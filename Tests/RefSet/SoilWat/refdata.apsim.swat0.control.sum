@@ -1,0 +1,167 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = soilwat2 reference dataset
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1977
+     Simulation end date   = 31/12/1978
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.dd/mm/yyyy as date
+        SoilWat.eo
+        SoilWat.eos
+        SoilWat.runoff
+        SoilWat.sw_dep
+
+     Output file = swat.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: gmtr.met
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 100 then
+        irrigation apply amount = 30 (mm)
+     endif
+     if day = 120 then
+        soilwat tillage type = disc, cn_red = 15.0, cn_rain = 30.0
+     endif
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.100  0.200  0.400  0.500  0.300  1.000  0.613  0.100
+          100.-  200.  0.100  0.200  0.400  0.500  0.300  1.000  0.243  0.100
+          200.-  300.  0.100  0.200  0.400  0.500  0.300  1.000  0.096  0.100
+          300.-  400.  0.100  0.200  0.400  0.500  0.300  1.000  0.038  0.100
+          400.-  500.  0.100  0.200  0.400  0.500  0.300  1.000  0.009  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      20.00      10.00      20.00      10.00
+          100.-  200.      20.00      10.00      20.00      10.00
+          200.-  300.      20.00      10.00      20.00      10.00
+          300.-  400.      20.00      10.00      20.00      10.00
+          400.-  500.      20.00      10.00      20.00      10.00
+          ---------------------------------------------------------
+               Totals     100.00      50.00     100.00      50.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   1.50        0.25      100.00       50.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00    0.00    0.00  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     4.00 ()
+            Eo from priestly-taylor
+------- Start of simulation  --------------------------------------------------
+10 April 1977(Day of year=100), manager: 
+     Manager sending message :- irrigation apply  amount = 30 (mm)
+30 April 1977(Day of year=120), manager: 
+     Manager sending message :- soilwat tillage  type = disc, cn_red = 15.0, cn_rain = 30.0
+30 April 1977(Day of year=120), SoilWat: 
+     Soil tilled using disc
+                                             CN reduction =    15.00
+                                             Acc rain     =    30.00
+10 May 1977(Day of year=130), SoilWat: 
+     Tillage CN reduction finished
+10 April 1978(Day of year=100), manager: 
+     Manager sending message :- irrigation apply  amount = 30 (mm)
+30 April 1978(Day of year=120), manager: 
+     Manager sending message :- soilwat tillage  type = disc, cn_red = 15.0, cn_rain = 30.0
+30 April 1978(Day of year=120), SoilWat: 
+     Soil tilled using disc
+                                             CN reduction =    15.00
+                                             Acc rain     =    30.00
+31 May 1978(Day of year=151), SoilWat: 
+     Tillage CN reduction finished
+31 December 1978(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

@@ -1,0 +1,82 @@
+##################################################
+[file DOTNETDataTypes.h]
+#pragma once
+#include "..\DotNetComponentInterface\Interfaces.h"
+using namespace System::Collections;
+using namespace System::Runtime::InteropServices;
+
+   //------ ApsimType ------
+   public interface class ApsimType
+      {
+      virtual void pack(char* MessageData);
+      virtual void unpack(char* MessageData);
+      virtual unsigned memorySize();
+      virtual String^ DDML();
+      };
+   inline void pack(char* messageData, ApsimType^ Data)   {return Data->pack(messageData);}
+   inline void unpack(char* messageData, ApsimType^ Data) {return Data->unpack(messageData);}
+   inline unsigned memorySize(ApsimType^ Data)            {return Data->memorySize();}
+   inline String^ DDML(ApsimType^ Data)                   {return Data->DDML();}
+
+   //------ NullType ------
+   public ref class NullType : public ApsimType
+      {
+      public:
+         virtual void pack(char* MessageData)   { }
+         virtual void unpack(char* MessageData) { }
+         virtual unsigned memorySize()          {return 0;}
+         virtual String^ DDML()                 {return "<type/>";}
+      };
+[foreach types.type]
+
+   //------ [type.name] ------
+   public ref class [type.name]Type : public ApsimType
+      {
+      public:
+      [foreach type.field]
+      [field.dotnettype] [field.name];
+      [endfor]
+         virtual void pack(char* MessageData);
+         virtual void unpack(char* MessageData);
+         virtual unsigned memorySize();
+         virtual String^ DDML();
+      };
+[endfor]
+[endfile]
+##################################################
+[file DOTNETDataTypes.cpp]
+#include "DOTNETDataTypes.h"
+#include "..\DotNetComponentInterface\MessageData.h"
+
+[foreach types.type]
+   // ------ [type.name] ------
+   void [type.name]Type::pack(char* messageData)
+      {
+      [foreach type.field]
+      ::pack(messageData, [field.name]);
+      [endfor]
+      }
+   void [type.name]Type::unpack(char* messageData)
+      {
+      [foreach type.field]
+      [if [field.arrayofstructures] = T]
+      ::unpackArrayOfStructures(messageData, [field.name]);
+      [elseif [field.structure] = T]
+      ::unpack(messageData, [field.name]);
+      [else]
+      ::unpack(messageData, [field.name], "[field.name]");
+      [endif]
+      [endfor]
+      }
+   unsigned [type.name]Type::memorySize()
+      {
+      return 0
+       [foreach type.field]              + ::memorySize([field.name])
+       [endfor]              ;
+      }
+   String^ [type.name]Type::DDML()
+      {return [type.cddml];}
+   public delegate void On[type.name]([type.name]Type^ Data);
+
+[endfor]
+[endfile]

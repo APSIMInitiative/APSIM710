@@ -1,0 +1,252 @@
+!!!!!!!!!! Impact of summer cropping on productivity and deep drainage !!!!!
+
+!! rotations simulated
+!!   - continuous wheat
+!!   - sorghum opportunity crop between wheat crops
+!!   - sorghum Sept plant after pasture and into wheat (2 offset runs)
+!!   - no sorghum after pasture and then into wheat (2 offset runs)
+!!   - continuous wheat with full profile at start of fallow
+!!   - wheat-sorghum with full profile at start of sorghum
+
+!! Locations
+!    - salmon_gums
+!    - scaddan
+!    - Myrup
+!    - Kendenup
+
+!*************************************************************************************************
+!***** Salmon_Gums ***********************
+!*************************************************************************************************
+
+!!!! Continuous wheat !!!!
+
+version = 7.0(2)
+[apsim.sal_cw]
+Title = Salmon Gums continuous wheat
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[sal_cw]
+module = Input(met)      met/salmon_gums.met  [weather]
+module = manager  runs.par [cont_wht]   runs.par[all] runs.par[salmon_gums]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [salmon_gums] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [salmon_gums] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [salmon_gums] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [salmon_gums] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! sorghum wheat with rainfall-based sowing rule
+
+[apsim.sal_sw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[sal_sw]
+module = Input(met)      met/salmon_gums.met  [weather]
+module = manager  runs.par [sorg_wht]   runs.par[all] runs.par[salmon_gums]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [salmon_gums] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [salmon_gums] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [salmon_gums] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [salmon_gums] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! pasture sorghum wheat with rainfall-based sowing rule
+
+[apsim.sal_psw_r]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[sal_psw_r]
+module = Input(met)      met/salmon_gums.met  [weather]
+module = manager  runs.par [psw_r]   runs.par[all] runs.par[salmon_gums]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [salmon_gums] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [salmon_gums] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [salmon_gums] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [salmon_gums] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! fallow (no sorghum) after pasture followed by wheat
+
+[apsim.sal_pfw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[sal_pfw]
+module = Input(met)      met/salmon_gums.met  [weather]
+module = manager  runs.par [no_sorg_sept_wht]   runs.par[all] runs.par[salmon_gums]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [salmon_gums] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [salmon_gums] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [salmon_gums] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [salmon_gums] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+!*************************************************************************************************
+!***** Myrup ***********************
+!*************************************************************************************************
+
+!!!! Continuous wheat !!!!
+
+[apsim.myr_cw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[myr_cw]
+module = Input(met)      met/myrup.met  [weather]
+module = manager  runs.par [cont_wht]   runs.par[all] runs.par[myrup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [myrup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [myrup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [myrup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [myrup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! sorghum wheat with rainfall-based sowing rule
+
+[apsim.myr_sw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[myr_sw]
+module = Input(met)      met/myrup.met  [weather]
+module = manager  runs.par [sorg_wht]   runs.par[all] runs.par[myrup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [myrup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [myrup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [myrup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [myrup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! pasture sorghum wheat with rainfall-based sowing rule
+
+[apsim.myr_psw_r]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[myr_psw_r]
+module = Input(met)      met/myrup.met  [weather]
+module = manager  runs.par [psw_r]   runs.par[all] runs.par[myrup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [myrup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [myrup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [myrup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [myrup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! fallow (no sorghum) after pasture followed by wheat
+
+[apsim.myr_pfw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[myr_pfw]
+module = Input(met)      met/myrup.met  [weather]
+module = manager  runs.par [no_sorg_sept_wht]   runs.par[all] runs.par[myrup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [myrup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [myrup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [myrup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [myrup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+!*************************************************************************************************
+!***** Kendenup ***********************
+!*************************************************************************************************
+
+!!!! Continuous wheat !!!!
+
+[apsim.kend_cw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[kend_cw]
+module = Input(met)      met/kendenup.met  [weather]
+module = manager  runs.par [cont_wht]   runs.par[all] runs.par[kendenup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [kendenup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [kendenup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [kendenup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [kendenup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! sorghum wheat with rainfall-based sowing rule
+
+[apsim.kend_sw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[kend_sw]
+module = Input(met)      met/kendenup.met  [weather]
+module = manager  runs.par [sorg_wht]   runs.par[all] runs.par[kendenup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [kendenup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [kendenup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [kendenup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [kendenup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! pasture sorghum wheat with rainfall-based sowing rule
+
+[apsim.kend_psw_r]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[kend_psw_r]
+module = Input(met)      met/kendenup.met  [weather]
+module = manager  runs.par [psw_r]   runs.par[all] runs.par[kendenup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [kendenup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [kendenup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [kendenup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [kendenup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! fallow (no sorghum) after pasture followed by wheat
+
+[apsim.kend_pfw]
+module = clock   runs.par [1958_start] %apsim%/Model/clock.xml [standard]
+module = report   report.par[all] report.par[kend_pfw]
+module = Input(met)      met/kendenup.met  [weather]
+module = manager  runs.par [no_sorg_sept_wht]   runs.par[all] runs.par[kendenup]
+module = SurfaceOM   runs.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilWat   soil.par [kendenup] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soil.par [kendenup] %apsim%/Model/SoilN.xml [standard]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = accum    runs.par [all]
+module = plant(wheat)   soil.par [kendenup] %apsim%/Model/wheat.xml [standard]
+module = sorghum   soil.par [kendenup] %apsim%/Model/sorghum.xml [standard]
+module = tracker   report.par[all]
+module = sysbal
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

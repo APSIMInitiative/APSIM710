@@ -1,0 +1,718 @@
+[all.clock.parameters]
+start_date = 1/7/1975     ! dd/mm/yyyy
+end_date = 30/5/1999     ! dd/mm/yyyy
+
+[all.accum.parameters]
+
+Accum_variables = rain[5]
+
+[all.manager.init]
+     crop_flag = 0
+     emer_date = 0
+     anth_date = 0
+     mat_date = 0
+harvd = 0
+[all.manager.start_of_day]
+
+! resetting soil N and water
+   if (day=300) and
+      crop_flag = 0 then
+      SoilWat set sw  =    0.3  0.3  0.3  0.3  0.3  0.3  0.3  0.3  0.3  0.3
+      SoilN set NO3ppm =   1.0  0.5  0.5  0.5  0.3  0.3  0.3  0.2  0.2  0.2
+      soilp set labile_P =  3    3    2    2    1    1    1    1    1    1
+   endif
+
+!Tillage
+if (day= 304) then
+   surfaceom tillage type = user_defined, f_incorp = 0.9 (), tillage_depth = 100 ()
+endif
+
+! sowing rule for sowing maize
+if date_within('15-nov, 15-jan') AND
+                  rain[5] >= 20 AND
+                  maize.plant_status = 'out' THEN
+         crop_flag = 1
+         maize sow plants = 4.2, sowing_depth = 50, row_spacing = 0.90, cultivar = sc401, tiller_no_fertile = 0
+         mz_sowdate = day
+endif
+
+[P0.manager.start_of_day]
+
+! xxxxxxxxxxxxxxx  INPUTS OF BROADCAST P xxxxxxxxxxxxxxxxxxxxx
+
+[P10.manager.start_of_day]
+    if day = 321 then
+       Fertiliser apply amount = 10, depth = 50, type = broadcast_p
+    endif
+
+[P20.manager.start_of_day]
+    if day = 321 then
+       Fertiliser apply amount = 20, depth = 50, type = broadcast_p
+    endif
+
+[P30.manager.start_of_day]
+    if day = 321 then
+       fertiliz apply amount = 30, depth = 50, type = broadcast_p
+    endif
+
+[P40.manager.start_of_day]
+    if day = 321 then
+       Fertiliser apply amount = 40, depth = 50, type = broadcast_p
+    endif
+
+[P50.manager.start_of_day]
+   if day = 321 then
+       fertiliz apply amount = 50, depth = 50, type = broadcast_p
+    endif
+
+[P60.manager.start_of_day]
+    if day = 321 then
+       Fertiliser apply amount = 60, depth = 50, type = broadcast_p
+    endif
+
+[P70.manager.start_of_day]
+    if day = 321 then
+       Fertiliser apply amount = 70, depth = 50, type = broadcast_p
+    endif
+
+[P80.manager.start_of_day]
+    if day = 321 then
+       Fertiliser apply amount = 80, depth = 50, type = broadcast_p
+    endif
+
+! xxxxxxxxxxxxxxx  INPUTS OF Fertiliser N xxxxxxxxxxxxxxxxxxxxx
+
+[N0.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 then
+      Fertiliser apply amount = 0, type = nh4no3, depth = 5
+    endif
+
+[N13.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 then
+      Fertiliser apply amount = 6.25, type = nh4no3, depth = 5
+    endif
+
+[N25.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 then
+      Fertiliser apply amount = 12.5, type = nh4no3, depth = 5
+    endif
+
+[N50.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 then
+      Fertiliser apply amount = 25, type = nh4no3, depth = 5
+    endif
+
+[N75.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 then
+      Fertiliser apply amount = 37.5, type = nh4no3, depth = 5
+    endif
+
+[N100.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 then
+      Fertiliser apply amount = 50, type = nh4no3, depth = 5
+    endif
+
+[N125.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 then
+      Fertiliser apply amount = 62.5, type = nh4no3, depth = 5
+    endif
+
+[N150.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 or maize.DaysAfterSowing = 61 then
+      Fertiliser apply amount = 50, type = nh4no3, depth = 5
+    endif
+
+[N175.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 or maize.DaysAfterSowing = 61 then
+      Fertiliser apply amount = 58.3, type = nh4no3, depth = 5
+    endif
+
+[N200.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 or maize.DaysAfterSowing = 61 then
+      Fertiliser apply amount = 66.7, type = nh4no3, depth = 5
+    endif
+
+[N250.manager.start_of_day]
+
+if maize.DaysAfterSowing = 1 or maize.DaysAfterSowing = 42 or maize.DaysAfterSowing = 61 then
+      Fertiliser apply amount = 83.3, type = nh4no3, depth = 5
+    endif
+
+[all.manager.end_of_day]
+
+     if Stage = 3 and emer_date = 0 then
+        emer_date = DaysAfterSowing
+     elseif Stage = 7 and anth_date = 0 then
+        anth_date = DaysAfterSowing
+     elseif Stage = 11 and mat_date = 0 then
+        mat_date = DaysAfterSowing
+     endif
+
+     if (maize.Stage = 11 OR
+   maize.plant_status = 'dead') THEN
+        report do_output
+        maize harvest
+        maize end_crop
+        harvd = day
+     endif
+
+     if
+        maize.plant_status = 'out' and
+        day = harvd + 30 then
+        surfaceom tillage type = user_defined, f_incorp = 0.50 (), tillage_depth = 0 (mm)
+        crop_flag = 0
+     endif
+
+!     if days_since_last_report = 5 then
+!     report do_output
+!     endif
+
+[p0N0.SummaryFile.parameters]
+summaryfile = p0N0c_h.sum
+
+[all.tracker1.parameters]
+variable = sum of met.rain on end_of_day from report.reported to now as sum@met_rain
+variable = sum of SoilWat.runoff on end_of_day from report.reported to now as sum@soilwat2_runoff
+variable = sum of SoilWat.drain on end_of_day from report.reported to now as sum@soilwat2_drain
+variable = sum of SoilWat.es on end_of_day from report.reported to now as sum@soilwat2_es
+variable = average of maize.swdef_photo on end_of_day from report.reported to now as avg@maize_swdef_photo
+variable = average of maize.nfact_photo on end_of_day from report.reported to now as avg@maize_nfact_photo
+variable = average of maize.pfact_photo on end_of_day from report.reported to now as avg@maize_pfact_photo
+variable = sum of SoilWat.no3_leach(5) on end_of_day from report.reported to now as sum@soilwat2_no3_leach[5]
+
+[p0N13.SummaryFile.parameters]
+summaryfile = p0N13c_h.sum
+
+[p0N25.SummaryFile.parameters]
+summaryfile = p0N25c_h.sum
+
+[p0N50.SummaryFile.parameters]
+summaryfile = p0N50c_h.sum
+
+[p0N75.SummaryFile.parameters]
+summaryfile = p0N75c_h.sum
+
+[p0N100.SummaryFile.parameters]
+summaryfile = p0N100c_h.sum
+
+[p0N125.SummaryFile.parameters]
+summaryfile = p0N125c_h.sum
+
+[p0N150.SummaryFile.parameters]
+summaryfile = p0N150c_h.sum
+
+[p0N175.SummaryFile.parameters]
+summaryfile = p0N175c_h.sum
+
+[p0N200.SummaryFile.parameters]
+summaryfile = p0N200c_h.sum
+
+[p0N250.SummaryFile.parameters]
+summaryfile = p0N250c_h.sum
+
+[p10N0.SummaryFile.parameters]
+summaryfile = p10N0c_h.sum
+
+[p10N13.SummaryFile.parameters]
+summaryfile = p10N13c_h.sum
+
+[p10N25.SummaryFile.parameters]
+summaryfile = p10N25c_h.sum
+
+[p10N50.SummaryFile.parameters]
+summaryfile = p10N50c_h.sum
+
+[p10N75.SummaryFile.parameters]
+summaryfile = p10N75c_h.sum
+
+[p10N100.SummaryFile.parameters]
+summaryfile = p10N100c_h.sum
+
+[p10N125.SummaryFile.parameters]
+summaryfile = p10N125c_h.sum
+
+[p10N150.SummaryFile.parameters]
+summaryfile = p10N150c_h.sum
+
+[p10N175.SummaryFile.parameters]
+summaryfile = p10N175c_h.sum
+
+[p10N200.SummaryFile.parameters]
+summaryfile = p10N200c_h.sum
+
+[p10N250.SummaryFile.parameters]
+summaryfile = p10N250c_h.sum
+
+[p20N0.SummaryFile.parameters]
+summaryfile = p20N0c_h.sum
+
+[p20N13.SummaryFile.parameters]
+summaryfile = p20N13c_h.sum
+
+[p20N25.SummaryFile.parameters]
+summaryfile = p20N25c_h.sum
+
+[p20N50.SummaryFile.parameters]
+summaryfile = p20N50c_h.sum
+
+[p20N75.SummaryFile.parameters]
+summaryfile = p20N75c_h.sum
+
+[p20N100.SummaryFile.parameters]
+summaryfile = p20N100c_h.sum
+
+[p20N125.SummaryFile.parameters]
+summaryfile = p20N125c_h.sum
+
+[p20N150.SummaryFile.parameters]
+summaryfile = p20N150c_h.sum
+
+[p20N175.SummaryFile.parameters]
+summaryfile = p20N175c_h.sum
+
+[p20N200.SummaryFile.parameters]
+summaryfile = p20N200c_h.sum
+
+[p20N250.SummaryFile.parameters]
+summaryfile = p20N250c_h.sum
+
+[P40N0.SummaryFile.parameters]
+summaryfile = P40N0c_h.sum
+
+[p40N13.SummaryFile.parameters]
+summaryfile = p40N13c_h.sum
+
+[P40N25.SummaryFile.parameters]
+summaryfile = P40N25c_h.sum
+
+[P40N50.SummaryFile.parameters]
+summaryfile = P40N50c_h.sum
+
+[P40N75.SummaryFile.parameters]
+summaryfile = P40N75c_h.sum
+
+[P40N100.SummaryFile.parameters]
+summaryfile = P40N100c_h.sum
+
+[P40N125.SummaryFile.parameters]
+summaryfile = P40N125c_h.sum
+
+[P40N150.SummaryFile.parameters]
+summaryfile = P40N150c_h.sum
+
+[P40N175.SummaryFile.parameters]
+summaryfile = P40N175c_h.sum
+
+[P40N200.SummaryFile.parameters]
+summaryfile = P40N200c_h.sum
+
+[P40N250.SummaryFile.parameters]
+summaryfile = P40N250c_h.sum
+
+[p50N0.SummaryFile.parameters]
+summaryfile = p50N0c_h.sum
+
+[p50N13.SummaryFile.parameters]
+summaryfile = p50N13c_h.sum
+
+[p50N25.SummaryFile.parameters]
+summaryfile = p50N25c_h.sum
+
+[p50N50.SummaryFile.parameters]
+summaryfile = p50N50c_h.sum
+
+[p50N75.SummaryFile.parameters]
+summaryfile = p50N75c_h.sum
+
+[p50N100.SummaryFile.parameters]
+summaryfile = p50N100c_h.sum
+
+[p50N125.SummaryFile.parameters]
+summaryfile = p50N125c_h.sum
+
+[p50N150.SummaryFile.parameters]
+summaryfile = p50N150c_h.sum
+
+[p50N175.SummaryFile.parameters]
+summaryfile = p50N175c_h.sum
+
+[p50N200.SummaryFile.parameters]
+summaryfile = p50N200c_h.sum
+
+[p50N250.SummaryFile.parameters]
+summaryfile = p50N250c_h.sum
+
+[p60N0.SummaryFile.parameters]
+summaryfile = p60N0c_h.sum
+
+[p60N13.SummaryFile.parameters]
+summaryfile = p60N13c_h.sum
+
+[p60N25.SummaryFile.parameters]
+summaryfile = p60N25c_h.sum
+
+[p60N50.SummaryFile.parameters]
+summaryfile = p60N50c_h.sum
+
+[p60N75.SummaryFile.parameters]
+summaryfile = p60N75c_h.sum
+
+[p60N100.SummaryFile.parameters]
+summaryfile = p60N100c_h.sum
+
+[p60N125.SummaryFile.parameters]
+summaryfile = p60N125c_h.sum
+
+[p60N150.SummaryFile.parameters]
+summaryfile = p60N150c_h.sum
+
+[p60N175.SummaryFile.parameters]
+summaryfile = p60N175c_h.sum
+
+[p60N200.SummaryFile.parameters]
+summaryfile = p60N200c_h.sum
+
+[p60N250.SummaryFile.parameters]
+summaryfile = p60N250c_h.sum
+
+[p70N0.SummaryFile.parameters]
+summaryfile = p70N0c_h.sum
+
+[p70N13.SummaryFile.parameters]
+summaryfile = p70N13c_h.sum
+
+[p70N25.SummaryFile.parameters]
+summaryfile = p70N25c_h.sum
+
+[p70N50.SummaryFile.parameters]
+summaryfile = p70N50c_h.sum
+
+[p70N75.SummaryFile.parameters]
+summaryfile = p70N75c_h.sum
+
+[p70N100.SummaryFile.parameters]
+summaryfile = p70N100c_h.sum
+
+[p70N125.SummaryFile.parameters]
+summaryfile = p70N125c_h.sum
+
+[p70N150.SummaryFile.parameters]
+summaryfile = p70N150c_h.sum
+
+[p70N175.SummaryFile.parameters]
+summaryfile = p70N175c_h.sum
+
+[p70N200.SummaryFile.parameters]
+summaryfile = p70N200c_h.sum
+
+[p70N250.SummaryFile.parameters]
+summaryfile = p70N250c_h.sum
+
+[p80N0.SummaryFile.parameters]
+summaryfile = p80N0c_h.sum
+
+[p80N13.SummaryFile.parameters]
+summaryfile = p80N13c_h.sum
+
+[p80N25.SummaryFile.parameters]
+summaryfile = p80N25c_h.sum
+
+[p80N50.SummaryFile.parameters]
+summaryfile = p80N50c_h.sum
+
+[p80N75.SummaryFile.parameters]
+summaryfile = p80N75c_h.sum
+
+[p80N100.SummaryFile.parameters]
+summaryfile = p80N100c_h.sum
+
+[p80N125.SummaryFile.parameters]
+summaryfile = p80N125c_h.sum
+
+[p80N150.SummaryFile.parameters]
+summaryfile = p80N150c_h.sum
+
+[p80N175.SummaryFile.parameters]
+summaryfile = p80N175c_h.sum
+
+[p80N200.SummaryFile.parameters]
+summaryfile = p80N200c_h.sum
+
+[p80N250.SummaryFile.parameters]
+summaryfile = p80N250c_h.sum
+
+[p0N0.Report.parameters]
+outputfile = p0N0c_h.out
+
+[p0N13.Report.parameters]
+outputfile = p0N13c_h.out
+
+[p0N25.Report.parameters]
+outputfile = p0N25c_h.out
+
+[p0N50.Report.parameters]
+outputfile = p0N50c_h.out
+
+[p0N75.Report.parameters]
+outputfile = p0N75c_h.out
+
+[p0N100.Report.parameters]
+outputfile = p0N100c_h.out
+
+[p0N125.Report.parameters]
+outputfile = p0N125c_h.out
+
+[p0N150.Report.parameters]
+outputfile = p0N150c_h.out
+
+[p0N175.Report.parameters]
+outputfile = p0N175c_h.out
+
+[p0N200.Report.parameters]
+outputfile = p0N200c_h.out
+
+[p0N250.Report.parameters]
+outputfile = p0N250c_h.out
+
+[p10N0.Report.parameters]
+outputfile = p10N0c_h.out
+
+[p10N13.Report.parameters]
+outputfile = p10N13c_h.out
+
+[p10N25.Report.parameters]
+outputfile = p10N25c_h.out
+
+[p10N50.Report.parameters]
+outputfile = p10N50c_h.out
+
+[p10N75.Report.parameters]
+outputfile = p10N75c_h.out
+
+[p10N100.Report.parameters]
+outputfile = p10N100c_h.out
+
+[p10N125.Report.parameters]
+outputfile = p10N125c_h.out
+
+[p10N150.Report.parameters]
+outputfile = p10N150c_h.out
+
+[p10N175.Report.parameters]
+outputfile = p10N175c_h.out
+
+[p10N200.Report.parameters]
+outputfile = p10N200c_h.out
+
+[p10N250.Report.parameters]
+outputfile = p10N250c_h.out
+
+[p20N0.Report.parameters]
+outputfile = p20N0c_h.out
+
+[p20N13.Report.parameters]
+outputfile = p20N13c_h.out
+
+[p20N25.Report.parameters]
+outputfile = p20N25c_h.out
+
+[p20N50.Report.parameters]
+outputfile = p20N50c_h.out
+
+[p20N75.Report.parameters]
+outputfile = p20N75c_h.out
+
+[p20N100.Report.parameters]
+outputfile = p20N100c_h.out
+
+[p20N125.Report.parameters]
+outputfile = p20N125c_h.out
+
+[p20N150.Report.parameters]
+outputfile = p20N150c_h.out
+
+[p20N175.Report.parameters]
+outputfile = p20N175c_h.out
+
+[p20N200.Report.parameters]
+outputfile = p20N200c_h.out
+
+[p20N250.Report.parameters]
+outputfile = p20N250c_h.out
+
+[P40N0.Report.parameters]
+outputfile = P40N0c_h.out
+
+[p40N13.Report.parameters]
+outputfile = p40N13c_h.out
+
+[P40N25.Report.parameters]
+outputfile = P40N25c_h.out
+
+[P40N50.Report.parameters]
+outputfile = P40N50c_h.out
+
+[P40N75.Report.parameters]
+outputfile = P40N75c_h.out
+
+[P40N100.Report.parameters]
+outputfile = P40N100c_h.out
+
+[P40N125.Report.parameters]
+outputfile = P40N125c_h.out
+
+[P40N150.Report.parameters]
+outputfile = P40N150c_h.out
+
+[P40N175.Report.parameters]
+outputfile = P40N175c_h.out
+
+[P40N200.Report.parameters]
+outputfile = P40N200c_h.out
+
+[P40N250.Report.parameters]
+outputfile = P40N250c_h.out
+
+[p50N0.Report.parameters]
+outputfile = p50N0c_h.out
+
+[p50N13.Report.parameters]
+outputfile = p50N13c_h.out
+
+[p50N25.Report.parameters]
+outputfile = p50N25c_h.out
+
+[p50N50.Report.parameters]
+outputfile = p50N50c_h.out
+
+[p50N75.Report.parameters]
+outputfile = p50N75c_h.out
+
+[p50N100.Report.parameters]
+outputfile = p50N100c_h.out
+
+[p50N125.Report.parameters]
+outputfile = p50N125c_h.out
+
+[p50N150.Report.parameters]
+outputfile = p50N150c_h.out
+
+[p50N175.Report.parameters]
+outputfile = p50N175c_h.out
+
+[p50N200.Report.parameters]
+outputfile = p50N200c_h.out
+
+[p50N250.Report.parameters]
+outputfile = p50N250c_h.out
+
+[p60N0.Report.parameters]
+outputfile = p60N0c_h.out
+
+[p60N13.Report.parameters]
+outputfile = p60N13c_h.out
+
+[p60N25.Report.parameters]
+outputfile = p60N25c_h.out
+
+[p60N50.Report.parameters]
+outputfile = p60N50c_h.out
+
+[p60N75.Report.parameters]
+outputfile = p60N75c_h.out
+
+[p60N100.Report.parameters]
+outputfile = p60N100c_h.out
+
+[p60N125.Report.parameters]
+outputfile = p60N125c_h.out
+
+[p60N150.Report.parameters]
+outputfile = p60N150c_h.out
+
+[p60N175.Report.parameters]
+outputfile = p60N175c_h.out
+
+[p60N200.Report.parameters]
+outputfile = p60N200c_h.out
+
+[p60N250.Report.parameters]
+outputfile = p60N250c_h.out
+
+[p70N0.Report.parameters]
+outputfile = p70N0c_h.out
+
+[p70N13.Report.parameters]
+outputfile = p70N13c_h.out
+
+[p70N25.Report.parameters]
+outputfile = p70N25c_h.out
+
+[p70N50.Report.parameters]
+outputfile = p70N50c_h.out
+
+[p70N75.Report.parameters]
+outputfile = p70N75c_h.out
+
+[p70N100.Report.parameters]
+outputfile = p70N100c_h.out
+
+[p70N125.Report.parameters]
+outputfile = p70N125c_h.out
+
+[p70N150.Report.parameters]
+outputfile = p70N150c_h.out
+
+[p70N175.Report.parameters]
+outputfile = p70N175c_h.out
+
+[p70N200.Report.parameters]
+outputfile = p70N200c_h.out
+
+[p70N250.Report.parameters]
+outputfile = p70N250c_h.out
+
+[p80N0.Report.parameters]
+outputfile = p80N0c_h.out
+
+[p80N13.Report.parameters]
+outputfile = p80N13c_h.out
+
+[p80N25.Report.parameters]
+outputfile = p80N25c_h.out
+
+[p80N50.Report.parameters]
+outputfile = p80N50c_h.out
+
+[p80N75.Report.parameters]
+outputfile = p80N75c_h.out
+
+[p80N100.Report.parameters]
+outputfile = p80N100c_h.out
+
+[p80N125.Report.parameters]
+outputfile = p80N125c_h.out
+
+[p80N150.Report.parameters]
+outputfile = p80N150c_h.out
+
+[p80N175.Report.parameters]
+outputfile = p80N175c_h.out
+
+[p80N200.Report.parameters]
+outputfile = p80N200c_h.out
+
+[p80N250.Report.parameters]
+outputfile = p80N250c_h.out
+
+

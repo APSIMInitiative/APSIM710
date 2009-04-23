@@ -1,0 +1,53 @@
+!Title = RCE-3(JVDK)ICRISAT Alfisol,(PAWC = 200mm, 1.2m)
+[*attributes]
+
+   module_usage  = soil_nitrogen
+   must_have     = soil_nitrogen
+
+[*contents]
+
+[run%.soiln2.parameters]
+
+   amp               =   11.9   (oC)  	!temperature amplitude (oC) -
+                                        !difference between highest and 
+                                        !lowest mean monthly air temperatures                       
+   tav               =   25.9   (oC)    ! mean annual air temperature (oC)                           
+   root_cn           =   45.0   ()      !                                                            
+   root_wt           =  500.0   (kg/ha) !                                                            
+   soil_cn           =   7.82   ()      !soil humic pool C:N ratio                                               
+                                        !(JVDK information)                  
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =     on           ! (on|off) whether to remap N+C if
+                                        ! soil loss occurs.
+                                           
+      ! layer        1       2       3       4       5       
+
+
+dlayer  =   150.000  150.000 300.000 300.000 300.000   (mm)  ! layer depth                            
+
+  oc      =     0.643   0.571   0.510   0.333   0.270  (%)     
+  ph      =     6.244   6.053   6.261   6.537   6.696  ( )    
+
+! *********    5. what proportion of total N is your incubation N and/or ! microbia N for each layer?
+fbiom   =     0.020   0.015   0.022   0.024   0.024    () 
+! microbe fraction of hunic pool
+ 
+finert  =     0.440   0.520   0.620   0.740   0.830    () 
+! inert fraction of humic pool
+ureappm =     0.000   0.000   0.000   0.000   0.000   (ppm) 
+! ppm urea
+
+#stop   
+! *********6. what is the kg/ha/rooting depth measured at sowing?
+!      This will be requested at one of the APSFRONT menus.
+!      you can put in the actual measured concentrations for 
+!      each layer in the next 2 lines, but Apsfront doesn't use this 
+!      currently.   
+   no3ppm  =     16.195   10.526   23.730    12.720   11.53  ()
+   nh4ppm  =     0.600   0.100   0.100   0.100   0.100  ()
+  
+
+	
+

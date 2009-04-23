@@ -1,0 +1,34 @@
+version = 7.0(2)
+[APSIM.test1_sugar]
+title=Test sowing before out
+module = clock   testA.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testA.par[test1]  testA.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testA.par[test1]   testA.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sugar   testA.par [all] %apsim%/Model/sugar.xml [standard]
+
+[APSIM.test2_sugar]
+title=Test sowing after out on same day
+module = clock   testA.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testA.par[test2]  testA.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testA.par[test2]   testA.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sugar   testA.par [all] %apsim%/Model/sugar.xml [standard]
+
+[APSIM.test3_sugar]
+title=Test sowing next day after out
+module = clock   testA.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testA.par[test3]  testA.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testA.par[test3]   testA.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sugar   testA.par [all] %apsim%/Model/sugar.xml [standard]
+

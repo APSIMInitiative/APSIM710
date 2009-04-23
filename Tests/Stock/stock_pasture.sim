@@ -1,0 +1,221 @@
+<Simulation name="StockPasture" executable="%apsuite\apsim\protocolmanager\lib\protocolmanager.dll">
+   <title>stock Pasture SAMPLE Simulation</title>
+   <component name="Log" executable="%apsuite\apsim\log\lib\log.dll">
+      <initdata>
+         <logfile>debug.xml</logfile>
+         <debug_output>off</debug_output>
+      </initdata>
+   </component>
+   <component name="clock" executable="%apsuite\apsim\clock\lib\clock.dll">
+      <initdata>
+         <include>%apsuite\apsim\clock\clock.xml</include>
+         <start_date>1/1/1988</start_date>
+         <end_date>30/12/1989</end_date>
+      </initdata>
+   </component>
+   <component name="Met" executable="%apsuite\apsim\Input\lib\Input.dll">
+      <initdata>
+         <filename>%apsuite\apsim\met\sample\dalby.met</filename>
+      </initdata>
+   </component>
+    <component name="FarmwiseSequencer" executable="%apsuite\apsim\\FarmwiseSequencer\lib\FarmwiseSequencerConverter.dll">
+      <initdata>
+         <include>%apsuite\apsim\FarmwiseSequencer\FarmwiseSequencer.xml</include>
+      </initdata>
+   </component>
+   <component name="reportstock" executable="%apsuite\apsim\report\lib\report.dll">
+      <initdata>
+        <outputfrequency>post </outputfrequency>
+         <outputfile>stock_on_pasture.out</outputfile>
+         <variable>dd/mm/yyyy as Date</variable>
+         <variable>rain as rain</variable>
+         <variable>stock.paddock</variable>
+         <variable>stock.number</variable>
+         <variable>stock.sex</variable>
+         <variable>stock.age</variable>
+         <variable>stock.weight</variable>
+         <variable>stock.cond_score</variable>
+         <variable>stock.intake</variable>
+         <variable>stock.wt_change</variable>
+         <variable>stock.trampling</variable>
+      </initdata>
+   </component>
+   <component name="report" executable="%apsuite\apsim\report\lib\report.dll">
+      <initdata>
+        <outputfrequency>post </outputfrequency>
+         <outputfile>pasture.out</outputfile>
+         <variable>dd/mm/yyyy as Date</variable>
+         <variable>rain as rain</variable>
+         <variable>pasture.assimilation</variable>
+         <variable>pasture.growth</variable>
+         <variable>pasture.green_dm</variable>
+         <variable>pasture.shoot_dm</variable>
+         <variable>pasture.shoot_n</variable>
+         <variable>pasture.senc_dm</variable>
+         <variable>pasture.seed_dm</variable>
+         <variable>pasture.rtdep</variable>
+         <variable>pasture.sw_uptake()</variable>
+         <variable>soilwat2.sw_dep()</variable>
+         <variable>soilwat2.es</variable>
+         <variable>soiln2.no3()</variable>
+         <variable>soiln2.nh4()</variable>
+         <variable>soiln2.fom_c()</variable>
+         <variable>pasture.cover_tot</variable>
+         <variable>pasture.residue_cover</variable>
+         <variable>pasture.senc_dm</variable>
+         <variable>pasture.litter_dm</variable>
+         <variable>pasture.uptake_no3()</variable>
+         <variable>pasture.uptake_nh4()</variable>
+      </initdata>
+   </component>
+   <component name="manager" executable="%apsuite\apsim\manager\lib\manager.dll">
+      <initdata>
+         <rule name="sample.start_of_day" condition="start_of_day">
+            <![CDATA[
+            if (day = 60) then
+               pastureconverter sowpasture rate = 100.0
+            endif
+
+            if (day = 300) then
+               pastureconverter cultivatepasture depth = 100, propn_incorp = 0.5, propn_mixed = 0.3
+            endif
+            endif
+            ]]>
+         </rule>
+      </initdata>
+   </component>
+   <component name="soilwat2" executable="%apsuite\apsim\soilwat2\lib\soilwat2.dll">
+      <initdata>
+         <include>%apsuite\apsim\soilwat2\soilwat2.xml</include>
+         <insoil>2.0</insoil>
+         <diffus_const>88.</diffus_const>
+         <diffus_slope>35.4</diffus_slope>
+         <cn2_bare>80</cn2_bare>
+         <cn_red>20</cn_red>
+         <cn_cov>.8</cn_cov>
+         <salb>0.13</salb>
+         <cona>2.5</cona>
+         <u>4</u>
+         <dlayer>150  150  300  300  300  300  300</dlayer>
+         <sat>0.500 0.509 0.510 0.505 0.490 0.480 0.480</sat>
+         <dul>0.450 0.459  0.45 0.44  0.42  0.41  0.41</dul>
+         <sw>0.450 0.259  0.25 0.34  0.42  0.41  0.41</sw>
+         <ll15>0.230 0.240 0.240 0.250 0.260 0.270 0.280</ll15>
+         <air_dry>0.10 0.20 0.20 0.20 0.20 0.20 0.20</air_dry>
+         <swcon>0.2  0.2  0.2  0.2  0.2  0.2  0.2</swcon>
+         <bd>1.30 1.30 1.29 1.31 1.35 1.36 1.36</bd>
+      </initdata>
+   </component>
+   <component name="soiln2" executable="%apsuite\apsim\soiln2\lib\soiln2.dll">
+      <initdata>
+         <include>%apsuite\apsim\soiln2\soiln2.xml</include>
+         <amp>15.0</amp>
+         <tav>20.0</tav>
+         <root_cn>20.</root_cn>
+         <root_wt>1000.</root_wt>
+         <soil_cn>14.5</soil_cn>
+         <oc>1.00 0.84 0.77 0.65 0.54 0.48 0.43</oc>
+         <ph>8.20 8.50 8.60 8.60 7.40 5.30 5.00</ph>
+         <fbiom>.035 .025 .015 0.01 0.01 0.01 0.01</fbiom>
+         <finert>0.30 0.50 0.60 0.75 0.90 0.99 0.99</finert>
+         <no3ppm>9.2  7.6  4.9  2.7  1.5  1.8  1.4</no3ppm>
+         <nh4ppm>0.30 0.30 0.30 0.30 0.30 0.50 0.50</nh4ppm>
+         <ureappm>0  0    0    0    0    0    0</ureappm>
+         <enr_a_coeff>7.4</enr_a_coeff>
+         <enr_b_coeff>0.2</enr_b_coeff>
+         <profile_reduction>off</profile_reduction>
+      </initdata>
+   </component>
+    <component name="FarmwiseSequencer" executable="%apsuite\apsim\\FarmwiseSequencer\lib\FarmwiseSequencerConverter.dll">
+      <initdata>
+         <include>%apsuite\apsim\FarmwiseSequencer\FarmwiseSequencer.xml</include>
+      </initdata>
+   </component>
+    <component name="pastureconverter" executable="%apsuite\apsim\pasture\lib\PastureScienceConverter.dll">
+      <initdata>
+         <debug>on</debug>
+         <sand>0.0     0.0     0.0     0.0     0.0     0.0     0.0  </sand>
+         <svp_fract> 0.75</svp_fract>
+         <co2_ppm> 350</co2_ppm>
+      </initdata>
+   </component>
+    <component name="Pasture" executable="C:\Program Files\Ausfarm\PASTURE.dll" active="T">
+      <executable name="C:\Program Files\Ausfarm\PASTURE.dll" version="1.2"/>
+    <initdata>
+      <![CDATA[
+          <initsection>
+            <init name="published_events" array="T">
+            </init>
+            <init name="driver_connections" array="T">
+            </init>
+            <init name="param_file" kind="string">
+              <val></val>
+            </init>
+            <init name="species" kind="string">
+              <val>Perennial Ryegrass</val>
+            </init>
+            <init name="nutrients" kind="string">
+              <val>N</val>
+            </init>
+          </initsection>
+      ]]>
+    </initdata>
+   </component>
+   <component name="stock" executable="C:\Program Files\ausfarm\stock.dll">
+    <initdata>
+      <![CDATA[
+        <initsection>
+          <init name="rand_seed" kind="integer4">
+            <val>1</val>
+          </init>
+          <init name="genotypes" array="T">
+            <element>
+              <field name="name" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="dam_breed" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="sire_breed" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="death_rate" kind="double" unit="/y">
+                <val>0.0</val>
+              </field>
+            </element>
+          </init>
+          <init name="cattle" array="T">
+            <element>
+              <field name="name" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="number" kind="integer4">
+                <val>0</val>
+              </field>
+            </element>
+          </init>
+          <init name="sheep" array="T" />
+       </initsection>
+       ]]>
+     </initdata>
+   </component>
+    <component name="cattle" executable="%apsuite\apsim\stock\lib\StockScienceConverter.dll">
+      <initdata>
+         <debug>on</debug>
+         <fraction_faeces_added>0.5</fraction_faeces_added>
+         <fraction_urine_added>0.5</fraction_urine_added>
+         <conversion_model>nonherbage</conversion_model>
+      </initdata>
+   </component>
+   <component name="managercattle" executable="%apsuite\apsim\manager\lib\manager.dll">
+      <initdata>
+         <rule name="sample.start_of_day" condition="start_of_day">
+            <![CDATA[
+            if day = 90 and year = 1988 then
+               cattle buystock number = 20 (-), genotype = angus, sex = steer, age = 12 (months), weight = 250.0 (kg)
+            endif
+            ]]>
+         </rule>
+      </initdata>
+   </component>
+</Simulation>

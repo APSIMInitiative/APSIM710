@@ -1,0 +1,47 @@
+[tree.tree.parameters]
+crop_type = trees
+root_depth_init  = 1500      (mm)
+                                   ! Max rooting depth of trees (p296*10)
+basal_area_init  = 0         (m2/ha)
+                                   ! Mature tree basal area (p291)
+ll               = 0.05     0.1      0.1      0.1       (mm/mm)
+                                   ! Tree minimum soil moisture (p292/p020), (p293/p021),
+                                   ! (p294/p022), (p294/p022)
+kl =               0.099    .340    .323    .238
+
+cover_tot        = 0         ()
+                                   ! Total cover for soilwat
+cover_green      = 0         ()
+                                   ! Green cover for soilwat
+
+uptake_source    = calc
+kl2rlv           = 1.5
+
+[tree.report.parameters]
+
+
+!Input stuff
+
+
+
+outputfile =model.out
+
+variable = clock.year
+variable = clock.day
+variable = manager.dateser as date
+variable = SoilWat.sw_dep()
+variable = SoilWat.sw_dep
+variable = SoilWat.eos
+variable = SoilWat.es
+variable = SoilWat.total_cover as cover
+variable = tree.basal_area
+variable = tree.sw_demand
+[tree.clock.parameters]
+
+
+start_date=1/1/1986     ! dd/mm/yyyy
+end_date=1/1/1996     ! dd/mm/yyyy
+
+[tree.summaryfile.parameters]
+summaryfile=model.sum
+

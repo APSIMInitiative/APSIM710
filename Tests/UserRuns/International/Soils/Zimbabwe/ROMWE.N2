@@ -1,0 +1,38 @@
+!Title = ROMWE, Zimbabwe Loamy Sand, (PAWC = 92mm, 1.05m) 
+
+[*attributes]
+
+   module_usage  = soil_nitrogen
+   must_have     = soil_nitrogen
+
+[*contents]
+
+[run%.soiln2.parameters]
+
+   amp               =    9.7   (oC)       ! GOL temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures                       
+   tav               =   19.6   (oC)       ! GOL mean annual air temperature (oC)                           
+     root_cn = $root_cn ()      ! initial root C:N ratio
+     root_wt = $root_wt (kg/ha) ! initial root DW 
+   soil_cn           =   12.0   ()         ! 14.5 soil humic pool C:N ratio                                  
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =     on              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+                                           
+!  layer             1       2       3       4       5       6       7
+!  dlayer  =   150.000 150.000 150.000 150.000 150.000 150.000 150.000 (mm)    ! layer depth                            
+   oc      =     0.550   0.400   0.340   0.340   0.340   0.190   0.190 (%)   ! organic carbon %
+   ph      =     5.110   5.060   5.120   5.100   5.600   7.800   7.500 ()    ! ph 
+   fbiom   =     0.040   0.020   0.015   0.010   0.010   0.010   0.010 ()    ! microbe fraction of humic pool
+   finert  =     0.390   0.470   0.520   0.620   0.740   0.830   0.830 ()    ! inert fraction of humic pool
+   ureappm =     0.000   0.000   0.000   0.000   0.000   0.000   0.000 (ppm) ! ppm urea
+
+#stop   
+   no3ppm  =     5.100   4.600   3.000   1.300   1.100   1.700   1.700 ()
+   nh4ppm  =     0.600   0.100   0.100   0.100   0.100   0.100   0.100 ()
+
+[*variables]
+   $root_cn = "Root C:N ratio : " 45.0 real
+   $root_wt = "Root weight (kg/ha) : " 400.0 real

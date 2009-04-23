@@ -1,0 +1,1838 @@
+   !!!! Soil types !!!!!!!!!!!!!!!!!!!!!!!!!!
+! duplex_b - duplex (beverley) yellow duplex 
+! lsand    - deap loamy sand (Wongan Hills)
+! alsand   - acid loamy sand = Lsand with reduced root depth (Wongan Hills)
+! duplex_m - duplex (merredin) similar to yellow duplex - DO'NT USE
+! duplex_c - duplex (Cundedin) red duplex or clay soil
+! sand     - sand (Moora)
+!!! modified soil types !!!!
+! duplex_w - duplex (Wagga) - allows deeper rooting
+! duplex_g - duplex for Gnowanerup modified from Beverley (higher LL below 25 cm)
+! dong_clay - deep uniform cracking clay loam
+! duplex_be  - duplex_b but dul=max SWC in beverley93ACT-canola (used for beverley93 simulation) 
+! dcc        - heavy soil - cunderdin (but not cunderdin 99)
+! lsand2    - loamy sand (modified from lsand, used in Cunderdin 99)
+! Moora      - sand soil from Moora, used for Moora lupin, and for Moora wheat-lupin rotation
+! Collgar   - Collgar Loamy Sand (Merredin soil)
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   duplex_b   (Beverley)   waterlogging (yellow duplex)  Senthold's original!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[duplex_b.SoilWat.parameters]    
+
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  10   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.8   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =    50  50   100  100  100  100  100  100  200  200  200  200  200  200  200  200  200   
+ll15 =     .05  .05  .04 .06  .06  .13  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16   
+dul =      .16  .16  .21 .21  .22  .22  .22  .22  .22  .21  .195 .195 .195 .195 .195 .195 .195   
+sat =      .29  .29  .29 .29  .29  .28  .24  .24  .24  .24  .24  .24  .24  .24  .24  .24  .24   
+bd =      1.7  1.7  1.75 1.8 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85   
+
+! waterlogging senthold! used in AJAR-lupin paper Aug03
+swcon =    .8   .9   .9   .9  .9   .11 1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+mwcon =   1.   1.   1.   1.  1.    .0  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+
+!! 11-8-00 No waterlogging  values (I used wrong values before)No waterlogging
+!swcon =   0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35   
+!mwcon =      1     1     1     1     1     1     1     1     1     1     1     1     1     1     1     1     1   
+
+
+!!testing, 7-8-03
+!swcon =     .8   .9   .9   .9  .9   .11  0.   0.   0.   0.   0    0    0   0    0    0    0   
+!mwcon =      1.   1.   1.   1.  1.   .0  1.   1.   1.   1.   1.0  1.0  1.0 1.0  1.0  1.0  1.0   
+
+!!testing, 8-8-03
+!swcon =     .8   .9   .9   .9  .9   .11  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1   
+!mwcon =      1.   1.   1.   1.  1.   .0  1.   1.   1.   1.   1.0  1.0  1.0  1.0  1.0  1.0  1.0   
+
+
+
+
+air_dry =  .03  .05  .04 .06  .06  .13  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16     
+
+!!!! lupin  -  assumed same as canola !!!!!
+[duplex_b.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   !original as wheat
+xf =      0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01   ! values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+!!!! canola -  assumed same as wheat !!!!!
+[duplex_b.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   !original as wheat
+xf =      0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01   ! values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+!!!! wheat -  assumed same as senthold wheat !!!!!
+[duplex_b.wheat.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   !original as wheat
+xf =      0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01   ! values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+[duplex_b.fababean.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   
+xf =      0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .001 .001  .001  .001 .001 .001 .001   
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01  0.01  0.01 0.01 0.01 0.01 0.01 0.01   
+
+!!!!!!!!! nwheat!!!!!!!!
+[duplex_b.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   
+wr =      1.0  1.0  1.0  .1   .1   .1   .1   .1   .1  .01  .01  .01   .01   .01 .01  .01  .01   
+nem =     0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01   
+
+[duplex_b.nwheat.spear]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   
+wr =      1.0  1.0  1.0  .1   .1   .1   .1   .1   .1  .01  .01  .01   .01   .01 .01  .01  .01   
+nem =     0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+
+[duplex_b.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =     1.70 1.70 1.75 1.80 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85   
+oc =      .81  .81 0.26 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10   
+ph =     4.7  4.7  4.70 4.70 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00   
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+fbiom =  0.04 0.04 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01   
+
+!initial proportion of total soil C that is not subject to mineralization (0-1)
+finert =  0.1 0.1  0.1  0.2  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9   
+
+
+!        -------  Soil Nitrogen parameters
+
+amp =  13.8   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.2   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms Beverley Gregory and Eastham 96
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =    7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+enr_b_coeff =    0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients 
+
+soiltype = sand
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   duplex_b_diff   (Beverley)   waterlogging (yellow duplex) MODIFIED FOR VALIDN97 for Lgrace !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[duplex_b_diff.SoilWat.parameters]    
+
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  10   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.8   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =    50  50   100  100  100  100  100  100  200  200  200  200  200  200  200  200  200   
+ll15 =     .05  .05  .04 .06  .06  .13  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16   
+dul =      .16  .16  .21 .21  .22  .22  .22  .22  .22  .21  .195 .195 .195 .195 .195 .195 .195   
+sat =      .29  .29  .29 .29  .29  .28  .24  .24  .24  .24  .24  .24  .24  .24  .24  .24  .24   
+bd =      1.7  1.7  1.75 1.8 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85   
+! waterlogging
+!swcon =    .8   .9   .9   .9  .9   .11 1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+!mwcon =   1.   1.   1.   1.  1.    .0  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+
+!No waterlogging (Imma: first stimate for Lakegrace soil, dec-99)
+!swcon =    1.   1.    1.    1.   1.     1.  1.  1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+!mwcon =   0.7   0.7   0.7   0.7  0.7   .0   1.  1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+
+!! 11-8-00 new values (I used wrong values before)
+swcon =   0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35  0.35   
+mwcon =      1     1     1     1     1     1     1     1     1     1     1     1     1     1     1     1     1   
+
+
+air_dry =  .03  .05  .04 .06  .06  .13  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16     
+
+
+!!!! lupin  -  assumed same as canola !!!!!
+
+[duplex_b_diff.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   !original as wheat
+xf =      0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01   ! values of nem for wheat
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+
+
+!!!! canola -  assumed same as wheat !!!!!
+
+[duplex_b_diff.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+!ll =       .05  .05  .04 .06  .06  .13  .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   !original as wheat
+ll =       .10  .10  .13 .13  .14  .18  .18  .19  .19  .19  .18  .18  .18  .18  .18  .18  .18   !!!invented, increased ll to decrease ASW. March2000(Brisbane) IF
+
+xf =      0.1  0.1  0.1  .2   .2   .2   .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01   ! values of nem for wheat
+!xf =      0.2  0.2  0.2  .2   .2   .2   .2   .2   .2  .2   .2  .2   .2   .2 .2  .2  .2   ! 17April00
+
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+
+
+[duplex_b_diff.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =     1.70 1.70 1.75 1.80 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85   
+oc =      .81  .81 0.26 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10   
+ph =     4.7  4.7  4.70 4.70 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00   
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+fbiom =  0.04 0.04 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01   
+
+!initial proportion of total soil C that is not subject to mineralization (0-1)
+finert =  0.1 0.1  0.1  0.2  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9   
+
+
+!        -------  Soil Nitrogen parameters
+
+amp =  13.8   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.2   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms Beverley Gregory and Eastham 96
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =    7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+enr_b_coeff =    0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients 
+soiltype = sand
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   loamy sand   (Wongan Hills)  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lsand.SoilWat.parameters]    
+
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                  !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =      50      50     100     100     100     100     100     100     200     200     200     200     200     200     200     200     200   
+ll15 =       0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+dul =       0.13    0.13    0.14   0.144   0.144   0.147   0.147   0.151  0.1555    0.16   0.175   0.175   0.175   0.175   0.175   0.175   0.175   
+sat =       0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35   
+bd =        1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+swcon =     0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65   
+mwcon =        1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1   
+air_dry =   0.04    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+
+
+[lsand.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+!! original values from wheat used for Carmody
+!xf =     0.1 0.05 0.2 0.5 0.5 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.5 0.5 0.5 0.5 0.5   ! values of nem for wheat
+xf =       0.2 0.2 0.2 0.5 0.5 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.5 0.5 0.5 0.5 0.5   !IF 17-04-00, nem wheat except layers 1-2
+
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+
+[lsand.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+!! original values from wheat used for Carmody
+!xf =         0.1    0.05     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   ! values of nem for wheat
+xf =         0.2    0.2     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   !IF 17-04-00
+
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! used in AJAR-validn
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+[lsand.wheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =        0.1    0.05     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+
+[lsand.sorg.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =      1.0    1.0  1.0   1.0   1.0   1.0   1.0   1.0   1.0   1.0     1.0   1.0     1.0    1.0     1.0     1.0     1.0   
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! 
+
+[lsand.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =           1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =        0.1    0.05     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   
+
+[lsand.nwheat.spear]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =           1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =        0.1    0.05     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lsand.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =        1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+oc =        1.23    0.43    0.37    0.26    0.26    0.21    0.21     0.2    0.19    0.18    0.18    0.18    0.17    0.17    0.17    0.17    0.17   
+ph =        4.7     5.1     5.1     5.1       6       6       6       6       6       6       6       6       6       6       6       6       6   
+fbiom =     0.04    0.04    0.03    0.02    0.02    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01   
+finert =    0.1     0.1     0.1     0.2     0.2     0.8     0.8     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9   
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.6   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms in Wongan Hills
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =       7.4  ()   
+enr_b_coeff =       0.2  ()   
+soiltype = sand
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   acid loamy sand   (Wongan Hills)  !!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   loamy sand with less root depth   !!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[alsand.SoilWat.parameters]    
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =       50      50     100     100     100     100     100     100     200     200     200     200     200     200     200     200     200   
+ll15 =       0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+dul =        0.13    0.13    0.14   0.144   0.144   0.147   0.147   0.151  0.1555    0.16   0.175   0.175   0.175   0.175   0.175   0.175   0.175   
+sat =        0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35   
+bd =         1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+swcon =      0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65   
+mwcon =         1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1   
+air_dry =    0.04    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+
+
+[alsand.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =          0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4  ! values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !used in paper validn
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+[alsand.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =          0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4  ! values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+[alsand.wheat.parameters]     ! assumed same as old wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =          0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4  ! values of nem for wheat
+!xf =          0.13    0.065     0.26     0.39     0.39     0.52     0.52    0.52     0.52     0.52     0.52     0.52     0.52     0.52     0.52     0.52     0.52  ! increased xf by 30% to compensate for max root depth value of 25 mm/day
+
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+[alsand.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+[alsand.nwheat.spear]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+[alsand.nwheat.kulin_e]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+[alsand.nwheat.spear_e]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[alsand.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =         1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+oc =         1.23    0.43    0.37    0.26    0.26    0.21    0.21     0.2    0.19    0.18    0.18    0.18    0.17    0.17    0.17    0.17    0.17   
+ph =         4.7     5.1     5.1     5.1       6       6       6       6       6       6       6       6       6       6       6       6       6   
+fbiom =      0.04    0.04    0.03    0.02    0.02    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01   
+finert =      0.1     0.1     0.1     0.2     0.2     0.8     0.8     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9   
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.6   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms in Wongan Hills
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+
+
+enr_a_coeff =       7.4  ()   
+enr_b_coeff =       0.2  ()   
+soiltype = sand
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!  heavy soil duplex_C  clay - not waterlogging   !!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!  after Rickert heavy soil from Merredin (red duplex) !!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[duplex_c.SoilWat.parameters]    
+u =  7.5   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cona =  3.0   ! 2.0 WA sand; 3.8 SA clay, 4.0 NL clay: 2.stage soil drying 
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+! split top layer, drop bottom layer
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =   50  50  100  100  100  100  100   100  200  200  200   200   200  200  200  200 200   
+ll15 =     .08  .08  .08  .08  .17  .18  .18  .19  .19  .19  .19  .19  .19  .19  .19  .19  .19  
+dul =      .17  .18  .22  .24  .28  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29   
+!sat =      .31  .28  .28  .34  .35  .33  .32  .32  .32  .32  .32  .32  .32  .32  .32  .32  .32   
+sat =      .31  .28  .28  .34  .35  .33  .32  .32  .32  .32  .32  .32  .33  .33  .33  .33  .33   
+
+bd =      1.72 1.80 1.82 1.66 1.64 1.66 1.71 1.74 1.78 1.79 1.79 1.79 1.79 1.79 1.79 1.79 1.79   
+swcon =    .8   .8   .7   .7   .7   .6   .6   .6   .6   .6   .6   .6   .6   .6   .6   .6   .6   
+mwcon =   1.   1.   1.   1.   1.    1.  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+!air_dry =  .035 .08  .10  .13  .17  .18  .18  .19  .19  .20  .20  .20  .20  .20  .20  .21  .21  
+air_dry  =  .035 .08  .08  .08  .16  .16  .18  .19  .19  .19  .19  .19  .19  .19  .19  .19  .19
+
+! 28-12, IF, values of air_dry layer 10-17 taken as equal to ll15
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+[duplex_c.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =   .08  .08  .10  .13  .17  .18  .19  .21  .22  .23  .24  .25  .26  .26  .26  .26  .26      
+xf =   0.3  0.3   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2    ! values of nem for wheat
+!kl =   0.08 0.08 0.08 0.08 0.06 0.04 0.02 0.01 0.01 0.01  0.01 0.01 0.01 0.01 0.01 0.01 0.01 !used until 241001, values AJAR-validn
+!kl =   0.08 0.08 0.08 0.08 0.06 0.06 0.04 0.04 0.04 0.04  0.02 0.02 0.01 0.01 0.01 0.01 0.01 !if test 5 nov 02
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl 31-7-03
+
+[duplex_c.lupin.parameters]     
+!depth 0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer  1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+!ll =  .08  .08  .10  .13   .17   .18   .19   .21  .22  .23  .24  .25  .26  .26  .26  .26  .26     !Senthold 
+!ll =   .08  .08  .08  .08   .17   .18   .19   .21  .22  .23  .24  .25  .26  .26  .26  .26  .26   !if test 5 nov 02 
+ll =   .08  .08  .08  .08   .16   .16   .19   .21  .22  .23  .24  .25  .26  .26  .26  .26  .26   !if test 10 dec 02 
+
+xf =    0.3  0.3   .3   .3   .3   .3   .3    .3   .2    .2    .2   0.2  0.2  0.2  0.2  0.2  0.2    ! values of nem for wheat
+!xf =     0.3  0.3   .2   .2   .1   .1   .05    .05  .05   .05   .05  0.2  0.2  0.2  0.2  0.2  0.2    ! if test 5 nov 02
+!xf =     0.25  0.25   .2   .2   .1   .1   .01    .01  .01   .01   .01  0.2  0.2  0.2  0.2  0.2  0.2    ! if test 10 dec 02
+
+!kl =   0.08 0.08 0.08 0.08 0.06 0.04 0.02 0.01 0.01 0.01  0.01 0.01 0.01 0.01 0.01 0.01 0.01 !used until 241001
+!kl =   0.08 0.08 0.08  0.08  0.06  0.06  0.04   0.04  0.04  0.04   0.02    0.02    0.01     0.01    0.01   0.01  0.01 !
+!kl =   0.08 0.08 0.07  0.05  0.04  0.02  0.01   0.01  0.01  0.01   0.01    0.01    0.01     0.01    0.01   0.01  0.01 !if test 5 nov 02
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+
+[duplex_c.weed.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =   .08  .08  .10  .13  .17  .18  .19  .21  .22  .23  .24  .25  .26  .26  .26  .26  .26      
+xf =   0.3  0.3   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2    ! values of nem for wheat
+!kl =   0.08 0.08 0.08 0.08 0.06 0.04 0.02 0.01 0.01 0.01  0.01 0.01 0.01 0.01 0.01 0.01 0.01 !used until 241001, values AJAR-validn
+!kl =   0.08 0.08 0.08 0.08 0.06 0.06 0.04 0.04 0.04 0.04  0.02 0.02 0.01 0.01 0.01 0.01 0.01 !if test 5 nov 02
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl 31-7-03
+
+
+
+[duplex_c.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =      .08  .08  .10  .13  .17  .18  .19  .21  .22  .23  .24  .25  .26  .26  .26  .26  .26   
+wr =     1.0  1.0  1.0  1.0  1.0  1.0  1.0   1.0  .7   .7   .5  0.5  0.5  0.5  0.5  0.5  0.5   
+nem =    0.3  0.3   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2   
+
+[duplex_c.nwheat.spear]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =      .08  .08  .10  .13  .17  .18  .19  .21  .22  .23  .24  .25  .26  .26  .26  .26  .26   
+wr =     1.0  1.0  1.0  1.0  1.0  1.0  1.0   1.0  .7   .7   .5  0.5  0.5  0.5  0.5  0.5  0.5   
+nem =    0.3  0.3   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2   
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[duplex_c.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =      1.72 1.80 1.82 1.66 1.64 1.66 1.71 1.74 1.78 1.79 1.79 1.79  1.79  1.79  1.79  1.79  1.79   
+oc =      1.20 1.20 0.8  0.3  0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10  0.10  0.10  0.10  0.10  0.10   
+ph =      4.7  4.7  4.70 4.70 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00  6.00  6.00  6.00  6.00  6.00   
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+! lighter soil
+fbiom =   0.03 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01  0.01  0.01  0.01  0.01  0.01   
+finert =  0.3  0.3  0.3  0.4  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9   0.9   0.9   0.9   0.9   0.9   
+
+!        -------  Soil Nitrogen parameters
+
+amp =  13.8   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.2   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms in Wongan Hills
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =    7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+enr_b_coeff =    0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients 
+soiltype = sand
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!  SAND  (Moora)              !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[sand.SoilWat.parameters]    
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cona =  2.0   ! test for sandy soil
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =    50    50    100   100  100   100   100   100   200   200   200    200  200  200  200  200  200   
+ll15 =     .03   .03   .060  .060  .060  0.06  .060  0.06  .060  .060  .060  .07  .07   .07  .07  .07  .07
+dul =      .180  .130  .120  .110  .110  .095  .095  .095  .100  .110  .110  .120 .120  .120 .120 .120 .120   
+sat =      .320  .320  .320  .310  .310  .300  .300  .310  .310  .310  .310  .310 .310  .310 .310 .310 .310   
+bd =      1.58  1.68  1.67  1.78  1.78  1.85  1.85  1.8   1.8   1.8   1.8   1.8   1.8   1.8  1.8  1.8  1.8   
+swcon =    .75   .8    .80  .80   .80   .80   .80   .80   .80   .80   .80   .80   .8    .8  .8    .8    .8   
+mwcon =   1.    1.     1.   1.    1.    1.    1.    1.    1.    1.    1.    1.    1.     1.  1.   1.   1.   
+air_dry =  .020  .03   .060  .060  .060  0.06  .060  0.06  .060  .060  .060  .07  .07   .07  .07  .07  .07
+
+[sand.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =      1.58  1.68  1.67   1.78  1.85 1.85  1.8   1.8   1.8   1.8   1.8   1.8  1.8  1.8  1.8  1.8  1.8   
+oc =       .9    .9    .39   0.1   0.01 0.01  0.01  0.01  0.01  0.01  0.01  0.01 0.01 0.01 0.01 0.01 0.01   
+ph =      5.03  5.03  4.33   4.25  4.53 4.53  5.18  5.40  5.40  5.63  5.68  5.68 5.68 5.68 5.68 5.68 5.68   
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+fbiom =   0.040 0.040 0.03   0.02  0.01 0.01  0.01  0.01 0.01   0.01  0.01  0.01 0.01  0.01  0.01  0.01  0.01   
+
+!initial proportion of total soil C that is not subject to mineralization (0-1)
+finert =   0.1  0.1   0.1    0.2   0.8  0.8   0.9   0.9  0.9    0.9   0.9   0.09 0.09  0.09  0.09  0.09  0.09   
+
+!        -------  Soil Nitrogen parameters
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.6   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+
+soil_cn =  15.0   ! GA Moora estimate top layer 0-10cms 
+
+
+profile_reduction =  on   ! (on|off) whether to remap N+C if 
+                                     ! soil loss occurs. 
+enr_a_coeff =       7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+
+enr_b_coeff =       0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients
+soiltype = sand
+
+
+!!!! canola
+[sand.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =    .03   .03   .060  .060  .060  0.06  .070  0.07  .080  .085  .085  .100 .100 .100 .100 .100 .100   
+xf = .1    .1    .1    .2    .5     .5   .5     .5   .5    .5    .5    .3   .2   .2    .2   .2   .2 !values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+!!!! lupin
+[sand.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =    .03   .03   .060  .060  .060  0.06  .070  0.07  .080  .085  .085  .100 .100 .100 .100 .100 .100   
+xf = .1    .1    .1    .2    .5     .5   .5     .5   .5    .5    .5    .3   .2   .2    .2   .2   .2 !values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+!!!! wheat
+[sand.wheat.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =    .03   .03   .060  .060  .060  0.06  .070  0.07  .080  .085  .085  .100 .100 .100 .100 .100 .100   
+xf = .1    .1    .1    .2    .5     .5   .5     .5   .5    .5    .5    .3   .2   .2    .2   .2   .2 !values of nem for wheat
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+!!!! canola
+[sand.weed.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =    .03   .03   .060  .060  .060  0.06  .070  0.07  .080  .085  .085  .100 .100 .100 .100 .100 .100   
+xf = .1    .1    .1    .2    .5     .5   .5     .5   .5    .5    .5    .3   .2   .2    .2   .2   .2 !values of nem for wheat
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+kl = 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06  !testing ct kl, used from 31-7-03
+
+
+
+[sand.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .03   .03   .060  .060  .060  0.06  .070  0.07  .080  .085  .085  .100 .100 .100 .100 .100 .100   
+wr =      1.0   1.0    .5    .5    .5     .5  1.0    1.0  1.0   1.0   1.0   1.   1.    1     1   1     1   
+nem =      .1    .1    .1    .2    .5     .5   .5     .5   .5    .5    .5    .3   .2   .2    .2   .2   .2   
+
+[sand.nwheat.spear]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       .03   .03   .060  .060  .060  0.06  .070  0.07  .080  .085  .085  .100 .100 .100 .100 .100 .100   
+wr =      1.0   1.0    .5    .5    .5     .5  1.0    1.0  1.0   1.0   1.0   1.   1.    1     1   1     1   
+nem =      .1    .1    .1    .2    .5     .5   .5     .5   .5    .5    .5    .3   .2   .2    .2   .2   .2   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   duplex_be   (Beverley)   !!!!
+!!!!!  Using the original values from duplex_b but using the DUL=max SWC measured in Beverley93ACT-canola !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[duplex_be.SoilWat.parameters]    
+
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  10   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.8   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =    50  50   100  100  100  100  100  100  200  200  200  200  200  200  200  200  200   
+!ll15 =     .05  .05  .04 .06  .06  .13  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16   !orig
+ll15 =      .04  .02  .02 .02  .02 .095  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16  !29-05-02, validn paper
+
+!dul =  .16  .16  .21 .21  .22  .22  .22  .22  .22  .21  .195 .195 .195 .195 .195 .195 .195   !original values
+!dul =      .19  .19  .23  .25 .24  .21  .21  .20  .22  .21  .24  .21  .21 .195 .195 .195 .195 ! 30-5-00  
+!dul =       .19  .19  .23  .25 .24  .22  .22  .22  .22  .21  .24  .21  .21 .195 .195 .195 .195 ! 1-6-00  
+dul =    .19  .19  .21  .24 .24  .23  .21  .21  .21  .22  .23  .22  .21 .195 .195 .195 .195 ! paper validn!2-6-00  max SWC in the season(trapezoid)-canola-be93ACT
+!dul =   .16  .16  .21  .24 .24  .22  .22  .21  .21  .21  .195 .195 .195 .195 0.195 .195 .195! 11-8-00   Perry estimates
+
+sat =      .29  .29  .29 .29  .29  .28  .24  .24  .24  .24  .24  .24  .24  .24  .24  .24  .24   
+bd =      1.7  1.7  1.75 1.8 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85   
+
+!No waterlogging (used values from 11-8-00)
+swcon =   .8   .9   .9   .9  .9   .9  1.   1.   1.   1.   1.  1.   1. 1.  1.  1.  1.   
+mwcon =   1.   1.   1.   1.  1.    1.  1.   1.   1.   1.   1.  1.   1. 1.  1.  1.  1.   
+
+! waterlogging, orig
+!swcon =   .8   .9   .9   .9  .9   .11  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+!mwcon =   1.   1.   1.   1.  1.    .0  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+
+!!testing
+!swcon =    .8   .9   .9   .9   .9   0.  0.   0.   0.   0.   0    0     0   0    0    0    0   
+!mwcon =    1.   1.   1.   1.   1.   .0  0.   0.   0.   0.   0    0     0   0    0    0    0   
+
+!!testing, 7-8-03
+!swcon =     .8   .9   .9   .9  .9   .11  0.   0.   0.   0.   0    0     0   0    0    0    0   
+!mwcon =      1.   1.   1.   1.  1.   .0  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+
+
+!air_dry =  .03  .05  .04 .06  .06  .095  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16     !!original values
+!air_dry =  .03  .05  .04 .05  .06  .095  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16     !!6march2002
+air_dry =  .02  .02  .02 .02  .02  .095  .14  .15  .16  .16  .16  .16  .16   .16   .16 .16  .16     !!28may02
+
+!!!! lupin -  assumed same as canola !!!!!
+
+[duplex_be.lupin.parameters]     ! assumed same as wheat
+!depth  0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer   1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+!ll =   .05  .05  .04   .06   .06   .13   .14   .17   .17    .17   .17   .17  .17  .17 .17 .17 .17 !original as wheat
+!ll =   .05  .05  .04   .06   .06   .095  .156  .178  .196   .207  .207  .196 .189 .17 .17 .17 .17 !min SWC measured lupin-be93ACT 
+ll =   .04  .02  .02   .02   .02   .095  .156  .178  .196   .207  .207  .196 .189 .17 .17 .17 .17 !min SWC measured lupin-be93ACT , modified 28-05-02, validn paper
+
+!xf =  0.1  0.1  0.1   .2    .2    .2    .1    .1    .1     .1    .01  .01   .01  .01 .01  .01  .01 !values of nem for wheat
+!!incresead xf from 50 to 90
+xf =   0.1  0.1  0.1   .2    .2    .2    .2    .2    .2     .1    .01  .01   .01  .01 .01  .01  .01 !120901, increased xf in 50-90 cm for lupin
+
+!kl =  0.08  0.08 0.08 0.08  0.06  0.04  0.02  0.01  0.01  0.01   0.01  0.01  0.01 0.01 0.01 0.01 0.01 !original values
+!kl =  0.08  0.08 0.08 0.08  0.08  0.08  0.08  0.08  0.08  0.08   0.08  0.08  0.08 0.08 0.08 0.08 0.08 !cte, 170901
+kl =   0.08  0.08 0.08 0.08  0.08  0.06  0.04  0.04  0.02  0.01   0.01  0.01  0.01 0.01 0.01 0.01 0.01 !28may02
+
+!!!! canola -  assumed same as wheat !!!!!
+
+[duplex_be.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+!ll =     .05  .05   .04  .06   .06   .13   .14  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   !! original values
+!ll =    .05  .05    .04  .08   .15   .19   .20  .19  .21  .20  .22  .20  .19  .17  .17  .17  .17   !!30-05-00
+!ll =    .05  .05    .04  .08   .15   .19   .20  .19  .21  .20  .20  .20  .19  .17  .17  .17  .17   !!1-6-00
+!ll =    .05  .05    .04  .06   .12   .17   .19  .17  .17  .17  .17  .17  .17  .17  .17  .17  .17   !! 11-8-00
+ll =     .05  .05    .04  .05   .12   .165  .190  .192  .199  .207  .213  .209  .193  .17  .17  .17  .17 !!2-6-00 min swc measured in the season be93ACT
+
+!xf =   0.1  0.1  0.1   .2    .2    .2    .2    .2    .2     .1    .01  .01   .01  .01 .01  .01  .01 !120901, increased xf in 50-90 cm
+!xf =  0.1  0.1  0.1  .3   .3   .3   .3   .3   .3  .2   .2  .1   .1   .03 .01  .01  .01  !
+!xf = 0.08  0.08  0.08  .24   .24   .24   .24   .24   .24  .16   .16  .08   .08   .03 .01 .01 .01 !decresed by 10%
+!xf =  0.1  0.1  0.1  .2   .2  .2  .2   .2   .2  .2   .01  .01   .01   .01 .01  .01  .01   ! 22-6-00
+!xf =  0.1  0.1  0.1  .2   .2  .2  .1   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01  ! original values of nem for wheat
+xf =   0.1  0.1  0.1  .2   .2  .3  .2   .1   .1  .1   .01  .01   .01   .01 .01  .01  .01  ! 3-10-02
+
+kl =       0.08  0.08   0.08  0.08  0.08  0.04  0.04  0.04  0.02  0.02    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! 3-10-02
+!kl =       0.08  0.08  0.08  0.08  0.08  0.06  0.06  0.04  0.02  0.02    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! 2 nov 01
+!kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+!kl =      0.08  0.08  0.1  0.1  0.06  0.01  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! 11-8-00
+
+
+[duplex_be.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =     1.70 1.70 1.75 1.80 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85 1.85   
+oc =      .81  .81 0.26 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10   
+ph =     4.7  4.7  4.70 4.70 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00   
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+fbiom =  0.04 0.04 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01   
+
+!initial proportion of total soil C that is not subject to mineralization (0-1)
+finert =  0.1 0.1  0.1  0.2  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9  0.9   
+
+
+!        -------  Soil Nitrogen parameters
+
+amp =  13.8   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.2   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms Beverley Gregory and Eastham 96
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =    7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+enr_b_coeff =    0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients 
+
+soiltype = sand
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!  heavy soil dcc  (Cunderdin after Bill 1997 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!
+
+[dcc.SoilWat.parameters]
+!insoil = 1.1   ! indicator for initial soil water ! assuming profile close to ll15 on 1.5.
+               ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul,
+               !                                         >1 = input by user)
+u = 6      !7.5          ! stage 1 soil evaporation coefficient (mm)
+!max_pond = 0   ! ponding capacity
+cn2_bare = 60     ! 60 runoff curve number
+salb = 0.13    ! bare soil albedo
+cn_red = 20     ! curve number max reduction
+cn_cov = 0.8     ! cover which generates max cn reduction
+cn_canopy_fact = 1.0
+cona = 3.0   !3.0     ! 2.0 WA sand; 3.8 SA clay, 4.0 NL clay: 2.stage soil drying 
+crop _cover = 0. ! initialisation of crop cover
+diffus_const = 88  ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope = 35 ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename = blank
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer  =  50  50  100  100  100  100  100   100  200  200  200   200   200  200  200  200 200
+
+! smooth, from Bill, 0-10 adjusted for airdry
+!ll15     =    0.10    0.10    0.11    0.15    0.15    0.15    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16
+
+! NEW measured from Bill, 0-10 adjusted for airdry
+ll15  =    0.07    0.07    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+
+! smooth, from Bill (not measured!)
+!dul     =    0.18    0.18    0.23    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25
+
+! NEW, from Bill (measured!)
+dul     =    0.156    0.156    0.22    0.224    0.243    0.243   0.243   0.243   0.243   0.243  0.243  0.243   0.243   0.243   0.243   0.243   0.243 
+
+sat     =  .48  .48  .44  .44  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40
+
+! NEW from Bill
+bd     =     1.3     1.3    1.4    1.4    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5
+
+
+!swcon   = 1.   1.   1.   1.   1.    1.  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0
+
+swcon   = .6   .6   .6   .6   .6    .6  .6   .6   .6   .6   .6  .6   .6  .6  .6  .6  .6
+
+mwcon   = 1.   1.   1.   1.   1.    1.  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0 
+
+
+! for Bill's LL
+!air_dry =  0.034    0.034    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+
+! If. 210501, lowest measured values in dec 2000
+air_dry =  0.026    0.026    0.090    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! canola- assumed same as wheat
+
+[dcc.canola.parameters]
+!depth     0-5 5-10 10-20 10-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+
+ll     =    0.07    0.07    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+!ll      =   0.063 0.063 0.109 0.111 0.119 0.119 0.122 0.131 0.131 0.131 0.131 0.131 0.131 0.131 0.131 0.131 0.131 !test 8-8-00, decreased ll 
+
+!xf = 0.5  0.4   .3   .3   .3   .3   .3    .3  .2   .2   .2  .2  .2  .2  .2  .2  .2 ! original values of nem for wheat
+!xf = 0.3  0.3   .2   .2   .3   .3   .3    .3  .4   .4   .4  .2  .2  .2  .2  .2  .2 ! test 4-8-00
+!xf= 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  !test4-8-00
+!xf= .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 !test4-8-00
+!xf= .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 !test4-8-00
+!xf= .3 .3 .3 .3 .3 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 !test4-8-00
+xf= .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 !test4-8-00
+!xf=  .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 !test 9-8-00
+!xf=   .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4  !test 9-8-00
+
+
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+
+
+
+[dcc.nwheats.wilgoyne]
+!depth     0-5 5-10 10-20 10-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+
+ll     =    0.07    0.07    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+wr     = 1.0  1.0  1.0  1.0  1.0  1.0  1.0   1.0  1.0   1.0   1.0  1.0  1.0  1.0  1.0  1.0  1.0
+nem    = 0.5  0.4   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2
+
+
+[dcc.SoilN.parameters]
+
+!depth     0-5 5-10 10-20 10-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+!bd      = 1.72 1.80 1.82 1.66 1.64 1.66 1.71 1.74 1.78 1.79 1.79 1.79  1.79  1.79  1.79  1.79  1.79
+
+! Bill
+bd     =     1.3     1.3    1.4    1.4    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5
+
+!oc     =  1.20 1.20 0.8  0.3  0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10  0.10  0.10  0.10  0.10  0.10
+
+! Bill
+oc      =    0.73    0.73    0.46    0.39    0.30    0.22    0.19    0.19    0.10    0.10    0.10    0.10    0.10    0.10    0.10    0.10    0.10
+
+
+ph     =  4.7  4.7  4.70 4.70 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00  6.00  6.00  6.00  6.00  6.00
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+! lighter soil
+!fbiom   = 0.04 0.04 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01  0.01  0.01  0.01  0.01  0.01
+!finert  = 0.1  0.1  0.1  0.2  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9   0.9   0.9   0.9   0.9   0.9
+
+fbiom   = 0.03 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01  0.01  0.01  0.01  0.01  0.01
+finert  = 0.3  0.3  0.3  0.4  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9   0.9   0.9   0.9   0.9   0.9
+
+
+!        -------  Soil Nitrogen parameters
+
+amp = 13.8   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav = 18.2   ! mean annual air temperature (oC)
+dmod = 1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn = 13.0 ! measured top layer 0-10cms in Wongan Hills
+
+   profile_reduction = on               ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff    = 7.4  ()             ! 1.0 to 20.0 enrichment equation coefficients
+enr_b_coeff    = 0.2  ()             ! 1.0 to 20.0 enrichment equation coefficients 
+soiltype = sand
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! loamy sand2 (modified from lsand to use in canola-cunderdin 99 !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lsand2.SoilWat.parameters]    
+
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                  !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =      50      50     100     100     100     100     100     100     200     200     200     200     200     200     200     200     200   
+ll15 =       0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+dul =       0.13    0.13    0.14   0.144   0.144   0.147   0.147   0.151  0.1555    0.16   0.175   0.175   0.175   0.175   0.175   0.175   0.175   
+sat =       0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35   
+bd =        1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+swcon =     0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65   
+mwcon =        1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1   
+air_dry =   0.04    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+
+
+[lsand2.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =       0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+!! original values of nem for wheat
+xf =      0.1    0.05     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   ! values of nem for wheat
+!xf =       0.1    0.05     0.2     0.2     0.3     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   ! Test 24-8-00, decreasing xf respect to orig
+!xf =      0.2    0.2     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   !IF 17-04-00
+
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+!kl =     0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.02  0.02  0.02    0.02  0.02    0.01   0.01    0.01    0.01     0.01   !
+
+[lsand2.sorg.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =      1.0    1.0  1.0   1.0   1.0   1.0   1.0   1.0   1.0   1.0     1.0   1.0     1.0    1.0     1.0     1.0     1.0   
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! 
+
+
+[lsand2.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =           1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =        0.1    0.05     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lsand2.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =        1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+oc =        1.23    0.43    0.37    0.26    0.26    0.21    0.21     0.2    0.19    0.18    0.18    0.18    0.17    0.17    0.17    0.17    0.17   
+ph =        4.7     5.1     5.1     5.1       6       6       6       6       6       6       6       6       6       6       6       6       6   
+fbiom =     0.04    0.04    0.03    0.02    0.02    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01   
+finert =    0.1     0.1     0.1     0.2     0.2     0.8     0.8     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9   
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.3   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms in Wongan Hills
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =       7.4  ()   
+enr_b_coeff =       0.2  ()   
+soiltype = sand
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!  heavy soil dcc  (Cunderdin after Bill 1997 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!! Modified by Imma Farre for canola exp- cun2000
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+[dcc2.SoilWat.parameters]
+!insoil = 1.1   ! indicator for initial soil water ! assuming profile close to ll15 on 1.5.
+               ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul,
+               !                                         >1 = input by user)
+u = 6      !7.5          ! stage 1 soil evaporation coefficient (mm)
+!max_pond = 0   ! ponding capacity
+cn2_bare = 60     ! 60 runoff curve number
+salb = 0.13    ! bare soil albedo
+cn_red = 20     ! curve number max reduction
+cn_cov = 0.8     ! cover which generates max cn reduction
+cn_canopy_fact = 1.0
+cona = 3.0   !3.0     ! 2.0 WA sand; 3.8 SA clay, 4.0 NL clay: 2.stage soil drying 
+crop _cover = 0. ! initialisation of crop cover
+diffus_const = 88  ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope = 35 ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename = blank
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer  =  50  50  100  100  100  100  100   100  200  200  200   200   200  200  200  200 200
+
+! smooth, from Bill, 0-10 adjusted for airdry
+!ll15     =    0.10    0.10    0.11    0.15    0.15    0.15    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16
+
+!!! NEW measured from Bill, 0-10 adjusted for airdry
+ll15  =    0.07    0.07    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+
+! smooth, from Bill (not measured!)
+!dul     =    0.18    0.18    0.23    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25
+
+!!! NEW, from Bill (measured!)
+dul     =    0.156    0.156    0.22    0.224    0.243    0.243   0.243   0.243   0.243   0.243  0.243  0.243   0.243   0.243   0.243   0.243   0.243 
+
+sat     =  .48  .48  .44  .44  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40  .40
+
+!!! NEW from Bill
+bd     =     1.3     1.3    1.4    1.4    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5
+
+
+!swcon   = 1.   1.   1.   1.   1.    1.  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0
+
+
+swcon   = .6   .6   .6   .6   .6    .6  .6   .6   .6   .6   .6  .6   .6  .6  .6  .6  .6
+mwcon   = 1.   1.   1.   1.   1.    1.  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0 
+
+
+! for Bill's LL
+!air_dry =  0.034    0.034    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+
+! If. 210501, lowest measured values in dec 2000
+air_dry =  0.026    0.026    0.090    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! canola- assumed same as wheat
+
+[dcc2.canola.parameters]
+!depth     0-5 5-10 10-20 10-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+
+ll     =    0.07    0.07    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+!ll      =   0.063 0.063 0.109 0.111 0.119 0.119 0.122 0.131 0.131 0.131 0.131 0.131 0.131 0.131 0.131 0.131 0.131 !test 8-8-00, decreased ll 
+
+!xf = 0.5  0.4   .3   .3   .3   .3   .3    .3  .2   .2   .2  .2  .2  .2  .2  .2  .2 ! original values of nem for wheat
+!xf = 0.3  0.3   .2   .2   .3   .3   .3    .3  .4   .4   .4  .2  .2  .2  .2  .2  .2 ! test 4-8-00
+!xf= 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  !test4-8-00
+!xf= .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 .8 !test4-8-00
+!xf= .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 !test4-8-00
+!xf= .3 .3 .3 .3 .3 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 .6 !test4-8-00
+xf= .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 .3 !test4-8-00
+!xf=  .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 .5 !test 9-8-00
+!xf=   .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4  !test 9-8-00
+
+
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   ! original values
+
+
+
+[dcc.nwheats.wilgoyne]
+!depth     0-5 5-10 10-20 10-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+
+ll     =    0.07    0.07    0.121    0.123    0.132    0.132    0.135    0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   0.145   
+wr     = 1.0  1.0  1.0  1.0  1.0  1.0  1.0   1.0  1.0   1.0   1.0  1.0  1.0  1.0  1.0  1.0  1.0
+nem    = 0.5  0.4   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2
+
+
+[dcc.SoilN.parameters]
+
+!depth     0-5 5-10 10-20 10-30 30-40 40-50 50-60 60-70 70-90 80-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+!bd      = 1.72 1.80 1.82 1.66 1.64 1.66 1.71 1.74 1.78 1.79 1.79 1.79  1.79  1.79  1.79  1.79  1.79
+
+! Bill
+bd     =     1.3     1.3    1.4    1.4    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5    1.5
+
+!oc     =  1.20 1.20 0.8  0.3  0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10  0.10  0.10  0.10  0.10  0.10
+
+! Bill
+oc      =    0.73    0.73    0.46    0.39    0.30    0.22    0.19    0.19    0.10    0.10    0.10    0.10    0.10    0.10    0.10    0.10    0.10
+
+
+ph     =  4.7  4.7  4.70 4.70 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00  6.00  6.00  6.00  6.00  6.00
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+! lighter soil
+!fbiom   = 0.04 0.04 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01  0.01  0.01  0.01  0.01  0.01
+!finert  = 0.1  0.1  0.1  0.2  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9   0.9   0.9   0.9   0.9   0.9
+
+fbiom   = 0.03 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01  0.01  0.01  0.01  0.01  0.01
+finert  = 0.3  0.3  0.3  0.4  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9   0.9   0.9   0.9   0.9   0.9
+
+
+!        -------  Soil Nitrogen parameters
+
+amp = 13.8   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav = 18.2   ! mean annual air temperature (oC)
+dmod = 1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn = 13.0 ! measured top layer 0-10cms in Wongan Hills
+
+   profile_reduction = on               ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff    = 7.4  ()             ! 1.0 to 20.0 enrichment equation coefficients
+enr_b_coeff    = 0.2  ()             ! 1.0 to 20.0 enrichment equation coefficients 
+soiltype = sand
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   loamy sand  used for Williams  (Walton- Oct2001)  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lsand_wil.SoilWat.parameters]    
+
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                  !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =      50      50     100     100     100     100     100     100     200     200     200     200     200     200     200     200     200   
+ll15 =       0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+dul =       0.13    0.13    0.14   0.144   0.144   0.147   0.147   0.151  0.1555    0.16   0.175   0.175   0.175   0.175   0.175   0.175   0.175   
+sat =       0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35   
+bd =        1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+swcon =     0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65   
+mwcon =        1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1   
+air_dry =   0.04    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+
+
+[lsand_wil.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =         0.2    0.2     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.07     0.07     0.07     0.05     0.05     0.05     0.05     0.05   !IF 23-8-01
+
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+
+
+[lsand_wil.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+!! original values from wheat used for Carmody
+!xf =         0.1    0.05     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   ! values of nem for wheat
+!xf =      0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.7  !IF, 27-03-00
+xf =         0.2    0.2     0.2     0.5     0.5     0.7     0.7     0.7     0.7     0.7     0.7     0.7     0.5     0.5     0.5     0.5     0.5   !IF 17-04-00
+
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lsand_wil.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =        1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+oc =        1.23    0.43    0.37    0.26    0.26    0.21    0.21     0.2    0.19    0.18    0.18    0.18    0.17    0.17    0.17    0.17    0.17   
+ph =        4.7     5.1     5.1     5.1       6       6       6       6       6       6       6       6       6       6       6       6       6   
+fbiom =     0.04    0.04    0.03    0.02    0.02    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01   
+finert =    0.1     0.1     0.1     0.2     0.2     0.8     0.8     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9   
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.6   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms in Wongan Hills
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =       7.4  ()   
+enr_b_coeff =       0.2  ()   
+soiltype = sand
+
+
+!soil first used IN c:\apswork\lupin\moora\soil-mo.par(updated versions ofsoil in this file,site_wa.par file)
+!!! moora-rotation
+
+!!!!!!    Moora  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!! non-ripped !!!!!!!!!!!!!!!!!!!!!!!!!
+!!non-ripped Lupin95(W), Wheat95(E)
+
+[moora.SoilWat.parameters]        
+
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+
+cn2 =  60   ! runoff curve number
+!max_pond =  0   ! ponding capacity
+salb =  0.13   ! bare soil albedo
+cn2_bare =  60   ! runoff curve number
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cona =  2.0   ! test for sandy soil
+crop _cover = 0. ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1      2     3     4     5     6     7     8       9      10
+dlayer =   100   100   100   200   200   200   300   300     300    300   ! layer depth mm soil
+
+!ll15 =   .03   .060  .060  .060  .070  .070  .080   .100   .100    .100  !used for lupin
+!ll15 =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's !first attempt w-l rotation
+ll15 =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+
+sat =     .320  .320  .310  .300  .310  .310  .310   .310   .310    .310   ! saturation mm water/mm soil
+
+!dul =     .150  .120  .110  .095  .095  .100  .110    .120  .120    .120 !  new 20/5/96 from data !senthold Moora95
+!dul =     .140  .100  .100  .100  .100  .100  .110  .110   !  Perry file
+!dul =     .110  .100  .110  .100  .100  .100  .110  .120  .120  !Perry (from paper evap)
+dul =      .110  .105  .095  .095  .095  .095  .100  .110   .110    .110    !Perry's sept02
+
+bd =       1.63  1.67  1.78  1.85   1.8   1.8   1.8    1.8    1.8     1.8 !new 30/4/96 from data !S.Asseng file
+
+swcon =    .70   .60   .70   .70    .50   .50   .50    .40    1.0     1.0     !  1.5.96  Senthold! drainage coefficient
+mwcon =    1.    1.    1.    1.     1.    1.    1.      1.    1.      1.0   ! macroflow, set=1 for sandy soils
+!air_dry =  .030 .030  .040  .050  .050  .050  .050  .050    .050  .050   ! Only the top layer is important! S.Asseng file
+air_dry =  .020 .030  .040  .050  .050  .050  .050  .050     .050   .050 ! Perry file! Only the top layer is important! 
+
+[moora.SoilN.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1      2     3     4     5     6     7      8       9     10
+bd =      1.63  1.67  1.78  1.85   1.8   1.8   1.8    1.8     1.8    1.8! new 30/4/96 from data
+oc =      .9    .39   0.1   0.01   0.01  0.01  0.01   0.01    0.01   0.01 ! GA Moora, organic carbon % *1.3 ===>> total C, small impact
+ph =      5.03  4.33  4.25  4.53   5.18  5.40  5.63   5.68    5.68   5.68 ! GA Moora
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+fbiom =   0.040 0.03  0.02  0.01   0.01  0.01  0.01   0.01    0.01  0.01 ! orig. used by Senthold
+!fbiom =   0.020 0.01  0.01  0.01   0.01  0.01  0.01   0.01    0.01  0.01 !19dec02 Mike
+
+!initial proportion of total soil C that is not subject to mineralization (0-1)
+finert =    0.1   0.1   0.2  0.8   0.9   0.9   0.9    0.9     0.9   0.9! orig. used by Senthold
+!finert =    0.5   0.7   0.9  0.9   0.9   0.9   0.9    0.9     0.9   0.9! 19dec02 Mike
+
+
+!        -------  Soil Nitrogen parameters
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.6   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+
+soil_cn =  15.0   ! GA Moora estimate top layer 0-10cms test with 13 showed not different
+
+profile_reduction =  on   ! (on|off) whether to remap N+C if 
+                                     ! soil loss occurs. 
+enr_a_coeff =       7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+
+enr_b_coeff =       0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients
+soiltype = sand
+
+!!!   lupin  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[moora.lupin.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+!ll =     .03  .060   .060  .060  .060  .065  .065   .080    .080     .080  !Imma, ll=min SWC measured in lupin Moora-95 (west plot)
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+!ll =     .03   .060  .060  .060  .070  .070  .080   .100   .100   .100! using ll= ll15
+
+xf =      .1    .1    .2    .5    .5    .5    .5      .3     .2      .2  !nem for wheat
+!xf =      .11   .11   .22   .55   .55   .55   .55     .33    .22     .22  !nem +10%
+!xf =      .12   .12   .24   .60   .60   .60   .60     .36    .24     .24  !nem +20%
+!xf =      .13   .13   .23   .65   .65   .65   .65     .39    .26     .26  !nem +30%
+!xf =       .1    .1    .2    .5    .5    .5    .6      .4     .2      .2  !24 oct 02, incr layer 7,8
+!xf =      .1    .1    .2    .5    .5    .5    .7      .5     .4      .4  !increased 5 Apr 02
+!xf =      .1    .1    .2    .5    .5    .5    .5      .3     .3      .3  !Perry, July03
+
+
+!kl =     0.08  0.06  0.04  0.02  0.01   0.01  0.01  0.01  0.01  ! first attempt
+!kl =      0.08  0.08  0.08  0.05  0.03  0.03  0.03  0.03   0.01  !130901
+!kl =      0.08  0.08  0.08  0.08  0.08  0.08  0.08  0.08   0.08  ! constant kl 130901
+!kl =     0.08   0.08  0.06  0.04  0.03  0.02  0.01  0.01  0.01 !decreasing first
+!kl =     0.08   0.08  0.06  0.04  0.04  0.03  0.03  0.02  0.01 !decreasing
+!kl =     0.10   0.09  0.08  0.07  0.06  0.05  0.04  0.03  0.03 !Perry 
+!kl =     0.10   0.09  0.08  0.07  0.06  0.05  0.04  0.04  0.03  0.03  !Perry. one more layer, 30-05-02
+kl=       0.06   0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06 !ct kl, from 31July 03
+
+[moora.wheat.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10
+!!! using values from lupin-95
+
+!ll =      .03  .060  .060  .060  .060  .065  .065    .080    .080    .080  !Imma, ll=min SWC measured in lupin Moora-95 (west plot)
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+
+xf =      .1    .1   .2    .5    .5    .5    .5      .3     .2      .2    !nem for wheat
+!xf =     .11   .11   .22   .55   .55   .55   .55     .33    .22     .22  !nem +10%
+!xf =      .12   .12   .24   .60   .60   .60   .60     .36    .24     .24  !nem +20%
+!xf =     .13   .13   .23   .65   .65   .65   .65     .39    .26     .26  !nem +30%
+!xf =     .15   .15   .30   .75   .75   .75   .75     .45    .30     .30  !Perry +I, 3july03nem +50%
+!xf =     .15   .15   .30   .55   .55   .55   .55     .55    .30     .30  !Perry +I, 3july03 fitting
+!xf =      .1    .1   .2    .5    .5    1.0    1.0      .8     .2      .2    !Perry +I, 3july03 fitting
+!xf =       .2    .2   .2    .5    .5    .5    .5      .3     .2      .2    !22 oct 02
+!xf =       .2    .2   .3    0.8    0.8    0.8    0.8      .5     .3      .3    !21oct02
+!xf =       .2    .2   .4    1.0    1.0    1.0    1.0      .6     .4      .4    !nem for wheat x2
+!xf =         1     1    1    1      1      1      1         1     1       1   !16-10-02
+
+!kl =     0.10   0.09  0.08  0.07  0.06  0.05  0.04    0.04   0.03    0.03  !imma 30-05-02
+!kl =     0.10   0.09  0.08  0.07  0.06  0.05  0.05    0.05   0.03    0.03  !imma+Perry 3-07-03
+kl=       0.06   0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06 !ct kl, 31Jyly 03
+
+
+
+[moora.nwheat.kulin]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      .1    .1   .2    .5    .5    .5    .5     .3     .2      .2    !nem for wheat
+
+[moora.nwheat.spear]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      .1    .1   .2    .5    .5    .5    .5     .3     .2      .2    !nem for wheat
+   
+[moora.nwheat.cascades]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      .1    .1   .2    .5    .5    .5    .5     .3     .2      .2    !nem for wheat
+  
+[moora.nwheat.dagger]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      .1    .1   .2    .5    .5    .5    .5     .3     .2      .2    !nem for wheat
+   
+
+!!!   copied from imma's lupin  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[moora.lucerne.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+!ll =     .03  .060   .060  .060  .060  .065  .065   .080    .080     .080  !Imma, ll=min SWC measured in lupin Moora-95 (west plot)
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+!ll =     .03   .060  .060  .060  .070  .070  .080   .100   .100   .100! using ll= ll15
+
+!xf =      .1    .1    .2    .5    .5    .5    .5      .3     .2      .2  !nem for wheat
+!xf =      .11   .11   .22   .55   .55   .55   .55     .33    .22     .22  !nem +10%
+!xf =      .12   .12   .24   .60   .60   .60   .60     .36    .24     .24  !nem +20%
+xf =      .13   .13   .23   .65   .65   .65   .65     .39    .26     .26  !nem +30%
+!xf =       .1    .1    .2    .5    .5    .5    .6      .4     .2      .2  !24 oct 02, incr layer 7,8
+!xf =      .1    .1    .2    .5    .5    .5    .7      .5     .4      .4  !increased 5 Apr 02
+!xf =      .1    .1    .2    .5    .5    .5    .5      .3     .3      .3  !Perry
+
+!kl =     0.08  0.06  0.04  0.02  0.01   0.01  0.01   0.01  0.01  ! first attempt
+!kl =      0.08  0.08  0.08  0.05  0.03  0.03  0.03   0.03   0.01  !130901
+!kl =      0.08  0.08  0.08  0.08  0.08  0.08  0.08   0.08   0.08  ! constant kl 130901
+!kl =     0.08   0.08  0.06  0.04  0.03  0.02  0.01    0.01  0.01 !decreasing first
+!kl =     0.08   0.08  0.06  0.04  0.04  0.03  0.03   0.02  0.01 !decreasing
+!kl =     0.10   0.09  0.08  0.07  0.06  0.05  0.04   0.03  0.03 !Perry 
+kl =      0.10   0.09  0.08  0.07  0.06  0.05  0.04   0.04  0.03   0.03  !imma 30-05-02
+
+
+[moora.weed.parameters]     
+!Layers    0-10 10-20   20-30  30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer       1    2       3     4     5     6     7       8      9        10     
+!!! Perry's values sept02
+!ll    =    .03   .060   .060  .060  .070  .070  .080    .100   .100     .100
+!ll    =    .03   .030   .040  .050  .060  .060  .060    .07      .07     .07!lowest recorded
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+
+!xf =       .1    .1      .2    .5    .5    .5    .5      .3      .3      .3!nem from nwheat
+xf =      .13   .13   .23   .65   .65   .65   .65     .39    .26     .26  !nem +30%
+
+kl =     0.10   0.09  0.08  0.07  0.06  0.05  0.04    0.04   0.03    0.03  !imma 30-05-02
+
+
+!!ripped (96 to 98)
+!!!   lupin  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[moora-rip.lupin.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+!ll =     .03  .060   .060  .060  .060  .065  .065   .080    .080     .080  !Imma, ll=min SWC measured in lupin Moora-95 (west plot)
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+!ll =     .03   .060  .060  .060  .070  .070  .080   .100   .100   .100! using ll= ll15
+
+xf =      0.8    .8    .8    .5    .5    .5    .5      .3     .2      .2  !ripped, nem for wheat
+kl=       0.06   0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06 !ct kl, 31Jyly 03
+
+[moora-rip.wheat.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10
+!!! using values from lupin-95
+
+!ll =      .03  .060  .060  .060  .060  .065  .065    .080    .080    .080  !Imma, ll=min SWC measured in lupin Moora-95 (west plot)
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+
+xf =      0.8    .8    .8    .5    .5    .5    .5      .3     .2      .2  !ripped, nem for wheat
+kl=       0.06   0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06  0.06 !ct kl, 31Jyly 03
+
+
+[moora-rip.nwheat.kulin]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      0.8    .8    .8    .5    .5    .5    .5      .3     .2      .2  !ripped, nem for wheat
+
+[moora-rip.nwheat.spear]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      0.8    .8    .8    .5    .5    .5    .5      .3     .2      .2  !ripped, nem for wheat
+  
+[moora-rip.nwheat.cascades]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      0.8    .8    .8    .5    .5    .5    .5      .3     .2      .2  !ripped, nem for wheat
+  
+[moora-rip.nwheat.dagger]    
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180 180-210
+!layer     1     2      3     4     5     6     7     8       9       10 
+ll =    .02   .030  .040  .050  .060  .060  .060   .070   .070    .070  !Perry's sept 02
+wr =      1.0   .5    .5    .5   1.0    1.0   1.0    1.0     1.0   1.0      
+nem =      0.8    .8    .8    .5    .5    .5    .5      .3     .2      .2  !ripped, nem for wheat
+  
+
+
+
+!!!!!!    Merredin (paper R23) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!! Collgar Loamy Sand (Collgar)!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[collgar.SoilWat.parameters]        
+
+!insoil =  1.1   ! indicator for initial soil water ! assuming profile close to ll15 on 1.5.
+               ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul,
+               !                                         >1 = input by user)
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+
+cn2 =  60   ! runoff curve number
+!max_pond =  0   ! ponding capacity
+salb =  0.13   ! bare soil albedo
+cn2_bare =  60   ! runoff curve number
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cona =  2.0   ! test for sandy soil
+crop _cover = 0. ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180
+!layer     1      2     3     4     5     6     7     8       9      
+dlayer =   100   100   100   200   200   200   300   300   300   ! layer depth mm soil
+ll15 =    .016   .047  .068  .047  .097  .121  .151   .149   .149   
+sat =     .334  .290  .258  .315  .230  .200  .209   .154  .154   ! saturation mm water/mm soil
+dul =     .084  .095  .116  .129  .187  .200  .209    .154  .154   !  
+bd =      1.63  1.75  1.83  1.68  1.91   1.99   2.0   2.0   2.0 !
+swcon =  .78   .72   .70   .70   .50   .50   .50     .40   1.0   !   drainage coefficient
+mwcon =   1.    1.    1.    1.    1.    1.    1.      1.    1.   ! macroflow, set=1 for sandy soils
+air_dry =  .016 .020  .040  .047  .050  .050  .050  .050  .050   ! Only the top layer is important! Perry file
+
+[collgar.SoilN.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-250
+!layer     1      2     3     4     5     6     7      8       9  
+bd =      1.63  1.75  1.83  1.68  1.91   1.99   2.0   2.0   2.0 !
+oc =      .9    .39   0.1   0.01  0.01  0.01  0.01    0.01   0.01   ! GA Moora, organic carbon % *1.3 ===>> total C, small impact
+ph =      5.03  4.33  4.25  4.53  5.18  5.40  5.63    5.68   5.68   ! GA Moora
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+fbiom =   0.040 0.03  0.02  0.01  0.01  0.01 0.01   0.01  0.01   !
+
+!initial proportion of total soil C that is not subject to mineralization (0-1)
+finert =    0.1   0.1   0.2  0.8  0.9  0.9  0.9    0.9   0.9   ! test
+
+!        -------  Soil Nitrogen parameters
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.6   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+
+soil_cn =  15.0   ! GA Moora estimate top layer 0-10cms test with 13 showed not different
+
+profile_reduction =  on   ! (on|off) whether to remap N+C if 
+                                     ! soil loss occurs. 
+enr_a_coeff =       7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+
+enr_b_coeff =       0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients
+soiltype = sand
+
+!!!   lupin  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[collgar.lupin.parameters]        
+!Layers    0-10 10-20 20-30 30-50 50-70 70-90 90-120 120-150 150-180
+!layer     1     2      3     4     5     6     7     8       9      
+ll =    .016   .047  .068  .047  .097  .121  .151   .149   .149   !ll = ll15
+xf =       .1    .1   .2    .5    .5    .5    .5      .3     .2   !nem for wheat
+kl =     0.08   0.08  0.06  0.04  0.03  0.02  0.01    0.01  0.01 !decreasing
+
+ 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!   root50 
+!!!!  acid loamy sand   (Wongan Hills), with less root depth 
+!!! with roots up to 50 cm, to answer Bill Bowden questions on restricted root depth!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[root50.SoilWat.parameters]    
+u =  6   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cona =  2.0   ! test for sandy soil
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =       50      50     100     100     100     100     100     100     200     200     200     200     200     200     200     200     200   
+ll15 =       0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+dul =        0.13    0.13    0.14   0.144   0.144   0.147   0.147   0.151  0.1555    0.16   0.175   0.175   0.175   0.175   0.175   0.175   0.175   
+sat =        0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35    0.35   
+bd =         1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+swcon =      0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65    0.65   
+mwcon =         1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1       1   
+air_dry =    0.04    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.10    0.10    0.11    0.11    0.11    0.11    0.11   
+
+
+[root50.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =      0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+!xf =     0.1    0.05    0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4  ! values of nem for wheat
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+!xf =     0.1   0.05     0.07    0.07    0.1   0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1  ! low values to simulate max root depth of 50
+xf =     0.1   0.05     0.2     0.3     0.2   0.1     0.01    0.01    0.01    0.01    0.01   0.01     0.01   0.01   0.01     0.01     0.01 ! values of nem for wheat
+
+
+
+[root50.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+xf =          0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4  ! values of nem for wheat
+kl =      0.08  0.08  0.08  0.08  0.06  0.04  0.02  0.01  0.01  0.01    0.01  0.01    0.01   0.01    0.01    0.01     0.01   !
+
+
+[root50.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+[root50.nwheat.spear]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+[root50.nwheat.kulin_e]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+[root50.nwheat.spear_e]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =         0.05    0.05    0.08   0.085   0.085   0.095   0.095     0.1     0.1     0.1    0.11    0.11    0.12    0.12    0.13    0.13    0.13   
+wr =            1       1     0.5     0.5     0.5       1       1       1       1       1       1       1       1       1       1       1       1   
+nem =         0.1    0.05     0.2     0.3     0.3     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[root50.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =         1.31    1.31    1.45    1.48    1.48    1.53    1.53     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5     1.5   
+oc =         1.23    0.43    0.37    0.26    0.26    0.21    0.21     0.2    0.19    0.18    0.18    0.18    0.17    0.17    0.17    0.17    0.17   
+ph =         4.7     5.1     5.1     5.1       6       6       6       6       6       6       6       6       6       6       6       6       6   
+fbiom =      0.04    0.04    0.03    0.02    0.02    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01   
+finert =      0.1     0.1     0.1     0.2     0.2     0.8     0.8     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9     0.9   
+
+amp =  14.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.6   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms in Wongan Hills
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+
+
+enr_a_coeff =       7.4  ()   
+enr_b_coeff =       0.2  ()   
+soiltype = sand
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!clay50 = duplex_c, but root depth restricted to  50 cm, for B. Bowden!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!  heavy soil duplex_C  clay - not waterlogging   !!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!  after Rickert heavy soil from Merredin (red duplex) !!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[clay50.SoilWat.parameters]    
+u =  7.5   ! stage 1 soil evaporation coefficient (mm)
+!max_pond =  0   ! ponding capacity
+cn2_bare =  60   ! runoff curve number
+salb =  0.13   ! bare soil albedo
+cn_red =  20   ! curve number max reduction
+cn_cov =  0.80   ! cover which generates max cn reduction
+cn_canopy_fact =    1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                               !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cona =  3.0   ! 2.0 WA sand; 3.8 SA clay, 4.0 NL clay: 2.stage soil drying 
+crop_cover =  0.   ! initialisation of crop cover
+diffus_const =  88   ! coeffs for dbar ! jpd suggests 550 for sands
+diffus_slope =  35   ! "   "   " ! jpd suggests 26 for sands
+
+runoff_filename =  blank   
+
+! split top layer, drop bottom layer
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+dlayer =   50  50  100  100  100  100  100   100  200  200  200   200   200  200  200  200 200   
+ll15 =     .08  .08  .10  .13  .17  .18  .18  .19  .19  .19  .19  .19  .19  .19  .19  .19  .19  
+dul =      .17  .18  .22  .24  .28  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29   
+sat =      .31  .28  .28  .34  .35  .33  .32  .32  .32  .32  .32  .32  .32  .32  .32  .32  .32   
+bd =      1.72 1.80 1.82 1.66 1.64 1.66 1.71 1.74 1.78 1.79 1.79 1.79 1.79 1.79 1.79 1.79 1.79   
+swcon =    .8   .8   .7   .7   .7   .6   .6   .6   .6   .6   .6   .6   .6   .6   .6   .6   .6   
+mwcon =   1.   1.   1.   1.   1.    1.  1.   1.   1.   1.   1.0  1.0   1.0 1.0  1.0  1.0  1.0   
+!air_dry =  .035 .08  .10  .13  .17  .18  .18  .19  .19  .20  .20  .20  .20  .20  .20  .21  .21  
+air_dry  =  .035 .08  .10  .13  .17  .18  .18  .19  .19  .19  .19  .19  .19  .19  .19  .19  .19
+! 28-12, IF, values of air_dry layer 10-17 taken as equal to ll15
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[clay50.canola.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =   .08  .08  .10  .13  .17  .18  .19  .21  .22  .23  .24  .25  .26  .26  .26  .26  .26      
+!xf =   0.3  0.3   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2    ! values of nem for wheat
+xf =    0.3  0.3   .3   .3   .2   .01   .001    .001  .001   .001   .001  .01  .01  .01  .01  .01  .01    ! roots restricted to 50
+
+!kl =   0.08 0.08 0.08 0.08 0.06 0.04 0.02 0.01 0.01 0.01  0.01 0.01 0.01 0.01 0.01 0.01 0.01 !used until 241001
+kl =   0.08 0.08 0.08 0.08 0.06 0.06 0.04 0.04 0.04 0.04  0.02 0.02 0.01 0.01 0.01 0.01 0.01 !
+
+[clay50.lupin.parameters]     ! assumed same as wheat
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =   .08  .08  .10  .13  .17  .18  .19  .21  .22  .23  .24  .25  .26  .26  .26  .26  .26      
+xf =   0.3  0.3   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2    ! values of nem for wheat
+!kl =   0.08 0.08 0.08 0.08 0.06 0.04 0.02 0.01 0.01 0.01  0.01 0.01 0.01 0.01 0.01 0.01 0.01 !used until 241001
+kl =   0.08 0.08 0.08 0.08 0.06 0.06 0.04 0.04 0.04 0.04  0.02 0.02 0.01 0.01 0.01 0.01 0.01 !
+
+
+[clay50.nwheat.kulin]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+ll =      .08  .08  .10  .13  .17  .18  .19  .21  .22  .23  .24  .25  .26  .26  .26  .26  .26   
+wr =     1.0  1.0  1.0  1.0  1.0  1.0  1.0   1.0  .7   .7   .5  0.5  0.5  0.5  0.5  0.5  0.5   
+nem =    0.3  0.3   .3   .3   .3   .3   .3    .3  .2   .2   .2  0.2  0.2  0.2  0.2  0.2  0.2   
+
+
+[clay50.SoilN.parameters]    
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+bd =      1.72 1.80 1.82 1.66 1.64 1.66 1.71 1.74 1.78 1.79 1.79 1.79  1.79  1.79  1.79  1.79  1.79   
+oc =      1.20 1.20 0.8  0.3  0.10 0.10 0.10 0.10 0.10 0.10 0.10 0.10  0.10  0.10  0.10  0.10  0.10   
+ph =      4.7  4.7  4.70 4.70 6.00 6.00 6.00 6.00 6.00 6.00 6.00 6.00  6.00  6.00  6.00  6.00  6.00   
+
+! initial ratio of biomass-C to mineralizable humic-C (0-1)
+! lighter soil
+fbiom =   0.03 0.03 0.02 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01  0.01  0.01  0.01  0.01  0.01   
+finert =  0.3  0.3  0.3  0.4  0.8  0.9  0.9  0.9  0.9  0.9  0.9  0.9   0.9   0.9   0.9   0.9   0.9   
+
+!        -------  Soil Nitrogen parameters
+
+amp =  13.8   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav =  18.2   ! mean annual air temperature (oC)
+dmod =  1.0   ! weighting factor to adjust the rate of humus mineralization
+             ! for soils in which organic matter is chemically or physically
+             ! protected.
+soil_cn =  13.0   ! measured top layer 0-10cms in Wongan Hills
+
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =    7.4  ()   ! 1.0 to 20.0 enrichment equation coefficients
+enr_b_coeff =    0.2  ()   ! 1.0 to 20.0 enrichment equation coefficients 
+soiltype = sand
+
+
+

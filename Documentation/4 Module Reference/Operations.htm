@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Operations Schedule (OPERATNS) Module </title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM Operations Schedule (OPERATNS) Module </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">What is the Operations Schedule Module?</p>
+<p class="Normal">The operatns module is similar to the APSIM manager module in that it allows the user to specify set day and year timing of simulation actions for modules. It is a fixed schedule manager. The benefit it has over the standard manager in these conditions is speed of execution. Because of its fixed style of specification criteria can be checked and acted upon much more quickly than parsing of user-defined logic statements. Large fixed schedule management data can be quickly specified by the user and brought into APSIM simulation runs. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Parameter File Settings</p>
+<p class="Normal">The operations module input data is in a fixed format for speedy processing.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The format is space separated. Year and day (in any order) begin a line, followed by the standard message syntax.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">For example:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">1995 100 fertiliz apply amount=60 (kg/ha), type=urea (), depth=50 (mm)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The above example is the same as the following manager rule,</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;if day = 100 and year = 1995 then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fertiliz apply amount=60 (kg/ha), type=urea (), depth=50 (mm) </p>
+<p class="Code">&nbsp;&nbsp;endif </p>
+<p class="Code">&nbsp;</p>
+<p class="Title2">An example using OPERATNS</p>
+<p class="Normal">Since fixed schedules are usually found in experimental conditions we will use an example where an experiment (called exper01) has 4 treatments.</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="108" valign="top"><p align="center" class="Normal"><strong>Treatment No. </strong></p></td>
+    <td width="102" valign="top"><p align="center" class="Normal"><strong>Fertiliser </strong></p></td>
+    <td width="90" valign="top"><p align="center" class="Normal"><strong>Irrigation </strong></p></td>
+  </tr>
+  <tr>
+    <td width="108" valign="top"><p align="center" class="Normal">1 </p></td>
+    <td width="102" valign="top"><p align="center" class="Normal">No </p></td>
+    <td width="90" valign="top"><p align="center" class="Normal">No </p></td>
+  </tr>
+  <tr>
+    <td width="108" valign="top"><p align="center" class="Normal">2 </p></td>
+    <td width="102" valign="top"><p align="center" class="Normal">No </p></td>
+    <td width="90" valign="top"><p align="center" class="Normal">Yes </p></td>
+  </tr>
+  <tr>
+    <td width="108" valign="top"><p align="center" class="Normal">3 </p></td>
+    <td width="102" valign="top"><p align="center" class="Normal">Yes </p></td>
+    <td width="90" valign="top"><p align="center" class="Normal">No </p></td>
+  </tr>
+  <tr>
+    <td width="108" valign="top"><p align="center" class="Normal">4 </p></td>
+    <td width="102" valign="top"><p align="center" class="Normal">Yes </p></td>
+    <td width="90" valign="top"><p align="center" class="Normal">Yes </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">It is possible to use the APSIM data grouping to simply allot these different management regimes to each treatment. For example</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[fertiliser.operatns .parameters]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">! Exper01 fertilizer schedule </p>
+<p class="Code">! ---------------------------</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">1995 100 fertiliz apply amount=60 (kg/ha), type=urea (), depth=50 (mm) </p>
+<p class="Code">1995 130 fertiliz apply amount=30 (kg/ha), type=urea (), depth=50 (mm) </p>
+<p class="Code">1995 160 fertiliz apply amount=30 (kg/ha), type=urea (), depth=50 (mm)</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">[irrigation.operatns .parameters]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">! Exper01 irrigation schedule </p>
+<p class="Code">! ---------------------------</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">1995 100 irrigate apply amount= 60 (mm) </p>
+<p class="Code">1995 110 irrigate apply amount= 60 (mm) </p>
+<p class="Code">1995 130 irrigate apply amount= 30 (mm) </p>
+<p class="Code">1995 145 irrigate apply amount= 60 (mm) </p>
+<p class="Code">1995 160 irrigate apply amount= 30 (mm)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">This data is all that is necessary to describe the treatments listed above. All we need to do now is allot these user-defined data groups to the correct treatments. This is done using the APSIM data groups concept in the control file<br>
+</p>
+<p class="Normal">The elements of the control file used to apply the different treatments to exper01 are</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[APSIM.treatment1] </p>
+<p class="Code">&nbsp;&nbsp;. </p>
+<p class="Code">&nbsp;&nbsp;. <em>(No operations) </em></p>
+<p class="Code">&nbsp;&nbsp;.</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">[APSIM.treatment2] </p>
+<p class="Code">&nbsp;&nbsp;. </p>
+<p class="Code">&nbsp;&nbsp;module = operatns exper01.par[irrigation] </p>
+<p class="Code">&nbsp;&nbsp;.</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">[APSIM.treatment3] </p>
+<p class="Code">&nbsp;&nbsp;. </p>
+<p class="Code">&nbsp;&nbsp;module = operatns exper01.par[fertiliser] </p>
+<p class="Code">&nbsp;&nbsp;.</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">[APSIM.treatment1] </p>
+<p class="Code">&nbsp;&nbsp;. </p>
+<p class="Code">&nbsp;&nbsp;module = operatns exper01.par[fertiliser] </p>
+<p class="Code">&nbsp;&nbsp;exper01.par[irrigation] </p>
+<p class="Code">&nbsp;&nbsp;.</p>
+</body>
+</html>

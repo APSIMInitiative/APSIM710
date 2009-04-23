@@ -1,0 +1,71 @@
+[test1.SummaryFile.parameters]
+summaryfile=test1.sum
+[test1.report.parameters]
+outputfile  =test1.out
+[test1.manager.start_of_day]
+if maize.StageName = 'harvest_ripe' or maize.plant_status = 'dead' then
+   maize harvest
+   maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+endif
+
+[test2.SummaryFile.parameters]
+summaryfile=test2.sum
+[test2.report.parameters]
+outputfile  =test2.out
+[test2.manager.start_of_day]
+if maize.StageName = 'harvest_ripe' or maize.plant_status = 'dead' then
+   maize harvest
+   maize end_crop
+   maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+endif
+
+[test3.SummaryFile.parameters]
+summaryfile=test3.sum
+[test3.report.parameters]
+outputfile  =test3.out
+[test3.manager.start_of_day]
+if harvest = 1 then
+   maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+   harvest = 2
+endif
+
+if maize.StageName = 'harvest_ripe' or maize.plant_status = 'dead' then
+   maize harvest
+   maize end_crop
+   harvest = 1
+endif
+
+
+[all.report.parameters]
+variable = clock.day
+variable = clock.year
+variable = maize.lai
+variable = maize.biomass
+variable = maize.green_biomass
+
+[all.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=27/10/1989     ! dd/mm/yyyy
+end_date=30/4/1990     ! dd/mm/yyyy
+
+[all.manager.init]
+harvest = 0
+
+[all.manager.start_of_day]
+
+if day = 305 and year = 1989 then
+   maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+endif
+
+[all.manager.end_of_day]
+report do_end_day_output
+
+
+[all.maize.parameters]
+
+uptake_source =    calc   ! calculate own uptakes.
+   !layer    1    2    3    4    5    6    7
+ll =      .230 .240 .240 .250 .260 .270 .280   ! lower limit mm water/mm soil
+xf =      1.00 1.00 1.00 1.00 1.00 1.00 1.00   ! Root Exploration factor (0-1)
+kl =      0.12 0.12 0.12 0.12 0.10 0.08 0.04   ! Water Extraction parameter (0-1)
+

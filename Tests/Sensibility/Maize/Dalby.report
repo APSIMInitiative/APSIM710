@@ -1,0 +1,346 @@
+<report version="5">
+<Data>
+<ApsimFileReader name="Low600" Left="0" Top="0">
+    <FileName type="filenames">Dalby600Low.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="High600" Left="200" Top="0">
+    <FileName type="filenames">Dalby600High.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="Low1500" Left="400" Top="0">
+    <FileName type="filenames">Dalby1500Low.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="High1500" Left="600" Top="0">
+    <FileName type="filenames">Dalby1500High.out</FileName>
+  </ApsimFileReader>
+<Probability name="Low600Prob" Left="0" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>Low600</source>
+  </Probability>
+<Probability name="High600Prob" Left="200" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>High600</source>
+  </Probability>
+<Probability name="Low1500Prob" Left="400" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>Low1500</source>
+  </Probability>
+<Probability name="High1500Prob" Left="600" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>High1500</source>
+  </Probability>
+</Data>
+   <page> <![CDATA[
+object Page1: TQuickRep
+  Left = 74
+  Top = 1
+  Width = 653
+  Height = 845
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = Letter
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2794
+    0
+    2159
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 80
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 653
+    Height = 845
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2794
+      2159.66145833333)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 60
+      Top = 307
+      Width = 512
+      Height = 446
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1475.05208333333
+        198.4375
+        1015.33854166667
+        1693.33333333333)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = 'Cumulative Probability (%)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Yield (kg/ha)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Width = 2
+        BottomAxis.LabelsFont.Height = -21
+        BottomAxis.LabelsSeparation = 60
+        BottomAxis.Maximum = 12000
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Yield (kg/ha)'
+        BottomAxis.Title.Font.Height = -21
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Width = 2
+        LeftAxis.LabelsFont.Height = -19
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Cumulative Probability (%)'
+        LeftAxis.Title.Font.Height = -21
+        Legend.Brush.Color = clWhite
+        Legend.Brush.Style = bsClear
+        Legend.CustomPosition = True
+        Legend.Font.Height = -16
+        Legend.Frame.Visible = False
+        Legend.Left = 100
+        Legend.LegendStyle = lsSeries
+        Legend.Top = 40
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series1: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Low600Prob
+          Title = 'Low Population 600mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Low1500Prob
+          Title = 'Low Population 1500mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = High600Prob
+          Title = 'High Population 600mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series4: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = High1500Prob
+          Title = 'High Population 1500mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+      end
+    end
+    object Text1: TText
+      Left = 55
+      Top = 94
+      Width = 182
+      Height = 24
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        79.375
+        181.901041666667
+        310.885416666667
+        601.927083333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -24
+      Font.Name = 'Arial'
+      Font.Style = [fsBold, fsUnderline]
+      Lines.Strings = (
+        'Maize at Dalby, Qld.')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Maize at Dalby, Qld.'#13#10
+      FontSize = 18
+    end
+    object Text2: TText
+      Left = 53
+      Top = 132
+      Width = 587
+      Height = 181
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        598.619791666667
+        175.286458333333
+        436.5625
+        1941.38020833333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        
+          'Maize crop sown at Dalby on 1st of October on a deep vertosol (P' +
+          'AWC of 290mm).'
+        
+          'Nitrogen in non-limiting.  The crop is sown at 2.5 or 5 plants p' +
+          'er square meter.'
+        
+          'The starting soil moisture is set to be either 600mm or 1500mm o' +
+          'f wet soil.'
+        ''
+        
+          'Maximum yields should be approximately 10 t/ha for high populati' +
+          'ons and 7 t/ha for'
+        
+          'low populations.  Yield from high populations should exceed lowe' +
+          'r populations in'
+        
+          'approximately half of the years for a full profile of water but ' +
+          'only one in ten years for a '
+        'half profile of soil water.  '
+        
+          'Median yield for a full profile of water should be approximately' +
+          ' 6 t/ha and 4 t/ha for a half'
+        'profile.'
+        '')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        'Maize crop sown at Dalby on 1st of October on a deep vertosol (P' +
+        'AWC of 290mm).'#13#10'Nitrogen in non-limiting.  The crop is sown at 2' +
+        '.5 or 5 plants per square meter.'#13#10'The starting soil moisture is ' +
+        'set to be either 600mm or 1500mm of wet soil.'#13#10#13#10'Maximum yields ' +
+        'should be approximately 10 t/ha for high populations and 7 t/ha ' +
+        'for'#13#10'low populations.  Yield from high populations should exceed' +
+        ' lower populations in'#13#10'approximately half of the years for a ful' +
+        'l profile of water but only one in ten years for a '#13#10'half profil' +
+        'e of soil water.  '#13#10'Median yield for a full profile of water sho' +
+        'uld be approximately 6 t/ha and 4 t/ha for a half'#13#10'profile.'#13#10#13#10
+      FontSize = 14
+    end
+  end
+end
+]]>
+   </page>
+</report>

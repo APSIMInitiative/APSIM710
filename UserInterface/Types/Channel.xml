@@ -1,0 +1,32 @@
+   <channel>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/WaterSupply/docs/WaterSupply_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\drink_blue32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\drink_blue16.png</SmallIcon>
+      <drops>
+         <drop name="simulation"/>
+         <drop name="area"/>
+         <drop name="folder"/>
+         <drop name="toolbox"/>
+     </drops>
+     <variables>
+         <variable name="available_water" description ="Available channel Water"/>
+         <variable name="irrig_water_supplied" description ="Irrigation Water Supplied ML"/>
+     </variables>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\WaterSupply.dll</dll>
+         <sim>
+            <source_type>bore</source_type>
+            <max_available_water>[channel.max_available_water]</max_available_water>
+            <init_available_water>[channel.init_available_water]</init_available_water>
+            <max_pump>[channel.max_pump]</max_pump>
+            <min_volume>[channel.min_volume]</min_volume>
+            <annual_allocation>[channel.annual_allocation]</annual_allocation>
+            <allocation_renewal_day>[channel.allocation_renewal_day]</allocation_renewal_day>
+            <init_salt_conc>[dam.init_salt_conc]</init_salt_conc>
+         </sim>
+      </ApsimToSim>
+   </channel>

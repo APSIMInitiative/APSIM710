@@ -1,0 +1,1016 @@
+<folder name="Simulations" version="15">
+  <simulation name="Canopy">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\dalby.met</filename>
+    </metfile>
+    <clock name="clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="1/01/1988" ubound="30/04/1990">1/01/1988</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="1/01/1988" ubound="30/04/1990">31/12/1988</end_date>
+    </clock>
+    <summaryfile name="summaryfile">
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <outputfile name="Outputfile">
+        <filename name="filename">sample.out</filename>
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="sw_dep()" array="Yes" description="Soil water - layered (mm)" />
+          <variable name="cowpea.lai as lai_cowpea" array="No" description="Leaf area index" />
+          <variable name="maize.lai as lai_maize" array="No" description="Maize Leaf area index" />
+          <variable name="canopy.cover_tot_sum" array="" description="" />
+          <variable name="cowpea.biomass as biom_cowpea" array="No" description="Biomass" />
+          <variable name="maize.biomass as biom_maize" array="No" description="Maize Total Above Ground Biomass (kg/ha)" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" description="End of daily simulation time step" />
+        </events>
+      </outputfile>
+      <manager name="Logic">
+        <script>
+          <event>init</event>
+          <text>
+          </text>
+        </script>
+        <script>
+          <event>start_of_day</event>
+          <text> ! MAIZE SOWING AND HARVEST ************
+if day = 10 and year = 1988 then
+      maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+endif
+
+if (maize.stage = 11) then
+      maize harvest
+      maize end_crop
+endif
+
+! COWPEA SOWING AND HARVEST**********
+if day = 10 and year  = 1988 then
+   cowpea sow cultivar = banjo, plants = 25 (/m2), sowing_depth = 40 (mm)
+endif
+
+if cowpea.StageName = 'harvest_ripe' or cowpea.plant_status = 'dead' then
+   cowpea harvest
+   cowpea end_crop   
+endif
+</text>
+        </script>
+        <script>
+          <event>end_of_day</event>
+          <text>
+          </text>
+        </script>
+      </manager>
+      <canopy name="Canopy">
+        <intercrop name="intercrop" description="Enter crop names to intercrop" type="text">maize cowpea</intercrop>
+      </canopy>
+      <cowpea />
+      <maize />
+      <soil name="No000 SampleBlackVertosol (No000)">
+        <InitWater>
+          <profile>
+            <layer>
+              <sw>0.290</sw>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <sw>0.290</sw>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <sw>0.350</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.360</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.380</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.390</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.390</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.480</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.470</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.460</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.440</sw>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6</no3>
+              <nh4>1</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>5</no3>
+              <nh4>1</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>3</no3>
+              <nh4>0.900</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>2</no3>
+              <nh4>0.700</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.200</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.010</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.010</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.010</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.010</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.010</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+        <state>Queensland</state>
+        <region>South East Queensland</region>
+        <nearesttown>Generic</nearesttown>
+        <site>Generic</site>
+        <SoilType>Black Vertosol</SoilType>
+        <comment>estimated cotton LL</comment>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.020</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.150</airdry>
+            <dul>0.540</dul>
+            <sat>0.590</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.040</fbiom>
+            <finert>0.400</finert>
+            <oc>1.040</oc>
+            <ph>8.400</ph>
+            <ec>0.200</ec>
+            <ll name="wheat">0.290</ll>
+            <kl name="wheat">0.060</kl>
+            <xf name="wheat">1</xf>
+            <ll name="canola">0.290</ll>
+            <kl name="canola">0.060</kl>
+            <xf name="canola">1</xf>
+            <ll name="barley">0.290</ll>
+            <kl name="barley">0.070</kl>
+            <xf name="barley">1</xf>
+            <ll name="chickpea">0.290</ll>
+            <kl name="chickpea">0.060</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="fababean">0.290</ll>
+            <kl name="fababean">0.080</kl>
+            <xf name="fababean">1</xf>
+            <ll name="Cotton">0.290</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.290</ll>
+            <kl name="Sorghum">0.070</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Mungbean">0.290</ll>
+            <kl name="Mungbean">0.060</kl>
+            <xf name="Mungbean">1</xf>
+            <ll name="sunflowr">0.290</ll>
+            <kl name="sunflowr">0.100</kl>
+            <xf name="sunflowr">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.290</ll>
+            <kl name="Maize">0.060</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.290</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Cowpea">0.290</ll>
+            <kl name="Cowpea">0.060</kl>
+            <xf name="Cowpea">1</xf>
+            <ll name="Navybean">0.290</ll>
+            <kl name="Navybean">0.060</kl>
+            <xf name="Navybean">1</xf>
+            <ll name="Peanut">0.290</ll>
+            <kl name="Peanut">0.060</kl>
+            <xf name="Peanut">1</xf>
+            <ll name="Pigeonpea">0.290</ll>
+            <kl name="Pigeonpea">0.060</kl>
+            <xf name="Pigeonpea">1</xf>
+            <ll name="Soybean">0.290</ll>
+            <kl name="Soybean">0.060</kl>
+            <xf name="Soybean">1</xf>
+            <ll name="Stylo">0.290</ll>
+            <kl name="Stylo">0.100</kl>
+            <xf name="Stylo">1</xf>
+            <ll name="Sugar">0.290</ll>
+            <kl name="Sugar">0.100</kl>
+            <xf name="Sugar">1</xf>
+            <ll name="Lablab">0.290</ll>
+            <kl name="Lablab">0.100</kl>
+            <xf name="Lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.030</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.230</airdry>
+            <dul>0.530</dul>
+            <sat>0.580</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.020</fbiom>
+            <finert>0.600</finert>
+            <oc>0.890</oc>
+            <ph>8.800</ph>
+            <ec>0.300</ec>
+            <ll name="wheat">0.290</ll>
+            <kl name="wheat">0.060</kl>
+            <xf name="wheat">1</xf>
+            <ll name="canola">0.290</ll>
+            <kl name="canola">0.060</kl>
+            <xf name="canola">1</xf>
+            <ll name="barley">0.290</ll>
+            <kl name="barley">0.070</kl>
+            <xf name="barley">1</xf>
+            <ll name="chickpea">0.290</ll>
+            <kl name="chickpea">0.060</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="fababean">0.290</ll>
+            <kl name="fababean">0.080</kl>
+            <xf name="fababean">1</xf>
+            <ll name="Cotton">0.290</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.290</ll>
+            <kl name="Sorghum">0.070</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Mungbean">0.290</ll>
+            <kl name="Mungbean">0.060</kl>
+            <xf name="Mungbean">1</xf>
+            <ll name="sunflowr">0.290</ll>
+            <kl name="sunflowr">0.100</kl>
+            <xf name="sunflowr">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.290</ll>
+            <kl name="Maize">0.060</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.290</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Cowpea">0.290</ll>
+            <kl name="Cowpea">0.060</kl>
+            <xf name="Cowpea">1</xf>
+            <ll name="Navybean">0.290</ll>
+            <kl name="Navybean">0.060</kl>
+            <xf name="Navybean">1</xf>
+            <ll name="Peanut">0.290</ll>
+            <kl name="Peanut">0.060</kl>
+            <xf name="Peanut">1</xf>
+            <ll name="Pigeonpea">0.290</ll>
+            <kl name="Pigeonpea">0.060</kl>
+            <xf name="Pigeonpea">1</xf>
+            <ll name="Soybean">0.290</ll>
+            <kl name="Soybean">0.060</kl>
+            <xf name="Soybean">1</xf>
+            <ll name="Stylo">0.290</ll>
+            <kl name="Stylo">0.100</kl>
+            <xf name="Stylo">1</xf>
+            <ll name="Sugar">0.290</ll>
+            <kl name="Sugar">0.100</kl>
+            <xf name="Sugar">1</xf>
+            <ll name="Lablab">0.290</ll>
+            <kl name="Lablab">0.100</kl>
+            <xf name="Lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.020</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.540</dul>
+            <sat>0.590</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.020</fbiom>
+            <finert>0.800</finert>
+            <oc>0.890</oc>
+            <ph>9</ph>
+            <ec>0.300</ec>
+            <ll name="wheat">0.320</ll>
+            <kl name="wheat">0.060</kl>
+            <xf name="wheat">1</xf>
+            <ll name="canola">0.320</ll>
+            <kl name="canola">0.060</kl>
+            <xf name="canola">1</xf>
+            <ll name="barley">0.320</ll>
+            <kl name="barley">0.070</kl>
+            <xf name="barley">1</xf>
+            <ll name="chickpea">0.360</ll>
+            <kl name="chickpea">0.060</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="fababean">0.320</ll>
+            <kl name="fababean">0.080</kl>
+            <xf name="fababean">1</xf>
+            <ll name="Cotton">0.350</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.350</ll>
+            <kl name="Sorghum">0.070</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Mungbean">0.320</ll>
+            <kl name="Mungbean">0.060</kl>
+            <xf name="Mungbean">1</xf>
+            <ll name="sunflowr">0.320</ll>
+            <kl name="sunflowr">0.080</kl>
+            <xf name="sunflowr">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.340</ll>
+            <kl name="Maize">0.060</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.390</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Cowpea">0.320</ll>
+            <kl name="Cowpea">0.060</kl>
+            <xf name="Cowpea">1</xf>
+            <ll name="Navybean">0.320</ll>
+            <kl name="Navybean">0.060</kl>
+            <xf name="Navybean">1</xf>
+            <ll name="Peanut">0.320</ll>
+            <kl name="Peanut">0.060</kl>
+            <xf name="Peanut">1</xf>
+            <ll name="Pigeonpea">0.320</ll>
+            <kl name="Pigeonpea">0.060</kl>
+            <xf name="Pigeonpea">1</xf>
+            <ll name="Soybean">0.320</ll>
+            <kl name="Soybean">0.060</kl>
+            <xf name="Soybean">1</xf>
+            <ll name="Stylo">0.320</ll>
+            <kl name="Stylo">0.080</kl>
+            <xf name="Stylo">1</xf>
+            <ll name="Sugar">0.320</ll>
+            <kl name="Sugar">0.080</kl>
+            <xf name="Sugar">1</xf>
+            <ll name="Lablab">0.320</ll>
+            <kl name="Lablab">0.080</kl>
+            <xf name="Lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.020</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.540</dul>
+            <sat>0.580</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.020</fbiom>
+            <finert>1</finert>
+            <oc>0.890</oc>
+            <ph>9.200</ph>
+            <ec>0.400</ec>
+            <ll name="wheat">0.320</ll>
+            <kl name="wheat">0.040</kl>
+            <xf name="wheat">1</xf>
+            <ll name="canola">0.320</ll>
+            <kl name="canola">0.040</kl>
+            <xf name="canola">1</xf>
+            <ll name="barley">0.380</ll>
+            <kl name="barley">0.050</kl>
+            <xf name="barley">1</xf>
+            <ll name="chickpea">0.430</ll>
+            <kl name="chickpea">0.060</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="fababean">0.320</ll>
+            <kl name="fababean">0.080</kl>
+            <xf name="fababean">1</xf>
+            <ll name="Cotton">0.360</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.380</ll>
+            <kl name="Sorghum">0.050</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Mungbean">0.320</ll>
+            <kl name="Mungbean">0.040</kl>
+            <xf name="Mungbean">1</xf>
+            <ll name="sunflowr">0.320</ll>
+            <kl name="sunflowr">0.060</kl>
+            <xf name="sunflowr">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.340</ll>
+            <kl name="Maize">0.040</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.410</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Cowpea">0.320</ll>
+            <kl name="Cowpea">0.040</kl>
+            <xf name="Cowpea">1</xf>
+            <ll name="Navybean">0.320</ll>
+            <kl name="Navybean">0.040</kl>
+            <xf name="Navybean">1</xf>
+            <ll name="Peanut">0.320</ll>
+            <kl name="Peanut">0.040</kl>
+            <xf name="Peanut">1</xf>
+            <ll name="Pigeonpea">0.320</ll>
+            <kl name="Pigeonpea">0.050</kl>
+            <xf name="Pigeonpea">1</xf>
+            <ll name="Soybean">0.320</ll>
+            <kl name="Soybean">0.040</kl>
+            <xf name="Soybean">1</xf>
+            <ll name="Stylo">0.320</ll>
+            <kl name="Stylo">0.060</kl>
+            <xf name="Stylo">1</xf>
+            <ll name="Sugar">0.320</ll>
+            <kl name="Sugar">0.060</kl>
+            <xf name="Sugar">1</xf>
+            <ll name="Lablab">0.320</ll>
+            <kl name="Lablab">0.060</kl>
+            <xf name="Lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.060</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.520</dul>
+            <sat>0.570</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.770</oc>
+            <ph>9.200</ph>
+            <ec>0.600</ec>
+            <ll name="wheat">0.350</ll>
+            <kl name="wheat">0.040</kl>
+            <xf name="wheat">1</xf>
+            <ll name="canola">0.350</ll>
+            <kl name="canola">0.040</kl>
+            <xf name="canola">1</xf>
+            <ll name="barley">0.390</ll>
+            <kl name="barley">0.050</kl>
+            <xf name="barley">1</xf>
+            <ll name="chickpea">0.510</ll>
+            <kl name="chickpea">0.060</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="fababean">0.350</ll>
+            <kl name="fababean">0.060</kl>
+            <xf name="fababean">1</xf>
+            <ll name="Cotton">0.380</ll>
+            <kl name="Cotton">0.090</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.400</ll>
+            <kl name="Sorghum">0.050</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Mungbean">0.350</ll>
+            <kl name="Mungbean">0.040</kl>
+            <xf name="Mungbean">1</xf>
+            <ll name="sunflowr">0.350</ll>
+            <kl name="sunflowr">0.040</kl>
+            <xf name="sunflowr">1</xf>
+            <ll name="Lucerne">0.300</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.370</ll>
+            <kl name="Maize">0.040</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0.090</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Cowpea">0.350</ll>
+            <kl name="Cowpea">0.040</kl>
+            <xf name="Cowpea">1</xf>
+            <ll name="Navybean">0.350</ll>
+            <kl name="Navybean">0.040</kl>
+            <xf name="Navybean">1</xf>
+            <ll name="Peanut">0.350</ll>
+            <kl name="Peanut">0.040</kl>
+            <xf name="Peanut">1</xf>
+            <ll name="Pigeonpea">0.350</ll>
+            <kl name="Pigeonpea">0.040</kl>
+            <xf name="Pigeonpea">1</xf>
+            <ll name="Soybean">0.350</ll>
+            <kl name="Soybean">0.040</kl>
+            <xf name="Soybean">1</xf>
+            <ll name="Stylo">0.350</ll>
+            <kl name="Stylo">0.040</kl>
+            <xf name="Stylo">1</xf>
+            <ll name="Sugar">0.350</ll>
+            <kl name="Sugar">0.040</kl>
+            <xf name="Sugar">1</xf>
+            <ll name="Lablab">0.350</ll>
+            <kl name="Lablab">0.040</kl>
+            <xf name="Lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.110</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.500</dul>
+            <sat>0.550</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.450</oc>
+            <ph>9.100</ph>
+            <ec>0.800</ec>
+            <ll name="wheat">0.380</ll>
+            <kl name="wheat">0.020</kl>
+            <xf name="wheat">0.420</xf>
+            <ll name="canola">0.380</ll>
+            <kl name="canola">0.020</kl>
+            <xf name="canola">0.420</xf>
+            <ll name="barley">0.390</ll>
+            <kl name="barley">0.030</kl>
+            <xf name="barley">0.420</xf>
+            <ll name="chickpea">0.500</ll>
+            <kl name="chickpea">0.060</kl>
+            <xf name="chickpea">0.420</xf>
+            <ll name="fababean">0.380</ll>
+            <kl name="fababean">0.040</kl>
+            <xf name="fababean">0.420</xf>
+            <ll name="Cotton">0.390</ll>
+            <kl name="Cotton">0.070</kl>
+            <xf name="Cotton">0.420</xf>
+            <ll name="Sorghum">0.400</ll>
+            <kl name="Sorghum">0.040</kl>
+            <xf name="Sorghum">0.420</xf>
+            <ll name="Mungbean">0.380</ll>
+            <kl name="Mungbean">0.010</kl>
+            <xf name="Mungbean">0.420</xf>
+            <ll name="sunflowr">0.380</ll>
+            <kl name="sunflowr">0.020</kl>
+            <xf name="sunflowr">0.420</xf>
+            <ll name="Lucerne">0.310</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">0.420</xf>
+            <ll name="Maize">0.400</ll>
+            <kl name="Maize">0.020</kl>
+            <xf name="Maize">0.420</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0.070</kl>
+            <xf name="Perennial Grass">0.420</xf>
+            <ll name="Cowpea">0.380</ll>
+            <kl name="Cowpea">0.020</kl>
+            <xf name="Cowpea">0.420</xf>
+            <ll name="Navybean">0.380</ll>
+            <kl name="Navybean">0.010</kl>
+            <xf name="Navybean">0.420</xf>
+            <ll name="Peanut">0.380</ll>
+            <kl name="Peanut">0.010</kl>
+            <xf name="Peanut">0.420</xf>
+            <ll name="Pigeonpea">0.380</ll>
+            <kl name="Pigeonpea">0.020</kl>
+            <xf name="Pigeonpea">0.420</xf>
+            <ll name="Soybean">0.380</ll>
+            <kl name="Soybean">0.020</kl>
+            <xf name="Soybean">0.420</xf>
+            <ll name="Stylo">0.380</ll>
+            <kl name="Stylo">0.020</kl>
+            <xf name="Stylo">0.420</xf>
+            <ll name="Sugar">0.380</ll>
+            <kl name="Sugar">0.020</kl>
+            <xf name="Sugar">0.420</xf>
+            <ll name="Lablab">0.380</ll>
+            <kl name="Lablab">0.020</kl>
+            <xf name="Lablab">0.420</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.120</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.500</dul>
+            <sat>0.550</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.270</oc>
+            <ph>9</ph>
+            <ec>0.900</ec>
+            <ll name="wheat">0.410</ll>
+            <kl name="wheat">0.020</kl>
+            <xf name="wheat">0.370</xf>
+            <ll name="canola">0.410</ll>
+            <kl name="canola">0.010</kl>
+            <xf name="canola">0.370</xf>
+            <ll name="barley">0.410</ll>
+            <kl name="barley">0.020</kl>
+            <xf name="barley">0.370</xf>
+            <ll name="chickpea">0.500</ll>
+            <kl name="chickpea">0.060</kl>
+            <xf name="chickpea">0.370</xf>
+            <ll name="fababean">0.410</ll>
+            <kl name="fababean">0.030</kl>
+            <xf name="fababean">0.370</xf>
+            <ll name="Cotton">0.390</ll>
+            <kl name="Cotton">0.050</kl>
+            <xf name="Cotton">0.370</xf>
+            <ll name="Sorghum">0.400</ll>
+            <kl name="Sorghum">0.030</kl>
+            <xf name="Sorghum">0.370</xf>
+            <ll name="Mungbean">0.410</ll>
+            <kl name="Mungbean">0.010</kl>
+            <xf name="Mungbean">0.370</xf>
+            <ll name="sunflowr">0.410</ll>
+            <kl name="sunflowr">0.010</kl>
+            <xf name="sunflowr">0.370</xf>
+            <ll name="Lucerne">0.320</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">0.370</xf>
+            <ll name="Maize">0.420</ll>
+            <kl name="Maize">0.010</kl>
+            <xf name="Maize">0.370</xf>
+            <ll name="Perennial Grass">0.410</ll>
+            <kl name="Perennial Grass">0.050</kl>
+            <xf name="Perennial Grass">0.370</xf>
+            <ll name="Cowpea">0.410</ll>
+            <kl name="Cowpea">0.010</kl>
+            <xf name="Cowpea">0.370</xf>
+            <ll name="Navybean">0.410</ll>
+            <kl name="Navybean">0.010</kl>
+            <xf name="Navybean">0.370</xf>
+            <ll name="Peanut">0.410</ll>
+            <kl name="Peanut">0.010</kl>
+            <xf name="Peanut">0.370</xf>
+            <ll name="Pigeonpea">0.410</ll>
+            <kl name="Pigeonpea">0.010</kl>
+            <xf name="Pigeonpea">0.370</xf>
+            <ll name="Soybean">0.410</ll>
+            <kl name="Soybean">0.010</kl>
+            <xf name="Soybean">0.370</xf>
+            <ll name="Stylo">0.410</ll>
+            <kl name="Stylo">0.010</kl>
+            <xf name="Stylo">0.370</xf>
+            <ll name="Sugar">0.410</ll>
+            <kl name="Sugar">0.010</kl>
+            <xf name="Sugar">0.370</xf>
+            <ll name="Lablab">0.410</ll>
+            <kl name="Lablab">0.010</kl>
+            <xf name="Lablab">0.370</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.150</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.480</dul>
+            <sat>0.530</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.220</oc>
+            <ph>9</ph>
+            <ec>1</ec>
+            <ll name="wheat">0.480</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="canola">0.480</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="barley">0.480</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="chickpea">0.480</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="fababean">0.480</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="Cotton">0.480</ll>
+            <kl name="Cotton">0</kl>
+            <xf name="Cotton">0</xf>
+            <ll name="Sorghum">0.480</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Mungbean">0.480</ll>
+            <kl name="Mungbean">0</kl>
+            <xf name="Mungbean">0</xf>
+            <ll name="sunflowr">0.480</ll>
+            <kl name="sunflowr">0</kl>
+            <xf name="sunflowr">0</xf>
+            <ll name="Lucerne">0.330</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">0.330</xf>
+            <ll name="Maize">0.480</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.410</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Cowpea">0.480</ll>
+            <kl name="Cowpea">0</kl>
+            <xf name="Cowpea">0</xf>
+            <ll name="Navybean">0.480</ll>
+            <kl name="Navybean">0</kl>
+            <xf name="Navybean">0</xf>
+            <ll name="Peanut">0.480</ll>
+            <kl name="Peanut">0</kl>
+            <xf name="Peanut">0</xf>
+            <ll name="Pigeonpea">0.480</ll>
+            <kl name="Pigeonpea">0</kl>
+            <xf name="Pigeonpea">0</xf>
+            <ll name="Soybean">0.480</ll>
+            <kl name="Soybean">0</kl>
+            <xf name="Soybean">0</xf>
+            <ll name="Stylo">0.480</ll>
+            <kl name="Stylo">0</kl>
+            <xf name="Stylo">0</xf>
+            <ll name="Sugar">0.480</ll>
+            <kl name="Sugar">0</kl>
+            <xf name="Sugar">0</xf>
+            <ll name="Lablab">0.480</ll>
+            <kl name="Lablab">0</kl>
+            <xf name="Lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.180</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.470</dul>
+            <sat>0.520</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.160</oc>
+            <ph>8.900</ph>
+            <ec>1.100</ec>
+            <ll name="wheat">0.470</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="canola">0.470</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="barley">0.470</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="chickpea">0.470</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="fababean">0.470</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="Cotton">0.470</ll>
+            <kl name="Cotton">0</kl>
+            <xf name="Cotton">0</xf>
+            <ll name="Sorghum">0.470</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Mungbean">0.470</ll>
+            <kl name="Mungbean">0</kl>
+            <xf name="Mungbean">0</xf>
+            <ll name="sunflowr">0.470</ll>
+            <kl name="sunflowr">0</kl>
+            <xf name="sunflowr">0</xf>
+            <ll name="Lucerne">0.340</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">0.310</xf>
+            <ll name="Maize">0.470</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Cowpea">0.470</ll>
+            <kl name="Cowpea">0</kl>
+            <xf name="Cowpea">0</xf>
+            <ll name="Navybean">0.470</ll>
+            <kl name="Navybean">0</kl>
+            <xf name="Navybean">0</xf>
+            <ll name="Peanut">0.470</ll>
+            <kl name="Peanut">0</kl>
+            <xf name="Peanut">0</xf>
+            <ll name="Pigeonpea">0.470</ll>
+            <kl name="Pigeonpea">0</kl>
+            <xf name="Pigeonpea">0</xf>
+            <ll name="Soybean">0.470</ll>
+            <kl name="Soybean">0</kl>
+            <xf name="Soybean">0</xf>
+            <ll name="Stylo">0.470</ll>
+            <kl name="Stylo">0</kl>
+            <xf name="Stylo">0</xf>
+            <ll name="Sugar">0.470</ll>
+            <kl name="Sugar">0</kl>
+            <xf name="Sugar">0</xf>
+            <ll name="Lablab">0.470</ll>
+            <kl name="Lablab">0</kl>
+            <xf name="Lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.200</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.460</dul>
+            <sat>0.510</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.130</oc>
+            <ph>8.900</ph>
+            <ec>1.100</ec>
+            <ll name="wheat">0.460</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="canola">0.460</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="barley">0.460</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="chickpea">0.460</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="fababean">0.460</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="Cotton">0.460</ll>
+            <kl name="Cotton">0</kl>
+            <xf name="Cotton">0</xf>
+            <ll name="Sorghum">0.460</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Mungbean">0.460</ll>
+            <kl name="Mungbean">0</kl>
+            <xf name="Mungbean">0</xf>
+            <ll name="sunflowr">0.460</ll>
+            <kl name="sunflowr">0</kl>
+            <xf name="sunflowr">0</xf>
+            <ll name="Lucerne">0.350</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">0.310</xf>
+            <ll name="Maize">0.460</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Cowpea">0.460</ll>
+            <kl name="Cowpea">0</kl>
+            <xf name="Cowpea">0</xf>
+            <ll name="Navybean">0.460</ll>
+            <kl name="Navybean">0</kl>
+            <xf name="Navybean">0</xf>
+            <ll name="Peanut">0.460</ll>
+            <kl name="Peanut">0</kl>
+            <xf name="Peanut">0</xf>
+            <ll name="Pigeonpea">0.460</ll>
+            <kl name="Pigeonpea">0</kl>
+            <xf name="Pigeonpea">0</xf>
+            <ll name="Soybean">0.460</ll>
+            <kl name="Soybean">0</kl>
+            <xf name="Soybean">0</xf>
+            <ll name="Stylo">0.460</ll>
+            <kl name="Stylo">0</kl>
+            <xf name="Stylo">0</xf>
+            <ll name="Sugar">0.460</ll>
+            <kl name="Sugar">0</kl>
+            <xf name="Sugar">0</xf>
+            <ll name="Lablab">0.460</ll>
+            <kl name="Lablab">0</kl>
+            <xf name="Lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.250</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.440</dul>
+            <sat>0.490</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.120</oc>
+            <ph>8.900</ph>
+            <ec>1</ec>
+            <ll name="wheat">0.440</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="canola">0.440</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="barley">0.440</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="chickpea">0.440</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="fababean">0.440</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="Cotton">0.440</ll>
+            <kl name="Cotton">0</kl>
+            <xf name="Cotton">0</xf>
+            <ll name="Sorghum">0.440</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Mungbean">0.440</ll>
+            <kl name="Mungbean">0</kl>
+            <xf name="Mungbean">0</xf>
+            <ll name="sunflowr">0.440</ll>
+            <kl name="sunflowr">0</kl>
+            <xf name="sunflowr">0</xf>
+            <ll name="Lucerne">0.360</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">0.330</xf>
+            <ll name="Maize">0.440</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.420</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Cowpea">0.440</ll>
+            <kl name="Cowpea">0</kl>
+            <xf name="Cowpea">0</xf>
+            <ll name="Navybean">0.440</ll>
+            <kl name="Navybean">0</kl>
+            <xf name="Navybean">0</xf>
+            <ll name="Peanut">0.440</ll>
+            <kl name="Peanut">0</kl>
+            <xf name="Peanut">0</xf>
+            <ll name="Pigeonpea">0.440</ll>
+            <kl name="Pigeonpea">0</kl>
+            <xf name="Pigeonpea">0</xf>
+            <ll name="Soybean">0.440</ll>
+            <kl name="Soybean">0</kl>
+            <xf name="Soybean">0</xf>
+            <ll name="Stylo">0.440</ll>
+            <kl name="Stylo">0</kl>
+            <xf name="Stylo">0</xf>
+            <ll name="Sugar">0.440</ll>
+            <kl name="Sugar">0</kl>
+            <xf name="Sugar">0</xf>
+            <ll name="Lablab">0.440</ll>
+            <kl name="Lablab">0</kl>
+            <xf name="Lablab">0</xf>
+          </layer>
+        </profile>
+        <Cona>3.5</Cona>
+        <U>6</U>
+        <Salb>0.12</Salb>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <CN2Bare>73</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+      </soil>
+    </area>
+  </simulation>
+</folder>

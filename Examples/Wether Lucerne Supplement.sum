@@ -1,0 +1,1297 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Wether Lucerne Supplement
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Accumulate" = %apsim%\Model\Accum.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component   "Buy sheep on feed-on-offer" = %apsim%\Model\Manager.dll
+   Component "Buy supplement on a fixed date" = %apsim%\Model\Manager.dll
+   Component "Feed supplement on animal condition loss" = %apsim%\Model\Manager.dll
+   Component         "Sell sheep on weight" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "lucerne" = %apsim%\Model\Plant.dll
+   Component                   "supplement" = c:\program files\ausfarm\supplement.dll
+   Component   "supplementScienceConverter" = %apsim%\Model\supplementscienceconverter.dll
+   Component                        "stock" = c:\program files\ausfarm\stock.dll
+   Component        "stockScienceConverter" = %apsim%\Model\stockscienceconverter.dll
+   Component "lucerneStockHerbageConverter" = %apsim%\Model\stockscienceconverter.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   = 30/12/1945
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Goond.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy as Date2
+        year
+        dm_feed_on_offer()
+        dm_feed_removed()
+        stock.age
+        stock.wt_change
+        stock.weight
+        stock.sex
+        stock.past_intake
+        stock.number
+        stock.cond_score_all
+        stock.past_intake_all
+        stock.supp_intake_all
+        stock.fleece_wt_all
+        stock.fibre_diam_all
+        lucerne.biomass
+        lucerne.stage
+        lucerne.lai
+
+     Output file = Wether Lucerne Supplement.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Accumulate Initialisation ---------------------------------------------
+     Initialising
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('1/07/1940') then
+       lucerne sow plants =100, sowing_depth = 50, cultivar = sceptre, row_spacing = 500
+              endif
+     END of rules
+     
+
+------- Buy sheep on feed-on-offer Initialisation -----------------------------
+     Manager rules:
+     
+     SECTION:- init
+        sheep_presence = 'off'
+     
+     SECTION:- start_of_day
+             if (lucerne.biomass >= 200 and sheep_presence = 'off') then
+                stockscienceconverter buystock number = 15 (-), genotype = 'suffolk', sex = wether, age = 12 (months), weight = 45 (kg)
+                sheep_presence = 'on'
+              endif
+     END of rules
+     
+     Manager creating a new local string variable : sheep_presence = off
+
+------- Buy supplement on a fixed date Initialisation -------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('1-jan') then
+                supplementscienceconverter buysupplement supplement = 'lupins' (-), amount = 1000 (kg)
+              endif
+     END of rules
+     
+
+------- Feed supplement on animal condition loss Initialisation ---------------
+     Manager rules:
+     
+     SECTION:- init
+              false = 0
+              true = 1
+              feeding = false
+              feed_rate = 0.0
+              crit_cs = 0.0
+              feed_rate_factor = 0.2
+              est_lag_days = 10.0 / feed_rate_factor
+              initial_feed_rate = 0.0
+             yest_cond_score_all = 0.0
+     
+     SECTION:- start_of_day
+              dlt_cond_score = cond_score_all - yest_cond_score_all
+              yest_cond_score_all = cond_score_all
+     if (feeding = true and cond_score_all = 0.0) then
+        crit_cs = 0.0
+        feeding = false
+     endif
+     if (dlt_cond_score[5] < 0 and crit_cs <= 0.0) then
+        crit_cs = cond_score_all
+     endif
+     if ((feeding = false) and (cond_score_all < crit_cs)) then
+        feeding = true
+        feed_rate = initial_feed_rate
+     else
+     endif
+     if (feeding = true) then
+        feed_rate = feed_rate - feed_rate_factor * (cond_score_all + dlt_cond_score*est_lag_days - crit_cs)
+        if (feed_rate > 1) then
+           feed_rate = 1
+        elseif (feed_rate < 0.0) then
+           feed_rate = 0.0
+        endif
+        if (feed_rate > 0) then
+            feed_amount = feed_rate * number_all
+            supplementscienceconverter feedsupplement  supplement = 'lupins', amount = feed_amount
+        else
+           feed_rate = 0.0
+        endif
+     else
+        feed_rate = 0.0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : false = 0.00000
+     Manager creating a new local real variable : true = 1.00000
+     Manager creating a new local real variable : feeding = 0.00000
+     Manager creating a new local real variable : feed_rate = 0.00000
+     Manager creating a new local real variable : crit_cs = 0.00000
+     Manager creating a new local real variable : feed_rate_factor = 0.20000
+     Manager creating a new local real variable : est_lag_days = 50.00000
+     Manager creating a new local real variable : initial_feed_rate = 0.00000
+     Manager creating a new local real variable : yest_cond_score_all = 0.00000
+
+------- Sell sheep on weight Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if ((stock.weight >= 50 or stock.weight <= 40) and sheep_presence = 'on') then
+                stockscienceconverter sellstock number = 15 (-)
+                sheep_presence = 'off'
+             endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.140  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      66.00      66.00      15.00
+         1200.- 1500.      93.00      57.00      57.00      15.00
+         1500.- 1800.      96.00      54.00      54.00      15.00
+         1800.- 2100.      99.00      45.00      45.00      15.00
+         2100.- 2400.     102.00      39.00      39.00      15.00
+         2400.- 2700.     105.00      33.00      33.00      15.00
+         2700.- 3000.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     541.50     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.94    0.92    0.00
+             2     8.80  0.89    3.24    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.20    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.71    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               65.97    4.11    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+
+------- supplementScienceConverter Initialisation -----------------------------
+      - reading parameters
+     Debug = off
+     supplement_module = supplement
+     
+
+------- stockScienceConverter Initialisation ----------------------------------
+     Conversion model:- nonherbage
+     
+      - non-herbage converter reading parameters
+     Stock_module = stock
+     Fraction_faeces_added = 0.5
+     Fraction_urine_added = 0.5
+     Debug = off
+
+------- lucerneStockHerbageConverter Initialisation ---------------------------
+     Conversion model:- herbage
+     
+     Herbage model:- plant
+     
+      - herbage converter reading parameters
+     Debug = off
+      - conversion object reading parameters
+     Herbage module name = lucerne(id=16)
+     Debug = off
+      - reading  herbage parameters for module 'lucerne'
+     
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- supplementscienceconverter buysupplement  supplement = 'lupins' (-), amount = 1000 (kg)
+     Supplement buy:
+        Name = lupins
+        Amount = 1000 (kg)
+     
+     Manager creating a new local real variable : dlt_cond_score = 0.00000
+1 July 1940(Day of year=183), Sow on a fixed date: 
+     Manager sending message :- lucerne sow  plants = 100, sowing_depth = 50, cultivar = sceptre, row_spacing = 500
+1 July 1940(Day of year=183), lucerne: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sceptre
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     300     300 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    11.5      15 (h)
+              y_tt_end_of_juvenile       =     240     140 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     260     260 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =    9400    9400 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     500 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0001     0.0001
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.100          0.290       1.000
+         300.0     0.100          0.290       1.000
+         300.0     0.090          0.300       1.000
+         300.0     0.090          0.310       1.000
+         300.0     0.090          0.320       1.000
+         300.0     0.090          0.330       1.000
+         300.0     0.090          0.340       1.000
+         300.0     0.090          0.350       1.000
+         300.0     0.090          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            183   50.0  100.0  500.0   0.0   0.0 sceptre
+         ------------------------------------------------
+     
+2 July 1940(Day of year=184), lucerne: 
+      stage 2.0 germination
+15 July 1940(Day of year=197), lucerne: 
+      stage 3.0 emergence
+                     biomass =           0.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   25.70 (mm)
+18 August 1940(Day of year=231), lucerne: 
+      stage 4.0 end_of_juvenile
+                     biomass =           3.62 (g/m^2)   lai          =   0.083 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =  118.28 (mm)
+30 August 1940(Day of year=243), Buy sheep on feed-on-offer: 
+     Manager sending message :- stockscienceconverter buystock  number = 15 (-), genotype = 'suffolk', sex = wether, age = 12 (months), weight = 45 (kg)
+30 August 1940(Day of year=243), stockScienceConverter: 
+     Buy stock :-
+        number =         15 (-)
+        genotype = suffolk (-)
+        sex = wether (-)
+        age = 12 (months)
+        weight = 45 (kg)
+5 September 1940(Day of year=249), lucerne: 
+      stage 5.0 floral_initiation
+                     biomass =          23.10 (g/m^2)   lai          =   0.262 (m^2/m^2)
+                     stover N conc =     4.43 (%)    extractable sw =  109.35 (mm)
+21 September 1940(Day of year=265), Feed supplement on animal condition loss: 
+     Manager creating a new local real variable : feed_amount = 0.21885
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 0.21885
+21 September 1940(Day of year=265), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 0.21885 (kg)
+     
+22 September 1940(Day of year=266), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 0.45870
+22 September 1940(Day of year=266), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 0.4587 (kg)
+     
+23 September 1940(Day of year=267), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 0.73695
+23 September 1940(Day of year=267), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 0.73695 (kg)
+     
+24 September 1940(Day of year=268), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 1.54215
+24 September 1940(Day of year=268), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 1.54215 (kg)
+     
+24 September 1940(Day of year=268), lucerne: 
+      stage 6.0 flowering
+                     biomass =          10.00 (g/m^2)   lai          =   0.103 (m^2/m^2)
+                     stover N conc =     2.64 (%)    extractable sw =  177.60 (mm)
+25 September 1940(Day of year=269), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 2.00640
+25 September 1940(Day of year=269), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 2.0064 (kg)
+     
+26 September 1940(Day of year=270), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 2.45010
+26 September 1940(Day of year=270), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 2.4501 (kg)
+     
+27 September 1940(Day of year=271), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 2.85435
+27 September 1940(Day of year=271), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 2.85435 (kg)
+     
+28 September 1940(Day of year=272), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 3.29160
+28 September 1940(Day of year=272), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 3.2916 (kg)
+     
+29 September 1940(Day of year=273), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 3.77310
+29 September 1940(Day of year=273), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 3.7731 (kg)
+     
+30 September 1940(Day of year=274), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 4.51065
+30 September 1940(Day of year=274), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 4.51065 (kg)
+     
+1 October 1940(Day of year=275), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 5.50455
+1 October 1940(Day of year=275), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 5.50455 (kg)
+     
+1 October 1940(Day of year=275), lucerne: 
+      stage 7.0 start_grain_fill
+                     biomass =           4.35 (g/m^2)   lai          =   0.027 (m^2/m^2)
+                     stover N conc =     2.78 (%)    extractable sw =  175.25 (mm)
+2 October 1940(Day of year=276), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 6.46290
+2 October 1940(Day of year=276), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 6.4629 (kg)
+     
+3 October 1940(Day of year=277), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 7.02945
+3 October 1940(Day of year=277), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 7.02945 (kg)
+     
+4 October 1940(Day of year=278), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 7.33860
+4 October 1940(Day of year=278), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 7.3386 (kg)
+     
+5 October 1940(Day of year=279), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 7.60545
+5 October 1940(Day of year=279), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 7.60545 (kg)
+     
+6 October 1940(Day of year=280), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 7.83225
+6 October 1940(Day of year=280), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 7.83225 (kg)
+     
+7 October 1940(Day of year=281), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.02110
+7 October 1940(Day of year=281), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.0211 (kg)
+     
+8 October 1940(Day of year=282), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.10855
+8 October 1940(Day of year=282), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.10855 (kg)
+     
+9 October 1940(Day of year=283), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.20275
+9 October 1940(Day of year=283), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.20275 (kg)
+     
+10 October 1940(Day of year=284), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.26545
+10 October 1940(Day of year=284), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.26545 (kg)
+     
+11 October 1940(Day of year=285), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.32995
+11 October 1940(Day of year=285), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.32995 (kg)
+     
+12 October 1940(Day of year=286), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.40690
+12 October 1940(Day of year=286), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.4069 (kg)
+     
+13 October 1940(Day of year=287), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.53470
+13 October 1940(Day of year=287), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.5347 (kg)
+     
+14 October 1940(Day of year=288), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.80170
+14 October 1940(Day of year=288), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.8017 (kg)
+     
+15 October 1940(Day of year=289), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.05310
+15 October 1940(Day of year=289), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.0531 (kg)
+     
+16 October 1940(Day of year=290), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.27315
+16 October 1940(Day of year=290), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.27315 (kg)
+     
+17 October 1940(Day of year=291), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.45660
+17 October 1940(Day of year=291), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.4566 (kg)
+     
+18 October 1940(Day of year=292), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.61200
+18 October 1940(Day of year=292), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.612 (kg)
+     
+19 October 1940(Day of year=293), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.74325
+19 October 1940(Day of year=293), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.74325 (kg)
+     
+20 October 1940(Day of year=294), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.85290
+20 October 1940(Day of year=294), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.8529 (kg)
+     
+21 October 1940(Day of year=295), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.94530
+21 October 1940(Day of year=295), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.9453 (kg)
+     
+22 October 1940(Day of year=296), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.02300
+22 October 1940(Day of year=296), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.023 (kg)
+     
+23 October 1940(Day of year=297), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.08885
+23 October 1940(Day of year=297), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.0889 (kg)
+     
+24 October 1940(Day of year=298), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.14420
+24 October 1940(Day of year=298), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1442 (kg)
+     
+25 October 1940(Day of year=299), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.19040
+25 October 1940(Day of year=299), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1904 (kg)
+     
+26 October 1940(Day of year=300), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.23030
+26 October 1940(Day of year=300), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2303 (kg)
+     
+27 October 1940(Day of year=301), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.26375
+27 October 1940(Day of year=301), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2637 (kg)
+     
+28 October 1940(Day of year=302), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.29075
+28 October 1940(Day of year=302), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2907 (kg)
+     
+29 October 1940(Day of year=303), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.31430
+29 October 1940(Day of year=303), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3143 (kg)
+     
+30 October 1940(Day of year=304), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.33290
+30 October 1940(Day of year=304), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3329 (kg)
+     
+31 October 1940(Day of year=305), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.34940
+31 October 1940(Day of year=305), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3494 (kg)
+     
+1 November 1940(Day of year=306), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.36230
+1 November 1940(Day of year=306), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3623 (kg)
+     
+2 November 1940(Day of year=307), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.37310
+2 November 1940(Day of year=307), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3731 (kg)
+     
+3 November 1940(Day of year=308), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.38345
+3 November 1940(Day of year=308), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3834 (kg)
+     
+4 November 1940(Day of year=309), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.39020
+4 November 1940(Day of year=309), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3902 (kg)
+     
+5 November 1940(Day of year=310), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.41630
+5 November 1940(Day of year=310), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4163 (kg)
+     
+6 November 1940(Day of year=311), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.41930
+6 November 1940(Day of year=311), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4193 (kg)
+     
+7 November 1940(Day of year=312), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.41870
+7 November 1940(Day of year=312), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4187 (kg)
+     
+8 November 1940(Day of year=313), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.45425
+8 November 1940(Day of year=313), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4543 (kg)
+     
+9 November 1940(Day of year=314), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.46250
+9 November 1940(Day of year=314), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4625 (kg)
+     
+10 November 1940(Day of year=315), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.44900
+10 November 1940(Day of year=315), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.449 (kg)
+     
+11 November 1940(Day of year=316), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.43475
+11 November 1940(Day of year=316), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4347 (kg)
+     
+12 November 1940(Day of year=317), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.42290
+12 November 1940(Day of year=317), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4229 (kg)
+     
+13 November 1940(Day of year=318), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.40730
+13 November 1940(Day of year=318), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.4073 (kg)
+     
+14 November 1940(Day of year=319), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.39575
+14 November 1940(Day of year=319), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3957 (kg)
+     
+15 November 1940(Day of year=320), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.38210
+15 November 1940(Day of year=320), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3821 (kg)
+     
+16 November 1940(Day of year=321), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.36950
+16 November 1940(Day of year=321), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3695 (kg)
+     
+17 November 1940(Day of year=322), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.35645
+17 November 1940(Day of year=322), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3565 (kg)
+     
+18 November 1940(Day of year=323), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.34445
+18 November 1940(Day of year=323), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3445 (kg)
+     
+19 November 1940(Day of year=324), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.34280
+19 November 1940(Day of year=324), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3428 (kg)
+     
+20 November 1940(Day of year=325), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.33185
+20 November 1940(Day of year=325), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3318 (kg)
+     
+21 November 1940(Day of year=326), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.31910
+21 November 1940(Day of year=326), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3191 (kg)
+     
+22 November 1940(Day of year=327), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.30620
+22 November 1940(Day of year=327), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.3062 (kg)
+     
+23 November 1940(Day of year=328), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.29600
+23 November 1940(Day of year=328), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.296 (kg)
+     
+24 November 1940(Day of year=329), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.28565
+24 November 1940(Day of year=329), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2857 (kg)
+     
+25 November 1940(Day of year=330), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.27530
+25 November 1940(Day of year=330), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2753 (kg)
+     
+26 November 1940(Day of year=331), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.26480
+26 November 1940(Day of year=331), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2648 (kg)
+     
+27 November 1940(Day of year=332), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.25430
+27 November 1940(Day of year=332), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2543 (kg)
+     
+28 November 1940(Day of year=333), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.24365
+28 November 1940(Day of year=333), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2437 (kg)
+     
+29 November 1940(Day of year=334), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.23300
+29 November 1940(Day of year=334), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.233 (kg)
+     
+30 November 1940(Day of year=335), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.22400
+30 November 1940(Day of year=335), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.224 (kg)
+     
+1 December 1940(Day of year=336), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.21350
+1 December 1940(Day of year=336), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2135 (kg)
+     
+2 December 1940(Day of year=337), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.20465
+2 December 1940(Day of year=337), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.2047 (kg)
+     
+3 December 1940(Day of year=338), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.19445
+3 December 1940(Day of year=338), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1944 (kg)
+     
+4 December 1940(Day of year=339), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.18590
+4 December 1940(Day of year=339), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1859 (kg)
+     
+5 December 1940(Day of year=340), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.17600
+5 December 1940(Day of year=340), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.176 (kg)
+     
+6 December 1940(Day of year=341), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.16790
+6 December 1940(Day of year=341), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1679 (kg)
+     
+7 December 1940(Day of year=342), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.15845
+7 December 1940(Day of year=342), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1585 (kg)
+     
+8 December 1940(Day of year=343), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.14930
+8 December 1940(Day of year=343), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1493 (kg)
+     
+9 December 1940(Day of year=344), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.14195
+9 December 1940(Day of year=344), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1419 (kg)
+     
+10 December 1940(Day of year=345), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 10.13355
+10 December 1940(Day of year=345), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 10.1335 (kg)
+     
+11 December 1940(Day of year=346), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 6.83438
+11 December 1940(Day of year=346), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 6.83438 (kg)
+     
+12 December 1940(Day of year=347), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 6.67590
+12 December 1940(Day of year=347), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 6.6759 (kg)
+     
+13 December 1940(Day of year=348), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 7.47544
+13 December 1940(Day of year=348), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 7.47544 (kg)
+     
+14 December 1940(Day of year=349), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.37802
+14 December 1940(Day of year=349), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.37802 (kg)
+     
+15 December 1940(Day of year=350), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.82266
+15 December 1940(Day of year=350), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.82266 (kg)
+     
+16 December 1940(Day of year=351), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.90134
+16 December 1940(Day of year=351), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.90134 (kg)
+     
+17 December 1940(Day of year=352), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.82532
+17 December 1940(Day of year=352), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.82532 (kg)
+     
+18 December 1940(Day of year=353), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.72144
+18 December 1940(Day of year=353), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.72144 (kg)
+     
+19 December 1940(Day of year=354), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.63912
+19 December 1940(Day of year=354), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.63912 (kg)
+     
+20 December 1940(Day of year=355), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.59026
+20 December 1940(Day of year=355), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.59026 (kg)
+     
+21 December 1940(Day of year=356), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.56716
+21 December 1940(Day of year=356), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.56716 (kg)
+     
+22 December 1940(Day of year=357), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.64304
+22 December 1940(Day of year=357), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.64304 (kg)
+     
+23 December 1940(Day of year=358), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.75280
+23 December 1940(Day of year=358), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.7528 (kg)
+     
+24 December 1940(Day of year=359), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.84982
+24 December 1940(Day of year=359), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.84982 (kg)
+     
+25 December 1940(Day of year=360), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.93116
+25 December 1940(Day of year=360), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.93116 (kg)
+     
+26 December 1940(Day of year=361), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 8.99780
+26 December 1940(Day of year=361), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 8.9978 (kg)
+     
+27 December 1940(Day of year=362), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.05086
+27 December 1940(Day of year=362), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.05086 (kg)
+     
+28 December 1940(Day of year=363), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.09300
+28 December 1940(Day of year=363), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.093 (kg)
+     
+29 December 1940(Day of year=364), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.12814
+29 December 1940(Day of year=364), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.12814 (kg)
+     
+30 December 1940(Day of year=365), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.15488
+30 December 1940(Day of year=365), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.15488 (kg)
+     
+31 December 1940(Day of year=366), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.17574
+31 December 1940(Day of year=366), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.17574 (kg)
+     
+1 January 1941(Day of year=1), Buy supplement on a fixed date: 
+     Manager sending message :- supplementscienceconverter buysupplement  supplement = 'lupins' (-), amount = 1000 (kg)
+1 January 1941(Day of year=1), supplementScienceConverter: 
+     Supplement buy:
+        Name = lupins
+        Amount = 1000 (kg)
+     
+1 January 1941(Day of year=1), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.19072
+     Supplement feed:
+        Name = lupins
+        Amount = 9.19072 (kg)
+     
+2 January 1941(Day of year=2), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.20262
+2 January 1941(Day of year=2), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.20262 (kg)
+     
+3 January 1941(Day of year=3), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.21270
+3 January 1941(Day of year=3), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.2127 (kg)
+     
+4 January 1941(Day of year=4), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.21802
+4 January 1941(Day of year=4), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.21802 (kg)
+     
+5 January 1941(Day of year=5), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.22292
+5 January 1941(Day of year=5), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.22292 (kg)
+     
+6 January 1941(Day of year=6), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.22446
+6 January 1941(Day of year=6), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.22446 (kg)
+     
+7 January 1941(Day of year=7), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.22544
+7 January 1941(Day of year=7), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.22544 (kg)
+     
+8 January 1941(Day of year=8), Feed supplement on animal condition loss: 
+     Manager sending message :- supplementscienceconverter feedsupplement  supplement = 'lupins', amount = 9.22600
+8 January 1941(Day of year=8), supplementScienceConverter: 
+     Supplement feed:
+        Name = lupins
+        Amount = 9.226 (kg)
+     
+8 January 1941(Day of year=8), Sell sheep on weight: 
+     Manager sending message :- stockscienceconverter sellstock  number = 15 (-)
+8 January 1941(Day of year=8), stockScienceConverter: 
+     Sell stock :-
+        number =         15 (-)
+     
+27 January 1941(Day of year=27), lucerne: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 4.23 (kg/ha)
+1 January 1942(Day of year=1), Buy supplement on a fixed date: 
+     Manager sending message :- supplementscienceconverter buysupplement  supplement = 'lupins' (-), amount = 1000 (kg)
+1 January 1942(Day of year=1), supplementScienceConverter: 
+     Supplement buy:
+        Name = lupins
+        Amount = 1000 (kg)
+     
+1 January 1943(Day of year=1), Buy supplement on a fixed date: 
+     Manager sending message :- supplementscienceconverter buysupplement  supplement = 'lupins' (-), amount = 1000 (kg)
+1 January 1943(Day of year=1), supplementScienceConverter: 
+     Supplement buy:
+        Name = lupins
+        Amount = 1000 (kg)
+     
+1 January 1944(Day of year=1), Buy supplement on a fixed date: 
+     Manager sending message :- supplementscienceconverter buysupplement  supplement = 'lupins' (-), amount = 1000 (kg)
+1 January 1944(Day of year=1), supplementScienceConverter: 
+     Supplement buy:
+        Name = lupins
+        Amount = 1000 (kg)
+     
+1 January 1945(Day of year=1), Buy supplement on a fixed date: 
+     Manager sending message :- supplementscienceconverter buysupplement  supplement = 'lupins' (-), amount = 1000 (kg)
+1 January 1945(Day of year=1), supplementScienceConverter: 
+     Supplement buy:
+        Name = lupins
+        Amount = 1000 (kg)
+     
+30 December 1945(Day of year=364), clock: 
+     Simulation is terminating due to end criteria being met.

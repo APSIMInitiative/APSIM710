@@ -1,0 +1,71 @@
+[test1.SummaryFile.parameters]
+summaryfile=test1 sunflower.sum
+[test1.report.parameters]
+outputfile  =test1 sunflower.out
+[test1.manager.start_of_day]
+if sunflower.StageName = 'harvest_ripe' or sunflower.plant_status = 'dead' then
+   sunflower harvest
+   sunflower sow cultivar = Sunfola68-2, plants = 5, sowing_depth = 50 (mm)
+endif
+
+[test2.SummaryFile.parameters]
+summaryfile=test2 sunflower.sum
+[test2.report.parameters]
+outputfile  =test2 sunflower.out
+[test2.manager.start_of_day]
+if sunflower.StageName = 'harvest_ripe' or sunflower.plant_status = 'dead' then
+   sunflower harvest
+   sunflower end_crop
+   sunflower sow cultivar = Sunfola68-2, plants = 5, sowing_depth = 50 (mm)
+endif
+
+[test3.SummaryFile.parameters]
+summaryfile=test3 sunflower.sum
+[test3.report.parameters]
+outputfile  =test3 sunflower.out
+[test3.manager.start_of_day]
+if harvest = 1 then
+   sunflower sow cultivar = Sunfola68-2, plants = 5, sowing_depth = 50 (mm)
+   harvest = 2
+endif
+
+if sunflower.StageName = 'harvest_ripe' or sunflower.plant_status = 'dead' then
+   sunflower harvest
+   sunflower end_crop
+   harvest = 1
+endif
+
+
+[all.report.parameters]
+variable = clock.day
+variable = clock.year
+variable = sunflower.lai
+variable = sunflower.biomass
+variable = sunflower.green_biomass
+
+[all.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=5/12/1988     ! dd/mm/yyyy
+end_date=30/6/1989     ! dd/mm/yyyy
+
+[all.manager.init]
+harvest = 0
+
+[all.manager.start_of_day]
+
+if day = 349 and year = 1988 then
+   sunflower sow cultivar = Sunfola68-2, plants = 5, sowing_depth = 50 (mm)
+endif
+
+[all.manager.end_of_day]
+report do_end_day_output
+
+
+[all.sunflower.parameters]
+
+uptake_source =    calc   ! calculate own uptakes.
+  !layer    1    2    3    4    5    6    7
+ll =      .230 .240 .240 .250 .260 .270 .280   ! lower limit mm water/mm soil
+xf =      1.00 1.00 1.00 1.00 1.00 1.00 1.00   ! Root Exploration factor (0-1)
+kl =      0.10 0.10 0.10 0.10 0.10 0.08 0.04   ! Water Extraction parameter (0-1)
+

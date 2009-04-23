@@ -1,0 +1,49 @@
+   <weed>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\weed.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Weed science documentation">../apsim/weed/docs/weed_science.htm</Documentation>
+      <Documentation name="Generic plant documentation" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <class    name="plant"/>
+      <class    name="winter_grass"/>
+      <class    name="winter_dicot"/>
+      <class    name="summer_grass"/>
+      <class    name="perennial_legume"/>
+      <cultivar name="annual"/>
+      <cultivar name="perennial"/>
+      <cultivar name="determinate"/>
+      <cultivar name="indeterminate"/>
+      <cultivar name="C3"/>
+      <cultivar name="C4"/>
+      <cultivar name="non_legume ! maize"/>
+      <cultivar name="legume ! lucerne"/>
+      <cultivar name="vsmall_leaf  ! lucerne"/>
+      <cultivar name="small_leaf  ! wheat"/>
+      <cultivar name="medium_leaf ! canola"/>
+      <cultivar name="large_leaf  ! sorghum"/>
+      <cultivar name="cool_season"/>
+      <cultivar name="warm_season"/>
+      <cultivar name="early"/>
+      <cultivar name="late   "/>
+      <variables link="%apsim%\Documentation\ModelInfo\weed.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\weed.xml"/>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Plant.dll</dll>
+         <ini>%apsim%\Model\Weed.xml</ini>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </weed>

@@ -1,0 +1,96 @@
+!Title = Makoholi, Zimbabwe Granitic Sand, (PAWC = 59mm, 1.0m)
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+[run%.sorg.parameters]
+
+ll =#LL
+kl =  0.07    0.07    0.07    0.07    0.07    0.07   ()
+xf =  1.00    1.00    1.00    1.00    1.00    1.00   ()
+
+
+[run%.cowpea.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000  () ! root exploration factor
+
+[run%.maize.parameters]
+   
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.0     1.0     1.0     1.0     1.0     1.0    () 
+
+[run%.mucuna.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000  () ! root exploration factor
+
+[run%.peanut.parameters]
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000  () ! root exploration factor
+
+[run%.pigeonp.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   () ! root exploration factor
+
+[run%.soybean.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   () ! root exploration factor
+
+[run%.soilwat2.parameters]
+
+! GJO 26/9/97 set insoil=3.0
+!   insoil          =    2.0   ()     ! indicator for initial soil water
+!                                     ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul, >1 = input by user)
+!
+   max_evap        = 6        (mm)   ! maximum evaporation.
+   runoff_filename = blank           !if blank, runoff predicted using CN2                   
+   cona            = $cona      ()     ! stage 2 evap coef.                       
+   diffus_const    = 250.0    ()     !(?)   ! coeffs for rate of water movement by diffusion
+   diffus_slope    =  22.0    ()     !(?)   !     "
+   u               =  $uritch (mm)   ! stage 1 soil evaporation coefficient (mm)    
+   salb            =   0.13   ()     ! bare soil albedo                         
+                              
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        = $cn2     ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+   ! layer       1       2       3       4       5       6       
+   dlayer  =   150.0    150.0   150.0   150.0   150.0   250.0    (mm)    ! layer depth                            
+   air_dry =     0.030    0.070   0.130   0.150   0.180   0.200  (mm/mm) ! air dry                               
+   ll15    =     0.060    0.100   0.130   0.150   0.180   0.200  (mm/mm) ! air dry                               
+   dul     =     0.160    0.180   0.190   0.200   0.220   0.240  (mm/mm) ! drained upper limit                             
+   sat     =     0.410    0.410   0.410   0.370   0.360   0.340  (mm/mm) ! saturated soil water                  
+   swcon   =     0.700    0.700   0.700   0.700   0.700   0.700  ()      ! soil conductivity                     
+   bd      =     1.431    1.420   1.418   1.546   1.551   1.610  (g/cc)  ! bulk density gm dry soil/cc moist soil
+!   sw      =     0.100    0.100   0.130   0.150   0.180   0.220  (mm/mm) ! initial sw
+
+[*variables]
+
+   $cona = "Cona : " 6.0 real
+   $uritch = "Uritch : " 3.0 real
+   $cn2 = "Runoff curve number for BARE soil : " 85.0 real
+

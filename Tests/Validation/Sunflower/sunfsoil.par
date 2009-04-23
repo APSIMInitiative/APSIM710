@@ -1,0 +1,459 @@
+[general.SoilWat.parameters]
+
+insoil = 2.0
+
+runoff_filename         =    blank
+u                       =    8.0       ! default is 4.0 (stage 1 soil evaporation coefficient (mm), guess)
+salb                    =    0.13      ! bare soil albedo, guess
+cona                    =    3.5       ! guess
+cn_canopy_fact          =    1.0 ()    !  1.0 = canopy cover is fully effective in reducing runoff
+                                       !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cn_cov                  =    0.8 ()    ! frac. cover for "cn_red" reduction in cover & max. cover for reduction
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[General.SurfaceOM.parameters]
+
+mass = 1000.0   ()  ! surface residues as biomass (kg/ha)
+cnr = 33.0   ()  ! cn ratio of surface residues
+type = wheat
+report_additions  =  yes
+name = wheat
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[General.SoilN.parameters]
+
+amp     =    18.9 ! temperature amplitude (oC) - difference between highest and
+                  ! lowest mean monthly air temperatures, calc. from long. met
+tav     =    13.5 ! mean annual air temperature (oC), calc. from long. met
+dmod    =     1.0 ! weighting factor to adjust the rate of humus mineralization
+                  ! for soils in which organic matter is chemically or
+                  ! physically protected, guess
+!rt_fom  = 1000.0 ! root residues as biomass (kg/ha), guess
+!rt_cn   =   40.0 ! C:N ratio of root residues, guess
+soil_cn =    14.5 ! C:N ratio of soil, guess
+root_cn =    36.0
+root_wt =  2000.0
+enr_a_coeff = 7.4
+enr_b_coeff = 0.2
+profile_reduction = off
+
+
+!========================================================================================
+!EMERALD
+
+!----------------------------------------------------------------------------------------
+! Water
+
+[EMERALD.SoilWat.parameters]
+
+insoil = 2.0
+
+runoff_filename         =    blank
+u                       =    6.0       ! default is 4.0 (stage 1 soil evaporation coefficient (mm), guess)
+salb                    =    0.13      ! bare soil albedo, guess
+cona                    =    3.5       !
+cn_canopy_fact          =    1.0 ()    !  1.0 = canopy cover is fully effective in reducing runoff
+                                       !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cn_cov                  =    0.8 ()    ! frac. cover for "cn_red" reduction in cover & max. cover for reduction
+
+diffus_const = 88.0    ! coeffs for dbar
+diffus_slope = 35.4    !
+cn2_bare     = 80  ()! runoff curve number for BARE soil at AMC2
+cn_red       = 20  ()! reduction in CN2 for "cn_cov" increase in cover
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.430  0.428  0.428  0.438  0.458  0.460  0.480  0.390  0.390  0.390
+sat     =  0.480  0.478  0.478  0.488  0.480  0.480  0.490  0.430  0.430  0.430
+sw      =  0.455  0.391  0.391  0.400  0.420  0.368  0.438  0.380  0.380  0.380
+
+[em81dhi.SoilN.parameters]
+
+!layer    1    2    3    4    5    6    7    8    9    10
+dlayer =  200  200  200  200  200  200  200  200  200  200  ! layer depth mm soil
+bd     = 1.30 1.30 1.29 1.31 1.35 1.36 1.36 1.36 1.36 1.36  ! bulk density gm dry soil/cc moist soil
+oc     = 1.03 0.86 0.77 0.65 0.54 0.48 0.43 0.43 0.43 0.43  ! organic carbon %
+ph     = 8.20 8.50 8.60 8.60 7.40 5.30 5.00 5.00 5.00 5.00  ! ph
+nh4ppm = 1.30 1.00 1.00 0.80 0.80 0.50 0.50 0.50 0.50 0.50  ! ppm ammonia
+no3ppm = 1.24 0.18 0.18 0.13 0.11 0.16 0.92 0.92 0.92 0.92  ! ppm nitrate
+
+fbiom  = 0.05 0.02 0.015 0.01 0.01 0.01 0.01 0.01 0.01 0.01
+finert = 0.39 0.47 0.52 0.62 0.74 0.83 0.93 0.93 0.93 0.93
+
+[EMERALD.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.070  0.070  0.070
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+
+!========================================================================================
+!DALBY
+
+!----------------------------------------------------------------------------------------
+! Water
+
+[DALBY.SoilWat.parameters]
+
+insoil = 2.0
+
+runoff_filename         =    blank
+u                       =    6.0       ! default is 4.0 (stage 1 soil evaporation coefficient (mm), guess)
+salb                    =    0.13      ! bare soil albedo, guess
+cona                    =    3.5       !
+cn_canopy_fact          =    1.0 ()    !  1.0 = canopy cover is fully effective in reducing runoff
+                                       !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cn_cov                  =    0.8 ()    ! frac. cover for "cn_red" reduction in cover & max. cover for reduction
+
+diffus_const = 88.0    ! coeffs for dbar
+diffus_slope = 35.4    !
+cn2_bare     = 73  ()! runoff curve number for BARE soil at AMC2
+cn_red       = 20  ()! reduction in CN2 for "cn_cov" increase in cover
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.430  0.415  0.415  0.425  0.420  0.460  0.475  0.455  0.400  0.400
+sat     =  0.480  0.465  0.465  0.475  0.470  0.480  0.485  0.480  0.430  0.430
+sw      =  0.430  0.415  0.415  0.425  0.420  0.460  0.480  0.455  0.380  0.380
+
+[da84.SoilN.parameters]
+
+!layer    1    2    3    4    5    6    7    8    9    10
+dlayer =  200  200  200  200  200  200  200  200  200  200  ! layer depth mm soil
+bd     = 1.30 1.30 1.29 1.31 1.35 1.36 1.36 1.36 1.36 1.36  ! bulk density gm dry soil/cc moist soil
+oc     = 1.03 0.86 0.77 0.65 0.54 0.48 0.43 0.43 0.43 0.43  ! organic carbon %
+ph     = 8.20 8.50 8.60 8.60 7.40 5.30 5.00 5.00 5.00 5.00  ! ph
+nh4ppm = 1.30 1.00 1.00 0.80 0.80 0.50 0.50 0.50 0.50 0.50  ! ppm ammonia
+no3ppm = 1.24 0.18 0.18 0.13 0.11 0.16 0.92 0.92 0.92 0.92  ! ppm nitrate
+
+fbiom  = 0.05 0.02 0.015 0.01 0.01 0.01 0.01 0.01 0.01 0.01
+finert = 0.39 0.47 0.52 0.62 0.74 0.83 0.93 0.93 0.93 0.93
+
+[DALBY.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+
+!======================================================================================
+
+!========================================================================================
+!TATURA
+
+!----------------------------------------------------------------------------------------
+! Water
+
+[TATURA.SoilWat.parameters]
+
+insoil = 2.0
+
+runoff_filename         =    blank
+u                       =    6.0       ! default is 4.0 (stage 1 soil evaporation coefficient (mm), guess)
+salb                    =    0.13      ! bare soil albedo, guess
+cona                    =    3.5       !
+cn_canopy_fact          =    1.0 ()    !  1.0 = canopy cover is fully effective in reducing runoff
+                                       !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cn_cov                  =    0.8 ()    ! frac. cover for "cn_red" reduction in cover & max. cover for reduction
+
+diffus_const = 88.0    ! coeffs for dbar
+diffus_slope = 35.4    !
+cn2_bare     = 70  ()! runoff curve number for BARE soil at AMC2
+cn_red       = 20  ()! reduction in CN2 for "cn_cov" increase in cover
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.455  0.490  0.490  0.500  0.420  0.385  0.430  0.405  0.405  0.390
+sat     =  0.505  0.500  0.500  0.500  0.470  0.435  0.480  0.455  0.455  0.400
+sw      =  0.455  0.480  0.470  0.480  0.390  0.350  0.400  0.390  0.390  0.380
+
+[ta81j.SoilN.parameters]
+
+!layer    1    2    3    4    5    6    7    8    9    10
+dlayer =  200  200  200  200  200  200  200  200  200  200  ! layer depth mm soil
+bd     = 1.30 1.30 1.29 1.31 1.35 1.36 1.36 1.36 1.36 1.36  ! bulk density gm dry soil/cc moist soil
+oc     = 1.03 0.86 0.77 0.65 0.54 0.48 0.43 0.43 0.43 0.43  ! organic carbon %
+ph     = 8.20 8.50 8.60 8.60 7.40 5.30 5.00 5.00 5.00 5.00  ! ph
+nh4ppm = 1.30 1.00 1.00 0.80 0.80 0.50 0.50 0.50 0.50 0.50  ! ppm ammonia
+no3ppm = 1.24 0.18 0.18 0.13 0.11 0.16 0.92 0.92 0.92 0.92  ! ppm nitrate
+
+fbiom  = 0.05 0.02 0.015 0.01 0.01 0.01 0.01 0.01 0.01 0.01
+finert = 0.39 0.47 0.52 0.62 0.74 0.83 0.93 0.93 0.93 0.93
+
+
+[TATURA.sunflower.parameters]
+!!!plants = 5.33      ! planting population      - POP
+kl =  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+
+!========================================================================================
+!BILOELA
+
+!----------------------------------------------------------------------------------------
+! Water
+
+[biloela.SoilWat.parameters]
+
+insoil = 2.0
+
+runoff_filename         =    blank
+u                       =    6.0       ! default is 4.0 (stage 1 soil evaporation coefficient (mm), guess)
+salb                    =    0.13      ! bare soil albedo, guess
+cona                    =    3.5       ! guess
+cn_canopy_fact          =    1.0 ()    !  1.0 = canopy cover is fully effective in reducing runoff
+                                       !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cn_cov                  =    0.8 ()    ! frac. cover for "cn_red" reduction in cover & max. cover for reduction
+
+diffus_const = 88.0    ! coeffs for dbar, guess
+diffus_slope = 35.4    ! guess
+cn2_bare     = 81  ()! runoff curve number for BARE soil at AMC2
+cn_red       = 20  ()! reduction in CN2 for "cn_cov" increase in cover
+
+[BI723.SoilWat.parameters]
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.430  0.428  0.428  0.438  0.458  0.460  0.440  0.400  0.400  0.400
+sat     =  0.480  0.478  0.478  0.488  0.480  0.480  0.480  0.410  0.410  0.410
+
+[BI723.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+[BI723a.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.455  0.391  0.391  0.400  0.420  0.368  0.438  0.380  0.380  0.380
+
+[BI723b.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.406  0.369  0.369  0.379  0.399  0.375  0.444  0.380  0.380  0.380
+
+[BI723c.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.438  0.368  0.368  0.379  0.397  0.387  0.457  0.380  0.380  0.380
+
+[BI723d.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.271  0.329  0.354  0.364  0.384  0.394  0.463  0.380  0.380  0.380
+
+[BI723e.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.437  0.379  0.379  0.389  0.407  0.397  0.467  0.380  0.380  0.380
+
+
+
+
+[BI734.SoilWat.parameters]
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.430  0.428  0.428  0.438  0.458  0.460  0.440  0.400  0.400  0.400
+sat     =  0.480  0.478  0.478  0.488  0.480  0.480  0.480  0.410  0.410  0.410
+
+[BI734.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+[BI734a.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.435  0.396  0.396  0.406  0.426  0.431  0.500  0.380  0.380  0.380
+
+[BI734c.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.470  0.400  0.400  0.410  0.430  0.440  0.510  0.380  0.380  0.380
+
+[BI734e.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.430  0.406  0.406  0.416  0.436  0.417  0.486  0.380  0.380  0.380
+
+
+
+
+[BI745.SoilWat.parameters]
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.430  0.428  0.428  0.438  0.458  0.460  0.440  0.400  0.400  0.400
+sat     =  0.480  0.478  0.478  0.488  0.480  0.480  0.480  0.410  0.410  0.410
+
+[BI745.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+[BI745a.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.374  0.367  0.367  0.377  0.397  0.356  0.426  0.380  0.380  0.380
+
+[BI745b.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.434  0.352  0.352  0.362  0.382  0.347  0.417  0.380  0.380  0.380
+
+[BI745c.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.355  0.377  0.377  0.387  0.407  0.387  0.456  0.380  0.380  0.380
+
+[BI745d.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.453  0.377  0.377  0.387  0.407  0.393  0.462  0.380  0.380  0.380
+
+[BI745e.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.436  0.367  0.366  0.377  0.397  0.407  0.477  0.380  0.380  0.380
+
+[BI745f.SoilWat.parameters]
+!layer      1      2      3      4      5      6      7      8      9      10
+!dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+sw       =  0.420  0.387  0.386  0.396  0.416  0.407  0.477  0.380  0.380  0.380
+
+!----------------------------------------------------------------------------------------
+! N
+
+[biloela.SoilN.parameters]
+
+!layer    1    2    3    4    5    6    7    8    9    10
+dlayer =  200  200  200  200  200  200  200  200  200  200  ! layer depth mm soil
+bd     = 1.30 1.30 1.29 1.31 1.35 1.36 1.36 1.36 1.36 1.36  ! bulk density gm dry soil/cc moist soil
+oc     = 1.03 0.86 0.77 0.65 0.54 0.48 0.43 0.43 0.43 0.43  ! organic carbon %
+ph     = 8.20 8.50 8.60 8.60 7.40 5.30 5.00 5.00 5.00 5.00  ! ph
+nh4ppm = 1.30 1.00 1.00 0.80 0.80 0.50 0.50 0.50 0.50 0.50  ! ppm ammonia
+no3ppm = 1.24 0.18 0.18 0.13 0.11 0.16 0.92 0.92 0.92 0.92  ! ppm nitrate
+
+fbiom  = 0.05 0.02 0.015 0.01 0.01 0.01 0.01 0.01 0.01 0.01
+finert = 0.39 0.47 0.52 0.62 0.74 0.83 0.93 0.93 0.93 0.93
+
+
+!========================================================================================
+!MYALL VALE
+
+!----------------------------------------------------------------------------------------
+! Water
+[MYALLVALE.SoilWat.parameters]
+
+insoil = 2.0
+
+runoff_filename         =    blank
+u                       =    6.0       ! default is 4.0 (stage 1 soil evaporation coefficient (mm), guess)
+salb                    =    0.13      ! bare soil albedo, guess
+cona                    =    3.5       ! guess
+cn_canopy_fact          =    1.0 ()    !  1.0 = canopy cover is fully effective in reducing runoff
+                                       !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+cn_cov                  =    0.8 ()    ! frac. cover for "cn_red" reduction in cover & max. cover for reduction
+
+diffus_const = 88.0    ! coeffs for dbar, guess
+diffus_slope = 35.4    ! guess
+cn2_bare     = 73  ()! runoff curve number for BARE soil at AMC2
+cn_red       = 20  ()! reduction in CN2 for "cn_cov" increase in cover
+
+[mvs3.SoilWat.parameters]
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.480  0.415  0.415  0.400  0.370  0.370  0.440  0.440  0.430  0.410
+sat     =  0.500  0.465  0.465  0.450  0.420  0.420  0.490  0.490  0.480  0.460
+sw      =  0.480  0.390  0.410  0.380  0.350  0.360  0.430  0.436  0.420  0.410
+
+[MVS3.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+
+[mvs4.SoilWat.parameters]
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.490  0.440  0.440  0.375  0.345  0.360  0.405  0.405  0.385  0.385
+sat     =  0.500  0.490  0.490  0.425  0.395  0.410  0.455  0.455  0.405  0.400
+sw      =  0.490  0.430  0.420  0.364  0.330  0.345  0.402  0.397  0.380  0.380
+
+[MVS4.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+[mvs5.SoilWat.parameters]
+
+!layer      1      2      3      4      5      6      7      8     9      10
+dlayer  =  200    200    200    200    200    200    200    200    200    200   ! layer depth mm soil
+ll15    =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+bd      =  1.30   1.30   1.29   1.31   1.35   1.36   1.36   1.36   1.36   1.36  ! bulk density gm dry soil/cc moist soil
+swcon   =  0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1    0.1
+air_dry =  0.10   0.24   0.24   0.25   0.27   0.31   0.38   0.38   0.38   0.38
+dul     =  0.500  0.465  0.445  0.425  0.410  0.385  0.455  0.430  0.410  0.395
+sat     =  0.500  0.515  0.495  0.475  0.460  0.435  0.470  0.460  0.450  0.440
+sw      =  0.497  0.464  0.441  0.422  0.403  0.384  0.425  0.410  0.410  0.396
+
+!----------------------------------------------------------------------------------------
+! N
+
+[MVS5.sunflower.parameters]
+kl =  0.070  0.070  0.070  0.070  0.070  0.070  0.050  0.030  0.010  0.010
+ll =  0.230  0.240  0.240  0.250  0.270  0.310  0.380  0.380  0.380  0.380 ! lower limit mm water/mm soil
+xf =  1      1      1      1      1      1      1      1      1      1
+
+[MYALLVALE.SoilN.parameters]
+
+!layer    1    2    3    4    5    6    7    8    9    10
+dlayer =  200  200  200  200  200  200  200  200  200  200  ! layer depth mm soil
+bd     = 1.30 1.30 1.29 1.31 1.35 1.36 1.36 1.36 1.36 1.36  ! bulk density gm dry soil/cc moist soil
+oc     = 1.03 0.86 0.77 0.65 0.54 0.48 0.43 0.43 0.43 0.43  ! organic carbon %
+ph     = 8.20 8.50 8.60 8.60 7.40 5.30 5.00 5.00 5.00 5.00  ! ph
+nh4ppm = 1.30 1.00 1.00 0.80 0.80 0.50 0.50 0.50 0.50 0.50  ! ppm ammonia
+no3ppm = 1.24 0.18 0.18 0.13 0.11 0.16 0.92 0.92 0.92 0.92  ! ppm nitrate
+
+fbiom  = 0.05 0.02 0.015 0.01 0.01 0.01 0.01 0.01 0.01 0.01
+finert = 0.39 0.47 0.52 0.62 0.74 0.83 0.93 0.93 0.93 0.93
+

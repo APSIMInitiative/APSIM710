@@ -1,0 +1,329 @@
+!************************************************************************************************************************
+
+[scaddan.SoilWat.parameters] 
+
+! pale grey sandy loam duplex - depth of AB 10-15   
+insoil =  2.0   
+u =  3   
+cn2_bare =  80
+cn_red =  20 ()   
+cn_cov =  0.8 ()   
+salb =  0.18 !    
+cona =  3.0 ! NB BAK has used 2 for sands in WA
+diffus_const =  88.   
+diffus_slope =  35.0   
+
+runoff_filename =  blank   
+
+!layer    1    2    3    4    5    6    7  
+!depth   150  170  375  600  900 1200 1500 
+dlayer = 150  20   205  225  300  300  300 
+bd =     1.40 1.65 1.65 1.65 1.65 1.65 1.65 
+ll15 =  .025  .208 .171 .171 .171 .171 .171 
+dul =   .105  .285 .286 .286 .286 .286 .286 
+sat =   .40  .35   .35  .35  .35  .35  .35 
+swcon = 0.5  0.2   0.3  0.3  0.3  0.3  0.3 
+air_dry = .012 .2 .170 .17 .17  .17  .17 
+
+sw = .105  .285 .286 .286 .286 .286 .286 
+
+[scaddan.SoilN.parameters]    
+!layer    1    2    3    4    5    6    7  
+oc =     0.9  0.3  0.2  0.1  0.1  0.1  0.1 
+ph =     7.0  7.0  7.0  7.0  7.0  7.0  7.0 
+nh4ppm = 0.3  0.3  0.3  0.3  0.3  0.3  0.3 
+no3ppm = 0.3  0.3  0.3  0.3  0.3  0.3  0.3 
+ureappm =  0    0    0    0    0    0    0 
+fbiom =  0.04 0.025 0.015 0.01 0.01 0.01 0.01
+finert = 0.1  0.3   0.75  0.90 0.95 0.99 0.99
+
+
+soil_cn =  14.5   
+enr_a_coeff =  7.4 ()   !stuff for mapping erosion
+enr_b_coeff =  0.2   
+profile_reduction =  on   
+
+root_wt =  1500.   ! root residues as biomass (kg/ha)
+root_cn =  30.   
+
+[scaddan.residue2.parameters]  
+pot_decomp_rate =  0.10 ()    ! Potential decomposition rate
+residue_wt =  1500. (kg/ha)   ! Initial surface residue
+residue_cnr =  70.0 ()        ! C:N ration of initial residue
+residue_type =  wheat         ! Type if initial residue
+
+[scaddan.soiltemp.parameters]
+
+bound_layer_cond = 20.0  ! (J/s/m2/K)
+!layer    1    2    3    4    5    6    7  
+!depth   150  170  375  600  900 1200 1500 
+clay =   0.05 0.45 0.45 0.45 0.45 0.45 0.45 
+
+
+[scaddan.sorghum.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+!layer    1    2    3    4    5    6    7  
+!depth   150  170  375  600  900 1200 1500 
+ll =    .025  .208 .171 .171 .171 .171 .171
+kl =    0.07  0.07 0.05 0.05 0.04 0.04 0.04  () ! Water Extraction parameter (0-1)
+xf =    1.0   0.6   0.2  0.2  0.2 0.0  0.0   ()! Root Exploration factor (0-1)
+
+[scaddan.wheat.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+!layer    1    2    3    4    5    6    7  
+!depth   150  170  375  600  900 1200 1500 
+ll =    .025  .208 .171 .171 .171 .171 .171
+kl =    0.07  0.07 0.05 0.05 0.04 0.04 0.04  () ! Water Extraction parameter (0-1)
+xf =    1.0   0.6   0.2  0.2  0.2 0.0  0.0   ()! Root Exploration factor (0-1)
+
+
+!*******************************************************************************************************************************
+[salmon_gums.SoilWat.parameters]    
+insoil =  2.0   
+u =  3   
+cn2_bare =  80
+cn_red =  20 ()   
+cn_cov =  0.8 ()   
+salb =  0.18 !    
+cona =  3.0 ! NB BAK has used 2 for sands in WA
+diffus_const =  88.   
+diffus_slope =  35.0   
+
+runoff_filename =  blank   
+
+!layer       1      2      3      4      5      6      7     
+!depth      100    200    500    700    1000   1200   1500
+dlayer =    100    100    300    200    300    200     300
+bd =        1.50   1.50   1.65   1.65   1.65   1.65   1.65   
+ll15 =      .04     .03    0.17   0.17   .17   .17     .17    
+dul =       .12     .12    .30    .30    .30   .30     .30
+sat =       .43    .43    .35    .35    .35    .35    .35       
+swcon =     0.5    0.5    0.3    0.3    0.3    0.3    0.3 
+air_dry =  .017    .017    .17    .17    .17    .17    .17
+
+sw =       .12     .12    .30    .30    .30   .30     .30
+
+[salmon_gums.SoilN.parameters]    
+!layer       1    2    3      4      5      6      7     
+oc =        0.9  0.3  0.2    0.1    0.1    0.1    0.1    
+ph =        7.0  7.0  7.0    7.0    7.0    7.0    7.0    
+nh4ppm =    0.3  0.3  0.3    0.3    0.3    0.3    0.3    
+no3ppm =    9.52 4.04 3.03   0.3    0.3    0.3    0.3   ! 40 kg/ha distributed in the first 3 layers  
+ureappm =    0    0    0      0      0      0      0     
+fbiom =    0.04 0.025 0.015 0.01   0.01    0.01  0.01      
+finert =    0.1  0.3  0.75  0.90   0.95    0.99  0.99   
+
+!amp =  8.9   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+!tav =  16.85  ! mean annual air temperature (oC)
+
+soil_cn =  14.5   
+enr_a_coeff =  7.4 ()   !stuff for mapping erosion
+enr_b_coeff =  0.2   
+profile_reduction =  on   
+
+root_wt =  1500.   ! root residues as biomass (kg/ha)
+root_cn =  30.   
+
+[salmon_gums.residue2.parameters]    
+pot_decomp_rate =  0.10   
+
+! --- assume little residue at initialisation ---
+residue_wt =  1000.0   
+residue_cnr =  70.0   
+residue_type =  wheat   
+
+
+[salmon_gums.soiltemp.parameters]
+
+bound_layer_cond = 20.0  ! (J/s/m2/K)
+!layer       1      2      3      4      5      6      7     
+!depth      100    200    500    700    1000   1200   1500
+clay =     0.05    0.05   0.45  0.45    0.45   0.45    0.45
+
+
+[salmon_gums.sorghum.parameters]  
+!layer       1      2      3      4      5      6      7     
+!depth      100    200    500    700    1000   1200   1500
+ll   =     .04     .03    0.17   0.17   .17   .17     .17   ! lower limit mm water/mm soil
+xf =       1.00    1.0    1.0    1.0    0.0   0.00   0.00    ! Root Exploration factor (0-1)
+kl =       0.08   0.05   0.04    0.03   0.0    0.0    0.0     ! Water Extraction parameter (0-1)
+
+[salmon_gums.wheat.parameters]  
+!layer       1      2      3      4      5      6      7     
+!depth      100    200    500    700    1000   1200   1500
+ll   =     .04     .03    0.17   0.17   .17   .17     .17   ! lower limit mm water/mm soil
+xf =       1.00    1.0    1.0    1.0    0.0   0.00   0.00    ! Root Exploration factor (0-1)
+kl =       0.08   0.05   0.04    0.03   0.0    0.0    0.0     ! Water Extraction parameter (0-1)
+
+
+!************************************************************************************************************************
+
+
+[myrup.SoilWat.parameters]    
+insoil =  2.0   
+u =  3   
+cn2_bare =  80
+cn_red =  20 ()   
+cn_cov =  0.8 ()   
+salb =  0.18 !    
+cona =  3.0 ! NB BAK has used 2 for sands in WA
+diffus_const =  88.   
+diffus_slope =  35.0   
+
+runoff_filename =  blank   
+
+!layer       1      2      3      4      5      6      7     
+!depth      150    300    500    700    1000   1200   1500
+dlayer =    150    150    200    200    300    200     300
+bd =        1.40   1.40   1.4    1.4    1.4    1.4    1.4   
+ll15 =      .03     .03   0.03   0.03   .03   .03     .03    
+dul =       .09     .09   .09    .09    .09   .09     .09
+sat =       .40     .4    .40    .40    .40    .40    .40       
+swcon =     0.5    0.5    0.5    0.5    0.5    0.5    0.5 
+air_dry =  .015    .015   .015   .015   .015   .015   .015
+
+sw =       .09     .09   .09    .09    .09   .09     .09
+
+[myrup.SoilN.parameters]    
+!layer       1    2    3      4      5      6      7     
+oc =        0.9  0.3  0.2    0.1    0.1    0.1    0.1    
+ph =        7.0  7.0  7.0    7.0    7.0    7.0    7.0    
+nh4ppm =    0.3  0.3  0.3    0.3    0.3    0.3    0.3    
+no3ppm =    9.52 4.04 3.03   0.3    0.3    0.3    0.3   ! 40 kg/ha distributed in the first 3 layers  
+ureappm =    0    0    0      0      0      0      0     
+fbiom =    0.04 0.025 0.015 0.01   0.01    0.01  0.01      
+finert =    0.1  0.3  0.75  0.90   0.95    0.99  0.99   
+
+!amp =  8.9   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+!tav =  16.85  ! mean annual air temperature (oC)
+
+soil_cn =  14.5   
+enr_a_coeff =  7.4 ()   !stuff for mapping erosion
+enr_b_coeff =  0.2   
+profile_reduction =  on   
+
+root_wt =  1500.   ! root residues as biomass (kg/ha)
+root_cn =  30.   
+
+[myrup.residue2.parameters]    
+pot_decomp_rate =  0.10   
+
+! --- assume little residue at initialisation ---
+residue_wt =  1000.0   
+residue_cnr =  80.0   
+residue_type =  wheat   
+
+
+[myrup.soiltemp.parameters]
+
+bound_layer_cond = 20.0  ! (J/s/m2/K)
+!layer       1      2      3      4      5      6      7     
+!depth      150    300    500    700    1000   1200   1500
+clay =     0.05    0.05   0.05  0.45    0.45   0.45    0.45
+
+
+[myrup.sorghum.parameters]  
+
+!layer       1      2      3      4      5      6      7     
+!depth      150    300    500    700    1000   1200   1500
+ll   =     .03     .03   0.03   0.03   .03   .03     .03     ! lower limit mm water/mm soil
+xf =       1.00    1.0    1.0    1.0     1.0   1.00   1.00    ! Root Exploration factor (0-1)
+kl =       0.08   0.08   0.08    0.08    0.06   0.04    0.03     ! Water Extraction parameter (0-1)
+
+
+[myrup.wheat.parameters]  
+
+!layer       1      2      3      4      5      6      7     
+!depth      150    300    500    700    1000   1200   1500
+ll   =     .03     .03   0.03   0.03   .03   .03     .03     ! lower limit mm water/mm soil
+xf =       1.00    1.0    1.0    1.0     1.0   1.00   1.00    ! Root Exploration factor (0-1)
+kl =       0.08   0.08   0.08    0.08    0.06   0.04    0.03     ! Water Extraction parameter (0-1)
+
+
+!************************************************************************************************************************
+
+[kendenup.SoilWat.parameters]    
+insoil =  2.0   
+u =  3   
+cn2_bare =  80
+cn_red =  20 ()   
+cn_cov =  0.8 ()   
+salb =  0.18 !    
+cona =  3.0 ! NB BAK has used 2 for sands in WA
+diffus_const =  88.   
+diffus_slope =  35.0   
+
+runoff_filename =  blank   
+
+
+!layer       1      2      3      4      5      6      7     
+!depth      200    400    600    700    1000   1200   1500
+dlayer =    200    200    200    100    300    200     300
+bd =        1.40   1.40   1.70   1.70   1.70   1.70   1.70   
+ll15 =      .03     .02    0.18  0.18   .18   .18     .18    
+dul =       .09     .06    .29    .29    .29   .29     .29
+sat =       .40    .34    .35    .35    .35    .35    .35       
+swcon =     0.5    0.5    0.3    0.3    0.3    0.3    0.3 
+air_dry =  .015    .01    .17    .17    .17    .17    .17
+
+sw =       .09     .06    .29    .29    .29   .29     .29
+
+[kendenup.SoilN.parameters]    
+!layer       1    2    3      4      5      6      7     
+oc =        0.9  0.3  0.2    0.1    0.1    0.1    0.1    
+ph =        7.0  7.0  7.0    7.0    7.0    7.0    7.0    
+nh4ppm =    0.3  0.3  0.3    0.3    0.3    0.3    0.3    
+no3ppm =    9.52 4.04 3.03   0.3    0.3    0.3    0.3   ! 40 kg/ha distributed in the first 3 layers  
+ureappm =    0    0    0      0      0      0      0     
+fbiom =    0.04 0.025 0.015 0.01   0.01    0.01  0.01      
+finert =    0.1  0.3  0.75  0.90   0.95    0.99  0.99   
+
+!amp =  8.9   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+!tav =  16.85  ! mean annual air temperature (oC)
+
+soil_cn =  14.5   
+enr_a_coeff =  7.4 ()   !stuff for mapping erosion
+enr_b_coeff =  0.2   
+profile_reduction =  on   
+
+root_wt =  1500.   ! root residues as biomass (kg/ha)
+root_cn =  30.   
+
+[kendenup.residue2.parameters]    
+pot_decomp_rate =  0.10   
+
+! --- assume little residue at initialisation ---
+residue_wt =  1000.0   
+residue_cnr =  70.0   
+residue_type =  wheat   
+
+
+[kendenup.soiltemp.parameters]
+
+bound_layer_cond = 20.0  ! (J/s/m2/K)
+!layer       1      2      3      4      5      6      7     
+!depth      200    400    600    700    1000   1200   1500
+clay =     0.05    0.05   0.45  0.45    0.45   0.45    0.45
+
+
+[kendenup.sorghum.parameters]  
+!layer       1      2      3      4      5      6      7     
+!depth      200    400    600    700    1000   1200   1500
+ll   =     .03     .02    0.18  0.18   .18   .18     .18    ! lower limit mm water/mm soil
+xf =       1.00    1.0    1.0    0.0   0.0    0.00   0.00    ! Root Exploration factor (0-1)
+kl =       0.08   0.05   0.035    0.0    0.0    0.0    0.0     ! Water Extraction parameter (0-1)
+
+[kendenup.wheat.parameters]  
+!layer       1      2      3      4      5      6      7     
+!depth      200    400    600    700    1000   1200   1500
+ll   =     .03     .02    0.18  0.18   .18   .18     .18    ! lower limit mm water/mm soil
+xf =       1.00    1.0    1.0    0.0   0.0    0.00   0.00    ! Root Exploration factor (0-1)
+kl =       0.08   0.05   0.035    0.0    0.0    0.0    0.0     ! Water Extraction parameter (0-1)
+
+
+
+!************************************************************************************************************************
+

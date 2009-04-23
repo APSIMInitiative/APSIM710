@@ -1,0 +1,38 @@
+   <sorghum>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\sorghum.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Sorghum science documentation">../apsim/sorghum/docs/sorghum_science.htm</Documentation>
+      <Documentation name="Darling downs sensibility tests">http://www.apsim.info/apsim/publish/apsim/sorghum/sensibility/sorghum.gif</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <cultivar name="Buster"/>
+      <cultivar name="Early"/>
+      <cultivar name="Medium"/>
+      <cultivar name="Late"/>
+      <cultivar name="QL41xQL36"/>
+      <cultivar name="QL39xQL36"/>
+      <cultivar name="dekalb_DK55"/>
+      <cultivar name="texas_RS610"/>
+      <cultivar name="pioneer_s34"/>
+      <cultivar name="texas_671"/>
+      <variables link="%apsim%\Documentation\ModelInfo\sorghum.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\sorghum.xml"/>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Sorghum.dll</dll>
+         <ini>%apsim%\Model\Sorghum.xml</ini>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </sorghum>

@@ -1,0 +1,34 @@
+   <oats>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\oats.jpg</Image>
+      <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Wheat science documentation">../apsim/wheat/docs/wheat_science.htm</Documentation>
+      <Documentation name="Generic plant documentation" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <variables link="%apsim%\Documentation\ModelInfo\oats.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\oats.xml"/>
+      <cultivar name="taipan"/>
+      <cultivar name="potoroo"/>
+      <cultivar name="coolibah"/>
+      <cultivar name="barcoo"/>
+      <cultivar name="algerian"/>
+      <cultivar name="Wintaroo"/>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Plant.dll</dll>
+         <ini>%apsim%\Model\Oats.xml</ini>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </oats>

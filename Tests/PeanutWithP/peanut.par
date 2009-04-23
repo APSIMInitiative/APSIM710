@@ -1,0 +1,92 @@
+[sample.report.parameters]
+outputfile  =peanut.out
+
+
+
+variable = clock.day
+variable = clock.year
+variable = peanut.lai
+variable = peanut.biomass
+variable = peanut.green_biomass
+
+variable = peanut.GreenWt
+variable = peanut.GreenP
+variable = peanut.SenescedP
+variable = peanut.p_demand
+variable = peanut.pfact_photo
+variable = peanut.pfact_pheno
+variable = peanut.pfact_expansion
+variable = peanut.pfact_grain
+variable = peanut.biomass_p
+variable = peanut.green_biomass_p
+variable = peanut.grain_p
+variable = peanut.LeafGreenP
+variable = peanut.StemGreenP
+variable = peanut.RootGreenP
+variable = peanut.PodGreenP
+variable = peanut.FruitTotalP
+variable = peanut.GrowthP
+variable = peanut.RetranslocationP
+variable = peanut.DetachingP
+variable = peanut.p_conc_stover
+variable = peanut.LeafGreenPConc
+variable = peanut.StemGreenPConc
+variable = peanut.GrainGreenPConc
+variable = peanut.p_uptake_stover
+variable = peanut.grain_p_demand
+
+variable = surfaceom.surfaceom_p
+
+
+
+[all.report.parameters]
+
+variable = soilwat2.esw as esw
+variable = soilwat2.sw()
+variable = soilwat2.es
+variable = soilwat2.runoff
+variable = soilwat2.drain
+variable = soiln2.no3()
+variable = soiln2.nh4()
+
+variable = soilp.uptake_p_peanut()
+variable = soilp.fom_cp()
+variable = soilp.fom_p_pool3()
+variable = soilp.fom_p_pool2()
+variable = soilp.fom_p_pool1()
+variable = soilp.fom_p()
+variable = soilp.hum_p()
+variable = soilp.biom_p()
+variable = soilp.soil_test_p()
+variable = soilp.rock_p()
+variable = soilp.unavail_p()
+variable = soilp.labile_p()
+
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=15/11/1988
+end_date=20/4/1989
+
+[sample.manager.start_of_day]
+
+if day = 330 and year  = 1988 then
+   peanut sow cultivar = early_bunch, plants = 10 (/m2), sowing_depth = 40 (mm)
+endif
+
+if peanut.StageName = 'harvest_ripe' or peanut.plant_status = 'dead' then
+   peanut harvest
+   peanut end_crop
+
+endif
+
+[sample.manager.end_of_day]
+report do_output
+
+
+[sample.peanut.parameters]
+
+   ll    = .230 .240 .240 .250 .260 .270 .280  ! lower limit mm water/mm soil
+   xf   = 1.00 1.00 1.00 1.00 1.00 1.00 1.00  ! Weighting factor for root advance
+   kl   = 0.08 0.08 0.08 0.08 0.05 0.03 0.01  ! Water Extraction Parameter (0-1)
+[sample.SummaryFile.parameters]
+summaryfile=peanut.sum

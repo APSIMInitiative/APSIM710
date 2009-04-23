@@ -1,0 +1,176 @@
+[main]
+module = sugar
+owner = Dr Brian Keating
+contact = Neil Huth
+Notes = Test do not currently test APSwim or Canopy communications
+
+[maintenance]
+change = 30/6/97, NIH, Created
+
+;-----------------------------
+;inward states
+;-----------------------------
+
+[date]
+name = date
+description = Day and year
+apsimname = day, year
+internalname = g_day_of_year, g_year
+indicators = day, year
+
+[temperature]
+name = Atmospheric Air Temperature
+description = Temperature drives processes such as photosynthesis, phenology and canopy development.
+apsimname = maxt mint
+internalname= g_maxt g_mint
+indicators= biomass lai tt_tot
+
+[radiation]
+name = Solar Radiation
+description = Radiation drives photosynthesis and effects leaf area development.
+apsimname = radn
+internalname= g_radn
+indicators= biomass lai
+
+[soil_moisture]
+name = Available Soil Water
+description = Soil water supply and content can affect photosynthesis and crop development processes.
+apsimname = sw_dep
+internalname= g_sw_dep
+indicators= biomass lai swdef_photo
+
+[soil_nitrogen]
+name = Soil Nitrogen.
+description = Soil nitrogen supply can affect photosynthesis and crop development processes.
+apsimname = no3
+internalname= g_no3
+indicators= biomass lai nfact_photo
+
+[soil_structure]
+name = soil layer structure
+description = structure of soil
+apsimname = dlayer
+internalname = g_dlayer
+indicators = dlayer
+
+[smc]
+name = soil moisture characteristic
+description = used to determine root exploration, water logging, and bound checking moisture status
+apsimname = sat_dep, dul_dep, ll15_dep
+internalname = g_sat_dep, g_dul_dep, g_ll15_dep
+indicators = root_depth, water_log_fact
+
+;-----------------------------
+;outward states
+;-----------------------------
+
+[reset_sw]
+name = Resetting soil water profile
+description = Extraction of water by the crop requires the module to send this information to the water balance.
+apsimname = dlt_sw_dep
+internalname= g_dlt_sw_dep
+indicators= sw_dep
+
+[reset_no3]
+name = Resetting soil nitrate profile
+description = Extraction of nitrate by the crop requires the module to send this information to the nitrogen balance.
+apsimname = dlt_no3
+internalname= g_dlt_no3gsm
+indicators= no3
+
+;--------------------------------
+;inward messages
+;--------------------------------
+
+[plant_pop_msg]
+name = plant population
+description = Changes the plant population
+apsimname = plants
+internalname = g_plants
+indicators = ####
+
+[lodge_redn_photo_set]
+name = lodge_redn_photo
+description = Changes the lodging effect on  photosynthesis
+apsimname = lodge_redn_photo
+internalname = g_lodge_redn_photo
+indicators = lodge_redn_photo
+
+[lodge_redn_sucrose_set]
+name = lodge_redn_sucrose
+description = Changes the lodging effect on  sucrose growth
+apsimname = lodge_redn_sucrose
+internalname = g_lodge_redn_sucrose
+indicators = lodge_redn_sucrose
+
+[lodge_redn_green_leaf_set]
+name = lodge_redn_green_leaf
+description = Changes the lodging effect on green_leaf_number
+apsimname = lodge_redn_green_leaf
+internalname = g_lodge_redn_green_leaf
+indicators = lodge_redn_green_leaf
+
+
+[sow_msg]
+name = The Sowing Command
+description = An explicit sowing command is required to initiate crop development.
+apsimname = sow
+internalname= mes_sow
+indicators= crop_status
+
+[lodge_msg]
+name = The Lodge Command
+description = An explicit lodging command is required to initiate changed development due to lodging.
+apsimname = lodge
+internalname= lodge
+indicators= lodge_redn_photo
+
+[harvest_msg]
+name = The Harvest Command
+description = An explicit harvest command is required for removal of grain.
+apsimname = harvest
+internalname= mes_harvest
+indicators= yield
+
+[kill_crop_msg]
+name = The Kill Crop Command
+description = An explicit harvest command can be issued to kill the crop and transfer crop biomass to dead plant pools.
+apsimname = kill_crop
+internalname= mes_kill_crop
+indicators= crop_status dm_dead
+
+[end_crop_msg]
+name = The End Crop Command
+description = An explicit end command is required to finish the crop and transfer biomass to residues.
+apsimname = end_crop
+internalname= mes_end_crop
+indicators= crop_status
+
+[graze_msg]
+name = The Graze command
+description = An explicit graze command can be issued to graze the crop and remove biomass from the system.
+apsimname = graze
+internalname = graze
+indicators = dm_graze
+
+;-----------------------------
+;outward messages
+;-----------------------------
+
+[add_residue_msg]
+name = The Addition of surface residues
+description = Above-ground crop biomass returns to the soil as surface residues.
+apsimname = add_residue
+internalname= dlt_residue_wt dlt_residue_n
+indicators= residue_wt residue_n
+
+[incorp_fom_msg]
+name = The Addition of surface residues
+description = Above-ground crop biomass returns to the soil as surface residues.
+apsimname = incorp_fom
+internalname= dlt_dm_incorp dlt_n_incorp
+indicators= fom_c fom_n
+
+
+
+

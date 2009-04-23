@@ -1,0 +1,542 @@
+##################################################
+[file ..\ComponentInterface\DataTypes.h]
+#ifndef DataTypesH
+#define DataTypesH
+#include <general/stl_functions.h>
+#include <general/TreeNodeIterator.h>
+#include <general/xml.h>
+
+#include <ComponentInterface/MessageData.h>
+#include <ComponentInterface/MessageDataExt.h>
+#include <ComponentInterface/Type.h>
+#include <ComponentInterface/Interfaces.h>
+
+// Maximum Array Size for fortran arrays
+#define max_array_size 100
+
+namespace protocol {
+
+//-------------------- Built in types
+#define nullTypeDDML "<type/>"
+[foreach types.builtin]
+   std::string EXPORT DDML(const [builtin.cpptype]& value);
+[endfor]
+
+[foreach types.type]
+//-------------------- [type.name]Type
+struct [type.name]Type
+   {
+   [foreach type.field]
+   [field.cpptype] [field.name];
+   [endfor]
+   };
+struct F[type.name]Type
+   {
+   [foreach type.field]
+   [if [field.arrayofstructures] = T]
+   F[field.ctype]Type [field.name][max_array_size];
+   [elseif [field.arrayandstring] = T]
+   char [field.name][max_array_size*max_array_size];
+   [elseif [field.array] = T]
+   [field.ctype] [field.name][max_array_size];
+   [elseif [field.structure] = T]
+   F[field.cpptype] [field.name];
+   [elseif [field.cpptype] = std::string]
+   char [field.name][max_array_size];
+   [else]
+   [field.cpptype] [field.name];
+   [endif]
+   [if [field.array] = T]
+   unsigned num_[field.name];
+   [endif]
+   [endfor]
+   };
+inline protocol::MessageData& operator<<(protocol::MessageData& messageData, const [type.name]Type& data)
+   {
+   [foreach type.field]
+   messageData << data.[field.name];
+   [endfor]
+   return messageData;
+   }
+inline protocol::MessageData& operator>>(protocol::MessageData& messageData, [type.name]Type& data)
+   {
+   [foreach type.field]
+   messageData >> data.[field.name];
+   [endfor]
+   return messageData;
+   }
+std::string EXPORT DDML(const [type.name]Type& value);
+std::string EXPORT DDML(const F[type.name]Type& value);
+inline unsigned int memorySize(const [type.name]Type& data)
+   {
+   return 0
+   [foreach type.field]
+      + protocol::memorySize(data.[field.name])
+   [endfor];
+   }
+inline unsigned int memorySize(const F[type.name]Type& data)
+   {
+   unsigned size = 0;
+   [foreach type.field]
+      [if [field.arrayandstring] = T]
+      size += 4;
+      for (unsigned i = 0; i != data.num_[field.name]; i++)
+         size += protocol::memorySize(FString(&data.[field.name][i*max_array_size], max_array_size, FORString));
+      [elseif [field.array] = T]
+      size += 4;
+      for (unsigned i = 0; i != data.num_[field.name]; i++)
+         size += protocol::memorySize(data.[field.name][i]);
+      [elseif [field.cpptype] = std::string]
+      size += protocol::memorySize(FString(data.[field.name], max_array_size, FORString));
+      [else]
+      size += protocol::memorySize(data.[field.name]);
+      [endif]
+   [endfor];
+   return size;
+   }
+void Init[type.name]([type.name]Type& data, const std::string& xml);
+
+[endfor]
+} // protocol
+#endif
+
+
+[endfile]
+
+
+##################################################
+[file ..\ComponentInterface\DataTypes.cpp]
+#include <boost/lexical_cast.hpp>
+#include <general/stl_functions.h>
+#include <general/TreeNodeIterator.h>
+#include <general/xml.h>
+#include <general/platform.h>
+
+#include <ComponentInterface/Messages.h>
+#include "DataTypes.h"
+#include <ComponentInterface/Component.h>
+
+namespace protocol {
+[foreach types.builtin]
+std::string EXPORT DDML(const [builtin.cpptype]& value)
+   {
+   return [builtin.cddml];
+   }
+[endfor]
+} // protocol
+
+[foreach types.type]
+namespace protocol {
+void Init[type.name]([type.name]Type& data, const std::string& xml)
+   {
+   XMLDocument doc(xml, XMLDocument::xmlContents);
+   XMLNode::iterator childI = doc.documentElement();
+   [foreach type.field]
+   childI = std::find_if(doc.documentElement().begin(),
+                         doc.documentElement().end(),
+                         EqualToName<XMLNode>("[field.name]"));
+
+   [if [field.arrayofstructures] = T]
+   // Don't know yet
+   [elseif [field.array] = T]
+   StringToContainer<[field.cpptype], [field.rawcpptype]> (childI->getValue(), data.[field.name]);
+
+   [elseif [field.structure] = T]
+   // Don't know yet
+   [else]
+   data.[field.name] = boost::lexical_cast<[field.cpptype]> (childI->getValue());
+   [endif]
+   [endfor]
+   }
+
+std::string EXPORT DDML(const [type.name]Type& value)
+   {
+   return [type.cddml];
+   }
+std::string EXPORT DDML(const F[type.name]Type& value)
+   {
+   return [type.cddml];
+   }
+}; // namespace protocol
+[endfor]
+
+[endfile]
+
+##################################################
+[file ..\FortranInfrastructure\DataTypes.f90]
+module dataTypes
+   integer, parameter :: max_array_size = 100
+
+   !-------------------- Built in types
+   character(len=*), parameter :: nullTypeDDML = '<type/>'
+[foreach types.builtin]
+   character(len=*), parameter :: [builtin.name]TypeDDML = &
+      [builtin.forddml]
+
+[endfor]
+
+
+[foreach types.type]
+!-------------------- [type.name]Type
+   character(len=*), parameter :: [type.name]TypeDDML = &
+      [type.forddml]
+   type [type.name]Type
+      sequence
+      [foreach type.field]
+      [if [field.arrayofstructures] = T]
+      type([field.fortype]Type):: [field.name](max_array_size)
+      [elseif [field.structure] = T]
+      type([field.fortype]Type) :: [field.name]
+      [elseif [field.array] = T]
+      [field.fortype] :: [field.name](max_array_size)
+      [else]
+      [field.fortype] :: [field.name]
+      [endif]
+      [if [field.array] = T]
+      integer :: num_[field.name]
+      [endif]
+      [endfor]
+   end type [type.name]Type
+
+[endfor]
+end module dataTypes
+[endfile]
+
+
+
+##################################################
+[file ..\ComponentInterface\FortranDataTypes.cpp]
+#include <boost/lexical_cast.hpp>
+#include <general/stl_functions.h>
+#include <general/TreeNodeIterator.h>
+#include <general/xml.h>
+#include <general/platform.h>
+
+#include <ComponentInterface/Messages.h>
+#include <ComponentInterface/DataTypes.h>
+#include <ComponentInterface/Component.h>
+#include <ComponentInterface/FORTRANComponentWrapper.h>
+
+extern "C" void EXPORT STDCALL publish_null(unsigned* id)
+   {
+   FortranWrapper::currentInstance->publishNull(*id);
+   }
+[foreach types.type]
+namespace protocol {
+   inline protocol::MessageData& operator<<(protocol::MessageData& messageData, const F[type.name]Type& data)
+      {
+      [foreach type.field]
+      [if [field.arrayandstring] = T]
+      messageData << data.num_[field.name];
+      for (unsigned i = 0; i != data.num_[field.name]; i++)
+         messageData << FString(&data.[field.name][i*max_array_size], max_array_size, FORString);
+      [elseif [field.array] = T]
+      messageData << data.num_[field.name];
+      for (unsigned i = 0; i != data.num_[field.name]; i++)
+         messageData << data.[field.name][i];
+      [elseif [field.rawcpptype] = std::string]
+      messageData << FString(data.[field.name], max_array_size, FORString);
+      [else]
+      messageData << data.[field.name];
+      [endif]
+      [endfor]
+      return messageData;
+      }
+   inline protocol::MessageData& operator>>(protocol::MessageData& messageData, F[type.name]Type& data)
+      {
+      [foreach type.field]
+      [if [field.arrayandstring] = T]
+      messageData >> data.num_[field.name];
+      for (unsigned i = 0; i != data.num_[field.name]; i++)
+         {
+         FString [field.name]String(&data.[field.name][i*max_array_size], max_array_size, FORString);
+         FString [field.name]Alias;
+         messageData >> [field.name]Alias;
+         [field.name]String = [field.name]Alias;
+         }
+      [elseif [field.array] = T]
+      messageData >> data.num_[field.name];
+      for (unsigned i = 0; i != data.num_[field.name]; i++)
+         messageData >> data.[field.name][i];
+      [elseif [field.rawcpptype] = std::string]
+      FString [field.name]String(data.[field.name], max_array_size, FORString);
+      FString [field.name]Alias;
+      messageData >> [field.name]Alias;
+      [field.name]String = [field.name]Alias;
+      [else]
+      messageData >> data.[field.name];
+      [endif]
+      [endfor]
+      return messageData;
+      }
+}
+extern "C" void EXPORT STDCALL publish_[type.name](unsigned* id, const protocol::F[type.name]Type* data)
+   {
+   FortranWrapper::currentInstance->publish(*id, *data);
+   }
+extern "C" void EXPORT STDCALL unpack_[type.name](protocol::Variant* variant, protocol::F[type.name]Type* data)
+   {
+   variant->unpack(*data);
+   }
+[endfor]
+
+[endfile]
+
+
+
+##################################################
+[file ..\FortranInfrastructure\DataTypesInterface.f90]
+module dataTypesInterface
+   interface
+
+   subroutine publish_null(id)
+   use datatypes
+   ml_external publish_null
+   integer :: id
+   end subroutine
+
+   [foreach types.type]
+   subroutine publish_[type.name](id, data)
+   use datatypes
+   ml_external publish_[type.name]
+   integer :: id
+   type([type.name]Type) :: data
+   end subroutine
+   subroutine unpack_[type.name](variant, data)
+   use datatypes
+   ml_external unpack_[type.name]
+   integer :: variant
+   type([type.name]Type) :: data
+   end subroutine
+   [endfor]
+
+   end interface
+end module dataTypesInterface
+
+[endfile]
+
+##################################################
+[file ..\TclLink\CIDataTypes.tcl]
+;# Automatically generated - do not edit
+
+proc unpack_Variant {data} {
+   array set result {}
+   set ok [expr [string bytelength $data] > 0]
+   while {$ok} {
+      set nchar 0
+      binary scan $data i nchar
+      if {$nchar > 0} {
+         set name [string range $data 4 [expr 4+$nchar-1]]         ;# Name
+         set data [string range $data [expr 4+$nchar] end]
+         binary scan $data iic nchar5 typeCode isArray             ;# type & array flag
+         set data [string range $data 9 end]
+         if {$typeCode == 8} {
+            binary scan $data i nchar                              ;# string value
+            set value [string range $data 4 [expr 4+$nchar-1]]
+            set data [string range $data [expr 4+$nchar] end]
+         } elseif {$typeCode == 2} {
+            binary scan $data i value                              ;# integer
+            set data [string range $data 4 end]
+         } elseif {$typeCode == 4} {
+            binary scan $data f value                              ;# float
+            set data [string range $data 4 end]
+         } elseif {$typeCode == 5} {
+            binary scan $data d value                              ;# double
+            set data [string range $data 8 end]
+         } else {
+            ;#set value "<undef>"
+            error "Unhandled variant typecode $typeCode"
+         }
+         set result($name) $value
+         set ok [expr [string bytelength $data] > 0]
+      } else {
+         set ok 0
+      }
+   }
+   return [array get result]
+}
+
+proc unpack_MessageData {data} {
+   binary scan $data ii result(id) result(publishedByID)  ;# id, publishedByID
+   set data [string range $data 8 end]
+
+   set nchar 0
+   binary scan $data i nchar                              ;# typeXML
+   if {$nchar > 0} {
+     set result(typeXML) [string range $data 4 [expr 4+$nchar-1]]
+     set data [string range $data [expr 4+$nchar] end]
+   } else {
+     set result(typeXML) ""
+   }
+
+   set ok [expr [string bytelength $data] > 0]
+   while {$ok} {
+      set nchar 0
+      binary scan $data i nchar
+      if {$nchar > 0} {
+         ;##//messageData << variableName << protocol::memorySize(value)+5 << typeCode << isArray << value;
+         set name [string range $data 4 [expr 4+$nchar-1]]         ;# Name
+         set data [string range $data [expr 4+$nchar] end]
+         binary scan $data iic nchar5 typeCode isArray             ;# type & array flag
+         set data [string range $data 9 end]
+         if {$typeCode == 8} {
+            binary scan $data i nchar                              ;# string value
+            set value [string range $data 4 [expr 4+$nchar-1]]
+            set data [string range $data [expr 4+$nchar] end]
+         } elseif {$typeCode == 2} {
+            binary scan $data i value                              ;# integer
+            set data [string range $data 4 end]
+         } elseif {$typeCode == 4} {
+            binary scan $data f value                              ;# float
+            set data [string range $data 4 end]
+         } elseif {$typeCode == 5} {
+            binary scan $data d value                              ;# double
+            set data [string range $data 8 end]
+         } else {
+            ;#set value "<undef>"
+            error "Unhandled variant typecode $typeCode"
+         }
+         set result($name) $value
+         set ok [expr [string bytelength $data] > 0]
+      } else {
+         set ok 0
+      }
+   }
+   return [array get result]
+}
+
+[foreach types.type]
+proc unpack_[type.name] {data} {
+[foreach type.field]
+[if [field.array] = T]
+   binary scan $data i n ; set data [string range $data 4 end]
+   for {set i 0} {$i < $n} {incr i} {
+      set idx ".$i"
+[else]
+      set idx ""
+[endif]
+ [if [field.rawcpptype] = double]
+     binary scan $data d result([field.name]$idx); set data [string range $data 8 end]
+ [elseif [field.rawcpptype] = bool]
+     binary scan $data i result([field.name]$idx); set data [string range $data 4 end]
+ [elseif [field.rawcpptype] = int]
+     binary scan $data i result([field.name]$idx); set data [string range $data 4 end]
+ [elseif [field.rawcpptype] = float]
+     binary scan $data f result([field.name]$idx); set data [string range $data 4 end]
+ [elseif [field.rawcpptype] = std::string]
+     binary scan $data i stringlength ; set data [string range $data 4 end]
+     binary scan $data a$stringlength result([field.name]$idx) ; set data [string range $data $stringlength end]
+ [else]
+     array set result [process_ddml [type.cddml] $data]
+ [endif]
+[if [field.array] = T]
+   }
+[endif]
+[endfor]
+   if {[string bytelength $data] != 0 && [info exists result(ddml)]} {
+      array set result [process_ddml $result(ddml) $data]
+   }
+   return [array get result]
+}
+[endfor]
+
+package require tdom
+proc process_ddml {ddml chunk} {
+   set doc [dom parse $ddml]
+   set docroot [$doc documentElement]
+   array set result [list data $chunk]
+   if {[catch {array set result [process_node $docroot $result(data)]} msg]} {
+      lappend result(emsg) "Error:$msg"
+      puts "Error:$msg"
+   }
+   if {[string bytelength $result(data)] > 0} {
+      lappend result(emsg) "NB. unread data ([string bytelength $result(data)] bytes)"
+   }
+   return [array get result]
+}
+
+proc process_node {node chunk} {
+   array set result [list data $chunk]
+   if {[$node hasAttribute "name"]} {set name [$node getAttribute "name"]} else {set name "<anonymous>"}
+   if {[$node hasAttribute "array"] && [$node getAttribute "array"] == "T"} {
+     # Array types
+     if {[$node hasAttribute "kind"]} {
+        set kind [$node getAttribute "kind"]
+        if {[binary scan $result(data) i n] == 1} {
+           set result(data) [string range $result(data) 4 end]
+        } else {
+           set n 0
+        }
+        if {$kind == "double"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) d x]==1} {lappend arr $x; set result(data) [string range $result(data) 8 end]} else {error "error reading array double"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "boolean"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) i x]==1} {lappend arr $x; set result(data) [string range $result(data) 4 end]} else {error "error reading array bool"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "integer4"} {
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) i x]==1} {lappend arr $x; set result(data) [string range $result(data) 4 end]} else {error "error reading arrray int"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "single"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) f x]==1} {lappend arr $x; set result(data) [string range $result(data) 4 end]} else {error "error reading array float (at $i of $n)"}
+          }
+          lappend result($name) $arr
+        } elseif {$kind == "string"} {
+          set arr $name
+          for {set i 0} {$i < $n} {incr i} {
+             if {[binary scan $result(data) i stringlength] ==  1} {
+                set result(data) [string range $result(data) 4 end]
+                if {[binary scan $result(data) a$stringlength x]==1} {lappend arr $x; set result(data) [string range $result(data) $stringlength end]} else {error "error reading array string of $stringlength bytes"}
+             }
+          }
+          lappend result($name) $arr
+        } else {
+          error "unimplemented array type kind=$kind"
+        }
+     } else {
+        # an array of structures of some sort. Should probably do this $n times
+        foreach child [$node childNodes] {
+           array set result [process_node $child $result(data)]
+        }
+     }
+  } else {
+     if {[$node hasAttribute "kind"]} {
+        set kind [$node getAttribute "kind"]
+        # Scalar types
+        if {$kind == "double"} {
+          if {[binary scan $result(data) d x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 8 end]} else {error "error reading scalar double"}
+        } elseif {$kind == "boolean"} {
+          if {[binary scan $result(data) i x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 4 end]} else {error "error reading scalar bool"}
+        } elseif {$kind == "integer4"} {
+          if {[binary scan $result(data) i x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 4 end]} else {error "error reading scalar int"}
+        } elseif {$kind == "single"} {
+          if {[binary scan $result(data) f x]==1} {lappend result($name) $x; set result(data) [string range $result(data) 4 end]} else {error "error reading scalar float"}
+        } elseif {$kind == "string"} {
+          if {[binary scan $result(data) i stringlength]==1} {
+             set result(data) [string range $result(data) 4 end]
+             if {[binary scan $result(data) a$stringlength x]==1} {lappend result($name) $x; set result(data) [string range $result(data) $stringlength end]}  else {error "error reading scalar string ($stringlength bytes)"}
+          } else {
+             error "error reading scalar string length"
+          }
+        } else {
+          error "unimplemented scalar type kind=$kind"
+        }
+     } else {
+        # a structure of some sort
+        foreach child [$node childNodes] {
+           array set result [process_node $child $result(data)]
+        }
+     }
+   }
+   return [array get result]
+}
+[endfile]

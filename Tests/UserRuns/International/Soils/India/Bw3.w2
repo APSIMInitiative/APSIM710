@@ -1,0 +1,56 @@
+!Title = BW3
+
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+[run%.soilwat2.parameters]
+
+   max_evap        = 6        (mm)   ! maximum evaporation.
+   cona            = $cona    ()     ! stage 2 evap coef.                       
+   diffus_const    =  40.0    ()     !(?)   ! coeffs for rate of water movement by diffusion
+   diffus_slope    =  16.0    ()     !(?)   !     "
+   u               =  $uritch (mm)   ! stage 1 soil evaporation coefficient (mm)    
+   salb            =   0.05   ()     ! bare soil albedo                         
+                              
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        =  $cn2    ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = $cn_red  ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = $cn_cov  ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   runoff_filename = $runoff_filename ! blank           !if blank, runoff predicted using CN2                   
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+   ! layer       1       2       3       4       5       6       7   
+   dlayer  =   150.000  150.000 300.000 300.000 300.000 300.000 300.000  (mm)    ! layer depth                            
+   air_dry =     0.100    0.200   0.246   0.246   0.247   0.256   0.256  (mm/mm) ! air dry                               
+   ll15    =     0.224    0.245   0.246   0.246   0.247   0.256   0.256  (mm/mm) ! lower limit                    
+   dul     =     0.390    0.417   0.417   0.401   0.403   0.430   0.430  (mm/mm) ! drained upper limit                             
+   sat     =     0.440    0.467   0.467   0.451   0.453   0.480   0.480  (mm/mm) ! saturated soil water                  
+   sw      =     0.224    0.245   0.246   0.246   0.247   0.256   0.256  (mm/mm) ! initial sw                             
+   swcon   =     0.100    0.100   0.100   0.100   0.100   0.100   0.100  ()      ! soil conductivity                     
+   bd      =     1.200    1.200   1.200   1.200   1.200   1.200   1.200  (g/cc)  ! bulk density gm dry soil/cc moist soil
+                                                                                             
+
+[*variables]
+
+   $cona = "Cona : " 3.5 real
+   $uritch = "Uritch : " 6.0 real
+   $cn2 = "Runoff curve number for BARE soil : " 73.0 real
+   $runoff_filename = "runoff filename :" blank char                   
+   $cn_red = "reduction in CN2_bare for cn_cov increase in cover" 20.0 real
+   $cn_cov = "frac. cover for cn_red reduction in cover" 0.8 real
+ 

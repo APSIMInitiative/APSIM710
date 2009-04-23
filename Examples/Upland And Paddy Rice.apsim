@@ -1,0 +1,2218 @@
+<folder version="15" name="Simulations">
+  <simulation name="Upland Aus">
+    <memo>e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMTcgVXBsYW5kIGJyb2FkY2FzdCAtIGxvY2FsIGN1bHRpdmFyIC0gc2hvcnQgc2Vhc29uIGxvdyB5aWVsZGluZy5ccGFyDQp9DQo=</memo>
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
+    </metfile>
+    <climatechange>
+      <maxtmodifier type="text" description="Change in maximum temperature in degrees celsius">0</maxtmodifier>
+      <mintmodifier type="text" description="Change in minimum temperature in degrees celsius">0</mintmodifier>
+      <rainmodifier type="text" description="Relative change in rainfall">1</rainmodifier>
+      <radiationmodifier type="text" description="Relative change in radiation">1.5</radiationmodifier>
+      <co2 type="text" description="Atmospheric C02 concentration (ppm)">350</co2>
+    </climatechange>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/1988</start_date>
+      <end_date type="date" description="Select the end date of the simulation">30/6/1989</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Rice sowing rule">
+          <script name="init">
+            <text>
+!Inital variables
+Irrigation_amount = 0
+evap_amount = 0</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text>!Upland Aus                                      
+                                      ! plant 25th Mar (Mar-July)
+if (day = 84) then
+    rice sow cultivar = local, establishment = direct-seed, nplds = 180 (p/m2)
+endif
+</text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>
+if (rice.plant_status = 'dead') then
+  rice end_crop
+  Irrigation_amount = 0                                                   !reset  counters
+  evap_amount = 0
+                                                                                           !remove stubble
+  SurfaceOM tillage type = burn, remove = 0.95
+endif
+
+                                                                                          
+                                                                                           !counters
+ Irrigation_amount = Irrigation_amount + irrig_tot
+ evap_amount = evap_amount + es
+
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise_sowing">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">15-aug</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">0</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="First_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">05-Apr</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">15</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Second_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">25-Apr</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">20</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Third_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">10-May</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">40</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">300</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.6</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <surfaceom name="SurfaceOM">
+        <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <cpr type="text" description="C:P ratio of initial residue (optional)">
+        </cpr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <rice>
+        <estab type="text" description="estab">
+        </estab>
+        <sbdur type="text" description="sbdur">
+        </sbdur>
+        <nplh type="text" description="nplh">
+        </nplh>
+        <nh type="text" description="nh">
+        </nh>
+        <nplsb type="text" description="nplsb">
+        </nplsb>
+        <nplds type="text" description="nplds">
+        </nplds>
+        <eo_source type="text" description="eo_source">eo</eo_source>
+      </rice>
+      <soil name="BholaSouthBalia06">
+        <state>Bangladesh</state>
+        <region>Bhola</region>
+        <nearesttown>Bhola</nearesttown>
+        <site>Sth Balia</site>
+        <Latitude>999999</Latitude>
+        <Longitude>90.633614</Longitude>
+        <comment>2006/07 field measured DUL using wettest profile from pre-season measurements, estimated CLL</comment>
+        <Salb>0.14</Salb>
+        <DiffusConst>450</DiffusConst>
+        <DiffusSlope>188</DiffusSlope>
+        <CN2Bare>84</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1500</RootWT>
+        <SoilCN>12.5</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.458</bd>
+            <ll15>0.18</ll15>
+            <airdry>0.18</airdry>
+            <dul>0.345</dul>
+            <sat>0.42</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.5</oc>
+            <ec>0</ec>
+            <ph>6.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.18</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.206</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.18</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.348</bd>
+            <ll15>0.19</ll15>
+            <airdry>0.19</airdry>
+            <dul>0.311</dul>
+            <sat>0.461</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>1.2</oc>
+            <ec>0</ec>
+            <ph>7</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.19</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.191</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.19</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.413</bd>
+            <ll15>0.2</ll15>
+            <airdry>0.19</airdry>
+            <dul>0.387</dul>
+            <sat>0.437</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.8</finert>
+            <oc>0.75</oc>
+            <ec>0</ec>
+            <ph>7.4</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.22</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.263</ll>
+            <kl name="wheat_old">0.04</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.22</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.4</bd>
+            <ll15>0.25</ll15>
+            <airdry>0.2</airdry>
+            <dul>0.392</dul>
+            <sat>0.442</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.9</finert>
+            <oc>0.38</oc>
+            <ec>0</ec>
+            <ph>8.1</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.27</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.306</ll>
+            <kl name="wheat_old">0.04</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.27</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.36</bd>
+            <ll15>0.27</ll15>
+            <airdry>0.25</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.23</oc>
+            <ec>0</ec>
+            <ph>8.3</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.3</ll>
+            <kl name="wheat">0.03</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.33</ll>
+            <kl name="wheat_old">0.03</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.03</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.32</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.28</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.35</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.35</ll>
+            <kl name="wheat_old">0.02</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.32</bd>
+            <ll15>0.34</ll15>
+            <airdry>0.3</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.407</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.407</ll>
+            <kl name="wheat_old">0.02</kl>
+            <xf name="wheat_old">0</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>500</thickness>
+            <bd>1.32</bd>
+            <sat>0.457</sat>
+            <dul>0.41</dul>
+            <airdry>0.34</airdry>
+            <ll15>0.38</ll15>
+            <swcon>0.1</swcon>
+            <mwcon>1</mwcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.41</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <swcon>0</swcon>
+            <mwcon>0</mwcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <thickness>500</thickness>
+            <bd>1.32</bd>
+            <sat>0.457</sat>
+            <dul>0.41</dul>
+            <airdry>0.36</airdry>
+            <ll15>0.38</ll15>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.41</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+        </profile>
+        <U>4</U>
+        <Cona>2.5</Cona>
+        <InitWater>
+          <RelativeTo>wheat</RelativeTo>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.34</sw>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.284</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.382</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.426</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.422</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.451</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.425</sw>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <sw>0.425</sw>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <sw>0.425</sw>
+            </layer>
+          </profile>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <no3>0.399957314339242</no3>
+              <nh4>0.60018305743889</nh4>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <no3>0.599955389275502</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.599952240347558</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.299998888676488</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.700010428960373</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.39998690075559</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.1</no3>
+              <nh4>0.0999999999999997</nh4>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <outputfile name="Output">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="year" />
+          <variable name="crop_type" array="No" description="usually rice" />
+          <variable name="DaysAfterSowing" />
+          <variable name="dae as Rice.DaysAfterSowing" array="No" description="Days after emergence (days)" />
+          <variable name="cropsta" array="No" description="Crop stage(0-4)" />
+          <variable name="wagt" array="No" description="Total aboveground dry matter kg/ha" />
+          <variable name="wso" array="No" description="Dry weight of storage organs kg/ha" />
+          <variable name="rlai" array="No" description="Rice leaf area index" />
+          <variable name="zrt" array="No" description="Root length or rooting depth" />
+          <variable name="ldstrs" array="No" description="Drought stress factor accelerating leaf death   !-" />
+          <variable name="lestrs" array="No" description="Drought stress factor reducing leaf expansion  !-" />
+          <variable name="lrstrs" array="No" description="Drought stress factor causing leaf rolling   " />
+          <variable name="ancr" array="No" description="Actual nitrogen uptake rate by crop  !kg N ha-1 d-1 " />
+          <variable name="irrigation_amount as irrig" />
+          <variable name="evap_amount " />
+          <variable name="biomass" array="No" description="Biomass" />
+          <variable name="yield" array="No" description="Yield" />
+          <variable name="TopsTotalN" array="No" description="Total Tops nitrogen" />
+          <variable name="esw" />
+          <variable name="tnsoil as N_avail_4_rice" array="No" description="Daily amount of N available for uptake from soil  !kg N ha-1 d-1 " />
+          <variable name="NO3()" />
+          <variable name="surfaceom_wt" array="Total mass of all surface organic materials" />
+          <variable name="water_table" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="daily" description="End of daily simulation time step" />
+        </events>
+        <SplitReport name="Yield">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\UplandAus Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Bar</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>wso</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Biomass">
+          <Page name="Data" Left="0" Top="0" Width="1019" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>wagt</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="1019" Height="415">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Water">
+          <Page name="Data" Left="0" Top="0" Width="1019" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Bar</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>esw</Y>
+              <YRight>water_table</YRight>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="1019" Height="415">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="629" Height="363">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Nitrogen">
+          <Page name="Data" Left="0" Top="0" Width="1019" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>ancr</Y>
+              <Y>TopsTotalN</Y>
+              <Y>NO3()</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="1019" Height="404">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Stress">
+          <Page name="Data" Left="0" Top="0" Width="1019" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>ldstrs</Y>
+              <Y>lestrs</Y>
+              <Y>lrstrs</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="1019" Height="415">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="483" Height="373">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Irrigation">
+          <Page name="Data" Left="0" Top="0" Width="1019" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>irrig</Y>
+              <YRight>evap_amount</YRight>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="1019" Height="404">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Residue">
+          <Page name="Data" Left="0" Top="0" Width="1019" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>surfaceom_wt</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="1019" Height="404">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Paddy Transplanted Aman">
+    <memo>e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMTcgUGFkZHkgcmljZSAtIFRyYW5zcGxhbnRlZCAtIG1pZCBzZWFzb24gLSB1c2luZyBhIEJSMjMgY3VsdGl2YXIgZGVzY3JpYmVkIGluIHRoZSBJTkkuXHBhcg0KfQ0K</memo>
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
+    </metfile>
+    <climatechange>
+      <maxtmodifier type="text" description="Change in maximum temperature in degrees celsius">0</maxtmodifier>
+      <mintmodifier type="text" description="Change in minimum temperature in degrees celsius">0</mintmodifier>
+      <rainmodifier type="text" description="Relative change in rainfall">1</rainmodifier>
+      <radiationmodifier type="text" description="Relative change in radiation">1.5</radiationmodifier>
+      <co2 type="text" description="Atmospheric C02 concentration (ppm)">350</co2>
+    </climatechange>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/1988</start_date>
+      <end_date type="date" description="Select the end date of the simulation">30/6/1989</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Rice sowing rule">
+          <script name="init">
+            <text>
+!Inital variables
+Irrigation_amount = 0
+evap_amount = 0</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text>!Transplanted Aman                                    
+                                      ! plant 1st Aug (July-Dec)
+! Transplant
+if (day = 213) then                                                                    !sbdur= duration of seedbed
+                                                                                                    !nplh= number of plants on hills
+                                                                                                    !nh= number of hills
+    rice sow cultivar = BR23, establishment = transplant, sbdur = 44, nplh = 4 , nh = 28, nplsb = 112
+endif
+
+</text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>
+if (rice.plant_status = 'dead') then
+  rice end_crop
+  Irrigation_amount = 0                                                   !reset  counters
+  evap_amount = 0
+                                                                                           !remove stubble
+  SurfaceOM tillage type = burn, remove = 0.95
+endif
+
+                                                                                          
+                                                                                           !counters
+ Irrigation_amount = Irrigation_amount + irrig_tot
+ evap_amount = evap_amount + es
+
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise_sowing">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">15-aug</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">0</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="First_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">15-aug</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">25</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Second_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">30-aug</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">30</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Third_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">15-sep</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">50</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">500</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.6</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <surfaceom name="SurfaceOM">
+        <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <cpr type="text" description="C:P ratio of initial residue (optional)">
+        </cpr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <rice>
+        <estab type="text" description="estab">
+        </estab>
+        <sbdur type="text" description="sbdur">
+        </sbdur>
+        <nplh type="text" description="nplh">
+        </nplh>
+        <nh type="text" description="nh">
+        </nh>
+        <nplsb type="text" description="nplsb">
+        </nplsb>
+        <nplds type="text" description="nplds">
+        </nplds>
+        <eo_source type="text" description="eo_source">eo</eo_source>
+      </rice>
+      <soil name="BholaSouthBalia06">
+        <state>Bangladesh</state>
+        <region>Bhola</region>
+        <nearesttown>Bhola</nearesttown>
+        <site>Sth Balia</site>
+        <Latitude>999999</Latitude>
+        <Longitude>90.633614</Longitude>
+        <comment>2006/07 field measured DUL using wettest profile from pre-season measurements, estimated CLL</comment>
+        <Salb>0.14</Salb>
+        <DiffusConst>450</DiffusConst>
+        <DiffusSlope>188</DiffusSlope>
+        <CN2Bare>84</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1500</RootWT>
+        <SoilCN>12.5</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.458</bd>
+            <ll15>0.18</ll15>
+            <airdry>0.18</airdry>
+            <dul>0.345</dul>
+            <sat>0.42</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.5</oc>
+            <ec>0</ec>
+            <ph>6.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.18</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.206</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.18</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.348</bd>
+            <ll15>0.19</ll15>
+            <airdry>0.19</airdry>
+            <dul>0.311</dul>
+            <sat>0.461</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>1.2</oc>
+            <ec>0</ec>
+            <ph>7</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.19</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.191</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.19</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.413</bd>
+            <ll15>0.2</ll15>
+            <airdry>0.19</airdry>
+            <dul>0.387</dul>
+            <sat>0.437</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.8</finert>
+            <oc>0.75</oc>
+            <ec>0</ec>
+            <ph>7.4</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.22</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.263</ll>
+            <kl name="wheat_old">0.04</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.22</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.4</bd>
+            <ll15>0.25</ll15>
+            <airdry>0.2</airdry>
+            <dul>0.392</dul>
+            <sat>0.442</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.9</finert>
+            <oc>0.38</oc>
+            <ec>0</ec>
+            <ph>8.1</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.27</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.306</ll>
+            <kl name="wheat_old">0.04</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.27</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.36</bd>
+            <ll15>0.27</ll15>
+            <airdry>0.25</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.23</oc>
+            <ec>0</ec>
+            <ph>8.3</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.3</ll>
+            <kl name="wheat">0.03</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.33</ll>
+            <kl name="wheat_old">0.03</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.03</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.32</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.28</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.35</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.35</ll>
+            <kl name="wheat_old">0.02</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.32</bd>
+            <ll15>0.34</ll15>
+            <airdry>0.3</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.407</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.407</ll>
+            <kl name="wheat_old">0.02</kl>
+            <xf name="wheat_old">0</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>500</thickness>
+            <bd>1.32</bd>
+            <sat>0.457</sat>
+            <dul>0.41</dul>
+            <airdry>0.34</airdry>
+            <ll15>0.38</ll15>
+            <swcon>0.1</swcon>
+            <mwcon>1</mwcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.41</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <swcon>0</swcon>
+            <mwcon>0</mwcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <thickness>500</thickness>
+            <bd>1.32</bd>
+            <sat>0.457</sat>
+            <dul>0.41</dul>
+            <airdry>0.36</airdry>
+            <ll15>0.38</ll15>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.41</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+        </profile>
+        <U>4</U>
+        <Cona>2.5</Cona>
+        <InitWater>
+          <RelativeTo>wheat</RelativeTo>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.34</sw>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.284</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.382</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.426</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.422</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.451</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.425</sw>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <sw>0.425</sw>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <sw>0.425</sw>
+            </layer>
+          </profile>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <no3>0.399957314339242</no3>
+              <nh4>0.60018305743889</nh4>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <no3>0.599955389275502</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.599952240347558</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.299998888676488</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.700010428960373</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.39998690075559</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.1</no3>
+              <nh4>0.0999999999999997</nh4>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <outputfile name="Output">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="year" />
+          <variable name="crop_type" array="No" description="usually rice" />
+          <variable name="DaysAfterSowing" />
+          <variable name="dae as Rice.DaysAfterSowing" array="No" description="Days after emergence (days)" />
+          <variable name="cropsta" array="No" description="Crop stage(0-4)" />
+          <variable name="wagt" array="No" description="Total aboveground dry matter kg/ha" />
+          <variable name="wso" array="No" description="Dry weight of storage organs kg/ha" />
+          <variable name="rlai" array="No" description="Rice leaf area index" />
+          <variable name="zrt" array="No" description="Root length or rooting depth" />
+          <variable name="ldstrs" array="No" description="Drought stress factor accelerating leaf death   !-" />
+          <variable name="lestrs" array="No" description="Drought stress factor reducing leaf expansion  !-" />
+          <variable name="lrstrs" array="No" description="Drought stress factor causing leaf rolling   " />
+          <variable name="ancr" array="No" description="Actual nitrogen uptake rate by crop  !kg N ha-1 d-1 " />
+          <variable name="irrigation_amount as irrig" />
+          <variable name="evap_amount " />
+          <variable name="biomass" array="No" description="Biomass" />
+          <variable name="yield" array="No" description="Yield" />
+          <variable name="TopsTotalN" array="No" description="Total Tops nitrogen" />
+          <variable name="esw" />
+          <variable name="tnsoil as N_avail_4_rice" array="No" description="Daily amount of N available for uptake from soil  !kg N ha-1 d-1 " />
+          <variable name="NO3()" />
+          <variable name="surfaceom_wt" array="Total mass of all surface organic materials" />
+          <variable name="water_table" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="daily" description="End of daily simulation time step" />
+        </events>
+        <SplitReport name="Yield">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>wso</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Biomass">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>wagt</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Water">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Bar</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>esw</Y>
+              <YRight>water_table</YRight>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="629" Height="363">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Nitrogen">
+          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-wheat Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>ancr</Y>
+              <Y>tnsoil</Y>
+              <Y>TopsTotalN</Y>
+              <Y>no3()</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Stress">
+          <Page name="Data" Left="0" Top="0" Width="946" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-T_Aman-wheat Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>ldstrs</Y>
+              <Y>lestrs</Y>
+              <Y>lrstrs</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="946" Height="395">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="483" Height="373">
+              <Source>XY</Source>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Irrigation">
+          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aman Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>irrig</Y>
+              <YRight>evap_amount</YRight>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Residue">
+          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-T_Aman-wheat Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>surfaceom_wt</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+            </Chart>
+          </Page>
+        </SplitReport>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Paddy Transplated Rotation">
+    <memo>e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMTcgVHJhbnNwbGFudGVkIC0gZWFybHkgc2Vhc29uIC0gdXNpbmcgYSBCUjMgY3VsdGl2YXIgZGVzY3JpYmVkIGluIHRoZSBJTkkuXHBhcg0KICAgICAgICAgICAgICAgICAgICAtIG1pZCBzZWFzb24gLSBBdWd1c3QgLSBCUjIzXHBhcg0KfQ0K</memo>
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
+    </metfile>
+    <climatechange>
+      <maxtmodifier type="text" description="Change in maximum temperature in degrees celsius">0</maxtmodifier>
+      <mintmodifier type="text" description="Change in minimum temperature in degrees celsius">0</mintmodifier>
+      <rainmodifier type="text" description="Relative change in rainfall">1</rainmodifier>
+      <radiationmodifier type="text" description="Relative change in radiation">1.5</radiationmodifier>
+      <co2 type="text" description="Atmospheric C02 concentration (ppm)">350</co2>
+    </climatechange>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/1988</start_date>
+      <end_date type="date" description="Select the end date of the simulation">30/6/1989</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Rice sowing rule">
+          <script name="init">
+            <text>
+!Inital variables
+Irrigation_amount = 0
+evap_amount = 0</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text>!Transplanted Aus                                     
+                                      ! plant 25th Apr (Apr-Aug)
+! Transplant
+if (day = 91) then                                                                    !sbdur= duration of seedbed
+                                                                                                    !nplh= number of plants on hills
+                                                                                                    !nh= number of hills
+          rice sow cultivar = BR3, establishment = transplant, sbdur = 45, nplh = 25 , nh = 7, nplsb = 180
+endif
+
+!Transplanted Aman                                    
+                                      ! plant 20th Aug (July-Dec)
+! Transplant
+if (day = 213) then                                                                    !sbdur= duration of seedbed
+                                                                                                    !nplh= number of plants on hills
+                                                                                                    !nh= number of hills
+      rice sow cultivar = BR23, establishment = transplant, sbdur = 44, nplh = 4 , nh = 28, nplsb = 112
+endif
+
+</text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>
+if (rice.plant_status = 'dead') then
+  rice end_crop
+  Irrigation_amount = 0                                                   !reset  counters
+  evap_amount = 0
+                                                                                           !remove stubble
+  SurfaceOM tillage type = burn, remove = 0.95
+endif
+
+                                                                                          
+                                                                                           !counters
+ Irrigation_amount = Irrigation_amount + irrig_tot
+ evap_amount = evap_amount + es
+
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise_sowing">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">15-aug</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">0</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="First_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">05-may</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">25</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Second_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">22-may</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">30</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Third_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">6-jun</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">50</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">300</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.6</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <surfaceom name="SurfaceOM">
+        <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <cpr type="text" description="C:P ratio of initial residue (optional)">
+        </cpr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <rice>
+        <estab type="text" description="estab">
+        </estab>
+        <sbdur type="text" description="sbdur">
+        </sbdur>
+        <nplh type="text" description="nplh">
+        </nplh>
+        <nh type="text" description="nh">
+        </nh>
+        <nplsb type="text" description="nplsb">
+        </nplsb>
+        <nplds type="text" description="nplds">
+        </nplds>
+        <eo_source type="text" description="eo_source">eo</eo_source>
+      </rice>
+      <soil name="BholaSouthBalia06">
+        <state>Bangladesh</state>
+        <region>Bhola</region>
+        <nearesttown>Bhola</nearesttown>
+        <site>Sth Balia</site>
+        <Latitude>999999</Latitude>
+        <Longitude>90.633614</Longitude>
+        <comment>2006/07 field measured DUL using wettest profile from pre-season measurements, estimated CLL</comment>
+        <Salb>0.14</Salb>
+        <DiffusConst>450</DiffusConst>
+        <DiffusSlope>188</DiffusSlope>
+        <CN2Bare>84</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1500</RootWT>
+        <SoilCN>12.5</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.458</bd>
+            <ll15>0.18</ll15>
+            <airdry>0.18</airdry>
+            <dul>0.345</dul>
+            <sat>0.42</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.5</oc>
+            <ec>0</ec>
+            <ph>6.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.18</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.206</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.18</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.348</bd>
+            <ll15>0.19</ll15>
+            <airdry>0.19</airdry>
+            <dul>0.311</dul>
+            <sat>0.461</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>1.2</oc>
+            <ec>0</ec>
+            <ph>7</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.19</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.191</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.19</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.413</bd>
+            <ll15>0.2</ll15>
+            <airdry>0.19</airdry>
+            <dul>0.387</dul>
+            <sat>0.437</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.8</finert>
+            <oc>0.75</oc>
+            <ec>0</ec>
+            <ph>7.4</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.22</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.263</ll>
+            <kl name="wheat_old">0.04</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.22</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.4</bd>
+            <ll15>0.25</ll15>
+            <airdry>0.2</airdry>
+            <dul>0.392</dul>
+            <sat>0.442</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.9</finert>
+            <oc>0.38</oc>
+            <ec>0</ec>
+            <ph>8.1</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.27</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.306</ll>
+            <kl name="wheat_old">0.04</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.27</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.36</bd>
+            <ll15>0.27</ll15>
+            <airdry>0.25</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.23</oc>
+            <ec>0</ec>
+            <ph>8.3</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.3</ll>
+            <kl name="wheat">0.03</kl>
+            <xf name="wheat">1</xf>
+            <ll name="wheat_old">0.33</ll>
+            <kl name="wheat_old">0.03</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.03</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.32</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.28</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.35</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.35</ll>
+            <kl name="wheat_old">0.02</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.32</bd>
+            <ll15>0.34</ll15>
+            <airdry>0.3</airdry>
+            <dul>0.407</dul>
+            <sat>0.457</sat>
+            <swcon>0.1</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <mwcon>1</mwcon>
+            <ll name="wheat">0.407</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.407</ll>
+            <kl name="wheat_old">0.02</kl>
+            <xf name="wheat_old">0</xf>
+            <ll name="mungbean">0.407</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <thickness>500</thickness>
+            <bd>1.32</bd>
+            <sat>0.457</sat>
+            <dul>0.41</dul>
+            <airdry>0.34</airdry>
+            <ll15>0.38</ll15>
+            <swcon>0.1</swcon>
+            <mwcon>1</mwcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.41</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+          <layer>
+            <swcon>0</swcon>
+            <mwcon>0</mwcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.15</oc>
+            <ec>0</ec>
+            <ph>8.5</ph>
+            <cl>0</cl>
+            <thickness>500</thickness>
+            <bd>1.32</bd>
+            <sat>0.457</sat>
+            <dul>0.41</dul>
+            <airdry>0.36</airdry>
+            <ll15>0.38</ll15>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0</xf>
+            <ll name="wheat_old">0.41</ll>
+            <kl name="wheat_old">0.06</kl>
+            <xf name="wheat_old">1</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.02</kl>
+            <xf name="mungbean">0</xf>
+          </layer>
+        </profile>
+        <U>4</U>
+        <Cona>2.5</Cona>
+        <InitWater>
+          <RelativeTo>wheat</RelativeTo>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.34</sw>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.284</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.382</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.426</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.422</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.451</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.425</sw>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <sw>0.425</sw>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <sw>0.425</sw>
+            </layer>
+          </profile>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <no3>0.399957314339242</no3>
+              <nh4>0.60018305743889</nh4>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <no3>0.599955389275502</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.599952240347558</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.299998888676488</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.700010428960373</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.39998690075559</no3>
+              <nh4>0.10001619660457</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>0.1</no3>
+              <nh4>0.0999999999999997</nh4>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>500</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <outputfile name="Output">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="year" />
+          <variable name="crop_type" array="No" description="usually rice" />
+          <variable name="DaysAfterSowing" />
+          <variable name="dae as Rice.DaysAfterSowing" array="No" description="Days after emergence (days)" />
+          <variable name="cropsta" array="No" description="Crop stage(0-4)" />
+          <variable name="wagt" array="No" description="Total aboveground dry matter kg/ha" />
+          <variable name="wso" array="No" description="Dry weight of storage organs kg/ha" />
+          <variable name="rlai" array="No" description="Rice leaf area index" />
+          <variable name="zrt" array="No" description="Root length or rooting depth" />
+          <variable name="ldstrs" array="No" description="Drought stress factor accelerating leaf death   !-" />
+          <variable name="lestrs" array="No" description="Drought stress factor reducing leaf expansion  !-" />
+          <variable name="lrstrs" array="No" description="Drought stress factor causing leaf rolling   " />
+          <variable name="ancr" array="No" description="Actual nitrogen uptake rate by crop  !kg N ha-1 d-1 " />
+          <variable name="irrigation_amount as irrig" />
+          <variable name="evap_amount " />
+          <variable name="biomass" array="No" description="Biomass" />
+          <variable name="yield" array="No" description="Yield" />
+          <variable name="TopsTotalN" array="No" description="Total Tops nitrogen" />
+          <variable name="esw" />
+          <variable name="tnsoil as N_avail_4_rice" array="No" description="Daily amount of N available for uptake from soil  !kg N ha-1 d-1 " />
+          <variable name="NO3()" />
+          <variable name="surfaceom_wt" array="Total mass of all surface organic materials" />
+          <variable name="water_table" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="daily" description="End of daily simulation time step" />
+        </events>
+        <SplitReport name="Yield">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>wso</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Biomass">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>wagt</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Water">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Bar</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>esw</Y>
+              <YRight>water_table</YRight>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="629" Height="363">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Nitrogen">
+          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>ancr</Y>
+              <Y>tnsoil</Y>
+              <Y>TopsTotalN</Y>
+              <Y>no3()</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Stress">
+          <Page name="Data" Left="0" Top="0" Width="946" Height="256">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>ldstrs</Y>
+              <Y>lestrs</Y>
+              <Y>lrstrs</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="259" Width="946" Height="395">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="483" Height="373">
+              <Source>XY</Source>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Irrigation">
+          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>irrig</Y>
+              <YRight>evap_amount</YRight>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+            </Chart>
+          </Page>
+        </SplitReport>
+        <SplitReport name="Residue">
+          <Page name="Data" Left="0" Top="0" Width="676" Height="267">
+            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
+              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </ApsimFileReader>
+            <XY Left="12" Top="6" Width="357" Height="250">
+              <Source>OutputFile</Source>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Colour>-65536</Colour>
+              <X>Date</X>
+              <Y>surfaceom_wt</Y>
+            </XY>
+          </Page>
+          <Page name="Report" Left="0" Top="270" Width="676" Height="555">
+            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
+              <Source>XY</Source>
+              <Properties>
+                <Axes>
+                  <LeftAxis />
+                  <BottomAxis />
+                  <TopAxis />
+                  <RightAxis />
+                </Axes>
+              </Properties>
+            </Chart>
+          </Page>
+        </SplitReport>
+      </outputfile>
+    </area>
+  </simulation>
+</folder>

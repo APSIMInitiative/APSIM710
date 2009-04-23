@@ -1,0 +1,397 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Test report variables 2
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                       "lablab" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  9/05/1988
+     Simulation end date   = 26/10/1989
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.year
+        clock.day
+        lablab.n_conc_stover
+        lablab.RootGreenNConc
+        lablab.LeafGreenNConc
+        lablab.StemGreenNConc
+        lablab.n_conc_grain
+        lablab.MealGreenNConc
+        lablab.n_grain_pcnt
+        lablab.grain_protein
+        lablab.n_conc_crit
+        lablab.n_conc_crit_leaf
+        lablab.n_conc_crit_stem
+        lablab.n_conc_min
+        lablab.n_conc_min_stem
+        lablab.n_uptake_stover
+        lablab.no3_tot
+        lablab.n_demand
+        lablab.n_demand_leaf
+        lablab.n_demand_stem
+        lablab.grain_n_demand
+        lablab.n_supply_soil
+        lablab.dlt_n_fixed_pot
+        lablab.dlt_n_fixed
+        lablab.n_fixed_tops
+        lablab.nfact_photo
+        lablab.nfact_pheno
+        lablab.nfact_expan
+        lablab.nfact_grain
+        lablab.remove_biom_pheno
+        lablab.nfact_grain_tot
+        lablab.n_stress_photo
+        lablab.n_stress_pheno
+        lablab.n_stress_expan
+        lablab.n_stress_grain
+        lablab.rlv
+        lablab.rld
+        lablab.no3_demand
+        lablab.sw_demand
+        lablab.sw_demand_te
+        lablab.root_length
+        lablab.root_length_dead
+        lablab.no3gsm_uptake_pot
+        lablab.nh4gsm_uptake_pot
+        lablab.no3_swfac
+        lablab.leaves_per_node
+        lablab.no3_uptake
+        lablab.nh4_uptake
+        lablab.parasite_dm_supply
+        lablab.leaf_area_tot
+        lablab.GreenP
+        lablab.SenescedP
+        lablab.p_demand
+        lablab.pfact_photo
+        lablab.pfact_pheno
+        lablab.pfact_expansion
+        lablab.pfact_grain
+        lablab.p_stress_photo
+        lablab.p_stress_pheno
+        lablab.p_stress_expansion
+        lablab.p_stress_expan
+        lablab.p_stress_grain
+        lablab.biomass_p
+        lablab.p_uptake
+        lablab.green_biomass_p
+        lablab.grain_p
+        lablab.LeafGreenP
+        lablab.StemGreenP
+        lablab.RootGreenP
+        lablab.FruitTotalP
+        lablab.PodGreenP
+        lablab.GrowthP
+        lablab.RetranslocationP
+        lablab.DetachingP
+        lablab.dlt_p_sen
+        lablab.p_conc_stover
+        lablab.LeafGreenPConc
+        lablab.StemGreenPConc
+        lablab.GrainGreenPConc
+        lablab.p_grain_pcnt
+        lablab.p_uptake_stover
+        lablab.grain_p_demand
+        lablab.stage
+        lablab.DeltaStage
+        lablab.StageName
+        lablab.Stage
+        lablab.phase_tt
+        lablab.tt_tot
+        lablab.days_tot
+        lablab.DaysAfterSowing
+        lablab.TT
+        lablab.TT
+        lablab.flowering_das
+        lablab.maturity_das
+
+     Output file = test7.csv
+     Format = csv
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 270 and year  = 1988 then
+       lablab sow cultivar = highworth, plants = 10 (/m2), sowing_depth = 40 (mm)
+     endif
+     report do_end_day_output
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.230  0.450  0.500  0.280  1.300  0.762  0.200
+          150.-  300.  0.200  0.240  0.459  0.509  0.364  1.300  0.190  0.200
+          300.-  600.  0.200  0.240  0.450  0.510  0.430  1.290  0.048  0.200
+          600.-  900.  0.200  0.250  0.440  0.505  0.430  1.310  0.000  0.200
+          900.- 1200.  0.200  0.260  0.420  0.490  0.400  1.350  0.000  0.200
+         1200.- 1500.  0.200  0.270  0.410  0.480  0.410  1.360  0.000  0.200
+         1500.- 1800.  0.200  0.280  0.410  0.480  0.410  1.360  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50       7.50      33.00       7.50
+          150.-  300.      36.00      18.60      32.85       7.50
+          300.-  600.      72.00      57.00      63.00      18.00
+          600.-  900.      75.00      54.00      57.00      19.50
+          900.- 1200.      78.00      42.00      48.00      21.00
+         1200.- 1500.      81.00      42.00      42.00      21.00
+         1500.- 1800.      84.00      39.00      39.00      21.00
+          ---------------------------------------------------------
+               Totals     460.50     260.10     314.85     115.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     2.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          mungbean  mungbean      2000.0   800.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.00   17.94    0.58    0.00
+             2     8.50  0.84   14.82    0.58    0.00
+             3     8.60  0.77   18.96    1.16    0.00
+             4     8.60  0.65   10.61    1.18    0.00
+             5     7.40  0.54    6.07    1.22    0.00
+             6     5.30  0.48    7.34    2.04    0.00
+             7     5.00  0.43    5.71    2.04    0.00
+          ------------------------------------------------
+           Totals               81.46    8.81    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      19038.4  1313.0   461.6    57.7   138.9     6.9
+             2      16180.2  1115.9   199.8    25.0   108.1     5.4
+             3      29622.8  2043.0   176.2    22.0    65.6     3.3
+             4      25481.8  1757.4    63.2     7.9    39.8     2.0
+             5      21848.3  1506.8    21.7     2.7    24.1     1.2
+             6      19582.1  1350.5     1.9     0.2    14.6     0.7
+             7      17542.3  1209.8     1.7     0.2     8.9     0.4
+          ---------------------------------------------------------
+           Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+26 September 1988(Day of year=270), manager: 
+     Manager sending message :- lablab sow  cultivar = highworth, plants = 10 (/m2), sowing_depth = 40 (mm)
+26 September 1988(Day of year=270), lablab: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = highworth
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       3 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     500     500 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    13.3      18 (h)
+              y_tt_end_of_juvenile       =     600     600 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      20      20 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     900     900 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     400 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0300     0.0300
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.20       0.20
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.200       1.000
+         150.0     0.080          0.280       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.080          0.300       1.000
+         300.0     0.050          0.270       1.000
+         300.0     0.030          0.240       1.000
+         300.0     0.010          0.310       1.000
+         -----------------------------------------------
+         Extractable SW:   271mm in  1800mm total depth ( 15%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            270   40.0   10.0  500.0   0.0   0.0 highworth
+         ------------------------------------------------
+     
+27 September 1988(Day of year=271), lablab: 
+      stage 2.0 germination
+9 October 1988(Day of year=283), lablab: 
+      stage 3.0 emergence
+                     biomass =           7.00 (g/m^2)   lai          =   0.035 (m^2/m^2)
+                     stover N conc =     5.64 (%)    extractable sw =   59.86 (mm)
+21 November 1988(Day of year=326), lablab: 
+      stage 4.0 end_of_juvenile
+                     biomass =         321.64 (g/m^2)   lai          =   3.329 (m^2/m^2)
+                     stover N conc =     6.26 (%)    extractable sw =   63.59 (mm)
+4 January 1989(Day of year=4), lablab: 
+      stage 5.0 floral_initiation
+                     biomass =         767.74 (g/m^2)   lai          =   5.632 (m^2/m^2)
+                     stover N conc =     7.21 (%)    extractable sw =   66.81 (mm)
+5 January 1989(Day of year=5), lablab: 
+      stage 6.0 flowering
+                     biomass =         773.49 (g/m^2)   lai          =   5.475 (m^2/m^2)
+                     stover N conc =     7.23 (%)    extractable sw =   62.60 (mm)
+12 January 1989(Day of year=12), lablab: 
+      stage 7.0 start_grain_fill
+                     biomass =         842.13 (g/m^2)   lai          =   5.006 (m^2/m^2)
+                     stover N conc =     6.90 (%)    extractable sw =   83.41 (mm)
+22 March 1989(Day of year=81), lablab: 
+      stage 8.0 end_grain_fill
+                     biomass =        1108.15 (g/m^2)   lai          =   3.159 (m^2/m^2)
+                     stover N conc =     4.47 (%)    extractable sw =   82.13 (mm)
+26 April 1989(Day of year=116), lablab: 
+      stage 9.0 maturity
+                     biomass =        1108.15 (g/m^2)   lai          =   3.159 (m^2/m^2)
+                     stover N conc =     4.47 (%)    extractable sw =  206.52 (mm)
+27 April 1989(Day of year=117), lablab: 
+      stage 10.0 harvest_ripe
+                     biomass =        1108.15 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     5.55 (%)    extractable sw =  208.41 (mm)
+28 April 1989(Day of year=118), lablab: 
+      stage 11.0 end_crop
+26 October 1989(Day of year=299), clock: 
+     Simulation is terminating due to end criteria being met.

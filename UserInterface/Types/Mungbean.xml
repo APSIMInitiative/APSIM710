@@ -1,0 +1,39 @@
+   <mungbean>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\mungbean.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Mungbean science documentation">../apsim/mungbean/docs/mungbean_science.htm</Documentation>
+      <Documentation name="Generic plant" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <Documentation name="Darling downs sensibility tests">http://www.apsim.info/apsim/publish/apsim/mungbean/sensibility/darlingdowns.gif</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <class    name="plant"/>
+      <cultivar name="berken"/>
+      <cultivar name="king"/>
+      <cultivar name="satin"/>
+      <cultivar name="shangtung"/>
+      <cultivar name="putland"/>
+      <cultivar name="emerald"/>
+      <cultivar name="celera"/>
+      <cultivar name="green_diamond"/>
+      <cultivar name="delta"/>
+      <variables link="%apsim%\Documentation\ModelInfo\mungbean.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\mungbean.xml"/>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Plant.dll</dll>
+         <ini>%apsim%\Model\MungBean.xml</ini>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </mungbean>

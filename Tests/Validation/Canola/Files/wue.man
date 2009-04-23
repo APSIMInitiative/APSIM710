@@ -1,0 +1,952 @@
+[all.manager.init]
+samp_start_sw = 0
+rain_samp_start_sw = 0
+rain_samp_finish_sw = 0
+sim_start_sw = 0
+sim_finish_sw = 0    
+cum_days = 0
+pre_sow_rain = 0
+flower_flag = 0
+grain_fill_rain = 0
+sum_rain = 0
+in_crop_rain = 0
+num_rain_events = 0
+
+[all.manager.start_of_day]
+
+   if (DaysAfterSowing = 1) then
+      cum_temp = 0
+      cum_swdef = 0
+      cum_days = 0
+   elseif (StageName = 'start_grain_fill' or
+                 StageName = 'end_grain_fill' or
+                 StageName = 'maturity' or
+                 StageName = 'harvest_ripe') then
+      cum_temp = cum_temp + (maxt + mint) / 2
+      cum_swdef = cum_swdef + swdef_photo
+      cum_days = cum_days + 1
+   endif
+
+   ! calculate canola oil content
+   if (cum_days > 0) then
+      avg_temp = cum_temp / cum_days
+      avg_swdef = cum_swdef / cum_days
+      if (avg_temp <= 14) then
+         oil_conc =  47
+      else
+         oil_conc = (47 - ((avg_temp - 14)*1.21)) - (1.91*(1 - avg_swdef^2))
+      endif
+   else
+      oil_conc = 0
+   endif
+
+
+[all.manager.end_of_day]
+
+if day = 100 then
+     accum_es = 0
+endif
+
+if canola.DaysAfterSowing = 1 then
+   start_esw = esw
+   sow_day = day
+endif
+
+if canola.plant_status = 'out' then
+   pre_sow_rain = pre_sow_rain + rain
+endif
+
+if canola.DaysAfterSowing > 0 then
+     accum_es = accum_es + es
+     in_crop_rain = in_crop_rain + rain
+endif     
+
+if canola.DaysAfterSowing > 0 and rain > 3 then
+     num_rain_events = num_rain_events + 1
+endif     
+
+if canola.StageName = 'flowering' and flower_flag = 0 then 
+   pre_flower_rain = in_crop_rain
+   pre_flower_rain_events = num_rain_events
+   flower_lai = lai
+   flower_flag = 1
+   grain_fill_rain = 0 
+endif
+
+grain_fill_rain = grain_fill_rain + rain
+
+if canola.StageName = 'harvest_ripe' or canola.plant_status = 'dead' then
+   total_rain_events = num_rain_events
+   end_esw = esw
+   canola harvest
+   canola kill_crop
+   canola end_crop 
+   in_crop_rain = 0
+   crop_in = 0
+   flower_flag = 0
+   pre_sow_rain = 0
+endif
+
+if month = 1 and end_month = 1 then
+  jan_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 2 and end_month = 1 then
+  feb_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 3 and end_month = 1 then
+  mar_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 4 and end_month = 1 then
+  apr_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 5 and end_month = 1 then
+  may_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 6 and end_month = 1 then
+  jun_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 7 and end_month = 1 then
+  jul_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 8 and end_month = 1 then
+  aug_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 9 and end_month = 1 then
+  sep_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 10 and end_month = 1 then
+  oct_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 11 and end_month = 1 then
+  nov_rain = sum_rain
+  sum_rain = 0
+endif
+
+if month = 12 and end_month = 1 then
+  dec_rain = sum_rain
+  sum_rain = 0
+endif
+
+sum_rain = sum_rain + rain
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  residue  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[all.SurfaceOM.parameters]
+
+mass = 2000   ()  ! surface residues as biomass (kg/ha)
+cnr = 76.0   ()  ! cn ratio of surface residues
+type = wheat
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  screen  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+name = wheat
+[all.Screen.parameters]
+screen_output = on
+
+! *************************
+! ********  1991 and 92 ***
+! *************************
+
+[Condo_Dirn_91.clock.parameters]
+start_date=1/1/1991
+end_date=31/12/1991
+
+[Condo_Dirn_92.clock.parameters]
+start_date=1/11/1991
+end_date=31/12/1992
+
+[Condo_91_S1_75N.manager.start_of_day]
+if year = 1991 and day = 199 then
+  sim_start_sw = esw
+endif
+
+[Condo_91_S1_75N.manager.end_of_day]
+if year = 1991 and day = 200 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 1991 and day = 332 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+endif
+
+[Condo_91_S1_75N.Operations.parameters]
+ 130   1991    Fertiliser apply amount = 75, depth = 50, type = urea_n
+ 144   1991    canola sow plants = 55, row_spacing = 200, sowing_depth = 20, cultivar = oscar
+ 200   1991    soilwat set sw = 0.237 0.334 0.321 0.350 0.359 0.346 0.334 0.322 0.318 0.313 0.313 0.313 0.303 0.292 0.292 0.292 
+
+[Condo_92_S1_75N.manager.start_of_day]
+if year = 1992 and day = 134 then
+  sim_start_sw = esw
+endif
+
+[Condo_92_S1_75N.manager.end_of_day]
+if year = 1992 and day = 135 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 1992 and day = 315 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+endif
+
+[Condo_92_S1_75N.Operations.parameters]
+  99   1992    Fertiliser apply amount = 75, depth = 50, type = urea_n
+ 113   1992    canola sow plants = 55, row_spacing = 200, sowing_depth = 20, cultivar = oscar
+ 135   1992    soilwat set   sw = 0.154 0.210 0.284 0.335 0.396 0.429 0.410 0.390 0.380 0.370 0.369 0.368 0.355 0.343 0.340 0.336
+ 135   1992    soiln set no3ppm = 20    14    2     2     2     2     2     2     2     2     2     2     2     2     2     2
+
+[Condo_92_S1_75N.SoilWat.parameters]
+insoil = 0.2
+
+
+[Dirn_91_S1_150N.manager.start_of_day]
+if year = 1991 and day = 157 then
+  sim_start_sw = esw
+endif
+
+[Dirn_91_S1_150N.manager.end_of_day]
+if year = 1991 and day = 158 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain + in_crop_rain
+endif
+if year = 1991 and day = 341 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+endif
+
+[Dirn_91_S1_150N.Operations.parameters]
+ 147   1991    canola sow plants = 55, row_spacing = 200, sowing_depth = 20, cultivar = oscar
+ 158   1991    soiln set no3ppm = 35.0  25.0  7.0   3.5   2.0   1.1   1.8   1.8   2.5   2.5   2.0   2     2     2     2     2     2     2     2     2
+ 158   1991    soilwat set   sw = 0.148 0.173 0.183 0.198 0.232 0.250 0.230 0.211 0.209 0.207 0.207 0.207 0.222 0.237 0.237 0.237 0.241 0.250 0.250 0.250
+ 134   1991    fertilise apply amount = 150, depth = 50, type = urea_n
+
+[Dirn_91_S1_150N.SoilWat.parameters]
+insoil = 0.2
+
+
+[Dirn_92_S1_150N.manager.start_of_day]
+if year = 1992 and day = 146 then
+  sim_start_sw = esw
+endif
+
+[Dirn_92_S1_150N.manager.end_of_day]
+if year = 1992 and day = 147 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain + in_crop_rain
+endif
+if year = 1992 and day = 362 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+endif
+
+[Dirn_92_S1_150N.Operations.parameters]
+ 147   1992    canola sow plants = 55, row_spacing = 200, sowing_depth = 20, cultivar = oscar
+ 147   1992    soiln set no3ppm =   35.0  25.0  7.0   3.5   2.0   1.1   1.8   1.8   2.5   2.5   2.0   2     2     2     2     2     2     2     2     2
+ 147   1992    soilwat set  sw  =   0.179 0.205 0.195 0.240 0.267 0.276 0.258 0.239 0.231 0.222 0.222 0.222 0.223 0.224 0.224 0.224 0.236 0.248 0.248 0.248
+ 134   1992    fertiliser apply amount = 150, depth = 50, type = urea_n
+
+[Dirn_92_S1_150N.SoilWat.parameters]
+insoil = 0.2
+
+
+! *************************
+! ********  1993 **********
+! *************************
+
+[normans_93.clock.parameters]    
+start_date=1/1/1993
+end_date=18/1/1994
+
+[normans_93.SurfaceOM.parameters]    
+mass = 1000   ! lucerne mown and removed before ploughing in
+cnr = 20
+type = lucerne
+
+name = lucerne
+[normans_93.SoilN.parameters]    
+root_wt =  15000   ! root weight after 5 yrs of lucerne stand
+root_cn =  18   
+nh4ppm =  1 1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1   
+no3ppm =  4 4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4   
+uppm =   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   
+
+[normans_93.SoilWat.parameters]    
+insoil = 0.1
+
+[normans_93.manager.start_of_day]
+if year = 1993 and day = 90 then
+  sim_start_sw = esw
+endif
+
+[normans_93.manager.end_of_day]
+if year = 1993 and day = 91 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 1994 and day = 18 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+endif
+
+[normans_93.Operations.parameters]    
+ 64   1993     surfaceom tillage type = disc 
+ 88   1993     surfaceom tillage type = chisel
+ 91   1993     soilwat set sw = 0.088 0.093 0.110 0.143 0.256 0.256 0.250 0.250 0.301 0.301 0.314 0.314 0.282 0.282 0.256 0.256 0.251 0.251 0.270 0.270
+ 91   1993     soiln set no3ppm  = 36.8  13.7 5.3   4.5  4.5   4.5   3.0   3.0   2.7   2.7   2.6   2.6   2.4   2.4   2.1   2.1   2.0   2.0   1.7  1.7
+165   1993     canola sow plants = 43, crop_class = plant, row_spacing = 180, sowing_depth = 20, cultivar = hyola42
+165   1993     fertiliser apply amount = 28, depth = 50, type = no3_n
+
+
+[Harden_93.clock.parameters]    
+start_date=1/1/1993
+end_date=31/12/1993
+
+[harden_93.manager.start_of_day]
+if year = 1993 and day = 145 then
+  sim_start_sw = esw
+endif
+
+[harden_93.manager.end_of_day]
+if year = 1993 and day = 146 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+!!!!! Harden 1993 Yickadee !!!!!
+[Harden_93.Operations.parameters]
+  18   1993    soiln set no3ppm =  18.6 4.9    2.9   1.7  1.1   1.5   2.5   2.8   4.9   5.4   5.1  5   5   5   5   5   5  5   5   5
+ 146   1993    canola sow plants = 55, row_spacing = 200, sowing_depth = 20, cultivar = oscar
+ 196   1993    fertiliser apply amount = 43, depth = 50, type = urea_n
+ 232   1993    fertiliser apply amount = 54, depth = 50, type = urea_n
+
+
+! *************************
+! ********  1994 **********
+! *************************
+
+[normans_94.clock.parameters]    
+start_date=15/11/1993
+end_date=31/12/1994
+
+[normans_94.SoilN.parameters]    
+root_wt =  0   
+root_cn =  33   
+nh4ppm =  1 1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1   
+no3ppm =  2 2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2   
+uppm =   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   
+
+[normans_94.SoilWat.parameters]    
+insoil = 0.1
+
+[normans_94.manager.start_of_day]
+if year = 1994 and day = 109 then
+  sim_start_sw = esw
+endif
+
+[normans_94.manager.end_of_day]
+if year = 1994 and day = 110 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 1994 and day = 355 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+endif
+
+!!!!!!!!!!!!! Normans 1994 after grazing oats !!!!
+[normans_94.Operations.parameters]    
+ 110  1994     soilwat set sw = 0.129 0.147 0.183 0.222 0.308 0.308 0.280 0.280 0.309 0.309 0.309  0.309 0.304 0.304 0.304 0.304 0.324 0.324 0.324 0.324
+ 110  1994     soiln set no3ppm  = 67.1  11.3  8.3   5.0  2.4   2.4   1.1   1.1   0.9   0.9   0.9   1.3   1.3   1.3   1.3   1.7   1.7   1.7   1.7  1.7
+ 161  1994     canola sow plants = 76, crop_class = plant, row_spacing = 180, sowing_depth = 20, cultivar = oscar
+ 161  1994     fertiliser apply amount = 18, depth = 50, type = no3_n
+
+
+! *************************
+! ********  1995 **********
+! *************************
+
+[normans_95.clock.parameters]    
+start_date=15/11/1994
+end_date=31/12/1995
+
+[normans_95.manager.start_of_day]
+if year = 1995 and day = 190 then
+  sim_start_sw = esw
+endif
+
+[normans_95.manager.end_of_day]
+if year = 1995 and day = 191 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 1995 and day = 353 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+  
+endif
+
+!!!!!!!!!!!!! Normans 1995 after oats
+[normans_95.Operations.parameters]     ! set starting SW to dry before reset at day 191
+ 191  1995    soilwat set sw = 0.260 0.216 0.234 0.264 0.264 0.360 0.360 0.350 0.340 0.330 0.340  0.355 0.355 0.322 0.322 0.322 0.322 0.355 0.355 0.355
+ 191  1995    soiln set no3ppm = 12.6  20.3  31.2   36.0 31.3  31.3  14.2 14.2   7.5   7.5  7.5   4.8   4.8   4.8   4.8   4.8   5.2   5.2   5.2  5.2
+ 150  1995    canola sow plants = 57, crop_class = plant, row_spacing = 180, sowing_depth = 20, cultivar = oscar
+ 150  1995    fertiliser apply amount = 18, depth = 50, type = no3_n
+
+! *************************
+! ********  1996 **********
+! *************************
+
+[gin_96.clock.parameters]    
+start_date=1/1/1996
+end_date=31/12/1996
+
+[gin_96.SoilWat.parameters]    
+insoil =  0.2   
+
+[gin_96.manager.start_of_day]
+if year = 1996 and day = 134 then
+  sim_start_sw = esw
+endif
+
+[gin_96.manager.end_of_day]
+if year = 1996 and day = 135 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+!!!!!!!!!!!!! Ginninderra 1996 Oscar
+[Gin_96.Operations.parameters]     ! assume 1995 profile on 1 Jan
+ 135  1996    canola sow plants = 70, crop_class = plant, row_spacing = 180, sowing_depth = 20, cultivar = oscar
+ 135  1996    fertiliser apply amount = 18, depth = 50, type = no3_n
+ 238  1996    fertiliser apply amount = 30, depth = 50, type = urea_n
+ 239  1996    fertiliser apply amount = 40, depth = 50, type = urea_n
+
+[Gin_96.SoilN.parameters]     ! lucerne preceded 2 seasons ago
+root_wt =  2000   
+root_cn =  20   
+nh4ppm =  1 1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1   
+no3ppm = 30 25 20 20 7  6  6  4  4  4  4  4  4  4  4  4  4  4  4  4   
+uppm =   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   
+
+
+! *************************
+! ********  1997 **********
+! *************************
+
+[gin_97.clock.parameters]    
+start_date=1/1/1997
+end_date=31/12/1997
+
+[gin_97.SoilWat.parameters]    
+insoil =  0.2   
+
+[gin_97.manager.start_of_day]
+if year = 1997 and day = 133 then
+  sim_start_sw = esw
+endif
+
+[gin_97.manager.end_of_day]
+if year = 1997 and day = 134 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[Gin_97.Operations.parameters]     ! assume 1995 profile on 1 Jan
+ 134  1997    canola sow plants = 70, crop_class = plant, row_spacing = 180, sowing_depth = 20, cultivar = monty
+ 134  1997    fertiliser apply amount = 18, depth = 50, type = no3_n
+ 280  1997    fertiliser apply amount = 50, depth = 50, type = urea_n
+ 301  1997    irrigation apply amount = 25 (mm)
+
+[Gin_97.SoilN.parameters]     ! lucerne preceded 2 seasons ago
+root_wt =  2000   
+root_cn =  20   
+nh4ppm =  1 1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1   
+no3ppm =  20 15 10 8 7  6  6  4  4  4  4  4  4  4  4  4  4  4  4  4   
+uppm =   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   
+
+
+! *************************
+! ********  1999 **********
+! *************************
+
+[Harden_99.clock.parameters]    
+start_date=1/11/1998
+end_date=31/12/1999
+
+[Harden_99.manager.start_of_day]
+if year = 1999 and day = 187 then
+  sim_start_sw = esw
+endif
+
+[Harden_99.manager.end_of_day]
+if year = 1999 and day = 188 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 1999 and day = 353 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+  
+endif
+
+[Harden_99.SoilWat.parameters]    
+insoil =  0.2
+
+[harden_99.Operations.parameters]
+138 1999 canola  sow plants = 60, crop_class = triazine, sowing_depth = 20, row_spacing = 500, cultivar = pinnacle
+188 1999 soiln set no3ppm =   4.54 4.37 5.75 6.17 7.86 10.34 8.71 7.9 5.1 3.82 4.77  
+188 1999 soilwat set sw = 0.195 0.201 0.210 0.250 0.281 0.253 0.208 0.261 0.254 0.205 0.256
+201 1999 fertiliser apply amount = 70 (kg/ha), type = urea_n, depth = 10 (mm)
+
+! *************************
+! ********  2001 **********
+! *************************
+
+[2001.clock.parameters]
+start_date = 1/1/2001
+end_date = 31/12/2001
+
+[Harden_2001.clock.parameters]
+! special start date to account for rainfall in preceding Dec
+start_date = 1/1/2001
+end_date = 31/12/2001
+
+[Wall_2001.clock.parameters]
+! special start date to account for rainfall in preceding Dec
+start_date = 15/11/2000
+end_date = 31/12/2001
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  harden  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[Harden_01.manager.start_of_day]
+if year = 2001 and day = 133 then
+  sim_start_sw = esw
+endif
+
+[Harden_01.manager.end_of_day]
+if year = 2001 and day = 134 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 2001 and day = 353 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+  
+endif
+
+[Harden_01.SoilWat.parameters]    
+insoil =  0.0
+
+[has2_01.Operations.process]
+2001 135 fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_N
+2001 134 soiln set no3ppm = 28.0  10.0  5.6  3.5   2.65  1.8   2.25  2.7   2.8   2.9   3.25 
+2001 134 soilwat set sw =  0.149 0.167 0.166 0.198 0.250 0.224 0.211 0.206 0.238 0.243 0.236
+2001 135 surfaceom reset
+2001 135 canola sow cultivar = rainbow, plants = 50 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+2001 135 fertiliser apply amount = 20 (kg/ha), depth = 50 (mm), type = urea_N
+2001 235 fertiliser apply amount = 50 (kg/ha), depth = 50 (mm), type = urea_N
+
+[Galong_01.manager.start_of_day]
+if year = 2001 and day = 98 then
+  sim_start_sw = esw
+endif
+
+[Galong_01.manager.end_of_day]
+if year = 2001 and day = 99 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[Galong_01.SoilWat.parameters]    
+insoil =  0.1   
+
+[gaS1_01.Operations.parameters]
+2001 99 soiln set no3ppm =   104.0  18.0  13.0  12.0 15.5 19.0 20.0 21.0  18.0  15.0  11.5  8.0  6.5  5.0  3.4  1.8 1.8 1.8 1.8 1.8
+2001 99 soilwat set sw =  0.111 0.163 0.169 0.187 0.209 0.23 0.231 0.232 0.227 0.222 0.213 0.204 0.203 0.202 0.202 0.202 0.202 0.202 0.202 0.202
+2001 120 surfaceom reset
+2001 120 canola sow cultivar = rainbow, plants = 50 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+
+
+[gaS2_01.Operations.process]
+2001 99 soiln set no3ppm =   111.0  13.6  19.2  15.4 15.1 14.8 11.95 9.1  6.25 3.4 3.2 3.0 2.2 1.4 1.4 1.4 1.4 1.4 1.4 1.4
+2001 99 soilwat set sw =  0.111 0.163 0.169 0.187 0.209 0.23 0.231 0.232 0.227 0.222 0.213 0.204 0.203 0.202 0.202 0.202 0.202 0.202 0.202 0.202
+2001 134 surfaceom reset
+2001 134 canola sow cultivar = rainbow, plants = 50 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+
+
+[gaS3_01.Operations.process]
+2001 99 soiln set no3ppm =   93.0  6.4  5.5  5.6 6.5 7.4 6.25 5.1  4.2 3.3 2.7 2.1 2.05 2.0 1.85 1.7 1.7 1.7 1.7 1.7
+2001 99 soilwat set sw =  0.111 0.163 0.169 0.187 0.209 0.23 0.231 0.232 0.227 0.222 0.213 0.204 0.203 0.202 0.202 0.202 0.202 0.202 0.202 0.202
+2001 148 surfaceom reset
+2001 148 canola sow cultivar = rainbow, plants = 50 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+
+[Wallendbeen_01.SoilWat.parameters]    
+insoil =  0.4   
+
+[Wallendbeen_01.manager.start_of_day]
+if year = 2001 and day = 98 then
+  sim_start_sw = esw
+endif
+
+[Wallendbeen_01.manager.end_of_day]
+if year = 2001 and day = 99 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[waS1_01.Operations.process]
+2001 99 soiln set no3ppm =   126.0  42.0  28.0 18.0 13.5 9.0 6.0 3.0  2.0 1.0 1.5 2.0 1.90 1.8 1.25 0.7 0.7 0.7 0.7 0.7
+2001 99 soilwat set sw =  0.157  0.246 0.273 0.291 0.318 0.349 0.382 0.406 0.373 0.339 0.331 0.322 0.310 0.298 0.274 0.251 0.251 0.251 0.251 0.251 
+2001 120 surfaceom reset
+2001 120 canola sow cultivar = rainbow, plants = 50 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+
+
+[waS2_01.Operations.process]
+2001 99 soiln set no3ppm =  126.0  42.0  28.0 18.0 13.5 9.0 6.0 3.0  2.0 1.0 1.5 2.0 1.90 1.8 1.25 0.7 0.7 0.7 0.7 0.7
+2001 99 soilwat set sw =  0.157 0.246 0.273 0.291 0.318 0.349 0.382 0.406 0.373 0.339 0.331 0.322 0.310 0.298 0.274 0.251 0.251 0.251 0.251 0.251 
+2001 134 surfaceom reset
+2001 134 canola sow cultivar = rainbow, plants = 50 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+
+
+[waS3_01.Operations.process]
+2001 99 soiln set no3ppm =  126.0  42.0  28.0 18.0 13.5 9.0 6.0 3.0  2.0 1.0 1.5 2.0 1.90 1.8 1.25 0.7 0.7 0.7 0.7 0.7
+2001 99 soilwat set sw =  0.157  0.246 0.273 0.291 0.318 0.349 0.382 0.406 0.373 0.339 0.331 0.322 0.310 0.298 0.274 0.251 0.251 0.251 0.251 0.251 
+2001 149 surfaceom reset
+2001 149 canola sow cultivar = rainbow, plants = 50 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+
+
+! *************************
+! ********  2002 **********
+! *************************
+
+[2002.clock.parameters]
+start_date = 1/1/2002
+end_date = 31/12/2002
+
+[Wallendbeen_2002.clock.parameters]
+start_date = 15/11/2001
+end_date = 31/12/2002
+
+[Galong_02.manager.start_of_day]
+if year = 2002 and day = 113 then
+  sim_start_sw = esw
+endif
+
+[Galong_02.manager.end_of_day]
+if year = 2002 and day = 114 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[wallendbeen_02.manager.start_of_day]
+if year = 2002 and day = 113 then
+  sim_start_sw = esw
+endif
+
+[wallendbeen_02.manager.end_of_day]
+if year = 2002 and day = 114 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+if year = 2002 and day = 360 then
+  sim_finish_sw = esw
+  rain_samp_finish_sw = grain_fill_rain
+  
+endif
+
+[Galong_02.SoilWat.parameters]    
+insoil =  0.4   
+
+[galong_02.Operations.parameters]
+2002 114 soiln set no3ppm =   45.0  10.5  7.1   6.9   6.4   6.0   4.5   3.1   2.8   2.4   2.3   2.2   2.1   1.9   1.4   0.9   0.9   0.9   0.9   0.9
+2002 114 soilwat set sw   =   0.186 0.211 0.192 0.239 0.285 0.327 0.324 0.310 0.279 0.248 0.246 0.244 0.237 0.231 0.239 0.247 0.247 0.247 0.247 0.247
+2002 205 fertiliser apply amount = 46, type = no3_n, depth = 30 (mm)
+
+[Wallendbeen_02.SoilWat.parameters]    
+insoil =  0.2
+
+[wallendbean_02.Operations.parameters]
+2002 114 soiln set no3ppm =   45.5   7.2  2.7   1.8   1.3   0.8   0.9   1.0   0.8   0.6   0.6   0.6   0.5   0.5   0.6   0.6   0.6   0.6   0.6   0.6
+2002 114 soilwat set sw   =   0.153 0.244 0.231 0.246 0.260 0.270 0.283 0.285 0.280 0.276 0.272 0.270 0.269 0.285 0.289 0.291 0.291 0.291 0.291 0.291
+2002 198 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2002 246 fertiliser apply amount = 46, type = no3_n, depth = 30 (mm)
+
+[gaS1_02.Operations.parameters]
+2002 120 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2002 120 fertiliser apply amount = 33, type = nh4_n, depth = 30 (mm)
+
+
+[gaS2_02.Operations.process]
+2002 134 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2002 134 fertiliser apply amount = 33, type = nh4_n, depth = 30 (mm)
+
+
+[gaS3_02.Operations.process]
+2002 148 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2002 148 fertiliser apply amount = 33, type = nh4_n, depth = 30 (mm)
+
+
+[waS1_02.Operations.process]
+2002 120 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2002 120 fertiliser apply amount = 10, type = nh4_n, depth = 30 (mm)
+
+
+[waS2_02.Operations.process]
+2002 134 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2002 134 fertiliser apply amount = 10, type = nh4_n, depth = 30 (mm)
+
+[waS3_02.Operations.process]
+2002 149 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2002 149 fertiliser apply amount = 10, type = nh4_n, depth = 30 (mm)
+
+! *************************
+! ********  2003 **********
+! *************************
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ardlethan  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[ardlethan.clock.parameters]
+
+! Soil SAMPLED 10 May 2003
+!start_date = 10/5/2003
+start_date = 1/1/2003
+end_date = 31/12/2003
+
+[ardlethan_03.manager.start_of_day]
+if year = 2003 and day = 129 then
+  sim_start_sw = esw
+endif
+
+[ardlethan_03.manager.end_of_day]
+if year = 2003 and day = 130 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[ardlethan_03.Operations.parameters]
+2003 130 soilwat set sw  = 0.101   0.223   0.341   0.353   0.270   0.254   0.254   0.251   0.256   0.256
+2003 151 fertiliser apply amount = 35, type = nh4_n, depth = 30 (mm)
+
+[arS1_03.Operations.process]
+2003 121 fertiliser apply amount = 49, type = urea_n, depth = 30 (mm) ! at sowing
+2003 165 canola sow cultivar = rainbow, plants = 20 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm) ! germination date
+
+[arS2_03.Operations.process]
+2003 176 fertiliser apply amount = 49, type = urea_n, depth = 30 (mm) ! at sowing
+2003 176 canola sow cultivar = rainbow, plants = 20 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+[arS3_03.Operations.process]
+2003 185 fertiliser apply amount = 49, type = urea_n, depth = 30 (mm) ! at sowing
+2003 185 canola sow cultivar = rainbow, plants = 20 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  dirnaseer  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[dirnaseer.clock.parameters]
+
+! Soil SAMPLED 20 May 2003
+!start_date = 20/5/2003
+start_date = 1/1/2003
+end_date = 31/12/2003
+
+[dirnaseer_03.manager.start_of_day]
+if year = 2003 and day = 139 then
+  sim_start_sw = esw
+endif
+
+[dirnaseer_03.manager.end_of_day]
+if year = 2003 and day = 140 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[dirnaseer_03.SoilWat.parameters]    
+insoil =  0.2
+
+[dirnaseer_03.Operations.parameters]
+2003 140 soilwat set sw  = 0.103   0.255   0.377   0.390   0.297   0.273   0.280   0.277   0.282   0.273
+2003 240 fertiliser apply amount = 55, type = urea_n, depth = 30 (mm)
+
+[diS1_03.Operations.process]
+2003 144 fertiliser apply amount = 42, type = urea_n, depth = 30 (mm) ! at sowing
+2003 144 canola sow cultivar = oscar, crop_class = triazine, plants = 30 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+[diS2_03.Operations.process]
+2003 155 fertiliser apply amount = 42, type = urea_n, depth = 30 (mm) ! at sowing
+2003 155 canola sow cultivar = oscar, crop_class = triazine, plants = 30 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+[diS3_03.Operations.process]
+2003 169 fertiliser apply amount = 42, type = urea_n, depth = 30 (mm) ! at sowing
+2003 169 canola sow cultivar = oscar, crop_class = triazine, plants = 30 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Galong  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[galong.clock.parameters]
+
+! Soil SAMPLED 16 April 2003
+!start_date = 16/4/2003
+start_date = 1/1/2003
+end_date = 31/12/2003
+
+[Galong_03.manager.start_of_day]
+if year = 2003 and day = 105 then
+  sim_start_sw = esw
+endif
+
+[Galong_03.manager.end_of_day]
+if year = 2003 and day = 106 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[galong_03.Operations.parameters]
+2003 106 soilwat set sw  = 0.104   0.132   0.135   0.142   0.173   0.197   0.218   0.228   0.251   0.267
+2003 233 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2003 254 fertiliser apply amount = 16, type = nh4_n, depth = 30 (mm)
+
+[gaS1_03.Operations.process]
+2003 121 canola sow cultivar = rainbow, plants = 15 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm) 
+2003 121 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2003 121 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+
+[gaS2_03.Operations.process]
+2003 156 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm) ! approx germ date
+2003 133 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2003 133 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+
+[gaS3_03.Operations.process]
+2003 161 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2003 161 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2003 161 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Grenfell  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[Grenfell.clock.parameters]
+
+! Soil SAMPLED 15 April 2003
+!start_date = 15/4/2003
+start_date = 1/1/2003
+end_date = 31/12/2003
+
+[grenfell_03.manager.start_of_day]
+if year = 2003 and day = 104 then
+  sim_start_sw = esw
+endif
+
+[grenfell_03.manager.end_of_day]
+if year = 2003 and day = 105 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[grenfell_03.Operations.parameters]
+2003 105 soilwat set sw  = 0.135   0.168   0.196   0.216   0.244   0.217   0.217   0.218   0.227   0.237
+
+[grS1_03.Operations.process]
+2003 107 canola sow cultivar = oscar, crop_class = triazine, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2003 107 fertiliser apply amount = 32, type = urea_n, depth = 30 (mm)
+2003 107 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+     
+[grS2_03.Operations.process]
+2003 132 canola sow cultivar = oscar, crop_class = triazine, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2003 132 fertiliser apply amount = 32, type = urea_n, depth = 30 (mm)
+2003 132 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+
+[grS3_03.Operations.process]
+2003 162 canola sow cultivar = oscar, crop_class = triazine, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2003 162 fertiliser apply amount = 32, type = urea_n, depth = 30 (mm)
+2003 162 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  lockhart  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lockhart.clock.parameters]
+
+! Soil SAMPLED 10 May 2003
+!start_date = 10/5/2003
+start_date = 1/1/2003
+end_date = 31/12/2003
+
+[lockhart_03.manager.start_of_day]
+if year = 2003 and day = 129 then
+  sim_start_sw = esw
+endif
+
+[lockhart_03.manager.end_of_day]
+if year = 2003 and day = 130 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[lockhart_03.Operations.parameters]
+2003 130 soilwat set sw  = 0.176   0.236   0.281   0.300   0.305   0.317   0.327   0.337   0.348   0.351
+2003 263 fertiliser apply amount = 20, type = nh4_n, depth = 30 (mm) ! 19th Sept
+
+[loS1_03.Operations.process]
+2003 138 fertiliser apply amount = 25, type = urea_n, depth = 30 (mm) ! at sowing
+2003 138 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+[loS2_03.Operations.process]
+2003 147 fertiliser apply amount = 25, type = urea_n, depth = 30 (mm) ! at sowing
+2003 147 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+[loS3_03.Operations.process]
+2003 157 fertiliser apply amount = 25, type = urea_n, depth = 30 (mm) ! at sowing
+2003 157 canola sow cultivar = rainbow, plants = 40 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Wallendbeen  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[wallendbeen.clock.parameters]
+
+! Soil SAMPLED 15 April 2003
+!start_date = 15/4/2003
+start_date = 1/1/2003
+end_date = 31/12/2003
+
+[wallendbeen_03.manager.start_of_day]
+if year = 2003 and day = 104 then
+  sim_start_sw = esw
+endif
+
+[wallendbeen_03.manager.end_of_day]
+if year = 2003 and day = 105 then
+  samp_start_sw = esw
+  rain_samp_start_sw = pre_sow_rain
+endif
+
+[wallendbeen_03.Operations.parameters]
+2003 105 soilwat set sw  = 0.226   0.258   0.261   0.256   0.286   0.309   0.305   0.309   0.319   0.328
+2003 233 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+
+[waS1_03.Operations.process]
+2003 121 canola sow cultivar = rainbow, plants = 30 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2003 121 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2003 121 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+ 
+[waS2_03.Operations.process]
+2003 133 canola sow cultivar = rainbow, plants = 30 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2003 133 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2003 121 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)
+
+[waS3_03.Operations.process]
+2003 150 canola sow cultivar = rainbow, plants = 25 (/m2), sowing_depth = 10 (mm), row_spacing = 300 (mm)
+2003 150 fertiliser apply amount = 46, type = urea_n, depth = 30 (mm)
+2003 121 fertiliser apply amount = 12, type = nh4_n, depth = 30 (mm)

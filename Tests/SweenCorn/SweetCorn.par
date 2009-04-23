@@ -1,0 +1,58 @@
+
+[sample.report.parameters]
+outputfile    = SweetCorn.out
+
+variable = clock.dd/mmm/yyyy as Date
+variable = met.rain as rain
+variable = SweetCorn.DaysAfterSowing
+variable = SweetCorn.zadok_stage
+variable = met.day_length
+variable = SweetCorn.stage
+variable = SweetCorn.lai
+variable = SweetCorn.biomass
+variable = SweetCorn.yield
+variable = SweetCorn.root_depth
+variable = SweetCorn.ep
+variable = SweetCorn.swdef_photo
+variable = SweetCorn.swdef_expan
+variable = SweetCorn.nfact_photo
+variable = SweetCorn.temp_stress_photo
+variable = SweetCorn.tt_tot
+variable = met.maxt
+variable = met.mint
+variable = met.radn
+variable = SweetCorn.TTAfterSowing
+variable = SweetCorn.TT
+variable = SweetCorn.LeafGreenWt
+variable = SweetCorn.StemGreenWt
+
+[sample.clock.parameters]
+start_date=1/09/1998     ! dd/mm/yyyy
+end_date=30/06/1999    ! dd/mm/yyyy
+
+
+[sample.manager.start_of_day]
+if today = date('9/12/98') then
+   SweetCorn sow cultivar = h5, plants = 6.6, sowing_depth = 50 (mm)
+   Fertiliser apply amount = 200, type = urea_n, depth = 50
+endif
+
+[sample.manager.end_of_day]
+if SweetCorn.StageName = 'harvest_ripe' or SweetCorn.plant_status = 'dead' then
+   SweetCorn harvest
+   SweetCorn end_crop
+endif
+
+   report do_output
+
+
+[sample.SweetCorn.parameters]
+ll =  0.230   0.240   0.240   0.250   0.260   0.270   0.280 ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+[sample.Screen.parameters]
+screen_output = on
+
+[sample.summaryfile.parameters]
+summaryfile=SweetCorn.sum

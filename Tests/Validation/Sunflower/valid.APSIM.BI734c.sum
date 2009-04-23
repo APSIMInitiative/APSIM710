@@ -1,0 +1,457 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = BILOELA 1973/4 SOW C DRY SUNFOLA
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                       "SYSBAL" = %apsim%\Model\SYSBAL.dll
+   Component                    "sunflower" = %apsim%\Model\CropMod.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/08/1973
+     Simulation end date   = 30/06/1974
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.year as year
+        sunflower.das_int as DaysAfterSowing
+        sunflower.lai as lai
+        sunflower.biomass_wt as biomass
+        sunflower.grain_wt as yield
+        manager.cum_et as et
+
+     Output file = new\BI734c.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met\bi734.met
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+        crop_growing = 0
+     
+     SECTION:- start_of_day
+     if (day = sow_day) then
+        crop_growing = 1
+        fertiliser apply amount = 250 (kg/ha), depth = 20 (mm), type = no3_n
+        if (geno = 1) then
+           sunflower sow cultivar = sunfola68-2, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
+        elseif (geno = 2) then
+           sunflower sow cultivar = hysun32, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
+        elseif (geno = 3) then
+           sunflower sow cultivar = sungold, plants = 5.33, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
+        elseif (geno = 4) then
+           sunflower sow cultivar = sc52, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
+        elseif (geno = 5) then
+           sunflower sow cultivar = sc150, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0 ()
+        endif
+     endif
+     if (sunflower.stage = 11) then
+        sunflower harvest
+        sunflower kill_crop
+        sunflower end_crop
+        crop_growing = 0
+     endif
+     if (crop_growing = 1) then
+     frac_stored_water = (sw_dep() - ll15_dep()) / (dul_dep() - ll15_dep())
+     paw = sw_dep() - ll15_dep()
+     atsw = paw
+     cum_et = 1.0
+     cum_et = 0.0 - sunflower.cep
+     if sw_supply_demand_ratio > 1 then
+       supply_demand_ratio = 1
+     else
+       supply_demand_ratio = sw_supply_demand_ratio
+     endif
+     dw1000gr = grain_size * 1000
+        report do_end_day_output
+     endif
+     
+     SECTION:- init
+        sow_day = 274
+        geno = 1
+     END of rules
+     
+     Manager creating a new local real variable : crop_growing = 0.00000
+     Manager creating a new local real variable : sow_day = 274.00000
+     Manager creating a new local real variable : geno = 1.00000
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.510000      in layer   7
+              is above saturation of     0.480000
+     Component name: SoilWat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.100  0.230  0.430  0.480  0.470  1.300  0.856  0.100
+          200.-  400.  0.240  0.240  0.428  0.478  0.400  1.300  0.135  0.100
+          400.-  600.  0.240  0.240  0.428  0.478  0.400  1.290  0.009  0.100
+          600.-  800.  0.250  0.250  0.438  0.488  0.410  1.310  0.000  0.100
+          800.- 1000.  0.270  0.270  0.458  0.480  0.430  1.350  0.000  0.100
+         1000.- 1200.  0.310  0.310  0.460  0.480  0.440  1.360  0.000  0.100
+         1200.- 1400.  0.380  0.380  0.440  0.480  0.510  1.360  0.000  0.100
+         1400.- 1600.  0.380  0.380  0.400  0.410  0.380  1.360  0.000  0.100
+         1600.- 1800.  0.380  0.380  0.400  0.410  0.380  1.360  0.000  0.100
+         1800.- 2000.  0.380  0.380  0.400  0.410  0.380  1.360  0.000  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      46.00      48.00      40.00      10.00
+          200.-  400.      48.00      32.00      37.60      10.00
+          400.-  600.      48.00      32.00      37.60      10.00
+          600.-  800.      50.00      32.00      37.60      10.00
+          800.- 1000.      54.00      32.00      37.60       4.40
+         1000.- 1200.      62.00      26.00      30.00       4.00
+         1200.- 1400.      76.00      26.00      12.00       8.00
+         1400.- 1600.      76.00       0.00       4.00       2.00
+         1600.- 1800.      76.00       0.00       4.00       2.00
+         1800.- 2000.      76.00       0.00       4.00       2.00
+          ---------------------------------------------------------
+               Totals     612.00     228.00     244.40      62.40
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              81.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0    12.1     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.03    3.22    3.38    0.00
+             2     8.50  0.86    0.47    2.60    0.00
+             3     8.60  0.77    0.46    2.58    0.00
+             4     8.60  0.65    0.34    2.10    0.00
+             5     7.40  0.54    0.30    2.16    0.00
+             6     5.30  0.48    0.44    1.36    0.00
+             7     5.00  0.43    2.50    1.36    0.00
+             8     5.00  0.43    2.50    1.36    0.00
+             9     5.00  0.43    2.50    1.36    0.00
+            10     5.00  0.43    2.50    1.36    0.00
+          ------------------------------------------------
+           Totals               15.24   19.62    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      26002.1  1793.2   777.9    97.2   218.2     6.1
+             2      22127.6  1526.0   232.4    29.0   161.7     4.5
+             3      19725.1  1360.4   140.9    17.6   119.8     3.3
+             4      16965.9  1170.1    64.1     8.0    88.7     2.5
+             5      14542.5  1002.9    37.5     4.7    65.7     1.8
+             6      13034.0   898.9    22.0     2.7    48.7     1.4
+             7      11687.9   806.1     8.1     1.0    36.1     1.0
+             8      11687.9   806.1     8.1     1.0    26.7     0.7
+             9      11687.9   806.1     8.1     1.0    19.8     0.5
+            10      11687.9   806.1     8.1     1.0    14.7     0.4
+          ---------------------------------------------------------
+           Totals  159148.8 10975.8  1307.2   163.4   800.0    22.2
+          ---------------------------------------------------------
+
+------- sunflower Initialisation ----------------------------------------------
+      Initialising, V1.0 2000.01.21
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+1 October 1973(Day of year=274), manager: 
+     Manager sending message :- fertiliser apply  amount = 250 (kg/ha), depth = 20 (mm), type = no3_n
+1 October 1973(Day of year=274), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       250.00 of N as nitrate (no3_n)
+                                         added at depth   20.00 (layer   1)
+     Manager sending message :- sunflower sow  cultivar = sunfola68-2, plants = 5, sowing_depth = 50 (mm), tiller_no_fertile = 0
+1 October 1973(Day of year=274), sunflower: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            274   50.0    5.0    0.0    0.0   sunfola68-    0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by sunflower
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          200.000    0.070    0.230    1.000
+          200.000    0.070    0.240    1.000
+          200.000    0.070    0.240    1.000
+          200.000    0.070    0.250    1.000
+          200.000    0.070    0.270    1.000
+          200.000    0.070    0.310    1.000
+          200.000    0.050    0.380    1.000
+          200.000    0.030    0.380    1.000
+          200.000    0.010    0.380    1.000
+          200.000    0.010    0.380    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = sunfola68-2
+         rel_leaf_init_rate       =    1.00
+         photoperiod_crit1        =   12.50
+         photoperiod_crit2        =   14.50
+         photoperiod_slope        =   -1.00
+         tt_emerg_to_endjuv       =  200.00
+         tt_endjuv_to_init        =  370.00
+         tt_fi_to_flag            =  380.00
+         tt_flag_to_flower        =    1.00
+         tt_flower_to_start_grain =  100.00
+         tt_flower_to_maturity    =  714.00
+         tt_maturity_to_ripe      =    1.00
+         hi_incr                  =   0.009
+         x_hi_max_pot_stress      =    0.00   1.00
+         y_hi_max_pot             =    0.10   0.40
+         tpla_prod_coef           =   0.010
+         tpla_inflection          = 495.000
+         spla_prod_coef           =   0.004
+         spla_intercept           =   0.018
+         x_stem_wt                =     0.0   80.0
+         y_height                 =     0.0 2800.0
+         ------------------------------------------------
+     
+     
+     
+     Manager creating a new local real variable : frac_stored_water = 0.84457
+     Manager creating a new local real variable : paw = 206.41187
+     Manager creating a new local real variable : atsw = 206.41187
+     Manager creating a new local real variable : cum_et = 1.00000
+     Manager creating a new local real variable : supply_demand_ratio = 0.00000
+     Manager creating a new local real variable : dw1000gr = 0.00000
+2 October 1973(Day of year=275), sunflower: 
+      stage    2.0 germination
+7 October 1973(Day of year=280), sunflower: 
+      stage    3.0 emergence
+                          biomass =           1.000000       lai =    0.2000000E-02
+                          stover N conc =    5.000000       extractable sw =    64.70159
+19 October 1973(Day of year=292), sunflower: 
+      stage    4.0 end_of_juvenile
+                          biomass =           11.00037       lai =    0.8574789E-01
+                          stover N conc =    4.603961       extractable sw =    125.4036
+8 November 1973(Day of year=312), sunflower: 
+      stage    5.0 floral_initiation
+                          biomass =           164.9315       lai =     1.518680
+                          stover N conc =    4.005136       extractable sw =    190.2242
+29 November 1973(Day of year=333), sunflower: 
+      stage    6.0 flag_leaf
+                          biomass =           517.6522       lai =     2.240197
+                          stover N conc =    2.581978       extractable sw =    72.48201
+30 November 1973(Day of year=334), sunflower: 
+      stage    7.0 flowering
+                          biomass =           524.8272       lai =     2.225307
+                          stover N conc =    2.570950       extractable sw =    66.36270
+3 December 1973(Day of year=337), sunflower: 
+      stage    8.0 start_grain_fill
+                          biomass =           542.3345       lai =     2.111728
+                          stover N conc =    2.563248       extractable sw =    50.43267
+26 December 1973(Day of year=360), sunflower: 
+      stage    9.0 end_grain_fill
+                          biomass =           695.5996       lai =    0.8166970
+                          stover N conc =    2.253185       extractable sw =    107.7787
+27 December 1973(Day of year=361), sunflower: 
+      stage   10.0 maturity
+                          biomass =           709.0874       lai =    0.6813202
+                          stover N conc =    2.226499       extractable sw =    102.3386
+28 December 1973(Day of year=362), sunflower: 
+      stage   11.0 harvest_ripe
+                          biomass =           709.0874       lai =     0.000000
+                          stover N conc =    2.362905       extractable sw =    96.03306
+29 December 1973(Day of year=363), manager: 
+     Manager sending message :- sunflower harvest
+29 December 1973(Day of year=363), sunflower: 
+     
+     
+     
+     flowering (DAS) =   61                                maturity (DAS)  =      88
+      flowering day  =  334                                 stover (kg/ha) =    5836.4
+      maturity day        =  361                            grain yield (kg/ha) =    1254.5
+      grain % water content   =    9.0                      grain yield wet (kg/ha) =    1378.5
+      grain wt (g) =     0.000                              grains/m^2   =     0.000
+      grains/head =   0.0                                   maximum lai = 2.293
+      total above ground biomass (kg/ha) =    7090.9
+      live above ground biomass (kg/ha) =    7090.9
+      green above ground biomass (kg/ha) =    5364.9
+      senesced above ground biomass (kg/ha) =    1726.0
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  32.0
+      grain N percent =      1.51                           total N content (kg/ha) =    138.85
+      grain N uptake (kg/ha) =     18.99                    senesced N content (kg/ha) =     12.08
+      green N content (kg/ha) =    107.77                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.041
+         end_of_juvenile     to floral_initiation       0.000        0.018        0.000        0.068
+         floral_initiation   to flag_leaf               0.195        0.709        0.000        0.013
+         flag_leaf           to flowering               0.708        0.900        0.000        0.000
+         flowering           to start_grain_fill        0.751        0.900        0.000        0.000
+         start_grain_fill    to end_grain_fill          0.498        0.732        0.000        0.000
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               1254.48                    0.00
+                          N  (kg/ha) =                 18.99                    0.00
+     
+     Manager sending message :- sunflower kill_crop
+         kill. Standing above-ground dm =  6041.5 (kg/ha)
+     Manager sending message :- sunflower end_crop
+         Crop ended. Yield (dw) =     0.0
+29 December 1973(Day of year=363), SurfaceOM: 
+      Added surfom
+        SurfaceOM Type         = sunflower
+        Amount Added (kg/ha) =  6041.45020
+     
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               6041.45                 2290.34
+                          N  (kg/ha) =                119.86                   43.49
+                          P  (kg/ha) =                  0.00                    0.00
+     
+30 June 1974(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.

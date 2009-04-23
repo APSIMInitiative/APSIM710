@@ -1,0 +1,230 @@
+[gmtb0.clock.parameters]
+! Entire period
+start_date=5/8/1976
+end_date=18/3/1992
+
+[gmtb0.report.parameters]
+
+variable = clock.dd/mm/yyyy as date
+!                 [reset_depth.dlayer]
+!                 [bulk_density.dlayer]
+variable = SoilWat.dlayer()
+!                 [runoff.soil_loss]
+variable = erosion.soil_loss
+!                 [fudge_cover.erosion_cover]
+variable = erosion.erosion_cover
+!                 [cover.soil_loss]
+variable = SoilWat.cover_surface_runoff
+
+[gmtb0a.report.parameters]
+outputfile =gmtb0a.out
+
+[gmtb0.SoilWat.parameters]
+cona =            3.25 ()
+u =               8.0  ()
+salb =            0.2  ()
+insoil =          1.5  ()
+cn_red =          20   ()
+cn_cov =          0.8  ()
+cn2_bare =        70   ()
+diffus_const =    50   ()
+diffus_slope =    16   ()
+
+!layer           = 1       2        3       4
+dlayer =           100     500      600     300   (mm)
+air_dry =          0.05    0.28     0.3     0.3   (mm/mm)
+ll15 =             0.15    0.28     0.3     0.3   (mm/mm)
+dul =              0.4     0.47     0.45    0.45  (mm/mm)
+sat =              0.45    0.5      0.49    0.49  (mm/mm)
+bd =               1.4     1.3      1.1     1.0   ()
+sw =               0.25    0.336    0.33    0.36  (mm/mm)
+swcon =            1.0     0.8      0.09    0.18  ()
+
+
+!--------------------------------------------------------------------
+! Gmt - general parameters
+!--------------------------------------------------------------------
+
+[gmtb0a.erosion.parameters]
+model =     freebairn (eastern darling downs)
+slope =             6.5   (%)
+slope_length =      60.0  (m)
+bed_depth =         1500.   (mm)
+profile_reduction =    off
+profile_layer_merge =    0.05 ()
+minimum_depth =    100.0 (mm)
+
+k_factor =          0.4   ()
+p_factor =          1.0   ()
+
+[gmtb0.SurfaceOM.parameters]
+mass = 100. ()   ! surface residue (kg/ha) !stubble incorporated prior to sowing. guess @1000kg
+cnr = 120. ()   ! cn ratio of surface residues
+type = wheat
+
+
+
+name = wheat
+[gmtb0.grasp.seedling]
+
+! Initial values
+root_depth_init =  350       (mm)
+dm_green_leaf_init =  0        (kg/ha)
+dm_green_stem_init =  0        (kg/ha)
+dm_green_root_init =  0        (kg/ha)
+dm_dead_leaf_init =  0        (kg/ha)
+dm_dead_stem_init =  0        (kg/ha)
+dm_dead_root_init =  0        (kg/ha)
+basal_area_init =  0.1       (%)
+acc_trans_for_n_init =  0        (mm)
+acc_growth_for_n_init =  0        (kg/ha)
+
+[gmtb0.grasp.parameters]
+crop_type =  grass
+uptake_source =  calc
+
+max_n_avail =      15        ()
+max_n_avail_dist =  0.8    0.1      0.05    0.05  ()
+ll =               0.15    0.28     0.3     0.3   (mm/mm)
+kl =               0.5     0.5       0.5    0.0   ()
+kl2rlv =  1.0                                     ()
+
+! grass parameters
+swi_nogrow =       0.3       ()
+height_max =       1200      (mm)
+hgt_vpd_screen =   200       (mm)
+height_1000kg =    150       (mm)
+et_use_efficiency =  5        ()
+frac_leaf2total =  0.5       ()
+yld_cover_slope =  0.693147  ()
+yld_fpc50 =        1600      ()
+yld_cov50 =        1600      ()
+yld_tcov50 =       3100      (kg/ha)
+runoff_power =     0.98      ()
+swi_fullgreen =    0.3       ()
+pot_regrow =       3.5       ()
+te_std =           15        ()
+rad_factor =       8.97      ()
+residual_plant_N =  5        (kg/ha)
+litter_n =         0.335     ()
+n_uptk_per100 =    6         (kg/ha)
+frost_start =      2         (oC)
+frost_kill =       0         (oC)
+death_slope =      0.013     ()
+death_intercept =  0.002     ()
+leaf_death_ratio =  1        ()
+stem_death_ratio =  1        ()
+n_conc_dm_crit =   2.5       ()
+n_conc_dm_min =    0.45      ()
+n_conc_dm_max =    0.55      ()
+stem_thresh =      0         ()
+! parts:        root      leaf      stem
+detach_dryseason =  0       0.0017   0.0017    ()
+detach_wetseason =  0       0.0015   0.0015    ()
+
+! Date resets
+day_start_summer =  305      ()
+day_end_summer =   0   !120       ()  !(set to 0 for no dynamic basal area change)
+acc_et_reset =     120       ()
+acc_growth_reset =  334      ()
+trans_for_n_reset =  258      ()
+growth_for_n_reset =  258      ()
+day_start_wet =    274       ()
+day_start_dry =    91        ()
+
+enr_a_coeff =    7.4  ()
+enr_b_coeff =    0.2  ()
+[gmtb0.SummaryFile.parameters]
+summaryfile=gmtb0e.sum
+[gmtb0b.report.parameters]
+outputfile =gmtb0b.out
+
+[gmtb0b.erosion.parameters]
+model =     freebairn (eastern darling downs)
+slope =             6.5   (%)
+slope_length =      60.0  (m)
+bed_depth =         1500.   (mm)
+profile_reduction =    off
+profile_layer_merge =    0.05
+minimum_depth =    100.0 (mm)
+
+k_factor_bed =      0.36  ()
+k_factor_susp =     0.04  ()
+p_factor =          1.0   ()
+
+[gmtb0c.report.parameters]
+outputfile =gmtb0c.out
+
+[gmtb0c.erosion.parameters]
+model =    rose model
+slope =             6.5   (%)
+slope_length =      60.0  (m)
+bed_depth =         1500.   (mm)
+profile_reduction =    off
+profile_layer_merge =    0.05
+minimum_depth =    100.0 (mm)
+
+entrain_eff =       0.7   ()
+eros_rose_b2 =      0.15  ()
+
+[gmtb0d.report.parameters]
+outputfile =gmtb0d.out
+
+[gmtb0d.erosion.parameters]
+model =    rose model
+slope =             6.5   (%)
+slope_length =      60.0   (m)
+bed_depth =         1500.   (mm)
+profile_reduction =    off
+profile_layer_merge =    0.05 ()
+minimum_depth =    100.0 (mm)
+
+entrain_eff_bed =       0.72   ()
+eros_rose_b2_bed =      0.15  ()
+entrain_eff_susp =       0.08   ()
+eros_rose_b2_susp =      0.15  ()
+
+[gmtb0e.report.parameters]
+outputfile =gmtb0e.out
+
+
+[gmtb0e.erosion.parameters]
+model =     freebairn (eastern darling downs)
+slope =             40.0   (%)
+slope_length =      60.0  (m)
+bed_depth =         1500.   (mm)
+profile_reduction =    on
+profile_layer_merge =    0.1 ()
+minimum_depth =    100.0 (mm)
+k_factor =          0.95   ()
+p_factor =          1.0   ()
+
+
+[gmtb0a.SummaryFile.parameters]
+summaryfile=gmtb0a.sum
+[gmtb0b.SummaryFile.parameters]
+summaryfile=gmtb0b.sum
+[gmtb0c.SummaryFile.parameters]
+summaryfile=gmtb0c.sum
+[gmtb0d.SummaryFile.parameters]
+summaryfile=gmtb0d.sum
+[gmtb0e.SummaryFile.parameters]
+summaryfile=gmtb0e.sum
+
+[gmt.manager.start_of_day]
+if (clock.day = clock.simulation_start_day and
+    clock.year = clock.simulation_start_year) then
+  grasp establish init_section = seedling
+endif
+[gmtb0.manager.start_of_day]
+if (clock.day = clock.simulation_start_day and
+    clock.year = clock.simulation_start_year) then
+  grasp establish init_section = seedling
+endif
+
+[gmt.manager.end_of_day]
+if (soil_loss > 0.0) then
+  report do_output
+endif
+
+[gmtb0.Operations.parameters]

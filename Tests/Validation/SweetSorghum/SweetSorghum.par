@@ -1,0 +1,213 @@
+
+[PacSeeds1.report.parameters]
+outputfile    = PacSeeds1.out
+[PacSeeds2.report.parameters]
+outputfile    = PacSeeds2.out
+
+[Lawes1.report.parameters]
+outputfile    = Lawes1.out
+[Lawes2.report.parameters]
+outputfile    = Lawes2.out
+[Lawes3.report.parameters]
+outputfile    = Lawes3.out
+[Lawes4.report.parameters]
+outputfile    = Lawes4.out
+[Lawes5.report.parameters]
+outputfile    = Lawes5.out
+[Lawes6.report.parameters]
+outputfile    = Lawes6.out
+
+[Biboohra.report.parameters]
+outputfile    = Biboohra.out
+[Miallo.report.parameters]
+outputfile    = Miallo.out
+[MaryFarms.report.parameters]
+outputfile    = MaryFarms.out
+
+[all.report.parameters]
+variable = clock.dd/mmm/yyyy as Date
+variable = met.rain as rain
+variable = sweetsorghum.DaysAfterSowing
+variable = sweetsorghum.zadok_stage
+variable = met.day_length
+variable = sweetsorghum.stage
+variable = sweetsorghum.lai
+variable = sweetsorghum.biomass
+variable = sweetsorghum.yield
+variable = sweetsorghum.root_depth
+variable = sweetsorghum.ep
+variable = sweetsorghum.swdef_photo
+variable = sweetsorghum.swdef_expan
+variable = sweetsorghum.nfact_photo
+variable = sweetsorghum.temp_stress_photo
+variable = met.maxt
+variable = met.mint
+variable = met.radn
+variable = sweetsorghum.TTAfterSowing
+variable = sweetsorghum.TT
+variable = sweetsorghum.LeafGreenWt
+variable = sweetsorghum.StemGreenWt
+variable = sweetsorghum.node_no
+variable = sweetsorghum.height
+variable = sweetsorghum.HeadTotalWt
+variable = sweetsorghum.LeafSenescedWt as dead_leaf
+variable = sweetsorghum.leaf_no_sen
+
+[PacSeeds1.clock.parameters]
+start_date=15/09/2004     ! dd/mm/yyyy
+end_date=31/01/2005    ! dd/mm/yyyy
+[PacSeeds2.clock.parameters]
+start_date=01/01/2005     ! dd/mm/yyyy
+end_date=31/05/2005    ! dd/mm/yyyy
+
+[Lawes1.clock.parameters]
+start_date=23/11/2001     ! dd/mm/yyyy
+end_date=31/01/2005    ! dd/mm/yyyy
+[Lawes2.clock.parameters]
+start_date=21/12/2001     ! dd/mm/yyyy
+end_date=31/01/2005    ! dd/mm/yyyy
+[Lawes3.clock.parameters]
+start_date=22/01/2002     ! dd/mm/yyyy
+end_date=31/01/2005    ! dd/mm/yyyy
+[Lawes4.clock.parameters]
+start_date=21/02/2002     ! dd/mm/yyyy
+end_date=31/01/2005    ! dd/mm/yyyy
+[Lawes5.clock.parameters]
+start_date=25/03/2002     ! dd/mm/yyyy
+end_date=31/01/2005    ! dd/mm/yyyy
+[Lawes6.clock.parameters]
+start_date=15/09/2004     ! dd/mm/yyyy
+end_date=31/01/2005    ! dd/mm/yyyy
+
+[Biboohra.clock.parameters]
+start_date=7/08/2002     ! dd/mm/yyyy
+end_date=30/06/2003    ! dd/mm/yyyy
+[Miallo.clock.parameters]
+start_date=31/12/2002     ! dd/mm/yyyy
+end_date=30/06/2003    ! dd/mm/yyyy
+[MaryFarms.clock.parameters]
+start_date=13/01/2003     ! dd/mm/yyyy
+end_date=30/06/2003    ! dd/mm/yyyy
+
+
+[wet.Irrigation.parameters]
+
+! Automatic irrigation scheduling
+! ===============================
+automatic_irrigation =  on
+crit_fr_asw =  0.5 (0-1)   ! Critical fraction of available soil water
+                       ! to trigger irrigation
+asw_depth =   750 (mm)   ! Depth to use for available soil water
+                       ! calculations
+
+[PacSeeds1.manager.start_of_day]
+     if today = date('15-sep-2004') then
+        sweetsorghum sow cultivar = sugargraze, plants = 12.3, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+[PacSeeds2.manager.start_of_day]
+     if today = date('12-jan-2005') then
+        sweetsorghum sow cultivar = sugargraze, plants = 12.7, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+
+[Lawes1.manager.start_of_day]
+     if today = date('23-nov-2001') then
+        !sweetsorghum sow cultivar = sugargraze, plants = 9.8, sowing_depth = 30 (mm)
+        sweetsorghum sow cultivar = sugargraze, plants = 13, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+[Lawes2.manager.start_of_day]
+     if today = date('21-dec-2001') then
+        !sweetsorghum sow cultivar = sugargraze, plants = 9.6, sowing_depth = 30 (mm)
+        sweetsorghum sow cultivar = sugargraze, plants = 13, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+[Lawes3.manager.start_of_day]
+     if today = date('22-jan-2002') then
+        !sweetsorghum sow cultivar = sugargraze, plants = 7.3, sowing_depth = 30 (mm)
+        sweetsorghum sow cultivar = sugargraze, plants = 9, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+[Lawes4.manager.start_of_day]
+     if today = date('21-feb-2002') then
+        !sweetsorghum sow cultivar = sugargraze, plants = 9.7, sowing_depth = 30 (mm)
+        sweetsorghum sow cultivar = sugargraze, plants = 10, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+[Lawes5.manager.start_of_day]
+     if today = date('15-sep-2004') then
+        sweetsorghum sow cultivar = sugargraze, plants = 12.3, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+[Lawes6.manager.start_of_day]
+     if today = date('15-sep-2004') then
+        sweetsorghum sow cultivar = sugargraze, plants = 12.3, sowing_depth = 30 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+[Biboohra.manager.start_of_day]
+     if today = date('7-aug-2002') then
+        sweetsorghum sow cultivar = sugargraze, plants = 12.3, sowing_depth = 50 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+[Miallo.manager.start_of_day]
+     if today = date('31-dec-2002') then
+        sweetsorghum sow cultivar = sugargraze, plants = 12.3, sowing_depth = 50 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+[MaryFarms.manager.start_of_day]
+     if today = date('13-jan-2003') then
+        sweetsorghum sow cultivar = sugargraze, plants = 12.3, sowing_depth = 50 (mm)
+        Fertiliser apply amount = 300, type = no3_n, depth = 50
+     endif
+
+
+[all.manager.end_of_day]
+     if sweetsorghum.plant_status = 'alive' then
+        report do_output
+     endif
+
+     if sweetsorghum.StageName = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
+        sweetsorghum harvest
+        sweetsorghum end_crop
+     endif
+
+
+[all.sweetsorghum.parameters]
+ll =  0.230   0.240   0.240   0.250   0.260   0.270   0.280 ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+[PacSeeds1.summaryfile.parameters]
+summaryfile=PacSeeds1.sum
+[PacSeeds2.summaryfile.parameters]
+summaryfile=PacSeeds2.sum
+
+[Lawes1.summaryfile.parameters]
+summaryfile=Lawes1.sum
+[Lawes2.summaryfile.parameters]
+summaryfile=Lawes2.sum
+[Lawes3.summaryfile.parameters]
+summaryfile=Lawes3.sum
+[Lawes4.summaryfile.parameters]
+summaryfile=Lawes4.sum
+[Lawes5.summaryfile.parameters]
+summaryfile=Lawes5.sum
+[Lawes6.summaryfile.parameters]
+summaryfile=Lawes6.sum
+
+[Biboohra.summaryfile.parameters]
+summaryfile=Biboohra.sum
+[Miallo.summaryfile.parameters]
+summaryfile=Miallo.sum
+[MaryFarms.summaryfile.parameters]
+summaryfile=MaryFarms.sum
+

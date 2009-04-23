@@ -1,0 +1,380 @@
+<Simulation name="Pasture" executable="%apsuite\apsim\protocolmanager\lib\protocolmanager.dll">
+   <title>Pasture PI SAMPLE Simulation</title>
+   <component name="Log" executable="%apsuite\apsim\log\lib\log.dll">
+      <initdata>
+         <logfile>debug.xml</logfile>
+         <debug_output>off</debug_output>
+      </initdata>
+   </component>
+   <component name="clock" executable="%apsuite\apsim\clock\lib\clock.dll">
+      <initdata>
+         <include>%apsuite\apsim\clock\clock.xml</include>
+         <start_date>30/4/2002</start_date>
+         <end_date>15/12/2002</end_date>
+      </initdata>
+   </component>
+   <component name="Met" executable="%apsuite\apsim\Input\lib\Input.dll">
+      <initdata>
+         <filename>%apsuite\apsim\met\sample\roseworthy.met</filename>
+      </initdata>
+   </component>
+   <component name="report" executable="%apsuite\apsim\report\lib\report.dll">
+      <initdata>
+        <outputfrequency>post </outputfrequency>
+         <outputfile>pasture.out</outputfile>
+         <variable>dd/mm/yyyy as Date</variable>
+         <variable>rain as rain</variable>
+         <variable>pasture.assimilation</variable>
+         <variable>pasture.growth</variable>
+         <variable>pasture.green_dm</variable>
+         <variable>pasture.shoot_dm</variable>
+         <variable>pasture.shoot_n</variable>
+         <variable>pasture.senc_dm</variable>
+         <variable>pasture.seed_dm</variable>
+         <variable>pasture.rtdep</variable>
+         <variable>pasture.rlv</variable>
+         <variable>pasture.sw_uptake()</variable>
+         <variable>soilwat2.sw_dep()</variable>
+         <variable>soilwat2.es</variable>
+         <variable>soiln2.no3()</variable>
+         <variable>soiln2.nh4()</variable>
+         <variable>soiln2.fom_c()</variable>
+         <variable>pasture.sw_uptake</variable>
+         <variable>soilwat2.sw_dep</variable>
+         <variable>soiln2.no3</variable>
+         <variable>soiln2.nh4</variable>
+         <variable>pasture.cover_tot</variable>
+         <variable>pasture.residue_cover</variable>
+         <variable>pasture.senc_dm</variable>
+         <variable>pasture.litter_dm</variable>
+         <variable>pasture.uptake_no3</variable>
+         <variable>pasture.uptake_nh4</variable>
+         <variable>pasture.glf_gai</variable>
+         <variable>pasture.glf_nitr</variable>
+         <variable>pasture.glf_nutr</variable>
+         <variable>pasture.glf_phos</variable>
+         <variable>pasture.glf_sm</variable>
+         <variable>pasture.glf_sulf</variable>
+         <variable>pasture.glf_tmp</variable>
+         <variable>pasture.glf_vpd</variable>
+         <variable>pasture.glf_wl</variable>
+      </initdata>
+   </component>
+   <component name="manager" executable="%apsuite\apsim\manager\lib\manager.dll">
+      <initdata>
+         <rule name="sample.start_of_day" condition="start_of_day">
+            <![CDATA[
+            if (day = 124) then
+               pastureconverter cutpasture cut_height = 100, gathered = 0.5, dmd_loss = 0.1, dm_content = 0.9
+            endif
+            if (day = 126) then
+               pastureconverter burnpasture kill_plants = 0.5, kill_seed = 0.5, propn_unburnt = 0.2
+            endif
+            if (day = 128) then
+               pastureconverter killpasture propn_herbage = 0.5,  propn_seed = 0.5
+            endif
+            if (day = 130) then
+               pastureconverter sowpasture rate = 100.0
+            endif
+            if (day = 300) then
+               pastureconverter cultivatepasture depth = 100, propn_incorp = 0.5, propn_mixed = 0.3
+            endif
+           ]]>
+        </rule>
+      </initdata>
+   </component>
+   <component name="soilwat2" executable="%apsuite\apsim\soilwat2\lib\soilwat2.dll">
+      <initdata>
+         <include>%apsuite\apsim\soilwat2\soilwat2.xml</include>
+         <insoil>2.0</insoil>
+         <diffus_const>88.</diffus_const>
+         <diffus_slope>35.4</diffus_slope>
+         <cn2_bare>80</cn2_bare>
+         <cn_red>20</cn_red>
+         <cn_cov>.8</cn_cov>
+         <salb>0.13</salb>
+         <cona>2.5</cona>
+         <u>4</u>
+         <dlayer>150  150  300  300  300  300  300</dlayer>
+         <sat>0.500 0.509 0.510 0.505 0.490 0.480 0.480</sat>
+         <dul>0.450 0.459  0.45 0.44  0.42  0.41  0.41</dul>
+         <sw>0.450 0.259  0.25 0.34  0.42  0.41  0.41</sw>
+         <ll15>0.230 0.240 0.240 0.250 0.260 0.270 0.280</ll15>
+         <air_dry>0.10 0.20 0.20 0.20 0.20 0.20 0.20</air_dry>
+         <swcon>0.2  0.2  0.2  0.2  0.2  0.2  0.2</swcon>
+         <bd>1.30 1.30 1.29 1.31 1.35 1.36 1.36</bd>
+      </initdata>
+   </component>
+   <component name="soiln2" executable="%apsuite\apsim\soiln2\lib\soiln2.dll">
+      <initdata>
+         <include>%apsuite\apsim\soiln2\soiln2.xml</include>
+         <amp>15.0</amp>
+         <tav>20.0</tav>
+         <root_cn>20.</root_cn>
+         <root_wt>1000.</root_wt>
+         <soil_cn>14.5</soil_cn>
+         <oc>1.00 0.84 0.77 0.65 0.54 0.48 0.43</oc>
+         <ph>8.20 8.50 8.60 8.60 7.40 5.30 5.00</ph>
+         <fbiom>.035 .025 .015 0.01 0.01 0.01 0.01</fbiom>
+         <finert>0.30 0.50 0.60 0.75 0.90 0.99 0.99</finert>
+         <no3ppm>99.2  97.6  4.9  2.7  1.5  1.8  1.4</no3ppm>
+         <nh4ppm>0.30 0.30 0.30 0.30 0.30 0.50 0.50</nh4ppm>
+         <ureappm>0  0    0    0    0    0    0</ureappm>
+         <enr_a_coeff>7.4</enr_a_coeff>
+         <enr_b_coeff>0.2</enr_b_coeff>
+         <profile_reduction>off</profile_reduction>
+      </initdata>
+   </component>
+    <component name="pastureconverter" executable="%apsuite\apsim\pasture\lib\PastureScienceConverter.dll">
+      <initdata>
+         <debug>on</debug>
+         <sand>0.0     0.0     0.0     0.0     0.0     0.0     0.0  </sand>
+         <svp_fract> 0.75</svp_fract>
+         <co2_ppm> 350</co2_ppm>
+      </initdata>
+   </component>
+    <component name="Pasture" executable="C:\Program Files\Ausfarm\PASTURE.dll" active="T">
+      <executable name="C:\Program Files\Ausfarm\PASTURE.dll" version="1.2"/>
+    <initdata>
+      <![CDATA[
+          <initsection>
+            <init name="published_events" array="T">
+            </init>
+            <init name="driver_connections" array="T">
+            </init>
+            <init name="param_file" kind="string">
+              <val></val>
+            </init>
+            <init name="species" kind="string">
+              <val>Perennial Ryegrass</val>
+            </init>
+            <init name="nutrients" kind="string">
+              <val>N</val>
+            </init>
+            <init name="fertility" kind="double">
+              <val>0.0</val>
+            </init>
+            <init name="layers" kind="double" array="T" unit="mm">
+            </init>
+            <init name="max_rtdep" kind="double" unit="mm">
+              <val>250.0</val>
+            </init>
+            <init name="lagged_day_t" kind="double" unit="oC">
+              <val>-999.9</val>
+            </init>
+            <init name="phenology" kind="double">
+              <val>1.005</val>
+            </init>
+            <init name="flower_len" kind="double" unit="d">
+              <val>0.0</val>
+            </init>
+            <init name="flower_time" kind="double" unit="d">
+              <val>0.0</val>
+            </init>
+            <init name="senc_index" kind="double" unit="d">
+              <val>0.0</val>
+            </init>
+            <init name="dorm_index" kind="double" unit="d">
+              <val>0.0</val>
+            </init>
+            <init name="dorm_t" kind="double" unit="oC">
+              <val>-999.9</val>
+            </init>
+            <init name="extinct_coeff" kind="double" array="T">
+              <val>0.0</val>
+              <val>0.5</val>
+              <val>0.0</val>
+            </init>
+            <init name="green" array="T">
+              <element>
+                <field name="status" kind="string">
+                  <val>established</val>
+                </field>
+                <field name="herbage" array="T">
+                  <element>
+                    <field name="dmd" kind="double" array="T" unit="kg/kg">
+                      <val>0.825</val>
+                    </field>
+                    <field name="weight" kind="double" array="T" unit="kg/ha">
+                      <val>4000.0</val>
+                    </field>
+                    <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.15</val>
+                    </field>
+                    <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.15</val>
+                    </field>
+                    <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.15</val>
+                    </field>
+                    <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                      <val>10.0</val>
+                    </field>
+                  </element>
+                  <element>
+                    <field name="dmd" kind="double" array="T" unit="kg/kg">
+                      <val>0.825</val>
+                    </field>
+                    <field name="weight" kind="double" array="T" unit="kg/ha">
+                      <val>100.0</val>
+                    </field>
+                    <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.08</val>
+                    </field>
+                    <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.08</val>
+                    </field>
+                    <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.08</val>
+                    </field>
+                    <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                      <val>10.0</val>
+                    </field>
+                  </element>
+                </field>
+                <field name="root_wt" array="T">
+                  <element kind="double" array="T" unit="kg/ha">
+                    <val>4000.0</val>
+                  </element>
+                  <element kind="double" array="T" unit="kg/ha">
+                    <val>0.0</val>
+                  </element>
+                </field>
+                <field name="rt_dep" kind="double" unit="mm">
+                  <val>200.0</val>
+                </field>
+                <field name="estab_index" kind="double">
+                  <val>0.0</val>
+                </field>
+                <field name="stress_index" kind="double">
+                  <val>0.0</val>
+                </field>
+                <field name="stem_reloc" kind="double" unit="kg/ha">
+                  <val>0.0</val>
+                </field>
+                <field name="frosts" kind="integer4">
+                  <val>0</val>
+                </field>
+              </element>
+            </init>
+            <init name="dry" array="T">
+              <element>
+                <field name="status" kind="string">
+                  <val>dead</val>
+                </field>
+                <field name="herbage" array="T">
+                  <element>
+                    <field name="dmd" kind="double" array="T" unit="kg/kg">
+                      <val>0.65</val>
+                    </field>
+                    <field name="weight" kind="double" array="T" unit="kg/ha">
+                      <val>500.0</val>
+                    </field>
+                    <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                      <val>10.0</val>
+                    </field>
+                  </element>
+                  <element>
+                    <field name="dmd" kind="double" array="T" unit="kg/kg">
+                      <val>0.425</val>
+                    </field>
+                    <field name="weight" kind="double" array="T" unit="kg/ha">
+                      <val>100.0</val>
+                    </field>
+                    <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.04</val>
+                    </field>
+                    <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                      <val>10.0</val>
+                    </field>
+                  </element>
+                </field>
+              </element>
+              <element>
+                <field name="status" kind="string">
+                  <val>litter</val>
+                </field>
+                <field name="herbage" array="T">
+                  <element>
+                    <field name="dmd" kind="double" array="T" unit="kg/kg">
+                      <val>0.651</val>
+                    </field>
+                    <field name="weight" kind="double" array="T" unit="kg/ha">
+                      <val>233.0</val>
+                    </field>
+                    <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.04</val>
+                    </field>
+                    <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                      <val>10.0</val>
+                    </field>
+                  </element>
+                  <element>
+                    <field name="dmd" kind="double" array="T" unit="kg/kg">
+                      <val>0.0</val>
+                    </field>
+                    <field name="weight" kind="double" array="T" unit="kg/ha">
+                      <val>0.0</val>
+                    </field>
+                    <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                      <val>0.04</val>
+                    </field>
+                    <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                       <val>0.04</val>
+                    </field>
+                    <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                      <val>10.0</val>
+                    </field>
+                  </element>
+                </field>
+              </element>
+            </init>
+            <init name="seeds">
+              <field name="soft_unripe" kind="double" array="T" unit="kg/ha">
+              </field>
+              <field name="soft_ripe" kind="double" array="T" unit="kg/ha">
+              </field>
+              <field name="hard_unripe" kind="double" array="T" unit="kg/ha">
+              </field>
+              <field name="hard_ripe" kind="double" array="T" unit="kg/ha">
+              </field>
+            </init>
+            <init name="seed_dorm_time" kind="double" unit="d">
+              <val>0.0</val>
+            </init>
+            <init name="germ_index" kind="double" unit="d">
+              <val>0.0</val>
+            </init>
+          </initsection>
+      ]]>
+    </initdata>
+
+    </component>
+
+
+
+</Simulation>

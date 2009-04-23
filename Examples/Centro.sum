@@ -1,0 +1,542 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Centro
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component "Grey Vertosol-Kupunn (Kupunn No009) Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component "Grey Vertosol-Kupunn (Kupunn No009) Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "centro" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 30/04/1990
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        year
+        day
+        DaysAfterSowing
+        biomass
+        green_biomass
+        stover_wt
+        yield
+        lai
+        esw_layr()
+        root_depth
+
+     Output file = Centro.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 ) then
+              if (date_within('23-sep, 23-sep') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('yes' = 'yes' and today = date('23-sep'))) then
+        centro sow plants =20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if centro.stagename = 'harvest_ripe' or centro.plant_status = 'dead' then
+       centro  harvest
+       centro  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- centro.sowing
+             fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Grey Vertosol-Kupunn (Kupunn No009) Water Initialisation --------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.110  0.210  0.390  0.440  0.210  1.400  0.762  0.300
+          150.-  300.  0.170  0.210  0.390  0.440  0.210  1.390  0.190  0.300
+          300.-  600.  0.210  0.210  0.400  0.450  0.220  1.370  0.048  0.300
+          600.-  900.  0.210  0.210  0.410  0.460  0.250  1.360  0.000  0.300
+          900.- 1200.  0.210  0.210  0.400  0.450  0.270  1.380  0.000  0.300
+         1200.- 1500.  0.210  0.210  0.390  0.440  0.310  1.390  0.000  0.300
+         1500.- 1800.  0.210  0.210  0.380  0.430  0.360  1.420  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      31.50       0.00      27.00       7.50
+          150.-  300.      31.50       0.00      27.00       7.50
+          300.-  600.      63.00       3.00      57.00      15.00
+          600.-  900.      63.00      12.00      60.00      15.00
+          900.- 1200.      63.00      18.00      57.00      15.00
+         1200.- 1500.      63.00      30.00      54.00      15.00
+         1500.- 1800.      63.00      45.00      51.00      15.00
+          ---------------------------------------------------------
+               Totals     378.00     108.00     333.00      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Grey Vertosol-Kupunn (Kupunn No009) Nitrogen Initialisation -----------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Grey Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24   12.60    2.10    0.00
+             2     7.00  1.24   10.43    2.09    0.00
+             3     7.00  1.25   12.33    3.70    0.00
+             4     7.00  1.10    8.16    2.86    0.00
+             5     7.00  0.71    4.14    0.83    0.00
+             6     7.00  0.34    4.17    0.42    0.00
+             7     7.00  0.26    4.26    0.04    0.00
+          ------------------------------------------------
+           Totals               56.09   12.03    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      25439.1  2119.9   600.9    75.1   138.9     3.5
+             2      25651.2  2137.6   202.8    25.3   108.1     2.7
+             3      51173.5  4264.5   201.5    25.2    65.6     1.6
+             4      44880.0  3740.0     0.0     0.0    39.8     1.0
+             5      29394.0  2449.5     0.0     0.0    24.1     0.6
+             6      14178.0  1181.5     0.0     0.0    14.6     0.4
+             7      11076.0   923.0     0.0     0.0     8.9     0.2
+          ---------------------------------------------------------
+           Totals  201791.8 16816.0  1005.2   125.6   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+23 September 1988(Day of year=267), Sowing rule: 
+     Manager sending message :- centro sow  plants = 20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
+23 September 1988(Day of year=267), centro: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = cavalcade
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      40 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      40 (vd)
+              tt_emergence               =     320     360 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     600     305     300 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      73      73 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     740     740 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     350     350 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     300 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0080     0.0080
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.10       0.10
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.190       1.000
+         150.0     0.060          0.210       1.000
+         300.0     0.060          0.250       1.000
+         300.0     0.040          0.280       1.000
+         300.0     0.040          0.310       1.000
+         300.0     0.020          0.370       1.000
+         300.0     0.020          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   174mm in  1800mm total depth ( 10%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            267   30.0   20.0  250.0   0.0   0.0 cavalcade
+         ------------------------------------------------
+     
+23 September 1988(Day of year=267), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+24 September 1988(Day of year=268), centro: 
+      stage 2.0 germination
+7 October 1988(Day of year=281), centro: 
+      stage 3.0 emergence
+                     biomass =          14.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   16.82 (mm)
+6 November 1988(Day of year=311), centro: 
+      stage 4.0 end_of_juvenile
+                     biomass =          58.76 (g/m^2)   lai          =   0.753 (m^2/m^2)
+                     stover N conc =     5.63 (%)    extractable sw =   94.88 (mm)
+2 December 1988(Day of year=337), centro: 
+      stage 5.0 floral_initiation
+                     biomass =         257.78 (g/m^2)   lai          =   1.793 (m^2/m^2)
+                     stover N conc =     3.82 (%)    extractable sw =   53.18 (mm)
+7 December 1988(Day of year=342), centro: 
+      stage 6.0 flowering
+                     biomass =         282.43 (g/m^2)   lai          =   1.732 (m^2/m^2)
+                     stover N conc =     3.62 (%)    extractable sw =   41.84 (mm)
+30 January 1989(Day of year=30), centro: 
+      stage 7.0 start_grain_fill
+                     biomass =         690.55 (g/m^2)   lai          =   1.373 (m^2/m^2)
+                     stover N conc =     2.68 (%)    extractable sw =   15.45 (mm)
+26 February 1989(Day of year=57), centro: 
+      stage 8.0 end_grain_fill
+                     biomass =         798.77 (g/m^2)   lai          =   0.820 (m^2/m^2)
+                     stover N conc =     2.72 (%)    extractable sw =   86.30 (mm)
+19 March 1989(Day of year=78), centro: 
+      stage 9.0 maturity
+                     biomass =         917.35 (g/m^2)   lai          =   1.054 (m^2/m^2)
+                     stover N conc =     2.26 (%)    extractable sw =   45.55 (mm)
+20 March 1989(Day of year=79), centro: 
+      stage 10.0 harvest_ripe
+                     biomass =         921.25 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.69 (%)    extractable sw =   43.79 (mm)
+20 March 1989(Day of year=79), Harvesting rule: 
+     Manager sending message :- centro harvest
+     
+      flowering day          =  342                           stover (kg/ha)         =     8298.4
+      maturity day           =   78                           grain yield (kg/ha)    =      914.1
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1038.7
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.749
+      total above ground biomass (kg/ha)    =     9212.5
+      live above ground biomass (kg/ha)     =     9212.5
+      green above ground biomass (kg/ha)    =     5675.2
+      senesced above ground biomass (kg/ha) =     3537.3
+      number of leaves       =    611.5
+      DM Root:Shoot ratio    =     0.32                       Harvest Index          =       0.10
+      Stover C:N ratio       =    23.45                       Root C:N ratio         =      15.82
+      grain N percent        =     1.70                       total N content (kg/ha)=     157.10
+      grain N uptake (kg/ha) =    15.54                       senesced N content (kg/ha)=   13.48
+      green N content (kg/ha)=   128.08
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.002        0.000        0.020
+         end_of_juvenile      to floral_initiation       0.157        0.189        0.000        0.069
+         floral_initiation    to flowering               0.188        0.225        0.000        0.067
+         flowering            to start_grain_fill        0.308        0.368        0.000        0.039
+         start_grain_fill     to end_grain_fill          0.341        0.401        0.000        0.033
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                7464.7                     0.0
+                          N  (kg/ha) =                 120.07                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 914.1                     0.0
+                          N  (kg/ha) =                  15.54                    0.00
+     
+      stage 3.0 emergence
+                     biomass =          30.83 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   43.79 (mm)
+     Manager sending message :- centro end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 308.3                   345.0
+                          N  (kg/ha) =                   8.40                    3.29
+     
+23 September 1989(Day of year=266), Sowing rule: 
+     Manager sending message :- centro sow  plants = 20, sowing_depth = 30, cultivar = cavalcade, row_spacing = 250, crop_class = plant
+23 September 1989(Day of year=266), centro: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = cavalcade
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      40 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      40 (vd)
+              tt_emergence               =     320     360 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     600     305     300 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      73      73 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     740     740 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     350     350 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     300 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0080     0.0080
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.10       0.10
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.190       1.000
+         150.0     0.060          0.210       1.000
+         300.0     0.060          0.250       1.000
+         300.0     0.040          0.280       1.000
+         300.0     0.040          0.310       1.000
+         300.0     0.020          0.370       1.000
+         300.0     0.020          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   174mm in  1800mm total depth ( 10%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            266   30.0   20.0  250.0   0.0   0.0 cavalcade
+         ------------------------------------------------
+     
+23 September 1989(Day of year=266), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+24 September 1989(Day of year=267), centro: 
+      stage 2.0 germination
+9 October 1989(Day of year=282), centro: 
+      stage 3.0 emergence
+                     biomass =          14.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   15.51 (mm)
+6 November 1989(Day of year=310), centro: 
+      stage 4.0 end_of_juvenile
+                     biomass =          29.06 (g/m^2)   lai          =   0.278 (m^2/m^2)
+                     stover N conc =     5.65 (%)    extractable sw =  169.00 (mm)
+29 November 1989(Day of year=333), centro: 
+      stage 5.0 floral_initiation
+                     biomass =         262.51 (g/m^2)   lai          =   2.921 (m^2/m^2)
+                     stover N conc =     2.71 (%)    extractable sw =  132.07 (mm)
+5 December 1989(Day of year=339), centro: 
+      stage 6.0 flowering
+                     biomass =         345.24 (g/m^2)   lai          =   3.443 (m^2/m^2)
+                     stover N conc =     2.25 (%)    extractable sw =  106.90 (mm)
+29 January 1990(Day of year=29), centro: 
+      stage 7.0 start_grain_fill
+                     biomass =         835.85 (g/m^2)   lai          =   1.562 (m^2/m^2)
+                     stover N conc =     2.62 (%)    extractable sw =   23.68 (mm)
+23 February 1990(Day of year=54), centro: 
+      stage 8.0 end_grain_fill
+                     biomass =        1064.45 (g/m^2)   lai          =   1.449 (m^2/m^2)
+                     stover N conc =     2.35 (%)    extractable sw =   55.12 (mm)
+17 March 1990(Day of year=76), centro: 
+      stage 9.0 maturity
+                     biomass =        1161.87 (g/m^2)   lai          =   0.946 (m^2/m^2)
+                     stover N conc =     2.32 (%)    extractable sw =   12.67 (mm)
+18 March 1990(Day of year=77), centro: 
+      stage 10.0 harvest_ripe
+                     biomass =        1162.64 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.74 (%)    extractable sw =   11.99 (mm)
+18 March 1990(Day of year=77), Harvesting rule: 
+     Manager sending message :- centro harvest
+     
+      flowering day          =  339                           stover (kg/ha)         =    10466.4
+      maturity day           =   76                           grain yield (kg/ha)    =     1160.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1318.2
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.840
+      total above ground biomass (kg/ha)    =    11626.4
+      live above ground biomass (kg/ha)     =    11626.4
+      green above ground biomass (kg/ha)    =     7463.2
+      senesced above ground biomass (kg/ha) =     4163.2
+      number of leaves       =    612.4
+      DM Root:Shoot ratio    =     0.30                       Harvest Index          =       0.10
+      Stover C:N ratio       =    22.41                       Root C:N ratio         =      15.61
+      grain N percent        =     1.70                       total N content (kg/ha)=     206.54
+      grain N uptake (kg/ha) =    19.72                       senesced N content (kg/ha)=   14.36
+      green N content (kg/ha)=   172.46
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.009
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.008        0.064
+         floral_initiation    to flowering               0.004        0.008        0.019        0.093
+         flowering            to start_grain_fill        0.216        0.258        0.013        0.116
+         start_grain_fill     to end_grain_fill          0.216        0.260        0.011        0.097
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                9256.9                     0.0
+                          N  (kg/ha) =                 157.16                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1160.0                     0.0
+                          N  (kg/ha) =                  19.72                    0.00
+     
+      stage 3.0 emergence
+                     biomass =          39.84 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   11.99 (mm)
+     Manager sending message :- centro end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 398.4                   406.9
+                          N  (kg/ha) =                   8.40                    3.75
+     
+30 April 1990(Day of year=120), clock: 
+     Simulation is terminating due to end criteria being met.

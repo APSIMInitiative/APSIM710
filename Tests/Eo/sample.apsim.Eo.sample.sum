@@ -1,0 +1,96 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = eo sample
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                           "eo" = %apsim%\Model\eo.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1996
+     Simulation end date   =  1/01/1997
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.year
+        clock.day
+        eo.eo_pm
+        eo.ra
+        met.evap
+
+     Output file = eo.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: coopr96.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     canopy_height = 00
+     lai = 0.0
+     cover_green=0.00
+     cover_tot = 0.00
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+     Manager creating a new local real variable : canopy_height = 0.00000
+     Manager creating a new local real variable : lai = 0.00000
+     Manager creating a new local real variable : cover_green = 0.00000
+     Manager creating a new local real variable : cover_tot = 0.00000
+
+------- eo Initialisation -----------------------------------------------------
+     Initialising:
+     
+        - Reading Eo Parameters
+     
+     
+     
+                      Eo Parameters
+          -------------------------------------------------------------------
+        Vpd Factor  Albedo  Max albedo  Z0soil  Dflt_Wind  Dflt_Pa Dflt_instrum_ht
+            (-)       (-)       (-)       (mm)   (km/day)   (hpa)      (mm)
+          -------------------------------------------------------------------
+           0.75      0.13      0.23     3.000     60.00   1000.00   2000.00
+     
+      instrum_disp instrum_z0  extn_cf  plant_method wind_day_fr  adj_fact  wind_mlt
+           (mm)      (mm)       (-)                     (-)         (-)      (-)
+          -------------------------------------------------------------------------
+          37.00      4.00      0.80 eo_penman_d_x_cover   0.66      1.00      1.00
+          -------------------------------------------------------------------------
+     
+     
+     
+          Default instrument height used =      2000. (mm)
+          Source of VPD is mint
+          Default atmospheric pressure used =   1000.0 (mb)
+------- Start of simulation  --------------------------------------------------
+1 January 1997(Day of year=1), clock: 
+     Simulation is terminating due to end criteria being met.

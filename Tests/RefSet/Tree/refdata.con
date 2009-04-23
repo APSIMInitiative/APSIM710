@@ -1,0 +1,34 @@
+! Derived from McKeon's 7 steps.
+! See http://apsru.sth.dpi.qld.gov.au/~devoilp/grasp for a detailed explanation
+
+version = 7.0(2)
+
+! All off.
+[APSIM.step1.control]
+title=Step 1. All off.
+module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[all] refdata.par[step1]
+module = input(met) narayen.met[weather]
+module = manager refdata.par[all]
+module = SoilWat   refdata.par [all] %apsim%/Model/SoilWat.xml [standard]
+module = tree   refdata.par [all] refdata.par [step1] refdata.par [soilwat] %apsim%/Model/tree.xml [standard]
+
+! Transpiration
+[APSIM.step2.control]
+title=Step 2. Transpiring
+module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[all] refdata.par[step2]
+module = input(met) narayen.met[weather]
+module = manager refdata.par[all]
+module = SoilWat   refdata.par [all] %apsim%/Model/SoilWat.xml [standard]
+module = tree   refdata.par [all] refdata.par [step2] refdata.par [soilwat] %apsim%/Model/tree.xml [standard]
+
+! SWIM interface.
+[APSIM.step3.control]
+title=Step 3. swim
+module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[gmtb0]
+module = input(met) gmtapsim.dat[weather]
+module = manager refdata.par[all]
+module = SWIM2   refdata.par [gmtb0] %apsim%/Model/SWIM2.xml [standard]
+module = tree   refdata.par [all] refdata.par [step3] refdata.par [swim] %apsim%/Model/tree.xml [standard]

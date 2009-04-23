@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>SOI PHASES MODULE: Adding SOI capability to APSIM </title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1"><strong>SOI PHASES MODULE: </strong><strong>Adding SOI capability to APSIM </strong></p>
+<p class="Normal">&nbsp; </p>
+<p class="Title2">Introduction </p>
+<p class="Normal">Many farming decisions are influenced by the long-range climate outlook and specifically by the phases of the SOI (Stone et al., 1996). Examples are, for instance, </p>
+<ul>
+  <li class="Normal">the amount of nitrogen fertilizer applied to a crop, </li>
+  <li class="Normal">deciding whether to double crop or to fallow, </li>
+  <li class="Normal">investigating if it would be better to grow wheat now or sorghum next spring, </li>
+  <li><span class="Normal"> investigating if earlier or later sown crops more economical. </span></li>
+</ul>
+<p class="Normal">There are many more of these decisions. In order to simulate the tactical and strategic responses to SOI conditions, the SOI module was developed that allows conditional systems simulations based on the SOI phases. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Implementation </p>
+<p class="Normal">The SOI Phases module requires an up to date list of soi phases. This is usually comes with your apsim installation as %apsuite\apsim\soi\sample\phases.soi. This source of this file is <a href="file:///\\thor\public\met\phases.soi">\\thor\public\met\phases.soi </a>.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">To make the module available to APSIM the following line should be added to the configuration (.con) file:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;module = soi phases.soi [soi] </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Manager Rules </p>
+<p class="Normal">The basic format of the SOI module syntax is:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;Soi[&lt;month&gt; or &lt;lag&gt;] = &lt;phase&gt;</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Where &lt;month&gt; is a month in either numeric format (1,2,3,4….12) or 3-letter month abbreviation </p>
+<p class="Normal">(Jan,Feb,Mar….Dec). The full Date will also work, but remember the SOI Phases are monthly values.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Where &lt;lag&gt; is a negative or zero numerical value that indicates the number of months prior to the current </p>
+<p class="Normal">Date, that we are comparing the SOI Phase to. Eg: -1 is one month prior, -2 is two months prior…</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Where &lt;phase&gt; is the SOI Phase we are comparing to. There are five Phases, 1 to 5:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">1 – Consistently Negative SOI </p>
+<p class="Normal">2 – Consistently Positive SOI </p>
+<p class="Normal">3 – Rapidly Falling SOI </p>
+<p class="Normal">4 – Rapidly Rising SOI </p>
+<p class="Normal">5 – Consistently Near Zero SOI</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong><em>Examples </em></strong></p>
+<p class="Normal">! Sow Sorghum if the SOI Phase in February is Consistently Negative </p>
+<p class="Normal">If soi[Feb] = 1 then </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;Sorgum sow ….. </p>
+<p class="Normal">Else </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;Cotton sow …. </p>
+<p class="Normal">Endif </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">! Set the Soilwater if the current SOI Phase is Rapidly Rising </p>
+<p class="Normal">if soi[0] = 4 then </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;soilwat2 init </p>
+<p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;soilwat2 set sw = 0.344 0.347 0.369 0.33 0.34 0.33 0.345 (mm/mm) </p>
+<p class="Normal">endif </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong><em>Other examples</em></strong></p>
+<p class="Normal">If soi[‘-1'] = 1 then &szlig; <em>Notice the inverted commas around the negative value </em></p>
+<p class="Normal">If soi[‘15-Oct'] = 5 then </p>
+<p class="Normal">if (today = date('15-Oct') AND soi[‘-2'] = 3) then </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Report Rules </p>
+<p class="Normal">The SOI Phases module is used in the Report module as it is in the Manager, with one exception. </p>
+<p class="Normal">Because the Report module doesn't use the Manager to parse its variables, lag values (negative numbers) should not be enclosed in inverted commas.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong><em>Examples</em></strong></p>
+<p class="Normal">Module_names = soi </p>
+<p class="Normal">Variable_names = soi[Apr] </p>
+<p class="Normal">Variable_alias = soi </p>
+<p class="Normal">Units = - </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Module_names = soi </p>
+<p class="Normal">Variable_names = soi[-2] </p>
+<p class="Normal">Variable_alias = soi[-2] </p>
+<p class="Normal">Units = - </p>
+</body>
+</html>

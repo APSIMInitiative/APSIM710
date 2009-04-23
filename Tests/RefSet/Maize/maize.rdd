@@ -1,0 +1,109 @@
+[main]
+module = maize
+owner = Dr Michael Robertson
+contact = Neil Huth
+Notes = Test do not currently test APSwim communications
+
+; Inward State Stimuli
+; --------------------
+[temperature]
+name = Atmospheric Air Temperature
+description = Temperature drives processes such as photosynthesis, phenology and canopy development.
+apsimname = maxt mint
+internalname= g_maxt g_mint
+indicators= biomass lai tt_tot
+
+[radiation]
+name = Solar Radiation
+description = Radiation drives photosynthesis and effects leaf area development.
+apsimname = radn
+internalname= g_radn
+indicators= biomass lai
+
+[soil_moisture]
+name = Available Soil Water
+description = Soil water supply and content can affect photosynthesis and crop development processes.
+apsimname = sw_dep
+internalname= g_sw_dep
+indicators= biomass lai swdef_photo
+
+[soil_nitrogen]
+name = Soil Nitrogen.
+description = Soil nitrogen supply can affect photosynthesis and crop development processes.
+apsimname = no3
+internalname= g_no3
+indicators= biomass lai nfact_photo root_length
+
+[Photoperiod]
+name = Photoperiod
+description = Photoperiod (day length) can affect phenological development
+apsimname = day latitude
+internalname= g_day, g_latitude
+indicators= tt_tot
+
+; Outward State Stimuli
+; ---------------------
+[reset_sw]
+name = Resetting soil water profile
+description = Extraction of water by the crop requires the module to send this information to the water balance.
+apsimname = dlt_sw_dep
+internalname= g_dlt_sw_dep
+indicators= sw_dep
+
+[reset_no3]
+name = Resetting soil nitrate profile
+description = Extraction of nitrate by the crop requires the module to send this information to the nitrogen balance.
+apsimname = dlt_no3
+internalname= g_dlt_no3gsm
+indicators= no3
+
+
+; Inward Message Stimuli
+; ----------------------
+[sow_msg]
+name = The Sowing Command
+description = An explicit sowing command is required to initiate crop development.
+apsimname = sow
+internalname= mes_sow
+indicators= crop_status
+
+[harvest_msg]
+name = The Harvest Command
+description = An explicit harvest command is required for removal of grain.
+apsimname = harvest
+internalname= mes_harvest
+indicators= yield
+
+[kill_crop_msg]
+name = The Kill Crop Command
+description = An explicit harvest command can be issued to kill the crop and transfer crop biomass to dead plant pools.
+apsimname = kill_crop
+internalname= mes_kill_crop
+indicators= crop_status dm_dead
+
+[end_crop_msg]
+name = The End Crop Command
+description = An explicit end command is required to finish the crop and transfer biomass to residues.
+apsimname = end_crop
+internalname= mes_end_crop
+indicators= crop_status
+
+; Outward Message Stimuli
+; -----------------------
+[add_residue_msg]
+name = The Addition of surface residues
+description = Above-ground crop biomass returns to the soil as surface residues.
+apsimname = add_residue
+internalname= dlt_residue_wt dlt_residue_n
+indicators= residue_wt residue_n
+
+[incorp_fom_msg]
+name = The Addition of surface residues
+description = Above-ground crop biomass returns to the soil as surface residues.
+apsimname = incorp_fom
+internalname= dlt_dm_incorp dlt_n_incorp
+indicators= fom_c fom_n
+
+
+
+

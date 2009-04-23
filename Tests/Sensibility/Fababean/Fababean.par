@@ -1,0 +1,52 @@
+[dalby600.report.parameters]
+outputfile  =Dalby600.out
+[dalby1500.report.parameters]
+outputfile  =Dalby1500.out
+[roma400.report.parameters]
+outputfile  =Roma400.out
+[roma800.report.parameters]
+outputfile  =Roma800.out
+
+[sensibility.report.parameters]
+
+variable = clock.day
+variable = clock.year
+variable = fababean.lai
+variable = fababean.biomass
+variable = fababean.yield
+variable = tracker.sum_ep
+
+[sensibility.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1957
+end_date=21/12/2002
+
+[sensibility.manager.start_of_day]
+
+if today = date('15-may') then
+   SoilWat reset
+   SoilN reset
+   surfaceom reset
+   fababean sow cultivar = fiord, plants = 25 (/m2), sowing_depth = 40 (mm)
+endif
+
+[sensibility.manager.end_of_day]
+if fababean.StageName = 'harvest_ripe' or fababean.plant_status = 'dead' then
+
+   report do_output
+   fababean harvest
+   fababean end_crop
+
+endif
+
+[Dalby600.SummaryFile.parameters]
+summaryfile=Dalby600.sum
+[Dalby1500.SummaryFile.parameters]
+summaryfile=Dalby1500.sum
+[Roma400.SummaryFile.parameters]
+summaryfile=Roma400.sum
+[Roma800.SummaryFile.parameters]
+summaryfile=roma800.sum
+
+[sensibility.tracker.parameters]
+variable = sum of fababean.ep on process from reported to now as sum_ep

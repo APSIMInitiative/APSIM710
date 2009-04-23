@@ -1,0 +1,13 @@
+version = 7.0(2)
+[APSIM.sample_log]
+title=Log Sample Simulation
+module = clock       log.par [sample] %apsim%/Model/clock.xml [standard]
+module = report      log.par[sample]
+module = input(met)  %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager     %apsim%/Tests/Canola/canola.par[sample]
+module = Fertiliser  %apsim%/Model/Fertiliser.xml [standard]
+module = SoilWat     %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = surfaceom   %apsim%/Tests/SurfaceOM/SurfaceOM.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN       %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = plant(canola)   %apsim%/Tests/Canola/canola.par [sample] %apsim%/Model/canola.xml [standard]
+module = Log     log.par[sample]

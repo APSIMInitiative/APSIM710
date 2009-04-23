@@ -1,0 +1,2451 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = populneaW90
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component             "OutputCalculator" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component               "WellCamp Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component            "WellCamp Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "Epopulnea" = %apsim%\Model\Growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1889
+     Simulation end date   =  4/09/2006
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\MetFiles\Dalby.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        epopulnea.killing
+     Output variables:
+        dd/mm/yyyy as Date
+        day
+        lai
+        adm_green(1) as stem_wt
+        foliage_mass as leaf_wt
+        fw
+        fn
+        rain
+        irrigation
+        es
+        sw
+        sw_dep()
+        ft
+        plantleaf
+        plantstem
+        plantla
+        plantbiomass
+        swsi
+        plants
+        slai
+        no3()
+        nh4()
+        root_depth
+        rlv
+        ep
+        eo
+        rtr
+        sw150
+        petr
+        peta
+        ffasw
+        height
+        ftcanopy
+        sw_demand
+        sw_supply
+        runoff
+        cum_stress
+        esw
+        fwcanopy
+        ga
+        biomass
+        fvpd
+
+     Output file = populneaW90.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+         21-feb  Prepare      Epopulnea establish plants = 62500, init_section = seedling
+         21-feb  Prepare      'Wellcamp Water' reset
+         21-feb  Prepare      Irrigation apply amount = 90
+         21-aug  Prepare      epopulnea kill
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- OutputCalculator Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     plantbiomass = 0
+     plantleaf = 0
+     plantstem = 0
+     plantla = 0
+     swsi = 0
+     nodes = 0
+     rtr = 0
+     sw150 = 0
+     windspeed = 5.55
+     
+     SECTION:- endofday
+     if lai > 0 then
+        plantbiomass = biomass/plants*1000
+        plantleaf = foliage_mass/plants*1000
+        plantstem = adm_green(1)/ plants*1000
+        plantla = lai * 10000 / plants
+        swsi = swsi + (1.0 - swdef_photo)
+        rtr = ep / (eo * cover_green)
+     endif
+       sw150 = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6)
+       sw60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
+       ll60 = ll15_dep(1) + ll15_dep(2) + ll15_dep(3)
+       dul60 = dul_dep(1) + dul_dep(2) + dul_dep(3)
+     END of rules
+     
+     Manager creating a new local real variable : plantbiomass = 0.00000
+     Manager creating a new local real variable : plantleaf = 0.00000
+     Manager creating a new local real variable : plantstem = 0.00000
+     Manager creating a new local real variable : plantla = 0.00000
+     Manager creating a new local real variable : swsi = 0.00000
+     Manager creating a new local real variable : nodes = 0.00000
+     Manager creating a new local real variable : rtr = 0.00000
+     Manager creating a new local real variable : sw150 = 0.00000
+     Manager creating a new local real variable : windspeed = 5.55000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- WellCamp Water Initialisation -----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.190  0.190  0.540  0.590  0.190  0.900  0.762  0.300
+          150.-  300.  0.250  0.320  0.520  0.580  0.320  1.010  0.190  0.300
+          300.-  600.  0.300  0.380  0.520  0.590  0.380  1.020  0.048  0.300
+          600.-  900.  0.250  0.300  0.480  0.530  0.300  1.000  0.000  0.300
+          900.- 1200.  0.210  0.250  0.420  0.470  0.250  1.060  0.000  0.300
+         1200.- 1500.  0.210  0.280  0.400  0.450  0.280  1.140  0.000  0.300
+         1500.- 1800.  0.210  0.300  0.400  0.450  0.300  1.230  0.000  0.300
+         1800.- 2100.  0.210  0.300  0.400  0.450  0.300  1.230  0.000  0.300
+         2100.- 2500.  0.210  0.300  0.400  0.450  0.300  1.230  0.000  0.300
+         2500.- 3000.  0.210  0.300  0.400  0.450  0.300  1.230  0.000  0.300
+         3000.- 3500.  0.210  0.300  0.400  0.450  0.400  1.230  0.000  0.300
+         3500.- 4000.  0.210  0.300  0.400  0.450  0.400  1.230  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      28.50       0.00      52.50       7.50
+          150.-  300.      48.00       0.00      30.00       9.00
+          300.-  600.     114.00       0.00      42.00      21.00
+          600.-  900.      90.00       0.00      54.00      15.00
+          900.- 1200.      75.00       0.00      51.00      15.00
+         1200.- 1500.      84.00       0.00      36.00      15.00
+         1500.- 1800.      90.00       0.00      30.00      15.00
+         1800.- 2100.      90.00       0.00      30.00      15.00
+         2100.- 2500.     120.00       0.00      40.00      20.00
+         2500.- 3000.     150.00       0.00      50.00      25.00
+         3000.- 3500.     150.00      50.00      50.00      25.00
+         3500.- 4000.     150.00      50.00      50.00      25.00
+          ---------------------------------------------------------
+               Totals    1189.50     100.00     515.50     207.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.09       20.00        8.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              85.00    0.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.1     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- WellCamp Nitrogen Initialisation --------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    8.78    0.81    0.00
+             2     8.80  0.89    7.57    0.15    0.00
+             3     9.00  0.89   15.30    0.31    0.00
+             4     9.20  0.89   15.00    0.30    0.00
+             5     9.20  0.77   15.90    0.32    0.00
+             6     9.10  0.45   17.10    0.34    0.00
+             7     9.10  0.45   18.45    0.37    0.00
+             8     9.10  0.45   18.45    0.37    0.00
+             9     9.10  0.45   24.60    0.49    0.00
+            10     9.10  0.45   30.75    0.62    0.00
+            11     9.10  0.45   30.75    0.62    0.00
+            12     9.10  0.45   30.75    0.62    0.00
+          ------------------------------------------------
+           Totals              233.40    5.30    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      13834.5  1106.8   205.5    25.7    16.2     0.4
+             2      13377.7  1070.2   105.8    13.2    14.5     0.4
+             3      27153.5  2172.3    80.5    10.1    11.5     0.3
+             4      26673.6  2133.9    26.4     3.3     9.2     0.2
+             5      24473.9  1957.9    12.1     1.5     7.4     0.2
+             6      15382.4  1230.6     7.6     1.0     5.9     0.1
+             7      16596.8  1327.7     8.2     1.0     4.7     0.1
+             8      16596.8  1327.7     8.2     1.0     3.7     0.1
+             9      22129.0  1770.3    11.0     1.4     2.8     0.1
+            10      27661.3  2212.9    13.7     1.7     1.9     0.0
+            11      27661.3  2212.9    13.7     1.7     1.3     0.0
+            12      27661.3  2212.9    13.7     1.7     0.9     0.0
+          ---------------------------------------------------------
+           Totals  259202.1 20736.2   506.4    63.3    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+21 February 1889(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1889(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1889(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1889(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1889(Day of year=233), Epopulnea: 
+     Killing
+21 February 1890(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1890(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1890(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1890(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1890(Day of year=233), Epopulnea: 
+     Killing
+21 February 1891(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1891(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1891(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1891(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1891(Day of year=233), Epopulnea: 
+     Killing
+21 February 1892(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1892(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1892(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1892(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1892(Day of year=234), Epopulnea: 
+     Killing
+21 February 1893(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1893(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1893(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1893(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1893(Day of year=233), Epopulnea: 
+     Killing
+21 February 1894(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1894(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1894(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1894(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1894(Day of year=233), Epopulnea: 
+     Killing
+21 February 1895(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1895(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1895(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1895(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1895(Day of year=233), Epopulnea: 
+     Killing
+21 February 1896(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1896(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1896(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1896(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1896(Day of year=234), Epopulnea: 
+     Killing
+21 February 1897(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1897(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1897(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1897(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1897(Day of year=233), Epopulnea: 
+     Killing
+21 February 1898(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1898(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1898(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1898(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1898(Day of year=233), Epopulnea: 
+     Killing
+21 February 1899(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1899(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1899(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1899(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1899(Day of year=233), Epopulnea: 
+     Killing
+21 February 1900(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1900(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1900(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1900(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1900(Day of year=233), Epopulnea: 
+     Killing
+21 February 1901(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1901(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1901(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1901(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1901(Day of year=233), Epopulnea: 
+     Killing
+21 February 1902(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1902(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1902(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1902(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1902(Day of year=233), Epopulnea: 
+     Killing
+21 February 1903(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1903(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1903(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1903(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1903(Day of year=233), Epopulnea: 
+     Killing
+21 February 1904(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1904(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1904(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1904(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1904(Day of year=234), Epopulnea: 
+     Killing
+21 February 1905(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1905(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1905(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1905(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1905(Day of year=233), Epopulnea: 
+     Killing
+21 February 1906(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1906(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1906(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1906(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1906(Day of year=233), Epopulnea: 
+     Killing
+21 February 1907(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1907(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1907(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1907(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1907(Day of year=233), Epopulnea: 
+     Killing
+21 February 1908(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1908(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1908(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1908(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1908(Day of year=234), Epopulnea: 
+     Killing
+21 February 1909(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1909(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1909(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1909(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1909(Day of year=233), Epopulnea: 
+     Killing
+21 February 1910(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1910(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1910(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1910(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1910(Day of year=233), Epopulnea: 
+     Killing
+21 February 1911(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1911(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1911(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1911(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1911(Day of year=233), Epopulnea: 
+     Killing
+21 February 1912(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1912(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1912(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1912(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1912(Day of year=234), Epopulnea: 
+     Killing
+21 February 1913(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1913(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1913(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1913(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1913(Day of year=233), Epopulnea: 
+     Killing
+21 February 1914(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1914(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1914(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1914(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1914(Day of year=233), Epopulnea: 
+     Killing
+21 February 1915(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1915(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1915(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1915(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1915(Day of year=233), Epopulnea: 
+     Killing
+21 February 1916(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1916(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1916(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1916(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1916(Day of year=234), Epopulnea: 
+     Killing
+21 February 1917(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1917(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1917(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1917(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1917(Day of year=233), Epopulnea: 
+     Killing
+21 February 1918(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1918(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1918(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1918(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1918(Day of year=233), Epopulnea: 
+     Killing
+21 February 1919(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1919(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1919(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1919(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1919(Day of year=233), Epopulnea: 
+     Killing
+21 February 1920(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1920(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1920(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1920(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1920(Day of year=234), Epopulnea: 
+     Killing
+21 February 1921(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1921(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1921(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1921(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1921(Day of year=233), Epopulnea: 
+     Killing
+21 February 1922(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1922(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1922(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1922(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1922(Day of year=233), Epopulnea: 
+     Killing
+21 February 1923(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1923(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1923(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1923(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1923(Day of year=233), Epopulnea: 
+     Killing
+21 February 1924(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1924(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1924(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1924(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1924(Day of year=234), Epopulnea: 
+     Killing
+21 February 1925(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1925(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1925(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1925(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1925(Day of year=233), Epopulnea: 
+     Killing
+21 February 1926(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1926(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1926(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1926(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1926(Day of year=233), Epopulnea: 
+     Killing
+21 February 1927(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1927(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1927(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1927(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1927(Day of year=233), Epopulnea: 
+     Killing
+21 February 1928(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1928(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1928(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1928(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1928(Day of year=234), Epopulnea: 
+     Killing
+21 February 1929(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1929(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1929(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1929(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1929(Day of year=233), Epopulnea: 
+     Killing
+21 February 1930(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1930(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1930(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1930(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1930(Day of year=233), Epopulnea: 
+     Killing
+21 February 1931(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1931(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1931(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1931(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1931(Day of year=233), Epopulnea: 
+     Killing
+21 February 1932(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1932(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1932(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1932(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1932(Day of year=234), Epopulnea: 
+     Killing
+21 February 1933(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1933(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1933(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1933(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1933(Day of year=233), Epopulnea: 
+     Killing
+21 February 1934(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1934(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1934(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1934(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1934(Day of year=233), Epopulnea: 
+     Killing
+21 February 1935(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1935(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1935(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1935(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1935(Day of year=233), Epopulnea: 
+     Killing
+21 February 1936(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1936(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1936(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1936(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1936(Day of year=234), Epopulnea: 
+     Killing
+21 February 1937(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1937(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1937(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1937(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1937(Day of year=233), Epopulnea: 
+     Killing
+21 February 1938(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1938(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1938(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1938(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1938(Day of year=233), Epopulnea: 
+     Killing
+21 February 1939(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1939(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1939(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1939(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1939(Day of year=233), Epopulnea: 
+     Killing
+21 February 1940(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1940(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1940(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1940(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1940(Day of year=234), Epopulnea: 
+     Killing
+21 February 1941(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1941(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1941(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1941(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1941(Day of year=233), Epopulnea: 
+     Killing
+21 February 1942(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1942(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1942(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1942(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1942(Day of year=233), Epopulnea: 
+     Killing
+21 February 1943(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1943(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1943(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1943(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1943(Day of year=233), Epopulnea: 
+     Killing
+21 February 1944(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1944(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1944(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1944(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1944(Day of year=234), Epopulnea: 
+     Killing
+21 February 1945(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1945(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1945(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1945(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1945(Day of year=233), Epopulnea: 
+     Killing
+21 February 1946(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1946(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1946(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1946(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1946(Day of year=233), Epopulnea: 
+     Killing
+21 February 1947(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1947(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1947(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1947(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1947(Day of year=233), Epopulnea: 
+     Killing
+21 February 1948(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1948(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1948(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1948(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1948(Day of year=234), Epopulnea: 
+     Killing
+21 February 1949(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1949(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1949(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1949(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1949(Day of year=233), Epopulnea: 
+     Killing
+21 February 1950(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1950(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1950(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1950(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1950(Day of year=233), Epopulnea: 
+     Killing
+21 February 1951(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1951(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1951(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1951(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1951(Day of year=233), Epopulnea: 
+     Killing
+21 February 1952(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1952(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1952(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1952(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1952(Day of year=234), Epopulnea: 
+     Killing
+21 February 1953(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1953(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1953(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1953(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1953(Day of year=233), Epopulnea: 
+     Killing
+21 February 1954(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1954(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1954(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1954(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1954(Day of year=233), Epopulnea: 
+     Killing
+21 February 1955(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1955(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1955(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1955(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1955(Day of year=233), Epopulnea: 
+     Killing
+21 February 1956(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1956(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1956(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1956(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1956(Day of year=234), Epopulnea: 
+     Killing
+21 February 1957(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1957(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1957(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1957(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1957(Day of year=233), Epopulnea: 
+     Killing
+21 February 1958(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1958(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1958(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1958(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1958(Day of year=233), Epopulnea: 
+     Killing
+21 February 1959(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1959(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1959(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1959(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1959(Day of year=233), Epopulnea: 
+     Killing
+21 February 1960(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1960(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1960(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1960(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1960(Day of year=234), Epopulnea: 
+     Killing
+21 February 1961(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1961(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1961(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1961(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1961(Day of year=233), Epopulnea: 
+     Killing
+21 February 1962(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1962(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1962(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1962(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1962(Day of year=233), Epopulnea: 
+     Killing
+21 February 1963(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1963(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1963(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1963(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1963(Day of year=233), Epopulnea: 
+     Killing
+21 February 1964(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1964(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1964(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1964(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1964(Day of year=234), Epopulnea: 
+     Killing
+21 February 1965(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1965(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1965(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1965(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1965(Day of year=233), Epopulnea: 
+     Killing
+21 February 1966(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1966(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1966(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1966(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1966(Day of year=233), Epopulnea: 
+     Killing
+21 February 1967(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1967(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1967(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1967(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1967(Day of year=233), Epopulnea: 
+     Killing
+21 February 1968(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1968(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1968(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1968(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1968(Day of year=234), Epopulnea: 
+     Killing
+21 February 1969(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1969(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1969(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1969(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1969(Day of year=233), Epopulnea: 
+     Killing
+21 February 1970(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1970(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1970(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1970(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1970(Day of year=233), Epopulnea: 
+     Killing
+21 February 1971(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1971(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1971(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1971(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1971(Day of year=233), Epopulnea: 
+     Killing
+21 February 1972(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1972(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1972(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1972(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1972(Day of year=234), Epopulnea: 
+     Killing
+21 February 1973(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1973(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1973(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1973(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1973(Day of year=233), Epopulnea: 
+     Killing
+21 February 1974(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1974(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1974(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1974(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1974(Day of year=233), Epopulnea: 
+     Killing
+21 February 1975(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1975(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1975(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1975(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1975(Day of year=233), Epopulnea: 
+     Killing
+21 February 1976(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1976(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1976(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1976(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1976(Day of year=234), Epopulnea: 
+     Killing
+21 February 1977(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1977(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1977(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1977(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1977(Day of year=233), Epopulnea: 
+     Killing
+21 February 1978(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1978(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1978(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1978(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1978(Day of year=233), Epopulnea: 
+     Killing
+21 February 1979(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1979(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1979(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1979(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1979(Day of year=233), Epopulnea: 
+     Killing
+21 February 1980(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1980(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1980(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1980(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1980(Day of year=234), Epopulnea: 
+     Killing
+21 February 1981(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1981(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1981(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1981(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1981(Day of year=233), Epopulnea: 
+     Killing
+21 February 1982(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1982(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1982(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1982(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1982(Day of year=233), Epopulnea: 
+     Killing
+21 February 1983(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1983(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1983(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1983(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1983(Day of year=233), Epopulnea: 
+     Killing
+21 February 1984(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1984(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1984(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1984(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1984(Day of year=234), Epopulnea: 
+     Killing
+21 February 1985(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1985(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1985(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1985(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1985(Day of year=233), Epopulnea: 
+     Killing
+21 February 1986(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1986(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1986(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1986(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1986(Day of year=233), Epopulnea: 
+     Killing
+21 February 1987(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1987(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1987(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1987(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1987(Day of year=233), Epopulnea: 
+     Killing
+21 February 1988(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1988(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1988(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1988(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1988(Day of year=234), Epopulnea: 
+     Killing
+21 February 1989(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1989(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1989(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1989(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1989(Day of year=233), Epopulnea: 
+     Killing
+21 February 1990(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1990(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1990(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1990(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1990(Day of year=233), Epopulnea: 
+     Killing
+21 February 1991(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1991(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1991(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1991(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1991(Day of year=233), Epopulnea: 
+     Killing
+21 February 1992(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1992(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1992(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1992(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1992(Day of year=234), Epopulnea: 
+     Killing
+21 February 1993(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1993(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1993(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1993(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1993(Day of year=233), Epopulnea: 
+     Killing
+21 February 1994(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1994(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1994(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1994(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1994(Day of year=233), Epopulnea: 
+     Killing
+21 February 1995(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1995(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1995(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1995(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1995(Day of year=233), Epopulnea: 
+     Killing
+21 February 1996(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1996(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1996(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1996(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 1996(Day of year=234), Epopulnea: 
+     Killing
+21 February 1997(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1997(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1997(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1997(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1997(Day of year=233), Epopulnea: 
+     Killing
+21 February 1998(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1998(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1998(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1998(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1998(Day of year=233), Epopulnea: 
+     Killing
+21 February 1999(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 1999(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 1999(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 1999(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 1999(Day of year=233), Epopulnea: 
+     Killing
+21 February 2000(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 2000(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 2000(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 2000(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 2000(Day of year=234), Epopulnea: 
+     Killing
+21 February 2001(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 2001(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 2001(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 2001(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 2001(Day of year=233), Epopulnea: 
+     Killing
+21 February 2002(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 2002(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 2002(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 2002(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 2002(Day of year=233), Epopulnea: 
+     Killing
+21 February 2003(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 2003(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 2003(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 2003(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 2003(Day of year=233), Epopulnea: 
+     Killing
+21 February 2004(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 2004(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 2004(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 2004(Day of year=234), operations: 
+      Sending kill message to epopulnea
+21 August 2004(Day of year=234), Epopulnea: 
+     Killing
+21 February 2005(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 2005(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 2005(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 2005(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 2005(Day of year=233), Epopulnea: 
+     Killing
+21 February 2006(Day of year=52), operations: 
+      Sending establish message to epopulnea
+21 February 2006(Day of year=52), Epopulnea: 
+     Establishing
+      Sending reset message to wellcamp water
+21 February 2006(Day of year=52), WellCamp Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+      Sending apply message to irrigation
+21 August 2006(Day of year=233), operations: 
+      Sending kill message to epopulnea
+21 August 2006(Day of year=233), Epopulnea: 
+     Killing
+4 September 2006(Day of year=247), clock: 
+     Simulation is terminating due to end criteria being met.

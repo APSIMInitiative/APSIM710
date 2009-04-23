@@ -1,0 +1,1631 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Rotation Sample (Directed Graph)
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                       "cotton" = %apsim%\Model\Ozcot.dll
+   Component                      "Manager" = %apsim%\Model\TclLink.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   = 31/12/1950
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        yield
+        biomass
+
+     Output file = Rotation Sample (Directed Graph).out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.105  0.210  0.390  0.440  0.390  1.400  0.762  0.300
+          150.-  300.  0.189  0.210  0.390  0.440  0.390  1.390  0.190  0.300
+          300.-  600.  0.220  0.220  0.400  0.450  0.400  1.370  0.048  0.300
+          600.-  900.  0.250  0.250  0.410  0.460  0.410  1.360  0.000  0.300
+          900.- 1200.  0.270  0.270  0.400  0.450  0.400  1.380  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.390  0.440  0.390  1.390  0.000  0.300
+         1500.- 1800.  0.360  0.360  0.380  0.430  0.380  1.420  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      31.50      27.00      27.00       7.50
+          150.-  300.      31.50      27.00      27.00       7.50
+          300.-  600.      66.00      54.00      54.00      15.00
+          600.-  900.      75.00      48.00      48.00      15.00
+          900.- 1200.      81.00      39.00      39.00      15.00
+         1200.- 1500.      93.00      24.00      24.00      15.00
+         1500.- 1800.     108.00       6.00       6.00      15.00
+          ---------------------------------------------------------
+               Totals     486.00     225.00     225.00      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Grey Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24   13.65    1.26    0.00
+             2     7.00  1.24    4.38    0.21    0.00
+             3     7.00  1.25    8.63    0.41    0.00
+             4     7.00  1.10    6.94    0.41    0.00
+             5     7.00  0.71    7.04    0.41    0.00
+             6     7.00  0.34    7.09    0.42    0.00
+             7     7.00  0.26    7.24    0.43    0.00
+          ------------------------------------------------
+           Totals               54.96    3.54    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      25584.9  2046.8   455.1    56.9    27.8     0.7
+             2      25651.2  2052.1   202.8    25.3    21.6     0.5
+             3      51273.3  4101.9   101.7    12.7    13.1     0.3
+             4      44835.6  3586.8    44.4     5.6     8.0     0.2
+             5      29379.4  2350.4    14.6     1.8     4.8     0.1
+             6      14171.0  1133.7     7.0     0.9     2.9     0.1
+             7      11070.5   885.6     5.5     0.7     1.8     0.0
+          ---------------------------------------------------------
+           Totals  201965.9 16157.3   831.1   103.9    80.0     2.0
+          ---------------------------------------------------------
+
+------- cotton Initialisation -------------------------------------------------
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.210
+           15.0          0.210
+           30.0          0.220
+           30.0          0.250
+           30.0          0.270
+           30.0          0.310
+           30.0          0.360
+     ------------------------
+     
+     
+     
+
+------- Manager Initialisation ------------------------------------------------
+     Copyright (C) 1991-1994 The Regents of the University of California.
+     Copyright (C) 1996-1997 Sun Microsystems, Inc.
+     Copyright (C) 2001      ActiveState.
+     --->Section: init
+     source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
+     set state "WinterFallow"
+     
+     --->Section: process
+     checkSetup
+     doProcess
+     
+     --->Section: exit
+     exit
+     
+     --->Section: init
+     package require struct
+     ::struct::graph stateGraph
+     stateGraph node insert "SummerFallow2"
+     set colour(SummerFallow2) "gray"
+     stateGraph node insert "Chickpea"
+     set colour(Chickpea) "lightgreen"
+     stateGraph node insert "Wheat"
+     set colour(Wheat) "darkgreen"
+     stateGraph node insert "WinterFallow"
+     set colour(WinterFallow) "gray"
+     stateGraph node insert "SummerFallow1"
+     set colour(SummerFallow1) "maroon"
+     stateGraph node insert "F1"
+     set colour(F1) "gray"
+     stateGraph node insert "Cotton"
+     set colour(Cotton) "purple"
+     stateGraph arc insert "SummerFallow1" "WinterFallow" "arc2"
+     stateGraph arc lappend "arc2" rules {[apsimGet day]  == 192}
+     stateGraph arc lappend "arc2" actions {}
+     stateGraph arc insert "WinterFallow" "Cotton" "arc6"
+     stateGraph arc lappend "arc6" actions {sow_cotton}
+     stateGraph arc lappend "arc6" rules {[canPlant_cotton]}
+     stateGraph arc lappend "arc6" actions {}
+     stateGraph arc insert "Wheat" "SummerFallow2" "arc3"
+     stateGraph arc lappend "arc3" actions {apsimSendMessage wheat harvest}
+     stateGraph arc lappend "arc3" actions {apsimSendMessage wheat end_crop}
+     stateGraph arc lappend "arc3" rules {{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.plant_status] == "dead"}}
+     stateGraph arc lappend "arc3" actions {}
+     stateGraph arc insert "F1" "SummerFallow1" "arc7"
+     stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
+     stateGraph arc lappend "arc7" actions {}
+     stateGraph arc insert "F1" "Chickpea" "arc0"
+     stateGraph arc lappend "arc0" actions {sow_chickpea}
+     stateGraph arc lappend "arc0" rules {[canPlant_chickpea]}
+     stateGraph arc lappend "arc0" actions {}
+     stateGraph arc insert "Chickpea" "SummerFallow1" "arc8"
+     stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea harvest}
+     stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea end_crop}
+     stateGraph arc lappend "arc8" rules {{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.plant_status] == "dead"}}
+     stateGraph arc lappend "arc8" actions {}
+     stateGraph arc insert "SummerFallow1" "Wheat" "arc1"
+     stateGraph arc lappend "arc1" actions {sow_wheat}
+     stateGraph arc lappend "arc1" rules {[canPlant_wheat]}
+     stateGraph arc lappend "arc1" actions {}
+     stateGraph arc insert "Cotton" "F1" "arc5"
+     stateGraph arc lappend "arc5" actions {apsimSendMessage cotton harvest}
+     stateGraph arc lappend "arc5" rules {[apsimGet ozcot_status] > 0}
+     stateGraph arc lappend "arc5" actions {}
+     stateGraph arc insert "SummerFallow2" "WinterFallow" "arc9"
+     stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
+     stateGraph arc lappend "arc9" actions {}
+     
+     --->Section: init
+     
+     # Support procedures
+     # Can we plant a crop today?
+     proc canPlant_cotton {} {
+       if {"variable" == "variable"} {
+          set year [apsimGet year]; set day [apsimGet day]
+          set d1 [clock format [clock scan "15-oct-$year"] -format %j]
+          set d2 [clock format [clock scan "15-dec-$year"] -format %j]
+     
+          if {"yes" == "yes" && $day == $d2} {return 1}
+     
+          if {$d1 > $d2} {
+             set dateOK [expr $day >= $d1 || $day <= $d2]
+          } else {
+             set dateOK [expr $day >= $d1 && $day <= $d2]
+          }
+          set rainOK [expr [apsimGet rain\[3\]] >= 10]
+          set eswOK [expr [apsimGet esw] >= 100]
+          return [expr $dateOK && $rainOK && $eswOK]
+       } elseif {"variable" == "fixed"} {
+          set year [apsimGet year]; set day [apsimGet day]
+          set d1 [clock format [clock scan "15-oct-$year"] -format %j]
+          return [expr $day == $d1]
+       } else {
+          error "Unknown sowing criteria \"variable\"."
+       }
+       return "notreached"
+     }
+     
+     # Plant a crop now
+     proc sow_cotton {} {
+       if {"ozcot" == "plant"} {
+          apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
+                  {cultivar Siok} {row_spacing 1000} \
+                  {skipplant 0} {skiprow 0} {crop_class plant}
+       } elseif {"ozcot" == "cropmod"} {
+          apsimSendMessage cotton sow {plants [density]} {sowing_depth [depth]} \
+                  {cultivar Siok} {row_spacing 1000} {skiprow 0}
+       } elseif {"ozcot" == "growth"} {
+          apsimSendMessage cotton ???
+       } elseif {"ozcot" == "ozcot"} {
+          apsimSendMessage cotton sow {plants_pm 10} {sowing_depth 30} \
+                  {row_spacing 1000} {skiprow 0} {cultivar Siok}
+       } elseif {"ozcot" == "oryza"} {
+          apsimSendMessage cotton sow {cultivar Siok}
+       } elseif {"ozcot" == "sorghum"} {
+          apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
+                  {cultivar Siok} {row_spacing 1000} {skiprow 0} \
+                  {tiller_no_fertile [tiller_no_fertile]}
+       } elseif {"ozcot" == "sugar"} {
+          apsimSendMessage cotton sow {plants 100} {cultivar Siok} {sowing_depth 30}
+       } else {
+         error "Unknown crop module \"ozcot\"."
+       }
+     }
+     
+     
+     
+     
+     
+     
+     
+     
+     --->Section: init
+     
+     # Support procedures
+     # Can we plant a crop today?
+     proc canPlant_chickpea {} {
+       if {"variable" == "variable"} {
+          set year [apsimGet year]; set day [apsimGet day]
+          set d1 [clock format [clock scan "15-may-$year"] -format %j]
+          set d2 [clock format [clock scan "10-jul-$year"] -format %j]
+     
+          if {"no" == "yes" && $day == $d2} {return 1}
+     
+          if {$d1 > $d2} {
+             set dateOK [expr $day >= $d1 || $day <= $d2]
+          } else {
+             set dateOK [expr $day >= $d1 && $day <= $d2]
+          }
+          set rainOK [expr [apsimGet rain\[3\]] >= 15]
+          set eswOK [expr [apsimGet esw] >= 50]
+          return [expr $dateOK && $rainOK && $eswOK]
+       } elseif {"variable" == "fixed"} {
+          set year [apsimGet year]; set day [apsimGet day]
+          set d1 [clock format [clock scan "15-may-$year"] -format %j]
+          return [expr $day == $d1]
+       } else {
+          error "Unknown sowing criteria \"variable\"."
+       }
+       return "notreached"
+     }
+     
+     # Plant a crop now
+     proc sow_chickpea {} {
+       if {"plant" == "plant"} {
+          apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
+                  {cultivar amethyst} {row_spacing 500} \
+                  {skipplant 0} {skiprow 0} {crop_class plant}
+       } elseif {"plant" == "cropmod"} {
+          apsimSendMessage chickpea sow {plants [density]} {sowing_depth [depth]} \
+                  {cultivar amethyst} {row_spacing 500} {skiprow 0}
+       } elseif {"plant" == "growth"} {
+          apsimSendMessage chickpea ???
+       } elseif {"plant" == "ozcot"} {
+          apsimSendMessage chickpea sow {plants_pm } {sowing_depth 30} \
+                  {row_spacing 500} {skiprow 0} {cultivar amethyst}
+       } elseif {"plant" == "oryza"} {
+          apsimSendMessage chickpea sow {cultivar amethyst}
+       } elseif {"plant" == "sorghum"} {
+          apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
+                  {cultivar amethyst} {row_spacing 500} {skiprow 0} \
+                  {tiller_no_fertile [tiller_no_fertile]}
+       } elseif {"plant" == "sugar"} {
+          apsimSendMessage chickpea sow {plants 25} {cultivar amethyst} {sowing_depth 30}
+       } else {
+         error "Unknown crop module \"plant\"."
+       }
+     }
+     
+     
+     
+     
+     
+     
+     
+     --->Section: init
+     
+     # Support procedures
+     # Can we plant a crop today?
+     proc canPlant_wheat {} {
+       if {"variable" == "variable"} {
+          set year [apsimGet year]; set day [apsimGet day]
+          set d1 [clock format [clock scan "15-may-$year"] -format %j]
+          set d2 [clock format [clock scan "10-jul-$year"] -format %j]
+     
+          if {"no" == "yes" && $day == $d2} {return 1}
+     
+          if {$d1 > $d2} {
+             set dateOK [expr $day >= $d1 || $day <= $d2]
+          } else {
+             set dateOK [expr $day >= $d1 && $day <= $d2]
+          }
+          set rainOK [expr [apsimGet rain\[3\]] >= 25]
+          set eswOK [expr [apsimGet esw] >= 50]
+          return [expr $dateOK && $rainOK && $eswOK]
+       } elseif {"variable" == "fixed"} {
+          set year [apsimGet year]; set day [apsimGet day]
+          set d1 [clock format [clock scan "15-may-$year"] -format %j]
+          return [expr $day == $d1]
+       } else {
+          error "Unknown sowing criteria \"variable\"."
+       }
+       return "notreached"
+     }
+     
+     # Plant a crop now
+     proc sow_wheat {} {
+       if {"plant" == "plant"} {
+          apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+                  {cultivar hartog} {row_spacing 250} \
+                  {skipplant 0} {skiprow 0} {crop_class plant}
+       } elseif {"plant" == "cropmod"} {
+          apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
+                  {cultivar hartog} {row_spacing 250} {skiprow 0}
+       } elseif {"plant" == "growth"} {
+          apsimSendMessage wheat ???
+       } elseif {"plant" == "ozcot"} {
+          apsimSendMessage wheat sow {plants_pm [plants_pm]} {sowing_depth 30} \
+                  {row_spacing 250} {skiprow 0} {cultivar hartog}
+       } elseif {"plant" == "oryza"} {
+          apsimSendMessage wheat sow {cultivar hartog}
+       } elseif {"plant" == "sorghum"} {
+          apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+                  {cultivar hartog} {row_spacing 250} {skiprow 0} \
+                  {tiller_no_fertile [tiller_no_fertile]}
+       } elseif {"plant" == "sugar"} {
+          apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
+       } else {
+         error "Unknown crop module \"plant\"."
+       }
+     }
+     
+     
+     
+     
+     
+     
+     
+     
+     --->End
+------- Start of simulation  --------------------------------------------------
+1 December 1940(Day of year=336), cotton: 
+     Sow
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar   = Siok
+         percent_L  =   42.00
+         scboll     =     4.5
+         respcon    =   0.016
+         sqcon      =   0.023
+         fcutout    =  0.5411
+         flai       =     0.5
+         ddisq      =   420.0
+         popcon     = 0.03633
+         acotyl     =    525.
+         rlai       = 0.01000
+         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
+         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
+         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
+         fburr      =    1.23
+         dLdS_max  =    0.12
+         rate_emergence  =    1.00
+         Background_Retention (default) =    0.80
+         ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Cultivar
+         Day no   mm     m       mm     Name
+         ------------------------------------------------
+            336   30.0  10.0   1000.0 Siok
+         ------------------------------------------------
+6 December 1940(Day of year=341), cotton: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+12 May 1941(Day of year=132), cotton: 
+         Defoliant spray    1
+22 May 1941(Day of year=142), cotton: 
+         First Pick  172 days from sowing. There are enough bolls for a 2nd pick.
+         Crop terminated: first pick.
+     harvest
+     
+     
+     
+      Days after sowing      =    172
+      bolls/m2               =  86.78        Lint (kg/ha)           =     1391.5
+      N uptake (kg/ha)       = 157.53        bolls sc (g/boll)      =        3.8
+      max squares das (days) =     82        max lai das (days)     =    119
+      maximum squares/m2     = 176.38        maximum lai (m2/m2)    =  2.114
+      total above ground biomass (kg/ha) =     7890.9
+23 May 1941(Day of year=143), cotton: 
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.210
+           15.0          0.210
+           30.0          0.220
+           30.0          0.250
+           30.0          0.270
+           30.0          0.310
+           30.0          0.360
+     ------------------------
+     
+     
+     
+15 December 1941(Day of year=349), cotton: 
+     Sow
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar   = Siok
+         percent_L  =   42.00
+         scboll     =     4.5
+         respcon    =   0.016
+         sqcon      =   0.023
+         fcutout    =  0.5411
+         flai       =     0.5
+         ddisq      =   420.0
+         popcon     = 0.03633
+         acotyl     =    525.
+         rlai       = 0.01000
+         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
+         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
+         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
+         fburr      =    1.23
+         dLdS_max  =    0.12
+         rate_emergence  =    1.00
+         Background_Retention (default) =    0.80
+         ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Cultivar
+         Day no   mm     m       mm     Name
+         ------------------------------------------------
+            349   30.0  10.0   1000.0 Siok
+         ------------------------------------------------
+20 December 1941(Day of year=354), cotton: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+27 June 1942(Day of year=178), cotton: 
+      *** All bolls open; crop finished.
+     harvest
+     
+     
+     
+      Days after sowing      =    194
+      bolls/m2               =   2.66        Lint (kg/ha)           =       14.9
+      N uptake (kg/ha)       =  15.73        bolls sc (g/boll)      =        1.3
+      max squares das (days) =    106        max lai das (days)     =    194
+      maximum squares/m2     =  61.57        maximum lai (m2/m2)    =  0.147
+      total above ground biomass (kg/ha) =      804.7
+28 June 1942(Day of year=179), cotton: 
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.210
+           15.0          0.210
+           30.0          0.220
+           30.0          0.250
+           30.0          0.270
+           30.0          0.310
+           30.0          0.360
+     ------------------------
+     
+     
+     
+14 December 1942(Day of year=348), cotton: 
+     Sow
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar   = Siok
+         percent_L  =   42.00
+         scboll     =     4.5
+         respcon    =   0.016
+         sqcon      =   0.023
+         fcutout    =  0.5411
+         flai       =     0.5
+         ddisq      =   420.0
+         popcon     = 0.03633
+         acotyl     =    525.
+         rlai       = 0.01000
+         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
+         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
+         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
+         fburr      =    1.23
+         dLdS_max  =    0.12
+         rate_emergence  =    1.00
+         Background_Retention (default) =    0.80
+         ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Cultivar
+         Day no   mm     m       mm     Name
+         ------------------------------------------------
+            348   30.0  10.0   1000.0 Siok
+         ------------------------------------------------
+20 December 1942(Day of year=354), cotton: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+5 May 1943(Day of year=125), cotton: 
+      *** All bolls open; crop finished.
+     harvest
+     
+     
+     
+      Days after sowing      =    142
+      bolls/m2               =  35.28        Lint (kg/ha)           =      362.7
+      N uptake (kg/ha)       =  70.30        bolls sc (g/boll)      =        2.4
+      max squares das (days) =     65        max lai das (days)     =     75
+      maximum squares/m2     = 121.62        maximum lai (m2/m2)    =  0.748
+      total above ground biomass (kg/ha) =     3878.3
+6 May 1943(Day of year=126), cotton: 
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.210
+           15.0          0.210
+           30.0          0.220
+           30.0          0.250
+           30.0          0.270
+           30.0          0.310
+           30.0          0.360
+     ------------------------
+     
+     
+     
+2 June 1943(Day of year=153), chickpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = amethyst
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     515     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     446       0 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     690     690 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.220       1.000
+         300.0     0.060          0.270       1.000
+         300.0     0.040          0.290       1.000
+         300.0     0.020          0.340       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   198mm in  1800mm total depth ( 11%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   30.0   25.0  500.0   0.0   0.0 amethyst
+         ------------------------------------------------
+     
+4 June 1943(Day of year=155), chickpea: 
+      stage 2.0 germination
+10 June 1943(Day of year=161), chickpea: 
+      stage 3.0 emergence
+                     biomass =           5.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =    7.79 (mm)
+29 July 1943(Day of year=210), chickpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           7.94 (g/m^2)   lai          =   0.066 (m^2/m^2)
+                     stover N conc =     4.74 (%)    extractable sw =    6.92 (mm)
+27 August 1943(Day of year=239), chickpea: 
+      stage 5.0 floral_initiation
+                     biomass =          36.90 (g/m^2)   lai          =   0.692 (m^2/m^2)
+                     stover N conc =     3.14 (%)    extractable sw =   17.52 (mm)
+30 August 1943(Day of year=242), chickpea: 
+      stage 6.0 flowering
+                     biomass =          45.16 (g/m^2)   lai          =   0.811 (m^2/m^2)
+                     stover N conc =     2.82 (%)    extractable sw =   15.46 (mm)
+27 September 1943(Day of year=270), chickpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         111.09 (g/m^2)   lai          =   0.485 (m^2/m^2)
+                     stover N conc =     2.34 (%)    extractable sw =    3.84 (mm)
+30 October 1943(Day of year=303), chickpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         123.03 (g/m^2)   lai          =   0.045 (m^2/m^2)
+                     stover N conc =     1.78 (%)    extractable sw =    0.50 (mm)
+2 November 1943(Day of year=306), chickpea: 
+      stage 9.0 maturity
+                     biomass =         123.16 (g/m^2)   lai          =   0.034 (m^2/m^2)
+                     stover N conc =     1.78 (%)    extractable sw =    0.41 (mm)
+3 November 1943(Day of year=307), chickpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         123.18 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.78 (%)    extractable sw =    0.38 (mm)
+     
+      flowering day          =  242                           stover (kg/ha)         =      975.6
+      maturity day           =  306                           grain yield (kg/ha)    =      256.2
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      291.1
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.319
+      total above ground biomass (kg/ha)    =     1231.8
+      live above ground biomass (kg/ha)     =     1231.8
+      green above ground biomass (kg/ha)    =      776.7
+      senesced above ground biomass (kg/ha) =      455.1
+      number of leaves       =    198.2
+      DM Root:Shoot ratio    =     0.37                       Harvest Index          =       0.21
+      Stover C:N ratio       =    24.23                       Root C:N ratio         =      24.28
+      grain N percent        =     3.60                       total N content (kg/ha)=      25.33
+      grain N uptake (kg/ha) =     9.22                       senesced N content (kg/ha)=    6.83
+      green N content (kg/ha)=     9.28
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.001        0.002        0.000        0.000
+         floral_initiation    to flowering               0.002        0.004        0.001        0.000
+         flowering            to start_grain_fill        0.107        0.125        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.235        0.270        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 975.6                     0.0
+                          N  (kg/ha) =                  16.11                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 256.2                     0.0
+                          N  (kg/ha) =                   9.22                    0.00
+     
+      stage 11.0 end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   458.9
+                          N  (kg/ha) =                   0.00                    7.56
+     
+28 October 1944(Day of year=302), cotton: 
+     Sow
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar   = Siok
+         percent_L  =   42.00
+         scboll     =     4.5
+         respcon    =   0.016
+         sqcon      =   0.023
+         fcutout    =  0.5411
+         flai       =     0.5
+         ddisq      =   420.0
+         popcon     = 0.03633
+         acotyl     =    525.
+         rlai       = 0.01000
+         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
+         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
+         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
+         fburr      =    1.23
+         dLdS_max  =    0.12
+         rate_emergence  =    1.00
+         Background_Retention (default) =    0.80
+         ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Cultivar
+         Day no   mm     m       mm     Name
+         ------------------------------------------------
+            302   30.0  10.0   1000.0 Siok
+         ------------------------------------------------
+3 November 1944(Day of year=308), cotton: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+10 March 1945(Day of year=69), cotton: 
+      *** All bolls open; crop finished.
+     harvest
+     
+     
+     
+      Days after sowing      =    133
+      bolls/m2               =  44.37        Lint (kg/ha)           =      663.6
+      N uptake (kg/ha)       =  87.88        bolls sc (g/boll)      =        3.6
+      max squares das (days) =     69        max lai das (days)     =     70
+      maximum squares/m2     = 150.19        maximum lai (m2/m2)    =  0.627
+      total above ground biomass (kg/ha) =     4407.8
+11 March 1945(Day of year=70), cotton: 
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.210
+           15.0          0.210
+           30.0          0.220
+           30.0          0.250
+           30.0          0.270
+           30.0          0.310
+           30.0          0.360
+     ------------------------
+     
+     
+     
+2 June 1945(Day of year=153), chickpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = amethyst
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     515     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     446       0 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     690     690 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.220       1.000
+         300.0     0.060          0.270       1.000
+         300.0     0.040          0.290       1.000
+         300.0     0.020          0.340       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   198mm in  1800mm total depth ( 11%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   30.0   25.0  500.0   0.0   0.0 amethyst
+         ------------------------------------------------
+     
+4 June 1945(Day of year=155), chickpea: 
+      stage 2.0 germination
+8 June 1945(Day of year=159), chickpea: 
+      stage 3.0 emergence
+                     biomass =           5.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   25.55 (mm)
+19 July 1945(Day of year=200), chickpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           6.72 (g/m^2)   lai          =   0.040 (m^2/m^2)
+                     stover N conc =     5.16 (%)    extractable sw =  157.28 (mm)
+18 August 1945(Day of year=230), chickpea: 
+      stage 5.0 floral_initiation
+                     biomass =          26.67 (g/m^2)   lai          =   0.495 (m^2/m^2)
+                     stover N conc =     3.71 (%)    extractable sw =  158.06 (mm)
+20 August 1945(Day of year=232), chickpea: 
+      stage 6.0 flowering
+                     biomass =          30.77 (g/m^2)   lai          =   0.584 (m^2/m^2)
+                     stover N conc =     3.54 (%)    extractable sw =  155.46 (mm)
+18 September 1945(Day of year=261), chickpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         200.60 (g/m^2)   lai          =   2.296 (m^2/m^2)
+                     stover N conc =     1.81 (%)    extractable sw =  113.30 (mm)
+25 October 1945(Day of year=298), chickpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         431.02 (g/m^2)   lai          =   0.773 (m^2/m^2)
+                     stover N conc =     1.80 (%)    extractable sw =   14.32 (mm)
+27 October 1945(Day of year=300), chickpea: 
+      stage 9.0 maturity
+                     biomass =         433.98 (g/m^2)   lai          =   0.665 (m^2/m^2)
+                     stover N conc =     1.79 (%)    extractable sw =   12.74 (mm)
+28 October 1945(Day of year=301), chickpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         436.07 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.81 (%)    extractable sw =   12.02 (mm)
+     
+      flowering day          =  232                           stover (kg/ha)         =     2674.1
+      maturity day           =  300                           grain yield (kg/ha)    =     1686.6
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1916.6
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.789
+      total above ground biomass (kg/ha)    =     4360.7
+      live above ground biomass (kg/ha)     =     4360.7
+      green above ground biomass (kg/ha)    =     3220.1
+      senesced above ground biomass (kg/ha) =     1140.6
+      number of leaves       =    255.3
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.39
+      Stover C:N ratio       =    23.81                       Root C:N ratio         =      26.25
+      grain N percent        =     3.60                       total N content (kg/ha)=     105.64
+      grain N uptake (kg/ha) =    60.72                       senesced N content (kg/ha)=   17.11
+      green N content (kg/ha)=    27.81
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.091        0.109        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2674.1                     0.0
+                          N  (kg/ha) =                  44.92                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1686.6                     0.0
+                          N  (kg/ha) =                  60.72                    0.00
+     
+      stage 11.0 end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   782.5
+                          N  (kg/ha) =                   0.00                   11.92
+     
+19 November 1946(Day of year=323), cotton: 
+     Sow
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar   = Siok
+         percent_L  =   42.00
+         scboll     =     4.5
+         respcon    =   0.016
+         sqcon      =   0.023
+         fcutout    =  0.5411
+         flai       =     0.5
+         ddisq      =   420.0
+         popcon     = 0.03633
+         acotyl     =    525.
+         rlai       = 0.01000
+         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
+         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
+         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
+         fburr      =    1.23
+         dLdS_max  =    0.12
+         rate_emergence  =    1.00
+         Background_Retention (default) =    0.80
+         ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Cultivar
+         Day no   mm     m       mm     Name
+         ------------------------------------------------
+            323   30.0  10.0   1000.0 Siok
+         ------------------------------------------------
+25 November 1946(Day of year=329), cotton: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+17 May 1947(Day of year=137), cotton: 
+         Defoliant spray    1
+27 May 1947(Day of year=147), cotton: 
+         First Pick  189 days from sowing. There are enough bolls for a 2nd pick.
+         Crop terminated: first pick.
+     harvest
+     
+     
+     
+      Days after sowing      =    189
+      bolls/m2               =  99.45        Lint (kg/ha)           =     1417.4
+      N uptake (kg/ha)       =  94.50        bolls sc (g/boll)      =        3.4
+      max squares das (days) =     71        max lai das (days)     =    118
+      maximum squares/m2     = 155.59        maximum lai (m2/m2)    =  1.673
+      total above ground biomass (kg/ha) =    10367.4
+27 May 1947(Day of year=147), chickpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = amethyst
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     515     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     446       0 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     690     690 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.220       1.000
+         300.0     0.060          0.270       1.000
+         300.0     0.040          0.290       1.000
+         300.0     0.020          0.340       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   198mm in  1800mm total depth ( 11%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            147   30.0   25.0  500.0   0.0   0.0 amethyst
+         ------------------------------------------------
+     
+28 May 1947(Day of year=148), cotton: 
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.210
+           15.0          0.210
+           30.0          0.220
+           30.0          0.250
+           30.0          0.270
+           30.0          0.310
+           30.0          0.360
+     ------------------------
+     
+     
+     
+29 May 1947(Day of year=149), chickpea: 
+      stage 2.0 germination
+4 June 1947(Day of year=155), chickpea: 
+      stage 3.0 emergence
+                     biomass =           5.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   16.07 (mm)
+18 July 1947(Day of year=199), chickpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           7.93 (g/m^2)   lai          =   0.065 (m^2/m^2)
+                     stover N conc =     4.79 (%)    extractable sw =   82.46 (mm)
+16 August 1947(Day of year=228), chickpea: 
+      stage 5.0 floral_initiation
+                     biomass =          40.52 (g/m^2)   lai          =   0.780 (m^2/m^2)
+                     stover N conc =     3.76 (%)    extractable sw =  102.22 (mm)
+19 August 1947(Day of year=231), chickpea: 
+      stage 6.0 flowering
+                     biomass =          45.32 (g/m^2)   lai          =   0.878 (m^2/m^2)
+                     stover N conc =     3.49 (%)    extractable sw =  118.02 (mm)
+20 September 1947(Day of year=263), chickpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         214.12 (g/m^2)   lai          =   2.465 (m^2/m^2)
+                     stover N conc =     1.83 (%)    extractable sw =   88.08 (mm)
+26 October 1947(Day of year=299), chickpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         454.94 (g/m^2)   lai          =   1.115 (m^2/m^2)
+                     stover N conc =     1.77 (%)    extractable sw =   14.23 (mm)
+29 October 1947(Day of year=302), chickpea: 
+      stage 9.0 maturity
+                     biomass =         459.07 (g/m^2)   lai          =   0.865 (m^2/m^2)
+                     stover N conc =     1.77 (%)    extractable sw =    9.96 (mm)
+30 October 1947(Day of year=303), chickpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         459.63 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.82 (%)    extractable sw =    9.46 (mm)
+     
+      flowering day          =  231                           stover (kg/ha)         =     2810.3
+      maturity day           =  302                           grain yield (kg/ha)    =     1786.1
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2029.6
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.829
+      total above ground biomass (kg/ha)    =     4596.3
+      live above ground biomass (kg/ha)     =     4596.3
+      green above ground biomass (kg/ha)    =     3434.2
+      senesced above ground biomass (kg/ha) =     1162.2
+      number of leaves       =    271.2
+      DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.39
+      Stover C:N ratio       =    23.72                       Root C:N ratio         =      26.24
+      grain N percent        =     3.60                       total N content (kg/ha)=     111.69
+      grain N uptake (kg/ha) =    64.30                       senesced N content (kg/ha)=   17.43
+      green N content (kg/ha)=    29.96
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.066        0.080        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2810.3                     0.0
+                          N  (kg/ha) =                  47.39                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1786.1                     0.0
+                          N  (kg/ha) =                  64.30                    0.00
+     
+      stage 11.0 end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   871.8
+                          N  (kg/ha) =                   0.00                   13.29
+     
+9 June 1948(Day of year=161), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.250       1.000
+         300.0     0.060          0.280       1.000
+         300.0     0.040          0.310       1.000
+         300.0     0.020          0.370       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   171mm in  1800mm total depth ( 10%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            161   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+11 June 1948(Day of year=163), wheat: 
+      stage 2.0 germination
+16 June 1948(Day of year=168), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   29.98 (mm)
+17 June 1948(Day of year=169), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.61 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   27.00 (mm)
+16 August 1948(Day of year=229), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         163.27 (g/m^2)   lai          =   2.349 (m^2/m^2)
+                     stover N conc =     2.07 (%)    extractable sw =  105.53 (mm)
+24 September 1948(Day of year=268), wheat: 
+      stage 6.0 flowering
+                     biomass =         545.57 (g/m^2)   lai          =   1.399 (m^2/m^2)
+                     stover N conc =     0.69 (%)    extractable sw =   50.34 (mm)
+30 September 1948(Day of year=274), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         616.44 (g/m^2)   lai          =   1.100 (m^2/m^2)
+                     stover N conc =     0.48 (%)    extractable sw =   34.43 (mm)
+28 October 1948(Day of year=302), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         698.02 (g/m^2)   lai          =   0.233 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =    5.77 (mm)
+29 October 1948(Day of year=303), wheat: 
+      stage 9.0 maturity
+                     biomass =         698.02 (g/m^2)   lai          =   0.212 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =    5.67 (mm)
+30 October 1948(Day of year=304), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         698.02 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =    5.45 (mm)
+     
+      flowering day          =  268                           stover (kg/ha)         =     5381.5
+      maturity day           =  303                           grain yield (kg/ha)    =     1598.7
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     1827.1
+      grain wt (g)           =    0.020                       grains/m^2             =     7912.5
+      grains/plant           =   79.1                         maximum lai            =      2.470
+      total above ground biomass (kg/ha)    =     6980.2
+      live above ground biomass (kg/ha)     =     6980.2
+      green above ground biomass (kg/ha)    =     5889.7
+      senesced above ground biomass (kg/ha) =     1090.5
+      number of leaves       =     42.6
+      DM Root:Shoot ratio    =     0.16                       Harvest Index          =       0.23
+      Stover C:N ratio       =   117.69                       Root C:N ratio         =      45.46
+      grain N percent        =     1.30                       total N content (kg/ha)=      39.01
+      grain N uptake (kg/ha) =    20.72                       senesced N content (kg/ha)=    5.45
+      green N content (kg/ha)=    12.84
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.168        0.201
+         floral_initiation    to flowering               0.000        0.002        0.209        0.314
+         flowering            to start_grain_fill        0.003        0.006        0.198        0.321
+         start_grain_fill     to end_grain_fill          0.038        0.051        0.262        0.435
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                5381.5                     0.0
+                          N  (kg/ha) =                  18.29                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1598.7                     0.0
+                          N  (kg/ha) =                  20.72                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =    5.45 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1148.3
+                          N  (kg/ha) =                   0.00                   10.10
+     
+15 October 1949(Day of year=288), cotton: 
+     Sow
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar   = Siok
+         percent_L  =   42.00
+         scboll     =     4.5
+         respcon    =   0.016
+         sqcon      =   0.023
+         fcutout    =  0.5411
+         flai       =     0.5
+         ddisq      =   420.0
+         popcon     = 0.03633
+         acotyl     =    525.
+         rlai       = 0.01000
+         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
+         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
+         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
+         fburr      =    1.23
+         dLdS_max  =    0.12
+         rate_emergence  =    1.00
+         Background_Retention (default) =    0.80
+         ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Cultivar
+         Day no   mm     m       mm     Name
+         ------------------------------------------------
+            288   30.0  10.0   1000.0 Siok
+         ------------------------------------------------
+22 October 1949(Day of year=295), cotton: 
+      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+9 March 1950(Day of year=68), cotton: 
+      *** All bolls open; crop finished.
+     harvest
+     
+     
+     
+      Days after sowing      =    145
+      bolls/m2               =  42.11        Lint (kg/ha)           =      643.3
+      N uptake (kg/ha)       =  78.36        bolls sc (g/boll)      =        3.6
+      max squares das (days) =     78        max lai das (days)     =     81
+      maximum squares/m2     = 147.84        maximum lai (m2/m2)    =  0.675
+      total above ground biomass (kg/ha) =     4282.8
+10 March 1950(Day of year=69), cotton: 
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.210
+           15.0          0.210
+           30.0          0.220
+           30.0          0.250
+           30.0          0.270
+           30.0          0.310
+           30.0          0.360
+     ------------------------
+     
+     
+     
+25 May 1950(Day of year=145), chickpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = amethyst
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     515     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     446       0 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     690     690 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.210       1.000
+         150.0     0.100          0.210       1.000
+         300.0     0.080          0.220       1.000
+         300.0     0.060          0.270       1.000
+         300.0     0.040          0.290       1.000
+         300.0     0.020          0.340       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   198mm in  1800mm total depth ( 11%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            145   30.0   25.0  500.0   0.0   0.0 amethyst
+         ------------------------------------------------
+     
+27 May 1950(Day of year=147), chickpea: 
+      stage 2.0 germination
+31 May 1950(Day of year=151), chickpea: 
+      stage 3.0 emergence
+                     biomass =           5.00 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   17.16 (mm)
+9 July 1950(Day of year=190), chickpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           6.16 (g/m^2)   lai          =   0.030 (m^2/m^2)
+                     stover N conc =     5.39 (%)    extractable sw =  140.09 (mm)
+4 August 1950(Day of year=216), chickpea: 
+      stage 5.0 floral_initiation
+                     biomass =          10.95 (g/m^2)   lai          =   0.142 (m^2/m^2)
+                     stover N conc =     3.97 (%)    extractable sw =  209.99 (mm)
+7 August 1950(Day of year=219), chickpea: 
+      stage 6.0 flowering
+                     biomass =          12.15 (g/m^2)   lai          =   0.170 (m^2/m^2)
+                     stover N conc =     3.64 (%)    extractable sw =  199.34 (mm)
+8 September 1950(Day of year=251), chickpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         115.43 (g/m^2)   lai          =   1.565 (m^2/m^2)
+                     stover N conc =     1.84 (%)    extractable sw =  150.97 (mm)
+15 October 1950(Day of year=288), chickpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         412.95 (g/m^2)   lai          =   2.332 (m^2/m^2)
+                     stover N conc =     1.76 (%)    extractable sw =  145.83 (mm)
+18 October 1950(Day of year=291), chickpea: 
+      stage 9.0 maturity
+                     biomass =         438.89 (g/m^2)   lai          =   2.245 (m^2/m^2)
+                     stover N conc =     1.71 (%)    extractable sw =  134.67 (mm)
+19 October 1950(Day of year=292), chickpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         442.14 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.79 (%)    extractable sw =  158.90 (mm)
+     
+      flowering day          =  219                           stover (kg/ha)         =     2689.2
+      maturity day           =  291                           grain yield (kg/ha)    =     1732.2
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1968.5
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.585
+      total above ground biomass (kg/ha)    =     4421.4
+      live above ground biomass (kg/ha)     =     4421.4
+      green above ground biomass (kg/ha)    =     3488.0
+      senesced above ground biomass (kg/ha) =      933.4
+      number of leaves       =    241.1
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.39
+      Stover C:N ratio       =    23.70                       Root C:N ratio         =      26.35
+      grain N percent        =     3.60                       total N content (kg/ha)=     107.75
+      grain N uptake (kg/ha) =    62.36                       senesced N content (kg/ha)=   14.00
+      green N content (kg/ha)=    31.39
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.001        0.001        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2689.2                     0.0
+                          N  (kg/ha) =                  45.39                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1732.2                     0.0
+                          N  (kg/ha) =                  62.36                    0.00
+     
+      stage 11.0 end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   542.6
+                          N  (kg/ha) =                   0.00                    8.24
+     
+31 December 1950(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

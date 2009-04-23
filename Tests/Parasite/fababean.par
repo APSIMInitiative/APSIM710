@@ -1,0 +1,77 @@
+[orobanche0.report.parameters]
+outputfile  =orobanche0.out
+[orobanche1.report.parameters]
+outputfile  =orobanche1.out
+[orobanche2.report.parameters]
+outputfile  =orobanche2.out
+
+[orobanche.report.parameters]
+variable = clock.day
+variable = clock.year
+
+variable = fababean.stage   as faba_stage
+variable = fababean.lai     as faba_lai
+variable = fababean.biomass as faba_biomass
+variable = fababean.yield   as faba_yield
+
+variable = orobanche.daa 
+variable = orobanche.stage      as orob_stage
+variable = orobanche.biomass    as orob_biomass
+variable = orobanche.population
+variable = orobanche.population_dead
+variable = orobanche.population_alive
+variable = orobanche.attach_area
+
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=9/5/1988
+end_date=26/12/1988
+
+[fababean.manager.start_of_day]
+if day = 130 and year  = 1988 then
+   fababean sow cultivar = ILB1814, plants = 25 (/m2), sowing_depth = 40 (mm)
+endif
+if fababean.StageName = 'harvest_ripe' or fababean.plant_status = 'dead' then
+   fababean harvest
+   fababean end_crop
+endif
+
+[orobanche.manager.init]
+oro_in = 0
+[orobanche.manager.start_of_day]
+if (fababean.stage >= 1.0 AND oro_in = 0) then
+   orobanche start cultivar = crenata, density = 600.0 (parasites/kg soil), depth = 100.0 (mm), host = fababean ()
+   oro_in = 1
+endif
+if (oro_in = 1 AND fababean.plant_status = 'out') then
+   orobanche harvest
+   orobanche finish
+   oro_in = 0
+endif
+
+[orobanche_treated.manager.start_of_day]
+if day = 250 and year  = 1988 then
+   orobanche weeding efficacy = 0.8 ()
+endif
+
+[fababean.manager.end_of_day]
+report do_output
+
+[sample.soiltemp.parameters]
+bound_layer_cond = 20.0  (J/s/m2/K)
+clay =  0.1  0.1  0.1  0.1  0.1  0.2  0.3  () ! proportion of clay (0-1)    
+
+[sample.fababean.parameters]
+   ll    = .230 .240 .240 .250 .260 .270 .280  ! lower limit mm water/mm soil
+   xf   = 1.00 1.00 1.00 1.00 1.00 1.00 1.00  ! Weighting factor for root advance
+   kl   = 0.08 0.08 0.08 0.08 0.05 0.03 0.01  ! Water Extraction Parameter (0-1)
+[orobanche0.SummaryFile.parameters]
+summaryfile = orobanche0.sum
+[orobanche1.SummaryFile.parameters]
+summaryfile = orobanche1.sum
+[orobanche2.SummaryFile.parameters]
+summaryfile = orobanche2.sum
+
+[sample.log.parameters]
+debug_output = on
+logfile= orobanche.log

@@ -1,0 +1,339 @@
+
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988
+end_date=30/1/1988
+
+
+[test1.SummaryFile.parameters]
+summaryfile = test1.sum
+
+[test1.report.parameters]
+outputfile =test1.out
+variable = clock.day
+variable = clock.year
+variable = SurfaceOM.surfaceom_wt
+variable = SurfaceOM.surfaceom_wt_residue1
+variable = SurfaceOM.surfaceom_wt_residue2
+variable = SurfaceOM.surfaceom_n_residue1
+variable = SurfaceOM.surfaceom_n_residue2
+variable = SurfaceOM.tf
+variable = SurfaceOM.wf
+variable = SurfaceOM.cf
+
+[test1.manager.end_of_day]
+report do_output
+[test1.log.parameters]
+debug_output = on
+logfile = test1.log
+
+[test1.SurfaceOM.parameters]
+
+name =     residue1     residue2
+type =     lucerne       lucerne
+mass     =    4000        4000
+cnr    =    10          10
+standing_fraction = .0          .5
+
+! ================ TEST 2 ===============================
+! Two inert residue pools are simulated to test code for adding and removing OM.
+! The two pools have the same mass but one pool has a standing fraction.
+[test2.SummaryFile.parameters]
+summaryfile = test2.sum
+
+[test2.report.parameters]
+outputfile =test2.out
+variable = clock.day
+variable = clock.year
+variable = SurfaceOM.surfaceom_wt
+variable = SurfaceOM.surfaceom_wt_residue1
+variable = SurfaceOM.surfaceom_wt_residue2
+variable = SurfaceOM.surfaceom_wt_residue3
+variable = SurfaceOM.surfaceom_n_residue1
+variable = SurfaceOM.surfaceom_n_residue2
+variable = SurfaceOM.surfaceom_n_residue3
+variable = SoilN.fom_c()
+variable = SoilN.fom_c
+
+[test2.manager.start_of_day]
+if day = 10 then
+   SurfaceOM tillage type = disc, f_incorp = 0.5, tillage_depth = 100.
+endif
+if day = 15 then
+   SurfaceOM tillage type = disc, f_incorp = 0.5, tillage_depth = 0.
+endif
+if day = 20 then
+   SurfaceOM add_surfaceom name=residue1, type = inert, mass=2000, cnr = 10, cpr = 100
+endif
+if day = 25 then
+   SurfaceOM add_surfaceom name=residue3, type = inert, mass=2000, cnr = 10, cpr = 100
+endif
+[test2.manager.end_of_day]
+report do_output
+[test2.log.parameters]
+debug_output = on
+logfile = test2.log
+
+[test2.SurfaceOM.parameters]
+
+name =     residue1     residue2
+type =     inert        inert
+mass     =    4000        4000
+cnr    =    10          10
+standing_fraction = .0          .5
+
+! ================ TEST 3 ===============================
+! Two residue pools are simulated where N is limiting (via HIGH C:N)
+! and temperature and water are non-limiting (via met file)
+! (Test is is similar to Test 1 but with a different C:N)
+
+[test3.SummaryFile.parameters]
+summaryfile = test3.sum
+
+[test3.report.parameters]
+outputfile =test3.out
+variable = clock.day
+variable = clock.year
+variable = SurfaceOM.surfaceom_wt
+variable = SurfaceOM.surfaceom_wt_residue1
+variable = SurfaceOM.surfaceom_wt_residue2
+variable = SurfaceOM.surfaceom_n_residue1
+variable = SurfaceOM.surfaceom_n_residue2
+variable = SurfaceOM.tf
+variable = SurfaceOM.wf
+variable = SurfaceOM.cf
+
+[test3.manager.end_of_day]
+report do_output
+[test3.log.parameters]
+debug_output = on
+logfile = test3.log
+
+[test3.SurfaceOM.parameters]
+
+name =     residue1     residue2
+type =     lucerne       lucerne
+mass     =    4000        4000
+cnr    =    120          120
+standing_fraction = .0          .5
+
+! ================ TEST 4 ===============================
+! Two residue pools are simulated where N is non-limiting (via low C:N)
+! and temperature and water are non-limiting (via met file)
+! The two pools have the same mass but one pool has a standing fraction
+[test4.SummaryFile.parameters]
+summaryfile = test4.sum
+
+[test4.report.parameters]
+outputfile =test4.out
+variable = clock.day
+variable = clock.year
+variable = SurfaceOM.surfaceom_wt
+variable = SurfaceOM.surfaceom_wt_residue1
+variable = SurfaceOM.surfaceom_wt_residue2
+variable = SurfaceOM.surfaceom_cover_residue1
+variable = SurfaceOM.surfaceom_cover_residue2
+variable = SurfaceOM.surfaceom_cover
+variable = SurfaceOM.tf
+variable = SurfaceOM.wf
+variable = SurfaceOM.cf
+
+[test4.manager.end_of_day]
+report do_output
+[test4.log.parameters]
+debug_output = on
+logfile = test4.log
+
+[test4.SurfaceOM.parameters]
+
+name =     residue1     residue2
+type =     lucerne       lucerne
+mass     =    20000        20000
+cnr    =    10          10
+standing_fraction = .0          .5
+
+! ================ TEST 5 ===============================
+! Two residue pools are simulated where N is non-limiting (via low C:N)
+! and temperature and water are non-limiting (via met file)
+! The two pools have the same mass but one pool has a standing fraction
+! Try doing crop chopped to surface OM with type information not unique
+
+[test5.SummaryFile.parameters]
+summaryfile = test5.sum
+
+[test5.report.parameters]
+outputfile =test5.out
+variable = clock.day
+variable = clock.year
+variable = SurfaceOM.surfaceom_wt
+variable = SurfaceOM.surfaceom_wt_residue1
+variable = SurfaceOM.surfaceom_wt_residue2
+variable = SurfaceOM.surfaceom_wt_bambatsi
+variable = bambatsi.foliage_mass
+variable = bambatsi.adm_green(1)  as stem_mass
+
+[test5.manager.start_of_day]
+
+if day = 10 then
+   bambatsi establish plants = 1000000 (/ha), init_section = dummy
+   report do_output
+   bambatsi  kill
+   report do_output
+endif
+
+[test5.bambatsi.parameters]
+uptake_source =  calc
+n_uptake_source = calc
+
+   ll    = .230 .240 .240 .250 .260 .270 .280  ! lower limit mm water/mm soil
+   xf   = 1.00 1.00 1.00 1.00 1.00 1.00 1.00  ! Weighting factor for root advance
+   kl   = 0.08 0.08 0.08 0.08 0.05 0.03 0.01  ! Water Extraction Parameter (0-1)
+  rlv   = 0.01 0.00 0.00 0.00 0.00 0.00 0.00  ! initial root length density (mm/mm3)
+
+[test5.bambatsi.dummy]
+age = 0.0
+height = 50 (mm)
+init_pla = 0.1
+foliage_n_conc = 0.03
+
+! Specify weights of components of individual plants
+ !                     stem
+ind_adm_green       =  0.01  (kg)
+ind_adm_sen         =  0    (kg)
+ind_adm_dead        =  0    (kg)
+
+ !                     crown
+ind_bdm_green       =  0           (kg)
+ind_bdm_sen         =  0           (kg)
+ind_bdm_dead        =  0           (kg)
+
+
+[test5.manager.end_of_day]
+report do_output
+[test5.log.parameters]
+debug_output = on
+logfile = test5.log
+
+[test5.SurfaceOM.parameters]
+
+name =     residue1     residue2   bambatsi
+type =     bambatsi       bambatsi  bambatsi
+mass     =    200         200            0
+cnr    =    10          10            10
+standing_fraction = .0          .5            0
+
+
+! ================ TEST 6 ===============================
+! A multi crop rotation is simulated to check calculation of cover when several (3+) residues are in system
+
+[test6.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1986
+end_date=31/12/1993
+
+
+[test6.SummaryFile.parameters]
+summaryfile = test6.sum
+
+[test6.report.parameters]
+outputfile =test6.out
+variable = clock.day
+variable = clock.year
+variable = wheat.biomass as wht_biomass
+variable = sorghum.biomass as sor_biomass
+variable = canola.biomass as can_biomass
+variable = SurfaceOM.surfaceom_wt
+variable = SurfaceOM.surfaceom_wt_old_wheat
+variable = SurfaceOM.surfaceom_wt_wheat
+variable = SurfaceOM.surfaceom_wt_sorghum
+variable = SurfaceOM.surfaceom_wt_canola
+variable = SurfaceOM.surfaceom_cover
+variable = SurfaceOM.surfaceom_cover_old_wheat
+variable = SurfaceOM.surfaceom_cover_wheat
+variable = SurfaceOM.surfaceom_cover_sorghum
+variable = SurfaceOM.surfaceom_cover_canola
+
+
+[test6.manager.end_of_day]
+report do_output
+[test6.log.parameters]
+debug_output = off
+logfile = test6.log
+
+[test6.manager.start_of_day]
+
+!**** WHEAT *********
+if day = 169 and year = 1986 then
+   wheat sow cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+endif
+
+if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   wheat harvest
+   wheat end_crop
+endif
+
+!**** SORGHUM *********
+   if day = 305 and year = 1986 then
+      sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
+                ! optional skiprow arguments are: skip = solid; skip = single; skip = double
+   irrigation apply amount = 150 (mm)
+   Fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
+   endif
+
+   if (sorghum.stage = 11) then
+      sorghum harvest
+      sorghum end_crop
+   endif
+
+! if crop killed due to stress, end simulation
+if (sorghum.plant_status = 'dead')  then
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+endif
+
+!**** CANOLA *********
+if day = 130 and year  = 1989 then
+   Fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
+   canola sow cultivar = Hyola42, plants = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+endif
+
+if canola.StageName = 'harvest_ripe' or canola.plant_status = 'dead' then
+   canola harvest
+   canola end_crop
+endif
+
+!**** WHEAT AGAIN *********
+if day = 169 and year = 1990 then
+   wheat sow cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+endif
+
+if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   wheat harvest
+   wheat end_crop
+endif
+
+
+[test6.wheat.parameters]
+ll =  0.230   0.240   0.240   0.250   0.260   0.270   0.280 ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+[test6.sorghum.parameters]
+ll =  0.230   0.240   0.240   0.250   0.260   0.270   0.280 ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+[test6.canola.parameters]
+ll    = .230 .240 .240 .250 .260 .270 .280  ! lower limit mm water/mm soil
+xf   = 1.00 1.00 1.00 1.00 1.00 1.00 1.00  ! Weighting factor for root advance
+kl   = 0.08 0.08 0.08 0.08 0.05 0.03 0.01  ! Water Extraction Parameter (0-1)
+
+
+[test6.SurfaceOM.parameters]
+
+name =              old_wheat   wheat    sorghum   canola  
+type =              wheat       wheat     sorghum  canola
+mass     =          4000          0          0        0
+cnr      =          10            0          0        0       
+standing_fraction = .0            0          0        0    

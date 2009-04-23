@@ -1,0 +1,100 @@
+!Title = Sadore generic soil profile. Labucheri sand (psammentic Paleustalf) (PAWC = 89 mm, 2.0 m)
+!Note : PAW is low because DUL was chosen after 30-days of drainage, in order to fit drainage data well.
+
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+[run%.sorg.parameters]
+
+ll =#LL
+kl =  0.07    0.07    0.07    0.07    0.07    0.07    0.04    0.04    0.04   0.04 ()
+xf =  1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00   1.00 ()
+
+
+[run%.cowpea.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.030   0.020   0.010   0.010 () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000 () ! root exploration factor
+
+[run%.maize.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.030   0.020   0.010   0.010 () ! rate of soil water extraction
+xf  =  1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+[run%.mucuna.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.030   0.020   0.010   0.010 () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000 () ! root exploration factor
+
+[run%.peanut.parameters]
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.030   0.020   0.010   0.010 () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000 () ! root exploration factor
+
+[run%.pigeonp.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.030   0.020   0.010   0.010 () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000 () ! root exploration factor
+
+[run%.soybean.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.030   0.020   0.010   0.010 () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000 () ! root exploration factor
+[run%.soilwat2.parameters]
+
+! REM : parameters followed by a uestion mark still need to be checked against actual data
+
+   max_evap        = 6        (mm)   !(?) maximum evaporation, not used in present version..
+   runoff_filename = blank           !if blank, runoff predicted using CN2.  If not, uses a file containing actual runoff values.
+   cona            = $cona    ()     ! stage 2 evap coef.
+   diffus_const    = 550.0    ()     !(?) ! coeffs for rate of water movement by diffusion
+   diffus_slope    =  26.0    ()     !(?)  !     "
+   u               =  $uritch (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            =   0.13   ()     ! bare soil albedo
+
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        =  $cn2    ()     ! (?) runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! (?) reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! (?) frac. cover for "cn_red" reduction in cover
+                                     !     & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+   ! layer         1        2       3       4       5       6       7       8       9       10
+   ! lower bound   15      30      45      60      75      90      120     150     180     200    (cm)
+   dlayer  =      150      150     150     150     150     150     300     300     300      200   (mm)    ! layer depth
+   air_dry =     0.018    0.022   0.030   0.035   0.035   0.040   0.045   0.044   0.048   0.050   (mm/mm) ! air dry (use same as initial soil water at end of dry season = sw if =< ll15, otherwise = ll15)
+   ll15    =     0.018    0.022   0.031   0.048   0.048   0.051   0.048   0.044   0.048   0.050   (mm/mm) ! lower limit at 15bar (from Labucheri soil, pg 37, ISC soil survey)
+   dul     =     0.090    0.095   0.095   0.085   0.085   0.085   0.085   0.085   0.085   0.085   (mm/mm) ! drained upper limit.  Estimated from int. drainage of 60 tubes after 30 days.
+                                                                                                          ! value taken after 30 days in order to accomodate for continuous slow drainage  over long periods.
+   sat     =     0.379    0.413   0.421   0.411   0.407   0.401   0.396   0.384   0.376   0.376   (mm/mm) ! saturated soil water (=total porosity minus 5% of porosity for entrapped air)
+   sw      =     0.020    0.030   0.030   0.035   0.035   0.040   0.045   0.050   0.055   0.060   (mm/mm) ! initial sw (from 03-May-96 2G/8A1 neutron probe data)
+   swcon   =     0.300    0.300   0.300   0.300   0.300   0.300   0.300   0.300   0.300   0.300   ()      ! (?) soil conductivity.  Should give correct drainage rates 2 or more days after rainfall.
+                                                                                                          ! Initial drainage is underestimated for very wet soil.  Is affected by the value of DUL.
+   bd      =     1.590    1.500   1.480   1.500   1.520   1.530   1.550   1.580   1.600   1.600   (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+
+[*variables]
+
+   $cona = "Cona : " 4.5 real
+   $uritch = "Uritch : " 1.0 real
+   $cn2 = "Runoff curve number for BARE soil : " 80.0 real
+

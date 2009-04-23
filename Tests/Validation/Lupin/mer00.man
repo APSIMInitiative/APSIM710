@@ -1,0 +1,158 @@
+[WA.clock.parameters]
+start_date = 12/6/2000     ! dd/mm/yyyy
+end_date = 30/12/2000     ! dd/mm/yyyy
+
+
+[duplex.SoilWat.parameters]
+!depth     0-5 5-10 10-20 20-30 30-40 40-50 50-60 60-70 70-90 90-110 110-130 130-150 150-170 170-190 190-210 210-230 230-250
+!layer      1   2     3     4     5     6     7     8     9     10      11      12      13      14      15      16      17
+!dlayer =   50  50  100  100  100  100  100   100  200  200  200   200   200  200  200  200 200   
+!dul =      .17  .18  .22  .24  .28  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29  .29   
+!swc measured neutron 22 june 2000
+!sw =      .08  .08  .11  .07  .16  .25  .28  .28  .28  .29  .30  .31  .33  .34  .36  .35  .38   
+sw =      .08  .08  .11  .11  .16  .25  .28  .28  .28  .29  .30  .31  .33  .33  .33  .33  .33   
+
+
+[standard.manager.init]
+     dateset = 0
+     emer_date = 0
+     endjuv_date = 0
+     anth_date = 0
+     mat_date = 0
+     event = 0
+apoc_rain = 0
+hi = 0
+hi_green = 0
+sla_tot=0
+eta=0
+eta_cum = 0
+etp_cum=0
+
+[standard.manager.start_of_day]    
+
+if day>90 and day<305 then
+   apoc_rain = apoc_rain + rain
+endif
+
+[standard.manager.end_of_day]    
+
+     if lupin.DaysAfterSowing > 0 then
+        report do_output
+     endif
+
+!if day = 164 then
+!   SoilN set no3 = 17.6 12.9 10.9 5.9 4.1 4.1 3.1 3.1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+!   SoilN set nh4 =  5.9  3.3  4.0 0.5 1.1 1.1 0.5 0.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+!endif
+
+
+
+!! calculate fraction of sw in 70 cm depth, layer 1 to 8 (0-70 cm deep)
+!! ll=ll15 up to 70 cm deep, ll15 used instead of ll
+!ll_70 =ll15_dep(1)+ ll15_dep(2) +ll15_dep(3) +ll15_dep(4) +ll15_dep(5) +ll15_dep(6) +ll15_dep(7) +ll15_dep(8)
+!dul_70 =  dul_dep(1) + dul_dep(2) + dul_dep(3) + dul_dep(4) + dul_dep(5) + dul_dep(6) + dul_dep(7) + dul_dep(8)
+
+sw_70 = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6) + sw_dep(7) + sw_dep(8)  
+!sw_70_rel = (sw_70 - ll_70) / (dul_70 - ll_70)
+
+!esw_70 = sw_70 - ll_70
+
+sw_150 = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6) + sw_dep(7) + sw_dep(8)+ sw_dep(9)+ sw_dep(10) )+ sw_dep(9)+ sw_dep(10)  )+ sw_dep(9)+ sw_dep(10)  )+ sw_dep(9)+ sw_dep(10)+ sw_dep(11)+ sw_dep(12)   
+
+sw_70 = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6) + sw_dep(7) + sw_dep(8)
+
+
+
+sw_40 = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5)  !mm water in 0-40 cm
+
+swc_40 = (( (sw(1) + sw(2) )/2) + sw(3) + sw(4) + sw(5))/4         !average vol SWC in 0-40 cm
+
+!recalculate swc layers, to compare with Merredin TDR
+
+swc_10 = (sw(1) + sw(2))/2   !vol SWC 0-10 cm
+swc_20 = sw(3)                ! vol swc 10-20
+swc_30 = sw(4)                ! vol swc 20-30
+swc_50 = (sw(5) + sw(6))/2    ! vol swc 30-50
+swc_70 = (sw(7) + sw(8))/2    ! vol swc 50-70
+swc_90 = (sw(9)               ! vol swc 70-90
+swc_120 = (2/3*sw(10)) + (1/3*sw(11))    ! vol swc 90-120
+swc_150 = (1/3*sw(11)) + (2/3*sw(12))    ! vol swc 120-150
+
+
+
+
+
+!!new outputs
+avgt   = (met.maxt + met.mint) / 2
+eta = ep + es    !eta=actual ET, ep=water uptake=actual transpiration 
+eta_cum = eta_cum + eta  !cum actual ET
+etp_cum =etp_cum + eo     !cum potential ET  , eo=daily potential ET
+
+if (lupin.stage>=3 and lupin.stage <= 8) then
+   hi = yield / biomass
+   hi_green = grain_wt / green_biomass_wt   !! HI_green= grain/green biomass 
+   sla_tot = lai/LeafGreenWt
+   yield_in_t = yield/1000
+   
+else
+   hi = 0     
+   hi_green = 0
+   sla_tot = 0
+   yield_in_t = 0
+endif
+
+
+if (lupin.StageName = 'harvest_ripe' or lupin.plant_status = 'dead') then
+   lupin harvest 
+   lupin kill_crop 
+   lupin end_crop
+   dateset = 0
+
+endif
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! SoilWat parameters !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[standard.SoilWat.parameters]    
+insoil =  2    ! ignores it and uses initial sw values from manager   
+!insoil =  0.8    ! uses initial sw = 0.8 x dul   
+
+!!!! RESIDUE2 parameters !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[standard.SurfaceOM.parameters]    
+mass = 2000  !(values for wheat)
+cnr = 70
+type = wheat
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! IRRIGATE parameters !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+![standard.irrigate.parameters]    
+!automatic_irrigation =  off
+
+!crit_fr_asw =  0.7   
+!asw_depth =  800.   
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! SOILN2 parameters !!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+name = wheat
+[all.SoilN.parameters]    
+root_wt =  1000   
+root_cn =  40   
+nh4ppm =   1    1    1   1   1    1    1    1    1    1    1   1   1    1    1    1    1
+no3ppm =    25   25   20  20  20   15    15 15  5  2.5  2.5 2.0 1.0  1.0  1.0  1.0  1.0
+
+
+!!!!!!!Merredin!!!!!!!!!
+
+[mer00.Operations.parameters]
+ 165   2000    lupin sow plants = 60, row_spacing = 200, sowing_depth = 40, cultivar = merrit
+
+ 201   2000    SoilWat set sw= 0.15 0.15 0.18 0.18 0.25 0.25 0.29 0.29 0.29 0.3 0.3 0.3 0.32 0.33 0.33 0.33 0.33

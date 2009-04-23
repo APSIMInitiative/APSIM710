@@ -1,0 +1,330 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Sample Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                      "sorghum" = %apsim%\Model\sorghum.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1995
+     Simulation end date   = 20/03/1995
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.day
+        clock.year
+        sorghum.sw_demand
+        sorghum.ep
+        SWIM2.uptake_water_sorghum
+        sorghum.rlv
+
+     Output file = test4.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: sample4.met
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+       1/1/1995  Prepare            sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.00  0.188  0.070  0.247  0.370
+            25.0  1.00  0.188  0.070  0.247  0.370
+            70.0  1.00  0.188  0.070  0.247  0.370
+           125.0  1.00  0.188  0.070  0.247  0.370
+           150.0  1.00  0.188  0.070  0.247  0.370
+           150.0  1.00  0.188  0.070  0.247  0.370
+           150.0  1.00  0.188  0.070  0.247  0.370
+           200.0  1.00  0.188  0.070  0.247  0.370
+           225.0  1.00  0.208  0.070  0.247  0.370
+           250.0  1.00  0.370  0.070  0.247  0.370
+           300.0  1.00  0.370  0.070  0.247  0.370
+           250.0  1.00  0.370  0.070  0.247  0.370
+           100.0  1.00  0.370  0.070  0.247  0.370
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.1875785     -0.300    130.000
+            10.0  -             0.1875785     -0.300    130.000
+            50.0  -             0.1875785     -0.300    130.000
+           150.0  -             0.1875785     -0.300    130.000
+           300.0  -             0.1875785     -0.300    130.000
+           450.0  -             0.1875785     -0.300    130.000
+           600.0  -             0.1875785     -0.300    130.000
+           750.0  -             0.1875785     -0.300    130.000
+          1000.0  -             0.2076128     -0.200    130.000
+          1200.0  -             0.3700000      0.000    130.000
+          1500.0  -             0.3700000      0.030    130.000
+          1800.0  -             0.3700000      0.060    130.000
+          2000.0  soil1         0.3700000      0.080    130.000
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.07023    0.07023    0.07023    0.07023    0.07023    0.07023    0.07023
+            -1.00 |    0.13907    0.13907    0.13907    0.13907    0.13907    0.13907    0.13907
+            -0.10 |    0.24712    0.24712    0.24712    0.24712    0.24712    0.24712    0.24712
+            -0.01 |    0.36599    0.36599    0.36599    0.36599    0.36599    0.36599    0.36599
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00277    0.00277    0.00277    0.00277    0.00277    0.00277    0.00277
+            -0.10 |    1.55516    1.55516    1.55516    1.55516    1.55516    1.55516    1.55516
+            -0.01 |  115.32992  115.32992  115.32992  115.32992  115.32992  115.32992  115.32992
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-05 .100E-05 .100E-01 2.00 1.00        0.100
+     
+     
+     
+     
+          Bypass flow is INactive
+          Runoff calculated using runoff functions
+          p%hm1   p%hm0   p%hrc   p%roff0   p%roff1
+          2.0   1.0   5.0    2.00    2.00
+     
+     
+     
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         2000.0   800.0     4.0     0.0   0.632     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.6
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.00    0.46    0.02    0.00
+             2     8.50  0.84    1.90    0.08    0.00
+             3     8.60  0.77    3.43    0.21    0.00
+             4     8.60  0.65    3.38    0.38    0.00
+             5     7.40  0.54    2.25    0.45    0.00
+             6     5.30  0.48    2.70    0.75    0.00
+             7     5.00  0.43    2.10    0.75    0.00
+             8     5.00  0.43    2.80    1.00    0.00
+             9     5.00  0.43    3.15    1.13    0.00
+            10     5.00  0.43    3.50    1.25    0.00
+            11     5.00  0.43    4.20    1.50    0.00
+            12     5.00  0.43    3.50    1.25    0.00
+            13     5.00  0.43    1.40    0.50    0.00
+          ------------------------------------------------
+           Totals               34.76    9.25    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        488.2    33.7    11.8     1.5    69.7     3.5
+             2       2074.4   143.1    25.6     3.2    67.1     3.4
+             3       5358.1   369.5    31.9     4.0    60.4     3.0
+             4       8104.9   559.0    20.1     2.5    50.1     2.5
+             5       8092.0   558.1     8.0     1.0    40.0     2.0
+             6       7199.3   496.5     0.7     0.1    32.0     1.6
+             7       6449.4   444.8     0.6     0.1    25.5     1.3
+             8       8599.1   593.0     0.9     0.1    18.9     0.9
+             9       9674.0   667.2     1.0     0.1    13.5     0.7
+            10      10748.9   741.3     1.1     0.1     9.3     0.5
+            11      12898.7   889.6     1.3     0.2     5.9     0.3
+            12      10748.9   741.3     1.1     0.1     4.1     0.2
+            13       4299.6   296.5     0.4     0.1     3.5     0.2
+          ---------------------------------------------------------
+           Totals   94735.6  6533.5   104.4    13.1   400.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+      Sending sow message to sorghum
+sorghum: 
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+              1    30.0    10.0  1000    1.0     early    0.00
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+               5.0     0.070          0.070       1.000
+              25.0     0.070          0.070       1.000
+              70.0     0.070          0.070       1.000
+             125.0     0.070          0.070       1.000
+             150.0     0.050          0.070       1.000
+             150.0     0.050          0.070       1.000
+             150.0     0.040          0.070       1.000
+             200.0     0.040          0.070       1.000
+             225.0     0.040          0.070       1.000
+             250.0     0.040          0.070       1.000
+             300.0     0.040          0.070       1.000
+             250.0     0.040          0.070       1.000
+             100.0     0.040          0.070       1.000
+         ---------------------------------------------------
+     
+2 January 1995(Day of year=2), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+2 January 1995(Day of year=2): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     No module allows a set of the variable dlt_sw_dep
+     Component name: MasterPM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     

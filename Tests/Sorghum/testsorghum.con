@@ -1,0 +1,34 @@
+version = 7.0(2)
+[APSIM.test1_Sorghum]
+title=Test sowing before out
+module = clock   testsorghum.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testsorghum.par[test1]  testsorghum.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testsorghum.par[test1]   testsorghum.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sorghum   testsorghum.par [all] %apsim%/Model/sorghum.xml [standard]
+
+[APSIM.test2_Sorghum]
+title=Test sowing after out on same day
+module = clock   testsorghum.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testsorghum.par[test2]  testsorghum.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testsorghum.par[test2]   testsorghum.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sorghum   testsorghum.par [all] %apsim%/Model/sorghum.xml [standard]
+
+[APSIM.test3_Sorghum]
+title=Test sowing next day after out
+module = clock   testsorghum.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testsorghum.par[test3]  testsorghum.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testsorghum.par[test3]   testsorghum.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sorghum   testsorghum.par [all] %apsim%/Model/sorghum.xml [standard]
+

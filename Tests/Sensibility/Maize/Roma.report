@@ -1,0 +1,344 @@
+<report version="5">
+<Data>
+<ApsimFileReader name="Low400" Left="0" Top="0">
+    <FileName type="filenames">Roma400Low.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="High400" Left="200" Top="0">
+    <FileName type="filenames">Roma400High.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="Low800" Left="400" Top="0">
+    <FileName type="filenames">Roma800Low.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="High800" Left="600" Top="0">
+    <FileName type="filenames">Roma800High.out</FileName>
+  </ApsimFileReader>
+<Probability name="Low600Prob" Left="0" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>Low400</source>
+  </Probability>
+<Probability name="High600Prob" Left="200" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>High400</source>
+  </Probability>
+<Probability name="Low1500Prob" Left="400" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>Low800</source>
+  </Probability>
+<Probability name="High1500Prob" Left="600" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>High800</source>
+  </Probability>
+</Data>
+   <page> <![CDATA[
+object Page1: TQuickRep
+  Left = 0
+  Top = 0
+  Width = 816
+  Height = 1056
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = Letter
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2794
+    0
+    2159
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 100
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 816
+    Height = 1056
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2794
+      2159)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 75
+      Top = 377
+      Width = 640
+      Height = 557
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1475.05208333333
+        198.4375
+        998.802083333333
+        1693.33333333333)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = 'Cumulative Probability (%)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Yield (kg/ha)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Width = 2
+        BottomAxis.LabelsFont.Height = -21
+        BottomAxis.LabelsSeparation = 60
+        BottomAxis.Maximum = 10000
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Yield (kg/ha)'
+        BottomAxis.Title.Font.Height = -21
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Width = 2
+        LeftAxis.LabelsFont.Height = -19
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Cumulative Probability (%)'
+        LeftAxis.Title.Font.Height = -21
+        Legend.Brush.Color = clWhite
+        Legend.Brush.Style = bsClear
+        Legend.CustomPosition = True
+        Legend.Font.Height = -16
+        Legend.Frame.Visible = False
+        Legend.Left = 360
+        Legend.LegendStyle = lsSeries
+        Legend.Top = 375
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series1: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Low600Prob
+          Title = 'Low Population 400mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Low1500Prob
+          Title = 'Low Population 800mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = High600Prob
+          Title = 'High Population 400mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series4: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = High1500Prob
+          Title = 'High Population 800mm'
+          LinePen.Width = 3
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+      end
+    end
+    object Text1: TText
+      Left = 69
+      Top = 118
+      Width = 229
+      Height = 30
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        79.375
+        182.5625
+        312.208333333333
+        605.895833333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -24
+      Font.Name = 'Arial'
+      Font.Style = [fsBold, fsUnderline]
+      Lines.Strings = (
+        'Maize at Roma, Qld.')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Maize at Roma, Qld.'#13#10
+      FontSize = 18
+    end
+    object Text2: TText
+      Left = 66
+      Top = 165
+      Width = 720
+      Height = 202
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        534.458333333333
+        174.625
+        436.5625
+        1905)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        
+          'Maize crop sown at Roma on 1st of October on a Brown vertosol (P' +
+          'AWC of 130mm).'
+        
+          'Nitrogen in non-limiting.  The crop is sown at 2.5 or 5 plants p' +
+          'er square meter.'
+        
+          'The starting soil moisture is set to be either 400mm or 800mm of' +
+          ' wet soil.'
+        ''
+        
+          'Simulations should indicate a rise in the number of failures as ' +
+          'population increases'
+        
+          'or starting soil water decreases.  Maximum yields for high popul' +
+          'ations should be '
+        
+          'approximately 8-9 t/ha with 6 t/ha for low populations.  Median ' +
+          'yields for low population'
+        
+          'should be approximately 1t/ha for a half profile of soil water a' +
+          'nd 2t/ha for a full profile.'
+        '')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        'Maize crop sown at Roma on 1st of October on a Brown vertosol (P' +
+        'AWC of 130mm).'#13#10'Nitrogen in non-limiting.  The crop is sown at 2' +
+        '.5 or 5 plants per square meter.'#13#10'The starting soil moisture is ' +
+        'set to be either 400mm or 800mm of wet soil.'#13#10#13#10'Simulations shou' +
+        'ld indicate a rise in the number of failures as population incre' +
+        'ases'#13#10'or starting soil water decreases.  Maximum yields for high' +
+        ' populations should be '#13#10'approximately 8-9 t/ha with 6 t/ha for ' +
+        'low populations.  Median yields for low population'#13#10'should be ap' +
+        'proximately 1t/ha for a half profile of soil water and 2t/ha for' +
+        ' a full profile.'#13#10#13#10
+      FontSize = 14
+    end
+  end
+end
+]]>
+   </page>
+</report>

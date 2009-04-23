@@ -1,0 +1,214 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Greenmount B0_SOILWAT
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                      "erosion" = %apsim%\Model\erosion.dll
+   Component                        "grasp" = %apsim%\Model\grasp.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  5/08/1976
+     Simulation end date   = 18/03/1992
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.dd/mm/yyyy as date
+        SoilWat.dlayer()
+        erosion.soil_loss
+        erosion.erosion_cover
+        SoilWat.cover_surface_runoff
+
+     Output file = gmtb0e.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: gmtapsim.dat
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (clock.day = clock.simulation_start_day and
+         clock.year = clock.simulation_start_year) then
+       grasp establish init_section = seedling
+     endif
+     
+     SECTION:- end_of_day
+     if (soil_loss > 0.0) then
+       report do_output
+     endif
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.050  0.150  0.400  0.450  0.250  1.400  0.613  1.000
+          100.-  600.  0.280  0.280  0.470  0.500  0.336  1.300  0.387  0.800
+          600.- 1200.  0.300  0.300  0.450  0.490  0.330  1.100  0.000  0.090
+         1200.- 1500.  0.300  0.300  0.450  0.490  0.360  1.000  0.000  0.180
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      15.00      10.00      25.00       5.00
+          100.-  600.     140.00      28.00      95.00      15.00
+          600.- 1200.     180.00      18.00      90.00      24.00
+         1200.- 1500.      90.00      18.00      45.00      12.00
+          ---------------------------------------------------------
+               Totals     425.00      74.00     255.00      56.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   1.50        0.20       50.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              70.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            8.00 (mm^0.5)
+            CONA:                     3.25 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat          100.0    40.0     0.3     0.0   0.049     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- erosion Initialisation ------------------------------------------------
+      Initialising:
+     
+        - Reading Parameters
+     
+     
+     
+                      Erosion Parameters
+          -----------------------------------------------
+           Profile reduction:                     on
+           Fraction of original layer for merge: .100
+           Freebairn cover-sediment concentration model
+     
+           LS factor:                             ******
+     
+           K factor:                              0.9500
+     
+           P factor:                              1.0000
+     
+          -----------------------------------------------
+
+------- grasp Initialisation --------------------------------------------------
+     Initialising:
+     Parameters:
+       Transpiration Efficiency:     15.00 kg/ha/mm at 20.0 hPa
+       Potential regrowth:            3.50 kg/ha/day
+       Radiation use eff.:           12.00 ()
+       SWI full green:                0.30 ()
+       fpc50 yield(radn):          1600.00 kg/ha
+       fcov50 yield(evap):         1600.00 kg/ha
+       Frost start:    2.00 oC, kill:     0.00 oC.
+       Root Profile:
+           Layer    Lower limit       Kl       Max N
+            ()        (mm)            ()      (kg/ha)
+         --------------------------------------------
+               1      15.000       0.500       12.00
+               2     140.000       0.500        1.50
+               3     180.000       0.500        0.75
+               4      90.000       0.000        0.75
+         --------------------------------------------
+     
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- grasp establish  init_section = seedling
+     Establishing Sward
+     Initial conditions:
+       Basal area :    0.10 %
+       Pools:
+                root     stem     leaf
+             +--------+--------+--------+
+      green  |      0.0      0.0      0.0
+      dead   |      0.0      0.0      0.0
+             +--------+--------+--------+
+       Root depth :   350.0 mm
+       Using vpd approximated from maxt, mint.
+       NB. Pan evap approximated by .MasterPM.SoilWat.eo
+18 March 1992(Day of year=78), clock: 
+     Simulation is terminating due to end criteria being met.

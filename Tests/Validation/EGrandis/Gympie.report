@@ -1,0 +1,517 @@
+<report version="5">
+<Data>
+<Excel name="Excel1" Left="0" Top="0">
+  <FileName type="filename"/>
+  <PageName>GympieVolume</PageName>
+</Excel>
+<ApsimFileReader name="C" Left="200" Top="0">
+  <FileName type="filenames">c.out</FileName>
+</ApsimFileReader>
+<ApsimFileReader name="I" Left="400" Top="0">
+  <FileName type="filenames">i.out</FileName>
+</ApsimFileReader>
+<ApsimFileReader name="F" Left="600" Top="0">
+  <FileName type="filenames">f.out</FileName>
+</ApsimFileReader>
+<ApsimFileReader name="IF" Left="0" Top="200">
+  <FileName type="filenames">if.out</FileName>
+</ApsimFileReader>
+<Filter name="ObsC" Left="200" Top="200">
+  <FilterString>Treatment='C'</FilterString>
+  <source>Excel1</source>
+</Filter>
+<Filter name="ObsI" Left="400" Top="200">
+  <FilterString>Treatment='I'</FilterString>
+  <source>Excel1</source>
+</Filter>
+<Filter name="ObsF" Left="600" Top="200">
+  <FilterString>Treatment='F'</FilterString>
+  <source>Excel1</source>
+</Filter>
+<Filter name="ObsIF" Left="0" Top="400">
+  <FilterString>Treatment='IF'</FilterString>
+  <source>Excel1</source>
+</Filter>
+</Data>
+   <page> <![CDATA[
+object Page1: TQuickRep
+  Left = 83
+  Top = 0
+  Width = 635
+  Height = 898
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = A4
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2970
+    0
+    2100
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 80
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 635
+    Height = 898
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2970
+      2100.13020833333)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 62
+      Top = 102
+      Width = 525
+      Height = 294
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        973.666666666667
+        206.375
+        338.666666666667
+        1735.66666666667)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = ' '
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = ' '
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        Legend.CustomPosition = True
+        Legend.Left = 100
+        Legend.LegendStyle = lsSeries
+        Legend.Top = 37
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsC
+          Title = 'C'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Volume'
+        end
+        object Series2: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsI
+          Title = 'I'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Volume'
+        end
+        object Series3: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsF
+          Title = 'F'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Volume'
+        end
+        object Series4: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsIF
+          Title = 'IF'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Volume'
+        end
+        object Series5: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = C
+          SeriesColor = clRed
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'volume'
+        end
+        object Series6: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = I
+          SeriesColor = clGreen
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'volume'
+        end
+        object Series7: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = F
+          SeriesColor = clYellow
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'volume'
+        end
+        object Series8: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = IF
+          SeriesColor = clBlue
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'volume'
+        end
+      end
+    end
+    object Graph2: TGraph
+      Left = 62
+      Top = 410
+      Width = 525
+      Height = 294
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        973.666666666667
+        206.375
+        1354.66666666667
+        1735.66666666667)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = ' '
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = ' '
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        Legend.CustomPosition = True
+        Legend.Left = 100
+        Legend.LegendStyle = lsSeries
+        Legend.Top = 37
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsC
+          Title = 'C'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'SPHa'
+        end
+        object PointSeries2: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsI
+          Title = 'I'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'SPHa'
+        end
+        object PointSeries3: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsF
+          Title = 'F'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'SPHa'
+        end
+        object PointSeries4: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsIF
+          Title = 'IF'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'SPHa'
+        end
+        object LineSeries1: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = C
+          SeriesColor = clRed
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'plants'
+        end
+        object LineSeries2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = I
+          SeriesColor = clGreen
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'plants'
+        end
+        object LineSeries3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = F
+          SeriesColor = clYellow
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'plants'
+        end
+        object LineSeries4: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = IF
+          SeriesColor = clBlue
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'age'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'plants'
+        end
+      end
+    end
+    object Text1: TText
+      Left = 108
+      Top = 57
+      Width = 186
+      Height = 32
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        105.833333333333
+        357.1875
+        188.515625
+        615.15625)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -24
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      Lines.Strings = (
+        'Toolara State Forest')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Toolara State Forest'#13#10
+      FontSize = 18
+    end
+  end
+end
+]]>
+   </page>
+</report>

@@ -1,0 +1,1125 @@
+[c.report.parameters]
+outputfile  =c.out
+
+[i.report.parameters]
+outputfile  =i.out
+
+[f.report.parameters]
+outputfile  =f.out
+
+[if.report.parameters]
+outputfile  =if.out
+
+
+[all.report.parameters]
+
+
+variable = clock.day
+variable = clock.year
+variable = clock.dd/mm/yyyy as date
+variable = Egrandis.age
+variable = SoilWat.esw
+variable = tracker1.sum@soilwat2_runoff
+variable = tracker1.sum@soilwat2_drain
+variable = tracker1.sum@soilwat2_es
+variable = tracker1.sum@irrigate_irrigation
+variable = SoilN.no3()
+variable = SoilN.nh4()
+variable = SoilN.biom_n()
+variable = SoilN.fom_n()
+variable = SoilN.hum_n()
+variable = tracker1.sum@soiln2_dlt_n_min[]
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_n
+variable = Egrandis.lai
+variable = tracker1.avg@Egrandis_Fn
+variable = tracker1.avg@Egrandis_Fw
+variable = tracker1.avg@Egrandis_Fvpd
+variable = tracker1.avg@Egrandis_ft
+variable = Egrandis.adm_green(1) as StemGreenWt
+variable = Egrandis.adm_green(2) as branch_wt
+variable = Egrandis.adm_green(3) as bark_wt
+variable = Egrandis.foliage_mass as LeafGreenWt
+variable = Egrandis.root_mass
+variable = Egrandis.adm_sen()
+variable = tracker1.avg@Egrandis_sw_demand
+variable = Egrandis.ep
+variable = Egrandis.height
+variable = tracker1.sum@Egrandis_dlt_adm_green[1] as dlt_stem_wt
+variable = tracker1.sum@Egrandis_dlt_adm_green[2] as dlt_branch_wt
+variable = tracker1.sum@Egrandis_dlt_adm_green[3] as dlt_bark_wt
+variable = tracker1.sum@Egrandis_dlt_foliage_mass as dlt_leaf_wt
+variable = Egrandis.foliage_n
+variable = Egrandis.an_green(1) as StemGreenN
+variable = Egrandis.an_green(2) as branch_n
+variable = Egrandis.an_green(3) as bark_n
+variable = tracker1.sum@Egrandis_n_demand
+variable = tracker1.sum@Egrandis_dlt_no3[]
+variable = Egrandis.plants
+variable = SoilN.carbon_tot(1)
+variable = SoilN.carbon_tot(2)
+variable = SoilN.nit_tot(1)
+variable = SoilN.nit_tot(2)
+variable = manager.c_n1
+variable = manager.c_n2
+variable = manager.oc1
+variable = manager.oc2
+variable = manager.volume
+variable = tracker1.sum@soilwat2_flow_no3[5]
+variable = tracker1.sum@soilwat2_flow_no3[8]
+variable = Egrandis.total_n
+variable = SoilN.nit_tot()
+variable = tracker1.sum@Egrandis_dlt_no3
+variable = Egrandis.rlv
+variable = SoilWat.dlayer
+variable = tracker1.sum@micromet_interception
+variable = tracker1.sum@met_rain
+variable = tracker1.sum@fertiliz_fertiliser
+[all.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=4/2/1987
+end_date=4/2/1997
+
+[all.manager.start_of_day]
+
+if day = 35 and year = 1987 then
+   Egrandis establish plants = 1111, init_section = seedling
+endif
+
+! Calculate interception losses
+!if met.rain > 4 then
+!
+!   met.rain = met.rain *(1.0 - 1.9534 * met.rain ** (-0.81))
+!
+!elseif met.rain > 0 then
+!   met.rain = 0
+!endif
+
+!start_popn = 1111
+!end_popn = 900
+!death_rate = (start_popn - end_popn)/(2. * 365)
+
+[i.manager.start_of_day]
+
+if day = 1 and year = 1994 then
+   automatic_irrigation = 'off'
+endif
+
+[if.manager.start_of_day]
+
+!if year > 1987 then
+!   forest thin dlt_plants = 0.43
+!endif
+
+[non_if.manager.start_of_day]
+
+!if year > 1987 then
+!   forest thin dlt_plants = 0.13
+!endif
+
+[all.manager.end_of_day]
+
+! Try to reproduce initial FOM pools from previous pinus ellioti plantation
+if day = 35 and year = 1987 then
+   surfaceom add_surfaceom mass=75000 kg/ha, cnr=100, type=grandis, name=grandis
+   surfaceom tillage type = disc, f_incorp = 1.0, tillage_depth = 150 (mm)
+endif
+
+c_n1 = carbon_tot(1)/nit_tot(1)
+c_n2 = carbon_tot(2)/nit_tot(2)
+oc1 = (carbon_tot(1)/100)/(bd(1)*dlayer(1))
+oc2 = (carbon_tot(2)/100)/(bd(2)*dlayer(2))
+volume = (adm_green(1) + adm_green(3) + foliage_mass)/1000. * 1000./500.
+
+if end_week = 1 then
+   report do_output
+endif
+[c.Operations.start_of_day]
+! 40 1987 Fertiliser apply amount = 192, type = no3_n, depth = 10
+
+[f.Operations.start_of_day]
+! Dates are estimates only
+ 40 1987 Fertiliser apply amount = 192, type = no3_n, depth = 10
+140 1987 Fertiliser apply amount = 192, type = no3_n, depth = 10
+240 1987 Fertiliser apply amount =  96, type = no3_n, depth = 10
+340 1987 Fertiliser apply amount = 256, type = no3_n, depth = 10
+ 60 1988 Fertiliser apply amount = 256, type = no3_n, depth = 10
+200 1988 Fertiliser apply amount = 128, type = no3_n, depth = 10
+300 1988 Fertiliser apply amount = 192, type = no3_n, depth = 10
+160 1989 Fertiliser apply amount = 128, type = no3_n, depth = 10
+300 1989 Fertiliser apply amount =  96, type = no3_n, depth = 10
+
+!244 1983 forest set foliage_n_conc = 0.011
+!244 1984 forest set foliage_n_conc = 0.011
+!244 1985 forest set foliage_n_conc = 0.0105
+!244 1986 forest set foliage_n_conc = 0.010
+!244 1987 forest set foliage_n_conc = 0.0095
+
+
+
+[i.irrigate.parameters]
+automatic_irrigation = on
+crit_fr_asw = 0.9
+asw_depth = 600.
+
+
+[all.SoilWat.parameters]
+
+insoil =    0.80 ()  ! indicator for initial soil water
+                    ! 0 to 1 = fraction of max avail soil water (0=ll15,
+                    !          1 = dul) used to initialise each soil layer
+                    !  > 1   = initialise to user specified volumetric
+                    !          soil water content information
+
+diffus_const =    88. ()   !   coeffs for unsaturated water flow
+diffus_slope =    35.4  ()   !     "
+
+! Ross and Thompson suggest that this is a hard-setting soil
+!cn2_bare =    80 ()   ! bare soil runoff curve number
+! Top soil is rather sandy
+cn2_bare =    65 ()   ! bare soil runoff curve number
+
+cn_red =    20   ! potetial reduction in curve number due to residue
+cn_cov =    .8   ! cover for maximum reduction in curve number
+salb =    0.13  ()   ! bare soil albedo
+cona =    3.5  ()   ! stage 2 evap coef.
+u =    4 (mm)   ! stage 1 soil evaporation coefficient (mm)
+
+! ================================================
+! layer      1    2    3    4    5    6   7    8
+! depth      100  300 500 1000 2000 3000 4000 5000
+! ================================================
+dlayer =    100  300  600 1000 1000 1000 1000 1000 ! layer thickness mm soil
+!sat =      .290 .290 .290 .290 .290 .290 .290 .290 ! saturation mm water/mm soil
+!dul =      .240 .240 .240 .240 .240 .240 .240 .240 ! drained upper limit mm water/mm soil
+!sw  =      .170 .170 .170 .230 .200 .200 .200 .200 ! Unused
+!ll15 =     .100 .100 .100 .100 .100 .100 .100 .100 ! lower limit mm water/mm soil
+!air_dry =  .010 .010 .010 .020 .050 .050 .050 .050 ! air dry mm water/ mm soil
+
+sat =      .290 .290 .290 .290 .290 .290 .290 .290 ! saturation mm water/mm soil
+dul =      .160 .150 .140 .130 .120 .120 .120 .120 ! drained upper limit mm water/mm soil
+sw  =      .100 .100 .100 .100 .100 .100 .100 .100 ! Unused
+ll15 =     .050 .050 .050 .050 .050 .050 .050 .050 ! lower limit mm water/mm soil
+air_dry =  .010 .010 .010 .020 .050 .050 .050 .050 ! air dry mm water/ mm soil
+swcon =     0.9  0.9  0.9  0.6  0.6  0.6  0.6  0.6 ! drainage coefficient
+bd =       1.50 1.60 1.68 1.75 1.70  1.7  1.7  1.7 ! bulk density gm dry soil/cc moist soil
+! ================================================
+
+[all.SoilN.parameters]
+
+root_cn =  60.   ! C:N ratio of initial root residues
+root_wt =  1.0   ! root residues as biomass (kg/ha)
+soil_cn =  20    ! C:N ratio of soil
+
+
+! ================================================
+! layer      1    2    3    4    5    6   7    8
+! depth      100  300 500 1000 2000 3000 4000 5000
+! ================================================
+oc =      1.00 1.00 0.29 0.20 0.12  0.10 0.10 0.10 (%)   ! Soil Organic Carbon
+ph =      5.80 5.70 5.70 5.90 5.70  5.70 5.70 5.70 ()    ! pH of soil
+fbiom =   .020 .020 .010 0.01 0.01  0.01 0.01 0.01 ()    ! Organic C Biomass Fraction
+finert =  0.60 0.70 0.95 0.99 0.99  0.99 0.99 0.99 ()    ! Inert Organic C Fraction
+no3ppm =  0.10  0.10 0.10 0.01 0.01 0.01 0.01 0.01 (ppm) ! Nitrate Concentration
+nh4ppm =  0.01  0.01 0.01 0.01 0.01 0.01 0.01 0.01 (ppm) ! Ammonium Concentration
+ureappm =  0   0    0    0    0      0     0   0   (ppm) ! Urea Concentration
+! =================================
+
+
+! Erosion profile reduction parameters
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+
+[all.Egrandis.parameters]
+uptake_source =  calc
+n_uptake_source = calc
+
+  rlv   =  0.005 0.001 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+[restrict_root.Egrandis.parameters]
+! ================================================
+! layer      1    2    3    4    5    6   7    8
+! depth      100  300 500 1000 2000 3000 4000 5000
+! ================================================
+   ll   = .100 .100 .100 .100 .100   .100 .10 0.10 ! lower limit mm water/mm soil
+   xf   = 1.00 1.00 1.00 1.00 1.00   0.00 0.00 0.00 ! Weighting factor for root advance
+   kl   = 0.07 0.07 0.05 0.02 0.02   0.02 0.01 0.01 ! Water Extraction Parameter (0-1)
+! ================================================
+
+[norestrict_root.Egrandis.parameters]
+! ================================================
+! layer      1    2    3    4    5    6   7    8
+! depth      100  300 500 1000 2000 3000 4000 5000
+! ================================================
+   ll   = .100 .100 .100 .100 .100   .100 .10 0.10 ! lower limit mm water/mm soil
+   xf   = 1.00 1.00 1.00 1.00 1.00   1.00 0.00 0.00 ! Weighting factor for root advance
+   kl   = 0.07 0.07 0.05 0.02 0.02   0.02 0.01 0.01 ! Water Extraction Parameter (0-1)
+! ================================================
+
+[all.SurfaceOM.parameters]
+mass = 10. (kg/ha)   ! Initial surface residue
+cnr = 80.0 ()   ! C:N ration of initial residue
+type = sugar   ! Type if initial residue
+name = sugar
+
+[all.micromet.parameters]
+soil_albedo = 0.23
+layer_ga = 0.01666
+!      Interception = A_interception * (rain ^ B_interception)
+!                   + C_interception * Total_LAI
+!                   + D_interception
+! Kyabram Fitting
+!a_interception = 1.2
+!b_interception = 0.6
+!c_interception = 0.0
+!d_interception = 0.0
+! Standard LAI approach
+a_interception = 0.0
+b_interception = 0.0
+c_interception = 0.1
+d_interception = 0.0
+! Fractional approach
+!a_interception = 0.15
+!b_interception = 0.0
+!c_interception = 0.0
+!d_interception = 0.0
+
+
+[i.Operations.start_of_day]
+   8      1986   irrigation apply amount =     0
+   15     1986   irrigation apply amount =     0
+   22     1986   irrigation apply amount =     0
+   29     1986   irrigation apply amount =     0
+   39     1986   irrigation apply amount =     0
+   46     1986   irrigation apply amount =     0
+   53     1986   irrigation apply amount =     0
+   60     1986   irrigation apply amount =     0
+   67     1986   irrigation apply amount =     0
+   74     1986   irrigation apply amount =     0
+   81     1986   irrigation apply amount =     0
+   88     1986   irrigation apply amount =     0
+   98     1986   irrigation apply amount =     0
+  105     1986   irrigation apply amount =     0
+  112     1986   irrigation apply amount =     0
+  119     1986   irrigation apply amount =     0
+  128     1986   irrigation apply amount =     0
+  135     1986   irrigation apply amount =     0
+  142     1986   irrigation apply amount =     0
+  149     1986   irrigation apply amount =     0
+  159     1986   irrigation apply amount =     0
+  166     1986   irrigation apply amount =     0
+  173     1986   irrigation apply amount =     0
+  180     1986   irrigation apply amount =     0
+  189     1986   irrigation apply amount =     0
+  196     1986   irrigation apply amount =     0
+  203     1986   irrigation apply amount =     0
+  210     1986   irrigation apply amount =     0
+  220     1986   irrigation apply amount =     0
+  227     1986   irrigation apply amount =     0
+  234     1986   irrigation apply amount =     0
+  241     1986   irrigation apply amount =     0
+  251     1986   irrigation apply amount =     0
+  258     1986   irrigation apply amount =     0
+  265     1986   irrigation apply amount =     0
+  272     1986   irrigation apply amount =     0
+  281     1986   irrigation apply amount =     0
+  288     1986   irrigation apply amount =     0
+  295     1986   irrigation apply amount =     0
+  302     1986   irrigation apply amount =     0
+  312     1986   irrigation apply amount =     0
+  319     1986   irrigation apply amount =     0
+  326     1986   irrigation apply amount =     0
+  333     1986   irrigation apply amount =     0
+  342     1986   irrigation apply amount =     0
+  349     1986   irrigation apply amount =     0
+  356     1986   irrigation apply amount =     0
+  363     1986   irrigation apply amount =     0
+   8      1987   irrigation apply amount =     0
+   15     1987   irrigation apply amount =     0
+   22     1987   irrigation apply amount =     0
+   29     1987   irrigation apply amount =     0
+   39     1987   irrigation apply amount =   3.885
+   46     1987   irrigation apply amount =   3.885
+   53     1987   irrigation apply amount =   3.885
+   60     1987   irrigation apply amount =   3.885
+   67     1987   irrigation apply amount =  25.5633
+   74     1987   irrigation apply amount =  25.5633
+   81     1987   irrigation apply amount =  25.5633
+   88     1987   irrigation apply amount =  25.5633
+   98     1987   irrigation apply amount =  17.6379
+  105     1987   irrigation apply amount =  17.6379
+  112     1987   irrigation apply amount =  17.6379
+  119     1987   irrigation apply amount =  17.6379
+  128     1987   irrigation apply amount =   9.7902
+  135     1987   irrigation apply amount =   9.7902
+  142     1987   irrigation apply amount =   9.7902
+  149     1987   irrigation apply amount =   9.7902
+  159     1987   irrigation apply amount =     0
+  166     1987   irrigation apply amount =     0
+  173     1987   irrigation apply amount =     0
+  180     1987   irrigation apply amount =     0
+  189     1987   irrigation apply amount =  13.6752
+  196     1987   irrigation apply amount =  13.6752
+  203     1987   irrigation apply amount =  13.6752
+  210     1987   irrigation apply amount =  13.6752
+  220     1987   irrigation apply amount =   11.655
+  227     1987   irrigation apply amount =   11.655
+  234     1987   irrigation apply amount =   11.655
+  241     1987   irrigation apply amount =   11.655
+  251     1987   irrigation apply amount =  17.5602
+  258     1987   irrigation apply amount =  17.5602
+  265     1987   irrigation apply amount =  17.5602
+  272     1987   irrigation apply amount =  17.5602
+  281     1987   irrigation apply amount =   6.1383
+  288     1987   irrigation apply amount =   6.1383
+  295     1987   irrigation apply amount =   6.1383
+  302     1987   irrigation apply amount =   6.1383
+  312     1987   irrigation apply amount =  11.8881
+  319     1987   irrigation apply amount =  11.8881
+  326     1987   irrigation apply amount =  11.8881
+  333     1987   irrigation apply amount =  11.8881
+  342     1987   irrigation apply amount =   9.7125
+  349     1987   irrigation apply amount =   9.7125
+  356     1987   irrigation apply amount =   9.7125
+  363     1987   irrigation apply amount =   9.7125
+   8      1988   irrigation apply amount =  13.7529
+   15     1988   irrigation apply amount =  13.7529
+   22     1988   irrigation apply amount =  13.7529
+   29     1988   irrigation apply amount =  13.7529
+   39     1988   irrigation apply amount =  37.0629
+   46     1988   irrigation apply amount =  37.0629
+   53     1988   irrigation apply amount =  37.0629
+   60     1988   irrigation apply amount =  37.0629
+   68     1988   irrigation apply amount =  42.56018
+   75     1988   irrigation apply amount =  42.56018
+   82     1988   irrigation apply amount =  42.56018
+   89     1988   irrigation apply amount =  42.56018
+   99     1988   irrigation apply amount =     0
+  106     1988   irrigation apply amount =     0
+  113     1988   irrigation apply amount =     0
+  120     1988   irrigation apply amount =     0
+  129     1988   irrigation apply amount =     0
+  136     1988   irrigation apply amount =     0
+  143     1988   irrigation apply amount =     0
+  150     1988   irrigation apply amount =     0
+  160     1988   irrigation apply amount =     0
+  167     1988   irrigation apply amount =     0
+  174     1988   irrigation apply amount =     0
+  181     1988   irrigation apply amount =     0
+  190     1988   irrigation apply amount =     0
+  197     1988   irrigation apply amount =     0
+  204     1988   irrigation apply amount =     0
+  211     1988   irrigation apply amount =     0
+  221     1988   irrigation apply amount =    7.77
+  228     1988   irrigation apply amount =    7.77
+  235     1988   irrigation apply amount =    7.77
+  242     1988   irrigation apply amount =    7.77
+  252     1988   irrigation apply amount =  9.965025
+  259     1988   irrigation apply amount =  9.965025
+  266     1988   irrigation apply amount =  9.965025
+  273     1988   irrigation apply amount =  9.965025
+  282     1988   irrigation apply amount =   32.634
+  289     1988   irrigation apply amount =   32.634
+  296     1988   irrigation apply amount =   32.634
+  303     1988   irrigation apply amount =   32.634
+  313     1988   irrigation apply amount =  41.78318
+  320     1988   irrigation apply amount =  41.78318
+  327     1988   irrigation apply amount =  41.78318
+  334     1988   irrigation apply amount =  41.78318
+  343     1988   irrigation apply amount =  12.91763
+  350     1988   irrigation apply amount =  12.91763
+  357     1988   irrigation apply amount =  12.91763
+  364     1988   irrigation apply amount =  12.91763
+   8      1989   irrigation apply amount =   8.0031
+   15     1989   irrigation apply amount =   8.0031
+   22     1989   irrigation apply amount =   8.0031
+   29     1989   irrigation apply amount =   8.0031
+   39     1989   irrigation apply amount =  15.9285
+   46     1989   irrigation apply amount =  15.9285
+   53     1989   irrigation apply amount =  15.9285
+   60     1989   irrigation apply amount =  15.9285
+   67     1989   irrigation apply amount =  23.7762
+   74     1989   irrigation apply amount =  23.7762
+   81     1989   irrigation apply amount =  23.7762
+   88     1989   irrigation apply amount =  23.7762
+   98     1989   irrigation apply amount =     0
+  105     1989   irrigation apply amount =     0
+  112     1989   irrigation apply amount =     0
+  119     1989   irrigation apply amount =     0
+  128     1989   irrigation apply amount =     0
+  135     1989   irrigation apply amount =     0
+  142     1989   irrigation apply amount =     0
+  149     1989   irrigation apply amount =     0
+  159     1989   irrigation apply amount =     0
+  166     1989   irrigation apply amount =     0
+  173     1989   irrigation apply amount =     0
+  180     1989   irrigation apply amount =     0
+  189     1989   irrigation apply amount =   0.2331
+  196     1989   irrigation apply amount =   0.2331
+  203     1989   irrigation apply amount =   0.2331
+  210     1989   irrigation apply amount =   0.2331
+  220     1989   irrigation apply amount =   8.8578
+  227     1989   irrigation apply amount =   8.8578
+  234     1989   irrigation apply amount =   8.8578
+  241     1989   irrigation apply amount =   8.8578
+  251     1989   irrigation apply amount =  21.73658
+  258     1989   irrigation apply amount =  21.73658
+  265     1989   irrigation apply amount =  21.73658
+  272     1989   irrigation apply amount =  21.73658
+  281     1989   irrigation apply amount =  43.08465
+  288     1989   irrigation apply amount =  43.08465
+  295     1989   irrigation apply amount =  43.08465
+  302     1989   irrigation apply amount =  43.08465
+  312     1989   irrigation apply amount =  23.36828
+  319     1989   irrigation apply amount =  23.36828
+  326     1989   irrigation apply amount =  23.36828
+  333     1989   irrigation apply amount =  23.36828
+  342     1989   irrigation apply amount =  35.21753
+  349     1989   irrigation apply amount =  35.21753
+  356     1989   irrigation apply amount =  35.21753
+  363     1989   irrigation apply amount =  35.21753
+   8      1990   irrigation apply amount =  53.94323
+   15     1990   irrigation apply amount =  53.94323
+   22     1990   irrigation apply amount =  53.94323
+   29     1990   irrigation apply amount =  53.94323
+   39     1990   irrigation apply amount =  54.27345
+   46     1990   irrigation apply amount =  54.27345
+   53     1990   irrigation apply amount =  54.27345
+   60     1990   irrigation apply amount =  54.27345
+   67     1990   irrigation apply amount =  23.11575
+   74     1990   irrigation apply amount =  23.11575
+   81     1990   irrigation apply amount =  23.11575
+   88     1990   irrigation apply amount =  23.11575
+   98     1990   irrigation apply amount =     0
+  105     1990   irrigation apply amount =     0
+  112     1990   irrigation apply amount =     0
+  119     1990   irrigation apply amount =     0
+  128     1990   irrigation apply amount =     0
+  135     1990   irrigation apply amount =     0
+  142     1990   irrigation apply amount =     0
+  149     1990   irrigation apply amount =     0
+  159     1990   irrigation apply amount =     0
+  166     1990   irrigation apply amount =     0
+  173     1990   irrigation apply amount =     0
+  180     1990   irrigation apply amount =     0
+  189     1990   irrigation apply amount =     0
+  196     1990   irrigation apply amount =     0
+  203     1990   irrigation apply amount =     0
+  210     1990   irrigation apply amount =     0
+  220     1990   irrigation apply amount =  16.9386
+  227     1990   irrigation apply amount =  16.9386
+  234     1990   irrigation apply amount =  16.9386
+  241     1990   irrigation apply amount =  16.9386
+  251     1990   irrigation apply amount =  34.8096
+  258     1990   irrigation apply amount =  34.8096
+  265     1990   irrigation apply amount =  34.8096
+  272     1990   irrigation apply amount =  34.8096
+  281     1990   irrigation apply amount =  32.28435
+  288     1990   irrigation apply amount =  32.28435
+  295     1990   irrigation apply amount =  32.28435
+  302     1990   irrigation apply amount =  32.28435
+  312     1990   irrigation apply amount =  21.65888
+  319     1990   irrigation apply amount =  21.65888
+  326     1990   irrigation apply amount =  21.65888
+  333     1990   irrigation apply amount =  21.65888
+  342     1990   irrigation apply amount =  32.1678
+  349     1990   irrigation apply amount =  32.1678
+  356     1990   irrigation apply amount =  32.1678
+  363     1990   irrigation apply amount =  32.1678
+   8      1991   irrigation apply amount =   8.2362
+   15     1991   irrigation apply amount =   8.2362
+   22     1991   irrigation apply amount =   8.2362
+   29     1991   irrigation apply amount =   8.2362
+   39     1991   irrigation apply amount =   3.885
+   46     1991   irrigation apply amount =   3.885
+   53     1991   irrigation apply amount =   3.885
+   60     1991   irrigation apply amount =   3.885
+   67     1991   irrigation apply amount =  11.8881
+   74     1991   irrigation apply amount =  11.8881
+   81     1991   irrigation apply amount =  11.8881
+   88     1991   irrigation apply amount =  11.8881
+   98     1991   irrigation apply amount =    7.77
+  105     1991   irrigation apply amount =    7.77
+  112     1991   irrigation apply amount =    7.77
+  119     1991   irrigation apply amount =    7.77
+  128     1991   irrigation apply amount =   8.1585
+  135     1991   irrigation apply amount =   8.1585
+  142     1991   irrigation apply amount =   8.1585
+  149     1991   irrigation apply amount =   8.1585
+  159     1991   irrigation apply amount =     0
+  166     1991   irrigation apply amount =     0
+  173     1991   irrigation apply amount =     0
+  180     1991   irrigation apply amount =     0
+  189     1991   irrigation apply amount =     0
+  196     1991   irrigation apply amount =     0
+  203     1991   irrigation apply amount =     0
+  210     1991   irrigation apply amount =     0
+  220     1991   irrigation apply amount =     0
+  227     1991   irrigation apply amount =     0
+  234     1991   irrigation apply amount =     0
+  241     1991   irrigation apply amount =     0
+  251     1991   irrigation apply amount =  36.57728
+  258     1991   irrigation apply amount =  36.57728
+  265     1991   irrigation apply amount =  36.57728
+  272     1991   irrigation apply amount =  36.57728
+  281     1991   irrigation apply amount =  16.14218
+  288     1991   irrigation apply amount =  16.14218
+  295     1991   irrigation apply amount =  16.14218
+  302     1991   irrigation apply amount =  16.14218
+  312     1991   irrigation apply amount =  14.89898
+  319     1991   irrigation apply amount =  14.89898
+  326     1991   irrigation apply amount =  14.89898
+  333     1991   irrigation apply amount =  14.89898
+  342     1991   irrigation apply amount =   15.54
+  349     1991   irrigation apply amount =   15.54
+  356     1991   irrigation apply amount =   15.54
+  363     1991   irrigation apply amount =   15.54
+   8      1992   irrigation apply amount =  23.4654
+   15     1992   irrigation apply amount =  23.4654
+   22     1992   irrigation apply amount =  23.4654
+   29     1992   irrigation apply amount =  23.4654
+   39     1992   irrigation apply amount =    3.85
+   46     1992   irrigation apply amount =    3.85
+   53     1992   irrigation apply amount =    3.85
+   60     1992   irrigation apply amount =    3.85
+   68     1992   irrigation apply amount =     0
+   75     1992   irrigation apply amount =     0
+   82     1992   irrigation apply amount =     0
+   89     1992   irrigation apply amount =     0
+   99     1992   irrigation apply amount =     0
+  106     1992   irrigation apply amount =     0
+  113     1992   irrigation apply amount =     0
+  120     1992   irrigation apply amount =     0
+  129     1992   irrigation apply amount =     0
+  136     1992   irrigation apply amount =     0
+  143     1992   irrigation apply amount =     0
+  150     1992   irrigation apply amount =     0
+  160     1992   irrigation apply amount =     0
+  167     1992   irrigation apply amount =     0
+  174     1992   irrigation apply amount =     0
+  181     1992   irrigation apply amount =     0
+  190     1992   irrigation apply amount =    6.41
+  197     1992   irrigation apply amount =    6.41
+  204     1992   irrigation apply amount =    6.41
+  211     1992   irrigation apply amount =    6.41
+  221     1992   irrigation apply amount =   23.31
+  228     1992   irrigation apply amount =   23.31
+  235     1992   irrigation apply amount =   23.31
+  242     1992   irrigation apply amount =   23.31
+  252     1992   irrigation apply amount =   1.9425
+  259     1992   irrigation apply amount =   1.9425
+  266     1992   irrigation apply amount =   1.9425
+  273     1992   irrigation apply amount =   1.9425
+  282     1992   irrigation apply amount =  21.23153
+  289     1992   irrigation apply amount =  21.23153
+  296     1992   irrigation apply amount =  21.23153
+  303     1992   irrigation apply amount =  21.23153
+  313     1992   irrigation apply amount =  2.777775
+  320     1992   irrigation apply amount =  2.777775
+  327     1992   irrigation apply amount =  2.777775
+  334     1992   irrigation apply amount =  2.777775
+  343     1992   irrigation apply amount =     0
+  350     1992   irrigation apply amount =     0
+  357     1992   irrigation apply amount =     0
+  364     1992   irrigation apply amount =     0
+   8      1993   irrigation apply amount =  10.81973
+   15     1993   irrigation apply amount =  10.81973
+   22     1993   irrigation apply amount =  10.81973
+   29     1993   irrigation apply amount =  10.81973
+   39     1993   irrigation apply amount =  15.6177
+   46     1993   irrigation apply amount =  15.6177
+   53     1993   irrigation apply amount =  15.6177
+   60     1993   irrigation apply amount =  15.6177
+   67     1993   irrigation apply amount =  7.57575
+   74     1993   irrigation apply amount =  7.57575
+   81     1993   irrigation apply amount =  7.57575
+   88     1993   irrigation apply amount =  7.57575
+   98     1993   irrigation apply amount =  30.55553
+  105     1993   irrigation apply amount =  30.55553
+  112     1993   irrigation apply amount =  30.55553
+  119     1993   irrigation apply amount =  30.55553
+  128     1993   irrigation apply amount =     0
+  135     1993   irrigation apply amount =     0
+  142     1993   irrigation apply amount =     0
+  149     1993   irrigation apply amount =     0
+  159     1993   irrigation apply amount =  15.28748
+  166     1993   irrigation apply amount =  15.28748
+  173     1993   irrigation apply amount =  15.28748
+  180     1993   irrigation apply amount =  15.28748
+  189     1993   irrigation apply amount =  5.01165
+  196     1993   irrigation apply amount =  5.01165
+  203     1993   irrigation apply amount =  5.01165
+  210     1993   irrigation apply amount =  5.01165
+  220     1993   irrigation apply amount =  15.43133
+  227     1993   irrigation apply amount =  15.43133
+  234     1993   irrigation apply amount =  15.43133
+  241     1993   irrigation apply amount =  15.43133
+  251     1993   irrigation apply amount =  4.019925
+  258     1993   irrigation apply amount =  4.019925
+  265     1993   irrigation apply amount =  4.019925
+  272     1993   irrigation apply amount =  4.019925
+  281     1993   irrigation apply amount =  15.2646
+  288     1993   irrigation apply amount =  15.2646
+  295     1993   irrigation apply amount =  15.2646
+  302     1993   irrigation apply amount =  15.2646
+  312     1993   irrigation apply amount =     0
+  319     1993   irrigation apply amount =     0
+  326     1993   irrigation apply amount =     0
+  333     1993   irrigation apply amount =     0
+  342     1993   irrigation apply amount =  10.50368
+  349     1993   irrigation apply amount =  10.50368
+  356     1993   irrigation apply amount =  10.50368
+  363     1993   irrigation apply amount =  10.50368
+   8      1994   irrigation apply amount =  6.85425
+   15     1994   irrigation apply amount =  6.85425
+   22     1994   irrigation apply amount =  6.85425
+   29     1994   irrigation apply amount =  6.85425
+   39     1994   irrigation apply amount =     0
+   46     1994   irrigation apply amount =     0
+   53     1994   irrigation apply amount =     0
+   60     1994   irrigation apply amount =     0
+   67     1994   irrigation apply amount =     0
+   74     1994   irrigation apply amount =     0
+   81     1994   irrigation apply amount =     0
+   88     1994   irrigation apply amount =     0
+
+
+[if.Operations.start_of_day]
+! Dates estimated from survival time series
+40 1988 egrandis thin plants_fr=0.1, biomass_fr = 0.15
+140 1988 egrandis thin plants_fr=0.22, biomass_fr = 0.33
+270 1988 egrandis thin plants_fr=0.14, biomass_fr = 0.21
+
+
+
+   8       1986    irrigation apply amount =    0
+   15      1986    irrigation apply amount =    0
+   22      1986    irrigation apply amount =    0
+   29      1986    irrigation apply amount =    0
+   39      1986    irrigation apply amount =    0
+   46      1986    irrigation apply amount =    0
+   53      1986    irrigation apply amount =    0
+   60      1986    irrigation apply amount =    0
+   67      1986    irrigation apply amount =    0
+   74      1986    irrigation apply amount =    0
+   81      1986    irrigation apply amount =    0
+   88      1986    irrigation apply amount =    0
+   98      1986    irrigation apply amount =    0
+  105      1986    irrigation apply amount =    0
+  112      1986    irrigation apply amount =    0
+  119      1986    irrigation apply amount =    0
+  128      1986    irrigation apply amount =    0
+  135      1986    irrigation apply amount =    0
+  142      1986    irrigation apply amount =    0
+  149      1986    irrigation apply amount =    0
+  159      1986    irrigation apply amount =    0
+  166      1986    irrigation apply amount =    0
+  173      1986    irrigation apply amount =    0
+  180      1986    irrigation apply amount =    0
+  189      1986    irrigation apply amount =    0
+  196      1986    irrigation apply amount =    0
+  203      1986    irrigation apply amount =    0
+  210      1986    irrigation apply amount =    0
+  220      1986    irrigation apply amount =    0
+  227      1986    irrigation apply amount =    0
+  234      1986    irrigation apply amount =    0
+  241      1986    irrigation apply amount =    0
+  251      1986    irrigation apply amount =    0
+  258      1986    irrigation apply amount =    0
+  265      1986    irrigation apply amount =    0
+  272      1986    irrigation apply amount =    0
+  281      1986    irrigation apply amount =    0
+  288      1986    irrigation apply amount =    0
+  295      1986    irrigation apply amount =    0
+  302      1986    irrigation apply amount =    0
+  312      1986    irrigation apply amount =    0
+  319      1986    irrigation apply amount =    0
+  326      1986    irrigation apply amount =    0
+  333      1986    irrigation apply amount =    0
+  342      1986    irrigation apply amount =    0
+  349      1986    irrigation apply amount =    0
+  356      1986    irrigation apply amount =    0
+  363      1986    irrigation apply amount =    0
+   8       1987    irrigation apply amount =    0
+   15      1987    irrigation apply amount =    0
+   22      1987    irrigation apply amount =    0
+   29      1987    irrigation apply amount =    0
+   39      1987    irrigation apply amount =  2.2533
+   46      1987    irrigation apply amount =  2.2533
+   53      1987    irrigation apply amount =  2.2533
+   60      1987    irrigation apply amount =  2.2533
+   67      1987    irrigation apply amount = 25.5633
+   74      1987    irrigation apply amount = 25.5633
+   81      1987    irrigation apply amount = 25.5633
+   88      1987    irrigation apply amount = 25.5633
+   98      1987    irrigation apply amount = 21.5229
+  105      1987    irrigation apply amount = 21.5229
+  112      1987    irrigation apply amount = 21.5229
+  119      1987    irrigation apply amount = 21.5229
+  128      1987    irrigation apply amount = 13.6752
+  135      1987    irrigation apply amount = 13.6752
+  142      1987    irrigation apply amount = 13.6752
+  149      1987    irrigation apply amount = 13.6752
+  159      1987    irrigation apply amount =    0
+  166      1987    irrigation apply amount =    0
+  173      1987    irrigation apply amount =    0
+  180      1987    irrigation apply amount =    0
+  189      1987    irrigation apply amount = 17.6379
+  196      1987    irrigation apply amount = 17.6379
+  203      1987    irrigation apply amount = 17.6379
+  210      1987    irrigation apply amount = 17.6379
+  220      1987    irrigation apply amount =   7.77
+  227      1987    irrigation apply amount =   7.77
+  234      1987    irrigation apply amount =   7.77
+  241      1987    irrigation apply amount =   7.77
+  251      1987    irrigation apply amount = 16.58895
+  258      1987    irrigation apply amount = 16.58895
+  265      1987    irrigation apply amount = 16.58895
+  272      1987    irrigation apply amount = 16.58895
+  281      1987    irrigation apply amount = 15.8508
+  288      1987    irrigation apply amount = 15.8508
+  295      1987    irrigation apply amount = 15.8508
+  302      1987    irrigation apply amount = 15.8508
+  312      1987    irrigation apply amount = 20.47395
+  319      1987    irrigation apply amount = 20.47395
+  326      1987    irrigation apply amount = 20.47395
+  333      1987    irrigation apply amount = 20.47395
+  342      1987    irrigation apply amount =  19.425
+  349      1987    irrigation apply amount =  19.425
+  356      1987    irrigation apply amount =  19.425
+  363      1987    irrigation apply amount =  19.425
+   8       1988    irrigation apply amount = 15.6954
+   15      1988    irrigation apply amount = 15.6954
+   22      1988    irrigation apply amount = 15.6954
+   29      1988    irrigation apply amount = 15.6954
+   39      1988    irrigation apply amount = 39.0054
+   46      1988    irrigation apply amount = 39.0054
+   53      1988    irrigation apply amount = 39.0054
+   60      1988    irrigation apply amount = 39.0054
+   68      1988    irrigation apply amount = 42.56018
+   75      1988    irrigation apply amount = 42.56018
+   82      1988    irrigation apply amount = 42.56018
+   89      1988    irrigation apply amount = 42.56018
+   99      1988    irrigation apply amount =    0
+  106      1988    irrigation apply amount =    0
+  113      1988    irrigation apply amount =    0
+  120      1988    irrigation apply amount =    0
+  129      1988    irrigation apply amount =    0
+  136      1988    irrigation apply amount =    0
+  143      1988    irrigation apply amount =    0
+  150      1988    irrigation apply amount =    0
+  160      1988    irrigation apply amount =    0
+  167      1988    irrigation apply amount =    0
+  174      1988    irrigation apply amount =    0
+  181      1988    irrigation apply amount =    0
+  190      1988    irrigation apply amount =    0
+  197      1988    irrigation apply amount =    0
+  204      1988    irrigation apply amount =    0
+  211      1988    irrigation apply amount =    0
+  221      1988    irrigation apply amount =   7.77
+  228      1988    irrigation apply amount =   7.77
+  235      1988    irrigation apply amount =   7.77
+  242      1988    irrigation apply amount =   7.77
+  252      1988    irrigation apply amount = 9.965025
+  259      1988    irrigation apply amount = 9.965025
+  266      1988    irrigation apply amount = 9.965025
+  273      1988    irrigation apply amount = 9.965025
+  282      1988    irrigation apply amount =  40.404
+  289      1988    irrigation apply amount =  40.404
+  296      1988    irrigation apply amount =  40.404
+  303      1988    irrigation apply amount =  40.404
+  313      1988    irrigation apply amount = 49.55318
+  320      1988    irrigation apply amount = 49.55318
+  327      1988    irrigation apply amount = 49.55318
+  334      1988    irrigation apply amount = 49.55318
+  343      1988    irrigation apply amount = 12.91763
+  350      1988    irrigation apply amount = 12.91763
+  357      1988    irrigation apply amount = 12.91763
+  364      1988    irrigation apply amount = 12.91763
+   8       1989    irrigation apply amount = 11.8881
+   15      1989    irrigation apply amount = 11.8881
+   22      1989    irrigation apply amount = 11.8881
+   29      1989    irrigation apply amount = 11.8881
+   39      1989    irrigation apply amount = 15.9285
+   46      1989    irrigation apply amount = 15.9285
+   53      1989    irrigation apply amount = 15.9285
+   60      1989    irrigation apply amount = 15.9285
+   67      1989    irrigation apply amount = 23.7762
+   74      1989    irrigation apply amount = 23.7762
+   81      1989    irrigation apply amount = 23.7762
+   88      1989    irrigation apply amount = 23.7762
+   98      1989    irrigation apply amount =    0
+  105      1989    irrigation apply amount =    0
+  112      1989    irrigation apply amount =    0
+  119      1989    irrigation apply amount =    0
+  128      1989    irrigation apply amount =    0
+  135      1989    irrigation apply amount =    0
+  142      1989    irrigation apply amount =    0
+  149      1989    irrigation apply amount =    0
+  159      1989    irrigation apply amount =    0
+  166      1989    irrigation apply amount =    0
+  173      1989    irrigation apply amount =    0
+  180      1989    irrigation apply amount =    0
+  189      1989    irrigation apply amount =  0.2331
+  196      1989    irrigation apply amount =  0.2331
+  203      1989    irrigation apply amount =  0.2331
+  210      1989    irrigation apply amount =  0.2331
+  220      1989    irrigation apply amount = 12.91763
+  227      1989    irrigation apply amount = 12.91763
+  234      1989    irrigation apply amount = 12.91763
+  241      1989    irrigation apply amount = 12.91763
+  251      1989    irrigation apply amount = 51.70935
+  258      1989    irrigation apply amount = 51.70935
+  265      1989    irrigation apply amount = 51.70935
+  272      1989    irrigation apply amount = 51.70935
+  281      1989    irrigation apply amount = 61.4607
+  288      1989    irrigation apply amount = 61.4607
+  295      1989    irrigation apply amount = 61.4607
+  302      1989    irrigation apply amount = 61.4607
+  312      1989    irrigation apply amount = 31.21598
+  319      1989    irrigation apply amount = 31.21598
+  326      1989    irrigation apply amount = 31.21598
+  333      1989    irrigation apply amount = 31.21598
+  342      1989    irrigation apply amount = 13.73348
+  349      1989    irrigation apply amount = 13.73348
+  356      1989    irrigation apply amount = 13.73348
+  363      1989    irrigation apply amount = 13.73348
+   8       1990    irrigation apply amount = 69.50265
+   15      1990    irrigation apply amount = 69.50265
+   22      1990    irrigation apply amount = 69.50265
+   29      1990    irrigation apply amount = 69.50265
+   39      1990    irrigation apply amount = 77.19495
+   46      1990    irrigation apply amount = 77.19495
+   53      1990    irrigation apply amount = 77.19495
+   60      1990    irrigation apply amount = 77.19495
+   67      1990    irrigation apply amount = 30.6915
+   74      1990    irrigation apply amount = 30.6915
+   81      1990    irrigation apply amount = 30.6915
+   88      1990    irrigation apply amount = 30.6915
+   98      1990    irrigation apply amount =    0
+  105      1990    irrigation apply amount =    0
+  112      1990    irrigation apply amount =    0
+  119      1990    irrigation apply amount =    0
+  128      1990    irrigation apply amount =    0
+  135      1990    irrigation apply amount =    0
+  142      1990    irrigation apply amount =    0
+  149      1990    irrigation apply amount =    0
+  159      1990    irrigation apply amount =    0
+  166      1990    irrigation apply amount =    0
+  173      1990    irrigation apply amount =    0
+  180      1990    irrigation apply amount =    0
+  189      1990    irrigation apply amount =    0
+  196      1990    irrigation apply amount =    0
+  203      1990    irrigation apply amount =    0
+  210      1990    irrigation apply amount =    0
+  220      1990    irrigation apply amount = 24.82515
+  227      1990    irrigation apply amount = 24.82515
+  234      1990    irrigation apply amount = 24.82515
+  241      1990    irrigation apply amount = 24.82515
+  251      1990    irrigation apply amount = 59.9844
+  258      1990    irrigation apply amount = 59.9844
+  265      1990    irrigation apply amount = 59.9844
+  272      1990    irrigation apply amount = 59.9844
+  281      1990    irrigation apply amount = 60.70313
+  288      1990    irrigation apply amount = 60.70313
+  295      1990    irrigation apply amount = 60.70313
+  302      1990    irrigation apply amount = 60.70313
+  312      1990    irrigation apply amount = 42.22995
+  319      1990    irrigation apply amount = 42.22995
+  326      1990    irrigation apply amount = 42.22995
+  333      1990    irrigation apply amount = 42.22995
+  342      1990    irrigation apply amount = 61.0722
+  349      1990    irrigation apply amount = 61.0722
+  356      1990    irrigation apply amount = 61.0722
+  363      1990    irrigation apply amount = 61.0722
+   8       1991    irrigation apply amount = 16.02563
+   15      1991    irrigation apply amount = 16.02563
+   22      1991    irrigation apply amount = 16.02563
+   29      1991    irrigation apply amount = 16.02563
+   39      1991    irrigation apply amount = 10.29525
+   46      1991    irrigation apply amount = 10.29525
+   53      1991    irrigation apply amount = 10.29525
+   60      1991    irrigation apply amount = 10.29525
+   67      1991    irrigation apply amount = 23.73735
+   74      1991    irrigation apply amount = 23.73735
+   81      1991    irrigation apply amount = 23.73735
+   88      1991    irrigation apply amount = 23.73735
+   98      1991    irrigation apply amount =  15.54
+  105      1991    irrigation apply amount =  15.54
+  112      1991    irrigation apply amount =  15.54
+  119      1991    irrigation apply amount =  15.54
+  128      1991    irrigation apply amount = 15.9285
+  135      1991    irrigation apply amount = 15.9285
+  142      1991    irrigation apply amount = 15.9285
+  149      1991    irrigation apply amount = 15.9285
+  159      1991    irrigation apply amount =    0
+  166      1991    irrigation apply amount =    0
+  173      1991    irrigation apply amount =    0
+  180      1991    irrigation apply amount =    0
+  189      1991    irrigation apply amount =    0
+  196      1991    irrigation apply amount =    0
+  203      1991    irrigation apply amount =    0
+  210      1991    irrigation apply amount =    0
+  220      1991    irrigation apply amount = 16.51125
+  227      1991    irrigation apply amount = 16.51125
+  234      1991    irrigation apply amount = 16.51125
+  241      1991    irrigation apply amount = 16.51125
+  251      1991    irrigation apply amount = 61.63553
+  258      1991    irrigation apply amount = 61.63553
+  265      1991    irrigation apply amount = 61.63553
+  272      1991    irrigation apply amount = 61.63553
+  281      1991    irrigation apply amount = 31.7016
+  288      1991    irrigation apply amount = 31.7016
+  295      1991    irrigation apply amount = 31.7016
+  302      1991    irrigation apply amount = 31.7016
+  312      1991    irrigation apply amount = 29.04038
+  319      1991    irrigation apply amount = 29.04038
+  326      1991    irrigation apply amount = 29.04038
+  333      1991    irrigation apply amount = 29.04038
+  342      1991    irrigation apply amount =  31.08
+  349      1991    irrigation apply amount =  31.08
+  356      1991    irrigation apply amount =  31.08
+  363      1991    irrigation apply amount =  31.08
+   8       1992    irrigation apply amount = 46.7754
+   15      1992    irrigation apply amount = 46.7754
+   22      1992    irrigation apply amount = 46.7754
+   29      1992    irrigation apply amount = 46.7754
+   39      1992    irrigation apply amount =   7.7
+   46      1992    irrigation apply amount =   7.7
+   53      1992    irrigation apply amount =   7.7
+   60      1992    irrigation apply amount =   7.7
+   68      1992    irrigation apply amount =    0
+   75      1992    irrigation apply amount =    0
+   82      1992    irrigation apply amount =    0
+   89      1992    irrigation apply amount =    0
+   99      1992    irrigation apply amount =    0
+  106      1992    irrigation apply amount =    0
+  113      1992    irrigation apply amount =    0
+  120      1992    irrigation apply amount =    0
+  129      1992    irrigation apply amount =    0
+  136      1992    irrigation apply amount =    0
+  143      1992    irrigation apply amount =    0
+  150      1992    irrigation apply amount =    0
+  160      1992    irrigation apply amount =    0
+  167      1992    irrigation apply amount =    0
+  174      1992    irrigation apply amount =    0
+  181      1992    irrigation apply amount =    0
+  190      1992    irrigation apply amount =   6.41
+  197      1992    irrigation apply amount =   6.41
+  204      1992    irrigation apply amount =   6.41
+  211      1992    irrigation apply amount =   6.41
+  221      1992    irrigation apply amount =  34.965
+  228      1992    irrigation apply amount =  34.965
+  235      1992    irrigation apply amount =  34.965
+  242      1992    irrigation apply amount =  34.965
+  252      1992    irrigation apply amount =  3.885
+  259      1992    irrigation apply amount =  3.885
+  266      1992    irrigation apply amount =  3.885
+  273      1992    irrigation apply amount =  3.885
+  282      1992    irrigation apply amount = 41.35583
+  289      1992    irrigation apply amount = 41.35583
+  296      1992    irrigation apply amount = 41.35583
+  303      1992    irrigation apply amount = 41.35583
+  313      1992    irrigation apply amount = 3.69075
+  320      1992    irrigation apply amount = 3.69075
+  327      1992    irrigation apply amount = 3.69075
+  334      1992    irrigation apply amount = 3.69075
+  343      1992    irrigation apply amount =    0
+  350      1992    irrigation apply amount =    0
+  357      1992    irrigation apply amount =    0
+  364      1992    irrigation apply amount =    0
+   8       1993    irrigation apply amount = 11.79098
+   15      1993    irrigation apply amount = 11.79098
+   22      1993    irrigation apply amount = 11.79098
+   29      1993    irrigation apply amount = 11.79098
+   39      1993    irrigation apply amount = 26.37915
+   46      1993    irrigation apply amount = 26.37915
+   53      1993    irrigation apply amount = 26.37915
+   60      1993    irrigation apply amount = 26.37915
+   67      1993    irrigation apply amount = 9.51825
+   74      1993    irrigation apply amount = 9.51825
+   81      1993    irrigation apply amount = 9.51825
+   88      1993    irrigation apply amount = 9.51825
+   98      1993    irrigation apply amount = 47.64953
+  105      1993    irrigation apply amount = 47.64953
+  112      1993    irrigation apply amount = 47.64953
+  119      1993    irrigation apply amount = 47.64953
+  128      1993    irrigation apply amount =    0
+  135      1993    irrigation apply amount =    0
+  142      1993    irrigation apply amount =    0
+  149      1993    irrigation apply amount =    0
+  159      1993    irrigation apply amount = 20.70705
+  166      1993    irrigation apply amount = 20.70705
+  173      1993    irrigation apply amount = 20.70705
+  180      1993    irrigation apply amount = 20.70705
+  189      1993    irrigation apply amount = 17.19113
+  196      1993    irrigation apply amount = 17.19113
+  203      1993    irrigation apply amount = 17.19113
+  210      1993    irrigation apply amount = 17.19113
+  220      1993    irrigation apply amount = 30.56625
+  227      1993    irrigation apply amount = 30.56625
+  234      1993    irrigation apply amount = 30.56625
+  241      1993    irrigation apply amount = 30.56625
+  251      1993    irrigation apply amount = 7.724925
+  258      1993    irrigation apply amount = 7.724925
+  265      1993    irrigation apply amount = 7.724925
+  272      1993    irrigation apply amount = 7.724925
+  281      1993    irrigation apply amount =  30.381
+  288      1993    irrigation apply amount =  30.381
+  295      1993    irrigation apply amount =  30.381
+  302      1993    irrigation apply amount =  30.381
+  312      1993    irrigation apply amount =    0
+  319      1993    irrigation apply amount =    0
+  326      1993    irrigation apply amount =    0
+  333      1993    irrigation apply amount =    0
+  342      1993    irrigation apply amount = 10.50368
+  349      1993    irrigation apply amount = 10.50368
+  356      1993    irrigation apply amount = 10.50368
+  363      1993    irrigation apply amount = 10.50368
+   8       1994    irrigation apply amount = 15.38898
+   15      1994    irrigation apply amount = 15.38898
+   22      1994    irrigation apply amount = 15.38898
+   29      1994    irrigation apply amount = 15.38898
+   39      1994    irrigation apply amount =    0
+   46      1994    irrigation apply amount =    0
+   53      1994    irrigation apply amount =    0
+   60      1994    irrigation apply amount =    0
+   67      1994    irrigation apply amount =  7.7805
+   74      1994    irrigation apply amount =  7.7805
+   81      1994    irrigation apply amount =  7.7805
+   88      1994    irrigation apply amount =  7.7805
+[c.SummaryFile.parameters]
+summaryfile = c.sum
+
+[all.tracker1.parameters]
+variable = sum of SoilWat.runoff on process from report.reported to now as sum@soilwat2_runoff
+variable = sum of SoilWat.drain on process from report.reported to now as sum@soilwat2_drain
+variable = sum of SoilWat.es on process from report.reported to now as sum@soilwat2_es
+variable = sum of irrigation.irrigation on process from report.reported to now as sum@irrigate_irrigation
+variable = sum of SoilN.dlt_n_min() on process from report.reported to now as sum@soiln2_dlt_n_min[]
+variable = average of Egrandis.Fn on process from report.reported to now as avg@Egrandis_Fn
+variable = average of Egrandis.Fw on process from report.reported to now as avg@Egrandis_Fw
+variable = average of Egrandis.Fvpd on process from report.reported to now as avg@Egrandis_Fvpd
+variable = average of Egrandis.ft on process from report.reported to now as avg@Egrandis_ft
+variable = average of Egrandis.sw_demand on process from report.reported to now as avg@Egrandis_sw_demand
+variable = sum of Egrandis.dlt_adm_green(1) on process from report.reported to now as sum@Egrandis_dlt_adm_green[1]
+variable = sum of Egrandis.dlt_adm_green(2) on process from report.reported to now as sum@Egrandis_dlt_adm_green[2]
+variable = sum of Egrandis.dlt_adm_green(3) on process from report.reported to now as sum@Egrandis_dlt_adm_green[3]
+variable = sum of Egrandis.dlt_foliage_mass on process from report.reported to now as sum@Egrandis_dlt_foliage_mass
+variable = sum of Egrandis.n_demand on process from report.reported to now as sum@Egrandis_n_demand
+variable = sum of Egrandis.dlt_no3() on process from report.reported to now as sum@Egrandis_dlt_no3[]
+variable = sum of SoilWat.flow_no3(5) on process from report.reported to now as sum@soilwat2_flow_no3[5]
+variable = sum of SoilWat.flow_no3(8) on process from report.reported to now as sum@soilwat2_flow_no3[8]
+variable = sum of Egrandis.dlt_no3 on process from report.reported to now as sum@Egrandis_dlt_no3
+variable = sum of micromet.interception on process from report.reported to now as sum@micromet_interception
+variable = sum of met.rain on process from report.reported to now as sum@met_rain
+variable = sum of Fertiliser.Fertiliser on process from report.reported to now as sum@fertiliz_fertiliser
+
+[f.SummaryFile.parameters]
+summaryfile = f.sum
+[i.SummaryFile.parameters]
+summaryfile = i.sum
+[if.SummaryFile.parameters]
+summaryfile = if.sum

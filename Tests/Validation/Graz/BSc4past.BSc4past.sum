@@ -1,0 +1,322 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = 
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "annual" = %apsim%\Model\report.dll
+   Component                        "daily" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                        "grasp" = %apsim%\Model\grasp.dll
+   Component                      "tracker" = %apsim%\Model\tracker.dll
+   Component                         "graz" = %apsim%\Model\graz.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1900
+     Simulation end date   = 31/12/2003
+     Time step =           = 1440 (mins)
+
+------- annual Initialisation -------------------------------------------------
+     Output variables:
+        clock.year
+        tracker.rainfall
+        tracker.runoff
+        tracker.drainage
+        tracker.Esoil
+        tracker.Egrass
+        tracker.grass_growth
+        tracker.growth_regrow
+        tracker.growth_trans
+        tracker.growth_rad
+        tracker.lwg
+
+     Output file = annual.out
+     Format = normal
+
+------- daily Initialisation --------------------------------------------------
+     Output variables:
+        clock.dd/mm/yyyy   as Date
+        SoilWat.sw_dep(1) as sw1
+        SoilWat.sw_dep(2) as sw2
+        SoilWat.sw_dep(3) as sw3
+        manager.grass_sw   as grass_sw
+        SoilWat.sw_dep()  as total_sw
+        SoilWat.eos       as sevap_pot
+        SoilWat.es        as sevap_tot
+        SoilWat.drainage
+        SoilWat.runoff
+        SoilWat.cover_surface_runoff as run_cov
+        grasp.basal_area   as grass_ba
+        grasp.tsdm         as tsdm
+        grasp.green_pool
+        grasp.dead_pool
+        surfaceom.surfaceom_wt as litter
+        grasp.pot_trans_grass  as pot_trans
+        grasp.growth_transp    as grwth_trans
+        grasp.growth_photo     as grwth_rad
+        grasp.growth_regrowth  as grwth_regr
+        grasp.growth           as growth
+        grasp.death            as death
+        grasp.n_index          as n_ndx
+        grasp.rad_index        as rad_ndx
+        grasp.sw_index         as swi
+        grasp.temp_index       as temp_ndx
+        grasp.growth_index     as grwth_ndx
+        graz.alw
+        graz.acc_eaten
+        graz.daily_lwg
+
+     Output file = daily.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: capella.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (clock.day = clock.simulation_start_day and
+         clock.year = clock.simulation_start_year) then
+        grasp establish init_section = mature_sward
+        graz set stocking_rate = 0.8
+        graz set alw =  400.0
+        annual_lwg = 0.0
+     endif
+     
+     SECTION:- end_of_day
+     annual_lwg = annual_lwg + graz.lwg
+     if (today = date('1-sep') then
+        graz set alw = 400.0
+        avgdailyintake = (annual_lwg/365.25 + 1.058) / 0.304
+        targetutil = 20.0 / 100.0
+        annualintake = avgdailyintake * 365.5
+        stock_equiv_ratio = targetutil * grasp.tsdm / annualintake
+        weight_ratio = graz.alw / 200
+        factor = weight_ratio ** 0.75
+        beasts_ha = stock_equiv_ratio / factor
+        graz set stocking_rate = beasts_ha
+        annual_lwg = 0.0
+     endif
+     grass_sw = sw_dep(1) + sw_dep(2) + sw_dep(3)
+     if (year >= 1900) then
+       daily do_output
+     endif
+     
+     SECTION:- end_year
+     if (year >= 1900) then
+       annual do_output
+     endif
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.110  0.253  0.477  0.580  0.253  1.040  0.613  0.300  1.000
+          100.-  500.  0.120  0.298  0.463  0.520  0.298  1.210  0.387  0.300  1.000
+          500.- 2000.  0.292  0.292  0.338  0.426  0.292  1.410  0.000  0.300  1.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      25.30       0.00      22.40      10.30
+          100.-  500.     119.20       0.00      66.00      22.80
+          500.- 2000.     438.00       0.00      69.00     132.00
+          ---------------------------------------------------------
+               Totals     582.50       0.00     157.40     165.10
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          grass     grass         1000.0   400.0     5.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24    9.57    0.31    0.00
+             2     7.00  1.24   14.52    1.45    0.00
+             3     7.00  1.25   29.61    6.35    0.00
+          ------------------------------------------------
+           Totals               53.70    8.11    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      12598.4   868.9   297.6    37.2   249.0    12.4
+             2      59545.3  4106.6   470.7    58.8   136.6     6.8
+             3     263338.3 18161.3  1036.8   129.6    14.4     0.7
+          ---------------------------------------------------------
+           Totals  335481.9 23136.7  1805.1   225.6   400.0    20.0
+          ---------------------------------------------------------
+
+------- grasp Initialisation --------------------------------------------------
+     Initialising:
+     Parameters:
+       Transpiration Efficiency:     13.50 kg/ha/mm at 20.0 hPa
+       Potential regrowth:            3.50 kg/ha/day
+       Radiation use eff.:           12.00 ()
+       SWI full green:                0.30 ()
+       fpc50 yield(radn):          1000.00 kg/ha
+       fcov50 yield(evap):         1000.00 kg/ha
+       Frost start:    2.00 oC, kill:     0.00 oC.
+       Root Profile:
+           Layer    Lower limit       Kl       Max N
+            ()        (mm)            ()      (kg/ha)
+         --------------------------------------------
+               1      25.300       0.400       14.70
+               2     119.200       0.400        2.10
+               3     438.000       0.400        1.05
+         --------------------------------------------
+     
+
+------- tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        sum of met.rain on start_of_day from start_year to now as rainfall
+        sum of SoilWat.drain on end_of_day from start_year to now as drainage
+        sum of SoilWat.runoff on end_of_day from start_year to now as runoff
+        sum of SoilWat.es on end_of_day from start_year to now as Esoil
+        sum of grasp.ep on end_of_day from start_year to now as Egrass
+        sum of graz.intake_restr on end_of_day from start_year to now as grassEaten
+        sum of graz.lwg on end_of_day from start_year to now as lwg
+        sum of grasp.growth on end_of_day from start_year to now as grass_growth
+        sum of grasp.growth_regrowth on end_of_day from start_year to now as growth_regrow
+        sum of grasp.growth_transp on end_of_day from start_year to now as growth_trans
+        sum of grasp.growth_photo on end_of_day from start_year to now as growth_rad
+
+------- graz Initialisation ---------------------------------------------------
+  Initial Stocking rate: 0
+  Initial Live Weight: 0
+
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- grasp establish  init_section = mature_sward
+     Establishing Sward
+     Initial conditions:
+       Basal area :    1.00 %
+       Pools:
+                root     stem     leaf
+             +--------+--------+--------+
+      green  |    400.0    400.0    800.0
+      dead   |    400.0    400.0    800.0
+             +--------+--------+--------+
+       Root depth :   750.0 mm
+       Using vpd approximated from maxt, mint.
+       Using Pan evap from .MasterPM.met module.
+     Manager creating a new local real variable : annual_lwg = 0.00000
+     Manager creating a new local real variable : grass_sw = 582.25616
+1 September 1900(Day of year=244), manager: 
+     Manager creating a new local real variable : avgdailyintake = 4.20815
+     Manager creating a new local real variable : targetutil = 0.20000
+     Manager creating a new local real variable : annualintake = 1538.07874
+     Manager creating a new local real variable : stock_equiv_ratio = 0.04316
+     Manager creating a new local real variable : weight_ratio = 2.00000
+     Manager creating a new local real variable : factor = 1.68179
+     Manager creating a new local real variable : beasts_ha = 0.02566
+31 December 2003(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

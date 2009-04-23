@@ -1,0 +1,382 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = APSwim Test 3
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                       "solute" = %apsim%\Model\solute.dll
+   Component                        "slurp" = %apsim%\Model\plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1995
+     Simulation end date   = 20/01/1995
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.day
+        clock.year
+        slurp.sw_demand
+        slurp.ep
+        SWIM2.psi(1-3)
+
+     Output file = test3.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Sample2.MET
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 1 then
+        slurp sow cultivar=slurpcultivar
+     endif
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.00  0.188  0.070  0.247  0.370
+            25.0  1.00  0.188  0.070  0.247  0.370
+            70.0  1.00  0.188  0.070  0.247  0.370
+           125.0  1.00  0.188  0.070  0.247  0.370
+           150.0  1.00  0.188  0.070  0.247  0.370
+           150.0  1.00  0.188  0.070  0.247  0.370
+           150.0  1.00  0.188  0.070  0.247  0.370
+           200.0  1.00  0.188  0.070  0.247  0.370
+           225.0  1.00  0.208  0.070  0.247  0.370
+           250.0  1.00  0.370  0.070  0.247  0.370
+           300.0  1.00  0.370  0.070  0.247  0.370
+           250.0  1.00  0.370  0.070  0.247  0.370
+           100.0  1.00  0.370  0.070  0.247  0.370
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.1875785     -0.300    130.000
+            10.0  -             0.1875785     -0.300    130.000
+            50.0  -             0.1875785     -0.300    130.000
+           150.0  -             0.1875785     -0.300    130.000
+           300.0  -             0.1875785     -0.300    130.000
+           450.0  -             0.1875785     -0.300    130.000
+           600.0  -             0.1875785     -0.300    130.000
+           750.0  -             0.1875785     -0.300    130.000
+          1000.0  -             0.2076128     -0.200    130.000
+          1200.0  -             0.3700000      0.000    130.000
+          1500.0  -             0.3700000      0.030    130.000
+          1800.0  -             0.3700000      0.060    130.000
+          2000.0  soil1         0.3700000      0.080    130.000
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.07023    0.07023    0.07023    0.07023    0.07023    0.07023    0.07023
+            -1.00 |    0.13907    0.13907    0.13907    0.13907    0.13907    0.13907    0.13907
+            -0.10 |    0.24712    0.24712    0.24712    0.24712    0.24712    0.24712    0.24712
+            -0.01 |    0.36599    0.36599    0.36599    0.36599    0.36599    0.36599    0.36599
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00277    0.00277    0.00277    0.00277    0.00277    0.00277    0.00277
+            -0.10 |    1.55516    1.55516    1.55516    1.55516    1.55516    1.55516    1.55516
+            -0.01 |  115.32992  115.32992  115.32992  115.32992  115.32992  115.32992  115.32992
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-05 .100E-05 .100E-01 2.00 1.00        0.100
+     
+     
+     
+     
+          Bypass flow is active
+          depth(node)   conductance  storage
+          ----------------------------------
+           180.(  11)        0.1000    0.100
+     
+     
+     
+          Runoff calculated using runoff functions
+          p%hm1   p%hm0   p%hrc   p%roff0   p%roff1
+          2.0   1.0   5.0    2.00    2.00
+     
+     
+     
+          top boundary condition = conductance function
+            initial      minimum    precipitation
+          conductance  conductance     constant
+          ---------------------------------------
+               4.0000       0.0200         2.5000
+     
+     
+     
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- solute Initialisation -------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- slurp sow  cultivar = slurpcultivar
+1 January 1995(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 January 1995(Day of year=2): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 January 1995(Day of year=3): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 January 1995(Day of year=4): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 January 1995(Day of year=5): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 January 1995(Day of year=6): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 January 1995(Day of year=7): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 January 1995(Day of year=8): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 January 1995(Day of year=9): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 January 1995(Day of year=10): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 January 1995(Day of year=11): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 January 1995(Day of year=12): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 January 1995(Day of year=13): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 January 1995(Day of year=14): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 January 1995(Day of year=15): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 January 1995(Day of year=16): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 January 1995(Day of year=17): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 January 1995(Day of year=18): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 January 1995(Day of year=19): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 January 1995(Day of year=20): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Possible error with low total RLV for wheat
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 January 1995(Day of year=20), clock: 
+     Simulation is terminating due to end criteria being met.

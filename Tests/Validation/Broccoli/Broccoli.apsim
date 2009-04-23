@@ -1,0 +1,3281 @@
+<folder version="16" name="untitled">
+  <folder name="Lawes2006">
+    <simulation name="Lawes06P1Wet">
+      <clock>
+        <start_date type="date" description="Select the start date of the simulation">29/03/2006</start_date>
+        <end_date type="date" description="Select the end date of the simulation">3/07/2006</end_date>
+      </clock>
+      <summaryfile>
+        <filename name="filename">Lawes06.sum</filename>
+      </summaryfile>
+      <metfile name="met">
+        <filename name="filename">C:\apsim\Tests\Validation\Broccoli\DPI2006b.met</filename>
+      </metfile>
+      <area name="Paddock">
+        <registrations name="global" />
+        <micromet name="Micromet">
+          <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+          <a_interception type="text" description="a_interception">0</a_interception>
+          <b_interception type="text" description="b_interception">0</b_interception>
+          <c_interception type="text" description="c_interception">0.1</c_interception>
+          <d_interception type="text" description="d_interception">0</d_interception>
+        </micromet>
+        <folder name="Manager folder">
+          <manager name="Sow on a fixed date">
+            <ui>
+              <category description="Sowing criteria" />
+              <date type="text" description="Enter sowing date (dd-mmm) : ">4-Apr-2006</date>
+              <category description="Sowing parameters" />
+              <crop type="modulename" description="Enter name of crop to sow : ">broccoli</crop>
+              <density type="text" description="Enter sowing density  (plants/m2) : ">4</density>
+              <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+              <cultivar type="cultivars" description="Enter cultivar : ">greenbelt</cultivar>
+              <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+              <class type="text" description="Enter Crop Class:">transplant</class>
+            </ui>
+            <script name="start_of_day">
+              <text>
+      if (today = date('[date]') then
+                    [crop] sow population =[density], depth = [depth], cultivar = [cultivar], MaxCover = 1.0, BudNumber = 1, row_spacing = [row_spacing], crop_class = [class]
+        endif
+               </text>
+              <event>start_of_day</event>
+            </script>
+          </manager>
+          <operations name="LeafHarvests">
+            <operation condition="start_of_day">
+              <date>24-Apr-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10-May-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23-May-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22-Jun-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+          </operations>
+          <operations>
+            <operation condition="start_of_day">
+              <date>5/04/2006</date>
+              <action>irrigation apply amount = 45</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/04/2006</date>
+              <action>irrigation apply amount = 31</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/04/2006</date>
+              <action>irrigation apply amount = 8.03775459513155</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/04/2006</date>
+              <action>irrigation apply amount = 5.06706408345752</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/04/2006</date>
+              <action>irrigation apply amount = 7.38201689021368</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/04/2006</date>
+              <action>irrigation apply amount = 7.83904619970193</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/04/2006</date>
+              <action>irrigation apply amount = 6.29316420014084</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/04/2006</date>
+              <action>irrigation apply amount = 4.03100775193798</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/05/2006</date>
+              <action>irrigation apply amount = 6.26924987580732</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/05/2006</date>
+              <action>irrigation apply amount = 2.81888653981678</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/05/2006</date>
+              <action>irrigation apply amount = 6.28611698379147</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/05/2006</date>
+              <action>irrigation apply amount = 6.2649753347427</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/05/2006</date>
+              <action>irrigation apply amount = 6.35658914728682</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/05/2006</date>
+              <action>irrigation apply amount = 8.21095571095574</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/05/2006</date>
+              <action>irrigation apply amount = 6.04073522106314</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/05/2006</date>
+              <action>irrigation apply amount = 6.42191142191142</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/05/2006</date>
+              <action>irrigation apply amount = 8.29607550919024</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/05/2006</date>
+              <action>irrigation apply amount = 8.11227024341781</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/05/2006</date>
+              <action>irrigation apply amount = 6.4977645305515</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/06/2006</date>
+              <action>irrigation apply amount = 9.72180824639839</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/06/2006</date>
+              <action>irrigation apply amount = 3.12468951813224</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/06/2006</date>
+              <action>irrigation apply amount = 6.45802285146548</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/06/2006</date>
+              <action>irrigation apply amount = 6.60705414803763</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/06/2006</date>
+              <action>irrigation apply amount = 6.63189269746643</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/06/2006</date>
+              <action>irrigation apply amount = 8.37059115747631</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/06/2006</date>
+              <action>irrigation apply amount = 3.38301043219085</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/06/2006</date>
+              <action>broccoli harvest</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/06/2006</date>
+              <action>broccoli EndCrop</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/06/2006</date>
+              <action>irrigation apply amount = 6.78589170392443</action>
+            </operation>
+          </operations>
+          <manager name="Calculations">
+            <script name="init">
+              <text>TotalET = 0.0
+DAS = 0
+SW60 = 0
+</text>
+              <event>init</event>
+            </script>
+            <script name="start_of_day">
+              <text>
+              </text>
+              <event>start_of_day</event>
+            </script>
+            <script name="end_of_day">
+              <text><![CDATA[
+TotalET = broccoli.LeafTranspiration + es
+!TotalET = es
+
+if broccoli.LeafLAI > 0 then
+  DAS = DAS + 1
+endif
+
+SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
+
+
+
+]]></text>
+              <event>end_of_day</event>
+            </script>
+          </manager>
+        </folder>
+        <fertiliser />
+        <surfaceom name="surface organic matter">
+          <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+          <type type="text" description="Organic Matter type">wheat</type>
+          <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+          <cnr type="text" description="C:N ration of initial residue">80</cnr>
+          <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+        </surfaceom>
+        <outputfile name="Daily">
+          <filename name="filename">Lawes06 Planting1Wet.out</filename>
+          <variables name="My Variables">
+            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+            <variable name="day" array="Day" />
+            <variable name="DAS" />
+            <variable name="PhenologyCurrentPhaseName" />
+            <variable name="PhenologyThermalTimeValue" />
+            <variable name="broccoli.AboveGroundDM" array="?" description="Biomass weight" />
+            <variable name="broccoli.LeafCohortNo" />
+            <variable name="LeafLAI" array="?" description="Leaf area index" />
+            <variable name="LeafTranspiration" />
+            <variable name="LeafWaterDemand" />
+            <variable name="RootWaterSupply" />
+            <variable name="eo" array="No" description="Potential evapotranspiration (mm)" />
+            <variable name="es" />
+            <variable name="TotalET" />
+            <variable name="evap" />
+            <variable name="WaterSupplyDemandRatio" />
+            <variable name="broccoli.floral_initiation_das" array="?" description="Days from sowing to floral initiation" />
+            <variable name="broccoli.maturity_das" array="?" description="Days from sowing to maturity" />
+            <variable name="broccoli.stage" array="?" description="Plant stage" />
+            <variable name="broccoli.PhenologyJuvenileVDModelCumulativeVD" array="?" description="Cumulative vernalisation" />
+            <variable name="broccoli.TTAfterSowing" array="?" description="Thermal time spent in each crop stage" />
+            <variable name="broccoli.swdef_photo" array="?" description="Soil water deficit in photosynthesis" />
+            <variable name="broccoli.nfact_photo" array="?" description="N factor for photosynthesis" />
+            <variable name="broccoli.LeafPhotosynthesisFt" array="?" description="Temperature Stress in photosynthesis" />
+            <variable name="LeafPhotosynthesisFvpd" />
+            <variable name="Irrigation.irrigation" array="?" description="Irrigation entering the profile (mm)" />
+            <variable name="LeafFinalNodeNo" array="?" description="Final number of leaves on main stem" />
+            <variable name="broccoli.emergence_das" array="?" description="Days from sowing to emergence" />
+            <variable name="broccoli.LeafDeadNodeNo" array="?" />
+            <variable name="broccoli.LeafFullyExpandedNodeNo" array="?" />
+            <variable name="sw_dep()" array="?" description="Soil water - layered (mm)" />
+            <variable name="SW60" />
+            <variable name="broccoli.LeafLiveWt" />
+            <variable name="broccoli.StemLiveWt" />
+            <variable name="sw" array="Yes" description="Soil water - layered (mm/mm)" />
+            <variable name="no3" />
+            <variable name="RootDepth" />
+            <variable name="no3_demand" />
+            <variable name="totaln" />
+            <variable name="FloretReadyForHarvest" />
+            <variable name="StageCodeValue" />
+            <variable name="LeafDMSupply" />
+            <variable name="FloretLiveWt" />
+            <variable name="LeafSLAcheck" />
+            <variable name="Height" />
+            <variable name="LeafExpansionStressValue" />
+            <variable name="LeafFw" />
+            <variable name="LeafSpecificArea" />
+            <variable name="Interception" />
+            <variable name="peta" />
+            <variable name="petr" />
+          </variables>
+          <events name="My Variables Events">
+            <event name="Daily" description="End of day" />
+          </events>
+        </outputfile>
+        <broccoli />
+        <outputfile name="Final">
+          <filename name="filename">Lawes06 Planting1Wet final.out</filename>
+          <variables name="FinalVariables">
+            <variable name="broccoli.sowing_date" array="?" description="sowing date" />
+            <variable name="dd/mm/yyyy" array="?" description="Date (dd/mm/yyyy)" />
+            <variable name="broccoli.floral_initiation_das" array="?" description="Days from sowing to floral initiation" />
+            <variable name="broccoli.maturity_das" array="?" description="Days from sowing to maturity" />
+            <variable name="broccoli.green_biomass_wt" array="?" description="Green Biomass weight" />
+            <variable name="broccoli.FloretGreenWt" array="?" description="Weight of pods" />
+            <variable name="broccoli.leaf_area_max" array="?" description="leaf areas" />
+            <variable name="broccoli.stage" />
+            <variable name="broccoli.cumvd" />
+            <variable name="broccoli.TTAfterSowing" />
+            <variable name="broccoli.swdef_photo" array="?" description="Plant stage" />
+            <variable name="broccoli.nfact_photo" array="?" description="Cumulative vernalisation" />
+            <variable name="broccoli.temp_stress_photo" array="?" description="Thermal time spent in each crop stage" />
+            <variable name="Irrigation.irrigation" array="?" description="Soil water deficit in photosynthesis" />
+            <variable name="broccoli.dlt_leaf_no" array="?" description="N factor for photosynthesis" />
+            <variable name="broccoli.dlt_node_no" array="?" description="Temperature Stress in photosynthesis" />
+            <variable name="broccoli.final_leaf_no" array="?" description="Irrigation entering the profile (mm)" />
+            <variable name="broccoli.emergence_das" array="?" description="Change in number of leaves" />
+            <variable name="broccoli.node_no_sen" array="?" description="Change in number of nodes" />
+            <variable name="broccoli.node_no_fx" array="?" description="Final number of leaves on main stem" />
+            <variable name="sw_dep()" array="?" description="Days from sowing to emergence" />
+          </variables>
+          <events name="FinalVariables Events">
+            <event name="broccoli.harvesting" />
+          </events>
+        </outputfile>
+        <Soil name="DPIGatton">
+          <region>Lockyer</region>
+          <site>UQ, Lawes</site>
+          <SoilType>Prarie</SoilType>
+          <nearesttown>Gatton, Q 4343</nearesttown>
+          <comment>oc and ph estimated</comment>
+          <naturalvegetation>Blue Gum, Moreton Bay Ash, Tea Tree</naturalvegetation>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <bd>1.26</bd>
+              <ll15>0.2</ll15>
+              <airdry>0.14</airdry>
+              <dul>0.35</dul>
+              <sat>0.38</sat>
+              <swcon>0.6</swcon>
+              <fbiom>0.030</fbiom>
+              <finert>0.400</finert>
+              <oc>1.250</oc>
+              <ph>7</ph>
+              <ll name="SweetCorn">0.140</ll>
+              <kl name="SweetCorn">0.200</kl>
+              <xf name="SweetCorn">1.000</xf>
+              <ll name="Broccoli">0.2</ll>
+              <kl name="Broccoli">0.12</kl>
+              <xf name="Broccoli">1</xf>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <bd>1.45</bd>
+              <ll15>0.21</ll15>
+              <airdry>0.2</airdry>
+              <dul>0.38</dul>
+              <sat>0.41</sat>
+              <swcon>0.6</swcon>
+              <fbiom>0.020</fbiom>
+              <finert>0.600</finert>
+              <oc>1.060</oc>
+              <ph>7</ph>
+              <ll name="SweetCorn">0.210</ll>
+              <kl name="SweetCorn">0.080</kl>
+              <xf name="SweetCorn">0.300</xf>
+              <ll name="Broccoli">0.21</ll>
+              <kl name="Broccoli">0.08</kl>
+              <xf name="Broccoli">1</xf>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <bd>1.27</bd>
+              <ll15>0.21</ll15>
+              <airdry>0.2</airdry>
+              <dul>0.38</dul>
+              <sat>0.41</sat>
+              <swcon>0.6</swcon>
+              <fbiom>0.010</fbiom>
+              <finert>0.800</finert>
+              <oc>0.810</oc>
+              <ph>7</ph>
+              <ll name="SweetCorn">0.300</ll>
+              <kl name="SweetCorn">0.080</kl>
+              <xf name="SweetCorn">1.000</xf>
+              <ll name="Broccoli">0.25</ll>
+              <kl name="Broccoli">0.06</kl>
+              <xf name="Broccoli">1</xf>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <bd>1.33</bd>
+              <ll15>0.21</ll15>
+              <airdry>0.2</airdry>
+              <dul>0.44</dul>
+              <sat>0.47</sat>
+              <swcon>0.6</swcon>
+              <fbiom>0.010</fbiom>
+              <finert>0.900</finert>
+              <oc>0.700</oc>
+              <ph>7</ph>
+              <ll name="SweetCorn">0.310</ll>
+              <kl name="SweetCorn">0.040</kl>
+              <xf name="SweetCorn">1.000</xf>
+              <ll name="Broccoli">0.26</ll>
+              <kl name="Broccoli">0.02</kl>
+              <xf name="Broccoli">1</xf>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <bd>1.41</bd>
+              <ll15>0.21</ll15>
+              <airdry>0.2</airdry>
+              <dul>0.4</dul>
+              <sat>0.43</sat>
+              <swcon>0.6</swcon>
+              <fbiom>0.010</fbiom>
+              <finert>0.950</finert>
+              <oc>0.700</oc>
+              <ph>7</ph>
+              <ll name="SweetCorn">0.270</ll>
+              <kl name="SweetCorn">0.040</kl>
+              <xf name="SweetCorn">1.000</xf>
+              <ll name="Broccoli">0.26</ll>
+              <kl name="Broccoli">0.02</kl>
+              <xf name="Broccoli">0</xf>
+            </layer>
+          </profile>
+          <Salb>0.13</Salb>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <CN2Bare>95</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <RootCN>40</RootCN>
+          <RootWT>200</RootWT>
+          <SoilCN>12.5</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <irrigation_layer>2</irrigation_layer>
+          <SummerU>5</SummerU>
+          <WinterU>4</WinterU>
+          <SummerCona>5</SummerCona>
+          <WinterCona>2</WinterCona>
+          <SummerDate>1-sep</SummerDate>
+          <WinterDate>1-may</WinterDate>
+          <InitWater>
+            <profile>
+              <layer>
+                <thickness>150</thickness>
+                <sw>0.264</sw>
+              </layer>
+              <layer>
+                <thickness>150</thickness>
+                <sw>0.344</sw>
+              </layer>
+              <layer>
+                <thickness>300</thickness>
+                <sw>0.362</sw>
+              </layer>
+              <layer>
+                <thickness>300</thickness>
+                <sw>0.42</sw>
+              </layer>
+              <layer>
+                <thickness>300</thickness>
+                <sw>0.37</sw>
+              </layer>
+            </profile>
+          </InitWater>
+          <InitNitrogen>
+            <profile>
+              <layer>
+                <no3>52.9100529100529</no3>
+                <nh4>52.9101687046804</nh4>
+                <thickness>150</thickness>
+              </layer>
+              <layer>
+                <no3>9.2</no3>
+                <nh4>0.100019792196698</nh4>
+                <thickness>150</thickness>
+              </layer>
+              <layer>
+                <no3>11.8</no3>
+                <nh4>0.100019792196698</nh4>
+                <thickness>300</thickness>
+              </layer>
+              <layer>
+                <no3>11.2</no3>
+                <nh4>0.100019792196698</nh4>
+                <thickness>300</thickness>
+              </layer>
+              <layer>
+                <no3>10.3</no3>
+                <nh4>0.100019792196698</nh4>
+                <thickness>300</thickness>
+              </layer>
+            </profile>
+          </InitNitrogen>
+        </Soil>
+        <irrigation name="Irrigation">
+          <automatic_irrigation type="text" description="switch">off</automatic_irrigation>
+          <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+          <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+          <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+          <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        </irrigation>
+        <outputfile name="LeafOutput">
+          <filename name="filename">Lawes06 Planting1Wet.out</filename>
+          <variables name="My Variables">
+            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+            <variable name="LeafMaxSize" />
+          </variables>
+          <events name="My Variables Events" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Lawes06P1Mild" shortcut="/untitled/Lawes2006/Lawes06P1Wet">
+      <clock shortcut="/untitled/Lawes2006/Lawes06P1Wet/clock" />
+      <summaryfile shortcut="/untitled/Lawes2006/Lawes06P1Wet/summaryfile" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met" />
+      <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock">
+        <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Micromet" />
+        <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/Sow on a fixed date" />
+          <operations name="LeafHarvests" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/LeafHarvests" />
+          <operations>
+            <operation condition="start_of_day">
+              <date>5/04/2006</date>
+              <action>irrigation apply amount = 45</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/04/2006</date>
+              <action>irrigation apply amount = 31</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/04/2006</date>
+              <action>irrigation apply amount = 8.03775459513155</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/04/2006</date>
+              <action>irrigation apply amount = 5.06706408345752</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/04/2006</date>
+              <action>irrigation apply amount = 7.38201689021368</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/04/2006</date>
+              <action>irrigation apply amount = 7.83904619970193</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/05/2006</date>
+              <action>irrigation apply amount = 6.26924987580732</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/05/2006</date>
+              <action>irrigation apply amount = 8.21095571095574</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/05/2006</date>
+              <action>irrigation apply amount = 6.04073522106314</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/05/2006</date>
+              <action>irrigation apply amount = 6.42191142191142</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/05/2006</date>
+              <action>irrigation apply amount = 8.29607550919024</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/05/2006</date>
+              <action>irrigation apply amount = 8.11227024341781</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/05/2006</date>
+              <action>irrigation apply amount = 6.4977645305515</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/06/2006</date>
+              <action>irrigation apply amount = 9.72180824639839</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/06/2006</date>
+              <action>irrigation apply amount = 3.12468951813224</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/06/2006</date>
+              <action>irrigation apply amount = 6.45802285146548</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/06/2006</date>
+              <action>irrigation apply amount = 6.60705414803763</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/06/2006</date>
+              <action>irrigation apply amount = 6.63189269746643</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/06/2006</date>
+              <action>irrigation apply amount = 8.37059115747631</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/06/2006</date>
+              <action>irrigation apply amount = 3.38301043219085</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/06/2006</date>
+              <action>irrigation apply amount = 6.78589170392443</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/06/2006</date>
+              <action>broccoli harvest</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/06/2006</date>
+              <action>broccoli EndCrop</action>
+            </operation>
+          </operations>
+          <manager name="Calculations" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/Calculations" />
+        </folder>
+        <fertiliser shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/surface organic matter" />
+        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables Events" />
+        </outputfile>
+        <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
+        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final">
+          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
+          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
+        </outputfile>
+        <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton">
+          <InitWater shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/InitWater" />
+          <InitNitrogen shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/InitNitrogen" />
+        </Soil>
+        <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Irrigation" />
+        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables Events" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Lawes06P1Severe" shortcut="/untitled/Lawes2006/Lawes06P1Wet">
+      <clock shortcut="/untitled/Lawes2006/Lawes06P1Wet/clock" />
+      <summaryfile shortcut="/untitled/Lawes2006/Lawes06P1Wet/summaryfile" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met" />
+      <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock">
+        <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Micromet" />
+        <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/Sow on a fixed date" />
+          <operations name="LeafHarvests" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/LeafHarvests" />
+          <operations>
+            <operation condition="start_of_day">
+              <date>5/04/2006</date>
+              <action>irrigation apply amount = 45</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/04/2006</date>
+              <action>irrigation apply amount = 31</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/04/2006</date>
+              <action>irrigation apply amount = 8.03775459513155</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/04/2006</date>
+              <action>irrigation apply amount = 5.06706408345752</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/04/2006</date>
+              <action>irrigation apply amount = 7.38201689021368</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/04/2006</date>
+              <action>irrigation apply amount = 7.83904619970193</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/04/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/05/2006</date>
+              <action>irrigation apply amount = 6.26924987580732</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/05/2006</date>
+              <action>irrigation apply amount = 6.04073522106314</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/05/2006</date>
+              <action>irrigation apply amount = 8.29607550919024</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/05/2006</date>
+              <action>irrigation apply amount = 8.11227024341781</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/05/2006</date>
+              <action>irrigation apply amount = 6.4977645305515</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/05/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/06/2006</date>
+              <action>irrigation apply amount = 9.72180824639839</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/06/2006</date>
+              <action>irrigation apply amount = 3.12468951813224</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/06/2006</date>
+              <action>irrigation apply amount = 6.45802285146548</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/06/2006</date>
+              <action>irrigation apply amount = 6.60705414803763</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/06/2006</date>
+              <action>irrigation apply amount = 6.63189269746643</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/06/2006</date>
+              <action>irrigation apply amount = 8.37059115747631</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/06/2006</date>
+              <action>irrigation apply amount = 3.38301043219085</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/06/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/06/2006</date>
+              <action>irrigation apply amount = 6.78589170392443</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/06/2006</date>
+              <action>broccoli harvest</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/06/2006</date>
+              <action>broccoli EndCrop</action>
+            </operation>
+          </operations>
+          <manager name="Calculations" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/Calculations" />
+        </folder>
+        <fertiliser shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/surface organic matter" />
+        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables Events" />
+        </outputfile>
+        <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
+        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final">
+          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
+          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
+        </outputfile>
+        <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton">
+          <InitWater shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/InitWater" />
+          <InitNitrogen shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/InitNitrogen" />
+        </Soil>
+        <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Irrigation" />
+        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables Events" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Lawes06P2Wet" shortcut="/untitled/Lawes2006/Lawes06P1Wet">
+      <clock>
+        <start_date type="date" description="Select the start date of the simulation">21/06/2006</start_date>
+        <end_date type="date" description="Select the end date of the simulation">4/10/2006</end_date>
+      </clock>
+      <summaryfile shortcut="/untitled/Lawes2006/Lawes06P1Wet/summaryfile" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met" />
+      <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock">
+        <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Micromet" />
+        <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder">
+          <manager name="Sow on a fixed date">
+            <ui>
+              <category description="Sowing criteria" />
+              <date type="text" description="Enter sowing date (dd-mmm) : ">29-Jun-2006</date>
+              <category description="Sowing parameters" />
+              <crop type="modulename" description="Enter name of crop to sow : ">broccoli</crop>
+              <density type="text" description="Enter sowing density  (plants/m2) : ">4</density>
+              <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+              <cultivar type="cultivars" description="Enter cultivar : ">greenbelt</cultivar>
+              <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+              <class type="text" description="Enter Crop Class:">transplant</class>
+            </ui>
+            <script name="start_of_day">
+              <text>
+      if (today = date('[date]') then
+                    [crop] sow population =[density], depth = [depth], cultivar = [cultivar], MaxCover = 1.0, BudNumber = 1, row_spacing = [row_spacing], crop_class = [class]
+        endif
+               </text>
+              <event>start_of_day</event>
+            </script>
+          </manager>
+          <operations name="LeafHarvests">
+            <operation condition="start_of_day">
+              <date>19-Jul-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27-Jul-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14-Aug-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15-Sep-2006</date>
+              <action>LeafOutput do_output</action>
+            </operation>
+          </operations>
+          <operations>
+            <operation condition="start_of_day">
+              <date>30/06/2006</date>
+              <action>irrigation apply amount = 39</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/07/2006</date>
+              <action>irrigation apply amount = 6.35780470420528</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/07/2006</date>
+              <action>irrigation apply amount = 6.37205987170338</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/07/2006</date>
+              <action>irrigation apply amount = 2.94606794963174</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/07/2006</date>
+              <action>irrigation apply amount = 6.16298408172971</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/07/2006</date>
+              <action>irrigation apply amount = 6.00142551674983</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/07/2006</date>
+              <action>irrigation apply amount = 2.0527441197434</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/07/2006</date>
+              <action>irrigation apply amount = 5.25540508434305</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/07/2006</date>
+              <action>irrigation apply amount = 3.02684723212168</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/08/2006</date>
+              <action>irrigation apply amount = 4.80399144689952</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/08/2006</date>
+              <action>irrigation apply amount = 5.49376474553421</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/08/2006</date>
+              <action>irrigation apply amount = 6.0128075497135</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/08/2006</date>
+              <action>irrigation apply amount = 2.93899561846974</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/08/2006</date>
+              <action>irrigation apply amount = 6.07347489046183</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/08/2006</date>
+              <action>irrigation apply amount = 5.56901876930373</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/08/2006</date>
+              <action>irrigation apply amount = 4.45567913717556</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/08/2006</date>
+              <action>irrigation apply amount = 8.17660936973381</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/08/2006</date>
+              <action>irrigation apply amount = 7.52229654403571</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/08/2006</date>
+              <action>irrigation apply amount = 6.33221850613157</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/08/2006</date>
+              <action>irrigation apply amount = 9.43143812709039</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/08/2006</date>
+              <action>irrigation apply amount = 4.45930880713484</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/08/2006</date>
+              <action>irrigation apply amount = 2.98216276477151</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/09/2006</date>
+              <action>irrigation apply amount = 11.2473271560942</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>broccoli harvest</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>broccoli EndCrop</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/09/2006</date>
+              <action>irrigation apply amount = 5.87788073176517</action>
+            </operation>
+          </operations>
+          <manager name="Calculations" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/Calculations" />
+        </folder>
+        <fertiliser shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/surface organic matter" />
+        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables Events" />
+        </outputfile>
+        <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
+        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final">
+          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
+          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
+        </outputfile>
+        <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton">
+          <InitWater>
+            <profile>
+              <layer>
+                <thickness>150</thickness>
+                <sw>0.18</sw>
+              </layer>
+              <layer>
+                <thickness>150</thickness>
+                <sw>0.25</sw>
+              </layer>
+              <layer>
+                <thickness>300</thickness>
+                <sw>0.23</sw>
+              </layer>
+              <layer>
+                <thickness>300</thickness>
+                <sw>0.28</sw>
+              </layer>
+              <layer>
+                <thickness>300</thickness>
+                <sw>0.34</sw>
+              </layer>
+            </profile>
+          </InitWater>
+          <InitNitrogen shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/InitNitrogen" />
+        </Soil>
+        <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Irrigation" />
+        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables Events" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Lawes06P2Mild" shortcut="/untitled/Lawes2006/Lawes06P2Wet">
+      <clock shortcut="/untitled/Lawes2006/Lawes06P2Wet/clock" />
+      <summaryfile shortcut="/untitled/Lawes2006/Lawes06P2Wet/summaryfile" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P2Wet/met" />
+      <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock">
+        <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Micromet" />
+        <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder/Sow on a fixed date" />
+          <operations name="LeafHarvests" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder/LeafHarvests" />
+          <operations>
+            <operation condition="start_of_day">
+              <date>30/06/2006</date>
+              <action>irrigation apply amount = 39</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/07/2006</date>
+              <action>irrigation apply amount = 6.35780470420528</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/07/2006</date>
+              <action>irrigation apply amount = 6.37205987170338</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/07/2006</date>
+              <action>irrigation apply amount = 2.94606794963174</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/07/2006</date>
+              <action>irrigation apply amount = 6.16298408172971</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/07/2006</date>
+              <action>irrigation apply amount = 6.00142551674983</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/07/2006</date>
+              <action>irrigation apply amount = 2.0527441197434</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/07/2006</date>
+              <action>irrigation apply amount = 5.25540508434305</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/07/2006</date>
+              <action>irrigation apply amount = 3.02684723212168</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/08/2006</date>
+              <action>irrigation apply amount = 4.80399144689952</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/08/2006</date>
+              <action>irrigation apply amount = 5.56901876930373</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/08/2006</date>
+              <action>irrigation apply amount = 7.52229654403571</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/08/2006</date>
+              <action>irrigation apply amount = 6.33221850613157</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/08/2006</date>
+              <action>irrigation apply amount = 9.43143812709039</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/08/2006</date>
+              <action>irrigation apply amount = 4.45930880713484</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/08/2006</date>
+              <action>irrigation apply amount = 2.98216276477151</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/09/2006</date>
+              <action>irrigation apply amount = 11.2473271560942</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>broccoli harvest</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>broccoli EndCrop</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/09/2006</date>
+              <action>irrigation apply amount = 5.87788073176517</action>
+            </operation>
+          </operations>
+          <manager name="Calculations" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/Calculations" />
+        </folder>
+        <fertiliser shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/surface organic matter" />
+        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables Events" />
+        </outputfile>
+        <broccoli shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/broccoli" />
+        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final">
+          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables" />
+          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables Events" />
+        </outputfile>
+        <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton">
+          <InitWater shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/InitWater" />
+          <InitNitrogen shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/InitNitrogen" />
+        </Soil>
+        <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Irrigation" />
+        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables Events" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Lawes06P2Severe" shortcut="/untitled/Lawes2006/Lawes06P2Wet">
+      <clock shortcut="/untitled/Lawes2006/Lawes06P2Wet/clock" />
+      <summaryfile shortcut="/untitled/Lawes2006/Lawes06P2Wet/summaryfile" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P2Wet/met" />
+      <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock">
+        <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Micromet" />
+        <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder">
+          <manager name="Sow on a fixed date" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder/Sow on a fixed date" />
+          <operations name="LeafHarvests" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder/LeafHarvests" />
+          <operations>
+            <operation condition="start_of_day">
+              <date>30/06/2006</date>
+              <action>irrigation apply amount = 39</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/07/2006</date>
+              <action>irrigation apply amount = 6.35780470420528</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/07/2006</date>
+              <action>irrigation apply amount = 6.37205987170338</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/07/2006</date>
+              <action>irrigation apply amount = 2.94606794963174</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/07/2006</date>
+              <action>irrigation apply amount = 6.16298408172971</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/07/2006</date>
+              <action>irrigation apply amount = 6.00142551674983</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/07/2006</date>
+              <action>irrigation apply amount = 2.0527441197434</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/07/2006</date>
+              <action>irrigation apply amount = 5.25540508434305</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/07/2006</date>
+              <action>irrigation apply amount = 3.02684723212168</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/07/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/08/2006</date>
+              <action>irrigation apply amount = 4.80399144689952</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/08/2006</date>
+              <action>irrigation apply amount = 5.56901876930373</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>17/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>18/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>19/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>20/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>21/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>22/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>23/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>24/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>26/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>27/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>28/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>29/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>30/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31/08/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>2/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>3/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>4/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>5/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>6/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>7/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>8/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>9/09/2006</date>
+              <action>irrigation apply amount = 11.2473271560942</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>10/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>11/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>12/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>13/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>14/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>irrigation apply amount = 0</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>broccoli harvest</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>15/09/2006</date>
+              <action>broccoli EndCrop</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>16/09/2006</date>
+              <action>irrigation apply amount = 5.87788073176517</action>
+            </operation>
+          </operations>
+          <manager name="Calculations" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder/Calculations" />
+        </folder>
+        <fertiliser shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/surface organic matter" />
+        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables Events" />
+        </outputfile>
+        <broccoli shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/broccoli" />
+        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final">
+          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables" />
+          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables Events" />
+        </outputfile>
+        <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton">
+          <InitWater shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/InitWater" />
+          <InitNitrogen shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/InitNitrogen" />
+        </Soil>
+        <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Irrigation" />
+        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput">
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables Events" />
+        </outputfile>
+      </area>
+    </simulation>
+    <Graph name="LAI Graph">
+      <Plot name="PredictedP1">
+        <X>Date</X>
+        <Y>LeafLAI</Y>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="PredictedP2">
+        <X>Date</X>
+        <Y>LeafLAI</Y>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <Y>LAI</Y>
+        <colour>
+        </colour>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LeafAppearance">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <X>Date</X>
+        <Y>LeafCohortNo</Y>
+        <Y>LeafDeadNodeNo</Y>
+        <Y>LeafFullyExpandedNodeNo</Y>
+        <colour>
+        </colour>
+        <Y>LeafFinalNodeNo</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <Y>LeafNo</Y>
+        <Y>DLeafNo</Y>
+        <colour>
+        </colour>
+        <Y>FXLeafNo</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006Leaf.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LeafWt">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>Leaf</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="Biomass">
+      <Plot name="PredictedP1">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>AboveGroundDM</Y>
+        <Y>FloretLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="PredictedP2">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>AboveGroundDM</Y>
+        <Y>FloretLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Biomass</Y>
+        <Y>Head</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="StemWt">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>StemLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>Stem</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="TotalSW">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw_dep()</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Predicted2">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw_dep()</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>Single</Y>
+        <Y>Mild</Y>
+        <Y>Severe</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006TotSW.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="TotalSW60cm">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>SW60</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Predicted2">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>SW60</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>Single</Y>
+        <Y>Mild</Y>
+        <Y>Severe</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006TotSW60cm.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="WaterUse">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>eo</Y>
+        <Y>LeafWaterDemand</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Predicted1">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>eo</Y>
+        <Y>LeafWaterDemand</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="RootDepth">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>RootDepth</Y>
+        <X>Date</X>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="P1WetSW">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw(1)</Y>
+        <Y>sw(2)</Y>
+        <Y>sw(3)</Y>
+        <Y>sw(4)</Y>
+        <Y>sw(5)</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>15cm</Y>
+        <Y>30cm</Y>
+        <Y>60cm</Y>
+        <Y>90cm</Y>
+        <Y>120cm</Y>
+        <Y>150cm</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006P1WetSW.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="P2WetSW">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw(1)</Y>
+        <Y>sw(2)</Y>
+        <Y>sw(3)</Y>
+        <Y>sw(4)</Y>
+        <Y>sw(5)</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>15cm</Y>
+        <Y>30cm</Y>
+        <Y>60cm</Y>
+        <Y>90cm</Y>
+        <Y>120cm</Y>
+        <Y>150cm</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006P2WetSW.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="P1SevereSW">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw(1)</Y>
+        <Y>sw(2)</Y>
+        <Y>sw(3)</Y>
+        <Y>sw(4)</Y>
+        <Y>sw(5)</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>15cm</Y>
+        <Y>30cm</Y>
+        <Y>60cm</Y>
+        <Y>90cm</Y>
+        <Y>120cm</Y>
+        <Y>150cm</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006P1SevereSW.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="P2SevereSW">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw(1)</Y>
+        <Y>sw(2)</Y>
+        <Y>sw(3)</Y>
+        <Y>sw(4)</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>15cm</Y>
+        <Y>30cm</Y>
+        <Y>60cm</Y>
+        <Y>90cm</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006P2SevereSW.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="ThermalTime">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>PhenologyThermalTimeValue</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="SLA Graph">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LeafSpecificArea</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>SLA</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LeafExpansionStress">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LeafExpansionStressValue</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LeafPhotoStress">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LeafFw</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LeafPhotoTempStress">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LeafPhotosynthesisFt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="WaterBalance">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>eo</Y>
+        <Y>es</Y>
+        <Y>Interception</Y>
+        <Y>TotalET</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Predicted1">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>eo</Y>
+        <Y>es</Y>
+        <Y>Interception</Y>
+        <Y>TotalET</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="Partitioning">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>AboveGroundDM</X>
+        <Y>StemLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Predicted1">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>AboveGroundDM</X>
+        <Y>StemLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="CanopyHeight">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>Height</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>Height</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Observed\Gatton2006Height.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LeafPhotoVPDStress">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LeafPhotosynthesisFvpd</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="PMcomponents">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>peta</Y>
+        <Y>petr</Y>
+        <X>Date</X>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Predicted1">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>peta</Y>
+        <Y>petr</Y>
+        <X>Date</X>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="RootWaterSupply">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>RootWaterSupply</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
+          <FileName>C:\apsim\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+  </folder>
+</folder>

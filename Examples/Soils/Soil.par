@@ -1,0 +1,94 @@
+[black_earth.SoilWat.parameters]  
+insoil =    2.0 ()  ! indicator for initial soil water
+                    ! 0 to 1 = fraction of max avail soil water (0=ll15,
+                    !          1 = dul) used to initialise each soil layer
+                    !  > 1   = initialise to user specified volumetric
+                    !          soil water content information
+
+diffus_const =    88. ()   !   coeffs for unsaturated water flow
+diffus_slope =    35.4  ()   !     "
+
+
+cn2_bare =    80 ()   ! bare soil runoff curve number
+cn_red =    20   ! potetial reduction in curve number due to residue
+cn_cov =    .8   ! cover for maximum reduction in curve number
+salb =    0.13  ()   ! bare soil albedo
+cona =    2.5  ()   ! stage 2 evap coef.
+u =    4 (mm)   ! stage 1 soil evaporation coefficient (mm)
+
+   !layer    1    2    3    4    5    6    7   
+dlayer =     150  150  300  300  300  300  300   ! layer thickness mm soil
+sat =      .500 .509 .510 .505 .490 .480 .480   ! saturation mm water/mm soil
+dul =      .450 .459  .45 .44  .42  .41  .41   ! drained upper limit mm water/mm soil
+sw =       .280 .364  .43 .43  .40  .41  .41   ! initial soil water mm water/mm soil
+ll15 =     .230 .240 .240 .250 .260 .270 .280   ! lower limit mm water/mm soil
+air_dry =    .10 .20 .20 .20 .20 .20 .20   ! air dry mm water/ mm soil
+swcon =     0.2  0.2  0.2  0.2  0.2  0.2  0.2   ! drainage coefficient
+bd =       1.30 1.30 1.29 1.31 1.35 1.36 1.36   ! bulk density gm dry soil/cc moist soil
+
+[black_earth.SoilN.parameters]
+
+amp =  15.0   ! temperature amplitude (oC) - difference between highest and
+               ! lowest mean monthly air temperatures
+tav =  20.0   ! mean annual air temperature (oC)
+root_cn =  20.   ! C:N ratio of initial root residues
+root_wt =  1000.   ! root residues as biomass (kg/ha)
+soil_cn =  14.5   ! C:N ratio of soil
+
+!layer    1    2    3    4    5    6    7
+oc =     1.00 0.84 0.77 0.65 0.54 0.48 0.43 (%)   ! Soil Organic Carbon
+ph =     8.20 8.50 8.60 8.60 7.40 5.30 5.00 ()   ! pH of soil
+fbiom =  .035 .025 .015 0.01 0.01 0.01 0.01 ()   ! Organic C Biomass Fraction
+finert =  0.30 0.50 0.60 0.75 0.90 0.99 0.99 ()   ! Inert Organic C Fraction
+no3ppm =  9.2  7.6  4.9  2.7  1.5  1.8  1.4 (ppm)   ! Nitrate Concentration
+nh4ppm =  0.30 0.30 0.30 0.30 0.30 0.50 0.50 (ppm)   ! Ammonium Concentration
+ureappm =  0  0    0    0    0    0    0    (ppm)   ! Urea Concentration
+
+! Erosion profile reduction parameters
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+[sample.surfaceom.parameters]
+
+name = manure       lucerne
+type =            manure       lucerne
+mass =             2000        4000
+cnr  =             200          50
+!cpr =              35          20
+standing_fraction = .1          .2
+
+[no_residue.SurfaceOM.parameters]
+mass = 0.0 (kg/ha)   ! Initial surface residue
+cnr = 80.0 ()   ! C:N ration of initial residue
+type = wheat   ! Type if initial residue
+name = wheat
+
+[wheat_residue.SurfaceOM.parameters]
+mass = 5000. (kg/ha)   ! Initial surface residue
+cnr = 80.0 ()   ! C:N ration of initial residue
+type = wheat   ! Type if initial residue
+name = wheat
+
+[legume_residue.SurfaceOM.parameters]
+mass = 2000. (kg/ha)   ! Initial surface residue
+cnr = 30.0 ()   ! C:N ration of initial residue
+type = mungbean   ! Type if initial residue
+name = mungbean
+
+[sugar_residue.SurfaceOM.parameters]
+mass = 10000. (kg/ha)   ! Initial surface residue
+cnr = 80.0 ()   ! C:N ration of initial residue
+type = sugar   ! Type if initial residue
+name = sugar
+
+
+[sample.soilp.parameters]
+!layer         1   2   3   4   5   6   7
+labile_P =     5   1   1   1   1   1   1   (ppm) !labile p content for each layer
+sorption =    50  100 200  200 200 200 200  ()   !soils p sorption characteristic
+root_cp =      200             ()                !c:p ratio of roots at initialisation
+rate_dissol_rock_P =  0.20     (/yr)             !rate at which rock P source becomes available
+rate_loss_avail_P =  0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC
+                              ! Recommended value: Alfisol - 0.3; Andisol - 0.7
+

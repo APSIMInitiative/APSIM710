@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Data Tracking (TRACKER) Module</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p align="left" class="Title1">The APSIM Data Tracking (TRACKER) Module</p>
+<p class="Title2">1 What is the Data Tracker Module?</p>
+<p class="Normal">The tracker module allows the user to track information through a simulation and perform simple statistics to that data prior to recording it in an APSIM output file. For example, tracker can record and accumulate flows of matter (e.g. rainfall, irrigation, drainage, fertiliser) between simulation outputs. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">2 Definition of statistical types </p>
+<p class="Normal">Statistics can be provided on either events or the states of variables within simulation execution. In both cases, the statistic can be based upon a single “spot” sample at some defined point or it can be based upon an accumulated sample of values for a defined timeframe within model execution. </p>
+<p class="Normal">In all cases the statistical variable is defined in the parameter file via a specification of the form “variable = <em>specification </em>” where <em>specification </em> is a description of the statistic via a predefined grammar. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>2.1 Event Statistics </strong></p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>2.1.1 Spot Sample </strong></p>
+<p class="Normal">Variable = <em>statistic </em> of <em>event </em> as <em>alias </em></p>
+<p class="Normal">Where </p>
+<p class="Normal"><em>Statistic </em> is the type of statistic to be applied. Currently the only option here is “date”. </p>
+<p class="Normal"><em>Event </em> is the event on which the statistic is to be applied. This can be any event within the APSIM simulation. </p>
+<p class="Normal"><em>Alias </em> is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic. </p>
+<p class="Normal"><em>Sample 1 – Report the sowing date of the last wheat crop </em></p>
+<p class="Normal">variable = date of wheat.sowing as wheat_sowing_date </p>
+<p class="Normal"><em>Sample 2 – Report the harvesting date of the last wheat crop </em></p>
+<p class="Normal">variable = date of wheat.harvesting as wheat_harvest_date </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong><strong>2.1.</strong>2 Accumulated Samples </strong></p>
+<p class="Normal">Variable = <em>statistic </em> of <em>event </em> from <em>start_event </em> to <em>end_event </em> as <em>alias </em></p>
+<p class="Normal">Where </p>
+<p class="Normal"><em>Statistic </em> is the type of statistic to be applied. Currently the only option here is “count”. </p>
+<p class="Normal"><em>Event </em> is the event on which the statistic is to be applied. This can be any event within the APSIM simulation. </p>
+<p class="Normal"><em>Start_event </em> is the APSIM event which signals the start of the sampling window. </p>
+<p class="Normal"><em>End_event </em> is the APSIM event which signals the start of the sampling window. </p>
+<p class="Normal"><em>Alias </em> is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic. </p>
+<p class="Normal"><em>Sample 1 – Count the number of lucerne cuts since the last report to the output file </em></p>
+<p class="Normal">variable = count of lucerne.harvesting from reported to now as number_of_cuts </p>
+<p class="Normal"><em>Sample 2 – Count the number of days since chickpea was last sown </em></p>
+<p class="Normal">variable = count of tick from chickpea.sowing to now as days_since_chickpea_sowing </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>2.2 State Variable Statistics </strong></p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>2.2.1 Spot Sample </strong></p>
+<p class="Normal">Variable = <em>statistic </em> of <em>variable </em> on <em> event </em>as <em>alias </em></p>
+<p class="Normal">Where </p>
+<p class="Normal"><em>Statistic </em> is the type of statistic to be applied. Currently the only option for the user is “value”. </p>
+<p class="Normal"><em>Variable </em> is the APSIM state variable upon which statistics are calculated. This can be any variable within the APSIM simulation. </p>
+<p class="Normal"><em>Event </em> is the event on which the statistic is to be applied. This can be any event within the APSIM simulation. </p>
+<p class="Normal"><em>Alias </em> is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic. </p>
+<p class="Normal"><em>Sample 1 – Report the yield of the last wheat crop </em></p>
+<p class="Normal">variable = value of wheat.yield on wheat.harvesting as wheat_yield </p>
+<p class="Normal"><em>Sample 2 – Report the total soil water at the sowing of the last wheat crop </em></p>
+<p class="Normal">variable = value of sw_dep() on wheat.sowing as wheat_sowing_sw </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>2.2.2 Accumulated Samples </strong></p>
+<p class="Normal">Variable = <em>statistic </em> of <em>variable </em> on [ <em>last nnn </em>] <em> event </em> [from <em>start_event </em> to <em>end_event </em>] as <em>alias </em></p>
+<p class="Normal">Where </p>
+<p class="Normal"><em>Statistic </em> is the type of statistic to be applied. Currently the user can choose from “sum”, “average”, “maximum” and “minimum”. </p>
+<p class="Normal"><em>Variable </em> is the APSIM state variable upon which statistics are calculated. This can be any variable within the APSIM simulation. </p>
+<p class="Normal">“ <em>Last nnn </em>” is an optional specification to allow the user to specify a moving sample set. </p>
+<p class="Normal"><em>Event </em> is the event on which the statistic is to be applied. This can be any event within the APSIM simulation. </p>
+<p class="Normal"><em>Start_event </em> is the APSIM event which signals the start of the sampling window. </p>
+<p class="Normal"><em>End_event </em> is the APSIM event which signals the start of the sampling window. </p>
+<p class="Normal"><em>Alias </em> is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic. </p>
+<p class="Normal">Note: the “from <em>start_event </em> to <em>end_event” </em> is optional only if the “ <em>last nnn </em>” is specified. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>Sample 1 – Report the accumulated rainfall since the last report to the output file </em></p>
+<p class="Normal">variable = sum of rain on start_of_day from reported to now as rainfall </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>Sample 2 – Report the accumulated rainfall for the last 3 days </em></p>
+<p class="Normal">variable = sum of rain on last 3 start_of_day as rain3 </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>Sample 3 – Report the accumulated lucerne harvest since the last report to the output file </em></p>
+<p class="Normal">variable = sum of lucerne.biomass on lucerne.harvesting from reported to now … </p>
+<p class="Normal">as cut_biomass </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>Sample 4 – Report the in-crop rainfall for the last wheat crop </em></p>
+<p class="Normal">variable = sum of met.rain on met.newmet from wheat.sowing to wheat.harvesting as wheat_incrop_rain </p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><em>Sample 5 – Report the 7 day moving average of the wheat crop water stress factor </em></p>
+<p class="Normal">variable = average of wheat.swdef_photo on last 7 end_of_day from wheat.sowing … </p>
+<p class="Normal">to wheat.harvesting as wheat_weekly_stress </p>
+</body>
+</html>

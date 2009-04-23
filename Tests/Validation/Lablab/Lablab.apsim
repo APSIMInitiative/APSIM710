@@ -1,0 +1,1241 @@
+<folder version="17" name="Simulations">
+  <simulation name="Gatton_LabLab_2000exp_P5">
+    <metfile name="met">
+      <filename name="filename">gatton_2000.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/2000</start_date>
+      <end_date type="date" description="Select the end date of the simulation">1/06/2000</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Continuous Wheat Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <burgundybean>
+        <ini>
+          <filename>C:\DATA\Temp\NPD\West_Timor\APSIMV6\burgundybean.ini</filename>
+        </ini>
+      </burgundybean>
+      <folder name="Manager folder">
+        <manager name="Sowing rule">
+          <ui>
+            <category description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">24-Jan-2000</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">24-Jan-2000</date2>
+            <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+            <category description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">lablab</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">5</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">highworth</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+         if (date_within('[date1], [date2]') = 1) then
+            if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
+                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
+               ChooseNextCrop = 'yes'   ! for rotations
+               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+            endif
+            if today = date('[date2]') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">lablab</crop>
+          </ui>
+          <script name="end_of_day">
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Manager">
+          <script name="init">
+            <text>cuts = 0
+ total_minN = 0
+biom = 0
+
+green_leaves = 0</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[ biom = leafgreenwt + stemgreenwt
+
+
+ if leaf_no >= 1 then
+      green_leaves = leaf_no - leaf_no_sen 
+ else
+ endif
+
+  if day = 358 and year = 2007 then        
+      irrigation apply amount = 10
+  endif
+
+  if day = 362  and year = 2007 then        
+      irrigation apply amount = 38
+  endif
+
+ 
+  if day = 97 and year = 2008 then        
+      irrigation apply amount = 40
+  endif
+
+  if day = 9114 and year = 2008 then        
+      irrigation apply amount = 50
+  endif
+
+
+
+
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>  total_minN = total_minN + dlt_n_min_tot()
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">centro</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">centro</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">500</mass>
+        <cnr type="text" description="C:N ratio of initial residue">40</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <lablab />
+      <soil name="Prarie-Lockyer">
+        <state>Queensland</state>
+        <region>Lockyer</region>
+        <nearesttown>Lawes, Q 4350</nearesttown>
+        <site>Lawes</site>
+        <SoilType>Prarie</SoilType>
+        <Latitude>-27.5338629</Latitude>
+        <Longitude>152.3384387</Longitude>
+        <LocationAccuracy>+-20m</LocationAccuracy>
+        <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number); oc and ph estimated</comment>
+        <naturalvegetation>Blue Gum, Moreton Bay Ash, Tea Tree</naturalvegetation>
+        <SummerCona>3.5</SummerCona>
+        <WinterCona>2.5</WinterCona>
+        <SummerU>6</SummerU>
+        <WinterU>4</WinterU>
+        <SummerDate>1-Nov</SummerDate>
+        <WinterDate>1-apr</WinterDate>
+        <Salb>0.12</Salb>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <CN2Bare>73</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.38</bd>
+            <ll15>0.19</ll15>
+            <airdry>0.1</airdry>
+            <dul>0.38</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.2</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.2</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.2</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.19</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.19</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.19</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.38</bd>
+            <ll15>0.195</ll15>
+            <airdry>0.168</airdry>
+            <dul>0.38</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>1.2</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.21</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.21</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.195</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.195</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.195</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.28</bd>
+            <ll15>0.2</ll15>
+            <airdry>0.2</airdry>
+            <dul>0.39</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.8</finert>
+            <oc>1.2</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.2</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.2</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.2</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.2</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.2</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.38</bd>
+            <ll15>0.22</ll15>
+            <airdry>0.22</airdry>
+            <dul>0.4</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>1</finert>
+            <oc>1.1</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.22</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.22</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.22</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.22</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.22</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.4</bd>
+            <ll15>0.23</ll15>
+            <airdry>0.23</airdry>
+            <dul>0.39</dul>
+            <sat>0.44</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.7</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.23</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.24</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.23</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.23</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.23</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.46</bd>
+            <ll15>0.25</ll15>
+            <airdry>0.25</airdry>
+            <dul>0.37</dul>
+            <sat>0.42</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.3</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.3</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.28</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.25</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.25</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.25</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.47</bd>
+            <ll15>0.26</ll15>
+            <airdry>0.26</airdry>
+            <dul>0.34</dul>
+            <sat>0.42</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.3</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.34</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.3</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.26</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.26</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.26</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.47</bd>
+            <sat>0.42</sat>
+            <dul>0.34</dul>
+            <airdry>0.27</airdry>
+            <ll15>0.27</ll15>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.3</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.34</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.3</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.27</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.27</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.27</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+        </profile>
+        <InitWater>
+          <RelativeTo>lablab</RelativeTo>
+          <PercentMethod>
+            <Percent>1.00</Percent>
+            <Distributed>Evenly distributed</Distributed>
+          </PercentMethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <outputfile>
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="year" array="No" description="Year" />
+          <variable name="day" array="No" description="Day" />
+          <variable name="DaysAfterSowing" array="No" description="Days after Sowing" />
+          <variable name="flowering_das" array="No" description="Days from sowing to flowering" />
+          <variable name="flowering_date" array="No" description="Day number of flowering" />
+          <variable name="StageName" array="No" description="Plant stage name" />
+          <variable name="yield" array="No" description="Yield" />
+          <variable name="biomass_wt" array="No" description="Biomass weight" />
+          <variable name="LeafTotalWt" array="No" description="Total Leaf dry matter" />
+          <variable name="StemTotalWt" array="No" description="Total Stem dry matter" />
+          <variable name="podTotalWt" array="No" description="Total pod dry matter" />
+          <variable name="LeafSenescedWt" array="No" description="Senesced Leaf dry matter" />
+          <variable name="biom as green_biomass" array="No" description="Green Biomass weight" />
+          <variable name="LeafGreenWt" array="No" description="Green Leaf dry matter" />
+          <variable name="StemGreenWt" array="No" description="Green Stem dry matter" />
+          <variable name="leaf_no" array="No" description="Number of leaves per plant" />
+          <variable name="leaf_no_sen" array="No" description="Number of senesced leaves per square meter" />
+          <variable name="leaf_area()" array="Yes" description="Leaf area for each node" />
+          <variable name="node_no" array="No" description="Number of mainstem nodes per plant" />
+          <variable name="lai" array="No" description="Leaf area index" />
+          <variable name="stover_wt" array="No" description="Stover Biomass weight" />
+          <variable name="ep" array="No" description="Plant water uptake" />
+          <variable name="esw_layr()" array="Yes" description="Extractable soil water" />
+          <variable name="root_depth" array="No" description="depth of roots" />
+          <variable name="no3()" array="Yes" />
+          <variable name="manager.total_minN" />
+          <variable name="height" />
+          <variable name="dlt_dm_green_grain" />
+          <variable name="dlt_dm_green_leaf" />
+          <variable name="dlt_dm_green_meal" />
+          <variable name="dlt_dm_green_pod" />
+          <variable name="dlt_dm_green_root" />
+          <variable name="dlt_dm_green_stem" />
+          <variable name="leaves_per_node" array="No" />
+          <variable name="swdef_pheno" />
+          <variable name="swdef_photo" />
+          <variable name="swdef_expan" />
+          <variable name="swdef_fixation" />
+          <variable name="lai_sum" array="No" description="LAI of all leaf components" />
+          <variable name="green_leaves" />
+          <variable name="tt_" />
+          <variable name="acc_TT" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" array="No" description="End of day" />
+        </events>
+        <Graph name="Biomass">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>biomass_wt</Y>
+            <Y>green_biomass</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+          <Plot name="XY1">
+            <X>Date</X>
+            <Y>biomass_wt</Y>
+            <SeriesType>No line</SeriesType>
+            <colour>
+            </colour>
+            <GDApsimFileReader>
+              <FileName>lablab_2000_Highworth_p5_obs.csv</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Leaf stem Sleaf ">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>LeafGreenWt</Y>
+            <Y>StemGreenWt</Y>
+            <Y>LeafSenescedWt</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+          <Plot name="XY1">
+            <X>Date</X>
+            <Y>LeafTotalWt</Y>
+            <SeriesType>No line</SeriesType>
+            <GDApsimFileReader>
+              <FileName>lablab_2000_Highworth_p5_obs.csv</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="LAI">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>lai</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+          <Plot name="XY1">
+            <X>Date</X>
+            <Y>lai</Y>
+            <SeriesType>No line</SeriesType>
+            <GDApsimFileReader>
+              <FileName>lablab_2000_Highworth_p5_obs.csv</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Leaf no">
+          <source>XY1</source>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>leaf_no</Y>
+            <Y>leaf_no_sen</Y>
+            <Y>green_leaves</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="dlt-Leaf-Stem-Pod">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>dlt_dm_green_leaf</Y>
+            <Y>dlt_dm_green_stem</Y>
+            <Y>dlt_dm_green_pod</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="ESW">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>esw_layr()</Y>
+            <YRight>no3()</YRight>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Node app">
+          <source>XY1</source>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>acc_tt</X>
+            <Y>node_no</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Stress-index">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>swdef_pheno</Y>
+            <Y>swdef_photo</Y>
+            <Y>swdef_expan</Y>
+            <YRight>swdef_fixation</YRight>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+  </simulation>
+  <simulation name="Gatton_LabLab_2000exp_P10">
+    <metfile name="met">
+      <filename name="filename">gatton_2000.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">23/01/2000</start_date>
+      <end_date type="date" description="Select the end date of the simulation">1/06/2000</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Continuous Wheat Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Sowing rule">
+          <ui>
+            <category description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">24-Jan-2000</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">24-Jan-2000</date2>
+            <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+            <category description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">lablab</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">highworth</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+         if (date_within('[date1], [date2]') = 1) then
+            if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
+                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
+               ChooseNextCrop = 'yes'   ! for rotations
+               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+            endif
+            if today = date('[date2]') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">lablab</crop>
+          </ui>
+          <script name="end_of_day">
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' or day = 79 then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Manager">
+          <script name="init">
+            <text>cuts = 0
+ total_minN = 0
+biom = 0
+
+green_leaves = 0
+
+tt_ = 0
+acc_TT = 0
+</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[ biom = leafgreenwt + stemgreenwt
+
+tt_ = ((maxt+mint)/2) -10
+acc_TT = tt_ + acc_tt
+ if leaf_no >= 1 then
+      green_leaves = leaf_no - leaf_no_sen 
+ else
+ endif
+
+  if day = 358 and year = 2007 then        
+      irrigation apply amount = 10
+  endif
+
+  if day = 362  and year = 2007 then        
+      irrigation apply amount = 38
+  endif
+
+ 
+  if day = 97 and year = 2008 then        
+      irrigation apply amount = 40
+  endif
+
+  if day = 9114 and year = 2008 then        
+      irrigation apply amount = 50
+  endif
+
+
+
+
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>  total_minN = total_minN + dlt_n_min_tot()
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">residue</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">lablab</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">40</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <lablab />
+      <soil name="Prarie-Lockyer">
+        <state>Queensland</state>
+        <region>Lockyer</region>
+        <nearesttown>Lawes, Q 4350</nearesttown>
+        <site>Lawes</site>
+        <SoilType>Prarie</SoilType>
+        <Latitude>-27.5338629</Latitude>
+        <Longitude>152.3384387</Longitude>
+        <LocationAccuracy>+-20m</LocationAccuracy>
+        <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number); oc and ph estimated</comment>
+        <naturalvegetation>Blue Gum, Moreton Bay Ash, Tea Tree</naturalvegetation>
+        <SummerCona>4</SummerCona>
+        <WinterCona>2.5</WinterCona>
+        <SummerU>6</SummerU>
+        <WinterU>4</WinterU>
+        <SummerDate>1-Nov</SummerDate>
+        <WinterDate>1-apr</WinterDate>
+        <Salb>0.12</Salb>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <CN2Bare>73</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1500</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.38</bd>
+            <ll15>0.19</ll15>
+            <airdry>0.1</airdry>
+            <dul>0.38</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.2</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.2</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.2</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.19</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.19</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.19</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.38</bd>
+            <ll15>0.195</ll15>
+            <airdry>0.168</airdry>
+            <dul>0.38</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>1.2</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.21</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.21</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.195</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.195</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.195</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.28</bd>
+            <ll15>0.2</ll15>
+            <airdry>0.2</airdry>
+            <dul>0.39</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.8</finert>
+            <oc>1.2</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.2</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.2</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.2</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.2</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.2</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.38</bd>
+            <ll15>0.22</ll15>
+            <airdry>0.22</airdry>
+            <dul>0.4</dul>
+            <sat>0.45</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>1</finert>
+            <oc>1.1</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.22</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.22</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.22</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.22</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.22</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.4</bd>
+            <ll15>0.23</ll15>
+            <airdry>0.23</airdry>
+            <dul>0.39</dul>
+            <sat>0.44</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.7</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.23</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.24</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.23</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.23</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.23</ll>
+            <kl name="lablab">0.04</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.46</bd>
+            <ll15>0.25</ll15>
+            <airdry>0.25</airdry>
+            <dul>0.37</dul>
+            <sat>0.42</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.3</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.3</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.28</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.25</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.25</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.25</ll>
+            <kl name="lablab">0.04</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.47</bd>
+            <ll15>0.26</ll15>
+            <airdry>0.26</airdry>
+            <dul>0.34</dul>
+            <sat>0.42</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.3</oc>
+            <ph>7</ph>
+            <ll name="chickpea">0.34</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="butterflypea">0.3</ll>
+            <kl name="butterflypea">0.06</kl>
+            <xf name="butterflypea">1</xf>
+            <ll name="centro">0.26</ll>
+            <kl name="centro">0.06</kl>
+            <xf name="centro">1</xf>
+            <ll name="macroptilium">0.26</ll>
+            <kl name="macroptilium">0.06</kl>
+            <xf name="macroptilium">1</xf>
+            <ll name="lablab">0.26</ll>
+            <kl name="lablab">0.02</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+        </profile>
+        <InitWater>
+          <RelativeTo>lablab</RelativeTo>
+          <PercentMethod>
+            <Percent>1.00</Percent>
+            <Distributed>Evenly distributed</Distributed>
+          </PercentMethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>2.710027100271</no3>
+              <nh4>0.1</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <outputfile>
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="year" array="No" description="Year" />
+          <variable name="day" array="No" description="Day" />
+          <variable name="DaysAfterSowing" array="No" description="Days after Sowing" />
+          <variable name="flowering_das" array="No" description="Days from sowing to flowering" />
+          <variable name="flowering_date" array="No" description="Day number of flowering" />
+          <variable name="StageName" array="No" description="Plant stage name" />
+          <variable name="yield" array="No" description="Yield" />
+          <variable name="biomass_wt" array="No" description="Biomass weight" />
+          <variable name="LeafTotalWt" array="No" description="Total Leaf dry matter" />
+          <variable name="StemTotalWt" array="No" description="Total Stem dry matter" />
+          <variable name="podTotalWt" array="No" description="Total pod dry matter" />
+          <variable name="LeafSenescedWt" array="No" description="Senesced Leaf dry matter" />
+          <variable name="biom as green_biomass" array="No" description="Green Biomass weight" />
+          <variable name="LeafGreenWt" array="No" description="Green Leaf dry matter" />
+          <variable name="StemGreenWt" array="No" description="Green Stem dry matter" />
+          <variable name="leaf_no" array="No" description="Number of leaves per plant" />
+          <variable name="leaf_no_sen" array="No" description="Number of senesced leaves per square meter" />
+          <variable name="leaf_area()" array="Yes" description="Leaf area for each node" />
+          <variable name="node_no" array="No" description="Number of mainstem nodes per plant" />
+          <variable name="lai" array="No" description="Leaf area index" />
+          <variable name="stover_wt" array="No" description="Stover Biomass weight" />
+          <variable name="ep" array="No" description="Plant water uptake" />
+          <variable name="esw_layr()" array="Yes" description="Extractable soil water" />
+          <variable name="root_depth" array="No" description="depth of roots" />
+          <variable name="no3()" array="Yes" />
+          <variable name="manager.total_minN" />
+          <variable name="height" />
+          <variable name="dlt_dm_green_grain" />
+          <variable name="dlt_dm_green_leaf" />
+          <variable name="dlt_dm_green_meal" />
+          <variable name="dlt_dm_green_pod" />
+          <variable name="dlt_dm_green_root" />
+          <variable name="dlt_dm_green_stem" />
+          <variable name="leaves_per_node" array="No" />
+          <variable name="swdef_pheno" />
+          <variable name="swdef_photo" />
+          <variable name="swdef_expan" />
+          <variable name="swdef_fixation" />
+          <variable name="lai_sum" array="No" description="LAI of all leaf components" />
+          <variable name="green_leaves" />
+          <variable name="tt_" />
+          <variable name="acc_TT" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" array="No" description="End of day" />
+        </events>
+        <Graph name="Biomass">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>biomass_wt</Y>
+            <Y>green_biomass</Y>
+            <colour>
+            </colour>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+          <Plot name="XY1">
+            <X>Date</X>
+            <Y>biomass_wt</Y>
+            <SeriesType>No line</SeriesType>
+            <GDApsimFileReader>
+              <FileName>lablab_2000_Highworth_p10_obs.csv</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Leaf stem Sleaf ">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>LeafGreenWt</Y>
+            <Y>StemGreenWt</Y>
+            <Y>LeafSenescedWt</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+          <Plot name="XY1">
+            <X>Date</X>
+            <Y>LeafTotalWt</Y>
+            <SeriesType>No line</SeriesType>
+            <GDApsimFileReader>
+              <FileName>lablab_2000_Highworth_p10_obs.csv</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="LAI">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>lai</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+          <Plot name="XY1">
+            <X>Date</X>
+            <Y>lai</Y>
+            <SeriesType>No line</SeriesType>
+            <colour>
+            </colour>
+            <GDApsimFileReader>
+              <FileName>lablab_2000_Highworth_p10_obs.csv</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Leaf no">
+          <source>XY1</source>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>leaf_no</Y>
+            <Y>leaf_no_sen</Y>
+            <Y>green_leaves</Y>
+            <Y>node_no</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="dlt-Leaf-Stem-Pod">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>dlt_dm_green_leaf</Y>
+            <Y>dlt_dm_green_stem</Y>
+            <Y>dlt_dm_green_pod</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="ESW">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>esw_layr()</Y>
+            <YRight>no3()</YRight>
+            <colour>
+            </colour>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Node app">
+          <source>XY1</source>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>acc_tt</X>
+            <Y>node_no</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Stress-index">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>swdef_pheno</Y>
+            <Y>swdef_photo</Y>
+            <Y>swdef_expan</Y>
+            <YRight>swdef_fixation</YRight>
+            <colour>
+            </colour>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+  </simulation>
+  <RegressionGraph name="Predicted Observed Biomass">
+    <Plot>
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <Y>Predicted biomass_wt</Y>
+      <X>Observed biomass_wt</X>
+      <GDPredObs name="PredictedObserved">
+        <FieldsToMatch>Title</FieldsToMatch>
+        <FieldsToMatch>Date</FieldsToMatch>
+        <GDApsimFileReader name="Observed">
+          <FileName>lablab_2000_Highworth_p10_obs.csv</FileName>
+          <FileName>lablab_2000_Highworth_p5_obs.csv</FileName>
+        </GDApsimFileReader>
+        <GDApsimFileReader name="Predicted">
+          <FileName>Gatton_LabLab_2000exp_P10.out</FileName>
+          <FileName>Gatton_LabLab_2000exp_P5.out</FileName>
+        </GDApsimFileReader>
+      </GDPredObs>
+    </Plot>
+  </RegressionGraph>
+  <RegressionGraph name="Predicted Observed LAI">
+    <Plot>
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <Y>Predicted lai</Y>
+      <X>Observed lai</X>
+      <GDPredObs name="PredictedObserved">
+        <FieldsToMatch>Title</FieldsToMatch>
+        <FieldsToMatch>Date</FieldsToMatch>
+        <GDApsimFileReader name="Observed">
+          <FileName>lablab_2000_Highworth_p10_obs.csv</FileName>
+          <FileName>lablab_2000_Highworth_p5_obs.csv</FileName>
+        </GDApsimFileReader>
+        <GDApsimFileReader name="Predicted">
+          <FileName>Gatton_LabLab_2000exp_P10.out</FileName>
+          <FileName>Gatton_LabLab_2000exp_P5.out</FileName>
+        </GDApsimFileReader>
+      </GDPredObs>
+    </Plot>
+  </RegressionGraph>
+</folder>

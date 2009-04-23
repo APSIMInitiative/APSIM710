@@ -1,0 +1,104 @@
+!********************************************************************
+!    Section common to all runs
+!********************************************************************
+
+[o97_1_all.clock.parameters]
+start_date=22/9/1995
+end_date=19/5/1996
+
+
+[o97_1_all.manager.end_of_day]
+
+   report do_output
+
+   if (day = 1 and year = 1995) then
+      cotton_status = 0
+   endif
+
+   if (ozcot_status > 0) then
+     ozcot harvest
+     cotton_status = 0
+   endif
+
+
+!******************************* Alan Hunter *****************************************
+
+[o97_1_1.report.parameters]
+Outputfile =o_971_1.out
+
+[o97_1_1.manager.end_of_day]
+
+  yield_acre = yield/2.5
+
+  if (day = 191) then
+    soilwat set sw  =  0.408   0.443   0.443   0.400   0.405   0.425   0.428
+    soiln set no3 = 13.000  20.000  37.000  33.000  14.000  19.000  29.000
+  endif
+
+  if (day = 280) then
+         ! cultivar, sowing_depth, row_spacing, plants_pm
+      ozcot sow cultivar = siok, sowing_depth = 50 (mm), row_spacing = 2000 (mm), plants_pm = 12.0 (), skiprow = 1
+!      ozcot sow cultivar = siok, sowing_depth = 50 (mm), row_spacing = 2000 (mm), plants_pm = 12.0 ()
+!      ozcot sow 4 5 2.0 12.0
+  endif
+
+
+!******************************* James Claerke **************************
+
+[o97_1_2.report.parameters]
+Title =          James Clarke
+Screen_output =  on
+Outputfile =     o_971_2.out    /overwrite
+Summaryfile =    s_971_2.sum    /overwrite
+
+[o97_1_2.clock.parameters]
+Start_day =     190
+Start_year =   1995
+End_day =       160
+End_year =     1996
+
+[o97_1_2.manager.end_of_day]
+
+  yield_acre = yield/2.5
+
+  if (day = 191) then
+    soilwat set sw  =  0.445   0.491   0.483   0.470   0.450   0.412   0.390
+    soiln set no3 = 21.000  31.000  59.000  47.000  37.000  36.000  37.000
+  endif
+
+  if (day = 196) then
+    fertiliz fertilize amount = 70 (kg/ha), depth=10(mm), type=nh4no3()
+  endif
+
+  if (day = 279) then
+      ozcot sow cultivar = siok, sowing_depth = 50 (mm), row_spacing = 2000 (mm), plants_pm = 12.0 (), skiprow = 1
+!      ozcot sow 4 5 2.0 12.0
+  endif
+
+
+
+!******************************* Mac Patterson *************************
+
+[o97_1_3.report.parameters]
+Title =          Mac Patterson
+Screen_output =  on
+Outputfile =     o_971_3.out    /overwrite
+Summaryfile =    s_971_3.sum    /overwrite
+
+[o97_1_3.manager.end_of_day]
+
+  yield_acre = yield/2.5
+
+  if (day = 191) then
+    soilwat set sw  =  0.375   0.416   0.407   0.373   0.369   0.350   0.350
+    soiln set no3 = 35.000  46.000  89.000  58.000  33.000  17.000  21.000
+  endif
+
+  if (day = 283) then
+      ozcot sow cultivar = siok, sowing_depth = 50 (mm), row_spacing = 2000 (mm), plants_pm = 14.0 (), skiprow = 1
+!      ozcot sow 4 5 2.0 14.0
+  endif
+
+
+!******************************* END ALL RUNS *************************
+

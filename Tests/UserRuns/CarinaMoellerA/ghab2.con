@@ -1,0 +1,11 @@
+version = 7.0(2)
+[apsim.g2w0]     ! Treatment4
+module = clock   ghab2.man [9900] %apsim%/Model/clock.xml [standard]
+module = report    reportCP.par [all]   reportCP.par [g2w0_00]
+module = input(met)       telhadya.met [weather]
+module = manager   ghab2.man  [g200]     ghab2.man [all]
+module = SoilWat   THsoil.par [telhadya] THsoil.par [b2] THsoil.par [inig2w0] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   THsoil.par [b2cp00] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   THsoil.par [telhadya] THsoil.par [b2cp00] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   chickpea.par [standard] THsoil.par [B2] %apsim%/Model/chickpea.xml [standard]
+title = Ghab2_W0_9900

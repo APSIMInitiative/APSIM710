@@ -1,0 +1,55 @@
+[dalby600.report.parameters]
+outputfile  =Dalby600.out
+[dalby1500.report.parameters]
+outputfile  =Dalby1500.out
+[roma600.report.parameters]
+outputfile  =Roma600.out
+[roma1500.report.parameters]
+outputfile  =Roma1500.out
+
+[sensibility.report.parameters]
+
+variable = clock.day
+variable = clock.year
+variable = sorghum.lai
+variable = sorghum.biomass
+variable = sorghum.yield
+variable = tracker.sum_ep
+
+[sensibility.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1957
+end_date=21/12/2002
+
+[sensibility.manager.start_of_day]
+
+if today = date('15-oct') then
+   SoilWat reset
+   SoilN reset
+   surfaceom reset
+   Fertiliser apply amount = 200, type = no3_n, depth = 200.
+   sorghum sow cultivar = medium, plants = 8 (/m2), sowing_depth = 30 (mm), row_spacing = 1.0, tiller_no_fertile = 1.0 ()
+endif
+
+endif
+
+[sensibility.manager.end_of_day]
+if (sorghum.stage = 11) or (sorghum.plant_status = 'dead') then
+
+   report do_output
+   sorghum harvest
+   sorghum end_crop
+
+endif
+
+[Dalby600.SummaryFile.parameters]
+summaryfile=Dalby600.sum
+[Dalby1500.SummaryFile.parameters]
+summaryfile=Dalby1500.sum
+[Roma600.SummaryFile.parameters]
+summaryfile=Roma600.sum
+[Roma1500.SummaryFile.parameters]
+summaryfile=roma1500.sum
+
+[sensibility.tracker.parameters]
+variable = sum of sorghum.ep on process from reported to now as sum_ep

@@ -1,0 +1,435 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = P3 Base Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                       "solute" = %apsim%\Model\solute.dll
+   Component                     "tracker1" = %apsim%\Model\tracker.dll
+   Component                     "bambatsi" = %apsim%\Model\growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  5/08/1994
+     Simulation end date   = 23/01/2000
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.dd/mm/yyyy as date
+        clock.day
+        clock.year
+        tracker1.sum@soilwat2_runoff
+        tracker1.sum@soilwat2_drain
+        tracker1.sum@soilwat2_es
+        SoilWat.eo
+        met.rain
+        micromet.interception
+        SoilN.nh4()
+        SoilN.no3()
+        tracker1.sum@soiln2_dnit[]
+        tracker1.sum@soilwat2_flow_no3[16]
+        manager.surf_biomn
+        manager.subsurf_biomn
+        SoilN.fom_n()
+        manager.surf_humn
+        manager.subsurf_humn
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_cover
+        SoilWat.cn2_new as curve_no
+        bambatsi.lai as b_lai
+        bambatsi.biomass as b_biomass
+        bambatsi.biomass_n as b_biomass_n
+        bambatsi.Fw as b_fw
+        bambatsi.Fn as b_fn
+        bambatsi.Fvpd as b_fvpd
+        bambatsi.Ft as b_ft
+        bambatsi.root_depth as b_root_depth
+        bambatsi.ep as b_ep
+        bambatsi.adm_sen()
+        bambatsi.adm_green()
+        bambatsi.adm_dead()
+        bambatsi.foliage_mass
+        bambatsi.foliage_mass_sen
+        bambatsi.height as b_height
+        manager.average_t
+        met.maxt
+        met.mint
+        bambatsi.ffasw
+        clock.month
+        manager.sw1
+        manager.sw2
+        manager.sw3
+        manager.swtot
+        manager.cum_production
+        manager.cum_runoff
+        SoilWat.cn2_new
+
+     Output file = p3.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: HUDSON.MET
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      8/12/1994  Prepare      Fertiliser apply amount = 20.0, type = urea_n, depth = 5
+       1/1/1995  Prepare      bambatsi  establish plants = 5000000, init_section = seedling
+      9/10/1995  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+     21/11/1995  Prepare      Fertiliser apply amount = 50, type = no3_n, depth = 5
+      1/12/1995  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99, plants = 300
+      30/1/1996  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+      28/2/1996  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+     26/11/1996  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+     22/12/1996  Prepare      Fertiliser apply amount = 50, type = no3_n, depth = 5
+      14/1/1997  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+       4/3/1997  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+      26/6/1997  Prepare      Fertiliser apply amount = 22, type = no3_n, depth = 5
+     17/11/1997  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+       7/4/1998  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+      9/10/1998  Prepare      Fertiliser apply amount = 30, type = no3_n, depth = 5
+     17/12/1998  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+      16/2/1999  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+       2/6/1999  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+     10/11/1999  Prepare      Fertiliser apply amount = 50, type = no3_n, depth = 5
+      29/9/1999  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+       2/2/2000  Prepare      bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     biom = 0.0
+     cum_production = 0.0
+     cum_runoff = 0.0
+     
+     SECTION:- end_of_day
+     surf_biomn = biom_n(1)
+     subsurf_biomn = biom_n(2) + biom_n(3)
+     surf_humn = hum_n(1)
+     subsurf_humn = hum_n(2) + hum_n(3)
+     average_t = (maxt + mint)/2.0
+     if bambatsi.biomass < biom / 3.0 then
+        cum_production = cum_production + biom - bambatsi.biomass
+     endif
+     biom = bambatsi.biomass
+     if today > date('30-aug-1996') then
+        cum_runoff = cum_runoff + soilwat.runoff
+     endif
+     sw1 = sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6)
+     sw2 = sw_dep(7) + sw_dep(8) + sw_dep(9) + sw_dep(10) + sw_dep(11)
+     sw3 = sw_dep(12) + sw_dep(13) + sw_dep(14) + sw_dep(15) + sw_dep(16)
+     swtot = sw1 + sw2 + sw3
+     report do_output
+     END of rules
+     
+     Manager creating a new local real variable : biom = 0.00000
+     Manager creating a new local real variable : cum_production = 0.00000
+     Manager creating a new local real variable : cum_runoff = 0.00000
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.100  0.240  0.470  0.530  0.470  1.000  0.613  0.400
+          100.-  300.  0.100  0.240  0.500  0.550  0.470  1.100  0.340  0.400
+          300.-  500.  0.100  0.280  0.520  0.570  0.530  1.100  0.048  0.400
+          500.-  700.  0.100  0.290  0.520  0.550  0.500  1.100  0.000  0.400
+          700.-  900.  0.100  0.290  0.510  0.540  0.470  1.100  0.000  0.400
+          900.- 1100.  0.100  0.290  0.500  0.530  0.460  1.200  0.000  0.400
+         1100.- 1300.  0.100  0.290  0.500  0.530  0.450  1.200  0.000  0.400
+         1300.- 1500.  0.100  0.330  0.480  0.510  0.450  1.200  0.000  0.400
+         1500.- 1700.  0.100  0.330  0.480  0.510  0.450  1.200  0.000  0.400
+         1700.- 1900.  0.100  0.350  0.480  0.510  0.430  1.200  0.000  0.400
+         1900.- 2100.  0.100  0.350  0.470  0.500  0.420  1.200  0.000  0.400
+         2100.- 2300.  0.100  0.350  0.450  0.480  0.420  1.200  0.000  0.400
+         2300.- 2500.  0.100  0.350  0.450  0.480  0.410  1.300  0.000  0.400
+         2500.- 2700.  0.100  0.350  0.450  0.480  0.430  1.300  0.000  0.400
+         2700.- 2900.  0.100  0.350  0.450  0.480  0.420  1.300  0.000  0.400
+         2900.- 3100.  0.100  0.350  0.450  0.480  0.410  1.300  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      24.00      23.00      23.00       6.00
+          100.-  300.      48.00      46.00      52.00      10.00
+          300.-  500.      56.00      50.00      48.00      10.00
+          500.-  700.      58.00      42.00      46.00       6.00
+          700.-  900.      58.00      36.00      44.00       6.00
+          900.- 1100.      58.00      34.00      42.00       6.00
+         1100.- 1300.      58.00      32.00      42.00       6.00
+         1300.- 1500.      66.00      24.00      30.00       6.00
+         1500.- 1700.      66.00      24.00      30.00       6.00
+         1700.- 1900.      70.00      16.00      26.00       6.00
+         1900.- 2100.      70.00      14.00      24.00       6.00
+         2100.- 2300.      70.00      14.00      20.00       6.00
+         2300.- 2500.      70.00      12.00      20.00       6.00
+         2500.- 2700.      70.00      16.00      20.00       6.00
+         2700.- 2900.      70.00      14.00      20.00       6.00
+         2900.- 3100.      70.00      12.00      20.00       6.00
+          ---------------------------------------------------------
+               Totals     982.00     409.00     507.00     104.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              72.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat           10.0     4.0     0.0     0.0   0.005     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.40   40.00    0.30    0.00
+             2     6.40  1.40   33.00    0.66    0.00
+             3     6.80  1.40   17.31    0.66    0.00
+             4     7.20  1.35   13.64    0.66    0.00
+             5     7.60  0.95   10.67    0.66    0.00
+             6     8.00  1.00    8.54    0.72    0.00
+             7     8.00  0.80    6.53    0.72    0.00
+             8     8.00  0.45    5.62    0.72    0.00
+             9     8.00  0.45    5.93    0.72    0.00
+            10     8.00  0.45    7.78    0.72    0.00
+            11     8.00  0.45   10.20    0.72    0.00
+            12     8.00  0.45   11.86    0.72    0.00
+            13     8.00  0.45   13.52    0.78    0.00
+            14     8.00  0.45   12.87    0.78    0.00
+            15     8.00  0.45   11.75    0.78    0.00
+            16     8.00  0.45   11.02    0.78    0.00
+          ------------------------------------------------
+           Totals              220.24   11.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      13775.7   950.1   224.3    28.0     0.7     0.0
+             2      30306.6  2090.1   493.4    61.7     0.6     0.0
+             3      30558.4  2107.5   241.6    30.2     0.5     0.0
+             4      29568.3  2039.2   131.7    16.5     0.4     0.0
+             5      20869.0  1439.2    31.0     3.9     0.3     0.0
+             6      23976.2  1653.5    23.8     3.0     0.3     0.0
+             7      19198.1  1324.0     1.9     0.2     0.2     0.0
+             8      10798.9   744.8     1.1     0.1     0.2     0.0
+             9      10798.9   744.8     1.1     0.1     0.2     0.0
+            10      10798.9   744.8     1.1     0.1     0.1     0.0
+            11      10798.9   744.8     1.1     0.1     0.1     0.0
+            12      10798.9   744.8     1.1     0.1     0.1     0.0
+            13      11698.8   806.8     1.2     0.1     0.1     0.0
+            14      11698.8   806.8     1.2     0.1     0.1     0.0
+            15      11698.8   806.8     1.2     0.1     0.0     0.0
+            16      11698.8   806.8     1.2     0.1     0.0     0.0
+          ---------------------------------------------------------
+           Totals  269042.4 18554.6  1157.6   144.7     4.0     0.1
+          ---------------------------------------------------------
+
+------- solute Initialisation -------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- tracker1 Initialisation -----------------------------------------------
+     Tracker variables:
+        sum of SoilWat.runoff on process from report.reported to now as sum@soilwat2_runoff
+        sum of SoilWat.drain on process from report.reported to now as sum@soilwat2_drain
+        sum of SoilWat.es on process from report.reported to now as sum@soilwat2_es
+        sum of SoilN.dnit() on process from report.reported to now as sum@soiln2_dnit[]
+        sum of SoilWat.flow_no3(16) on process from report.reported to now as sum@soilwat2_flow_no3[16]
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : surf_biomn = 28.02307
+     Manager creating a new local real variable : subsurf_biomn = 91.83105
+     Manager creating a new local real variable : surf_humn = 950.04407
+     Manager creating a new local real variable : subsurf_humn = 4197.56201
+     Manager creating a new local real variable : average_t = 9.40000
+     Manager creating a new local real variable : sw1 = 485.72733
+     Manager creating a new local real variable : sw2 = 440.03754
+     Manager creating a new local real variable : sw3 = 418.00250
+     Manager creating a new local real variable : swtot = 1343.76733
+8 December 1994(Day of year=342), Operations: 
+      Sending apply message to fertiliser
+8 December 1994(Day of year=342), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.00 of N as urea (urea_n)
+                                         added at depth    5.00 (layer   1)
+1 January 1995(Day of year=1), Operations: 
+      Sending establish message to bambatsi
+1 January 1995(Day of year=1), bambatsi: 
+     Establishing
+9 October 1995(Day of year=282), Operations: 
+      Sending cut message to bambatsi
+21 November 1995(Day of year=325), Operations: 
+      Sending apply message to fertiliser
+21 November 1995(Day of year=325), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (no3_n)
+                                         added at depth    5.00 (layer   1)
+1 December 1995(Day of year=335), Operations: 
+      Sending cut message to bambatsi
+30 January 1996(Day of year=30), Operations: 
+      Sending cut message to bambatsi
+28 February 1996(Day of year=59), Operations: 
+      Sending cut message to bambatsi
+26 November 1996(Day of year=331), Operations: 
+      Sending cut message to bambatsi
+22 December 1996(Day of year=357), Operations: 
+      Sending apply message to fertiliser
+22 December 1996(Day of year=357), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (no3_n)
+                                         added at depth    5.00 (layer   1)
+14 January 1997(Day of year=14), Operations: 
+      Sending cut message to bambatsi
+4 March 1997(Day of year=63), Operations: 
+      Sending cut message to bambatsi
+26 June 1997(Day of year=177), Operations: 
+      Sending apply message to fertiliser
+26 June 1997(Day of year=177), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        22.00 of N as nitrate (no3_n)
+                                         added at depth    5.00 (layer   1)
+17 November 1997(Day of year=321), Operations: 
+      Sending cut message to bambatsi
+7 April 1998(Day of year=97), Operations: 
+      Sending cut message to bambatsi
+9 October 1998(Day of year=282), Operations: 
+      Sending apply message to fertiliser
+9 October 1998(Day of year=282), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth    5.00 (layer   1)
+17 December 1998(Day of year=351), Operations: 
+      Sending cut message to bambatsi
+16 February 1999(Day of year=47), Operations: 
+      Sending cut message to bambatsi
+2 June 1999(Day of year=153), Operations: 
+      Sending cut message to bambatsi
+29 September 1999(Day of year=272), Operations: 
+      Sending cut message to bambatsi
+10 November 1999(Day of year=314), Operations: 
+      Sending apply message to fertiliser
+10 November 1999(Day of year=314), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (no3_n)
+                                         added at depth    5.00 (layer   1)
+23 January 2000(Day of year=23), clock: 
+     Simulation is terminating due to end criteria being met.

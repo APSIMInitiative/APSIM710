@@ -1,0 +1,39 @@
+!Title = Shallow Sand - mod carbon, (PAWC = 59mm, 1.0m)
+
+[*attributes]
+
+   module_usage  = soil_phosphorus
+   must_have     = soil_phosphorus
+
+[*contents]
+
+[run%.soilp.parameters]  
+! These are the inputs for the SoilP module for the experiment at Mutua's Farm
+! labile_P is assumed to be similar to the bicarbonate extractable P
+! unavail_P need not be specified.  If no values given, ratio labile_P:unavail_P
+! is set to availP_ratio (as given in soilp.ini)
+! banded_P and rock_P provide option to initialise model with non-zero values
+! sorption is measure of the soil's capacity to sorb P and
+!                 is used to relate P uptake to labile P in soil
+
+!layer         1   2   3   4   5   6
+labile_P =     $labp1 $labp2 $labp3 $labp4 $labp5 $labp6 (mg/kg)   !
+!unavail_P =   40  40  30  30  30  30  (mg/kg)   !unavailable p content for each layer
+banded_P =     0   0   0   0   0   0  (kg/ha)   !banded p content for each layer
+rock_P =       0   0   0   0   0   0  (kg/ha)   !rock p content for each layer ie no water soluble
+sorption =   115 150 160 200 200 200 ()   !P sorbed at 0.2ppm
+
+residue_cp =   250             ()   !c:p ratio of residues at initialisation
+root_cp =      200             ()   !c:p ratio of roots at initialisation
+rate_dissol_rock_P =  $dissol     (/yr)   !rate at which rock P source becomes available
+
+[*variables]
+
+   $dissol   = "Dissolution rate for rock P (/yr) : " 0.20 real
+   $LabP1   = "Labile P in layer 1 (ppm) : " 4 real
+   $LabP2   = "Labile P in layer 2 (ppm) : " 4 real
+   $LabP3   = "Labile P in layer 3 (ppm) : " 3 real
+   $LabP4   = "Labile P in layer 4 (ppm) : " 3 real
+   $LabP5   = "Labile P in layer 5 (ppm) : " 3 real
+   $LabP6   = "Labile P in layer 6 (ppm) : " 3 real
+

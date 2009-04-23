@@ -1,0 +1,12 @@
+version = 7.0(2)
+[APSIM.Psample_peanut]
+title=peanut P Sample Simulation
+module = clock   peanut.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     peanut.par[sample]
+module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    peanut.par[sample]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = SoilP   %apsim%/Examples/Soils/Soil.par [sample] %apsim%/Model/SoilP.xml [standard]
+module = Plant(peanut)   peanut.par [sample] %apsim%/Model/peanut.xml [standard]

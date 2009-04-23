@@ -1,0 +1,78 @@
+   <rice>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\rice.jpg</Image>
+      <Description>ORYZA is wholely owned by IRRI and is distributed in APSIM with permission. Goto http://www.knowledgebank.irri.org/oryza2000 for more info</Description>
+      <Documentation name="Rice science documentation"></Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <class    name="plant"/>
+      <cultivar name="IR72"/>
+     <variables>
+         <variable name="plant_status" description ="out, alive, or dead"/>
+         <variable name="cropsta" description ="Crop stage(0-4)"/>
+         <variable name="wagt" description ="Total aboveground dry matter kg/ha"/>
+         <variable name="wso" description ="Dry weight of storage organs kg/ha"/>
+         <variable name="wst" description ="Dry weight of stems kg/ha"/>
+         <variable name="wlvg" description ="Dry weight of green leaves kg/ha"/>
+         <variable name="wlvd" description ="Dry weight of dead leaves kg/ha"/>
+         <variable name="rlai" description ="Rice leaf area index"/>
+         <variable name="zrt" description ="Root length or rooting depth"/>
+         <variable name="crop_type" description ="usually rice"/>
+         <variable name="dae" description ="Days after emergence (days)"/>
+         <variable name="dvs" description ="Development stage of crop (0-2)"/>
+         <variable name="dvr" description ="Development rate of crop   (oCd-1)"/>
+         <variable name="hu" description ="Daily heat units effective for phenological development  (oCd d-1) "/>
+         <variable name="lrstrs" description ="Drought stress factor causing leaf rolling   "/>
+         <variable name="ldstrs" description ="Drought stress factor accelerating leaf death   !-"/>
+         <variable name="lestrs" description ="Drought stress factor reducing leaf expansion  !-"/>
+         <variable name="pcew" description ="Effect of drought stress on daily total gross CO2 assimilation of crop; reduction in potential transpiration rate  !-"/>
+         <variable name="tnsoil" description ="Daily amount of N available for uptake from soil  !kg N ha-1 d-1 "/>
+         <variable name="nflv" description ="Nitrogen fraction in leaves on leaf area basis  !g N m-2 leaf"/>
+         <variable name="fnlv" description ="Fraction of N in leaves on weight basis  !kg N kg-1 DM"/>
+         <variable name="nacr" description ="Actual nitrogen uptake rate by crop  !kg N ha-1 d-1 "/>
+         <variable name="ancr" description ="Amount of N in crop (live and dead material)  !kg N ha-1 "/>
+         <variable name="anso" description ="Amount of N in storage organs  !kg N ha-1 "/>
+         <variable name="anlv" description ="Amount of N in leaves  !kg N ha-1" />
+         <variable name="rnstrs" description ="Reduction factor on relative leaf growth rate caused by N stress  !-"/>
+         <variable name="dtga" description ="Daily total gross CO2 assimilation of crop  !kg CO2 ha-1 d-1 "/>
+         <variable name="gcr" description ="Gross growth rate of crop  !kg DM ha-1 d-1" />
+         <variable name="ssga" description ="Specific green stem area  !ha stem kg-1 stem"/>
+         <variable name="eff" description ="Initial light-use efficiency (kg CO2 ha-1 leaf h-1)(W m-2 leaf )-1 "/>
+         <variable name="etd" description ="Reference evapotranspiration (mm d-1)"/>
+         <variable name="etrd" description ="Radiation-driven part of reference evapotranspiration rate  !mm d-1 "/>
+         <variable name="etae" description ="Dryness-driven part of reference evapotranspiration rate  !mm d-1 "/>
+         <variable name="trc"  description ="Potential transpiration rate of crop with given LAI  !mm d-1"/>
+         <variable name="gnsp" description ="rate of increase in spikelet number"/>
+         <variable name="spgf" description ="spikelet growth factor"/>
+         <variable name="coldtt" description ="accumulated cold degree days"/>
+         <variable name="sf1" description ="spikelet sterility factor because of low temperatures"/>
+         <variable name="sf2" description ="spikelet fertility factor because of high temperatures"/>
+         <variable name="spfert" description ="spikelet fertility factor"/>
+         <variable name="nsp" description ="number of spikelets"/>
+         <variable name="gngr" description ="rate of increase in grain number"/>
+         <variable name="ggr" description ="rate of increase in grain weight"/>
+         <variable name="ngr" description ="number of grains"/>
+         <variable name="wgrmx" description ="maximum individual grain weight"/>
+         <variable name="cover_green"  description ="green cover from crop"/>
+         <variable name="cover_tot"  description ="total cover from crop"/>
+         <variable name="height"  description ="height of crop"/>
+     </variables>
+      <events>
+         <event name = "harvesting"/>
+         <event name = "sowing"/>
+      </events>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Oryza.dll</dll>
+         <ini>%apsim%\Model\Oryza.xml</ini>
+         <sim />
+      </ApsimToSim>
+   </rice>

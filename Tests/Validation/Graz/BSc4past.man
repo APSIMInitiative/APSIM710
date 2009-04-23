@@ -1,0 +1,41 @@
+[BSc4past.manager.start_of_day]
+
+if (clock.day = clock.simulation_start_day and
+    clock.year = clock.simulation_start_year) then
+   grasp establish init_section = mature_sward
+
+   graz set stocking_rate = 0.8
+   graz set alw =  400.0                 ! p084
+   annual_lwg = 0.0
+endif
+
+[BSc4past.manager.end_of_day]
+! 'GRAZEON' stocking rate resets (%Use of TSDM for next year)
+annual_lwg = annual_lwg + graz.lwg
+
+if (today = date('1-sep') then                                 ! p081
+   graz set alw = 400.0                                        ! p084
+   avgDailyIntake = (annual_lwg/365.25 + 1.058) / 0.304
+   targetUtil = 20.0 / 100.0                                   ! p083
+   annualIntake = avgDailyIntake * 365.5
+   stock_equiv_ratio = targetUtil * grasp.tsdm / annualIntake
+
+   weight_ratio = graz.alw / 200                               ! std-alw
+   factor = weight_ratio ** 0.75                               ! metabol_expon
+   beasts_ha = stock_equiv_ratio / factor
+   graz set stocking_rate = beasts_ha
+
+   annual_lwg = 0.0
+endif
+
+grass_sw = sw_dep(1) + sw_dep(2) + sw_dep(3)
+
+if (year >= 1900) then
+  daily do_output
+endif
+
+[BSc4past.manager.end_year]
+if (year >= 1900) then
+  annual do_output
+endif
+

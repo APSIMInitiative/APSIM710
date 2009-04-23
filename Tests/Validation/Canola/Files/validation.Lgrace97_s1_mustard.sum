@@ -1,0 +1,587 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Lgrace97_s1_mustard
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                       "canola" = %apsim%\Model\plant.dll
+   Component                     "tracker1" = %apsim%\Model\tracker.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1997
+     Simulation end date   = 31/12/1997
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        clock.year
+        clock.day
+        canola.Stage
+        canola.plant_status
+        manager.event
+        canola.grain_n
+        canola.DaysAfterSowing
+        canola.TTAfterSowing
+        canola.grain_wt
+        canola.yield units kg/ha
+        canola.biomass_wt
+        canola.plants
+        canola.leaf_no
+        canola.root_depth
+        canola.green_biomass_wt as green_biomass
+        tracker1.avg@canola_swdef_pheno
+        tracker1.avg@canola_swdef_photo
+        tracker1.avg@canola_swdef_expan
+        tracker1.avg@canola_nfact_photo
+        tracker1.avg@canola_nfact_grain
+        canola.n_uptake
+        canola.n_uptake_stover as stover_n
+        canola.esw_layr()
+        canola.lai
+        SoilWat.sw_dep() as total_sw
+        SoilN.no3() as total_no3
+        tracker1.sum@canola_ep[]
+        tracker1.sum@soilwat2_es
+        SoilWat.esw as pesw
+        tracker1.sum@soilwat2_runoff
+        tracker1.sum@soilwat2_drain
+        surfaceom.surfaceom_wt
+        canola.flowering_das as flow_das
+        canola.flowering_date as flow_date
+        met.day_length
+        canola.maturity_das as mat_das
+        canola.maturity_date as mat_date
+        canola.cover_green
+        tracker1.avg@met_maxt
+        tracker1.avg@met_mint
+        tracker1.avg@Met_radn
+        tracker1.sum@met_rain
+        canola.height
+        canola.node_no
+        manager.oil_conc
+        manager.avg_temp
+        canola.LeafGreenWt
+        canola.StemGreenWt
+        canola.PodGreenWt
+        canola.pai
+        clock.dd/mm/yyyy as date
+        canola.green_biomass_n as green_n
+        canola.LeafGreenN
+        canola.StemGreenN
+        canola.PodGreenN
+        canola.tlai
+        canola.MealGreenWt
+        canola.OilGreenWt
+        canola.dlt_dm_grain_demand
+        canola.grain_oil_conc
+        canola.dlt_dm_oil_conv
+        canola.dlt_dm_oil_conv_retrans
+        canola.GrowthN
+        canola.RetranslocationN
+        canola.LeafGreenNConc
+        canola.StemGreenNConc
+        canola.n_conc_grain
+        canola.MealGreenNConc
+        canola.n_conc_crit
+        canola.n_conc_min
+        manager.avg_swdef
+
+     Output file = Lgrace97_s1_mustard report.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met\lgrace.met
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      23/4/1997  Prepare         canola sow plants = 70, row_spacing = 200, sowing_depth = 20, cultivar = mustard
+      23/4/1997  Prepare         Fertiliser apply amount = 130, depth = 10, type = urea
+      18/6/1997  Prepare         Fertiliser apply amount = 40, depth = 10, type = urea
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+          dateset = 0
+          emer_date = 0
+          endjuv_date = 0
+          anth_date = 0
+          mat_date = 0
+          event = 0
+          cum_temp = 0
+          cum_swdef = 0
+          cum_days = 0
+     
+     SECTION:- start_of_day
+        if (daysaftersowing = 1) then
+           cum_temp = 0
+           cum_swdef = 0
+           cum_days = 0
+        elseif (stagename = 'start_grain_fill' or
+                      stagename = 'end_grain_fill' or
+                      stagename = 'maturity' or
+                      stagename = 'harvest_ripe') then
+           cum_temp = cum_temp + (maxt + mint) / 2
+           cum_swdef = cum_swdef + swdef_photo
+           cum_days = cum_days + 1
+        endif
+        if (cum_days > 0) then
+           avg_temp = cum_temp / cum_days
+           avg_swdef = cum_swdef / cum_days
+           if (avg_temp <= 14) then
+              oil_conc =  47
+           else
+              oil_conc = (47 - ((avg_temp - 14)*1.21)) - (1.91*(1 - avg_swdef^2))
+           endif
+        else
+           oil_conc = 0
+        endif
+     if (canola.stagename = 'harvest_ripe' or canola.plant_status = 'dead') then
+        canola harvest
+        canola kill_crop
+        canola end_crop
+        dateset = 0
+     endif
+     
+     SECTION:- end_of_day
+     if day = 105 then
+        soiln set no3 = 17.6 12.9 10.9 5.9 4.1 4.1 3.1 3.1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+        soiln set nh4 =  5.9  3.3  4.0 0.5 1.1 1.1 0.5 0.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : dateset = 0.00000
+     Manager creating a new local real variable : emer_date = 0.00000
+     Manager creating a new local real variable : endjuv_date = 0.00000
+     Manager creating a new local real variable : anth_date = 0.00000
+     Manager creating a new local real variable : mat_date = 0.00000
+     Manager creating a new local real variable : event = 0.00000
+     Manager creating a new local real variable : cum_temp = 0.00000
+     Manager creating a new local real variable : cum_swdef = 0.00000
+     Manager creating a new local real variable : cum_days = 0.00000
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mwcon is being replaced with a saturated conductivity. See documentation for details.
+     Component name: SoilWat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-   50.  0.030  0.050  0.160  0.290  0.050  1.700  0.376  0.350
+           50.-  100.  0.050  0.050  0.160  0.290  0.050  1.700  0.237  0.350
+          100.-  200.  0.040  0.040  0.210  0.290  0.040  1.750  0.243  0.350
+          200.-  300.  0.060  0.060  0.210  0.290  0.060  1.800  0.096  0.350
+          300.-  400.  0.060  0.060  0.220  0.290  0.092  1.850  0.038  0.350
+          400.-  500.  0.130  0.130  0.220  0.280  0.148  1.850  0.009  0.350
+          500.-  600.  0.140  0.140  0.220  0.240  0.156  1.850  0.000  0.350
+          600.-  700.  0.150  0.150  0.220  0.240  0.180  1.850  0.000  0.350
+          700.-  900.  0.160  0.160  0.220  0.240  0.180  1.850  0.000  0.350
+          900.- 1100.  0.160  0.160  0.210  0.240  0.178  1.850  0.000  0.350
+         1100.- 1300.  0.160  0.160  0.195  0.240  0.175  1.850  0.000  0.350
+         1300.- 1500.  0.160  0.160  0.195  0.240  0.175  1.850  0.000  0.350
+         1500.- 1700.  0.160  0.160  0.195  0.240  0.175  1.850  0.000  0.350
+         1700.- 1900.  0.160  0.160  0.195  0.240  0.175  1.850  0.000  0.350
+         1900.- 2100.  0.160  0.160  0.195  0.240  0.175  1.850  0.000  0.350
+         2100.- 2300.  0.160  0.160  0.195  0.240  0.175  1.850  0.000  0.350
+         2300.- 2500.  0.160  0.160  0.195  0.240  0.175  1.850  0.000  0.350
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-   50.       2.50       0.00       5.50       6.50
+           50.-  100.       2.50       0.00       5.50       6.50
+          100.-  200.       4.00       0.00      17.00       8.00
+          200.-  300.       6.00       0.00      15.00       8.00
+          300.-  400.       6.00       3.20      16.00       7.00
+          400.-  500.      13.00       1.80       9.00       6.00
+          500.-  600.      14.00       1.60       8.00       2.00
+          600.-  700.      15.00       3.00       7.00       2.00
+          700.-  900.      32.00       4.00      12.00       4.00
+          900.- 1100.      32.00       3.60      10.00       6.00
+         1100.- 1300.      32.00       3.00       7.00       9.00
+         1300.- 1500.      32.00       3.00       7.00       9.00
+         1500.- 1700.      32.00       3.00       7.00       9.00
+         1700.- 1900.      32.00       3.00       7.00       9.00
+         1900.- 2100.      32.00       3.00       7.00       9.00
+         2100.- 2300.      32.00       3.00       7.00       9.00
+         2300.- 2500.      32.00       3.00       7.00       9.00
+          ---------------------------------------------------------
+               Totals     351.00      38.20     154.00     119.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              60.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     2.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          chickpea  chickpea      4500.0  1800.0    72.0     0.0   0.593     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.6
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using soil mineralisation specification for sand
+     
+     
+     
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     4.70  0.81    9.35    4.08    0.00
+             2     4.70  0.81   12.75    2.72    0.00
+             3     4.70  0.26   25.20    3.15    0.00
+             4     4.70  0.10   12.96    1.08    0.00
+             5     6.00  0.10    6.29    0.74    0.00
+             6     6.00  0.10    3.70    0.37    0.00
+             7     6.00  0.10    1.48    0.19    0.00
+             8     6.00  0.10    0.74    0.19    0.00
+             9     6.00  0.10    5.18    0.37    0.00
+            10     6.00  0.10    2.96    0.37    0.00
+            11     6.00  0.10    0.74    0.37    0.00
+            12     6.00  0.10    0.74    0.37    0.00
+            13     6.00  0.10    0.74    0.37    0.00
+            14     6.00  0.10    0.74    0.37    0.00
+            15     6.00  0.10    0.74    0.37    0.00
+            16     6.00  0.10    0.74    0.37    0.00
+            17     6.00  0.10    0.74    0.37    0.00
+          ------------------------------------------------
+           Totals               85.79   15.84    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       6646.7   511.3   238.3    29.8    83.0     4.2
+             2       6646.7   511.3   238.3    29.8    78.2     3.9
+             3       4430.7   340.8   119.3    14.9    69.3     3.5
+             4       1771.8   136.3    28.2     3.5    61.5     3.1
+             5       1846.3   142.0     3.7     0.5    54.5     2.7
+             6       1848.2   142.2     1.8     0.2    48.4     2.4
+             7       1848.2   142.2     1.8     0.2    42.9     2.1
+             8       1848.2   142.2     1.8     0.2    38.1     1.9
+             9       3696.3   284.3     3.7     0.5    29.9     1.5
+            10       3696.3   284.3     3.7     0.5    23.5     1.2
+            11       3696.3   284.3     3.7     0.5    18.5     0.9
+            12       3696.3   284.3     3.7     0.5    14.6     0.7
+            13       3696.3   284.3     3.7     0.5    11.5     0.6
+            14       3696.3   284.3     3.7     0.5     9.0     0.5
+            15       3696.3   284.3     3.7     0.5     7.1     0.4
+            16       3696.3   284.3     3.7     0.5     5.6     0.3
+            17       3696.3   284.3     3.7     0.5     4.4     0.2
+          ---------------------------------------------------------
+           Totals   60153.7  4627.2   666.3    83.3   600.0    30.0
+          ---------------------------------------------------------
+
+------- tracker1 Initialisation -----------------------------------------------
+     Tracker variables:
+        average of canola.swdef_pheno on post since report.reported as avg@canola_swdef_pheno
+        average of canola.swdef_photo on post since report.reported as avg@canola_swdef_photo
+        average of canola.swdef_expan on post since report.reported as avg@canola_swdef_expan
+        average of canola.nfact_photo on post since report.reported as avg@canola_nfact_photo
+        average of canola.nfact_grain on post since report.reported as avg@canola_nfact_grain
+        sum of canola.ep on post since report.reported as sum@canola_ep[]
+        sum of SoilWat.es on post since report.reported as sum@soilwat2_es
+        sum of runoff on post since reported as sum@soilwat2_runoff
+        sum of SoilWat.drain on post since report.reported as sum@soilwat2_drain
+        average of met.maxt on post since report.reported post as avg@met_maxt
+        average of met.mint on post since report.reported post as avg@met_mint
+        average of Met.radn on post since report.reported as avg@Met_radn
+        sum of met.rain on post since report.reported as sum@met_rain
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : oil_conc = 0.00000
+23 April 1997(Day of year=113), Operations: 
+      Sending sow message to canola
+23 April 1997(Day of year=113), canola: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = mustard
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       5 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      25 (vd)
+              tt_emergence               =     183       1 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.8    16.3 (h)
+              y_tt_end_of_juvenile       =     632       1 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     700     700 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =       1 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.30       0.30
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+          50.0     0.080          0.100       0.100
+          50.0     0.080          0.100       0.100
+         100.0     0.080          0.130       0.100
+         100.0     0.080          0.130       0.200
+         100.0     0.060          0.140       0.200
+         100.0     0.040          0.180       0.200
+         100.0     0.020          0.180       0.100
+         100.0     0.010          0.190       0.100
+         200.0     0.010          0.190       0.100
+         200.0     0.010          0.190       0.100
+         200.0     0.010          0.180       0.010
+         200.0     0.010          0.180       0.010
+         200.0     0.010          0.180       0.010
+         200.0     0.010          0.180       0.010
+         200.0     0.010          0.180       0.010
+         200.0     0.010          0.180       0.010
+         200.0     0.010          0.180       0.010
+         -----------------------------------------------
+         Extractable SW:    72mm in  2500mm total depth (  3%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            113   20.0   70.0  200.0   0.0   0.0 mustard
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+23 April 1997(Day of year=113), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       130.00 of Urea ferilizer (urea)
+                                         added at depth   10.00 (layer   1)
+24 April 1997(Day of year=114), canola: 
+      stage 2.0 germination
+1 May 1997(Day of year=121), canola: 
+      stage 3.0 emergence
+                     biomass =           2.10 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   12.75 (mm)
+14 May 1997(Day of year=134), canola: 
+      stage 4.0 end_of_juvenile
+                     biomass =           5.51 (g/m^2)   lai          =   0.094 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   14.95 (mm)
+18 June 1997(Day of year=169), Operations: 
+      Sending apply message to fertiliser
+18 June 1997(Day of year=169), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.00 of Urea ferilizer (urea)
+                                         added at depth   10.00 (layer   1)
+30 June 1997(Day of year=181), canola: 
+      stage 5.0 floral_initiation
+                     biomass =         178.38 (g/m^2)   lai          =   2.182 (m^2/m^2)
+                     stover N conc =     5.51 (%)    extractable sw =   14.11 (mm)
+27 July 1997(Day of year=208), canola: 
+      stage 6.0 flowering
+                     biomass =         394.64 (g/m^2)   lai          =   3.661 (m^2/m^2)
+                     stover N conc =     3.99 (%)    extractable sw =   19.49 (mm)
+14 August 1997(Day of year=226), canola: 
+      stage 7.0 start_grain_fill
+                     biomass =         533.50 (g/m^2)   lai          =   2.017 (m^2/m^2)
+                     stover N conc =     3.16 (%)    extractable sw =   17.95 (mm)
+15 August 1997(Day of year=227), manager: 
+     Manager creating a new local real variable : avg_temp = 13.15000
+     Manager creating a new local real variable : avg_swdef = 0.37052
+11 October 1997(Day of year=284), canola: 
+      stage 8.0 end_grain_fill
+                     biomass =         833.64 (g/m^2)   lai          =   0.574 (m^2/m^2)
+                     stover N conc =     0.79 (%)    extractable sw =   16.23 (mm)
+12 October 1997(Day of year=285), canola: 
+      stage 9.0 maturity
+                     biomass =         836.53 (g/m^2)   lai          =   0.556 (m^2/m^2)
+                     stover N conc =     0.79 (%)    extractable sw =   14.17 (mm)
+13 October 1997(Day of year=286), canola: 
+      stage 10.0 harvest_ripe
+                     biomass =         836.53 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.77 (%)    extractable sw =   12.42 (mm)
+14 October 1997(Day of year=287), manager: 
+     Manager sending message :- canola harvest
+14 October 1997(Day of year=287), canola: 
+     
+      flowering day          =  208                           stover (kg/ha)         =     5864.3
+      maturity day           =  285                           grain yield (kg/ha)    =     2500.9
+      grain % water content  =    8.5                         grain yield wet (kg/ha)=     2733.3
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.753
+      total above ground biomass (kg/ha)    =     8365.3
+      live above ground biomass (kg/ha)     =     8365.3
+      green above ground biomass (kg/ha)    =     6372.2
+      senesced above ground biomass (kg/ha) =     1993.0
+      number of leaves       =     39.5
+      DM Root:Shoot ratio    =     0.35                       Harvest Index          =       0.30
+      Stover C:N ratio       =    39.80                       Root C:N ratio         =      52.32
+      grain N percent        =     4.21                       total N content (kg/ha)=     164.18
+      grain N uptake (kg/ha) =   105.25                       senesced N content (kg/ha)=   29.02
+      green N content (kg/ha)=    29.91
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.059
+         end_of_juvenile      to floral_initiation       0.031        0.041        0.000        0.111
+         floral_initiation    to flowering               0.065        0.082        0.000        0.100
+         flowering            to start_grain_fill        0.105        0.129        0.000        0.096
+         start_grain_fill     to end_grain_fill          0.141        0.174        0.113        0.255
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                5864.3                     0.0
+                          N  (kg/ha) =                  58.93                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2500.9                     0.0
+                          N  (kg/ha) =                 105.25                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     1.10 (%)    extractable sw =   12.42 (mm)
+     Manager sending message :- canola kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- canola end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2952.8
+                          N  (kg/ha) =                   0.00                   22.58
+     
+31 December 1997(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

@@ -1,0 +1,284 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Effluent-irrigated Eucalypt Forest
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "Planting rule" = %apsim%\Model\Manager.dll
+   Component     "Establishment fertiliser" = %apsim%\Model\Manager.dll
+   Component                     "micromet" = %apsim%\Model\Micromet.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component                  "LitterLayer" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component                     "egrandis" = %apsim%\Model\Growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1980
+     Simulation end date   = 31/12/1989
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        esw
+        lai
+        adm_green
+        fw
+        fn
+        plants
+        no3()
+        nh4()
+        cl()
+        drain
+        flow_no3(11) as no3_leached
+        irrigation
+        irrigation_no3
+
+     Output file = Effluent-irrigated Eucalypt Forest Block.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Planting rule Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (date('15-mar') = today) and egrandis.plant_status = 'out' then
+        egrandis  establish plants =1111, init_section = seedling
+              endif
+     END of rules
+     
+
+------- Establishment fertiliser Initialisation -------------------------------
+     Manager rules:
+     
+     SECTION:- egrandis.establishing
+             fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.070  0.100  0.200  0.300  0.200  1.200  0.762  0.300
+          150.-  300.  0.070  0.100  0.200  0.300  0.200  1.200  0.190  0.300
+          300.-  600.  0.070  0.100  0.200  0.300  0.200  1.200  0.048  0.300
+          600.-  900.  0.070  0.100  0.200  0.300  0.200  1.200  0.000  0.300
+          900.- 1200.  0.070  0.100  0.200  0.300  0.200  1.200  0.000  0.300
+         1200.- 1500.  0.070  0.100  0.200  0.300  0.200  1.200  0.000  0.300
+         1500.- 1800.  0.070  0.100  0.200  0.300  0.100  1.200  0.000  0.300
+         1800.- 2100.  0.070  0.100  0.200  0.300  0.100  1.200  0.000  0.300
+         2100.- 2400.  0.070  0.100  0.200  0.300  0.100  1.200  0.000  0.300
+         2400.- 2700.  0.070  0.100  0.200  0.300  0.100  1.200  0.000  0.300
+         2700.- 3000.  0.070  0.100  0.200  0.300  0.100  1.200  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      15.00      15.00      15.00      15.00
+          150.-  300.      15.00      15.00      15.00      15.00
+          300.-  600.      30.00      30.00      30.00      30.00
+          600.-  900.      30.00      30.00      30.00      30.00
+          900.- 1200.      30.00      30.00      30.00      30.00
+         1200.- 1500.      30.00      30.00      30.00      30.00
+         1500.- 1800.      30.00       0.00      30.00      30.00
+         1800.- 2100.      30.00       0.00      30.00      30.00
+         2100.- 2400.      30.00       0.00      30.00      30.00
+         2400.- 2700.      30.00       0.00      30.00      30.00
+         2700.- 3000.      30.00       0.00      30.00      30.00
+          ---------------------------------------------------------
+               Totals     300.00     150.00     300.00     300.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              65.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- LitterLayer Initialisation --------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          egrandis  grandis       1000.0   400.0     5.0     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Loam
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.00    1.80    0.18    0.00
+             2     6.00  0.90    1.80    0.18    0.00
+             3     6.00  0.90    3.60    0.36    0.00
+             4     6.00  0.90    3.60    0.36    0.00
+             5     6.00  0.80    3.60    0.36    0.00
+             6     6.00  0.40    3.60    0.36    0.00
+             7     6.00  0.30    3.60    0.36    0.00
+             8     6.00  0.20    3.60    0.36    0.00
+             9     6.00  0.20    3.60    0.36    0.00
+            10     6.00  0.10    3.60    0.36    0.00
+            11     6.00  0.10    3.60    0.36    0.00
+          ------------------------------------------------
+           Totals               36.00    3.60    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      17858.8   892.9   141.2    17.6    96.3     1.6
+             2      16072.9   803.6   127.1    15.9    82.8     1.4
+             3      32272.9  1613.6   127.1    15.9    61.4     1.0
+             4      32367.9  1618.4    32.1     4.0    45.5     0.8
+             5      28785.7  1439.3    14.3     1.8    33.7     0.6
+             6      14392.9   719.6     7.1     0.9    25.0     0.4
+             7      10794.7   539.7     5.3     0.7    18.5     0.3
+             8       7196.4   359.8     3.6     0.4    13.7     0.2
+             9       7196.4   359.8     3.6     0.4    10.1     0.2
+            10       3598.2   179.9     1.8     0.2     7.5     0.1
+            11       3598.2   179.9     1.8     0.2     5.6     0.1
+          ---------------------------------------------------------
+           Totals  174135.2  8706.8   464.8    58.1   400.0     6.7
+          ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+15 March 1980(Day of year=75), Planting rule: 
+     Manager sending message :- egrandis establish  plants = 1111, init_section = seedling
+15 March 1980(Day of year=75), egrandis: 
+     Establishing
+15 March 1980(Day of year=75), Establishment fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+15 March 1980(Day of year=75), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+31 December 1989(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

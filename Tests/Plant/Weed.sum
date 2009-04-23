@@ -1,0 +1,533 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Weed
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "weed" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 31/12/1989
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\\Examples\MetFiles\goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        yield
+        grain_protein
+        grain_size
+        esw
+        roottotalwt
+        stemtotalwt
+        leaftotalwt
+        podtotalwt
+        graintotalwt
+        oiltotalwt
+        roottotaln
+        stemtotaln
+        leaftotaln
+        podtotaln
+        graintotaln
+        lai
+        swdef_photo
+        nfact_photo
+
+     Output file = Weed.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('1-jun') then
+       weed sow plants =10, sowing_depth = 50, cultivar = late, row_spacing = 500, crop_class = winter_dicot
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if weed.stagename = 'harvest_ripe' or weed.plant_status = 'dead' then
+       weed  harvest
+       weed  end_crop
+                endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      66.00      66.00      15.00
+         1200.- 1500.      93.00      57.00      57.00      15.00
+         1500.- 1800.      96.00      54.00      54.00      15.00
+         1800.- 2100.      99.00      45.00      45.00      15.00
+         2100.- 2400.     102.00      39.00      39.00      15.00
+         2400.- 2700.     105.00      33.00      33.00      15.00
+         2700.- 3000.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     541.50     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.95    0.92    0.00
+             2     8.80  0.89    3.25    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.21    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               66.01    4.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 June 1988(Day of year=153), Sow on a fixed date: 
+     Manager sending message :- weed sow  plants = 10, sowing_depth = 50, cultivar = late, row_spacing = 500, crop_class = winter_dicot
+1 June 1988(Day of year=153), weed: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = late
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     700     700 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =       1      24 (h)
+              y_tt_end_of_juvenile       =     500     500 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      50      50 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     120     120 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     580     580 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.15       0.15
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   50.0   10.0  500.0   0.0   0.0 late
+         ------------------------------------------------
+     
+2 June 1988(Day of year=154), weed: 
+      stage 2.0 germination
+9 June 1988(Day of year=161), weed: 
+      stage 3.0 emergence
+                     biomass =           0.60 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   32.93 (mm)
+2 August 1988(Day of year=215), weed: 
+      stage 4.0 end_of_juvenile
+                     biomass =         143.03 (g/m^2)   lai          =   1.673 (m^2/m^2)
+                     stover N conc =     2.02 (%)    extractable sw =  248.36 (mm)
+5 September 1988(Day of year=249), weed: 
+      stage 5.0 floral_initiation
+                     biomass =         318.60 (g/m^2)   lai          =   2.805 (m^2/m^2)
+                     stover N conc =     1.27 (%)    extractable sw =  349.41 (mm)
+8 September 1988(Day of year=252), weed: 
+      stage 6.0 flowering
+                     biomass =         332.64 (g/m^2)   lai          =   2.892 (m^2/m^2)
+                     stover N conc =     1.25 (%)    extractable sw =  381.11 (mm)
+15 September 1988(Day of year=259), weed: 
+      stage 7.0 start_grain_fill
+                     biomass =         393.36 (g/m^2)   lai          =   2.858 (m^2/m^2)
+                     stover N conc =     1.14 (%)    extractable sw =  421.37 (mm)
+18 October 1988(Day of year=292), weed: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 5970.61 (kg/ha)
+18 October 1988(Day of year=292), Harvesting rule: 
+     Manager sending message :- weed harvest
+     
+      flowering day          =  252                           stover (kg/ha)         =     5087.6
+      maturity day           =    0                           grain yield (kg/ha)    =      897.8
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1020.2
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.003
+      total above ground biomass (kg/ha)    =     5985.4
+      live above ground biomass (kg/ha)     =     5985.4
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     5985.4
+      number of leaves       =     62.1
+      DM Root:Shoot ratio    =     0.28                       Harvest Index          =       0.15
+      Stover C:N ratio       =    49.65                       Root C:N ratio         =     101.25
+      grain N percent        =     1.46                       total N content (kg/ha)=      54.13
+      grain N uptake (kg/ha) =    13.14                       senesced N content (kg/ha)=   40.99
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.013        0.120
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.221        0.337
+         floral_initiation    to flowering               0.000        0.000        0.234        0.350
+         flowering            to start_grain_fill        0.000        0.000        0.251        0.371
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4567.7                     0.0
+                          N  (kg/ha) =                  35.28                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 897.8                     0.0
+                          N  (kg/ha) =                  13.14                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- weed end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 519.9                  1699.6
+                          N  (kg/ha) =                   5.71                    6.71
+     
+1 June 1989(Day of year=152), Sow on a fixed date: 
+     Manager sending message :- weed sow  plants = 10, sowing_depth = 50, cultivar = late, row_spacing = 500, crop_class = winter_dicot
+1 June 1989(Day of year=152), weed: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = late
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     700     700 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =       1      24 (h)
+              y_tt_end_of_juvenile       =     500     500 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      50      50 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     120     120 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     580     580 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.15       0.15
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            152   50.0   10.0  500.0   0.0   0.0 late
+         ------------------------------------------------
+     
+2 June 1989(Day of year=153), weed: 
+      stage 2.0 germination
+10 June 1989(Day of year=161), weed: 
+      stage 3.0 emergence
+                     biomass =           0.60 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   33.58 (mm)
+10 August 1989(Day of year=222), weed: 
+      stage 4.0 end_of_juvenile
+                     biomass =          81.47 (g/m^2)   lai          =   1.092 (m^2/m^2)
+                     stover N conc =     1.35 (%)    extractable sw =  264.21 (mm)
+17 September 1989(Day of year=260), weed: 
+      stage 5.0 floral_initiation
+                     biomass =         141.67 (g/m^2)   lai          =   1.487 (m^2/m^2)
+                     stover N conc =     1.02 (%)    extractable sw =  351.05 (mm)
+20 September 1989(Day of year=263), weed: 
+      stage 6.0 flowering
+                     biomass =         149.74 (g/m^2)   lai          =   1.534 (m^2/m^2)
+                     stover N conc =     0.97 (%)    extractable sw =  347.84 (mm)
+27 September 1989(Day of year=270), weed: 
+      stage 7.0 start_grain_fill
+                     biomass =         181.36 (g/m^2)   lai          =   1.383 (m^2/m^2)
+                     stover N conc =     0.85 (%)    extractable sw =  381.71 (mm)
+29 October 1989(Day of year=302), weed: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 2521.89 (kg/ha)
+29 October 1989(Day of year=302), Harvesting rule: 
+     Manager sending message :- weed harvest
+     
+      flowering day          =  263                           stover (kg/ha)         =     2147.3
+      maturity day           =    0                           grain yield (kg/ha)    =      378.9
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      430.6
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      1.581
+      total above ground biomass (kg/ha)    =     2526.2
+      live above ground biomass (kg/ha)     =     2526.2
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     2526.2
+      number of leaves       =     61.6
+      DM Root:Shoot ratio    =     0.28                       Harvest Index          =       0.15
+      Stover C:N ratio       =    60.47                       Root C:N ratio         =     116.69
+      grain N percent        =     1.37                       total N content (kg/ha)=      19.41
+      grain N uptake (kg/ha) =     5.20                       senesced N content (kg/ha)=   14.20
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.124        0.222
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.385        0.464
+         floral_initiation    to flowering               0.000        0.000        0.397        0.475
+         flowering            to start_grain_fill        0.000        0.000        0.416        0.495
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1953.1                     0.0
+                          N  (kg/ha) =                  12.54                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 378.9                     0.0
+                          N  (kg/ha) =                   5.20                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- weed end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 194.2                   719.1
+                          N  (kg/ha) =                   1.67                    2.46
+     
+31 December 1989(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

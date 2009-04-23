@@ -1,0 +1,1468 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Lawes0102
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "LawesSoil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component           "LawesSoil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                 "SweetSorghum" = %apsim%\Model\Plant.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "LawesSoil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component           "LawesSoil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                 "SweetSorghum" = %apsim%\Model\Plant.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "LawesSoil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component           "LawesSoil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                 "SweetSorghum" = %apsim%\Model\Plant.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "LawesSoil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component           "LawesSoil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                 "SweetSorghum" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/11/2001
+     Simulation end date   = 30/06/2002
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: UQG0102.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        SweetSorghum.zadok_stage
+        SweetSorghum.lai
+        SweetSorghum.LeafGreenWt
+        SweetSorghum.StemGreenWt
+        SweetSorghum.HeadTotalWt
+        SweetSorghum.biomass_wt
+
+     Output file = Lawes0102 Planting1.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
+       sweetsorghum  harvest
+       sweetsorghum  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- sweetsorghum.sowing
+             fertiliser apply amount = 300 (kg/ha), depth = 50 (mm), type = no3_n
+     END of rules
+     
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (today = date('23-nov') then
+             sweetsorghum sow plants =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+             endif
+     END of rules
+     
+
+------- LawesSoil Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.130  0.260  0.410  0.470  0.410  1.320  0.762  0.300
+          150.-  300.  0.234  0.260  0.430  0.480  0.430  1.300  0.190  0.300
+          300.-  600.  0.260  0.260  0.460  0.510  0.460  1.230  0.048  0.300
+          600.-  900.  0.260  0.260  0.440  0.490  0.440  1.270  0.000  0.300
+          900.- 1200.  0.250  0.250  0.400  0.450  0.400  1.370  0.000  0.300
+         1200.- 1500.  0.280  0.280  0.410  0.460  0.329  1.350  0.000  0.300
+         1500.- 1800.  0.310  0.310  0.380  0.460  0.310  1.350  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      39.00      22.50      22.50       9.00
+          150.-  300.      39.00      25.50      25.50       7.50
+          300.-  600.      78.00      60.00      60.00      15.00
+          600.-  900.      78.00      54.00      54.00      15.00
+          900.- 1200.      75.00      45.00      45.00      15.00
+         1200.- 1500.      84.00      14.70      39.00      15.00
+         1500.- 1800.      93.00       0.00      21.00      24.00
+          ---------------------------------------------------------
+               Totals     486.00     221.70     267.00     100.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- LawesSoil Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24   12.86    1.20    0.00
+             2     7.00  1.24    4.09    0.20    0.00
+             3     7.00  1.25    7.74    0.37    0.00
+             4     7.00  1.10    6.47    0.38    0.00
+             5     7.00  0.71    6.98    0.42    0.00
+             6     7.00  0.34    6.88    0.41    0.00
+             7     7.00  0.26    6.88    0.41    0.00
+          ------------------------------------------------
+           Totals               51.89    3.39    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24122.9  1929.8   429.1    53.6    27.8     0.7
+             2      23990.4  1919.2   189.6    23.7    21.6     0.5
+             3      46033.7  3682.7    91.3    11.4    13.1     0.3
+             4      41868.5  3349.5    41.5     5.2     8.0     0.2
+             5      29166.6  2333.3    14.4     1.8     4.8     0.1
+             6      13763.2  1101.1     6.8     0.9     2.9     0.1
+             7      10524.8   842.0     5.2     0.7     1.8     0.0
+          ---------------------------------------------------------
+           Totals  189470.0 15157.6   778.0    97.3    80.0     2.0
+          ---------------------------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        SweetSorghum.zadok_stage
+        SweetSorghum.lai
+        SweetSorghum.LeafGreenWt
+        SweetSorghum.StemGreenWt
+        SweetSorghum.HeadTotalWt
+        SweetSorghum.biomass_wt
+
+     Output file = Lawes0102 Planting2.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
+       sweetsorghum  harvest
+       sweetsorghum  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- sweetsorghum.sowing
+             fertiliser apply amount = 300 (kg/ha), depth = 50 (mm), type = no3_n
+     END of rules
+     
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (today = date('21-dec') then
+             sweetsorghum sow plants =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+             endif
+     END of rules
+     
+
+------- LawesSoil Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.130  0.260  0.410  0.470  0.410  1.320  0.762  0.300
+          150.-  300.  0.234  0.260  0.430  0.480  0.430  1.300  0.190  0.300
+          300.-  600.  0.260  0.260  0.460  0.510  0.460  1.230  0.048  0.300
+          600.-  900.  0.260  0.260  0.440  0.490  0.440  1.270  0.000  0.300
+          900.- 1200.  0.250  0.250  0.400  0.450  0.400  1.370  0.000  0.300
+         1200.- 1500.  0.280  0.280  0.410  0.460  0.329  1.350  0.000  0.300
+         1500.- 1800.  0.310  0.310  0.380  0.460  0.310  1.350  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      39.00      22.50      22.50       9.00
+          150.-  300.      39.00      25.50      25.50       7.50
+          300.-  600.      78.00      60.00      60.00      15.00
+          600.-  900.      78.00      54.00      54.00      15.00
+          900.- 1200.      75.00      45.00      45.00      15.00
+         1200.- 1500.      84.00      14.70      39.00      15.00
+         1500.- 1800.      93.00       0.00      21.00      24.00
+          ---------------------------------------------------------
+               Totals     486.00     221.70     267.00     100.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- LawesSoil Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24   12.86    1.20    0.00
+             2     7.00  1.24    4.09    0.20    0.00
+             3     7.00  1.25    7.74    0.37    0.00
+             4     7.00  1.10    6.47    0.38    0.00
+             5     7.00  0.71    6.98    0.42    0.00
+             6     7.00  0.34    6.88    0.41    0.00
+             7     7.00  0.26    6.88    0.41    0.00
+          ------------------------------------------------
+           Totals               51.89    3.39    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24122.9  1929.8   429.1    53.6    27.8     0.7
+             2      23990.4  1919.2   189.6    23.7    21.6     0.5
+             3      46033.7  3682.7    91.3    11.4    13.1     0.3
+             4      41868.5  3349.5    41.5     5.2     8.0     0.2
+             5      29166.6  2333.3    14.4     1.8     4.8     0.1
+             6      13763.2  1101.1     6.8     0.9     2.9     0.1
+             7      10524.8   842.0     5.2     0.7     1.8     0.0
+          ---------------------------------------------------------
+           Totals  189470.0 15157.6   778.0    97.3    80.0     2.0
+          ---------------------------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        SweetSorghum.zadok_stage
+        SweetSorghum.lai
+        SweetSorghum.LeafGreenWt
+        SweetSorghum.StemGreenWt
+        SweetSorghum.HeadTotalWt
+        SweetSorghum.biomass_wt
+
+     Output file = Lawes0102 Planting3.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
+       sweetsorghum  harvest
+       sweetsorghum  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- sweetsorghum.sowing
+             fertiliser apply amount = 300 (kg/ha), depth = 50 (mm), type = no3_n
+     END of rules
+     
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (today = date('22-jan') then
+             sweetsorghum sow plants =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+             endif
+     END of rules
+     
+
+------- LawesSoil Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.130  0.260  0.410  0.470  0.410  1.320  0.762  0.300
+          150.-  300.  0.234  0.260  0.430  0.480  0.430  1.300  0.190  0.300
+          300.-  600.  0.260  0.260  0.460  0.510  0.460  1.230  0.048  0.300
+          600.-  900.  0.260  0.260  0.440  0.490  0.440  1.270  0.000  0.300
+          900.- 1200.  0.250  0.250  0.400  0.450  0.400  1.370  0.000  0.300
+         1200.- 1500.  0.280  0.280  0.410  0.460  0.329  1.350  0.000  0.300
+         1500.- 1800.  0.310  0.310  0.380  0.460  0.310  1.350  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      39.00      22.50      22.50       9.00
+          150.-  300.      39.00      25.50      25.50       7.50
+          300.-  600.      78.00      60.00      60.00      15.00
+          600.-  900.      78.00      54.00      54.00      15.00
+          900.- 1200.      75.00      45.00      45.00      15.00
+         1200.- 1500.      84.00      14.70      39.00      15.00
+         1500.- 1800.      93.00       0.00      21.00      24.00
+          ---------------------------------------------------------
+               Totals     486.00     221.70     267.00     100.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- LawesSoil Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24   12.86    1.20    0.00
+             2     7.00  1.24    4.09    0.20    0.00
+             3     7.00  1.25    7.74    0.37    0.00
+             4     7.00  1.10    6.47    0.38    0.00
+             5     7.00  0.71    6.98    0.42    0.00
+             6     7.00  0.34    6.88    0.41    0.00
+             7     7.00  0.26    6.88    0.41    0.00
+          ------------------------------------------------
+           Totals               51.89    3.39    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24122.9  1929.8   429.1    53.6    27.8     0.7
+             2      23990.4  1919.2   189.6    23.7    21.6     0.5
+             3      46033.7  3682.7    91.3    11.4    13.1     0.3
+             4      41868.5  3349.5    41.5     5.2     8.0     0.2
+             5      29166.6  2333.3    14.4     1.8     4.8     0.1
+             6      13763.2  1101.1     6.8     0.9     2.9     0.1
+             7      10524.8   842.0     5.2     0.7     1.8     0.0
+          ---------------------------------------------------------
+           Totals  189470.0 15157.6   778.0    97.3    80.0     2.0
+          ---------------------------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        SweetSorghum.zadok_stage
+        SweetSorghum.lai
+        SweetSorghum.LeafGreenWt
+        SweetSorghum.StemGreenWt
+        SweetSorghum.HeadTotalWt
+        SweetSorghum.biomass_wt
+
+     Output file = Lawes0102 Planting4.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if sweetsorghum.stagename = 'harvest_ripe' or sweetsorghum.plant_status = 'dead' then
+       sweetsorghum  harvest
+       sweetsorghum  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- sweetsorghum.sowing
+             fertiliser apply amount = 300 (kg/ha), depth = 50 (mm), type = no3_n
+     END of rules
+     
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (today = date('21-feb') then
+             sweetsorghum sow plants =10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+             endif
+     END of rules
+     
+
+------- LawesSoil Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.130  0.260  0.410  0.470  0.410  1.320  0.762  0.300
+          150.-  300.  0.234  0.260  0.430  0.480  0.430  1.300  0.190  0.300
+          300.-  600.  0.260  0.260  0.460  0.510  0.460  1.230  0.048  0.300
+          600.-  900.  0.260  0.260  0.440  0.490  0.440  1.270  0.000  0.300
+          900.- 1200.  0.250  0.250  0.400  0.450  0.400  1.370  0.000  0.300
+         1200.- 1500.  0.280  0.280  0.410  0.460  0.329  1.350  0.000  0.300
+         1500.- 1800.  0.310  0.310  0.380  0.460  0.310  1.350  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      39.00      22.50      22.50       9.00
+          150.-  300.      39.00      25.50      25.50       7.50
+          300.-  600.      78.00      60.00      60.00      15.00
+          600.-  900.      78.00      54.00      54.00      15.00
+          900.- 1200.      75.00      45.00      45.00      15.00
+         1200.- 1500.      84.00      14.70      39.00      15.00
+         1500.- 1800.      93.00       0.00      21.00      24.00
+          ---------------------------------------------------------
+               Totals     486.00     221.70     267.00     100.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- LawesSoil Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24   12.86    1.20    0.00
+             2     7.00  1.24    4.09    0.20    0.00
+             3     7.00  1.25    7.74    0.37    0.00
+             4     7.00  1.10    6.47    0.38    0.00
+             5     7.00  0.71    6.98    0.42    0.00
+             6     7.00  0.34    6.88    0.41    0.00
+             7     7.00  0.26    6.88    0.41    0.00
+          ------------------------------------------------
+           Totals               51.89    3.39    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24122.9  1929.8   429.1    53.6    27.8     0.7
+             2      23990.4  1919.2   189.6    23.7    21.6     0.5
+             3      46033.7  3682.7    91.3    11.4    13.1     0.3
+             4      41868.5  3349.5    41.5     5.2     8.0     0.2
+             5      29166.6  2333.3    14.4     1.8     4.8     0.1
+             6      13763.2  1101.1     6.8     0.9     2.9     0.1
+             7      10524.8   842.0     5.2     0.7     1.8     0.0
+          ---------------------------------------------------------
+           Totals  189470.0 15157.6   778.0    97.3    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+23 November 2001(Day of year=327), Sow on a fixed date: 
+     Manager sending message :- sweetsorghum sow  plants = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+23 November 2001(Day of year=327), SweetSorghum: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sugargraze
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =       0 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              tt_emergence               =      70 (dd)
+           endjuv_to_fi
+              x_pp_endjuv_to_fi          =      13      14    14.6   14.75 (h)
+              y_tt_endjuv_to_fi          =      75     150     240     300 (dd)
+           fi_to_flag
+              Stage duration determined by leaf appearance rates
+           flag_to_flower
+              tt_flag_to_flower          =      80 (dd)
+           flowering
+              tt_flowering               =     170 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     250 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =       5 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       10.0 (/g)
+        potential_grain_filling_rate   =     0.0100 (g/grain/day)
+        potential_grain_growth_rate    =     0.0000 (g/grain/day)
+        max_grain_size                 =     0.5000 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.260       1.000
+         150.0     0.100          0.260       1.000
+         300.0     0.080          0.260       1.000
+         300.0     0.060          0.260       1.000
+         300.0     0.040          0.250       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   243mm in  1800mm total depth ( 14%).
+         Crop factor for bounding water use is set to   1.1 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            327   50.0   10.0  600.0   0.0   0.0 sugargraze
+         ------------------------------------------------
+     
+      stage 2.0 germination
+1 December 2001(Day of year=335), SweetSorghum: 
+      stage 3.0 emergence
+                     biomass =           0.05 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   16.31 (mm)
+6 December 2001(Day of year=340), SweetSorghum: 
+      stage 4.0 endjuv_to_fi
+                     biomass =           0.30 (g/m^2)   lai          =   0.009 (m^2/m^2)
+                     stover N conc =     5.79 (%)    extractable sw =   38.66 (mm)
+21 December 2001(Day of year=355), Sow on a fixed date: 
+     Manager sending message :- sweetsorghum sow  plants = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+21 December 2001(Day of year=355), SweetSorghum: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sugargraze
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =       0 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              tt_emergence               =      70 (dd)
+           endjuv_to_fi
+              x_pp_endjuv_to_fi          =      13      14    14.6   14.75 (h)
+              y_tt_endjuv_to_fi          =      75     150     240     300 (dd)
+           fi_to_flag
+              Stage duration determined by leaf appearance rates
+           flag_to_flower
+              tt_flag_to_flower          =      80 (dd)
+           flowering
+              tt_flowering               =     170 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     250 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =       5 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       10.0 (/g)
+        potential_grain_filling_rate   =     0.0100 (g/grain/day)
+        potential_grain_growth_rate    =     0.0000 (g/grain/day)
+        max_grain_size                 =     0.5000 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.260       1.000
+         150.0     0.100          0.260       1.000
+         300.0     0.080          0.260       1.000
+         300.0     0.060          0.260       1.000
+         300.0     0.040          0.250       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   243mm in  1800mm total depth ( 14%).
+         Crop factor for bounding water use is set to   1.1 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            355   50.0   10.0  600.0   0.0   0.0 sugargraze
+         ------------------------------------------------
+     
+      stage 2.0 germination
+27 December 2001(Day of year=361), SweetSorghum: 
+      stage 5.0 fi_to_flag
+                     biomass =          61.34 (g/m^2)   lai          =   0.906 (m^2/m^2)
+                     stover N conc =     2.08 (%)    extractable sw =  180.94 (mm)
+28 December 2001(Day of year=362), SweetSorghum: 
+      stage 3.0 emergence
+                     biomass =           0.05 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   12.05 (mm)
+1 January 2002(Day of year=1), SweetSorghum: 
+      stage 4.0 endjuv_to_fi
+                     biomass =           0.21 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     5.79 (%)    extractable sw =   50.38 (mm)
+16 January 2002(Day of year=16), SweetSorghum: 
+      stage 5.0 fi_to_flag
+                     biomass =          25.92 (g/m^2)   lai          =   0.519 (m^2/m^2)
+                     stover N conc =     3.41 (%)    extractable sw =  145.24 (mm)
+20 January 2002(Day of year=20), SweetSorghum: 
+      stage 6.0 flag_to_flower
+                     biomass =         395.21 (g/m^2)   lai          =   1.776 (m^2/m^2)
+                     stover N conc =     0.79 (%)    extractable sw =  177.23 (mm)
+22 January 2002(Day of year=22), Sow on a fixed date: 
+     Manager sending message :- sweetsorghum sow  plants = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+22 January 2002(Day of year=22), SweetSorghum: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sugargraze
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =       0 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              tt_emergence               =      70 (dd)
+           endjuv_to_fi
+              x_pp_endjuv_to_fi          =      13      14    14.6   14.75 (h)
+              y_tt_endjuv_to_fi          =      75     150     240     300 (dd)
+           fi_to_flag
+              Stage duration determined by leaf appearance rates
+           flag_to_flower
+              tt_flag_to_flower          =      80 (dd)
+           flowering
+              tt_flowering               =     170 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     250 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =       5 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       10.0 (/g)
+        potential_grain_filling_rate   =     0.0100 (g/grain/day)
+        potential_grain_growth_rate    =     0.0000 (g/grain/day)
+        max_grain_size                 =     0.5000 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.260       1.000
+         150.0     0.100          0.260       1.000
+         300.0     0.080          0.260       1.000
+         300.0     0.060          0.260       1.000
+         300.0     0.040          0.250       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   243mm in  1800mm total depth ( 14%).
+         Crop factor for bounding water use is set to   1.1 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             22   50.0   10.0  600.0   0.0   0.0 sugargraze
+         ------------------------------------------------
+     
+      stage 2.0 germination
+25 January 2002(Day of year=25), SweetSorghum: 
+      stage 7.0 flowering
+                     biomass =         525.43 (g/m^2)   lai          =   1.754 (m^2/m^2)
+                     stover N conc =     0.65 (%)    extractable sw =  149.42 (mm)
+29 January 2002(Day of year=29), SweetSorghum: 
+      stage 3.0 emergence
+                     biomass =           0.05 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =    8.66 (mm)
+3 February 2002(Day of year=34), SweetSorghum: 
+      stage 4.0 endjuv_to_fi
+                     biomass =           0.31 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     5.79 (%)    extractable sw =   31.45 (mm)
+5 February 2002(Day of year=36), SweetSorghum: 
+      stage 8.0 start_grain_fill
+                     biomass =         669.78 (g/m^2)   lai          =   1.460 (m^2/m^2)
+                     stover N conc =     0.60 (%)    extractable sw =  154.99 (mm)
+9 February 2002(Day of year=40), SweetSorghum: 
+      stage 6.0 flag_to_flower
+                     biomass =         376.32 (g/m^2)   lai          =   1.652 (m^2/m^2)
+                     stover N conc =     0.96 (%)    extractable sw =  212.64 (mm)
+13 February 2002(Day of year=44), SweetSorghum: 
+      stage 5.0 fi_to_flag
+                     biomass =           8.17 (g/m^2)   lai          =   0.165 (m^2/m^2)
+                     stover N conc =     3.33 (%)    extractable sw =   95.88 (mm)
+15 February 2002(Day of year=46), SweetSorghum: 
+      stage 7.0 flowering
+                     biomass =         533.66 (g/m^2)   lai          =   1.640 (m^2/m^2)
+                     stover N conc =     0.77 (%)    extractable sw =  177.47 (mm)
+21 February 2002(Day of year=52), Sow on a fixed date: 
+     Manager sending message :- sweetsorghum sow  plants = 10, sowing_depth = 50, cultivar = sugargraze, row_spacing = 600
+21 February 2002(Day of year=52), SweetSorghum: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sugargraze
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =       0 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              tt_emergence               =      70 (dd)
+           endjuv_to_fi
+              x_pp_endjuv_to_fi          =      13      14    14.6   14.75 (h)
+              y_tt_endjuv_to_fi          =      75     150     240     300 (dd)
+           fi_to_flag
+              Stage duration determined by leaf appearance rates
+           flag_to_flower
+              tt_flag_to_flower          =      80 (dd)
+           flowering
+              tt_flowering               =     170 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     250 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =       5 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       10.0 (/g)
+        potential_grain_filling_rate   =     0.0100 (g/grain/day)
+        potential_grain_growth_rate    =     0.0000 (g/grain/day)
+        max_grain_size                 =     0.5000 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.260       1.000
+         150.0     0.100          0.260       1.000
+         300.0     0.080          0.260       1.000
+         300.0     0.060          0.260       1.000
+         300.0     0.040          0.250       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.010          0.380       1.000
+         -----------------------------------------------
+         Extractable SW:   243mm in  1800mm total depth ( 14%).
+         Crop factor for bounding water use is set to   1.1 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             52   50.0   10.0  600.0   0.0   0.0 sugargraze
+         ------------------------------------------------
+     
+      stage 2.0 germination
+22 February 2002(Day of year=53), SweetSorghum: 
+      stage 9.0 end_grain_fill
+                     biomass =         669.78 (g/m^2)   lai          =   0.793 (m^2/m^2)
+                     stover N conc =     0.83 (%)    extractable sw =  155.64 (mm)
+23 February 2002(Day of year=54), SweetSorghum: 
+      stage 10.0 maturity
+                     biomass =         669.78 (g/m^2)   lai          =   0.761 (m^2/m^2)
+                     stover N conc =     0.83 (%)    extractable sw =  156.41 (mm)
+24 February 2002(Day of year=55), SweetSorghum: 
+      stage 11.0 harvest_ripe
+                     biomass =         669.78 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.84 (%)    extractable sw =  155.24 (mm)
+24 February 2002(Day of year=55), Harvesting rule: 
+     Manager sending message :- sweetsorghum harvest
+     
+      flowering day          =   25                           stover (kg/ha)         =     3933.8
+      maturity day           =   54                           grain yield (kg/ha)    =     2764.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3158.9
+      grain wt (g)           =    0.078                       grains/m^2             =     3561.7
+      grains/plant           =  356.2                         maximum lai            =      1.796
+      total above ground biomass (kg/ha)    =     6697.8
+      live above ground biomass (kg/ha)     =     6697.8
+      green above ground biomass (kg/ha)    =     5991.2
+      senesced above ground biomass (kg/ha) =      706.6
+      number of leaves       =     20.7
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.41
+      Stover C:N ratio       =    49.15                       Root C:N ratio         =      44.38
+      grain N percent        =     0.50                       total N content (kg/ha)=      45.91
+      grain N uptake (kg/ha) =    13.90                       senesced N content (kg/ha)=    4.95
+      green N content (kg/ha)=    27.07
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to endjuv_to_fi            0.000        0.000        0.000        0.000
+         endjuv_to_fi         to fi_to_flag              0.000        0.000        0.029        0.049
+         fi_to_flag           to flag_to_flower          0.000        0.000        0.214        0.274
+         flag_to_flower       to flowering               0.000        0.000        0.202        0.294
+         flowering            to start_grain_fill        0.000        0.000        0.172        0.309
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.140        0.253
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3933.8                     0.0
+                          N  (kg/ha) =                  32.01                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2764.1                     0.0
+                          N  (kg/ha) =                  13.90                    0.00
+     
+     Manager sending message :- sweetsorghum end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   784.6
+                          N  (kg/ha) =                   0.00                    7.07
+     
+27 February 2002(Day of year=58), SweetSorghum: 
+      stage 8.0 start_grain_fill
+                     biomass =         656.78 (g/m^2)   lai          =   1.577 (m^2/m^2)
+                     stover N conc =     0.72 (%)    extractable sw =  197.55 (mm)
+28 February 2002(Day of year=59), SweetSorghum: 
+      stage 3.0 emergence
+                     biomass =           0.05 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   12.27 (mm)
+6 March 2002(Day of year=65), SweetSorghum: 
+      stage 4.0 endjuv_to_fi
+                     biomass =           0.30 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     5.79 (%)    extractable sw =  109.68 (mm)
+10 March 2002(Day of year=69), SweetSorghum: 
+      stage 6.0 flag_to_flower
+                     biomass =         416.09 (g/m^2)   lai          =   1.515 (m^2/m^2)
+                     stover N conc =     1.10 (%)    extractable sw =  216.57 (mm)
+13 March 2002(Day of year=72), SweetSorghum: 
+      stage 5.0 fi_to_flag
+                     biomass =           3.16 (g/m^2)   lai          =   0.045 (m^2/m^2)
+                     stover N conc =     3.42 (%)    extractable sw =   98.30 (mm)
+16 March 2002(Day of year=75), SweetSorghum: 
+      stage 7.0 flowering
+                     biomass =         566.47 (g/m^2)   lai          =   1.511 (m^2/m^2)
+                     stover N conc =     0.90 (%)    extractable sw =  190.60 (mm)
+18 March 2002(Day of year=77), SweetSorghum: 
+      stage 9.0 end_grain_fill
+                     biomass =         656.78 (g/m^2)   lai          =   1.017 (m^2/m^2)
+                     stover N conc =     1.02 (%)    extractable sw =  228.37 (mm)
+19 March 2002(Day of year=78), SweetSorghum: 
+      stage 10.0 maturity
+                     biomass =         656.78 (g/m^2)   lai          =   0.968 (m^2/m^2)
+                     stover N conc =     1.02 (%)    extractable sw =  227.88 (mm)
+20 March 2002(Day of year=79), SweetSorghum: 
+      stage 11.0 harvest_ripe
+                     biomass =         656.78 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.06 (%)    extractable sw =  227.40 (mm)
+20 March 2002(Day of year=79), Harvesting rule: 
+     Manager sending message :- sweetsorghum harvest
+     
+      flowering day          =   46                           stover (kg/ha)         =     3983.6
+      maturity day           =   78                           grain yield (kg/ha)    =     2584.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2953.3
+      grain wt (g)           =    0.071                       grains/m^2             =     3617.7
+      grains/plant           =  361.8                         maximum lai            =      1.660
+      total above ground biomass (kg/ha)    =     6567.8
+      live above ground biomass (kg/ha)     =     6567.8
+      green above ground biomass (kg/ha)    =     5800.9
+      senesced above ground biomass (kg/ha) =      766.9
+      number of leaves       =     17.0
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.39
+      Stover C:N ratio       =    40.31                       Root C:N ratio         =      37.23
+      grain N percent        =     0.54                       total N content (kg/ha)=      53.36
+      grain N uptake (kg/ha) =    13.83                       senesced N content (kg/ha)=    5.37
+      green N content (kg/ha)=    34.16
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to endjuv_to_fi            0.000        0.000        0.000        0.000
+         endjuv_to_fi         to fi_to_flag              0.000        0.000        0.000        0.000
+         fi_to_flag           to flag_to_flower          0.000        0.000        0.160        0.244
+         flag_to_flower       to flowering               0.000        0.000        0.146        0.261
+         flowering            to start_grain_fill        0.000        0.000        0.121        0.248
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.095        0.194
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3983.6                     0.0
+                          N  (kg/ha) =                  39.53                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2584.1                     0.0
+                          N  (kg/ha) =                  13.83                    0.00
+     
+     Manager sending message :- sweetsorghum end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   790.8
+                          N  (kg/ha) =                   0.00                    8.50
+     
+29 March 2002(Day of year=88), SweetSorghum: 
+      stage 8.0 start_grain_fill
+                     biomass =         698.62 (g/m^2)   lai          =   1.493 (m^2/m^2)
+                     stover N conc =     0.81 (%)    extractable sw =  227.97 (mm)
+12 April 2002(Day of year=102), SweetSorghum: 
+      stage 6.0 flag_to_flower
+                     biomass =         338.62 (g/m^2)   lai          =   1.070 (m^2/m^2)
+                     stover N conc =     1.23 (%)    extractable sw =  204.72 (mm)
+20 April 2002(Day of year=110), SweetSorghum: 
+      stage 7.0 flowering
+                     biomass =         454.54 (g/m^2)   lai          =   1.067 (m^2/m^2)
+                     stover N conc =     0.95 (%)    extractable sw =  184.32 (mm)
+22 April 2002(Day of year=112), SweetSorghum: 
+      stage 9.0 end_grain_fill
+                     biomass =         698.62 (g/m^2)   lai          =   1.371 (m^2/m^2)
+                     stover N conc =     1.18 (%)    extractable sw =  208.27 (mm)
+23 April 2002(Day of year=113), SweetSorghum: 
+      stage 10.0 maturity
+                     biomass =         698.62 (g/m^2)   lai          =   1.357 (m^2/m^2)
+                     stover N conc =     1.18 (%)    extractable sw =  207.86 (mm)
+24 April 2002(Day of year=114), SweetSorghum: 
+      stage 11.0 harvest_ripe
+                     biomass =         698.62 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.24 (%)    extractable sw =  207.47 (mm)
+24 April 2002(Day of year=114), Harvesting rule: 
+     Manager sending message :- sweetsorghum harvest
+     
+      flowering day          =   75                           stover (kg/ha)         =     4138.2
+      maturity day           =  113                           grain yield (kg/ha)    =     2848.0
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3254.9
+      grain wt (g)           =    0.069                       grains/m^2             =     4103.8
+      grains/plant           =  410.4                         maximum lai            =      1.518
+      total above ground biomass (kg/ha)    =     6986.2
+      live above ground biomass (kg/ha)     =     6986.2
+      green above ground biomass (kg/ha)    =     6496.8
+      senesced above ground biomass (kg/ha) =      489.4
+      number of leaves       =     13.1
+      DM Root:Shoot ratio    =     0.11                       Harvest Index          =       0.41
+      Stover C:N ratio       =    34.13                       Root C:N ratio         =      25.76
+      grain N percent        =     0.59                       total N content (kg/ha)=      65.20
+      grain N uptake (kg/ha) =    16.71                       senesced N content (kg/ha)=    3.43
+      green N content (kg/ha)=    45.07
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to endjuv_to_fi            0.000        0.000        0.000        0.000
+         endjuv_to_fi         to fi_to_flag              0.000        0.000        0.000        0.000
+         fi_to_flag           to flag_to_flower          0.000        0.000        0.000        0.033
+         flag_to_flower       to flowering               0.000        0.000        0.000        0.033
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.027
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.000        0.020
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4138.2                     0.0
+                          N  (kg/ha) =                  48.49                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2848.0                     0.0
+                          N  (kg/ha) =                  16.71                    0.00
+     
+     Manager sending message :- sweetsorghum end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   782.7
+                          N  (kg/ha) =                   0.00                   12.15
+     
+8 May 2002(Day of year=128), SweetSorghum: 
+      stage 8.0 start_grain_fill
+                     biomass =         556.01 (g/m^2)   lai          =   1.053 (m^2/m^2)
+                     stover N conc =     0.81 (%)    extractable sw =  208.58 (mm)
+17 June 2002(Day of year=168), SweetSorghum: 
+      stage 9.0 end_grain_fill
+                     biomass =         556.01 (g/m^2)   lai          =   1.002 (m^2/m^2)
+                     stover N conc =     1.33 (%)    extractable sw =  211.17 (mm)
+18 June 2002(Day of year=169), SweetSorghum: 
+      stage 10.0 maturity
+                     biomass =         556.01 (g/m^2)   lai          =   1.001 (m^2/m^2)
+                     stover N conc =     1.33 (%)    extractable sw =  209.87 (mm)
+19 June 2002(Day of year=170), SweetSorghum: 
+      stage 11.0 harvest_ripe
+                     biomass =         556.01 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.39 (%)    extractable sw =  208.69 (mm)
+19 June 2002(Day of year=170), Harvesting rule: 
+     Manager sending message :- sweetsorghum harvest
+     
+      flowering day          =  110                           stover (kg/ha)         =     3267.9
+      maturity day           =  169                           grain yield (kg/ha)    =     2292.3
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2619.8
+      grain wt (g)           =    0.066                       grains/m^2             =     3480.0
+      grains/plant           =  348.0                         maximum lai            =      1.072
+      total above ground biomass (kg/ha)    =     5560.1
+      live above ground biomass (kg/ha)     =     5560.1
+      green above ground biomass (kg/ha)    =     5270.7
+      senesced above ground biomass (kg/ha) =      289.4
+      number of leaves       =     11.7
+      DM Root:Shoot ratio    =     0.10                       Harvest Index          =       0.41
+      Stover C:N ratio       =    30.09                       Root C:N ratio         =      15.70
+      grain N percent        =     0.59                       total N content (kg/ha)=      56.93
+      grain N uptake (kg/ha) =    13.49                       senesced N content (kg/ha)=    2.03
+      green N content (kg/ha)=    41.42
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to endjuv_to_fi            0.000        0.000        0.000        0.000
+         endjuv_to_fi         to fi_to_flag              0.000        0.000        0.000        0.000
+         fi_to_flag           to flag_to_flower          0.000        0.000        0.000        0.000
+         flag_to_flower       to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3267.9                     0.0
+                          N  (kg/ha) =                  43.44                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2292.3                     0.0
+                          N  (kg/ha) =                  13.49                    0.00
+     
+     Manager sending message :- sweetsorghum end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   563.0
+                          N  (kg/ha) =                   0.00                   14.34
+     
+30 June 2002(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.

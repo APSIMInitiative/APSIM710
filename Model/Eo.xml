@@ -1,0 +1,93 @@
+<eo>
+   <!--  Wind speed is calculated for a reference height above the simulated site. This site
+    is described to allow conversion from the instrument site described in the parameters.
+    -->
+   <reference_height units="mm" description="2000   ! relative reference height above base (mm) at which the wind speed is">2000.0</reference_height>
+   <!--  calculated.
+    Applies to penman monteith only
+    -->
+   <reference_height_base description="reference height base (canopy or soil). The base height is added to">canopy   </reference_height_base>
+   <!--  the reference height to give the actual height above ground level
+    that is used to calculate the wind speed.
+    soil, is a base height of 0.
+    canopy base height is the crop canopy height. Thus the actual reference
+    height moves up with the canopy.
+    Does not apply to Penman
+    -->
+   <zc_conversion units="mm" description="10000    ! conversion height above base, not influenced by surface (mm)">10000.0</zc_conversion>
+   <!--  Must be > 2*canopy height and <= 20m
+    This is an interim height used to convert wind speed from the instrument
+    site to the simulation site. It is assumed that wind speed at this height
+    is the same regardless of surface conditions below it, thus would be the
+    same at this height above both the instrument and simulation sites.
+    Does not apply to Penman
+    -->
+   <rsmin_canopy description="91.0 (s/m)     ! min canopy resistance   ! minimum leaf stomatal resistance (s/m)">50 </rsmin_canopy>
+   <!--  This is used only for the simulat and kelliher experimental methods for
+    calculating surface (canopy) resistance below.
+    Applies to penman monteith only
+    -->
+   <vpd_crit units="kg/kg" description="critical values for raupach method">0.03</vpd_crit>
+   <radn_crit units="w/m2" description="Applies to penman monteith only, raupach rc_method">350.0</radn_crit>
+   <lai_crit units="m2/m2">3.0</lai_crit>
+   <rc_method description="fixed                ! calculation method of bulk vegetation surface resistance">simple </rc_method>
+   <!--  (simulat, simple, kelliher, fixed, raupach)
+    Applies to penman monteith only
+    -->
+   <rc units="s/m" description="bulk vegetation surface resistance for 'fixed' method  (s/m)">20.0</rc>
+   <!--  Applies to penman monteith only
+    -->
+   <pen_mon_ub description="upper limit of Penman Monteith Eo for warning">15.0                </pen_mon_ub>
+   <!--  messages (mm)
+    -->
+   <ra_ub units="s/m" description="Upper limit of Ra. Ra is the aerodynamic resistance to transfer between">1200.0</ra_ub>
+   <!--  the surface and the reference height. Rough surfaces generate sufficient
+    mechanical turbulence to enhance mixing and thus keep the aerodynamic
+    resistance at a low value. Ra's over rough canopies are generally small.
+    Average ra's are: cereal crop = 50, grass = 115, open pan = 200, forest=12
+    Does not apply to Penman
+    -->
+   <default_wind_day_fraction description="default fraction of wind in daylight hours (day:night is 2:1)">0.66</default_wind_day_fraction>
+   <!--  if the wind day fraction is not found in the parameters.
+    FAO irrigation and drainage paper No.24 revised 1977.
+    Guidelines for predicting crop water requirements, J Doorenbos and W.O. Pruitt
+    "The penman equation given assumes the most common conditions where radiation is
+    medium to high, maximum relative humidity is medium to high and moderate
+    daytime wind about double the night time wind." Table 16 shows day wind
+    fractions from 0.5 to 0.8.
+    Does not apply to Penman
+    -->
+   <alt_photo_radn units="deg" description="sun altitude below which photosynthesis stops. Nominally when net">-0.83</alt_photo_radn>
+   <!--  shortwave radiation becomes negative. This occurs when the solar or
+    shortwave radiation falls below about 100 W/m2.
+    the centre of the sun's disc is at an altitude of -0.83 deg when the
+    top of the disc is at the horizon. This value will give actual
+    sunlight hours.
+    Does not apply to Penman
+    -->
+   <wind_hrs description="daylength of wind_day_fraction (hrs).">-1.0                  </wind_hrs>
+   <!--  -1.0 uses calculated daylength, based on the alt_photo_radn value.
+    Thus, a value of 24 for wind_hrs and 1.0 for wind_day_fraction
+    will calculate wind speed from the whole wind run over 24 hrs.
+    A value of .66 for wind_day_fraction, -1 for wind_hrs and 12.11
+    degrees for alt_photo_radn will calculate wind speed as
+    wind run*wind_day_fraction/(daylength between sun altitudes of
+    12.11 degrees)
+    Does not apply to Penman
+    -->
+   <wind_min units="m/s" description="minimum wind speed used in penman monteith function.">1</wind_min>
+   <soil_heat_flux description="0.0        ! fraction of net radiation absorbed by soil as heat flux.">0.1 </soil_heat_flux>
+   <!--  Does not apply to Penman
+    -->
+   <penman_fU2_coef_a description="coefficients in penman wind function a*(1+b*U) for vpd in mb">0.0262       </penman_fU2_coef_a>
+   <penman_fU2_coef_b description="and U in km/day. Penman's are a=0.0262, b=0.0061.">0.0061       </penman_fU2_coef_b>
+   <!--  Doorenbos and Pruit's are a=0.027, b=0.01. Their coefficients
+    applies to crops during summer conditions in midlatitudes
+    and where about two-thirds of the total wind run occurs during
+    the daylight hours. This is achieved by b*.67*24/9.6
+    where 0.67 is the fraction of wind in daylight hours,
+    and 9.67 is the daylength in hours. The model now does this
+    calculation using Penman's original values.
+    -->
+   <multiplier_height units="mm" description="height at which wind multiplier is applied (mm)">2000</multiplier_height>
+</eo>

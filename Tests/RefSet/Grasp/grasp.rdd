@@ -1,0 +1,168 @@
+[main]
+module =  grasp
+owner =   Mark Silburn
+contact = silburm@prose.dpi.qld.gov.au, devoil@usq.edu.au
+Notes = 
+
+; Inward State Stimuli
+; --------------------
+[canopy]
+name = Canopy shading
+direction = inward
+type = ?
+description = Canopy shade intercepts radiation, reducing growth by photosynthesis.
+apsimname = fr_intc_radn_grass
+internalname= g_fr_intc_radn
+indicators= tsdm, growth, growth_photo   
+
+[temperature]
+name = Temperature
+direction = inward
+type = state
+description = Temperature affects regrowth, transpiration efficiency, vapour pressure deficit and death by frost
+apsimname = maxt, mint
+internalname= g_maxt, g_mint
+indicators= tsdm, growth, growth_regrow, growth_transp, transp_eff_adj, vpd_estimation, death_frost
+
+[radiation]
+name = Solar Radiation
+direction = inward
+type = state
+description = Radiation drives photosynthesis.
+apsimname = radn
+internalname= g_radn
+indicators= tsdm, growth, growth_photo
+
+[pan]
+name = Pan evaporation
+direction = inward
+type = state
+description = Pan evaporation is the key measure of evapotranspiration. It is the upper limit to growth by transpiration.
+apsimname = pan (if unavailable -> eo)
+internalname= g_pan
+indicators= sw_demand, dlt_sw_dep, tsdm, growth, growth_transp, ep
+
+[vpd]
+name = Vapour pressure deficit
+direction = inward
+type = state
+description = VPD adjusts transpiration efficiency 
+apsimname = vpd (if unavailable, f(maxt, mint))
+internalname= g_vpd
+indicators= tsdm, growth, growth_transp, transp_eff_adj, vpd_estimation
+
+[soilevap]
+name = Soil evaporation
+direction = inward
+type = state
+description = Soil evaporation is used in accumulated evapotranspiration, which drives the dynamic basal area model.
+apsimname = es
+internalname= g_es
+indicators=  tsdm, growth, growth_regrowth, basal_area
+
+[profile]
+name = Profile depth
+direction = inward
+type = state
+description = Used in converting mm/mm to mm/layer, and the maximum root depth
+apsimname = dlayer
+internalname= g_dlayer
+indicators= root_depth
+
+[bulk density]
+name = Bulk density of soil
+type = state
+direction = inward
+description = Used to determine N loss in sediment from top layer
+apsimname = bd
+internalname= g_bd
+indicators= max_n_avail
+
+[dul]
+name = Drained upper limit of soil
+direction = inward
+type = state
+description = Used in calculation of sw index
+apsimname = dul_dep
+internalname= g_dul_dep
+indicators= tsdm, growth, growth_transp, swi, sw_index
+
+[soil_moisture]
+name = Soil water content
+direction = inward
+type = state
+description = Soil water supply 
+apsimname = sw_dep
+internalname= g_sw_dep
+indicators= tsdm, growth, growth_transp, swi, sw_index
+
+[soil_nitrogen]
+name = Soil Nitrogen.
+direction = inward
+type = state
+description = (lack of) Soil N limits growth
+apsimname = no3
+internalname= g_no3
+indicators= tsdm, growth, growth_photo, growth_regrowth
+
+[minimum soil_nitrogen]
+name = Minimum Soil Nitrogen.
+direction = inward
+type = state
+description = N cannopt be removed below this level
+apsimname = no3_min
+internalname= g_no3_min
+indicators= tsdm, growth, growth_photo, growth_regrowth
+
+[erosion]
+name = Eroding profile
+direction = inward
+type = state
+description = erosion reduces max_N_avail
+apsimname = max_n_avail
+internalname= g_p_max_n_avail
+indicators= growth_regrowth, growth_photo, n_uptake
+
+[water_uptake]
+name = uptake_water_
+direction = inward
+type = state
+description = Water uptake by sward as detrermined by SWIM
+apsimname = uptake_water_grass
+internalname= g_dlt_sw_dep
+indicators= tsdm, growth, growth_transp
+
+; Outward State Stimuli
+; ---------------------
+[reset_sw]
+name = Resetting soil water profile
+direction = outward
+type = state
+description = Extraction of water by the crop requires the module to send this information to the water balance.
+apsimname = dlt_sw_dep
+internalname= g_dlt_sw_dep
+indicators= 
+
+[no3_uptake]
+name = soil nitrate profile
+direction = outward
+type = state
+description = Extraction of nitrate by the crop requires the module to send this information to the nitrogen balance.
+apsimname = dlt_no3
+internalname= g_dlt_no3
+indicators= 
+
+
+; Inward Message Stimuli
+; ----------------------
+
+; Outward Message Stimuli
+; -----------------------
+[add_residue_msg]
+name = Detachment
+direction = outward
+type = state
+description = Detachment of stems and leaves
+apsimname = add_residue
+internalname= g_litter
+indicators= 

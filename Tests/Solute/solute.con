@@ -1,0 +1,11 @@
+version = 7.0(2)
+[apsim.sample_solute]
+
+title=Solute Sample Simulation
+module = clock   solute.par [sample] %apsim%/Model/clock.xml [standard]
+module = report   solute.par [sample]
+module = input(Met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+module = manager  solute.par [sample]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = solute   solute.par [sample] %apsim%/Model/solute.xml [standard]

@@ -1,0 +1,71 @@
+[Ngabu.soilwat2.parameters]
+insoil =  2.0   ! 0.8 !0.3 ()  ! indicator for initial soil water
+u =    1.5 ()   !8 (mm)       ! stage 1 soil evaporation coefficient (mm)
+cn2_bare =             85     ()   ! runoff curve number for BARE soil at AMC2
+cn_red =               20     ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+cn_cov =               0.8    ()   ! frac. cover for "cn_red" reduction in cover 
+                                   ! & max. cover for reduction 
+cn_canopy_fact =       1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                   !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+salb =    0.2  ()   ! bare soil albedo
+cona =    6.6  ()   ! stage 2 evap coef.
+diffus_const =    88.0 ()   !250. ()  !   coeffs for dbar
+diffus_slope =    35.4 ()   !22.  ()  !     "
+
+   !layer         1       2       3       4       5       6       7
+dlayer  =        150     150     300     300     300     300     300
+air_dry =        0.03    0.03    0.03    0.03    0.03    0.03    0.03
+ll15    =        0.142   0.166   0.171   0.170   0.178   0.193   0.198
+dul     =        0.316   0.315   0.314   0.270   0.243   0.230   0.228
+sat     =        0.459   0.459   0.459   0.459   0.459   0.459   0.459
+! PAW            26.1285 22.3077 42.9273  29.808  19.359  11.227 9.00928     161
+BD      =         1.3     1.3     1.3     1.3     1.3     1.3     1.3
+sw      =        0.142   0.166   0.171   0.170   0.178   0.193   0.198
+swcon   =        0.7     0.7     0.7     0.7     0.7     0.7     0.7    
+
+[Ngabu.soiln2.parameters]
+   !layer      1         2         3         4         5         6          7
+oc =          1.33      1.00      1.00      0.81      0.92      0.93       0.92    ()   ! organic carbon %
+ph =          7.3       7.2       7.8       7.9       7.9       7.9        7.9     ()   ! ph
+nh4ppm =      0.600     0.100     0.100     0.100     0.100     0.100      0.100   ()   ! ppm ammonia
+no3ppm =     10.00      8.00      5.00      1.00      1.00     1.00       1.00   ()   ! ppm nitrate reported
+ureappm =     0         0         0         0         0         0          0       ()   ! ppm urea
+
+fbiom =       0.03      0.02      0.015     0.005     0.005     0.005      0.005    ()   ! microbe fraction of humic pool
+finert =      0.55      0.60      0.70      0.80      0.90      0.95       0.95  ()   ! alt inert fraction of humic pool
+
+dmod =    1.0 ()     ! weighting factor to adjust the rate of humus mineralization
+                     ! for soils in which organic matter is chemically or physically
+                     ! protected.
+
+root_wt =    300     ! estimated as 15% of a prior unfertilized maize crop above ground DW
+root_cn =    36.0 () ! 
+   
+soil_cn =    14.5    ! soil humic pool C:N ratio
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                                        ! soil loss occurs. 
+enr_a_coeff =       7.4  ()   
+enr_b_coeff =       0.2  () 
+
+[ngabu.maize.parameters]
+ll =      0.142   0.166   0.171   0.170   0.178   0.193   0.198 (mm/mm)  ! maize lower limit 
+kl =      0.12   0.12    0.10    0.08    0.06    0.04     0.00 ()   ! rate of soil water extraction
+xf =      1.0    1.0     1.0     1.0     1.0     1.0      0.0  ()   
+
+[ngabu.soybean.parameters]
+ll =      0.142   0.166   0.171   0.170   0.178   0.193   0.198 (mm/mm)  ! maize lower limit 
+kl =      0.12   0.12    0.10    0.08    0.06    0.04     0.00 ()   ! rate of soil water extraction
+xf =      1.0    1.0     1.0     0.0     0.0     0.0      0.0  ()   
+
+[Ngabu.mucuna.parameters]
+ll =      0.142   0.166   0.171   0.170   0.178   0.193   0.198 (mm/mm)  
+kl =      0.12   0.12    0.10    0.08    0.06    0.04     0.00 ()   
+xf =      1.0    1.0     1.0     1.0     1.0     1.0      1.0  ()   
+
+[ngabu.weed.parameters]
+ll =      0.142   0.166   0.171   0.170   0.178   0.193   0.198 (mm/mm)  ! maize lower limit 
+kl =      0.12   0.12    0.10    0.08    0.06    0.04     0.00 ()   ! rate of soil water extraction
+xf =      1.0    1.0     1.0     1.0     1.0     1.0      0.0  ()   
+
+
+

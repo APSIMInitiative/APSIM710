@@ -1,0 +1,13 @@
+version = 7.0(2)
+
+[apsim.sample_map]
+
+title=Map Sample Simulation
+module = clock   map.par [sample] %apsim%/Model/clock.xml [standard]
+module = report   map.par [sample]
+module = input(Met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+module = manager  map.par [sample]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = solute   ../Solute/solute.par [sample] %apsim%/Model/solute.xml [standard]
+module = map      map.par [sample]

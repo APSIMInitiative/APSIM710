@@ -1,0 +1,707 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Merbein MinimalPruned
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                   "LeafOutput" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component        "Prune on a fixed date" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "vine" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 10/05/1994
+     Simulation end date   = 10/06/1999
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Vine\Mildura.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        PhenologyCurrentPhaseName
+        LeafLiveWt
+        StemLiveWt
+        BerryLiveWt
+        ReserveLiveWt
+        RootLiveWt
+        LeafLAI
+        LeafLAIdead
+        esw
+        LeafCohortNo
+        LeafFullyExpandedNodeNo
+        LeafDeadNodeNo
+        BerryNumber
+        BerrySize
+        LeafBranchNo
+        LeafDMSupply
+        radn
+        Cover_green
+        AboveGroundDM
+        TotalDM
+        LeafPhotosynthesisFT
+        StageCodeValue
+        BerryLiveFWt
+        BerryFSize
+        sw_dep()
+        sw
+        LeafFw
+        LeafWaterDemand
+        LeafTranspiration
+        es
+        eo
+
+     Output file = Merbein MinimalPruned.out
+     Format = normal
+
+------- LeafOutput Initialisation ---------------------------------------------
+     Output frequency:
+        Harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafMaxSize
+
+     Output file = Merbein MinimalPruned LeafOutput.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     19/07/1994  Prepare      Irrigation apply amount = 66
+     23/08/1994  Prepare      Irrigation apply amount = 66
+     11/09/1994  Prepare      Irrigation apply amount = 66
+      8/10/1994  Prepare      Irrigation apply amount = 66
+      7/11/1994  Prepare      Irrigation apply amount = 66
+      8/11/1994  Prepare      Irrigation apply amount = 44
+     26/11/1994  Prepare      Irrigation apply amount = 66
+      5/12/1994  Prepare      Irrigation apply amount = 38
+     14/12/1994  Prepare      Irrigation apply amount = 77
+      7/01/1995  Prepare      Irrigation apply amount = 66
+      3/02/1995  Prepare      Irrigation apply amount = 66
+     13/02/1995  Prepare      Irrigation apply amount = 55
+     10/03/1995  Prepare      Irrigation apply amount = 55
+     18/03/1995  Prepare      Irrigation apply amount = 55
+     30/03/1995  Prepare      Irrigation apply amount = 55
+     22/04/1995  Prepare      Irrigation apply amount = 44
+     21/09/1995  Prepare      Irrigation apply amount = 76.2
+     10/11/1995  Prepare      Irrigation apply amount = 63.5
+     23/11/1995  Prepare      Irrigation apply amount = 69.8
+      8/12/1995  Prepare      Irrigation apply amount = 63.5
+     21/12/1995  Prepare      Irrigation apply amount = 76.2
+      4/01/1996  Prepare      Irrigation apply amount = 76.2
+     17/01/1996  Prepare      Irrigation apply amount = 76.2
+     31/01/1996  Prepare      Irrigation apply amount = 76.2
+      9/02/1996  Prepare      Irrigation apply amount = 76.2
+     20/02/1996  Prepare      Irrigation apply amount = 76.2
+      1/04/1996  Prepare      Irrigation apply amount = 76.2
+     23/04/1996  Prepare      Irrigation apply amount = 76.2
+     17/05/1996  Prepare      Irrigation apply amount = 76.2
+     24/10/1996  Prepare      Irrigation apply amount = 65
+     14/11/1996  Prepare      Irrigation apply amount = 65
+     28/11/1996  Prepare      Irrigation apply amount = 69
+     12/12/1996  Prepare      Irrigation apply amount = 32
+     18/12/1996  Prepare      Irrigation apply amount = 61
+      6/01/1997  Prepare      Irrigation apply amount = 63
+      9/01/1997  Prepare      Irrigation apply amount = 44
+     21/01/1997  Prepare      Irrigation apply amount = 71
+      4/02/1997  Prepare      Irrigation apply amount = 65
+     20/02/1997  Prepare      Irrigation apply amount = 63
+     13/03/1997  Prepare      Irrigation apply amount = 67
+      3/04/1997  Prepare      Irrigation apply amount = 70
+     27/04/1997  Prepare      Irrigation apply amount = 48
+     25/05/1997  Prepare      Irrigation apply amount = 44
+     28/10/1997  Prepare      Irrigation apply amount = 52.6
+     22/11/1997  Prepare      Irrigation apply amount = 35.3
+     27/11/1997  Prepare      Irrigation apply amount = 11.6
+      4/12/1997  Prepare      Irrigation apply amount = 58.4
+     19/12/1997  Prepare      Irrigation apply amount = 65.1
+      7/01/1998  Prepare      Irrigation apply amount = 70.4
+     24/01/1998  Prepare      Irrigation apply amount = 52.9
+      5/02/1998  Prepare      Irrigation apply amount = 61.3
+     20/02/1998  Prepare      Irrigation apply amount = 68.6
+      6/03/1998  Prepare      Irrigation apply amount = 65.8
+     19/03/1998  Prepare      Irrigation apply amount = 60.9
+      8/04/1998  Prepare      Irrigation apply amount = 55.1
+     25/09/1998  Prepare      Irrigation apply amount = 49.7
+      9/10/1998  Prepare      Irrigation apply amount = 48.4
+     29/10/1998  Prepare      Irrigation apply amount = 54.3
+     12/11/1998  Prepare      Irrigation apply amount = 61.7
+     27/11/1998  Prepare      Irrigation apply amount = 52.9
+      4/12/1998  Prepare      Irrigation apply amount = 58.5
+     18/12/1998  Prepare      Irrigation apply amount = 62.5
+     31/12/1998  Prepare      Irrigation apply amount = 66.5
+     15/01/1999  Prepare      Irrigation apply amount = 61
+     29/01/1999  Prepare      Irrigation apply amount = 54.4
+     10/02/1999  Prepare      Irrigation apply amount = 61
+     27/02/1999  Prepare      Irrigation apply amount = 60.2
+     18/03/1999  Prepare      Irrigation apply amount = 56.5
+     11/04/1999  Prepare      Irrigation apply amount = 48.1
+      23/9/1996  Prepare      LeafOutput do_output
+      27/9/1996  Prepare      LeafOutput do_output
+      2/10/1996  Prepare      LeafOutput do_output
+     18/10/1996  Prepare      LeafOutput do_output
+     25/10/1996  Prepare      LeafOutput do_output
+      1/11/1996  Prepare      LeafOutput do_output
+      8/11/1996  Prepare      LeafOutput do_output
+     22/11/1996  Prepare      LeafOutput do_output
+     20/12/1996  Prepare      LeafOutput do_output
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.80
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('13-may') and vine.plantstatus <> 'in') then
+       vine sow population =0.1344, depth = 50, cultivar = shiraz, row_spacing = 3100, crop_class = plant, maxcover=0.5, budnumber=530
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if (vine.berryreadyforharvest = 1) then
+       vine  harvest
+                endif
+     END of rules
+     
+
+------- Prune on a fixed date Initialisation ----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('12-may') and vine.plantstatus = 'in') then
+       vine prune budno = 900
+              endif
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.055  0.100  0.260  0.400  0.252  1.480  0.856  0.700
+          200.-  400.  0.104  0.120  0.280  0.400  0.272  1.500  0.135  0.700
+          400.-  600.  0.130  0.140  0.300  0.400  0.292  1.500  0.009  0.700
+          600.-  800.  0.130  0.170  0.310  0.400  0.303  1.550  0.000  0.700
+          800.- 1000.  0.130  0.200  0.320  0.400  0.314  1.550  0.000  0.700
+         1000.- 1200.  0.130  0.230  0.340  0.400  0.335  1.550  0.000  0.700
+         1200.- 1400.  0.130  0.250  0.370  0.430  0.364  1.400  0.000  0.700
+         1400.- 1600.  0.130  0.300  0.430  0.470  0.424  1.300  0.000  0.700
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      20.00      30.40      32.00      28.00
+          200.-  400.      24.00      30.40      32.00      24.00
+          400.-  600.      28.00      30.40      32.00      20.00
+          600.-  800.      34.00      26.60      28.00      18.00
+          800.- 1000.      40.00      22.80      24.00      16.00
+         1000.- 1200.      46.00      21.00      22.00      12.00
+         1200.- 1400.      50.00      22.80      24.00      12.00
+         1400.- 1600.      60.00      24.80      26.00       8.00
+          ---------------------------------------------------------
+               Totals     302.00     209.20     220.00     138.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13      250.00       50.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              68.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Sandy Loam
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.00    0.30    0.30    0.00
+             2     7.00  0.50    0.30    0.30    0.00
+             3     7.00  0.50    0.30    0.30    0.00
+             4     7.00  0.50    0.31    0.31    0.00
+             5     7.00  0.50    0.31    0.31    0.00
+             6     7.00  0.50    0.31    0.31    0.00
+             7     7.00  0.50    0.28    0.28    0.00
+             8     7.00  0.50    0.26    0.26    0.00
+          ------------------------------------------------
+           Totals                2.37    2.37    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      29082.7  2423.6   517.3    64.7   131.6     3.3
+             2      14882.4  1240.2   117.6    14.7    90.5     2.3
+             3      14911.8  1242.6    88.2    11.0    62.2     1.6
+             4      15439.2  1286.6    60.8     7.6    42.7     1.1
+             5      15484.7  1290.4    15.3     1.9    29.4     0.7
+             6      15484.7  1290.4    15.3     1.9    20.2     0.5
+             7      14000.0  1166.7     0.0     0.0    13.9     0.3
+             8      13000.0  1083.3     0.0     0.0     9.5     0.2
+          ---------------------------------------------------------
+           Totals  132285.4 11023.8   814.6   101.8   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+13 May 1994(Day of year=133), Sow on a fixed date: 
+     Manager sending message :- vine sow  population = 0.1344, depth = 50, cultivar = shiraz, row_spacing = 3100, crop_class = plant, maxcover = 0.5, budnumber = 530
+19 July 1994(Day of year=200), operations: 
+      Sending apply message to irrigation
+10/08/1994 - EndDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23 August 1994(Day of year=235), operations: 
+      Sending apply message to irrigation
+11 September 1994(Day of year=254), operations: 
+      Sending apply message to irrigation
+17/09/1994 - BudBurst
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+8 October 1994(Day of year=281), operations: 
+      Sending apply message to irrigation
+7 November 1994(Day of year=311), operations: 
+      Sending apply message to irrigation
+8 November 1994(Day of year=312), operations: 
+      Sending apply message to irrigation
+9/11/1994 - Flowering
+                            LAI = 0.89 (m^2/m^2)
+           Above Ground Biomass = 86.07 (g/m^2)
+24/11/1994 - Set
+                            LAI = 1.33 (m^2/m^2)
+           Above Ground Biomass = 180.49 (g/m^2)
+26 November 1994(Day of year=330), operations: 
+      Sending apply message to irrigation
+5 December 1994(Day of year=339), operations: 
+      Sending apply message to irrigation
+14 December 1994(Day of year=348), operations: 
+      Sending apply message to irrigation
+7 January 1995(Day of year=7), operations: 
+      Sending apply message to irrigation
+18/01/1995 - Veraison
+                            LAI = 1.98 (m^2/m^2)
+           Above Ground Biomass = 567.84 (g/m^2)
+3 February 1995(Day of year=34), operations: 
+      Sending apply message to irrigation
+13 February 1995(Day of year=44), operations: 
+      Sending apply message to irrigation
+2/03/1995 - Ripe
+                            LAI = 1.97 (m^2/m^2)
+           Above Ground Biomass = 843.19 (g/m^2)
+2 March 1995(Day of year=61), Harvesting rule: 
+     Manager sending message :- vine harvest
+
+     2/03/1995  - Harvesting Berry from Vine
+     --------------------------------------------
+     Berry Yield DWt: 508.43 (g/m^2)
+     Berry Size: 0.08 (g)
+     Berry Number: 6187.79 (/m^2)
+
+10 March 1995(Day of year=69), operations: 
+      Sending apply message to irrigation
+18 March 1995(Day of year=77), operations: 
+      Sending apply message to irrigation
+30 March 1995(Day of year=89), operations: 
+      Sending apply message to irrigation
+22 April 1995(Day of year=112), operations: 
+      Sending apply message to irrigation
+12 May 1995(Day of year=132), Prune on a fixed date: 
+     Manager sending message :- vine prune  budno = 900
+Removing Leaves from plant
+12/05/1995 - StartDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+4/08/1995 - EndDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+9/09/1995 - BudBurst
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+21 September 1995(Day of year=264), operations: 
+      Sending apply message to irrigation
+2/11/1995 - Flowering
+                            LAI = 1.12 (m^2/m^2)
+           Above Ground Biomass = 107.32 (g/m^2)
+10 November 1995(Day of year=314), operations: 
+      Sending apply message to irrigation
+16/11/1995 - Set
+                            LAI = 1.81 (m^2/m^2)
+           Above Ground Biomass = 279.07 (g/m^2)
+23 November 1995(Day of year=327), operations: 
+      Sending apply message to irrigation
+8 December 1995(Day of year=342), operations: 
+      Sending apply message to irrigation
+21 December 1995(Day of year=355), operations: 
+      Sending apply message to irrigation
+4 January 1996(Day of year=4), operations: 
+      Sending apply message to irrigation
+10/01/1996 - Veraison
+                            LAI = 2.91 (m^2/m^2)
+           Above Ground Biomass = 830.48 (g/m^2)
+17 January 1996(Day of year=17), operations: 
+      Sending apply message to irrigation
+31 January 1996(Day of year=31), operations: 
+      Sending apply message to irrigation
+9 February 1996(Day of year=40), operations: 
+      Sending apply message to irrigation
+20 February 1996(Day of year=51), operations: 
+      Sending apply message to irrigation
+25/02/1996 - Ripe
+                            LAI = 2.89 (m^2/m^2)
+           Above Ground Biomass = 1190.28 (g/m^2)
+25 February 1996(Day of year=56), Harvesting rule: 
+     Manager sending message :- vine harvest
+
+     25/02/1996  - Harvesting Berry from Vine
+     ---------------------------------------------
+     Berry Yield DWt: 742.23 (g/m^2)
+     Berry Size: 0.10 (g)
+     Berry Number: 7595.20 (/m^2)
+
+1 April 1996(Day of year=92), operations: 
+      Sending apply message to irrigation
+23 April 1996(Day of year=114), operations: 
+      Sending apply message to irrigation
+12 May 1996(Day of year=133), Prune on a fixed date: 
+     Manager sending message :- vine prune  budno = 900
+Removing Leaves from plant
+12/05/1996 - StartDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+17 May 1996(Day of year=138), operations: 
+      Sending apply message to irrigation
+11/08/1996 - EndDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+17/09/1996 - BudBurst
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23 September 1996(Day of year=267), operations: 
+      Sending do_output message to leafoutput
+27 September 1996(Day of year=271), operations: 
+      Sending do_output message to leafoutput
+2 October 1996(Day of year=276), operations: 
+      Sending do_output message to leafoutput
+18 October 1996(Day of year=292), operations: 
+      Sending do_output message to leafoutput
+24 October 1996(Day of year=298), operations: 
+      Sending apply message to irrigation
+25 October 1996(Day of year=299), operations: 
+      Sending do_output message to leafoutput
+1 November 1996(Day of year=306), operations: 
+      Sending do_output message to leafoutput
+8 November 1996(Day of year=313), operations: 
+      Sending do_output message to leafoutput
+8/11/1996 - Flowering
+                            LAI = 1.35 (m^2/m^2)
+           Above Ground Biomass = 131.14 (g/m^2)
+14 November 1996(Day of year=319), operations: 
+      Sending apply message to irrigation
+22 November 1996(Day of year=327), operations: 
+      Sending do_output message to leafoutput
+24/11/1996 - Set
+                            LAI = 2.36 (m^2/m^2)
+           Above Ground Biomass = 358.38 (g/m^2)
+28 November 1996(Day of year=333), operations: 
+      Sending apply message to irrigation
+12 December 1996(Day of year=347), operations: 
+      Sending apply message to irrigation
+18 December 1996(Day of year=353), operations: 
+      Sending apply message to irrigation
+20 December 1996(Day of year=355), operations: 
+      Sending do_output message to leafoutput
+6 January 1997(Day of year=6), operations: 
+      Sending apply message to irrigation
+9 January 1997(Day of year=9), operations: 
+      Sending apply message to irrigation
+16/01/1997 - Veraison
+                            LAI = 3.58 (m^2/m^2)
+           Above Ground Biomass = 884.63 (g/m^2)
+21 January 1997(Day of year=21), operations: 
+      Sending apply message to irrigation
+4 February 1997(Day of year=35), operations: 
+      Sending apply message to irrigation
+20 February 1997(Day of year=51), operations: 
+      Sending apply message to irrigation
+5/03/1997 - Ripe
+                            LAI = 3.56 (m^2/m^2)
+           Above Ground Biomass = 1160.48 (g/m^2)
+5 March 1997(Day of year=64), Harvesting rule: 
+     Manager sending message :- vine harvest
+
+     5/03/1997  - Harvesting Berry from Vine
+     --------------------------------------------
+     Berry Yield DWt: 700.17 (g/m^2)
+     Berry Size: 0.07 (g)
+     Berry Number: 9381.91 (/m^2)
+
+13 March 1997(Day of year=72), operations: 
+      Sending apply message to irrigation
+3 April 1997(Day of year=93), operations: 
+      Sending apply message to irrigation
+27 April 1997(Day of year=117), operations: 
+      Sending apply message to irrigation
+12 May 1997(Day of year=132), Prune on a fixed date: 
+     Manager sending message :- vine prune  budno = 900
+Removing Leaves from plant
+12/05/1997 - StartDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+25 May 1997(Day of year=145), operations: 
+      Sending apply message to irrigation
+31/07/1997 - EndDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+13/09/1997 - BudBurst
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+28 October 1997(Day of year=301), operations: 
+      Sending apply message to irrigation
+6/11/1997 - Flowering
+                            LAI = 1.20 (m^2/m^2)
+           Above Ground Biomass = 115.11 (g/m^2)
+20/11/1997 - Set
+                            LAI = 1.77 (m^2/m^2)
+           Above Ground Biomass = 283.87 (g/m^2)
+22 November 1997(Day of year=326), operations: 
+      Sending apply message to irrigation
+27 November 1997(Day of year=331), operations: 
+      Sending apply message to irrigation
+4 December 1997(Day of year=338), operations: 
+      Sending apply message to irrigation
+19 December 1997(Day of year=353), operations: 
+      Sending apply message to irrigation
+7 January 1998(Day of year=7), operations: 
+      Sending apply message to irrigation
+12/01/1998 - Veraison
+                            LAI = 2.19 (m^2/m^2)
+           Above Ground Biomass = 603.08 (g/m^2)
+24 January 1998(Day of year=24), operations: 
+      Sending apply message to irrigation
+5 February 1998(Day of year=36), operations: 
+      Sending apply message to irrigation
+20 February 1998(Day of year=51), operations: 
+      Sending apply message to irrigation
+26/02/1998 - Ripe
+                            LAI = 2.18 (m^2/m^2)
+           Above Ground Biomass = 876.32 (g/m^2)
+26 February 1998(Day of year=57), Harvesting rule: 
+     Manager sending message :- vine harvest
+
+     26/02/1998  - Harvesting Berry from Vine
+     ---------------------------------------------
+     Berry Yield DWt: 599.77 (g/m^2)
+     Berry Size: 0.07 (g)
+     Berry Number: 8179.74 (/m^2)
+
+6 March 1998(Day of year=65), operations: 
+      Sending apply message to irrigation
+19 March 1998(Day of year=78), operations: 
+      Sending apply message to irrigation
+8 April 1998(Day of year=98), operations: 
+      Sending apply message to irrigation
+12 May 1998(Day of year=132), Prune on a fixed date: 
+     Manager sending message :- vine prune  budno = 900
+Removing Leaves from plant
+12/05/1998 - StartDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+2/08/1998 - EndDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+4/09/1998 - BudBurst
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+25 September 1998(Day of year=268), operations: 
+      Sending apply message to irrigation
+9 October 1998(Day of year=282), operations: 
+      Sending apply message to irrigation
+29 October 1998(Day of year=302), operations: 
+      Sending apply message to irrigation
+29/10/1998 - Flowering
+                            LAI = 1.00 (m^2/m^2)
+           Above Ground Biomass = 95.12 (g/m^2)
+12 November 1998(Day of year=316), operations: 
+      Sending apply message to irrigation
+12/11/1998 - Set
+                            LAI = 1.65 (m^2/m^2)
+           Above Ground Biomass = 250.55 (g/m^2)
+27 November 1998(Day of year=331), operations: 
+      Sending apply message to irrigation
+4 December 1998(Day of year=338), operations: 
+      Sending apply message to irrigation
+18 December 1998(Day of year=352), operations: 
+      Sending apply message to irrigation
+31 December 1998(Day of year=365), operations: 
+      Sending apply message to irrigation
+8/01/1999 - Veraison
+                            LAI = 2.57 (m^2/m^2)
+           Above Ground Biomass = 758.85 (g/m^2)
+15 January 1999(Day of year=15), operations: 
+      Sending apply message to irrigation
+29 January 1999(Day of year=29), operations: 
+      Sending apply message to irrigation
+10 February 1999(Day of year=41), operations: 
+      Sending apply message to irrigation
+22/02/1999 - Ripe
+                            LAI = 2.55 (m^2/m^2)
+           Above Ground Biomass = 1011.94 (g/m^2)
+22 February 1999(Day of year=53), Harvesting rule: 
+     Manager sending message :- vine harvest
+
+     22/02/1999  - Harvesting Berry from Vine
+     ---------------------------------------------
+     Berry Yield DWt: 601.56 (g/m^2)
+     Berry Size: 0.09 (g)
+     Berry Number: 6680.56 (/m^2)
+
+27 February 1999(Day of year=58), operations: 
+      Sending apply message to irrigation
+18 March 1999(Day of year=77), operations: 
+      Sending apply message to irrigation
+11 April 1999(Day of year=101), operations: 
+      Sending apply message to irrigation
+12 May 1999(Day of year=132), Prune on a fixed date: 
+     Manager sending message :- vine prune  budno = 900
+Removing Leaves from plant
+12/05/1999 - StartDormancy
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+10 June 1999(Day of year=161), clock: 
+     Simulation is terminating due to end criteria being met.

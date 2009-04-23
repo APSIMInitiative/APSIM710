@@ -1,0 +1,49 @@
+[sample1.report.parameters]
+outputfile =Operations.out
+[sample2.report.parameters]
+outputfile =operatns2.out
+
+[sample.report.parameters]
+variable = clock.day
+variable = clock.year
+variable = tracker.sum@irrigation
+variable = tracker.sum@Fertiliser
+variable = SoilWat.sw_dep()
+variable = SoilN.no3()
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988
+end_date=28/2/1988
+
+[sample.Operations.start_of_day]
+1988  5 fertiliser apply amount = 100 (kg/ha), type = no3_n, depth = 10 (mm)
+1988 15 irrigation apply amount = 50 (mm)
+
+[sample.Operations.end_of_day]
+1988  1 report do_output
+1988 10 report do_output
+1988 20 report do_output
+1988 30 report do_output
+
+[sample2.Operations.end_of_day]
+1/1/1988 report do_output
+2/1/1988 report do_output
+3/1/1988 report do_output
+4/1/1988 report do_output
+5/1/1988 report do_output
+6_jan    report do_output
+7-jan    report do_output
+8_jan_1988 report do_output
+9-jan-1988 report do_output
+feb      report do_output
+
+
+
+[sample1.SummaryFile.parameters]
+summaryfile=operatns.sum
+[sample2.SummaryFile.parameters]
+summaryfile=operatns2.sum
+
+[sample.tracker.parameters]
+variable = sum of irrigation on process from reported to now as sum@irrigation
+variable = sum of Fertiliser on process from reported to now as sum@Fertiliser

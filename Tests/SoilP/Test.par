@@ -1,0 +1,430 @@
+
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988
+end_date=30/1/1988
+
+
+[sample.soilp.parameters]
+!layer         1   2   3   4   5   6   7
+labile_P =     5   1   1   1   1   1   1   (ppm) !labile p content for each layer
+sorption =    50  100 200  200 200 200 200  ()   !soils p sorption characteristic
+root_cp =      200             ()                !c:p ratio of roots at initialisation
+rate_dissol_rock_P =  0.20     (/yr)             !rate at which rock P source becomes available
+rate_loss_avail_P =  0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC
+                              ! Recommended value: Alfisol - 0.3; Andisol - 0.7
+
+
+[sample.SoilWat.parameters]
+insoil =    2.0 ()  ! indicator for initial soil water
+                    ! 0 to 1 = fraction of max avail soil water (0=ll15,
+                    !          1 = dul) used to initialise each soil layer
+                    !  > 1   = initialise to user specified volumetric
+                    !          soil water content information
+
+diffus_const =    88. ()   !   coeffs for unsaturated water flow
+diffus_slope =    35.4  ()   !     "
+
+
+cn2_bare =    80 ()   ! bare soil runoff curve number
+cn_red =    20   ! potetial reduction in curve number due to residue
+cn_cov =    .8   ! cover for maximum reduction in curve number
+salb =    0.13  ()   ! bare soil albedo
+cona =    2.5  ()   ! stage 2 evap coef.
+u =    4 (mm)   ! stage 1 soil evaporation coefficient (mm)
+
+   !layer    1    2    3
+dlayer =     300 300  300    ! layer thickness mm soil
+sat =       .509 .50 .480    ! saturation mm water/mm soil
+dul =       .450 .43  .41    ! drained upper limit mm water/mm soil
+sw =        .364 .43  .41    ! initial soil water mm water/mm soil
+ll15 =      .240 .260 .280   ! lower limit mm water/mm soil
+air_dry =   .15  .20  .20    ! air dry mm water/ mm soil
+swcon =     0.2  0.2  0.2    ! drainage coefficient
+bd =        1.30 1.34 1.36   ! bulk density gm dry soil/cc moist soil
+
+
+[sample.SoilN.parameters]
+amp =  15.0   ! temperature amplitude (oC) - difference between highest and
+               ! lowest mean monthly air temperatures
+tav =  20.0   ! mean annual air temperature (oC)
+root_cn =  20.   ! C:N ratio of initial root residues
+root_wt =  1000.   ! root residues as biomass (kg/ha)
+soil_cn =  14.5   ! C:N ratio of soil
+
+!layer    1    2    3
+oc =     0.84 0.6  0.43 (%)    ! Soil Organic Carbonph =     8.50 8.00 5.30 ()     ! pH of soil
+fbiom =  .025 0.01 0.01 ()     ! Organic C Biomass Fraction
+finert = 0.45  0.8 0.99 ()     ! Inert Organic C Fraction
+no3ppm =  7.6  2.3 1.6 (ppm)   ! Nitrate Concentration
+nh4ppm =  0.30 0.3 0.5 (ppm)   ! Ammonium Concentration
+ureappm =  0    0   0  (ppm)   ! Urea Concentration
+ph      =  7    7   7
+
+! Erosion profile reduction parameters
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+
+
+! ================ TEST 1 ===============================
+! Tillage to depth of 300 mm
+[test1.SummaryFile.parameters]
+summaryfile = test1.sum
+
+[test1.report.parameters]
+outputfile =test1.out
+variable = clock.day
+variable = clock.year
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_p
+variable = soilp.fom_p
+variable = soilp.labile_p
+variable = soilp.unavail_p
+variable = soilp.rock_p
+variable = soilp.banded_p
+variable = soilp.biom_p()
+variable = soilp.hum_p()
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = SoilN.fom_c_pool1
+variable = SoilN.fom_c_pool2
+variable = SoilN.fom_c_pool3
+variable = SoilN.fom_n_pool1
+variable = SoilN.fom_n_pool2
+variable = SoilN.fom_n_pool3
+
+[test1.manager.start_of_day]
+if day = 10 then
+   surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 300.
+endif
+if day = 15 then
+   surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 0.
+endif
+
+
+[test1.manager.end_of_day]
+report do_output
+[test1.log.parameters]
+debug_output = on
+logfile = test1.log
+
+[test1.SurfaceOM.parameters]
+type = lucerne
+mass = 4000
+cnr = 20
+cpr = 200
+standing_fraction = .0
+name = lucerne
+
+! ================ TEST 2 ===============================
+! Tillage to depth of 600 mm
+[test2.SummaryFile.parameters]
+summaryfile = test2.sum
+
+[test2.report.parameters]
+outputfile =test2.out
+variable = clock.day
+variable = clock.day
+variable = clock.year
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_p
+variable = soilp.fom_p
+variable = soilp.labile_p
+variable = soilp.unavail_p
+variable = soilp.rock_p
+variable = soilp.banded_p
+variable = soilp.biom_p()
+variable = soilp.hum_p()
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = SoilN.fom_c_pool1
+variable = SoilN.fom_c_pool2
+variable = SoilN.fom_c_pool3
+variable = SoilN.fom_n_pool1
+variable = SoilN.fom_n_pool2
+variable = SoilN.fom_n_pool3
+
+
+[test2.manager.start_of_day]
+if day = 10 then
+   surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 600.
+endif
+if day = 15 then
+   surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 0.
+endif
+
+
+[test2.manager.end_of_day]
+report do_output
+[test2.log.parameters]
+debug_output = on
+logfile = test2.log
+
+[test2.SurfaceOM.parameters]
+type = lucerne
+mass = 4000
+cnr = 20
+cpr = 200
+standing_fraction = .0
+name = lucerne
+
+! ================ TEST 3 ===============================
+! Tillage to depth of 900 mm
+[test3.SummaryFile.parameters]
+summaryfile = test3.sum
+
+[test3.report.parameters]
+outputfile =test3.out
+variable = clock.day
+variable = clock.day
+variable = clock.year
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_p
+variable = soilp.fom_p
+variable = soilp.labile_p
+variable = soilp.unavail_p
+variable = soilp.rock_p
+variable = soilp.banded_p
+variable = soilp.biom_p()
+variable = soilp.hum_p()
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = SoilN.fom_c_pool1
+variable = SoilN.fom_c_pool2
+variable = SoilN.fom_c_pool3
+variable = SoilN.fom_n_pool1
+variable = SoilN.fom_n_pool2
+variable = SoilN.fom_n_pool3
+
+[test3.manager.start_of_day]
+if day = 10 then
+   surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 900.
+endif
+if day = 15 then
+   surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 0.
+endif
+
+
+[test3.manager.end_of_day]
+report do_output
+
+[test3.log.parameters]
+debug_output = on
+logfile = test3.log
+
+[test3.SurfaceOM.parameters]
+type = lucerne
+mass = 4000
+cnr = 20
+cpr = 200
+standing_fraction = .0
+name = lucerne
+
+! ================ TEST 4 ===============================
+! same as test 1 but use 'dry' met file
+[test4.SummaryFile.parameters]
+summaryfile = test4.sum
+
+[test4.report.parameters]
+outputfile =test4.out
+variable = clock.day
+variable = clock.day
+variable = clock.year
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_p
+variable = soilp.fom_p
+variable = soilp.labile_p
+variable = soilp.unavail_p
+variable = soilp.rock_p
+variable = soilp.banded_p
+variable = soilp.biom_p()
+variable = soilp.hum_p()
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = SoilN.fom_c_pool1
+variable = SoilN.fom_c_pool2
+variable = SoilN.fom_c_pool3
+variable = SoilN.fom_n_pool1
+variable = SoilN.fom_n_pool2
+variable = SoilN.fom_n_pool3
+
+[test4.manager.end_of_day]
+report do_output
+[test4.log.parameters]
+debug_output = on
+logfile = test4.log
+
+
+[test4.SurfaceOM.parameters]
+type = lucerne
+mass = 4000
+cnr = 20
+cpr = 200
+standing_fraction = .0
+name = lucerne
+
+! ================ TEST 5 ===============================
+! Use the add_roots method call
+
+[test5.SummaryFile.parameters]
+summaryfile = test5.sum
+
+[test5.report.parameters]
+outputfile =test5.out
+variable = clock.day
+variable = clock.day
+variable = clock.year
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_p
+variable = soilp.fom_p
+variable = soilp.labile_p
+variable = soilp.unavail_p
+variable = soilp.rock_p
+variable = soilp.banded_p
+variable = soilp.biom_p()
+variable = soilp.hum_p()
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = SoilN.fom_c_pool1
+variable = SoilN.fom_c_pool2
+variable = SoilN.fom_c_pool3
+variable = SoilN.fom_n_pool1
+variable = SoilN.fom_n_pool2
+variable = SoilN.fom_n_pool3
+
+[test5.manager.start_of_day]
+
+if day = 10 then
+   SoilN IncorpFOM type=chickpea, Amount=1000 500 250 125 62 31 15, CNR=20 20 20 20 20 20 20
+endif
+
+[test5.manager.end_of_day]
+report do_output
+
+[test5.SurfaceOM.parameters]
+type = lucerne
+mass = 4000
+cnr = 20
+cpr = 200
+standing_fraction = .0
+name = lucerne
+
+[test5.log.parameters]
+debug_output = on
+logfile = test5.log
+
+! ================ TEST 6 ===============================
+! Addition of fertiliser
+[test6.SummaryFile.parameters]
+summaryfile = test6.sum
+
+[test6.report.parameters]
+outputfile =test6.out
+variable = clock.day
+variable = clock.day
+variable = clock.year
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_p
+variable = soilp.fom_p
+variable = soilp.labile_p
+variable = soilp.unavail_p
+variable = soilp.rock_p
+variable = soilp.banded_p
+variable = soilp.biom_p()
+variable = soilp.hum_p()
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = SoilN.fom_c_pool1
+variable = SoilN.fom_c_pool2
+variable = SoilN.fom_c_pool3
+variable = SoilN.fom_n_pool1
+variable = SoilN.fom_n_pool2
+variable = SoilN.fom_n_pool3
+
+
+[test6.manager.start_of_day]
+if day = 10 then
+    Fertiliser apply amount = 100, type = banded_p, depth = 10
+    Fertiliser apply amount = 100, type = broadcast_p, depth = 400
+    Fertiliser apply amount = 100, type = rock_p, depth = 600
+endif
+
+
+[test6.manager.end_of_day]
+report do_output
+[test6.log.parameters]
+debug_output = on
+logfile = test6.log
+
+[test6.SurfaceOM.parameters]
+type = lucerne
+mass = 4000
+cnr = 100
+cpr = 200
+standing_fraction = .0
+name = lucerne
+
+! ================ TEST 7 ===============================
+! Reset soilP
+
+[test7.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988
+end_date=30/6/1988
+
+[test7.SummaryFile.parameters]
+summaryfile = test7.sum
+
+[test7.report.parameters]
+outputfile =test7.out
+variable = clock.day
+variable = clock.day
+variable = clock.year
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_p
+variable = soilp.fom_p
+variable = soilp.labile_p
+variable = soilp.unavail_p
+variable = soilp.rock_p
+variable = soilp.banded_p
+variable = soilp.biom_p()
+variable = soilp.hum_p()
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = SoilN.fom_c_pool1
+variable = SoilN.fom_c_pool2
+variable = SoilN.fom_c_pool3
+variable = SoilN.fom_n_pool1
+variable = SoilN.fom_n_pool2
+variable = SoilN.fom_n_pool3
+
+
+[test7.manager.start_of_day]
+if day = 10 then
+    Fertiliser apply amount = 100, type = banded_p, depth = 10
+    Fertiliser apply amount = 100, type = broadcast_p, depth = 400
+    Fertiliser apply amount = 100, type = rock_p, depth = 600
+endif
+
+if day = 90 then
+    SoilN reset
+    soilp reset
+endif
+
+[test7.manager.end_of_day]
+report do_output
+
+[test7.log.parameters]
+debug_output = off
+logfile = test7.log
+
+[test7.SurfaceOM.parameters]
+type = lucerne
+mass = 4000
+cnr = 100
+cpr = 200
+standing_fraction = 0.0
+name = lucerne
+

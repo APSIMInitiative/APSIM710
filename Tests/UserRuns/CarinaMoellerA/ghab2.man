@@ -1,0 +1,98 @@
+!=================== Management all treatments & seasons ==========================
+
+[9900.clock.parameters]
+start_date = 20/12/1999     ! dd/mm/yyyy
+end_date = 29/6/2000     ! dd/mm/yyyy
+
+[9899.clock.parameters]
+simulation_start_day   = 330  !26-nov
+simulation_start_year  = 1998
+simulation_end_day     = 181  !30-jun
+simulation_end_year    = 1999
+
+
+!======================== Ghab2 1999/2000 =============================
+! Chickpea Ghab2, irrigated (W1) and rainfed (W0), Tel Hadya block B2
+
+[g200.manager.start_of_day]
+
+
+if day = 355 and year = 1999 then
+      surfaceom tillage type = planter, f_incorp = 1.0 (0-1), tillage_depth = 150 (mm)
+endif
+
+
+if day = 356 and year = 1999 then 
+   chickpea sow cultivar = amethyst, plants = 50 (/m2), sowing_depth = 60 (mm)  !depth was very variable, slippery dry soil at sowing
+endif
+
+!------------------------------------------------------------------------------
+! Irrigation schedule 1999/2000
+
+[water.irrigate.parameters]
+manual_irrigation = on
+!date    29.3 2.4  5.4   13.4  18.4  26.4  2.5 
+year   = 2000 2000 2000  2000  2000  2000  2000
+day    = 89   93   96    104   109   117   123
+
+!amount = 41   30   15.2  44.6  31.9  22.1  23.6 ! applied water according to counter
+
+! ~90% of applied water
+amount = 37    27   13.7  40.1  28.7  20    21.2
+
+
+
+!=================== Ghab2 1998/1999 ===================================
+! Chickpea Ghab2, rainfed, Tel Hadya block B7
+! Ghab2 infested with Ascochyta blight at flowering
+! target population 50plnts/m2, observed plnt densities 41-49plnts/m2 (mean 45)
+
+[g299.manager.start_of_day]
+
+if day = 332 and year = 1998 then
+      surfaceom tillage type = planter, f_incorp = 1.0 (0-1), tillage_depth = 150 (mm)
+endif
+
+       
+if day = 333 and year = 1998 then
+   chickpea sow cultivar = amethyst, plants = 43 (/m2), sowing_depth = 70 (mm)
+endif
+
+
+
+!======================= section ALL ===============================================
+
+[all.manager.init]
+
+ tt_since_emerg = 0     
+  
+  
+[all.manager.end_of_day]
+
+
+if (chickpea.stage >= 3 and chickpea.stage <11) then
+   tt_since_emerg = tt_since_emerg + chickpea.TT
+else
+   tt_since_emerg = 0
+endif
+
+
+n_from_soil = biomass_n - n_fixed_tops
+
+wat_mm_1_4  = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4)
+
+
+if chickpea.StageName = 'harvest_ripe' or chickpea.plant_status = 'dead' then
+!if chickpea.plant_status = 'dead' then
+   chickpea harvest
+   chickpea end_crop
+endif
+
+
+!if (chickpea.stage >= 0 and chickpea.stage < 11 ) then  !simulation stops at harvest 11=end crop
+   report do_output
+!endif
+
+[g2w0_00.SummaryFile.parameters]
+summaryfile = g2_00_w0.sum
+

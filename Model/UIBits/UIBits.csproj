@@ -1,0 +1,139 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{29210E34-C94B-459F-A926-8203411B93BD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UIBits</RootNamespace>
+    <AssemblyName>UIBits</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ColorBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorBox.Designer.cs">
+      <DependentUpon>ColorBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorMessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FilePrintController.cs" />
+    <Compile Include="HyperTextLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Line.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Line.Designer.cs">
+      <DependentUpon>Line.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewDocumentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrintPreviewDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrintPreviewDialog.Designer.cs">
+      <DependentUpon>PrintPreviewDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReorderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextHeader.Designer.cs">
+      <DependentUpon>TextHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VerticalProgressBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ErrorMessageForm.resx">
+      <DependentUpon>ErrorMessageForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HyperTextLabel.resx">
+      <DependentUpon>HyperTextLabel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewDocumentForm.resx">
+      <DependentUpon>NewDocumentForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintPreviewDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PrintPreviewDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReorderForm.resx">
+      <DependentUpon>ReorderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VerticalProgressBar.resx">
+      <DependentUpon>VerticalProgressBar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ApsimFile\ApsimFile.csproj">
+      <Project>{416A3885-FD38-46D0-BE42-54AA33D146B7}</Project>
+      <Name>ApsimFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSGeneral\CSGeneral.csproj">
+      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
+      <Name>CSGeneral</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIUtility\UIUtility.csproj">
+      <Project>{BD0D614A-2EF9-411B-9884-F1EBD349A0C8}</Project>
+      <Name>UIUtility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

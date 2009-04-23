@@ -1,0 +1,54 @@
+   <bambatsi>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\bambatsi.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Generic Growth science documentation" >../apsim/growth/docs/growth_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <cultivar name="seedling"/>
+     <variables>
+         <variable name="lai" description ="Bambatsi leaf area index"/>
+         <variable name="fw" description ="Bambatsi water stress factor"/>
+         <variable name="fn" description ="Bambatsi N stress factor"/>
+         <variable name="ft" description ="Bambatsi Temperature stress factor"/>
+         <variable name="fvpd" description ="Bambatsi VPD stress factor"/>
+         <variable name="cover_green" description ="Bambatsi Canopy Cover"/>
+         <variable name="height" description ="Bambatsi Height"/>
+         <variable name="plants" description ="Bambatsi Plant Population"/>
+         <variable name="age" description ="Bambatsi Tree Age"/>
+         <variable name="sw_demand" description ="Bambatsi soil water demand"/>
+         <variable name="ep" description ="Bambatsi Tree water use"/>
+         <variable name="foliage_mass" description ="Bambatsi foliage mass"/>
+         <variable name="foliage_n" description ="Bambatsi foliage N mass"/>
+         <variable name="biomass" description ="Bambatsi Total Above-ground biomass"/>
+         <variable name="adm_green" array = "T" description ="Bambatsi Live Above-ground Biomass Pools"/>
+         <variable name="adm_dead" array = "T" description ="Bambatsi Dead Above-ground Biomass Pools"/>
+         <variable name="adm_sen" array = "T" description ="Bambatsi Senesced Above-ground Biomass Pools"/>
+         <variable name="root_mass" description ="Bambatsi root mass"/>
+         <variable name="root_n" description ="Bambatsi root N mass"/>
+         <variable name="root_depth" description ="Bambatsi rooting depth"/>
+     </variables>
+
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Growth.dll</dll>
+         <ini>%apsim%\Model\Bambatsi.xml</ini>
+         <sim>
+            <uptake_source>calc</uptake_source>
+            <n_uptake_source>calc</n_uptake_source>
+            <rlv> 0.01 0 0 0 0 0 0 0 0 0 0 0 0 0</rlv>
+         </sim>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </bambatsi>

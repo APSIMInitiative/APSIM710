@@ -1,0 +1,67 @@
+[standard.report.parameters]
+outputfile =  swat.out
+
+
+[calibrators.report.parameters]
+outputfile =  calib.out
+
+
+[swat.report.parameters]
+
+variable = clock.dd/mm/yyyy as date
+variable = SoilWat.eo
+variable = SoilWat.eos
+variable = SoilWat.runoff
+variable = SoilWat.sw_dep
+
+
+[swat.clock.parameters]
+start_date =  1/1/1977
+end_date =  31/12/1978
+
+[swat.SoilWat.parameters]
+cn2_bare =        80       ()
+diffus_const =    100      ()
+diffus_slope =    50       ()
+cona =            4.0      ()
+u =               4.0      ()
+salb =            0.25     ()
+insoil =          1.5      ()
+cn_red =          0        ()
+cn_cov =          0        ()
+
+!layer           = 1      2      3      4      5
+dlayer =           100    100    100    100    100       (mm)   ! Layer depth mm soil
+air_dry =          0.1    0.1    0.1    0.1    0.1    (mm/mm)   ! Air dry limit
+ll15 =             0.2    0.2    0.2    0.2    0.2    (mm/mm)   ! 15 bar lower limit mm water/mm soil
+dul =              0.4    0.4    0.4    0.4    0.4    (mm/mm)   ! Drained upper limit mm water/mm soil
+sat =              0.5    0.5    0.5    0.5    0.5    (mm/mm)   ! Saturation mm water/mm soil
+bd =               1.0    1.0    1.0    1.0    1.0    (g/cc)   ! Bulk density gm dry soil/cc moist soil
+sw =               0.3    0.3    0.3    0.3    0.3    (mm/mm)   ! Initial water content mm water/mm soil
+swcon =            0.1    0.1    0.1    0.1    0.1    ()   ! Soil conductivity - sand 0.7 heavy clay 0.1
+
+[calibrators.SoilWat.parameters]
+! Supplied met file has both "pan" and "obrunoff".
+eo_source =       pan
+observed_runoff =  obrunoff
+
+[swat.manager.init]
+
+[swat.manager.start_of_day]
+
+if day = 100 then
+   irrigation apply amount = 30 (mm)
+endif
+
+if day = 120 then
+   SoilWat tillage type = disc, cn_red = 15.0, cn_rain = 30.0
+endif
+
+[swat.manager.end_of_day]
+report do_output
+
+[swat.summaryfile.parameters]
+summaryfile =  swat.sum
+
+[calibrators.summaryfile.parameters]
+summaryfile =  calib.sum

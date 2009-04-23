@@ -1,0 +1,82 @@
+! gmtb0[a-d] give each model driven by single/split equations under soilwat.
+! gmtb0e gives eroding profile.
+! gmtb0s gives swim/surface.
+
+version = 7.0(2)
+[apsim.gmtb0a.control]
+
+title=Greenmount B0_SOILWAT
+module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[gmtb0] refdata.par[gmtb0a]
+module = input(met) gmtapsim.dat[weather]
+module = manager refdata.par[gmt]
+module = SoilWat   refdata.par [gmtb0] %apsim%/Model/SoilWat.xml [standard]
+module = erosion refdata.par[gmtb0a]
+module = SurfaceOM   refdata.par [gmtb0] %apsim%/Model/SurfaceOM.xml [standard]
+module = grasp   refdata.par [gmtb0] %apsim%/Model/grasp.xml [standard]
+[apsim.gmtb0b.control]
+
+title=Greenmount B0_SOILWAT
+module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[gmtb0] refdata.par[gmtb0b]
+module = input(met) gmtapsim.dat[weather]
+module = Operations   refdata.par [gmtb0]
+module = manager refdata.par[gmt]
+module = SoilWat   refdata.par [gmtb0] %apsim%/Model/SoilWat.xml [standard]
+module = erosion refdata.par[gmtb0b]
+module = SurfaceOM   refdata.par [gmtb0] %apsim%/Model/SurfaceOM.xml [standard]
+module = grasp refdata.par[gmtb0] grasp.ini[standard]
+[apsim.gmtb0c.control]
+
+title=Greenmount B0_SOILWAT
+module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[gmtb0] refdata.par[gmtb0c]
+module = input(met) gmtapsim.dat[weather]
+module = Operations   refdata.par [gmtb0]
+module = manager refdata.par[gmt]
+module = SoilWat   refdata.par [gmtb0] %apsim%/Model/SoilWat.xml [standard]
+module = erosion refdata.par[gmtb0c]
+module = SurfaceOM   refdata.par [gmtb0] %apsim%/Model/SurfaceOM.xml [standard]
+module = grasp   refdata.par [gmtb0] %apsim%/Model/grasp.xml [standard]
+[apsim.gmtb0d.control]
+
+title=Greenmount B0_SOILWAT
+module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[gmtb0] refdata.par[gmtb0d]
+module = input(met) gmtapsim.dat[weather]
+module = Operations   refdata.par [gmtb0]
+module = manager refdata.par[gmt]
+module = SoilWat   refdata.par [gmtb0] %apsim%/Model/SoilWat.xml [standard]
+module = erosion refdata.par[gmtb0d]
+module = SurfaceOM   refdata.par [gmtb0] %apsim%/Model/SurfaceOM.xml [standard]
+module = grasp   refdata.par [gmtb0] %apsim%/Model/grasp.xml [standard]
+
+! NB.
+!     This will throw report into chaos when a profile layer disappears.
+!     There's a silly message from input at the end of the summary file. Is it a bug???
+[apsim.gmtb0e.control]
+title=Greenmount B0_SOILWAT
+module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report refdata.par[gmtb0] refdata.par[gmtb0e]
+module = input(met) gmtapsim.dat[weather]
+module = Operations   refdata.par [gmtb0]
+module = manager refdata.par[gmt]
+module = SoilWat   refdata.par [gmtb0] %apsim%/Model/SoilWat.xml [standard]
+module = erosion refdata.par[gmtb0e]
+module = SurfaceOM   refdata.par [gmtb0] %apsim%/Model/SurfaceOM.xml [standard]
+module = grasp   refdata.par [gmtb0] %apsim%/Model/grasp.xml [standard]
+[apsim.gmtb0s.control]
+
+title=Greenmount B0_SWIM
+module = clock   gmtswim.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report   gmtswim.par [gmtb0]
+module = input(met)      gmtapsim.dat [weather]
+module = Operations
+module = manager  gmtswim.par [gmtb0]
+module = SWIM2   gmtswim.par [gmtb0] %apsim%/Model/SWIM2.xml [standard]
+module = erosion  gmtswim.par [gmtb0]
+module = SurfaceOM   gmtswim.par [gmtb0] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   gmtswim.par [gmtb0] %apsim%/Model/SoilN.xml [standard]
+module = grasp   gmtswim.par [gmtb0] %apsim%/Model/grasp.xml [standard]
+module = surface  gmtswim.par [gmtb0]
+module = canopy

@@ -1,0 +1,88 @@
+!!!!! CSU Red Brown Earth - Wagga Wagga
+
+[300mm.SoilWat.parameters]
+wet_soil_depth = 300
+
+[600mm.SoilWat.parameters]
+wet_soil_depth = 600
+
+[900mm.SoilWat.parameters]
+wet_soil_depth = 900
+
+[1200mm.SoilWat.parameters]
+wet_soil_depth = 1200
+
+[1500mm.SoilWat.parameters]
+wet_soil_depth = 1500
+
+
+[RedBrownEarth.SoilWat.parameters]
+
+insoil = 2.0   ! indicator for initial soil water
+               ! 0 to 1 is fraction of avail soil water
+               !                                         >1 = input by user)
+u = 6          ! 16.1.95 stage 1 soil evaporation coefficient (mm)
+cn2_bare = 75       ! runoff curve number
+salb = 0.13    ! bare soil albedo
+cn_red = 20     ! curve number max reduction
+cn_cov = .80     ! cover which generates max cn reduction
+cona = 3.5      !
+diffus_const = 44  !wagga
+diffus_slope = 16 !wagga
+
+
+!layer no      1        2          3       4       5      6         7       8       9    10     11    12
+!x =          100      400        600      900    1100   1500      1650   2000     2500  3000   3500   4000
+dlayer  =     100      300        200      300    200     400       150    350      500   500    500    500
+ll15    =    .097     .130        .168     .2     .197    .183     .230   .279      .279  .279  .279    .279
+dul     =    .256     .282        .346     .335   .341    .350     .358   .366      .366  .366  .366    .366
+!sw      =    .256     .282        .346     .335   .341    .350     .358   .366      .366  .366  .366    .366
+!sw      =    .09      .21         .27      .295   .296    .285     .299   .373      .373  .373  .373    .373
+sat     =    .401     .395        .46      .415   .43     .463     .435   .409      .409  .409  .409    .409
+bd      =    1.42     1.61        1.37     1.40   1.53    1.42     1.49   1.49      1.49  1.49  1.49    1.49
+!ks   =       .6       0.4        2.0      0.3     0.35   1.00     0.76   0.6        0.6   0.6   0.6     0.6
+swcon =       .5       0.5        0.5      0.5     0.5     0.5      0.5    0.5       0.5   0.5   0.5     0.5
+air_dry =     .04      .1         .15      .15     .15     .15      .15   .15        .15   .15   .15     .15
+
+
+
+[RedBrownEarth.SoilN.parameters]
+
+
+root_cn =               40       (C)   !initial root C:N (rough avg from mimic runs)
+root_wt =               2500      (kg/ha)   !initial root weight
+soil_cn =               9        (kgC/kgN)   !soil initial C:N ratio
+amp =                   15.9     (C)   !air temperature amplitude
+tav =                   15.4     (C)   !average annual temperature
+enr_a_coeff =           7.4      ()   !only used in erosion simultion
+enr_b_coeff =           0.2      ()   !only used in erosion simultion
+profile_reduction =     off      ()   !only used in erosion simultion
+
+!layer no              1        2          3       4       5      6         7       8       9    10     11    12
+!x =                  100      400        600      900    1100   1500      1650   2000     2500  3000   3500   4000
+ph =                  5.8       5.8       5.8      5.2    5.2     5.2      5.2    5.3      5.3   5.3    5.3     5.3
+no3ppm =             5.0       5.0       1.9       1.0    1        1        1     0.9     0.9    0.9    0.9     0.9
+nh4ppm =              1.00     1.0       1.0       1.0   0.65    0.40     0.30    0.30     0.30  0.30   0.30    0.30
+uppm =                 0        0         0         0       0        0       0       0       0     0      0       0
+fbiom =              0.05     0.025      0.01      0.01    0.01     0.01    0.01    0.01     0.01  0.01  0.01    0.01
+oc =                 0.96      0.59     0.46       0.35    0.2      0.06    0.06    0.06     0.06  0.06  0.06    0.06
+finert =             0.1       0.3      0.75       0.9     0.95     0.99    0.99    0.99     0.99  0.99  0.99    0.99
+
+
+[RedBrownEarth.wheat.parameters]
+
+!layer no      1        2          3       4       5      6         7       8       9    10     11    12
+ll =          .097     .130      .168       .2     .25    .183     .230    .279     .279  .279   .279   .279
+xf=           1.00    1.00        1.00     1.00     1.00    1.00      0      0         0     0      0      0
+kl=           0.1     0.1         0.1     0.08      0.06    0.03      0      0         0     0      0       0
+
+[RedBrownEarth.canola.parameters]
+! same as wheat
+!layer no      1        2          3       4       5      6         7       8       9    10     11    12
+ll =          .097     .130      .168       .2     .25    .183     .230    .279     .279  .279   .279   .279
+xf=           1.00    1.00        1.00     1.00     1.00    1.00      0      0         0     0      0      0
+kl=           0.1     0.1         0.1     0.08      0.06    0.03      0      0         0     0      0       0
+
+
+
+

@@ -1,0 +1,57 @@
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Pearse (Heitman) Mingenew WA (see Neal Dalgleish)
+
+[300mm.SoilWat.parameters]
+wet_soil_depth = 300
+
+[Sand.wheat.parameters]
+    ll   =  0.033    0.033   0.041   0.061   0.060   0.057   0.059   0.086  0.079  0.073  0.070
+!   kl   =  0.080    0.080   0.080   0.060   0.040   0.020   0.010  0.010  0.010  0.010  0.010 ()   !
+    kl   =  0.100    0.100   0.080   0.080   0.060   0.050   0.040  0.030  0.020  0.010  0.010 ()   !
+    xf   =  1.0      1.00    1.00    1.00    1.00    1.00    1.00   1.0    1.0    1.0    1.0     !
+
+
+[Sand.SoilWat.parameters]
+
+   cona            = 3.0      ()     ! stage 2 evap coef.
+   diffus_const =  88                ! coeffs for dbar ! jpd suggests 550 for sands
+   diffus_slope =  35                ! "   "   " ! jpd suggests 26 for sands
+   u               = 0.5      (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb = 0.13    ! bare soil albedo
+   max_pond = 0   ! ponding capacity
+   cn2_bare        = 62       ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                   ! & max. cover for reduction
+
+! layer       1        2       3       4       5       6       7      8      9      10     11
+   dlayer  =  150.000  150.000 300.000 300.000 300.000 300.000 300.00 300.00 300.00 300.00 300.00 (mm)
+air_dry    =  0.010    0.033   0.031   0.021   0.020   0.027   0.030   0.035 0.038  0.042  0.043
+!  air_dry =  0.010    0.030   0.041   0.061   0.060   0.057   0.059   0.086 0.079  0.073  0.070
+ll15       =  0.011    0.033   0.041   0.061   0.060   0.057   0.059   0.086 0.079  0.073  0.070
+dul        =  0.102    0.070   0.083   0.099   0.092   0.099   0.110   0.110 0.110  0.110  0.110
+sat        =  0.370    0.340   0.340   0.340   0.330   0.330   0.330   0.330 0.330  0.330  0.330
+bd         =  1.59     1.67    1.67    1.67    1.69    1.69    1.69    1.69  1.69   1.69   1.69
+swcon       =    0.100   0.100   0.100   0.100   0.100   0.300   0.300   0.300  0.300   0.300   0.300
+
+
+[Sand.SoilN.parameters]
+
+   root_cn =   50.0
+   root_wt =  1000.0
+   soil_cn = 12.5 ! measured top layer 0-10cms in Wongan Hills
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+!layer       1       2       3       4       5       6       7       8      9     10     11
+oc       =   0.995   0.473   0.218   0.176   0.156   0.127   0.117   0.117  0.110 0.110 0.010
+ph       =   5.65    5.42    5.23    5.3     5.7     6.08    6.1     6.4    6.2   6.5   6.5
+fbiom    =   0.025   0.02    0.015   0.01    0.01    0.01    0.01    0.01   0.01  0.01  0.01
+finert   =   0.4     0.6     0.8     0.9     0.95    0.95    0.95    0.95   0.95  0.95  0.95
+ureappm  =   0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0    0.0   0.0   0.0
+  nh4ppm =   1.240   0.180  0.180  0.130  0.110 0.11 0.11 0.11 0.11 0.10 0.01
+  no3ppm =   10.00   5.90   3.00   3.200  1.000 1.00 1.00 1.00 1.00 0.50 0.50
+

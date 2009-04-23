@@ -1,0 +1,612 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Lawes06P1Mild
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                        "Daily" = %apsim%\Model\Report.dll
+   Component                        "Final" = %apsim%\Model\Report.dll
+   Component                   "LeafOutput" = %apsim%\Model\Report.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                 "LeafHarvests" = %apsim%\Model\Operations.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component                 "Calculations" = %apsim%\Model\Manager.dll
+   Component              "DPIGatton Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component           "DPIGatton Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                     "broccoli" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 29/03/2006
+     Simulation end date   =  3/07/2006
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Validation\Broccoli\DPI2006b.met
+
+------- Daily Initialisation --------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        PhenologyCurrentPhaseName
+        PhenologyThermalTimeValue
+        broccoli.AboveGroundDM
+        broccoli.LeafCohortNo
+        LeafLAI
+        LeafTranspiration
+        LeafWaterDemand
+        RootWaterSupply
+        eo
+        es
+        TotalET
+        evap
+        WaterSupplyDemandRatio
+        broccoli.floral_initiation_das
+        broccoli.maturity_das
+        broccoli.stage
+        broccoli.PhenologyJuvenileVDModelCumulativeVD
+        broccoli.TTAfterSowing
+        broccoli.swdef_photo
+        broccoli.nfact_photo
+        broccoli.LeafPhotosynthesisFt
+        Irrigation.irrigation
+        LeafFinalNodeNo
+        broccoli.emergence_das
+        broccoli.LeafDeadNodeNo
+        broccoli.LeafFullyExpandedNodeNo
+        sw_dep()
+        broccoli.LeafLiveWt
+        broccoli.StemLiveWt
+        sw
+        no3
+        RootDepth
+        no3_demand
+        totaln
+        FloretReadyForHarvest
+        StageCodeValue
+        LeafDMSupply
+        FloretLiveWt
+        LeafSLAcheck
+        Height
+        LeafExpansionStressValue
+        LeafFw
+        LeafSpecificArea
+        Interception
+
+     Output file = Lawes06P1Mild Daily.out
+     Format = normal
+
+------- Final Initialisation --------------------------------------------------
+     Output frequency:
+        broccoli.harvesting
+     Output variables:
+        broccoli.sowing_date
+        dd/mm/yyyy
+        broccoli.floral_initiation_das
+        broccoli.maturity_das
+        broccoli.green_biomass_wt
+        broccoli.FloretGreenWt
+        broccoli.leaf_area_max
+        broccoli.stage
+        broccoli.cumvd
+        broccoli.TTAfterSowing
+        broccoli.swdef_photo
+        broccoli.nfact_photo
+        broccoli.temp_stress_photo
+        Irrigation.irrigation
+        broccoli.dlt_leaf_no
+        broccoli.dlt_node_no
+        broccoli.final_leaf_no
+        broccoli.emergence_das
+        broccoli.node_no_sen
+        broccoli.node_no_fx
+        sw_dep()
+
+     Output file = Lawes06P1Mild Final.out
+     Format = normal
+
+------- LeafOutput Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafMaxSize
+
+     Output file = Lawes06P1Mild LeafOutput.out
+     Format = normal
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- LeafHarvests Initialisation -------------------------------------------
+     Operations Schedule
+     ===================
+     24-Apr-200  Prepare      LeafOutput do_output
+     10-May-200  Prepare      LeafOutput do_output
+     23-May-200  Prepare      LeafOutput do_output
+     22-Jun-200  Prepare      LeafOutput do_output
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      5/04/2006  Prepare      irrigation apply amount = 45
+      6/04/2006  Prepare      irrigation apply amount = 0
+      7/04/2006  Prepare      irrigation apply amount = 0
+      8/04/2006  Prepare      irrigation apply amount = 31
+      9/04/2006  Prepare      irrigation apply amount = 0
+     10/04/2006  Prepare      irrigation apply amount = 0
+     11/04/2006  Prepare      irrigation apply amount = 8.03775459513155
+     12/04/2006  Prepare      irrigation apply amount = 0
+     13/04/2006  Prepare      irrigation apply amount = 0
+     14/04/2006  Prepare      irrigation apply amount = 0
+     15/04/2006  Prepare      irrigation apply amount = 5.06706408345752
+     16/04/2006  Prepare      irrigation apply amount = 0
+     17/04/2006  Prepare      irrigation apply amount = 0
+     18/04/2006  Prepare      irrigation apply amount = 7.38201689021368
+     19/04/2006  Prepare      irrigation apply amount = 0
+     20/04/2006  Prepare      irrigation apply amount = 0
+     21/04/2006  Prepare      irrigation apply amount = 0
+     22/04/2006  Prepare      irrigation apply amount = 7.83904619970193
+     23/04/2006  Prepare      irrigation apply amount = 0
+     24/04/2006  Prepare      irrigation apply amount = 0
+     25/04/2006  Prepare      irrigation apply amount = 0
+     26/04/2006  Prepare      irrigation apply amount = 0
+     27/04/2006  Prepare      irrigation apply amount = 0
+     28/04/2006  Prepare      irrigation apply amount = 0
+     29/04/2006  Prepare      irrigation apply amount = 0
+     30/04/2006  Prepare      irrigation apply amount = 0
+      1/05/2006  Prepare      irrigation apply amount = 0
+      2/05/2006  Prepare      irrigation apply amount = 6.26924987580732
+      3/05/2006  Prepare      irrigation apply amount = 0
+      4/05/2006  Prepare      irrigation apply amount = 0
+      5/05/2006  Prepare      irrigation apply amount = 0
+      6/05/2006  Prepare      irrigation apply amount = 0
+      7/05/2006  Prepare      irrigation apply amount = 0
+      8/05/2006  Prepare      irrigation apply amount = 0
+      9/05/2006  Prepare      irrigation apply amount = 0
+     10/05/2006  Prepare      irrigation apply amount = 0
+     11/05/2006  Prepare      irrigation apply amount = 0
+     12/05/2006  Prepare      irrigation apply amount = 0
+     13/05/2006  Prepare      irrigation apply amount = 8.21095571095574
+     14/05/2006  Prepare      irrigation apply amount = 0
+     15/05/2006  Prepare      irrigation apply amount = 0
+     16/05/2006  Prepare      irrigation apply amount = 6.04073522106314
+     17/05/2006  Prepare      irrigation apply amount = 0
+     18/05/2006  Prepare      irrigation apply amount = 0
+     19/05/2006  Prepare      irrigation apply amount = 0
+     20/05/2006  Prepare      irrigation apply amount = 6.42191142191142
+     21/05/2006  Prepare      irrigation apply amount = 0
+     22/05/2006  Prepare      irrigation apply amount = 0
+     23/05/2006  Prepare      irrigation apply amount = 8.29607550919024
+     24/05/2006  Prepare      irrigation apply amount = 0
+     25/05/2006  Prepare      irrigation apply amount = 0
+     26/05/2006  Prepare      irrigation apply amount = 0
+     27/05/2006  Prepare      irrigation apply amount = 8.11227024341781
+     28/05/2006  Prepare      irrigation apply amount = 0
+     29/05/2006  Prepare      irrigation apply amount = 0
+     30/05/2006  Prepare      irrigation apply amount = 6.4977645305515
+     31/05/2006  Prepare      irrigation apply amount = 0
+      1/06/2006  Prepare      irrigation apply amount = 0
+      2/06/2006  Prepare      irrigation apply amount = 0
+      3/06/2006  Prepare      irrigation apply amount = 0
+      4/06/2006  Prepare      irrigation apply amount = 9.72180824639839
+      5/06/2006  Prepare      irrigation apply amount = 0
+      6/06/2006  Prepare      irrigation apply amount = 3.12468951813224
+      7/06/2006  Prepare      irrigation apply amount = 0
+      8/06/2006  Prepare      irrigation apply amount = 6.45802285146548
+      9/06/2006  Prepare      irrigation apply amount = 0
+     10/06/2006  Prepare      irrigation apply amount = 6.60705414803763
+     11/06/2006  Prepare      irrigation apply amount = 0
+     12/06/2006  Prepare      irrigation apply amount = 0
+     13/06/2006  Prepare      irrigation apply amount = 6.63189269746643
+     14/06/2006  Prepare      irrigation apply amount = 0
+     15/06/2006  Prepare      irrigation apply amount = 0
+     16/06/2006  Prepare      irrigation apply amount = 0
+     17/06/2006  Prepare      irrigation apply amount = 8.37059115747631
+     18/06/2006  Prepare      irrigation apply amount = 0
+     19/06/2006  Prepare      irrigation apply amount = 0
+     20/06/2006  Prepare      irrigation apply amount = 0
+     21/06/2006  Prepare      irrigation apply amount = 0
+     22/06/2006  Prepare      irrigation apply amount = 3.38301043219085
+     23/06/2006  Prepare      irrigation apply amount = 0
+     24/06/2006  Prepare      irrigation apply amount = 6.78589170392443
+     27/06/2006  Prepare      broccoli harvest
+     27/06/2006  Prepare      broccoli EndCrop
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (today = date('4-apr-2006') then
+             broccoli sow population =4, depth = 50, cultivar = greenbelt, maxcover = 1.0, budnumber = 1, row_spacing = 600, crop_class = transplant
+             endif
+     END of rules
+     
+
+------- Calculations Initialisation -------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     totalet = 0.0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     totalet = broccoli.leaftranspiration + es
+     END of rules
+     
+     Manager creating a new local real variable : totalet = 0.00000
+
+------- DPIGatton Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.140  0.200  0.350  0.380  0.260  1.260  0.762  0.600
+          150.-  300.  0.200  0.210  0.380  0.410  0.340  1.450  0.190  0.600
+          300.-  600.  0.200  0.210  0.380  0.410  0.360  1.270  0.048  0.600
+          600.-  900.  0.200  0.210  0.440  0.470  0.420  1.330  0.000  0.600
+          900.- 1200.  0.200  0.210  0.400  0.430  0.370  1.410  0.000  0.600
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      30.00       9.00      22.50       4.50
+          150.-  300.      31.50      19.50      25.50       4.50
+          300.-  600.      63.00      45.00      51.00       9.00
+          600.-  900.      63.00      63.00      69.00       9.00
+          900.- 1200.      63.00      48.00      57.00       9.00
+          ---------------------------------------------------------
+               Totals     250.50     184.50     225.00      36.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              90.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-sep
+                                  Winter        1-jun
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- DPIGatton Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Prarie
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.25  100.00  100.00    0.00
+             2     7.00  1.06   20.01    0.22    0.00
+             3     7.00  0.81   44.96    0.38    0.00
+             4     7.00  0.70   44.69    0.40    0.00
+             5     7.00  0.70   43.57    0.42    0.00
+          ------------------------------------------------
+           Totals              253.22  101.42    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      23212.1  1857.0   412.9    51.6    35.8     0.9
+             2      22874.2  1829.9   180.8    22.6    24.6     0.6
+             3      30799.9  2464.0    61.1     7.6    11.6     0.3
+             4      27902.3  2232.2    27.7     3.5     5.5     0.1
+             5      29595.3  2367.6    14.7     1.8     2.6     0.1
+          ---------------------------------------------------------
+           Totals  134383.9 10750.7   697.1    87.1    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+4 April 2006(Day of year=94), Sow on a fixed date: 
+     Manager sending message :- broccoli sow  population = 4, depth = 50, cultivar = greenbelt, maxcover = 1.0, budnumber = 1, row_spacing = 600, crop_class = transplant
+5 April 2006(Day of year=95), operations: 
+      Sending apply message to irrigation
+6 April 2006(Day of year=96), operations: 
+      Sending apply message to irrigation
+7 April 2006(Day of year=97), operations: 
+      Sending apply message to irrigation
+8 April 2006(Day of year=98), operations: 
+      Sending apply message to irrigation
+9 April 2006(Day of year=99), operations: 
+      Sending apply message to irrigation
+9/04/2006 - EndShock
+                            LAI = 0.02 (m^2/m^2)
+           Above Ground Biomass = 1.74 (g/m^2)
+10 April 2006(Day of year=100), operations: 
+      Sending apply message to irrigation
+11 April 2006(Day of year=101), operations: 
+      Sending apply message to irrigation
+12 April 2006(Day of year=102), operations: 
+      Sending apply message to irrigation
+13 April 2006(Day of year=103), operations: 
+      Sending apply message to irrigation
+14 April 2006(Day of year=104), operations: 
+      Sending apply message to irrigation
+15 April 2006(Day of year=105), operations: 
+      Sending apply message to irrigation
+16 April 2006(Day of year=106), operations: 
+      Sending apply message to irrigation
+17 April 2006(Day of year=107), operations: 
+      Sending apply message to irrigation
+18 April 2006(Day of year=108), operations: 
+      Sending apply message to irrigation
+19 April 2006(Day of year=109), operations: 
+      Sending apply message to irrigation
+20 April 2006(Day of year=110), operations: 
+      Sending apply message to irrigation
+21 April 2006(Day of year=111), operations: 
+      Sending apply message to irrigation
+22 April 2006(Day of year=112), operations: 
+      Sending apply message to irrigation
+23 April 2006(Day of year=113), operations: 
+      Sending apply message to irrigation
+24 April 2006(Day of year=114), LeafHarvests: 
+      Sending do_output message to leafoutput
+24 April 2006(Day of year=114), operations: 
+      Sending apply message to irrigation
+25 April 2006(Day of year=115), operations: 
+      Sending apply message to irrigation
+26 April 2006(Day of year=116), operations: 
+      Sending apply message to irrigation
+27 April 2006(Day of year=117), operations: 
+      Sending apply message to irrigation
+28 April 2006(Day of year=118), operations: 
+      Sending apply message to irrigation
+29 April 2006(Day of year=119), operations: 
+      Sending apply message to irrigation
+30 April 2006(Day of year=120), operations: 
+      Sending apply message to irrigation
+1 May 2006(Day of year=121), operations: 
+      Sending apply message to irrigation
+2 May 2006(Day of year=122), operations: 
+      Sending apply message to irrigation
+3 May 2006(Day of year=123), operations: 
+      Sending apply message to irrigation
+4 May 2006(Day of year=124), operations: 
+      Sending apply message to irrigation
+4/05/2006 - FloralInitiation
+                            LAI = 0.81 (m^2/m^2)
+           Above Ground Biomass = 67.68 (g/m^2)
+5 May 2006(Day of year=125), operations: 
+      Sending apply message to irrigation
+6 May 2006(Day of year=126), operations: 
+      Sending apply message to irrigation
+7 May 2006(Day of year=127), operations: 
+      Sending apply message to irrigation
+8 May 2006(Day of year=128), operations: 
+      Sending apply message to irrigation
+9 May 2006(Day of year=129), operations: 
+      Sending apply message to irrigation
+10 May 2006(Day of year=130), LeafHarvests: 
+      Sending do_output message to leafoutput
+10 May 2006(Day of year=130), operations: 
+      Sending apply message to irrigation
+11 May 2006(Day of year=131), operations: 
+      Sending apply message to irrigation
+12 May 2006(Day of year=132), operations: 
+      Sending apply message to irrigation
+13 May 2006(Day of year=133), operations: 
+      Sending apply message to irrigation
+14 May 2006(Day of year=134), operations: 
+      Sending apply message to irrigation
+15 May 2006(Day of year=135), operations: 
+      Sending apply message to irrigation
+16 May 2006(Day of year=136), operations: 
+      Sending apply message to irrigation
+17 May 2006(Day of year=137), operations: 
+      Sending apply message to irrigation
+18 May 2006(Day of year=138), operations: 
+      Sending apply message to irrigation
+19 May 2006(Day of year=139), operations: 
+      Sending apply message to irrigation
+20 May 2006(Day of year=140), operations: 
+      Sending apply message to irrigation
+21 May 2006(Day of year=141), operations: 
+      Sending apply message to irrigation
+22 May 2006(Day of year=142), operations: 
+      Sending apply message to irrigation
+23 May 2006(Day of year=143), LeafHarvests: 
+      Sending do_output message to leafoutput
+23 May 2006(Day of year=143), operations: 
+      Sending apply message to irrigation
+24 May 2006(Day of year=144), operations: 
+      Sending apply message to irrigation
+25 May 2006(Day of year=145), operations: 
+      Sending apply message to irrigation
+26 May 2006(Day of year=146), operations: 
+      Sending apply message to irrigation
+27 May 2006(Day of year=147), operations: 
+      Sending apply message to irrigation
+27/05/2006 - StartBudding
+                            LAI = 2.26 (m^2/m^2)
+           Above Ground Biomass = 280.84 (g/m^2)
+28 May 2006(Day of year=148), operations: 
+      Sending apply message to irrigation
+29 May 2006(Day of year=149), operations: 
+      Sending apply message to irrigation
+30 May 2006(Day of year=150), operations: 
+      Sending apply message to irrigation
+31 May 2006(Day of year=151), operations: 
+      Sending apply message to irrigation
+1 June 2006(Day of year=152), operations: 
+      Sending apply message to irrigation
+2 June 2006(Day of year=153), operations: 
+      Sending apply message to irrigation
+3 June 2006(Day of year=154), operations: 
+      Sending apply message to irrigation
+4 June 2006(Day of year=155), operations: 
+      Sending apply message to irrigation
+5 June 2006(Day of year=156), operations: 
+      Sending apply message to irrigation
+6 June 2006(Day of year=157), operations: 
+      Sending apply message to irrigation
+7 June 2006(Day of year=158), operations: 
+      Sending apply message to irrigation
+8 June 2006(Day of year=159), operations: 
+      Sending apply message to irrigation
+9 June 2006(Day of year=160), operations: 
+      Sending apply message to irrigation
+10 June 2006(Day of year=161), operations: 
+      Sending apply message to irrigation
+10/06/2006 - Buttoning
+                            LAI = 3.70 (m^2/m^2)
+           Above Ground Biomass = 488.88 (g/m^2)
+11 June 2006(Day of year=162), operations: 
+      Sending apply message to irrigation
+12 June 2006(Day of year=163), operations: 
+      Sending apply message to irrigation
+13 June 2006(Day of year=164), operations: 
+      Sending apply message to irrigation
+14 June 2006(Day of year=165), operations: 
+      Sending apply message to irrigation
+15 June 2006(Day of year=166), operations: 
+      Sending apply message to irrigation
+16 June 2006(Day of year=167), operations: 
+      Sending apply message to irrigation
+17 June 2006(Day of year=168), operations: 
+      Sending apply message to irrigation
+18 June 2006(Day of year=169), operations: 
+      Sending apply message to irrigation
+19 June 2006(Day of year=170), operations: 
+      Sending apply message to irrigation
+20 June 2006(Day of year=171), operations: 
+      Sending apply message to irrigation
+21 June 2006(Day of year=172), operations: 
+      Sending apply message to irrigation
+22 June 2006(Day of year=173), LeafHarvests: 
+      Sending do_output message to leafoutput
+22 June 2006(Day of year=173), operations: 
+      Sending apply message to irrigation
+23 June 2006(Day of year=174), operations: 
+      Sending apply message to irrigation
+24 June 2006(Day of year=175), operations: 
+      Sending apply message to irrigation
+27 June 2006(Day of year=178), operations: 
+      Sending harvest message to broccoli
+
+     27/06/2006  - Harvesting Floret from Transplant
+     ----------------------------------------------------
+     Floret Yield DWt: 181.50 (g/m^2)
+
+      Sending endcrop message to broccoli
+3 July 2006(Day of year=184), clock: 
+     Simulation is terminating due to end criteria being met.

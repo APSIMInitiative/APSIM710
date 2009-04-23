@@ -1,0 +1,122 @@
+[BSc4past.clock.parameters]
+start_date=1/1/1900     ! dd/mm/yyyy
+!end_date=31/12/1902     ! dd/mm/yyyy
+end_date=31/12/2003     ! dd/mm/yyyy
+
+
+[daily.daily.parameters]
+outputfile = daily.out
+variable = clock.dd/mm/yyyy   as Date
+variable = SoilWat.sw_dep(1) as sw1
+variable = SoilWat.sw_dep(2) as sw2
+variable = SoilWat.sw_dep(3) as sw3
+variable = manager.grass_sw   as grass_sw
+variable = SoilWat.sw_dep()  as total_sw
+variable = SoilWat.eos       as sevap_pot
+variable = SoilWat.es        as sevap_tot
+variable = SoilWat.drainage
+variable = SoilWat.runoff
+variable = SoilWat.cover_surface_runoff as run_cov
+
+variable = grasp.basal_area   as grass_ba
+variable = grasp.tsdm         as tsdm
+variable = grasp.green_pool
+variable = grasp.dead_pool
+variable = surfaceom.surfaceom_wt as litter
+
+variable = grasp.pot_trans_grass  as pot_trans
+variable = grasp.growth_transp    as grwth_trans
+variable = grasp.growth_photo     as grwth_rad
+variable = grasp.growth_regrowth  as grwth_regr
+variable = grasp.growth           as growth
+variable = grasp.death            as death
+variable = grasp.n_index          as n_ndx
+variable = grasp.rad_index        as rad_ndx
+variable = grasp.sw_index         as swi
+variable = grasp.temp_index       as temp_ndx
+variable = grasp.growth_index     as grwth_ndx
+
+variable = graz.alw
+variable = graz.acc_eaten
+variable = graz.daily_lwg
+
+[annual.annual.parameters]
+outputfile =annual.out
+variable = clock.year 
+variable = tracker.rainfall
+variable = tracker.runoff
+variable = tracker.drainage
+variable = tracker.Esoil
+variable = tracker.Egrass
+variable = tracker.grass_growth 
+variable = tracker.growth_regrow
+variable = tracker.growth_trans
+variable = tracker.growth_rad
+variable = tracker.lwg
+
+[all.tracker.parameters]
+variable = sum of met.rain on start_of_day from start_year to now as rainfall
+variable = sum of SoilWat.drain on end_of_day from start_year to now as drainage
+variable = sum of SoilWat.runoff on end_of_day from start_year to now as runoff
+variable = sum of SoilWat.es on end_of_day from start_year to now as Esoil
+variable = sum of grasp.ep on end_of_day from start_year to now as Egrass
+variable = sum of graz.intake_restr on end_of_day from start_year to now as grassEaten
+variable = sum of graz.lwg on end_of_day from start_year to now as lwg
+variable = sum of grasp.growth on end_of_day from start_year to now as grass_growth
+variable = sum of grasp.growth_regrowth on end_of_day from start_year to now as growth_regrow
+variable = sum of grasp.growth_transp on end_of_day from start_year to now as growth_trans
+variable = sum of grasp.growth_photo on end_of_day from start_year to now as growth_rad
+
+
+
+[BlackVertosol.SoilWat.parameters]
+u               = 6         (mm)
+cona            = 3.5        ()
+insoil          = 2.0       ()
+cn2_bare        = 73        ()
+cn_red          = 20        ()
+cn_cov          = 0.8       ()
+salb            = 0.12       ()
+diffus_const    = 40        ()
+diffus_slope    = 16        ()
+
+dlayer            = 100    400   1500
+air_dry           = 0.11   0.12  0.292
+ll15              = 0.253  0.298 0.292 
+dul               = 0.477  0.463 0.338
+sat               = 0.58   0.52  0.426
+bd                = 1.04   1.21  1.41
+ks                = 1.0   1.0   1.0
+swcon =            0.3   0.3  0.3 
+sw               = 0.253  0.298 0.292 
+
+[BlackVertosol.SoilN.parameters]   !! Mostly guessed..
+root_cn =  20.   ! C:N ratio of initial root residues
+root_wt =  1000. ! root residues as biomass (kg/ha)
+soil_cn =  14.5  ! C:N ratio of soil
+
+!dlayer            = 150  150  300  300  300  300   300  200   300
+oc                = 1.24  1.24 1.25 1.1 0.71 0.34  0.2   0.2   0.2 (%)   ! Soil Organic Carbon
+ph             =     7    7    7    7   7    7      7    7     7()        ! pH of soil
+fbiom          =  0.04 0.02 0.02 0.02 0.01 0.01   0.01   0.01  0.01()   ! Organic C Biomass Fraction
+finert         =  0.4  0.6  0.8   1   1    1      1       1     1()      ! Inert Organic C Fraction
+no3ppm =          9.2  3.0  1.4  0.5  0.2  0.2    0.2    0.2   0.2(ppm)   ! Nitrate Concentration
+nh4ppm =         0.30 0.30 0.30  0.30 0.30 0.30  0.30  0.30   0.30(ppm)   ! Ammonium Concentration
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+[BlackVertosol.surfaceOM.parameters]
+mass = 1000. (kg/ha)   ! Initial surface residue
+cnr = 80.0 ()   ! C:N ration of initial residue
+type = grass   ! Type if initial residue
+name = grass
+
+[BlackVertosol.grasp.parameters]
+ll   = 0.253  0.298 0.292    ! lower limit mm water/mm soil
+xf   = 1.00 1.00 1.00 1.0  1.0  1.0  1.0  1.0  1.0 ! Weighting factor for root advance
+kl   = 0.4  0.4  0.4  0.4  0.0  0.0  0.0  0.0  0.0 ! Water Extraction Parameter (0-1)
+max_n_avail      =  21   (kg/ha/year)
+max_n_avail_dist =  0.7 0.1 0.05 0.05 0.05 0.05 0  0  0()
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2

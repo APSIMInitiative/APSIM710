@@ -1,0 +1,46 @@
+   <graz>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <IsCrop>No</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Description>Rickert &amp; McKeon (1981) grazing module</Description>
+      <Documentation name="Grazing science documentation"></Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\stock32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\stock16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+     <variables>
+         <variable name="stocking_rate"  units="beasts/ha" description="Stocking rate"/>
+         <variable name="alw"            units="kg"        description="Weight of beast"/>
+         <variable name="pasture_source" units=""          description="Crop or pasture module to eat"/>
+         <variable name="lwg"            units="kg"        description="Live weight gain"/>
+         <variable name="acc_eaten"      units="kg/ha"     description="Cumulative grass eaten by animals"/>
+         <variable name="acc_growth"     units="kg/ha"     description="Cumulative grass growth"/>
+         <variable name="intake_restr"   units=""          description="Intake of feed"/>
+     </variables>
+      <events>
+      </events>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Graz.dll</dll>
+         <sim>
+          <intake_util_intercept>[graz.intake_util_intercept]</intake_util_intercept>
+          <intake_util_slope>[graz.intake_util_slope]</intake_util_slope>
+          <yld_eat_restr>[graz.yld_eat_restr]</yld_eat_restr>
+          <summer_lwg>[graz.summer_lwg]</summer_lwg>
+          <autumn_lwg>[graz.autumn_lwg]</autumn_lwg>
+          <winter_lwg>[graz.winter_lwg]</winter_lwg>
+          <spring_lwg>[graz.spring_lwg]</spring_lwg>
+          <leaf_diet>[graz.leaf_diet]</leaf_diet>
+          <std_alw>[graz.std_alw]</std_alw>
+          <metabol_expon>[graz.metabol_expon]</metabol_expon>
+          <acc_eaten_reset>[graz.acc_eaten_reset]</acc_eaten_reset>
+          <prop_can_eat>[graz.prop_can_eat]</prop_can_eat>
+          <allow_supplements>[graz.allow_supplements]</allow_supplements>
+         </sim>
+      </ApsimToSim>
+   </graz>

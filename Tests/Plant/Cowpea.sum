@@ -1,0 +1,482 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Cowpea
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "cowpea" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 31/12/1989
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\\Examples\MetFiles\goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        yield
+        grain_protein
+        grain_size
+        esw
+        roottotalwt
+        stemtotalwt
+        leaftotalwt
+        podtotalwt
+        graintotalwt
+        oiltotalwt
+        roottotaln
+        stemtotaln
+        leaftotaln
+        podtotaln
+        graintotaln
+        lai
+        swdef_photo
+        nfact_photo
+
+     Output file = Cowpea.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('1-dec') then
+       cowpea sow plants =10, sowing_depth = 50, cultivar = banjo, row_spacing = 500, crop_class = plant
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if cowpea.stagename = 'harvest_ripe' or cowpea.plant_status = 'dead' then
+       cowpea  harvest
+       cowpea  end_crop
+                endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      66.00      66.00      15.00
+         1200.- 1500.      93.00      57.00      57.00      15.00
+         1500.- 1800.      96.00      54.00      54.00      15.00
+         1800.- 2100.      99.00      45.00      45.00      15.00
+         2100.- 2400.     102.00      39.00      39.00      15.00
+         2400.- 2700.     105.00      33.00      33.00      15.00
+         2700.- 3000.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     541.50     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.95    0.92    0.00
+             2     8.80  0.89    3.25    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.21    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               66.01    4.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 December 1988(Day of year=336), Sow on a fixed date: 
+     Manager sending message :- cowpea sow  plants = 10, sowing_depth = 50, cultivar = banjo, row_spacing = 500, crop_class = plant
+1 December 1988(Day of year=336), cowpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = banjo
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     552     552 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    13.3      18 (h)
+              y_tt_end_of_juvenile       =       1     229 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      20      20 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     280     280 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      20 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0140     0.0140
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.40       0.40
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            336   50.0   10.0  500.0   0.0   0.0 banjo
+         ------------------------------------------------
+     
+2 December 1988(Day of year=337), cowpea: 
+      stage 2.0 germination
+7 December 1988(Day of year=342), cowpea: 
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.008 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   61.84 (mm)
+9 January 1989(Day of year=9), cowpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =         151.72 (g/m^2)   lai          =   2.288 (m^2/m^2)
+                     stover N conc =     3.83 (%)    extractable sw =  213.75 (mm)
+13 January 1989(Day of year=13), cowpea: 
+      stage 5.0 floral_initiation
+                     biomass =         231.58 (g/m^2)   lai          =   3.325 (m^2/m^2)
+                     stover N conc =     3.43 (%)    extractable sw =  231.22 (mm)
+14 January 1989(Day of year=14), cowpea: 
+      stage 6.0 flowering
+                     biomass =         254.13 (g/m^2)   lai          =   3.549 (m^2/m^2)
+                     stover N conc =     3.33 (%)    extractable sw =  220.09 (mm)
+20 January 1989(Day of year=20), cowpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         381.69 (g/m^2)   lai          =   4.366 (m^2/m^2)
+                     stover N conc =     2.60 (%)    extractable sw =  216.04 (mm)
+8 February 1989(Day of year=39), cowpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         651.00 (g/m^2)   lai          =   1.788 (m^2/m^2)
+                     stover N conc =     2.08 (%)    extractable sw =  111.38 (mm)
+9 February 1989(Day of year=40), cowpea: 
+      stage 9.0 maturity
+                     biomass =         657.23 (g/m^2)   lai          =   1.607 (m^2/m^2)
+                     stover N conc =     2.05 (%)    extractable sw =  105.83 (mm)
+10 February 1989(Day of year=41), cowpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         660.72 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.03 (%)    extractable sw =  102.30 (mm)
+10 February 1989(Day of year=41), Harvesting rule: 
+     Manager sending message :- cowpea harvest
+     
+      flowering day          =   14                           stover (kg/ha)         =     4784.4
+      maturity day           =   40                           grain yield (kg/ha)    =     1822.8
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2071.4
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      4.402
+      total above ground biomass (kg/ha)    =     6607.2
+      live above ground biomass (kg/ha)     =     6607.2
+      green above ground biomass (kg/ha)    =     4528.5
+      senesced above ground biomass (kg/ha) =     2078.7
+      number of leaves       =     42.5
+      DM Root:Shoot ratio    =     0.37                       Harvest Index          =       0.28
+      Stover C:N ratio       =    19.83                       Root C:N ratio         =      26.68
+      grain N percent        =     4.50                       total N content (kg/ha)=     178.53
+      grain N uptake (kg/ha) =    82.03                       senesced N content (kg/ha)=   41.57
+      green N content (kg/ha)=    54.93
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.040
+         end_of_juvenile      to floral_initiation       0.000        0.006        0.000        0.038
+         floral_initiation    to flowering               0.000        0.006        0.000        0.037
+         flowering            to start_grain_fill        0.016        0.031        0.000        0.033
+         start_grain_fill     to end_grain_fill          0.057        0.085        0.000        0.024
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4784.4                     0.0
+                          N  (kg/ha) =                  96.50                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1822.8                     0.0
+                          N  (kg/ha) =                  82.03                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- cowpea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2436.0
+                          N  (kg/ha) =                   0.00                   36.52
+     
+1 December 1989(Day of year=335), Sow on a fixed date: 
+     Manager sending message :- cowpea sow  plants = 10, sowing_depth = 50, cultivar = banjo, row_spacing = 500, crop_class = plant
+1 December 1989(Day of year=335), cowpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = banjo
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     552     552 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    13.3      18 (h)
+              y_tt_end_of_juvenile       =       1     229 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      20      20 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     280     280 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      20 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0140     0.0140
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.40       0.40
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.290       1.000
+         150.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         300.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   542mm in  3000mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            335   50.0   10.0  500.0   0.0   0.0 banjo
+         ------------------------------------------------
+     
+2 December 1989(Day of year=336), cowpea: 
+      stage 2.0 germination
+7 December 1989(Day of year=341), cowpea: 
+      stage 3.0 emergence
+                     biomass =           0.30 (g/m^2)   lai          =   0.008 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   58.64 (mm)
+31 December 1989(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

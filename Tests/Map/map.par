@@ -1,0 +1,35 @@
+[sample.report.parameters]  
+outputfile =map.out   
+
+
+
+variable = clock.day
+variable = clock.year
+variable = map.ave_sw
+variable = map.conc_cl
+variable = map.concsw_br
+[sample.clock.parameters]  
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988     ! dd/mm/yyyy
+end_date=30/1/1988     ! dd/mm/yyyy
+
+[sample.manager.start_of_day]  
+if day = 5 then
+   solute set dlt_cl = 100 0 0 0 0 0 0 0 (kg/ha)
+endif
+
+[sample.manager.end_of_day]  
+report do_output
+
+[sample.map.parameters]
+arrays2sum_names        =  
+arrays2ave_names        =  sw
+arrays2conc_names       =  cl
+arrays2concsw_names     =  br
+arrays2satpaste_names   =  
+core_start  =    0    600   1200  
+core_end    =    600  1200  1800  
+
+[sample.summaryfile.parameters]
+summaryfile=Map.sum
+

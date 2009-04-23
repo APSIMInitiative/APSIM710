@@ -1,0 +1,84 @@
+! Lever Gully 1 Soil from Ringrose-Voase et al (Self Mulching Black Earth) - See N. Huth.
+
+[300mm.soilwat2.parameters]
+wet_soil_depth = 300
+
+[600mm.soilwat2.parameters]
+wet_soil_depth = 600
+
+[750mm.soilwat2.parameters]
+wet_soil_depth = 750
+
+[900mm.soilwat2.parameters]
+wet_soil_depth = 900
+
+[1200mm.soilwat2.parameters]
+wet_soil_depth = 1200
+
+[1500mm.soilwat2.parameters]
+wet_soil_depth = 1500
+
+
+[lg1.soiln2.parameters]
+
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+oc =                1.64    1.25    1.03    0.93    0.75    0.53    0.42    0.42    0.42    0.42    0.42    0.42    0.42    0.42    0.42    0.42 ! Organic carbon % = Walkley Black OC x1.3
+fbiom =            0.030   0.030   0.020   0.015   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010 ! Initial microbial biomass fraction
+finert =            0.45    0.45    0.60    0.70    0.85    0.90    0.99    0.99    0.99    0.99    0.99    0.99    0.99    0.99    0.99    0.99 ! Initial inert fraction of soil carbon
+ph =                7.40    7.60    7.60    7.60    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10 ! pH (water) = pH(CaCl2) + 0.5 when <7
+nh4ppm =            0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30
+ureappm =              0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+!no3ppm =            1.19    0.95    1.00    0.97    0.93    0.88    0.82    0.75    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30 ! 50kg nitrate/ha adjusted for BD over 1.5m, 0.3ppm below
+no3ppm =            3.19    2.95    3.00    2.97    2.93    2.88    2.82    2.75    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30 ! 50kg nitrate/ha adjusted for BD over 1.5m, 0.3ppm below
+
+
+root_wt =           1000 ! Root residues as biomass (kg/ha)
+root_cn =             40
+soil_cn =           14.5
+
+enr_a_coeff =        7.4()       ! Erosion mapping
+enr_b_coeff =        0.2
+profile_reduction = off
+
+
+[lg1.soilwat2.parameters]
+diffus_const =        40     ()  !   coeffs for unsaturated water flow
+diffus_slope =        16     ()
+
+cn2_bare =            72     ()  ! bare soil runoff curve number
+cn_red =              20     ()  ! potential reduction in curve number due to residue
+cn_cov =             0.8     ()  ! cover for maximum reduction in curve number
+salb =              0.13     ()  ! bare soil albedo
+cona =                 5     ()  ! stage 2 evap coef.
+u =                 6.28   (mm)  ! stage 1 soil evaporation coefficient (mm)
+
+! Layer                1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+dlayer =             100     200     200     200     200     200     200     200     200     200     200     200     200     200     200     200 ! layer thickness mm soil
+bd =               1.045   1.128   1.110   1.122   1.136   1.158   1.184   1.213   1.235   1.244   1.247   1.248   1.305   1.305   1.305   1.305 ! bulk density gm dry soil/cc moist soil
+sat=               0.539   0.544   0.542   0.548   0.546   0.539   0.531   0.529   0.520   0.517   0.515   0.515   0.494   0.494   0.494   0.494 ! saturation mm water/mm soil
+dul =              0.489   0.514   0.506   0.503   0.500   0.496   0.483   0.464   0.456   0.453   0.452   0.452   0.481   0.481   0.481   0.481 ! drained upper limit mm water/mm soil
+ll15 =             0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.328   0.322   0.320   0.319   0.319   0.358   0.358   0.358   0.358 ! lower limit mm water/mm soil
+air_dry =          0.154   0.173   0.173   0.169   0.170   0.171   0.167   0.164   0.161   0.160   0.160   0.160   0.179   0.179   0.179   0.179 ! air dry mm water/ mm soil
+swcon =            0.900   0.513   0.232   0.186   0.228   0.237   0.222   0.195   0.199   0.200   0.200   0.201   0.535   0.535   0.535   0.535 ! drainage coefficient
+!sw =               0.489   0.514   0.506   0.503   0.500   0.496   0.483   0.464   0.456   0.453   0.452   0.452   0.481   0.481   0.481   0.481 ! initial soil water mm water/mm soil
+
+[lg1.wheat.parameters]
+
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.02    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+!xf =                0.50    0.50    0.50    0.50    0.50    0.50    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1.chickpea.parameters]
+
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1.sorghum.parameters]
+
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.02    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+!xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor

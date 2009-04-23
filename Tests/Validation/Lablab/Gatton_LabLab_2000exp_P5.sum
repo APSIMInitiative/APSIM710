@@ -1,0 +1,443 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Gatton_LabLab_2000exp_P5
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
+   Component         "Prarie-Lockyer Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component      "Prarie-Lockyer Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "lablab" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2000
+     Simulation end date   =  1/06/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: gatton_2000.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        year
+        day
+        DaysAfterSowing
+        flowering_das
+        flowering_date
+        StageName
+        yield
+        biomass_wt
+        LeafTotalWt
+        StemTotalWt
+        podTotalWt
+        LeafSenescedWt
+        biom as green_biomass
+        LeafGreenWt
+        StemGreenWt
+        leaf_no
+        leaf_no_sen
+        leaf_area()
+        node_no
+        lai
+        stover_wt
+        ep
+        esw_layr()
+        root_depth
+        no3()
+        manager.total_minN
+        height
+        dlt_dm_green_grain
+        dlt_dm_green_leaf
+        dlt_dm_green_meal
+        dlt_dm_green_pod
+        dlt_dm_green_root
+        dlt_dm_green_stem
+        leaves_per_node
+        swdef_pheno
+        swdef_photo
+        swdef_expan
+        swdef_fixation
+        lai_sum
+        green_leaves
+        tt_
+        acc_TT
+
+     Output file = Gatton_LabLab_2000exp_P5.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'lablab')) then
+              if (date_within('24-jan-2000, 24-jan-2000') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('yes' = 'yes' and today = date('24-jan-2000'))) then
+        choosenextcrop = 'yes'
+        lablab sow plants =5, sowing_depth = 30, cultivar = highworth, row_spacing = 500, crop_class = plant
+     endif
+     if today = date('24-jan-2000') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if lablab.stagename = 'harvest_ripe' or lablab.plant_status = 'dead' then
+       lablab  harvest
+       lablab  end_crop
+                endif
+     END of rules
+     
+
+------- Manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     cuts = 0
+      total_minn = 0
+     biom = 0
+     green_leaves = 0
+     
+     SECTION:- start_of_day
+      biom = leafgreenwt + stemgreenwt
+      if leaf_no >= 1 then
+           green_leaves = leaf_no - leaf_no_sen
+      else
+      endif
+       if day = 358 and year = 2007 then
+           irrigation apply amount = 10
+       endif
+       if day = 362  and year = 2007 then
+           irrigation apply amount = 38
+       endif
+       if day = 97 and year = 2008 then
+           irrigation apply amount = 40
+       endif
+       if day = 9114 and year = 2008 then
+           irrigation apply amount = 50
+       endif
+     
+     SECTION:- end_of_day
+       total_minn = total_minn + dlt_n_min_tot()
+     END of rules
+     
+     Manager creating a new local real variable : cuts = 0.00000
+     Manager creating a new local real variable : total_minn = 0.00000
+     Manager creating a new local real variable : biom = 0.00000
+     Manager creating a new local real variable : green_leaves = 0.00000
+
+------- Prarie-Lockyer Water Initialisation -----------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.190  0.380  0.450  0.380  1.380  0.762  0.300
+          150.-  300.  0.168  0.195  0.380  0.450  0.380  1.380  0.190  0.300
+          300.-  600.  0.200  0.200  0.390  0.450  0.390  1.280  0.048  0.300
+          600.-  900.  0.220  0.220  0.400  0.450  0.400  1.380  0.000  0.300
+          900.- 1200.  0.230  0.230  0.390  0.440  0.390  1.400  0.000  0.300
+         1200.- 1500.  0.250  0.250  0.370  0.420  0.370  1.460  0.000  0.300
+         1500.- 1800.  0.260  0.260  0.340  0.420  0.340  1.470  0.000  0.300
+         1800.- 2100.  0.270  0.270  0.340  0.420  0.340  1.470  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      28.50      28.50      28.50      10.50
+          150.-  300.      29.25      27.75      27.75      10.50
+          300.-  600.      60.00      57.00      57.00      18.00
+          600.-  900.      66.00      54.00      54.00      15.00
+          900.- 1200.      69.00      48.00      48.00      15.00
+         1200.- 1500.      75.00      36.00      36.00      15.00
+         1500.- 1800.      78.00      24.00      24.00      24.00
+         1800.- 2100.      81.00      21.00      21.00      24.00
+          ---------------------------------------------------------
+               Totals     486.75     296.25     296.25     132.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          centro    centro         500.0   200.0     5.0     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- Prarie-Lockyer Nitrogen Initialisation --------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Prarie
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.20    5.61    0.21    0.00
+             2     7.00  1.20    5.61    0.21    0.00
+             3     7.00  1.20   10.41    0.38    0.00
+             4     7.00  1.10   11.22    0.41    0.00
+             5     7.00  0.70   11.38    0.42    0.00
+             6     7.00  0.30   11.87    0.44    0.00
+             7     7.00  0.30   11.95    0.44    0.00
+             8     7.00  0.30   11.95    0.44    0.00
+          ------------------------------------------------
+           Totals               80.00    2.95    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24266.8  2022.2   573.2    71.7   125.0     3.1
+             2      24645.2  2053.8   194.8    24.4   100.9     2.5
+             3      45899.3  3824.9   180.7    22.6    65.7     1.6
+             4      45540.0  3795.0     0.0     0.0    42.8     1.1
+             5      29400.0  2450.0     0.0     0.0    27.9     0.7
+             6      13140.0  1095.0     0.0     0.0    18.2     0.5
+             7      13230.0  1102.5     0.0     0.0    11.8     0.3
+             8      13230.0  1102.5     0.0     0.0     7.7     0.2
+          ---------------------------------------------------------
+           Totals  209351.2 17445.9   948.8   118.6   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 January 2000(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "fallowin".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : fallowin = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "nextcrop".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+24 January 2000(Day of year=24), Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- lablab sow  plants = 5, sowing_depth = 30, cultivar = highworth, row_spacing = 500, crop_class = plant
+24 January 2000(Day of year=24), lablab: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = highworth
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       3 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     500     500 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    13.3      18 (h)
+              y_tt_end_of_juvenile       =     600     600 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      20      20 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     900     900 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     400 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0300     0.0300
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.20       0.20
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.190       1.000
+         150.0     0.060          0.195       1.000
+         300.0     0.060          0.200       1.000
+         300.0     0.060          0.220       1.000
+         300.0     0.060          0.230       1.000
+         300.0     0.060          0.250       1.000
+         300.0     0.060          0.260       1.000
+         300.0     0.060          0.270       1.000
+         -----------------------------------------------
+         Extractable SW:   296mm in  2100mm total depth ( 14%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             24   30.0    5.0  500.0   0.0   0.0 highworth
+         ------------------------------------------------
+     
+25 January 2000(Day of year=25), lablab: 
+      stage 2.0 germination
+2 February 2000(Day of year=33), lablab: 
+      stage 3.0 emergence
+                     biomass =           3.50 (g/m^2)   lai          =   0.018 (m^2/m^2)
+                     stover N conc =     5.64 (%)    extractable sw =   59.40 (mm)
+10 March 2000(Day of year=70), lablab: 
+      stage 4.0 end_of_juvenile
+                     biomass =         284.17 (g/m^2)   lai          =   4.768 (m^2/m^2)
+                     stover N conc =     4.66 (%)    extractable sw =  186.00 (mm)
+25 April 2000(Day of year=116), lablab: 
+      stage 5.0 floral_initiation
+                     biomass =         959.00 (g/m^2)   lai          =   5.513 (m^2/m^2)
+                     stover N conc =     7.01 (%)    extractable sw =   56.71 (mm)
+27 April 2000(Day of year=118), lablab: 
+      stage 6.0 flowering
+                     biomass =         978.29 (g/m^2)   lai          =   5.446 (m^2/m^2)
+                     stover N conc =     6.98 (%)    extractable sw =   53.08 (mm)
+6 May 2000(Day of year=127), lablab: 
+      stage 7.0 start_grain_fill
+                     biomass =        1081.24 (g/m^2)   lai          =   5.140 (m^2/m^2)
+                     stover N conc =     6.52 (%)    extractable sw =   59.87 (mm)
+1 June 2000(Day of year=153), clock: 
+     Simulation is terminating due to end criteria being met.

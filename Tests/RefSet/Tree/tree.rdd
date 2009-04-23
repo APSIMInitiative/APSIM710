@@ -1,0 +1,80 @@
+[main]
+module =  tree
+owner =   Mark Silburn
+contact = mark.silburn@nrm.qld.gov.au, peter.devoil@dpi.qld.gov.au
+Notes =   Use SLURP unless there's a good reason, eg existing GRASP simulation.
+
+; Inward State Stimuli
+; --------------------
+
+[pan]
+name = Pan evaporation
+direction = inward
+type = state
+description = Pan evaporation is the key measure of evapotranspiration. It is the upper limit to growth by transpiration.
+apsimname = pan (if unavailable -> eo)
+internalname= g_pan
+indicators= sw_demand, ep, dlt_sw_dep
+
+[profile]
+name = Profile depth
+direction = inward
+type = state
+description = Used in converting mm/mm to mm/layer, and the maximum root depth
+apsimname = dlayer
+internalname= g_dlayer
+indicators= root_depth
+
+[dul]
+name = Drained upper limit of soil
+direction = inward
+type = state
+description = Used in calculation of sw index
+apsimname =   dul_dep
+internalname= g_dul_dep
+indicators=   sw_index
+
+[soil_moisture]
+name = Soil water content
+direction = inward
+type = state
+description = Soil water supply
+apsimname = sw_dep
+internalname= g_sw_dep
+indicators= swi, sw_index
+
+[water_uptake]
+name = uptake_water_
+direction = inward
+type = state
+description = Water uptake by sward as detrermined by SWIM
+apsimname = uptake_water_tree
+internalname= g_dlt_sw_dep
+indicators= ep
+
+[basal_area]
+name = basal_area
+direction = inward
+type = state
+description = Water uptake by module is primarily a function of pan evaporation and basal area
+apsimname = (dlt_)basal_area
+internalname= g_basal_area
+indicators= ep
+
+; Outward State Stimuli
+; ---------------------
+[reset_sw]
+name = Resetting soil water profile
+direction = outward
+type = state
+description = Extraction of water by the crop requires the module to send this information to the water balance.
+apsimname = dlt_sw_dep
+internalname= g_dlt_sw_dep
+indicators=  sw_dep
+
+
+; Inward Message Stimuli
+; ----------------------
+
+; Outward Message Stimuli
+; -----------------------

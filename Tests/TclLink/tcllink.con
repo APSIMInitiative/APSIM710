@@ -1,0 +1,65 @@
+version = 7.0(2)
+[apsim.tcllink]
+title = Test Tcl library
+
+module = clock   tcllink.par [all] %apsim%/Model/clock.xml [standard]
+module = input(met)       %apsim%/Examples/MetFiles/dalby.met [weather]
+module = report           tcllink.par [all]
+module = manager          tcllink.par [all]
+module = tcllink          tcllink.par [all]
+
+![apsim.rtg]
+!title = run time graphics
+!module = clock           %apsuite/apsim/sorghum/sample/sorghum.par [sample] %apsuite/apsim/clock/clock.ini[standard]
+!module = input(met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+!module = report          %apsuite/apsim/sorghum/sample/sorghum.par [sample]
+!module = manager         %apsuite/apsim/sorghum/sample/sorghum.par [sample]
+!module = soilwat2        %apsim%/Examples/Soils/Soil.par [black_earth]    %apsuite/apsim/soilwat2/soilwat2.ini [standard]
+!module = soiln2          %apsim%/Examples/Soils/Soil.par [black_earth]    %apsuite/apsim/soiln2/soiln2.ini     [standard]
+!module = sorghum         %apsuite/apsim/sorghum/sample/sorghum.par [sample] %apsuite/apsim/sorghum/sorghum.ini [standard]
+!module = tcllink         runtime-graphics.par [rtg]
+!module = SummaryFile     %apsuite/apsim/sorghum/sample/sorghum.par [sample]
+
+[apsim.catchEvent]
+module = clock           %apsim%/Tests/Sorghum/testsorghum.par [all] %apsim%/Model/clock.xml [standard]
+module = input(met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+module = report          %apsim%/Tests/Sorghum/testsorghum.par [test1] %apsim%/Tests/Sorghum/testsorghum.par [all]
+module = manager         %apsim%/Tests/Sorghum/testsorghum.par [test1] %apsim%/Tests/Sorghum/testsorghum.par [all]
+module = soilwat         %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/soilwat.xml [standard]
+module = soiln           %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/soiln.xml [standard]
+module = sorghum         %apsim%/Tests/Sorghum/testsorghum.par [all] %apsim%/Model/sorghum.xml [standard]
+module = tcllink         tcllink.par [catchEvent]
+
+! This one is broken until every message has proper xml 
+![apsim.catchEvent2]
+!module = clock           %apsuite/apsim/sorghum/sample/sorghum.par [sample] %apsuite/apsim/clock/clock.ini[standard]
+!module = input(met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+!module = report          %apsuite/apsim/sorghum/sample/sorghum.par [sample]
+!module = manager         %apsuite/apsim/sorghum/sample/sorghum.par [sample]
+!module = soilwat2        %apsim%/Examples/Soils/Soil.par [black_earth]    %apsuite/apsim/soilwat2/soilwat2.ini [standard]
+!module = soiln2          %apsim%/Examples/Soils/Soil.par [black_earth]    %apsuite/apsim/soiln2/soiln2.ini     [standard]
+!module = sorghum         %apsuite/apsim/sorghum/sample/sorghum.par [sample] %apsuite/apsim/sorghum/sorghum.ini [standard]
+!module = tcllink         tcllink.par [catchEvent2]
+
+
+![apsim.profileMessages]
+!title = test
+!module = clock   %apsuite/apsim/sorghum/sample/sorghum.par [sample] %apsim%/Model/clock.xml [standard]
+!module = input(met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+!module = report          %apsuite/apsim/sorghum/sample/sorghum.par [sample]
+!module = manager         %apsuite/apsim/sorghum/sample/sorghum.par [sample]
+!module = soilwat2   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/soilwat2.xml [standard]
+!module = soiln2   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/soiln2.xml [standard]
+!module = sorghum   %apsuite/apsim/sorghum/sample/sorghum.par [sample] %apsim%/Model/sorghum.xml [standard]
+!module = tcllink         tcllink.par [profileMessages]
+
+![apsim.profilePlant]
+!title = test
+!module = clock   %apsuite/apsim/Wheat/Sample/wheat.par [sample] %apsim%/Model/clock.xml [standard]
+!module = input(met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+!module = report          %apsuite/apsim/Wheat/Sample/wheat.par [sample]
+!module = manager         %apsuite/apsim/Wheat/Sample/wheat.par [sample]
+!module = soilwat2   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/soilwat2.xml [standard]
+!module = soiln2   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/soiln2.xml [standard]
+!module = Plant(wheat)   %apsuite/apsim/Wheat/Sample/wheat.par [sample] %apsim%/Model/wheat.xml [standard]
+!module = tcllink         tcllink.par [profilePlant]

@@ -1,0 +1,12 @@
+version = 7.0(2)
+[apsim.sample_SurfaceOM]
+
+title = SurfaceOM Sample Simulation
+module = clock   SurfaceOM.par [sample] %apsim%/Model/clock.xml [standard]
+module = report   SurfaceOM.par [sample]
+module = input(met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+module = manager  SurfaceOM.par [sample]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   SurfaceOM.par [sample] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sysbal

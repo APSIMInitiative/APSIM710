@@ -1,0 +1,356 @@
+[dalby600.report.parameters]
+outputfile  =Dalby600.out
+[dalby1500.report.parameters]
+outputfile  =Dalby1500.out
+[roma400.report.parameters]
+outputfile  =Roma400.out
+[roma800.report.parameters]
+outputfile  =Roma800.out
+
+[Emerald600early.report.parameters]
+outputfile  =Emerald600early.out
+[Emerald1500early.report.parameters]
+outputfile  =Emerald1500early.out
+[Emerald600late.report.parameters]
+outputfile  =Emerald600late.out
+[Emerald1500late.report.parameters]
+outputfile  =Emerald1500late.out
+
+
+[Gunnedah750.report.parameters]
+outputfile  =Gunnedah750.out
+[Gunnedah1500.report.parameters]
+outputfile  =Gunnedah1500.out
+
+[Walgett750.report.parameters]
+outputfile  =Walgett750.out
+[Walgett1500.report.parameters]
+outputfile  =Walgett1500.out
+
+[Birchip300.report.parameters]
+outputfile  =Birchip300.out
+[Birchip300HighN.report.parameters]
+outputfile  =Birchip300HighN.out
+
+[Mingenew300Sand.report.parameters]
+outputfile  =Mingenew300Sand.out
+[Mingenew300RedSCL.report.parameters]
+outputfile  =Mingenew300RedSCL.out
+[Latham200SandGravel.report.parameters]
+outputfile  =Latham200SandGravel.out
+[Merredin300.report.parameters]
+outputfile  =Merredin300.out
+
+
+[Warra600LowN.report.parameters]
+outputfile  =Warra600LowN.out
+[Warra1500LowN.report.parameters]
+outputfile  =Warra1500LowN.out
+[Warra600MediumN.report.parameters]
+outputfile  =Warra600MediumN.out
+[Warra1500MediumN.report.parameters]
+outputfile  =Warra1500MediumN.out
+[Warra600HighN.report.parameters]
+outputfile  =Warra600HighN.out
+[Warra1500HighN.report.parameters]
+outputfile  =Warra1500HighN.out
+
+[wagga600.report.parameters]
+outputfile  =wagga600.out
+[wagga1500.report.parameters]
+outputfile  =wagga1500.out
+
+[walpeup200.report.parameters]
+outputfile  =walpeup200.out
+
+[RoseworthyEarly.report.parameters]
+outputfile  =RoseworthyEarly.out
+[RoseworthyMid.report.parameters]
+outputfile  =RoseworthyMid.out
+[RoseworthyLate.report.parameters]
+outputfile  =RoseworthyLate.out
+[RoseworthyMidTopDress.report.parameters]
+outputfile  =RoseworthyMidTopDress.out
+[RoseworthyMidLowN.report.parameters]
+outputfile  =RoseworthyMidLowN.out
+[RoseworthyMidLowNTopDress.report.parameters]
+outputfile  =RoseworthyMidLowNTopDress.out
+
+
+[Cummins.report.parameters]
+outputfile  =Cummins.out
+[Keith.report.parameters]
+outputfile  =Keith.out
+[Lameroo.report.parameters]
+outputfile  =Lameroo.out
+[Minnipa.report.parameters]
+outputfile  =Minnipa.out
+[Naracoorte.report.parameters]
+outputfile  =Naracoorte.out
+[Orroroo.report.parameters]
+outputfile  =Orroroo.out
+[Roseworthy.report.parameters]
+outputfile  =Roseworthy.out
+[Wanbi.report.parameters]
+outputfile  =Wanbi.out
+
+[sensibility.report.parameters]
+variable = clock.dd/mm/yyyy as date
+variable = clock.day
+variable = clock.year
+variable = manager.in_crop_rain
+variable = manager.eff_in_crop_rain
+variable = Wheat.lai
+variable = Wheat.biomass
+variable = Wheat.yield
+variable = manager.hi
+variable = manager.nhi
+variable = tracker.sum_ep
+variable = wheat.n_conc_grain
+variable = wheat.grain_n
+variable = SoilN.no3()
+variable = SoilWat.esw
+variable = wheat.flowering_date
+variable = wheat.grain_protein
+variable = manager.sowing_paw2n
+!variable = wheat.grain_n_demand
+!variable = wheat.GrowthN(5)
+!variable = wheat.RetranslocationN(5)
+
+
+[sensibility.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1957
+end_date=31/12/2002
+
+[sensibility.accum.parameters]
+accum_variables = rain[3]
+
+[sensibility.manager.init]
+in_crop_rain = 0
+eff_in_crop_rain = 0
+
+[N010.manager.init]
+nrate = 10
+[N025.manager.init]
+nrate = 25
+[N030.manager.init]
+nrate = 30
+[N040.manager.init]
+nrate = 40
+[N050.manager.init]
+nrate = 50
+[N060.manager.init]
+nrate = 60
+[N075.manager.init]
+nrate = 75
+[N100.manager.init]
+nrate = 100
+[N150.manager.init]
+nrate = 150
+
+[start_may.manager.init]
+sow_day = 121
+[mid_may.manager.init]
+sow_day = 135
+[end_may.manager.init]
+sow_day = 150
+[mid_june.manager.init]
+sow_day = 165
+[end_june.manager.init]
+sow_day = 180
+
+[hartog.manager.init]
+cultivar = 'hartog'
+[sunco.manager.init]
+cultivar = 'sunco'
+[spear.manager.init]
+cultivar = 'spear'
+[kulin.manager.init]
+cultivar = 'kulin'
+[yitpi.manager.init]
+cultivar = 'yitpi'
+
+[SplitN000.manager.init]
+split_nrate = 0
+[SplitN030.manager.init]
+split_nrate = 30
+[SplitN040.manager.init]
+split_nrate = 40
+
+[sensibility.manager.start_of_day]
+
+if day = sow_day then
+   SoilWat reset
+   SoilN reset
+   surfaceom reset
+   Fertiliser apply amount = nrate, type = no3_n, depth = 5 (mm)
+   wheat sow cultivar = cultivar, plants = 100 (/m2), sowing_depth = 40 (mm)
+   sowpaw = sw_dep() - ll_dep()
+   ! dont add fertiliser as it is already added above
+   sown = no3()
+   sowing_paw2n = sowpaw / sown
+   in_crop_rain = 0
+   eff_in_crop_rain = 0
+endif
+
+if today = date('15-aug') then
+    Fertiliser apply amount = split_nrate, type = no3_n, depth = 5 (mm)
+ endif
+
+[sensibility.manager.end_of_day]
+in_crop_rain = in_crop_rain + met.rain
+eff_in_crop_rain = eff_in_crop_rain + met.rain - SoilWat.drain - SoilWat.runoff
+
+!if wheat.biomass > 1 then
+!   hi = wheat.yield/wheat.biomass
+!   nhi = wheat.grain_n/wheat.biomass_n
+!   report do_output
+!endif
+
+if Wheat.StageName = 'harvest_ripe' or Wheat.plant_status = 'dead' then
+   hi = wheat.yield/wheat.biomass
+   nhi = wheat.grain_n/wheat.biomass_n
+   report do_output
+   Wheat harvest
+   Wheat end_crop
+
+endif
+
+[variable.manager.start_of_day]
+
+if today = date('1-mar') then
+   SoilWat reset
+   SoilN reset
+   surfaceom reset
+ endif
+
+if date_within('15-apr,15-jun') and wheat.plant_status = 'out' and rain[3] > 20 then
+   Fertiliser apply amount = nrate, type = no3_n, depth = 5 (mm)
+   wheat sow cultivar = cultivar, plants = 200 (/m2), sowing_depth = 30 (mm)
+   in_crop_rain = 0
+   eff_in_crop_rain = 0
+endif
+
+if today = date('15-aug') then
+    Fertiliser apply amount = split_nrate, type = no3_n, depth = 5 (mm)
+ endif
+
+[variable.manager.end_of_day]
+in_crop_rain = in_crop_rain + met.rain
+eff_in_crop_rain = eff_in_crop_rain + met.rain - SoilWat.drain - SoilWat.runoff
+
+!if wheat.biomass > 1 then
+!   hi = wheat.yield/wheat.biomass
+!   nhi = wheat.grain_n/wheat.biomass_n
+!   report do_output
+!endif
+
+if Wheat.StageName = 'harvest_ripe' or Wheat.plant_status = 'dead' then
+   if wheat.biomass > 1 then
+      hi = wheat.yield/wheat.biomass
+      nhi = wheat.grain_n/wheat.biomass_n
+      report do_output
+   endif
+   Wheat harvest
+   Wheat end_crop
+endif
+
+[variable.manager.init]
+in_crop_rain = 0
+eff_in_crop_rain = 0
+
+[Dalby600.SummaryFile.parameters]
+summaryfile=Dalby600.sum
+[Dalby1500.SummaryFile.parameters]
+summaryfile=Dalby1500.sum
+
+[Roma400.SummaryFile.parameters]
+summaryfile=Roma400.sum
+[Roma800.SummaryFile.parameters]
+summaryfile=roma800.sum
+
+[Emerald600early.SummaryFile.parameters]
+summaryfile=Emerald600early.sum
+[Emerald1500early.SummaryFile.parameters]
+summaryfile=Emerald1500early.sum
+[Emerald600late.SummaryFile.parameters]
+summaryfile=Emerald600late.sum
+[Emerald1500late.SummaryFile.parameters]
+summaryfile=Emerald1500late.sum
+
+[Gunnedah750.SummaryFile.parameters]
+summaryfile=Gunnedah750.sum
+[Gunnedah1500.SummaryFile.parameters]
+summaryfile=Gunnedah1500.sum
+[Walgett750.SummaryFile.parameters]
+summaryfile=Walgett750.sum
+[Walgett1500.SummaryFile.parameters]
+summaryfile=Walgett1500.sum
+
+[Birchip300.SummaryFile.parameters]
+summaryfile=Birchip300.sum
+[Birchip300HighN.SummaryFile.parameters]
+summaryfile=Birchip300HighN.sum
+
+[Mingenew300Sand.SummaryFile.parameters]
+summaryfile=Mingenew300Sand.sum
+[Mingenew300RedSCL.SummaryFile.parameters]
+summaryfile=Mingenew300RedSCL.sum
+[Latham200SandGravel.SummaryFile.parameters]
+summaryfile=Latham200SandGravel.sum
+[Merredin300.SummaryFile.parameters]
+summaryfile=Merredin300.sum
+
+[Warra600LowN.SummaryFile.parameters]
+summaryfile=Warra600LowN.sum
+[Warra1500LowN.SummaryFile.parameters]
+summaryfile=Warra1500LowN.sum
+[Warra600HighN.SummaryFile.parameters]
+summaryfile=Warra600HighN.sum
+[Warra1500HighN.SummaryFile.parameters]
+summaryfile=Warra1500HighN.sum
+
+
+[wagga600.SummaryFile.parameters]
+summaryfile=wagga600.sum
+[wagga1500.SummaryFile.parameters]
+summaryfile=wagga1500.sum
+
+[walpeup200.SummaryFile.parameters]
+summaryfile=walpeup200.sum
+
+[RoseworthyEarly.SummaryFile.parameters]
+summaryfile=RoseworthyEarly.sum
+[RoseworthyMid.SummaryFile.parameters]
+summaryfile=RoseworthyMid.sum
+[RoseworthyLate.SummaryFile.parameters]
+summaryfile=RoseworthyLate.sum
+[RoseworthyMidTopDress.SummaryFile.parameters]
+summaryfile=RoseworthyMidTopDress.sum
+[RoseworthyMidLowN.SummaryFile.parameters]
+summaryfile=RoseworthyMidLowN.sum
+[RoseworthyMidLowNTopDress.SummaryFile.parameters]
+summaryfile=RoseworthyMidLowNTopDress.sum
+
+
+[Cummins.SummaryFile.parameters]
+summaryfile=Cummins.sum
+[Keith.SummaryFile.parameters]
+summaryfile=Keith.sum
+[Lameroo.SummaryFile.parameters]
+summaryfile=Lameroo.sum
+[Minnipa.SummaryFile.parameters]
+summaryfile=Minnipa.sum
+[Naracoorte.SummaryFile.parameters]
+summaryfile=Naracoorte.sum
+[Orroroo.SummaryFile.parameters]
+summaryfile=Orroroo.sum
+[Roseworthy.SummaryFile.parameters]
+summaryfile=Roseworthy.sum
+[Wanbi.SummaryFile.parameters]
+summaryfile=Wanbi.sum
+
+
+[sensibility.tracker.parameters]
+variable = sum of Wheat.ep on process from reported to now as sum_ep

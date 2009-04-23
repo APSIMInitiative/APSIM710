@@ -1,0 +1,33 @@
+   <lablab>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\lablab.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Lablab science documentation">../apsim/lablab/docs/Working science doc for lablab module.htm</Documentation>
+      <Documentation name="Generic plant" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+
+         <drop name="folder"/>
+     </drops>
+      <class    name="plant"/>
+      <cultivar name="lablab_small_leaf_perennial"/>
+      <cultivar name="endurance"/>
+      <cultivar name="highworth"/>
+      <variables link="%apsim%\Documentation\ModelInfo\lablab.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\lablab.xml"/>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Plant.dll</dll>
+         <ini>%apsim%\Model\LabLab.xml</ini>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </lablab>

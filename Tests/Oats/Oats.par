@@ -1,0 +1,46 @@
+!********************************************************************************
+[sample.report.parameters]
+outputfile    =Oats.out
+
+
+variable = clock.dd/mm/yyyy as Date
+variable = met.rain as rain
+variable = Oats.DaysAfterSowing
+variable = Oats.stage
+variable = Oats.lai
+variable = Oats.biomass
+variable = Oats.yield
+variable = Oats.root_depth
+variable = Oats.ep
+
+
+[sample.clock.parameters]
+start_date=14/6/1988     ! dd/mm/yyyy
+end_date=17/11/1988     ! dd/mm/yyyy
+
+
+[sample.manager.start_of_day]
+
+if day = 169 and year = 1988 then
+   Oats sow cultivar = Potoroo, plants = 120, sowing_depth = 30 (mm)
+endif
+
+if Oats.StageName = 'harvest_ripe' or Oats.plant_status = 'dead' then
+   Oats harvest
+   Oats end_crop
+endif
+
+[sample.manager.end_of_day]
+   report do_output
+
+
+[sample.Oats.parameters]
+ll =  0.230   0.240   0.240   0.250   0.260   0.270   0.280 ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+[sample.Screen.parameters]
+screen_output = on
+
+[sample.summaryfile.parameters]
+summaryfile=Oats.sum

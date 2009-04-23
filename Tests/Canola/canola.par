@@ -1,0 +1,40 @@
+[sample.report.parameters]
+outputfile  =canola.out
+
+
+
+variable = clock.day
+variable = clock.year
+variable = canola.lai
+variable = canola.biomass format 1
+variable = canola.green_biomass format 1
+variable = canola.pai
+variable = canola.OilGreenWt
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=9/5/1988
+end_date=26/10/1988
+
+[sample.manager.start_of_day]
+
+if day = 130 and year  = 1988 then
+   Fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
+   canola sow cultivar = Hyola42, plants = 40 (/m2), sowing_depth = 20 (mm), row_spacing = 300 (mm)
+endif
+
+if canola.StageName = 'harvest_ripe' or canola.plant_status = 'dead' then
+   canola harvest
+   canola end_crop
+endif
+
+[sample.manager.end_of_day]
+report do_output
+
+
+[sample.canola.parameters]
+
+   ll    = .230 .240 .240 .250 .260 .270 .280  ! lower limit mm water/mm soil
+   xf   = 1.00 1.00 1.00 1.00 1.00 1.00 1.00  ! Weighting factor for root advance
+   kl   = 0.08 0.08 0.08 0.08 0.05 0.03 0.01  ! Water Extraction Parameter (0-1)
+[sample.SummaryFile.parameters]
+summaryfile=canola.sum

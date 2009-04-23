@@ -1,0 +1,26 @@
+   <venlink>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <LargeIcon>%apsim%\UserInterface\Images\link32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\link16.png</SmallIcon>
+      <Documentation name="Science documentation">../apsim/venlink/docs/Guide to linking APSIM with the VENSIM.htm</Documentation>
+      <drops>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\VenLink.dll</dll>
+         <sim>
+         <model_filename>[venlink.model_filename]</model_filename>
+         [foreach venlink.variable]
+         <variable>[variable.innerxml]</variable>
+         [endfor]
+         [foreach venlink.ini]
+         <include>[ini.filename]</include>
+         [endfor]
+         </sim>
+      </ApsimToSim>
+   </venlink>

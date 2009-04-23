@@ -1,0 +1,54 @@
+   <epopulnea>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\epopulnea.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Generic Growth science documentation" >../apsim/growth/docs/growth_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <cultivar name="epopulnea"/>
+     <variables>
+         <variable name="lai" description ="E. populnea leaf area index"/>
+         <variable name="fw" description ="E. populnea water stress factor"/>
+         <variable name="fn" description ="E. populnea N stress factor"/>
+         <variable name="ft" description ="E. populnea Temperature stress factor"/>
+         <variable name="fvpd" description ="E. populnea VPD stress factor"/>
+         <variable name="cover_green" description ="E. populnea Canopy Cover"/>
+         <variable name="height" description ="E. populnea Tree Height"/>
+         <variable name="plants" description ="E. populnea Plant Population"/>
+         <variable name="age" description ="E. populnea Tree Age"/>
+         <variable name="sw_demand" description ="E. populnea soil water demand"/>
+         <variable name="ep" description ="E. populnea Tree water use"/>
+         <variable name="foliage_mass" description ="E. populnea foliage mass"/>
+         <variable name="foliage_n" description ="E. populnea foliage N mass"/>
+         <variable name="biomass" description ="E. populnea Total Above-ground biomass"/>
+         <variable name="adm_green" array = "T" description ="E. populnea Live Above-ground Biomass Pools"/>
+         <variable name="adm_dead" array = "T" description ="E. populnea Dead Above-ground Biomass Pools"/>
+         <variable name="adm_sen" array = "T" description ="E. populnea Senesced Above-ground Biomass Pools"/>
+         <variable name="root_mass" description ="E. populnea root mass"/>
+         <variable name="root_n" description ="E. populnea root N mass"/>
+         <variable name="root_depth" description ="E. populnea rooting depth"/>
+     </variables>
+
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Growth.dll</dll>
+         <ini>%apsim%\Model\EPopulnea.xml</ini>
+         <sim>
+            <uptake_source>calc</uptake_source>
+            <n_uptake_source>calc</n_uptake_source>
+            <rlv> 0.01 0 0 0 0 0 0 0 0 0 0 0 0 0</rlv>
+         </sim>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </epopulnea>

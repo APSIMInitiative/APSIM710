@@ -1,0 +1,114 @@
+[300mm.SoilWat.parameters]
+wet_soil_depth = 300
+
+[600mm.SoilWat.parameters]
+wet_soil_depth = 600
+
+[900mm.SoilWat.parameters]
+wet_soil_depth = 900
+
+[1200mm.SoilWat.parameters]
+wet_soil_depth = 1200
+
+[1500mm.SoilWat.parameters]
+wet_soil_depth = 1500
+
+[waco.SoilWat.parameters]
+
+!Title = Waco (Black Vertosol) Jimbour #014
+
+   max_evap        = 6        (mm)   ! maximum evaporation.
+   cona            = 3.5    ()     ! stage 2 evap coef.
+   diffus_const    =  40.0    ()     ! coeffs for dbar
+   diffus_slope    =  16.0    ()     !     "
+   u               = 6  (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            =   0.13   ()     ! bare soil albedo
+
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        = 73      ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   ! layer       1       2       3       4       5       6    7
+   dlayer  =  150.000 150.000 300.000 300.000 300.000 300.000 300.00   (mm)    ! layer depth
+   air_dry =    0.080   0.22    0.31    0.33    0.36    0.38   0.38    (mm/mm) ! air dry
+   ll15    =    0.24    0.22    0.31    0.33    0.36    0.38   0.38
+   dul     =    0.520   0.520   0.500   0.500   0.490   0.480   0.470  (mm/mm) ! lower limit
+   sat     =    0.570   0.570   0.550   0.550   0.540   0.530   0.520  (mm/mm) ! saturated soil water
+   swcon   =    0.300   0.300   0.300   0.300   0.300   0.300   0.300  ()      ! soil conductivity
+   bd      =    1.05    1.06    1.11    1.12    1.13    1.17    1.20   (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+[waco.SoilN.parameters]
+
+   amp               =   15.0   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   20.0   (oC)       ! mean annual air temperature (oC)
+   root_cn           =   50.0   ()         !
+   root_wt           = 1000.0   (kg/ha)    !
+   soil_cn           =   12.5   ()         ! soil humic pool C:N ratio
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+      !!layer        1       2       3       4       5       6      7
+   oc      =     1.560   1.220   1.118   0.930   0.520   0.332   0.290   (%)   ! organic carbon %
+   ph      =     8.200   8.700   8.900   8.100   8.000   8.000   8.000  ()    ! ph
+   fbiom   =     0.050   0.020   0.015   0.010   0.010   0.010   0.010  ()    ! microbe fraction of hunic pool
+   finert  =     0.390   0.470   0.520   0.620   0.740   0.830   0.850  ()    ! inert fraction of humic pool
+   ureappm =     0.000   0.000   0.000   0.000   0.000   0.000   0.000  (ppm) ! ppm urea
+   nh4ppm =   1.240   0.180   0.180   0.130   0.110   0.160   0.160 ()   ! ppm ammonia
+   no3ppm =   1.300   1.000   1.000   0.800   0.800   0.500   0.500 ()   ! ppm nitrate
+
+
+
+[waco.chickpea.parameters]
+   ll   =  0.220  0.220   0.370   0.380  0.400   0.400  0.410       !Database values
+   kl   =  0.080  0.080   0.080   0.060  0.040   0.020  0.010  ()   !
+   xf   =  1.000  1.000   1.000   1.000  1.000   1.000  1.000  ()   !root exploration factor
+
+[waco.mungbean.parameters]
+! LL assumed to be similar as wheat
+!   ll   =  0.220  0.220   0.310   0.330  0.370   0.420  0.470       !Database values
+! Assume similar to chickpea but shallower root system
+!ll15    =    0.24    0.22    0.31    0.33    0.36    0.38   0.38
+!dul     =    0.520   0.520   0.500   0.500   0.490   0.480   0.470  (mm/mm) ! lower limit
+   ll   =  0.220  0.220   0.370   0.400  0.420   0.400  0.410       !Database values
+   kl   =  0.080  0.080   0.080   0.060  0.060   0.000  0.000  ()   !
+   xf   =  1.000  1.000   1.000   1.000  1.000   0.000  0.000  ()   !root exploration factor
+
+[waco.fababean.parameters]
+! LL assumed to be similar as wheat
+!   ll   =  0.220  0.220   0.310   0.330  0.370   0.420  0.470       !Database values
+! Assume similar to chickpea
+   ll   =  0.220  0.220   0.370   0.450  0.450   0.450  0.450       !Database values
+   kl   =  0.080  0.080   0.080   0.040  0.000   0.000  0.000  ()   !
+   xf   =  1.000  1.000   1.000   1.000  0.000   0.000  0.000  ()   !root exploration factor
+
+[waco.maize.parameters]
+! Assume similar to chickpea
+   ll   =  0.220  0.220   0.370   0.380  0.400   0.400  0.410       !Database values
+   kl   =  0.120  0.120   0.120   0.120  0.100   0.080  0.040  ()   !
+   xf   =  1.000  1.000   1.000   1.000  1.000   1.000  1.000  ()   !root exploration factor
+
+[waco.sorghum.parameters]
+! Assume similar to maize
+   ll   =  0.220  0.220   0.370   0.380  0.400   0.400  0.410       !Database values
+   kl   =  0.120  0.120   0.120   0.120  0.100   0.080  0.040  ()   !
+   xf   =  1.000  1.000   1.000   1.000  1.000   1.000  1.000  ()   !root exploration factor
+
+[waco.wheat.parameters]
+   ll   =  0.220  0.220   0.370   0.380  0.400   0.400  0.410       !Database values
+   kl   =  0.080  0.080   0.080   0.060  0.040   0.020  0.010  ()   !
+   xf   =  1.000  1.000   1.000   1.000  1.000   1.000  1.000  ()   !root exploration factor
+   

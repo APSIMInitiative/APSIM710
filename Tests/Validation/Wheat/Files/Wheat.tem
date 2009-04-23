@@ -1,0 +1,191 @@
+#file Session$.apsim
+#Header<simulations name="ExpDescription$">
+  <simulation name="Treatment$">
+    <clock name="clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">StartDate$</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">EndDate$</end_date>
+    </clock>
+    <summaryfile name="summaryfile">
+      <filename name="filename">Treatment$.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">MetFile$.met</filename>
+    </metfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <outputfile name="outputfile">
+        <filename name="filename">Treatment$.out</filename>
+          <outputfiledescription name="DailyVariables" shortcut = "DailyVariables"/>
+      </outputfile>
+      <manager name="Manager">
+        <rule name="Sow on a fixed date">
+          <condition name="start_of_day">
+            if (paddock_is_fallow() = 1 and today = date('[date]')) then
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+            endif
+          </condition>
+          <category name="Sowing criteria">
+            <property name="date" value="PlantingDate$" type="text" description="Enter sowing date (d/m/yyyy) : " />
+          </category>
+          <category name="Sowing parameters">
+            <property name="crop" value="Wheat" type="modulename" description="Enter name of crop to sow : " />
+            <property name="density" value="Population$" type="text" description="Enter sowing density  (plants/m2) : " />
+            <property name="depth" value="sowing_depth$" type="text" description="Enter sowing depth  (mm) : " />
+            <property name="cultivar" value="Cultivar$" type="cultivars" croppropertyname="crop" description="Enter cultivar : " />
+            <property name="row_spacing" value="250" type="text" description="Enter row spacing (m) : " />
+          </category>
+        </rule>
+        <rule name="Harvesting rule">
+          <condition name="end_of_day">
+
+           if [crop].stage_name = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </condition>
+          <category name="Harvesting criteria">
+            <property name="crop" value="Wheat" type="modulename" description="Enter name of crop to harvest when ripe : " />
+          </category>
+        </rule>
+      </manager>
+      <soil name="SoilField$">
+        <Site>Site$</Site>
+        <Region>Region$</Region>
+        <LocalName>Site$</LocalName>
+        <SoilType>SoilType$</SoilType>
+        <NearestTown>Unknown</NearestTown>
+        <NaturalVegetation>Unknown</NaturalVegetation>
+        <Water>
+          <Cona>cona$</Cona>
+          <DiffusConst>diffus_const$</DiffusConst>
+          <DiffusSlope>diffus_slope$</DiffusSlope>
+          <U>u$</U>
+          <Salb>salb$</Salb>
+          <Cn2Bare>cn2_bare$</Cn2Bare>
+          <CnRed>cn_red$</CnRed>
+          <CnCov>cn_cov$</CnCov>
+#for_each_layer
+          <layer name="LayerNo$">
+            <thickness>dlayer$</thickness>
+            <bd>bd$</bd>
+            <ll15>ll15$</ll15>
+            <airdry>air_dry$</airdry>
+            <dul>dul$</dul>
+            <sat>sat$</sat>
+            <sw>Isw$</sw>
+            <swcon>swcon$</swcon>
+          </layer>
+#endfor
+        </Water>
+        <Nitrogen>
+          <CnCanopyFact>cn_cov$</CnCanopyFact>
+          <RootCn>root_cn$</RootCn>
+          <RootWt>root_wt$</RootWt>
+          <SoilCn>soil_cn$</SoilCn>
+          <EnrACoeff>1.0</EnrACoeff>
+          <EnrBCoeff>1.0</EnrBCoeff>
+#for_each_layer
+          <layer name="LayerNo$">
+            <oc>oc$</oc>
+            <ph>ph$</ph>
+            <fbiom>fbiom$</fbiom>
+            <finert>finert$</finert>
+            <no3>Ino3ppm$</no3>
+            <nh4>Inh4ppm$</nh4>
+          </layer>
+#endfor
+        </Nitrogen>
+        <other>
+        </other>
+        <InitWater>
+#for_each_layer
+            <layer name="LayerNo$">
+               <sw>Isw$</sw>
+             </layer>
+#endfor
+        </InitWater>
+        <InitNitrogen>
+#for_each_layer
+            <layer name="LayerNo$">
+               <no3>Ino3ppm$</no3>
+               <nh4>Inh4ppm$</nh4>
+             </layer>
+#endfor
+        </InitNitrogen>
+        <SoilCrop name="Crop$">
+#for_each_layer
+          <layer name="LayerNo$">
+            <ll>ll$</ll>
+            <kl>kl$</kl>
+            <xf>xf$</xf>
+          </layer>
+#endfor
+        </SoilCrop>
+      </soil>
+      <wheat />
+
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">off</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.9</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+      </irrigation>
+      <logic name="Irrigator">
+        <script name="init" />
+        <script name="startofday">
+           #for_each Irrigate
+           if (day = IrrigDay$) then
+               irrigation apply amount = IrrigAmt$ (mm)
+           endif
+           #endfor
+        </script>
+        <script name="endofday" />
+      </logic>
+      <fertiliser name="fertiliser" />
+      <logic name="Fertilizer">
+        <script name="init" />
+        <script name="startofday">
+           #for_each Fertilize
+           if (day = FertDay$) then
+               fertiliser apply amount = FertAmt$ (kg/ha), depth = 50 (mm), type = NO3_N ()
+           endif
+           #endfor
+        </script>
+        <script name="endofday" />
+      </logic>
+    </area>
+  </simulation>
+#Footer</simulations>
+#endfile
+  <folder name="shared">
+          <outputfiledescription name="DailyVariables">
+          <variables>
+            <variable name="Date" variablename="dd/mm/yyyy" module="global" arrayspec=" " description="Date (dd/mm/yyyy)" ModuleType="registrations" />
+            <variable name="day" variablename="day" module="global" arrayspec=" " description="Day of Year" ModuleType="registrations" />
+            <variable name="year" variablename="year" module="global" arrayspec=" " description="Year" ModuleType="registrations" />
+            <variable name="biomass" variablename="biomass" module="wheat" arrayspec=" " description="Biomass" ModuleType="wheat" />
+            <variable name="yield" variablename="yield" module="wheat" arrayspec=" " description="Yield" ModuleType="wheat" />
+            <variable name="grain_protein" variablename="grain_protein" module="wheat" arrayspec=" " description="grain protein content" ModuleType="wheat" />
+            <variable name="grain_size" variablename="grain_size" module="wheat" arrayspec=" " description="Size of each grain" ModuleType="wheat" />
+            <variable name="sw_dep" variablename="sw_dep" module="" arrayspec="()" description="Soil water - layered (mm)" array="T" />
+            <variable name="biomass_wt" variablename="biomass_wt" module="wheat" arrayspec=" " description="Biomass weight" ModuleType="wheat" />
+            <variable name="biomass_n" variablename="biomass_n" module="wheat" arrayspec=" " description="N in total biomass" ModuleType="wheat" />
+            <variable name="lai" variablename="lai" module="wheat" arrayspec=" " description="Leaf area index" ModuleType="wheat" />
+            <variable name="head_wt" variablename="head_wt" module="wheat" arrayspec=" " description="Weight of heads" ModuleType="wheat" />
+            <variable name="grain_wt" variablename="grain_wt" module="wheat" arrayspec=" " description="Weight of grain" ModuleType="wheat" />
+            <variable name="leaf_wt" variablename="leaf_wt" module="wheat" arrayspec=" " description="Weight of leaf" ModuleType="wheat" />
+            <variable name="head_n" variablename="head_n" module="wheat" arrayspec=" " description="N in heads" ModuleType="wheat" />
+            <variable name="grain_n" variablename="grain_n" module="wheat" arrayspec=" " description="N in grain" ModuleType="wheat" />
+            <variable name="leaf_n" variablename="leaf_n" module="wheat" arrayspec=" " description="N in leaf" ModuleType="wheat" />
+            <variable name="stem_n" variablename="stem_n" module="wheat" arrayspec=" " description="N in stem" ModuleType="wheat" />
+            <variable name="stem_wt" variablename="stem_wt" module="wheat" arrayspec=" " description="Weight of stem" ModuleType="wheat" />
+            <variable name="grain_no" variablename="grain_no" module="wheat" arrayspec=" " description="Grain number" ModuleType="wheat" />
+            <variable name="n_conc_grain" variablename="n_conc_grain" module="wheat" arrayspec=" " description="N concentration in grain" ModuleType="wheat" />
+          </variables>
+          <events>
+            <event name="global.Daily" description="End of day" module="global" eventname="Daily" />
+          </events>
+        </outputfiledescription>
+   </folder>
+

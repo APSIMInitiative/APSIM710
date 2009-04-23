@@ -1,0 +1,2982 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = site=coonamble; soil=cd2; treatment=LongFallow1; Nrate=200; RootDepth=deep; Sowing = AvgWindow
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                     "chickpea" = %apsim%\Model\plant.dll
+   Component                        "wheat" = %apsim%\Model\plant.dll
+   Component                      "sorghum" = %apsim%\Model\sorghum.dll
+   Component                      "tracker" = %apsim%\Model\tracker.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1970
+     Simulation end date   = 31/12/2000
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.dd/mm/yyyy as date
+        clock.year
+        tracker.wht_yield
+        tracker.wht_ep
+        tracker.wht_laimax
+        tracker.chk_yield
+        tracker.chk_ep
+        tracker.chk_laimax
+        tracker.sor_yield
+        tracker.sor_ep
+        tracker.sor_laimax
+        tracker.avg_residue
+        tracker.max_residue
+        tracker.min_residue
+        tracker.annual_rainfall
+        tracker.annual_runoff
+        tracker.annual_es
+        tracker.annual_drain
+
+     Output file = output\coonamble_cd2_200_LongFallow1_deep_AvgWindow.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: coonamble.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     wht_fert_target = 200
+     srg_fert_target = 200
+     
+     SECTION:- start_of_day
+     if (crop_in = 0) then
+        if (system_fallow > wht_min_fallow) and
+           ((days_since_wheat / 365) > wht_freq) and
+           (day >= wht_win1 and day <= wht_win3) then
+           if (fasw10 >= 0.0) and (fasw10 <= 0.99) and (fasw50 >= 0.75)
+              then
+              if (wht_crop_num < wht_crops_max) then
+                 if (day >= wht_win2) then
+                    wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
+                    wht_crop_num = wht_crop_num + 1
+                 else
+                    wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
+                    wht_crop_num = wht_crop_num + 1
+                 endif
+                 rz_no3 = no3(1) + no3(2) + no3(3)
+                 if rz_no3 < wht_fert_target then
+                    wht_fert = wht_fert_target - rz_no3
+                    fertiliser apply amount = wht_fert, depth = 0, type = no3_n
+                 endif
+              else
+                 wht_crop_num = 0
+                 if (day >= wht_win2) then
+                    chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+                 else
+                    chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+                 endif
+              endif
+              surfaceom tillage type = planter ()
+              crop_in = 1
+              system_fallow = 0
+              days_since_wheat = day - wht_win1
+           elseif day = wht_win3 then
+              days_since_wheat = day - wht_win1
+              wht_crop_num = 0
+           endif
+        else
+        endif
+        if (system_fallow > srg_min_fallow) and
+           ((days_since_sorg / 365) > srg_freq) and
+           (day >= srg_win1 or day <= srg_win3) then
+           if (fasw10 >= 0.0) and (fasw10 <= 0.99) and (fasw70 >= 0.75)
+                then
+              if (srg_seeding = 1 ) then
+                  sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+              else
+                  sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+              endif
+              rz_no3 = no3(1) + no3(2) + no3(3)
+              if rz_no3 < srg_fert_target then
+                 sor_fert = srg_fert_target - rz_no3
+                    fertiliser apply amount = sor_fert, depth = 0, type = no3_n
+              endif
+              surfaceom tillage type = planter ()
+              crop_in = 1
+              system_fallow = 0
+              if day <= srg_win3 then
+                 days_since_sorg = day + 365 - srg_win1
+              else
+                 days_since_sorg = day - srg_win1
+              endif
+           elseif day = srg_win3 then
+              days_since_sorg = day + 365 - srg_win1
+           endif
+        else
+        endif
+     else
+        if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+           w_mat_day = day
+           wheat harvest
+           wheat kill_crop
+           wheat end_crop
+           crop_in = 0
+        endif
+        if (chickpea.stage = 11) or (chickpea.plant_status = 'dead') then
+           c_mat_day = day
+           chickpea harvest
+           chickpea end_crop
+           crop_in = 0
+        endif
+        if (sorghum.stage = 11) or (sorghum.plant_status = 'dead') or ((sorghum.plant_status = 'alive') and (day = 166)) then
+           s_mat_day = day
+           sorghum harvest
+           sorghum kill_crop
+           sorghum end_crop
+           crop_in = 0
+        endif
+     endif
+     days_since_wheat = days_since_wheat + 1
+     days_since_sorg = days_since_sorg + 1
+     
+     SECTION:- init
+     system_fallow = 10
+     crop_in = 0
+     wht_freq = 3
+     days_since_wheat = 30 * 23
+     wht_min_fallow = 7
+     srg_freq = 3
+     days_since_sorg = 30 * 5
+     srg_min_fallow = 7
+     wht_crops_max = 200
+     
+     SECTION:- end_of_day
+     if end_year = 1 then
+        report do_output
+     endif
+     
+     SECTION:- init
+     sow_year = 1957
+     sow_day = 1
+     wht_fert = 0
+     sor_fert = 0
+     
+     SECTION:- start_of_day
+     if (crop_in = 0) then
+        system_fallow = system_fallow + 1
+        maw10 = dul_dep(1) - ll15_dep(1)
+        maw30 = maw10 + dul_dep(2)- ll15_dep(2)
+        maw50 = maw30 + dul_dep(3)- ll15_dep(3)
+        maw70 = maw50 + dul_dep(4) - ll15_dep(4)
+        maw90 = maw70 + dul_dep(5) - ll15_dep(5)
+        maw110 = maw90 + dul_dep(6) - ll15_dep(6)
+        maw130 = maw110 + dul_dep(7) - ll15_dep(7)
+        maw150 = maw130 + dul_dep(8) - ll15_dep(8)
+        maw170 = maw150 + dul_dep(9) - ll15_dep(9)
+        maw190 = maw170 + dul_dep(10) - ll15_dep(10)- maw10
+        paw10 = sw_dep(1) - ll15_dep(1)
+        paw30 = paw10 + sw_dep(2) - ll15_dep(2)
+        paw50 = paw30 + sw_dep(3) - ll15_dep(3)
+        paw70 = paw50 + sw_dep(4) - ll15_dep(4)
+        paw90 = paw70 + sw_dep(5) - ll15_dep(5)
+        paw110 = paw90 + sw_dep(6) - ll15_dep(6)
+        paw130 = paw110 + sw_dep(7) - ll15_dep(7)
+        paw150 = paw130 + sw_dep(8) - ll15_dep(8)
+        paw170 = paw150 + sw_dep(9) - ll15_dep(9)
+        paw190 = paw170 + sw_dep(10) - ll15_dep(10)- paw10
+        fasw10 = paw10 / maw10
+        fasw30 = paw30 / maw30
+        fasw50 = paw50 / maw50
+        fasw70 = paw70 / maw70
+        fasw90 = paw90 / maw90
+        fasw110 = paw110 / maw110
+        fasw130 = paw130 / maw130
+        fasw150 = paw150 / maw150
+        fasw170 = paw170 / maw170
+        fasw190 = paw190 / maw190
+     endif
+     
+     SECTION:- init
+     wht_win1 = 140
+     wht_win2 = 160
+     wht_win3 = 220
+     srg_win1 = 300
+     srg_win2 = 340
+     srg_win3 = 10
+     srg_seeding = 2
+     END of rules
+     
+     Manager creating a new local real variable : wht_fert_target = 200.00000
+     Manager creating a new local real variable : srg_fert_target = 200.00000
+     Manager creating a new local real variable : system_fallow = 10.00000
+     Manager creating a new local real variable : crop_in = 0.00000
+     Manager creating a new local real variable : wht_freq = 3.00000
+     Manager creating a new local real variable : days_since_wheat = 690.00000
+     Manager creating a new local real variable : wht_min_fallow = 7.00000
+     Manager creating a new local real variable : srg_freq = 3.00000
+     Manager creating a new local real variable : days_since_sorg = 150.00000
+     Manager creating a new local real variable : srg_min_fallow = 7.00000
+     Manager creating a new local real variable : wht_crops_max = 200.00000
+     Manager creating a new local real variable : sow_year = 1957.00000
+     Manager creating a new local real variable : sow_day = 1.00000
+     Manager creating a new local real variable : wht_fert = 0.00000
+     Manager creating a new local real variable : sor_fert = 0.00000
+     Manager creating a new local real variable : wht_win1 = 140.00000
+     Manager creating a new local real variable : wht_win2 = 160.00000
+     Manager creating a new local real variable : wht_win3 = 220.00000
+     Manager creating a new local real variable : srg_win1 = 300.00000
+     Manager creating a new local real variable : srg_win2 = 340.00000
+     Manager creating a new local real variable : srg_win3 = 10.00000
+     Manager creating a new local real variable : srg_seeding = 2.00000
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.191  0.382  0.552  0.602  0.552  0.935  0.613  0.249
+          100.-  300.  0.198  0.397  0.521  0.575  0.521  1.012  0.340  0.176
+          300.-  500.  0.198  0.396  0.520  0.575  0.520  1.012  0.048  0.176
+          500.-  700.  0.203  0.406  0.524  0.554  0.524  1.077  0.000  0.357
+          700.-  900.  0.208  0.415  0.527  0.532  0.527  1.146  0.000  0.900
+          900.- 1100.  0.205  0.411  0.521  0.526  0.521  1.160  0.000  0.900
+         1100.- 1300.  0.201  0.402  0.510  0.515  0.510  1.187  0.000  0.900
+         1300.- 1500.  0.196  0.392  0.497  0.502  0.497  1.220  0.000  0.900
+         1500.- 1700.  0.192  0.385  0.489  0.493  0.489  1.241  0.000  0.900
+         1700.- 1900.  0.191  0.382  0.485  0.489  0.485  1.249  0.000  0.900
+         1900.- 2100.  0.191  0.381  0.484  0.488  0.484  1.253  0.000  0.900
+         2100.- 2300.  0.190  0.381  0.483  0.488  0.483  1.254  0.000  0.900
+         2300.- 2500.  0.190  0.381  0.483  0.488  0.483  1.254  0.000  0.900
+         2500.- 2700.  0.190  0.381  0.483  0.487  0.483  1.254  0.000  0.900
+         2700.- 2900.  0.190  0.381  0.483  0.487  0.483  1.254  0.000  0.900
+         2900.- 3100.  0.190  0.381  0.483  0.487  0.483  1.254  0.000  0.900
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      38.20      17.00      17.00       5.00
+          100.-  300.      79.40      24.80      24.80      10.80
+          300.-  500.      79.20      24.80      24.80      11.00
+          500.-  700.      81.20      23.60      23.60       6.00
+          700.-  900.      83.00      22.40      22.40       1.00
+          900.- 1100.      82.20      22.00      22.00       1.00
+         1100.- 1300.      80.40      21.60      21.60       1.00
+         1300.- 1500.      78.40      21.00      21.00       1.00
+         1500.- 1700.      77.00      20.80      20.80       0.80
+         1700.- 1900.      76.40      20.60      20.60       0.80
+         1900.- 2100.      76.20      20.60      20.60       0.80
+         2100.- 2300.      76.20      20.40      20.40       1.00
+         2300.- 2500.      76.20      20.40      20.40       1.00
+         2500.- 2700.      76.20      20.40      20.40       0.80
+         2700.- 2900.      76.20      20.40      20.40       0.80
+         2900.- 3100.      76.20      20.40      20.40       0.80
+          ---------------------------------------------------------
+               Totals    1212.60     341.20     341.20      43.60
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              67.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            7.34 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat           10.0     4.0     0.0     0.0   0.005     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.40  1.64    2.98    0.28    0.00
+             2     7.60  1.25    5.97    0.61    0.00
+             3     7.60  1.03    6.07    0.61    0.00
+             4     7.60  0.93    6.40    0.65    0.00
+             5     8.10  0.75    6.72    0.69    0.00
+             6     8.10  0.53    6.68    0.70    0.00
+             7     8.10  0.42    6.69    0.71    0.00
+             8     8.10  0.42    6.71    0.73    0.00
+             9     8.10  0.42    0.74    0.74    0.00
+            10     8.10  0.42    0.75    0.75    0.00
+            11     8.10  0.42    0.75    0.75    0.00
+            12     8.10  0.42    0.75    0.75    0.00
+            13     8.10  0.42    0.75    0.75    0.00
+            14     8.10  0.42    0.75    0.75    0.00
+            15     8.10  0.42    0.75    0.75    0.00
+            16     8.10  0.42    0.75    0.75    0.00
+          ------------------------------------------------
+           Totals               54.23   10.98    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15088.4  1040.6   245.6    30.7    73.7     1.8
+             2      24894.7  1716.9   405.3    50.7    60.7     1.5
+             3      20683.7  1426.5   163.5    20.4    50.1     1.3
+             4      19943.4  1375.4    88.8    11.1    41.2     1.0
+             5      17164.5  1183.8    25.5     3.2    34.0     0.8
+             6      12283.8   847.2    12.2     1.5    28.0     0.7
+             7       9969.8   687.6     1.0     0.1    23.1     0.6
+             8      10247.0   706.7     1.0     0.1    19.0     0.5
+             9      10423.4   718.9     1.0     0.1    15.7     0.4
+            10      10490.6   723.5     1.0     0.1    12.9     0.3
+            11      10524.2   725.8     1.0     0.1    10.6     0.3
+            12      10532.6   726.4     1.0     0.1     8.8     0.2
+            13      10532.6   726.4     1.0     0.1     7.2     0.2
+            14      10532.6   726.4     1.0     0.1     6.0     0.1
+            15      10532.6   726.4     1.0     0.1     4.9     0.1
+            16      10532.6   726.4     1.0     0.1     4.0     0.1
+          ---------------------------------------------------------
+           Totals  214376.1 14784.6   951.3   118.9   400.0    10.0
+          ---------------------------------------------------------
+
+------- tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        maximum of wheat.yield on end_of_day from reported to now as wht_yield
+        sum of wheat.ep on end_of_day from reported to now as wht_ep
+        maximum of wheat.lai on end_of_day from reported to now as wht_laimax
+        maximum of chickpea.yield on end_of_day from reported to now as chk_yield
+        sum of chickpea.ep on end_of_day from reported to now as chk_ep
+        maximum of chickpea.lai on end_of_day from reported to now as chk_laimax
+        maximum of sorghum.yield on end_of_day from reported to now as sor_yield
+        sum of sorghum.ep on end_of_day from reported to now as sor_ep
+        maximum of sorghum.lai on end_of_day from reported to now as sor_laimax
+        average of surfaceom.surfaceom_wt on end_of_day from reported to now as avg_residue
+        maximum of surfaceom.surfaceom_wt on end_of_day from reported to now as max_residue
+        minimum of surfaceom.surfaceom_wt on end_of_day from reported to now as min_residue
+        sum of met.rain on end_of_day from reported to now as annual_rainfall
+        sum of SoilWat.runoff on end_of_day from reported to now as annual_runoff
+        sum of SoilWat.es on end_of_day from reported to now as annual_es
+        sum of SoilWat.drain on end_of_day from reported to now as annual_drain
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : maw10 = 17.00000
+     Manager creating a new local real variable : maw30 = 41.80000
+     Manager creating a new local real variable : maw50 = 66.60001
+     Manager creating a new local real variable : maw70 = 90.20001
+     Manager creating a new local real variable : maw90 = 112.60001
+     Manager creating a new local real variable : maw110 = 134.60002
+     Manager creating a new local real variable : maw130 = 156.20001
+     Manager creating a new local real variable : maw150 = 177.20001
+     Manager creating a new local real variable : maw170 = 198.00000
+     Manager creating a new local real variable : maw190 = 201.60001
+     Manager creating a new local real variable : paw10 = 17.00000
+     Manager creating a new local real variable : paw30 = 41.80000
+     Manager creating a new local real variable : paw50 = 66.60001
+     Manager creating a new local real variable : paw70 = 90.20001
+     Manager creating a new local real variable : paw90 = 112.60001
+     Manager creating a new local real variable : paw110 = 134.60002
+     Manager creating a new local real variable : paw130 = 156.20001
+     Manager creating a new local real variable : paw150 = 177.20001
+     Manager creating a new local real variable : paw170 = 198.00000
+     Manager creating a new local real variable : paw190 = 201.60001
+     Manager creating a new local real variable : fasw10 = 1.00000
+     Manager creating a new local real variable : fasw30 = 1.00000
+     Manager creating a new local real variable : fasw50 = 1.00000
+     Manager creating a new local real variable : fasw70 = 1.00000
+     Manager creating a new local real variable : fasw90 = 1.00000
+     Manager creating a new local real variable : fasw110 = 1.00000
+     Manager creating a new local real variable : fasw130 = 1.00000
+     Manager creating a new local real variable : fasw150 = 1.00000
+     Manager creating a new local real variable : fasw170 = 1.00000
+     Manager creating a new local real variable : fasw190 = 1.00000
+27 July 1971(Day of year=208): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "wht_crop_num".
+     Variables should have a value before they are used in an expression.
+     Component name: manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 July 1971(Day of year=208), manager: 
+     Manager creating a new local real variable : wht_crop_num = 0.00000
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
+27 July 1971(Day of year=208), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            208   80.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+     Manager creating a new local real variable : rz_no3 = 63.56465
+     Manager sending message :- fertiliser apply  amount = 136.43535, depth = 0, type = no3_n
+27 July 1971(Day of year=208), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       136.44 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+27 July 1971(Day of year=208), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+28 July 1971(Day of year=209), wheat: 
+      stage 2.0 germination
+11 August 1971(Day of year=223), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   33.61 (mm)
+12 August 1971(Day of year=224), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.65 (g/m^2)   lai          =   0.023 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   31.09 (mm)
+26 September 1971(Day of year=269), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         234.82 (g/m^2)   lai          =   2.869 (m^2/m^2)
+                     stover N conc =     3.29 (%)    extractable sw =   67.12 (mm)
+27 October 1971(Day of year=300), wheat: 
+      stage 6.0 flowering
+                     biomass =         472.89 (g/m^2)   lai          =   0.744 (m^2/m^2)
+                     stover N conc =     1.76 (%)    extractable sw =   47.52 (mm)
+2 November 1971(Day of year=306), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         501.21 (g/m^2)   lai          =   0.591 (m^2/m^2)
+                     stover N conc =     1.67 (%)    extractable sw =   39.26 (mm)
+30 November 1971(Day of year=334), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         606.78 (g/m^2)   lai          =   0.299 (m^2/m^2)
+                     stover N conc =     1.88 (%)    extractable sw =   41.38 (mm)
+1 December 1971(Day of year=335), wheat: 
+      stage 9.0 maturity
+                     biomass =         606.78 (g/m^2)   lai          =   0.260 (m^2/m^2)
+                     stover N conc =     1.89 (%)    extractable sw =   38.50 (mm)
+2 December 1971(Day of year=336), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         606.78 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.95 (%)    extractable sw =   35.17 (mm)
+3 December 1971(Day of year=337), manager: 
+     Manager creating a new local real variable : w_mat_day = 337.00000
+     Manager sending message :- wheat harvest
+3 December 1971(Day of year=337), wheat: 
+     
+      flowering day          =  300                           stover (kg/ha)         =     3907.9
+      maturity day           =  335                           grain yield (kg/ha)    =     2159.9
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2468.4
+      grain wt (g)           =    0.035                       grains/m^2             =     6201.5
+      grains/plant           =   62.0                         maximum lai            =      2.869
+      total above ground biomass (kg/ha)    =     6067.8
+      live above ground biomass (kg/ha)     =     6067.8
+      green above ground biomass (kg/ha)    =     4487.6
+      senesced above ground biomass (kg/ha) =     1580.2
+      number of leaves       =     39.4
+      DM Root:Shoot ratio    =     0.20                       Harvest Index          =       0.36
+      Stover C:N ratio       =    29.33                       Root C:N ratio         =      17.47
+      grain N percent        =     2.90                       total N content (kg/ha)=     115.98
+      grain N uptake (kg/ha) =    62.68                       senesced N content (kg/ha)=    7.90
+      green N content (kg/ha)=    45.39
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.040        0.051        0.000        0.000
+         floral_initiation    to flowering               0.189        0.229        0.000        0.000
+         flowering            to start_grain_fill        0.201        0.243        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.209        0.255        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                3907.9                     0.0
+                          N  (kg/ha) =                  53.29                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2159.9                     0.0
+                          N  (kg/ha) =                  62.68                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   35.17 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1190.4
+                          N  (kg/ha) =                   0.00                   27.26
+     
+27 November 1972(Day of year=332), manager: 
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+27 November 1972(Day of year=332), sorghum: 
+     Sowing initiate
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     sowing_depth = 101.000000
+        exceeds upper limit of 100.000000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            332   101.0     6.5   750    1.0     early    1.50
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.040          0.382       1.000
+             200.0     0.040          0.397       1.000
+             200.0     0.040          0.396       1.000
+             200.0     0.040          0.414       1.000
+             200.0     0.040          0.437       1.000
+             200.0     0.030          0.446       1.000
+             200.0     0.030          0.450       1.000
+             200.0     0.030          0.452       1.000
+             200.0     0.030          0.458       1.000
+             200.0     0.020          0.461       1.000
+             200.0     0.020          0.460       1.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+         ---------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 87.89062, depth = 0, type = no3_n
+27 November 1972(Day of year=332), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        87.89 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+27 November 1972(Day of year=332), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+28 November 1972(Day of year=333), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+5 December 1972(Day of year=340), sorghum: 
+     Stage 3 Emergence  DAS = 8
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  11.22
+14 December 1972(Day of year=349), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 17
+     		Biomass       =   3.56 		 LAI            =   0.05
+     		Stover N Conc =   0.11 		 Extractable SW =  49.46
+25 December 1972(Day of year=360), sorghum: 
+     Stage 5 FloralInitiation  DAS = 28
+     		Biomass       =  30.22 		 LAI            =   0.47
+     		Stover N Conc =   0.75 		 Extractable SW =  65.94
+15 January 1973(Day of year=15), sorghum: 
+     Stage 6 FlagLeaf  DAS = 49
+     		Biomass       = 180.37 		 LAI            =   1.79
+     		Stover N Conc =   3.52 		 Extractable SW = 100.61
+27 January 1973(Day of year=27), sorghum: 
+     Stage 7 Flowering  DAS = 61
+     		Biomass       = 324.59 		 LAI            =   1.80
+     		Stover N Conc =   5.16 		 Extractable SW =  58.07
+1 February 1973(Day of year=32), sorghum: 
+     Stage 8 StartGrainFill  DAS = 66
+     		Biomass       = 390.07 		 LAI            =   1.80
+     		Stover N Conc =   5.90 		 Extractable SW =  87.01
+10 March 1973(Day of year=69), sorghum: 
+     Stage 9 EndGrainFill  DAS = 103
+     		Biomass       = 814.90 		 LAI            =   1.21
+     		Stover N Conc =   2.70 		 Extractable SW =  89.88
+12 March 1973(Day of year=71), sorghum: 
+     Stage 10 Maturity  DAS = 105
+     		Biomass       = 833.21 		 LAI            =   1.10
+     		Stover N Conc =   2.53 		 Extractable SW =  84.09
+13 March 1973(Day of year=72), sorghum: 
+     Stage 11 HarvestRipe  DAS = 106
+     		Biomass       = 840.33 		 LAI            =   1.06
+     		Stover N Conc =   2.47 		 Extractable SW =  80.92
+14 March 1973(Day of year=73), manager: 
+     Manager creating a new local real variable : s_mat_day = 73.00000
+     Manager sending message :- sorghum harvest
+14 March 1973(Day of year=73), sorghum: 
+     
+     Harvest
+     Flowering (DAS)       = 61 		 Maturity (DAS)          = 105
+     Flowering day         = 27 		 Maturity day            = 71
+     Maximum LAI           = 1.8 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 8458.5
+     Green above ground biomass    (kg/ha) = 8005.8
+     Senesced above ground biomass (kg/ha) = 452.7
+     Stover (kg/ha)        = 4215.5 	 Grain yield (kg/ha)     = 4243.0
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 4877.0
+     Weight 1000 grains(g) = 33.2 		 Grains/m^2              = 12766.3
+     Grains/head           = 1964.0
+     Grain N percent    (%)     =      1.67 	 Grain N            (kg/ha) =    70.77
+     Total N content    (kg/ha) =     95.50 	 Senesced N content (kg/ha) =     8.30
+     Green N content    (kg/ha) =     19.23
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.6          0.6        1.0
+        Flag leaf           to Flowering                 0.7          0.6        1.0
+        Flowering           to Start grain fill          0.8          0.8        1.0
+        Start grain fill    to End grain fill            0.9          0.9        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               4242.96		    0.00
+                         N  (kg/ha) =                 70.77		    0.00
+     Manager sending message :- sorghum kill_crop
+     Kill Crop
+     Crop kill. Standing above-ground dm =  4215.5 kg/ha
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               4215.54		 1400.10
+                         N  (kg/ha) =                 24.73		    2.80
+                         P  (kg/ha) =                  0.00		    0.00
+21 May 1977(Day of year=141), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
+21 May 1977(Day of year=141), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sunco
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            141   80.0  100.0  250.0   0.0   0.0 sunco
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 140.09850, depth = 0, type = no3_n
+21 May 1977(Day of year=141), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       140.10 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+21 May 1977(Day of year=141), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+22 May 1977(Day of year=142), wheat: 
+      stage 2.0 germination
+6 June 1977(Day of year=157), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   28.97 (mm)
+7 June 1977(Day of year=158), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.62 (g/m^2)   lai          =   0.023 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   27.65 (mm)
+24 August 1977(Day of year=236), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         384.68 (g/m^2)   lai          =   2.368 (m^2/m^2)
+                     stover N conc =     3.56 (%)    extractable sw =   44.96 (mm)
+30 September 1977(Day of year=273), wheat: 
+      stage 6.0 flowering
+                     biomass =         564.96 (g/m^2)   lai          =   0.412 (m^2/m^2)
+                     stover N conc =     2.42 (%)    extractable sw =   27.30 (mm)
+6 October 1977(Day of year=279), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         581.06 (g/m^2)   lai          =   0.351 (m^2/m^2)
+                     stover N conc =     2.42 (%)    extractable sw =   23.62 (mm)
+2 November 1977(Day of year=306), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         626.19 (g/m^2)   lai          =   0.118 (m^2/m^2)
+                     stover N conc =     2.48 (%)    extractable sw =   10.98 (mm)
+4 November 1977(Day of year=308), wheat: 
+      stage 9.0 maturity
+                     biomass =         626.42 (g/m^2)   lai          =   0.118 (m^2/m^2)
+                     stover N conc =     2.47 (%)    extractable sw =   10.50 (mm)
+5 November 1977(Day of year=309), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         626.42 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.52 (%)    extractable sw =   10.37 (mm)
+6 November 1977(Day of year=310), manager: 
+     Manager sending message :- wheat harvest
+6 November 1977(Day of year=310), wheat: 
+     
+      flowering day          =  273                           stover (kg/ha)         =     4706.5
+      maturity day           =  308                           grain yield (kg/ha)    =     1557.7
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     1780.2
+      grain wt (g)           =    0.023                       grains/m^2             =     6914.1
+      grains/plant           =   69.1                         maximum lai            =      3.356
+      total above ground biomass (kg/ha)    =     6264.2
+      live above ground biomass (kg/ha)     =     6264.2
+      green above ground biomass (kg/ha)    =     3878.4
+      senesced above ground biomass (kg/ha) =     2385.8
+      number of leaves       =     50.3
+      DM Root:Shoot ratio    =     0.23                       Harvest Index          =       0.25
+      Stover C:N ratio       =    26.78                       Root C:N ratio         =      17.07
+      grain N percent        =     2.93                       total N content (kg/ha)=     115.89
+      grain N uptake (kg/ha) =    45.58                       senesced N content (kg/ha)=   11.93
+      green N content (kg/ha)=    58.38
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.115        0.141        0.000        0.005
+         floral_initiation    to flowering               0.222        0.267        0.000        0.004
+         flowering            to start_grain_fill        0.224        0.269        0.000        0.004
+         start_grain_fill     to end_grain_fill          0.251        0.304        0.000        0.003
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4706.5                     0.0
+                          N  (kg/ha) =                  70.31                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1557.7                     0.0
+                          N  (kg/ha) =                  45.58                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   10.37 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1467.8
+                          N  (kg/ha) =                   0.00                   34.39
+     
+5 November 1978(Day of year=309), manager: 
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+5 November 1978(Day of year=309), sorghum: 
+     Sowing initiate
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     sowing_depth = 101.000000
+        exceeds upper limit of 100.000000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            309   101.0     6.5   750    1.0     early    1.50
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.040          0.382       1.000
+             200.0     0.040          0.397       1.000
+             200.0     0.040          0.396       1.000
+             200.0     0.040          0.414       1.000
+             200.0     0.040          0.437       1.000
+             200.0     0.030          0.446       1.000
+             200.0     0.030          0.450       1.000
+             200.0     0.030          0.452       1.000
+             200.0     0.030          0.458       1.000
+             200.0     0.020          0.461       1.000
+             200.0     0.020          0.460       1.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+         ---------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 63.92377, depth = 0, type = no3_n
+5 November 1978(Day of year=309), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        63.92 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+5 November 1978(Day of year=309), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+6 November 1978(Day of year=310), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  80.92
+15 November 1978(Day of year=319), sorghum: 
+     Stage 3 Emergence  DAS = 10
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  84.10
+25 November 1978(Day of year=329), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 20
+     		Biomass       =   3.74 		 LAI            =   0.05
+     		Stover N Conc =   0.09 		 Extractable SW =  90.46
+6 December 1978(Day of year=340), sorghum: 
+     Stage 5 FloralInitiation  DAS = 31
+     		Biomass       =  24.96 		 LAI            =   0.43
+     		Stover N Conc =   0.64 		 Extractable SW =  98.25
+29 December 1978(Day of year=363), sorghum: 
+     Stage 6 FlagLeaf  DAS = 54
+     		Biomass       = 256.59 		 LAI            =   2.30
+     		Stover N Conc =   4.55 		 Extractable SW = 146.45
+11 January 1979(Day of year=11), sorghum: 
+     Stage 7 Flowering  DAS = 67
+     		Biomass       = 440.76 		 LAI            =   2.30
+     		Stover N Conc =   6.55 		 Extractable SW =  80.42
+16 January 1979(Day of year=16), sorghum: 
+     Stage 8 StartGrainFill  DAS = 72
+     		Biomass       = 478.51 		 LAI            =   2.30
+     		Stover N Conc =   7.02 		 Extractable SW =  67.55
+21 February 1979(Day of year=52), sorghum: 
+     Stage 9 EndGrainFill  DAS = 108
+     		Biomass       = 689.02 		 LAI            =   1.22
+     		Stover N Conc =   4.19 		 Extractable SW =  18.62
+23 February 1979(Day of year=54), sorghum: 
+     Stage 10 Maturity  DAS = 110
+     		Biomass       = 695.25 		 LAI            =   1.22
+     		Stover N Conc =   4.08 		 Extractable SW =  17.30
+24 February 1979(Day of year=55), sorghum: 
+     Stage 11 HarvestRipe  DAS = 111
+     		Biomass       = 697.56 		 LAI            =   1.22
+     		Stover N Conc =   4.04 		 Extractable SW =  16.67
+25 February 1979(Day of year=56), manager: 
+     Manager sending message :- sorghum harvest
+25 February 1979(Day of year=56), sorghum: 
+     
+     Harvest
+     Flowering (DAS)       = 67 		 Maturity (DAS)          = 110
+     Flowering day         = 11 		 Maturity day            = 54
+     Maximum LAI           = 2.3 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 6997.8
+     Green above ground biomass    (kg/ha) = 6301.9
+     Senesced above ground biomass (kg/ha) = 695.8
+     Stover (kg/ha)        = 3930.6 	 Grain yield (kg/ha)     = 3067.2
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 3525.5
+     Weight 1000 grains(g) = 17.2 		 Grains/m^2              = 17780.8
+     Grains/head           = 2735.5
+     Grain N percent    (%)     =      2.47 	 Grain N            (kg/ha) =    75.65
+     Total N content    (kg/ha) =    116.10 	 Senesced N content (kg/ha) =    14.26
+     Green N content    (kg/ha) =     29.61
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.8          0.8        1.0
+        Flag leaf           to Flowering                 0.6          0.5        1.0
+        Flowering           to Start grain fill          0.3          0.2        1.0
+        Start grain fill    to End grain fill            0.4          0.3        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               3067.16		    0.00
+                         N  (kg/ha) =                 75.65		    0.00
+     Manager sending message :- sorghum kill_crop
+     Kill Crop
+     Crop kill. Standing above-ground dm =  3930.6 kg/ha
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               3930.60		 1710.42
+                         N  (kg/ha) =                 40.45		    3.42
+                         P  (kg/ha) =                  0.00		    0.00
+20 May 1980(Day of year=141), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
+20 May 1980(Day of year=141), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sunco
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            141   80.0  100.0  250.0   0.0   0.0 sunco
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 93.04507, depth = 0, type = no3_n
+20 May 1980(Day of year=141), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        93.05 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+20 May 1980(Day of year=141), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+27 May 1980(Day of year=148), wheat: 
+      stage 2.0 germination
+8 June 1980(Day of year=160), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   26.99 (mm)
+9 June 1980(Day of year=161), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.62 (g/m^2)   lai          =   0.023 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   25.84 (mm)
+23 August 1980(Day of year=236), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         384.22 (g/m^2)   lai          =   3.131 (m^2/m^2)
+                     stover N conc =     3.25 (%)    extractable sw =   55.71 (mm)
+29 September 1980(Day of year=273), wheat: 
+      stage 6.0 flowering
+                     biomass =         599.43 (g/m^2)   lai          =   0.460 (m^2/m^2)
+                     stover N conc =     2.29 (%)    extractable sw =   20.81 (mm)
+4 October 1980(Day of year=278), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         608.65 (g/m^2)   lai          =   0.329 (m^2/m^2)
+                     stover N conc =     2.24 (%)    extractable sw =   17.53 (mm)
+30 October 1980(Day of year=304), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         643.77 (g/m^2)   lai          =   0.102 (m^2/m^2)
+                     stover N conc =     2.36 (%)    extractable sw =    7.76 (mm)
+1 November 1980(Day of year=306), wheat: 
+      stage 9.0 maturity
+                     biomass =         643.88 (g/m^2)   lai          =   0.097 (m^2/m^2)
+                     stover N conc =     2.36 (%)    extractable sw =    7.30 (mm)
+2 November 1980(Day of year=307), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         643.88 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.39 (%)    extractable sw =    7.25 (mm)
+3 November 1980(Day of year=308), manager: 
+     Manager sending message :- wheat harvest
+3 November 1980(Day of year=308), wheat: 
+     
+      flowering day          =  273                           stover (kg/ha)         =     4959.2
+      maturity day           =  306                           grain yield (kg/ha)    =     1479.6
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     1690.9
+      grain wt (g)           =    0.020                       grains/m^2             =     7469.9
+      grains/plant           =   74.7                         maximum lai            =      3.559
+      total above ground biomass (kg/ha)    =     6438.8
+      live above ground biomass (kg/ha)     =     6438.8
+      green above ground biomass (kg/ha)    =     3931.1
+      senesced above ground biomass (kg/ha) =     2507.7
+      number of leaves       =     52.3
+      DM Root:Shoot ratio    =     0.24                       Harvest Index          =       0.23
+      Stover C:N ratio       =    27.87                       Root C:N ratio         =      17.12
+      grain N percent        =     2.91                       total N content (kg/ha)=     114.23
+      grain N uptake (kg/ha) =    43.05                       senesced N content (kg/ha)=   12.54
+      green N content (kg/ha)=    58.63
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.076        0.095        0.000        0.000
+         floral_initiation    to flowering               0.209        0.249        0.000        0.000
+         flowering            to start_grain_fill        0.225        0.267        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.259        0.309        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4959.2                     0.0
+                          N  (kg/ha) =                  71.17                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1479.6                     0.0
+                          N  (kg/ha) =                  43.05                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =    7.25 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1521.4
+                          N  (kg/ha) =                   0.00                   35.54
+     
+27 October 1981(Day of year=300), manager: 
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+27 October 1981(Day of year=300), sorghum: 
+     Sowing initiate
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     sowing_depth = 101.000000
+        exceeds upper limit of 100.000000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            300   101.0     6.5   750    1.0     early    1.50
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.040          0.382       1.000
+             200.0     0.040          0.397       1.000
+             200.0     0.040          0.396       1.000
+             200.0     0.040          0.414       1.000
+             200.0     0.040          0.437       1.000
+             200.0     0.030          0.446       1.000
+             200.0     0.030          0.450       1.000
+             200.0     0.030          0.452       1.000
+             200.0     0.030          0.458       1.000
+             200.0     0.020          0.461       1.000
+             200.0     0.020          0.460       1.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+         ---------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 112.72769, depth = 0, type = no3_n
+27 October 1981(Day of year=300), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       112.73 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+27 October 1981(Day of year=300), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+28 October 1981(Day of year=301), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  16.67
+7 November 1981(Day of year=311), sorghum: 
+     Stage 3 Emergence  DAS = 11
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  26.09
+20 November 1981(Day of year=324), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 24
+     		Biomass       =   3.56 		 LAI            =   0.05
+     		Stover N Conc =   0.09 		 Extractable SW =  82.49
+2 December 1981(Day of year=336), sorghum: 
+     Stage 5 FloralInitiation  DAS = 36
+     		Biomass       =  26.37 		 LAI            =   0.47
+     		Stover N Conc =   0.69 		 Extractable SW =  87.20
+23 December 1981(Day of year=357), sorghum: 
+     Stage 6 FlagLeaf  DAS = 57
+     		Biomass       = 222.80 		 LAI            =   2.12
+     		Stover N Conc =   4.20 		 Extractable SW =  59.15
+6 January 1982(Day of year=6), sorghum: 
+     Stage 7 Flowering  DAS = 71
+     		Biomass       = 319.14 		 LAI            =   1.70
+     		Stover N Conc =   5.10 		 Extractable SW =  35.76
+11 January 1982(Day of year=11), sorghum: 
+     Stage 8 StartGrainFill  DAS = 76
+     		Biomass       = 339.02 		 LAI            =   1.33
+     		Stover N Conc =   5.24 		 Extractable SW =  30.55
+16 February 1982(Day of year=47), sorghum: 
+     Stage 9 EndGrainFill  DAS = 112
+     		Biomass       = 635.59 		 LAI            =   1.32
+     		Stover N Conc =   3.18 		 Extractable SW =  33.49
+18 February 1982(Day of year=49), sorghum: 
+     Stage 10 Maturity  DAS = 114
+     		Biomass       = 643.07 		 LAI            =   1.32
+     		Stover N Conc =   3.05 		 Extractable SW =  30.88
+19 February 1982(Day of year=50), sorghum: 
+     Stage 11 HarvestRipe  DAS = 115
+     		Biomass       = 650.80 		 LAI            =   1.26
+     		Stover N Conc =   2.91 		 Extractable SW =  29.65
+20 February 1982(Day of year=51), manager: 
+     Manager sending message :- sorghum harvest
+20 February 1982(Day of year=51), sorghum: 
+     
+     Harvest
+     Flowering (DAS)       = 71 		 Maturity (DAS)          = 114
+     Flowering day         = 6 		 Maturity day            = 49
+     Maximum LAI           = 2.1 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 6546.9
+     Green above ground biomass    (kg/ha) = 5962.4
+     Senesced above ground biomass (kg/ha) = 584.5
+     Stover (kg/ha)        = 3103.5 	 Grain yield (kg/ha)     = 3443.4
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 3957.9
+     Weight 1000 grains(g) = 30.5 		 Grains/m^2              = 11289.6
+     Grains/head           = 1736.9
+     Grain N percent    (%)     =      1.69 	 Grain N            (kg/ha) =    58.18
+     Total N content    (kg/ha) =     87.32 	 Senesced N content (kg/ha) =    11.41
+     Green N content    (kg/ha) =     20.31
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.7          0.6        1.0
+        Flag leaf           to Flowering                 0.3          0.2        1.0
+        Flowering           to Start grain fill          0.3          0.2        1.0
+        Start grain fill    to End grain fill            0.7          0.6        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               3443.39		    0.00
+                         N  (kg/ha) =                 58.18		    0.00
+     Manager sending message :- sorghum kill_crop
+     Kill Crop
+     Crop kill. Standing above-ground dm =  3103.5 kg/ha
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               3103.50		 1293.08
+                         N  (kg/ha) =                 29.13		    2.59
+                         P  (kg/ha) =                  0.00		    0.00
+28 May 1983(Day of year=148), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
+28 May 1983(Day of year=148), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sunco
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            148   80.0  100.0  250.0   0.0   0.0 sunco
+         ------------------------------------------------
+     
+     Manager sending message :- surfaceom tillage  type = planter
+28 May 1983(Day of year=148), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+29 May 1983(Day of year=149), wheat: 
+      stage 2.0 germination
+11 June 1983(Day of year=162), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   24.84 (mm)
+12 June 1983(Day of year=163), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.59 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   24.72 (mm)
+27 August 1983(Day of year=239), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         439.34 (g/m^2)   lai          =   5.207 (m^2/m^2)
+                     stover N conc =     3.21 (%)    extractable sw =  105.77 (mm)
+2 October 1983(Day of year=275), wheat: 
+      stage 6.0 flowering
+                     biomass =        1019.24 (g/m^2)   lai          =   2.592 (m^2/m^2)
+                     stover N conc =     1.94 (%)    extractable sw =   49.98 (mm)
+10 October 1983(Day of year=283), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1108.41 (g/m^2)   lai          =   1.918 (m^2/m^2)
+                     stover N conc =     1.76 (%)    extractable sw =   64.83 (mm)
+6 November 1983(Day of year=310), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1322.79 (g/m^2)   lai          =   0.712 (m^2/m^2)
+                     stover N conc =     1.30 (%)    extractable sw =   31.24 (mm)
+7 November 1983(Day of year=311), wheat: 
+      stage 9.0 maturity
+                     biomass =        1322.79 (g/m^2)   lai          =   0.586 (m^2/m^2)
+                     stover N conc =     1.31 (%)    extractable sw =   28.53 (mm)
+8 November 1983(Day of year=312), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1322.79 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.35 (%)    extractable sw =   26.30 (mm)
+9 November 1983(Day of year=313), manager: 
+     Manager sending message :- wheat harvest
+9 November 1983(Day of year=313), wheat: 
+     
+      flowering day          =  275                           stover (kg/ha)         =     8429.2
+      maturity day           =  311                           grain yield (kg/ha)    =     4798.7
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5484.2
+      grain wt (g)           =    0.034                       grains/m^2             =    14020.7
+      grains/plant           =  140.2                         maximum lai            =      6.173
+      total above ground biomass (kg/ha)    =    13227.9
+      live above ground biomass (kg/ha)     =    13227.9
+      green above ground biomass (kg/ha)    =    10125.3
+      senesced above ground biomass (kg/ha) =     3102.6
+      number of leaves       =     49.1
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.36
+      Stover C:N ratio       =    38.65                       Root C:N ratio         =      17.28
+      grain N percent        =     2.90                       total N content (kg/ha)=     226.42
+      grain N uptake (kg/ha) =   139.18                       senesced N content (kg/ha)=   15.51
+      green N content (kg/ha)=    71.73
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.027        0.040        0.000        0.000
+         floral_initiation    to flowering               0.088        0.115        0.000        0.000
+         flowering            to start_grain_fill        0.105        0.134        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.146        0.184        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                8429.2                     0.0
+                          N  (kg/ha) =                  87.24                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4798.7                     0.0
+                          N  (kg/ha) =                 139.18                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   26.30 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2350.9
+                          N  (kg/ha) =                   0.00                   54.40
+     
+5 November 1984(Day of year=310), manager: 
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+5 November 1984(Day of year=310), sorghum: 
+     Sowing initiate
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     sowing_depth = 101.000000
+        exceeds upper limit of 100.000000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            310   101.0     6.5   750    1.0     early    1.50
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.040          0.382       1.000
+             200.0     0.040          0.397       1.000
+             200.0     0.040          0.396       1.000
+             200.0     0.040          0.414       1.000
+             200.0     0.040          0.437       1.000
+             200.0     0.030          0.446       1.000
+             200.0     0.030          0.450       1.000
+             200.0     0.030          0.452       1.000
+             200.0     0.030          0.458       1.000
+             200.0     0.020          0.461       1.000
+             200.0     0.020          0.460       1.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+         ---------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 155.85849, depth = 0, type = no3_n
+5 November 1984(Day of year=310), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       155.86 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+5 November 1984(Day of year=310), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+6 November 1984(Day of year=311), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  29.65
+12 November 1984(Day of year=317), sorghum: 
+     Stage 3 Emergence  DAS = 7
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  34.04
+22 November 1984(Day of year=327), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 17
+     		Biomass       =   3.37 		 LAI            =   0.05
+     		Stover N Conc =   0.09 		 Extractable SW =  53.42
+4 December 1984(Day of year=339), sorghum: 
+     Stage 5 FloralInitiation  DAS = 29
+     		Biomass       =  23.82 		 LAI            =   0.43
+     		Stover N Conc =   0.62 		 Extractable SW =  75.86
+26 December 1984(Day of year=361), sorghum: 
+     Stage 6 FlagLeaf  DAS = 51
+     		Biomass       = 224.79 		 LAI            =   2.17
+     		Stover N Conc =   4.31 		 Extractable SW =  63.36
+9 January 1985(Day of year=9), sorghum: 
+     Stage 7 Flowering  DAS = 65
+     		Biomass       = 336.20 		 LAI            =   2.18
+     		Stover N Conc =   5.31 		 Extractable SW =  48.00
+14 January 1985(Day of year=14), sorghum: 
+     Stage 8 StartGrainFill  DAS = 70
+     		Biomass       = 360.78 		 LAI            =   1.70
+     		Stover N Conc =   5.42 		 Extractable SW =  43.28
+19 February 1985(Day of year=50), sorghum: 
+     Stage 9 EndGrainFill  DAS = 106
+     		Biomass       = 460.24 		 LAI            =   0.39
+     		Stover N Conc =   2.86 		 Extractable SW =  13.19
+21 February 1985(Day of year=52), sorghum: 
+     Stage 10 Maturity  DAS = 108
+     		Biomass       = 463.75 		 LAI            =   0.36
+     		Stover N Conc =   2.83 		 Extractable SW =  20.45
+22 February 1985(Day of year=53), sorghum: 
+     Stage 11 HarvestRipe  DAS = 109
+     		Biomass       = 466.38 		 LAI            =   0.34
+     		Stover N Conc =   2.81 		 Extractable SW =  17.96
+23 February 1985(Day of year=54), manager: 
+     Manager sending message :- sorghum harvest
+23 February 1985(Day of year=54), sorghum: 
+     
+     Harvest
+     Flowering (DAS)       = 65 		 Maturity (DAS)          = 108
+     Flowering day         = 9 		 Maturity day            = 52
+     Maximum LAI           = 2.2 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 4681.2
+     Green above ground biomass    (kg/ha) = 3536.6
+     Senesced above ground biomass (kg/ha) = 1144.6
+     Stover (kg/ha)        = 3111.6 	 Grain yield (kg/ha)     = 1569.6
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 1804.2
+     Weight 1000 grains(g) = 13.2 		 Grains/m^2              = 11887.5
+     Grains/head           = 1828.8
+     Grain N percent    (%)     =      3.09 	 Grain N            (kg/ha) =    48.51
+     Total N content    (kg/ha) =     76.63 	 Senesced N content (kg/ha) =    21.65
+     Green N content    (kg/ha) =      9.14
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.7          0.6        1.0
+        Flag leaf           to Flowering                 0.4          0.3        1.0
+        Flowering           to Start grain fill          0.2          0.1        1.0
+        Start grain fill    to End grain fill            0.3          0.2        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               1569.64		    0.00
+                         N  (kg/ha) =                 48.51		    0.00
+     Manager sending message :- sorghum kill_crop
+     Kill Crop
+     Crop kill. Standing above-ground dm =  3111.6 kg/ha
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               3111.56		 1336.91
+                         N  (kg/ha) =                 28.12		    2.67
+                         P  (kg/ha) =                  0.00		    0.00
+28 July 1986(Day of year=209), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
+28 July 1986(Day of year=209), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            209   80.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+     Manager sending message :- surfaceom tillage  type = planter
+28 July 1986(Day of year=209), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+29 July 1986(Day of year=210), wheat: 
+      stage 2.0 germination
+13 August 1986(Day of year=225), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   20.90 (mm)
+14 August 1986(Day of year=226), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.53 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   20.79 (mm)
+26 September 1986(Day of year=269), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         128.81 (g/m^2)   lai          =   1.002 (m^2/m^2)
+                     stover N conc =     4.06 (%)    extractable sw =   16.99 (mm)
+29 October 1986(Day of year=302), wheat: 
+      stage 6.0 flowering
+                     biomass =         211.70 (g/m^2)   lai          =   0.167 (m^2/m^2)
+                     stover N conc =     2.48 (%)    extractable sw =    4.73 (mm)
+4 November 1986(Day of year=308), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         214.96 (g/m^2)   lai          =   0.105 (m^2/m^2)
+                     stover N conc =     2.42 (%)    extractable sw =    4.43 (mm)
+29 November 1986(Day of year=333), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         232.08 (g/m^2)   lai          =   0.055 (m^2/m^2)
+                     stover N conc =     2.61 (%)    extractable sw =    5.79 (mm)
+1 December 1986(Day of year=335), wheat: 
+      stage 9.0 maturity
+                     biomass =         232.20 (g/m^2)   lai          =   0.055 (m^2/m^2)
+                     stover N conc =     2.61 (%)    extractable sw =    5.49 (mm)
+2 December 1986(Day of year=336), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         232.20 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.66 (%)    extractable sw =    5.46 (mm)
+3 December 1986(Day of year=337), manager: 
+     Manager sending message :- wheat harvest
+3 December 1986(Day of year=337), wheat: 
+     
+      flowering day          =  302                           stover (kg/ha)         =     1754.2
+      maturity day           =  335                           grain yield (kg/ha)    =      567.8
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=      648.9
+      grain wt (g)           =    0.021                       grains/m^2             =     2665.0
+      grains/plant           =   26.7                         maximum lai            =      1.375
+      total above ground biomass (kg/ha)    =     2322.0
+      live above ground biomass (kg/ha)     =     2322.0
+      green above ground biomass (kg/ha)    =     1472.4
+      senesced above ground biomass (kg/ha) =      849.6
+      number of leaves       =     33.7
+      DM Root:Shoot ratio    =     0.27                       Harvest Index          =       0.24
+      Stover C:N ratio       =    24.81                       Root C:N ratio         =      16.82
+      grain N percent        =     2.92                       total N content (kg/ha)=      44.85
+      grain N uptake (kg/ha) =    16.56                       senesced N content (kg/ha)=    4.25
+      green N content (kg/ha)=    24.04
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.153        0.183        0.000        0.000
+         floral_initiation    to flowering               0.307        0.361        0.000        0.000
+         flowering            to start_grain_fill        0.334        0.390        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.317        0.372        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1754.2                     0.0
+                          N  (kg/ha) =                  28.28                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 567.8                     0.0
+                          N  (kg/ha) =                  16.56                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =    5.46 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   620.6
+                          N  (kg/ha) =                   0.00                   14.76
+     
+20 May 1989(Day of year=140), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
+20 May 1989(Day of year=140), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sunco
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            140   80.0  100.0  250.0   0.0   0.0 sunco
+         ------------------------------------------------
+     
+     Manager sending message :- surfaceom tillage  type = planter
+20 May 1989(Day of year=140), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+21 May 1989(Day of year=141), wheat: 
+      stage 2.0 germination
+1 June 1989(Day of year=152), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   25.04 (mm)
+2 June 1989(Day of year=153), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.53 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   24.69 (mm)
+22 August 1989(Day of year=234), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         432.48 (g/m^2)   lai          =   5.662 (m^2/m^2)
+                     stover N conc =     3.25 (%)    extractable sw =   84.12 (mm)
+2 October 1989(Day of year=275), wheat: 
+      stage 6.0 flowering
+                     biomass =         791.71 (g/m^2)   lai          =   0.814 (m^2/m^2)
+                     stover N conc =     2.40 (%)    extractable sw =   31.40 (mm)
+9 October 1989(Day of year=282), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         817.70 (g/m^2)   lai          =   0.560 (m^2/m^2)
+                     stover N conc =     2.29 (%)    extractable sw =   24.86 (mm)
+6 November 1989(Day of year=310), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         880.58 (g/m^2)   lai          =   0.183 (m^2/m^2)
+                     stover N conc =     2.26 (%)    extractable sw =   19.26 (mm)
+8 November 1989(Day of year=312), wheat: 
+      stage 9.0 maturity
+                     biomass =         880.61 (g/m^2)   lai          =   0.183 (m^2/m^2)
+                     stover N conc =     2.26 (%)    extractable sw =   16.21 (mm)
+9 November 1989(Day of year=313), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         880.61 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.30 (%)    extractable sw =   14.85 (mm)
+10 November 1989(Day of year=314), manager: 
+     Manager sending message :- wheat harvest
+10 November 1989(Day of year=314), wheat: 
+     
+      flowering day          =  275                           stover (kg/ha)         =     6489.0
+      maturity day           =  312                           grain yield (kg/ha)    =     2317.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2648.2
+      grain wt (g)           =    0.022                       grains/m^2             =    10335.3
+      grains/plant           =  103.4                         maximum lai            =      6.051
+      total above ground biomass (kg/ha)    =     8806.1
+      live above ground biomass (kg/ha)     =     8806.1
+      green above ground biomass (kg/ha)    =     5817.9
+      senesced above ground biomass (kg/ha) =     2988.2
+      number of leaves       =     51.9
+      DM Root:Shoot ratio    =     0.20                       Harvest Index          =       0.26
+      Stover C:N ratio       =    27.18                       Root C:N ratio         =      17.00
+      grain N percent        =     2.92                       total N content (kg/ha)=     163.16
+      grain N uptake (kg/ha) =    67.66                       senesced N content (kg/ha)=   14.94
+      green N content (kg/ha)=    80.57
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.003        0.006        0.000        0.000
+         floral_initiation    to flowering               0.155        0.185        0.000        0.000
+         flowering            to start_grain_fill        0.173        0.206        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.208        0.250        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6489.0                     0.0
+                          N  (kg/ha) =                  95.51                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2317.1                     0.0
+                          N  (kg/ha) =                  67.66                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   14.85 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1771.9
+                          N  (kg/ha) =                   0.00                   41.70
+     
+23 July 1992(Day of year=205), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = hartog
+23 July 1992(Day of year=205), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            205   80.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 51.44449, depth = 0, type = no3_n
+23 July 1992(Day of year=205), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        51.44 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+23 July 1992(Day of year=205), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+24 July 1992(Day of year=206), wheat: 
+      stage 2.0 germination
+5 August 1992(Day of year=218), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   16.56 (mm)
+6 August 1992(Day of year=219), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.53 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   16.12 (mm)
+23 September 1992(Day of year=267), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         242.44 (g/m^2)   lai          =   2.478 (m^2/m^2)
+                     stover N conc =     3.44 (%)    extractable sw =   48.36 (mm)
+25 October 1992(Day of year=299), wheat: 
+      stage 6.0 flowering
+                     biomass =         501.60 (g/m^2)   lai          =   0.804 (m^2/m^2)
+                     stover N conc =     1.68 (%)    extractable sw =   43.75 (mm)
+30 October 1992(Day of year=304), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         523.51 (g/m^2)   lai          =   0.633 (m^2/m^2)
+                     stover N conc =     1.64 (%)    extractable sw =   37.42 (mm)
+25 November 1992(Day of year=330), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         683.81 (g/m^2)   lai          =   0.386 (m^2/m^2)
+                     stover N conc =     1.90 (%)    extractable sw =   49.87 (mm)
+27 November 1992(Day of year=332), wheat: 
+      stage 9.0 maturity
+                     biomass =         685.36 (g/m^2)   lai          =   0.328 (m^2/m^2)
+                     stover N conc =     1.90 (%)    extractable sw =   43.05 (mm)
+28 November 1992(Day of year=333), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         685.36 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.97 (%)    extractable sw =   40.51 (mm)
+29 November 1992(Day of year=334), manager: 
+     Manager sending message :- wheat harvest
+29 November 1992(Day of year=334), wheat: 
+     
+      flowering day          =  299                           stover (kg/ha)         =     4171.5
+      maturity day           =  332                           grain yield (kg/ha)    =     2682.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3065.2
+      grain wt (g)           =    0.040                       grains/m^2             =     6688.1
+      grains/plant           =   66.9                         maximum lai            =      2.589
+      total above ground biomass (kg/ha)    =     6853.6
+      live above ground biomass (kg/ha)     =     6853.6
+      green above ground biomass (kg/ha)    =     5197.4
+      senesced above ground biomass (kg/ha) =     1656.2
+      number of leaves       =     37.9
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.39
+      Stover C:N ratio       =    28.84                       Root C:N ratio         =      17.49
+      grain N percent        =     2.90                       total N content (kg/ha)=     135.54
+      grain N uptake (kg/ha) =    77.69                       senesced N content (kg/ha)=    8.28
+      green N content (kg/ha)=    49.57
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.085        0.109        0.000        0.000
+         floral_initiation    to flowering               0.196        0.240        0.000        0.000
+         flowering            to start_grain_fill        0.209        0.255        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.188        0.239        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4171.5                     0.0
+                          N  (kg/ha) =                  57.86                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2682.1                     0.0
+                          N  (kg/ha) =                  77.69                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   40.51 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1238.9
+                          N  (kg/ha) =                   0.00                   28.34
+     
+27 October 1993(Day of year=300), manager: 
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+27 October 1993(Day of year=300), sorghum: 
+     Sowing initiate
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     sowing_depth = 101.000000
+        exceeds upper limit of 100.000000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            300   101.0     6.5   750    1.0     early    1.50
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.040          0.382       1.000
+             200.0     0.040          0.397       1.000
+             200.0     0.040          0.396       1.000
+             200.0     0.040          0.414       1.000
+             200.0     0.040          0.437       1.000
+             200.0     0.030          0.446       1.000
+             200.0     0.030          0.450       1.000
+             200.0     0.030          0.452       1.000
+             200.0     0.030          0.458       1.000
+             200.0     0.020          0.461       1.000
+             200.0     0.020          0.460       1.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+         ---------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 80.67359, depth = 0, type = no3_n
+27 October 1993(Day of year=300), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        80.67 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+27 October 1993(Day of year=300), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+28 October 1993(Day of year=301), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  12.50
+14 November 1993(Day of year=318), sorghum: 
+     Stage 3 Emergence  DAS = 18
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  14.56
+24 November 1993(Day of year=328), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 28
+     		Biomass       =   3.17 		 LAI            =   0.04
+     		Stover N Conc =   0.09 		 Extractable SW =  39.07
+6 December 1993(Day of year=340), sorghum: 
+     Stage 5 FloralInitiation  DAS = 40
+     		Biomass       =  27.66 		 LAI            =   0.48
+     		Stover N Conc =   0.71 		 Extractable SW =  64.13
+28 December 1993(Day of year=362), sorghum: 
+     Stage 6 FlagLeaf  DAS = 62
+     		Biomass       = 235.28 		 LAI            =   2.35
+     		Stover N Conc =   4.69 		 Extractable SW =  58.37
+11 January 1994(Day of year=11), sorghum: 
+     Stage 7 Flowering  DAS = 76
+     		Biomass       = 324.00 		 LAI            =   1.63
+     		Stover N Conc =   5.63 		 Extractable SW =  37.60
+16 January 1994(Day of year=16), sorghum: 
+     Stage 8 StartGrainFill  DAS = 81
+     		Biomass       = 345.13 		 LAI            =   1.63
+     		Stover N Conc =   5.82 		 Extractable SW =  31.00
+21 February 1994(Day of year=52), sorghum: 
+     Stage 9 EndGrainFill  DAS = 117
+     		Biomass       = 436.04 		 LAI            =   0.42
+     		Stover N Conc =   3.34 		 Extractable SW =   8.25
+23 February 1994(Day of year=54), sorghum: 
+     Stage 10 Maturity  DAS = 119
+     		Biomass       = 438.74 		 LAI            =   0.41
+     		Stover N Conc =   3.30 		 Extractable SW =   7.63
+24 February 1994(Day of year=55), sorghum: 
+     Stage 11 HarvestRipe  DAS = 120
+     		Biomass       = 439.56 		 LAI            =   0.41
+     		Stover N Conc =   3.28 		 Extractable SW =   7.34
+25 February 1994(Day of year=56), manager: 
+     Manager sending message :- sorghum harvest
+25 February 1994(Day of year=56), sorghum: 
+     
+     Harvest
+     Flowering (DAS)       = 76 		 Maturity (DAS)          = 119
+     Flowering day         = 11 		 Maturity day            = 54
+     Maximum LAI           = 2.4 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 4405.5
+     Green above ground biomass    (kg/ha) = 3303.2
+     Senesced above ground biomass (kg/ha) = 1102.4
+     Stover (kg/ha)        = 2993.7 	 Grain yield (kg/ha)     = 1411.9
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 1622.8
+     Weight 1000 grains(g) = 11.7 		 Grains/m^2              = 12111.4
+     Grains/head           = 1863.3
+     Grain N percent    (%)     =      3.38 	 Grain N            (kg/ha) =    47.69
+     Total N content    (kg/ha) =     80.51 	 Senesced N content (kg/ha) =    24.51
+     Green N content    (kg/ha) =     10.90
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.8          0.7        1.0
+        Flag leaf           to Flowering                 0.3          0.2        1.0
+        Flowering           to Start grain fill          0.3          0.2        1.0
+        Start grain fill    to End grain fill            0.4          0.3        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               1411.86		    0.00
+                         N  (kg/ha) =                 47.69		    0.00
+     Manager sending message :- sorghum kill_crop
+     Kill Crop
+     Crop kill. Standing above-ground dm =  2993.7 kg/ha
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               2993.66		 1292.65
+                         N  (kg/ha) =                 32.82		    2.59
+                         P  (kg/ha) =                  0.00		    0.00
+22 May 1995(Day of year=142), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
+22 May 1995(Day of year=142), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sunco
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            142   80.0  100.0  250.0   0.0   0.0 sunco
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 64.49289, depth = 0, type = no3_n
+22 May 1995(Day of year=142), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        64.49 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+22 May 1995(Day of year=142), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+23 May 1995(Day of year=143), wheat: 
+      stage 2.0 germination
+3 June 1995(Day of year=154), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   24.60 (mm)
+4 June 1995(Day of year=155), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.60 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   24.47 (mm)
+19 August 1995(Day of year=231), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         353.98 (g/m^2)   lai          =   3.077 (m^2/m^2)
+                     stover N conc =     3.62 (%)    extractable sw =   55.34 (mm)
+20 September 1995(Day of year=263), wheat: 
+      stage 6.0 flowering
+                     biomass =         547.18 (g/m^2)   lai          =   0.810 (m^2/m^2)
+                     stover N conc =     2.45 (%)    extractable sw =   34.52 (mm)
+27 September 1995(Day of year=270), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         578.38 (g/m^2)   lai          =   0.640 (m^2/m^2)
+                     stover N conc =     2.30 (%)    extractable sw =   28.45 (mm)
+25 October 1995(Day of year=298), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         644.17 (g/m^2)   lai          =   0.191 (m^2/m^2)
+                     stover N conc =     2.26 (%)    extractable sw =   12.61 (mm)
+27 October 1995(Day of year=300), wheat: 
+      stage 9.0 maturity
+                     biomass =         644.22 (g/m^2)   lai          =   0.142 (m^2/m^2)
+                     stover N conc =     2.27 (%)    extractable sw =   12.01 (mm)
+28 October 1995(Day of year=301), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         644.22 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     2.32 (%)    extractable sw =   11.99 (mm)
+29 October 1995(Day of year=302), manager: 
+     Manager sending message :- wheat harvest
+29 October 1995(Day of year=302), wheat: 
+     
+      flowering day          =  263                           stover (kg/ha)         =     4579.7
+      maturity day           =  300                           grain yield (kg/ha)    =     1862.6
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2128.6
+      grain wt (g)           =    0.027                       grains/m^2             =     6788.0
+      grains/plant           =   67.9                         maximum lai            =      4.030
+      total above ground biomass (kg/ha)    =     6442.2
+      live above ground biomass (kg/ha)     =     6442.2
+      green above ground biomass (kg/ha)    =     4245.5
+      senesced above ground biomass (kg/ha) =     2196.7
+      number of leaves       =     50.0
+      DM Root:Shoot ratio    =     0.21                       Harvest Index          =       0.29
+      Stover C:N ratio       =    27.69                       Root C:N ratio         =      17.16
+      grain N percent        =     2.91                       total N content (kg/ha)=     120.33
+      grain N uptake (kg/ha) =    54.18                       senesced N content (kg/ha)=   10.98
+      green N content (kg/ha)=    55.17
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.060        0.073        0.000        0.000
+         floral_initiation    to flowering               0.159        0.190        0.000        0.000
+         flowering            to start_grain_fill        0.168        0.201        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.213        0.255        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4579.7                     0.0
+                          N  (kg/ha) =                  66.15                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1862.6                     0.0
+                          N  (kg/ha) =                  54.18                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   11.99 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1348.4
+                          N  (kg/ha) =                   0.00                   31.42
+     
+10 December 1996(Day of year=345), manager: 
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+10 December 1996(Day of year=345), sorghum: 
+     Sowing initiate
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     sowing_depth = 101.000000
+        exceeds upper limit of 100.000000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            345   101.0     6.5   750    1.0     early    1.50
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.040          0.382       1.000
+             200.0     0.040          0.397       1.000
+             200.0     0.040          0.396       1.000
+             200.0     0.040          0.414       1.000
+             200.0     0.040          0.437       1.000
+             200.0     0.030          0.446       1.000
+             200.0     0.030          0.450       1.000
+             200.0     0.030          0.452       1.000
+             200.0     0.030          0.458       1.000
+             200.0     0.020          0.461       1.000
+             200.0     0.020          0.460       1.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+         ---------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 10.23086, depth = 0, type = no3_n
+10 December 1996(Day of year=345), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.23 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+10 December 1996(Day of year=345), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+11 December 1996(Day of year=346), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   7.34
+21 December 1996(Day of year=356), sorghum: 
+     Stage 3 Emergence  DAS = 11
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  35.02
+29 December 1996(Day of year=364), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 19
+     		Biomass       =   3.08 		 LAI            =   0.05
+     		Stover N Conc =   0.10 		 Extractable SW =  52.28
+9 January 1997(Day of year=9), sorghum: 
+     Stage 5 FloralInitiation  DAS = 30
+     		Biomass       =  28.01 		 LAI            =   0.48
+     		Stover N Conc =   0.73 		 Extractable SW =  71.08
+29 January 1997(Day of year=29), sorghum: 
+     Stage 6 FlagLeaf  DAS = 50
+     		Biomass       = 192.92 		 LAI            =   2.09
+     		Stover N Conc =   3.92 		 Extractable SW =  57.26
+11 February 1997(Day of year=42), sorghum: 
+     Stage 7 Flowering  DAS = 63
+     		Biomass       = 298.69 		 LAI            =   2.10
+     		Stover N Conc =   5.22 		 Extractable SW =  35.43
+15 February 1997(Day of year=46), sorghum: 
+     Stage 8 StartGrainFill  DAS = 67
+     		Biomass       = 334.68 		 LAI            =   2.10
+     		Stover N Conc =   5.54 		 Extractable SW =  61.99
+25 March 1997(Day of year=84), sorghum: 
+     Stage 9 EndGrainFill  DAS = 105
+     		Biomass       = 481.28 		 LAI            =   0.57
+     		Stover N Conc =   3.17 		 Extractable SW =  10.88
+27 March 1997(Day of year=86), sorghum: 
+     Stage 10 Maturity  DAS = 107
+     		Biomass       = 484.38 		 LAI            =   0.57
+     		Stover N Conc =   3.12 		 Extractable SW =  10.13
+28 March 1997(Day of year=87), sorghum: 
+     Stage 11 HarvestRipe  DAS = 108
+     		Biomass       = 485.87 		 LAI            =   0.57
+     		Stover N Conc =   3.09 		 Extractable SW =   9.77
+29 March 1997(Day of year=88), manager: 
+     Manager sending message :- sorghum harvest
+29 March 1997(Day of year=88), sorghum: 
+     
+     Harvest
+     Flowering (DAS)       = 63 		 Maturity (DAS)          = 107
+     Flowering day         = 42 		 Maturity day            = 86
+     Maximum LAI           = 2.1 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 4871.2
+     Green above ground biomass    (kg/ha) = 3947.6
+     Senesced above ground biomass (kg/ha) = 923.7
+     Stover (kg/ha)        = 2785.6 	 Grain yield (kg/ha)     = 2085.6
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 2397.2
+     Weight 1000 grains(g) = 16.1 		 Grains/m^2              = 12952.3
+     Grains/head           = 1992.7
+     Grain N percent    (%)     =      2.53 	 Grain N            (kg/ha) =    52.86
+     Total N content    (kg/ha) =     83.80 	 Senesced N content (kg/ha) =    19.05
+     Green N content    (kg/ha) =     14.44
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.8          0.7        1.0
+        Flag leaf           to Flowering                 0.6          0.5        1.0
+        Flowering           to Start grain fill          0.8          0.7        1.0
+        Start grain fill    to End grain fill            0.4          0.3        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               2085.60		    0.00
+                         N  (kg/ha) =                 52.86		    0.00
+     Manager sending message :- sorghum kill_crop
+     Kill Crop
+     Crop kill. Standing above-ground dm =  2785.6 kg/ha
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               2785.61		 1273.05
+                         N  (kg/ha) =                 30.94		    2.55
+                         P  (kg/ha) =                  0.00		    0.00
+20 May 1998(Day of year=140), manager: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 80, cultivar = sunco
+20 May 1998(Day of year=140), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = sunco
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.382       1.000
+         200.0     0.040          0.397       1.000
+         200.0     0.040          0.396       1.000
+         200.0     0.040          0.414       1.000
+         200.0     0.040          0.437       1.000
+         200.0     0.030          0.446       1.000
+         200.0     0.030          0.450       1.000
+         200.0     0.030          0.452       1.000
+         200.0     0.030          0.458       1.000
+         200.0     0.020          0.461       1.000
+         200.0     0.000          0.460       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         200.0     0.000          0.459       0.000
+         -----------------------------------------------
+         Extractable SW:   182mm in  3100mm total depth (  6%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            140   80.0  100.0  250.0   0.0   0.0 sunco
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 73.42560, depth = 0, type = no3_n
+20 May 1998(Day of year=140), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        73.43 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+20 May 1998(Day of year=140), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+21 May 1998(Day of year=141), wheat: 
+      stage 2.0 germination
+2 June 1998(Day of year=153), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   24.48 (mm)
+3 June 1998(Day of year=154), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.58 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   24.36 (mm)
+20 August 1998(Day of year=232), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         360.15 (g/m^2)   lai          =   4.752 (m^2/m^2)
+                     stover N conc =     3.22 (%)    extractable sw =  119.93 (mm)
+26 September 1998(Day of year=269), wheat: 
+      stage 6.0 flowering
+                     biomass =        1038.07 (g/m^2)   lai          =   4.425 (m^2/m^2)
+                     stover N conc =     1.57 (%)    extractable sw =  147.87 (mm)
+3 October 1998(Day of year=276), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1163.94 (g/m^2)   lai          =   3.526 (m^2/m^2)
+                     stover N conc =     1.43 (%)    extractable sw =  108.54 (mm)
+4 November 1998(Day of year=308), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1546.86 (g/m^2)   lai          =   0.712 (m^2/m^2)
+                     stover N conc =     0.59 (%)    extractable sw =   43.26 (mm)
+5 November 1998(Day of year=309), wheat: 
+      stage 9.0 maturity
+                     biomass =        1546.86 (g/m^2)   lai          =   0.639 (m^2/m^2)
+                     stover N conc =     0.59 (%)    extractable sw =   40.37 (mm)
+6 November 1998(Day of year=310), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1546.86 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.59 (%)    extractable sw =   37.79 (mm)
+7 November 1998(Day of year=311), manager: 
+     Manager sending message :- wheat harvest
+7 November 1998(Day of year=311), wheat: 
+     
+      flowering day          =  269                           stover (kg/ha)         =     9384.5
+      maturity day           =  309                           grain yield (kg/ha)    =     6084.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     6953.3
+      grain wt (g)           =    0.041                       grains/m^2             =    14839.3
+      grains/plant           =  148.4                         maximum lai            =      5.485
+      total above ground biomass (kg/ha)    =    15468.6
+      live above ground biomass (kg/ha)     =    15468.6
+      green above ground biomass (kg/ha)    =    12980.3
+      senesced above ground biomass (kg/ha) =     2488.3
+      number of leaves       =     51.4
+      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.39
+      Stover C:N ratio       =    70.61                       Root C:N ratio         =      17.30
+      grain N percent        =     2.88                       total N content (kg/ha)=     228.34
+      grain N uptake (kg/ha) =   175.18                       senesced N content (kg/ha)=   12.44
+      green N content (kg/ha)=    40.72
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.002        0.004        0.000        0.000
+         flowering            to start_grain_fill        0.018        0.025        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.068        0.087        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                9384.5                     0.0
+                          N  (kg/ha) =                  53.16                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                6084.1                     0.0
+                          N  (kg/ha) =                 175.18                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   37.79 (mm)
+     Manager sending message :- wheat kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2112.3
+                          N  (kg/ha) =                   0.00                   48.83
+     
+4 November 1999(Day of year=308), manager: 
+     Manager sending message :- sorghum sow  plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+4 November 1999(Day of year=308), sorghum: 
+     Sowing initiate
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     sowing_depth = 101.000000
+        exceeds upper limit of 100.000000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            308   101.0     6.5   750    1.0     early    1.50
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - early
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  114.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.040          0.382       1.000
+             200.0     0.040          0.397       1.000
+             200.0     0.040          0.396       1.000
+             200.0     0.040          0.414       1.000
+             200.0     0.040          0.437       1.000
+             200.0     0.030          0.446       1.000
+             200.0     0.030          0.450       1.000
+             200.0     0.030          0.452       1.000
+             200.0     0.030          0.458       1.000
+             200.0     0.020          0.461       1.000
+             200.0     0.020          0.460       1.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+             200.0     0.000          0.459       0.000
+         ---------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 166.60448, depth = 0, type = no3_n
+4 November 1999(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       166.60 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+     Manager sending message :- surfaceom tillage  type = planter
+4 November 1999(Day of year=308), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+5 November 1999(Day of year=309), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   9.77
+16 November 1999(Day of year=320), sorghum: 
+     Stage 3 Emergence  DAS = 12
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  36.58
+27 November 1999(Day of year=331), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 23
+     		Biomass       =   3.06 		 LAI            =   0.04
+     		Stover N Conc =   0.09 		 Extractable SW =  63.30
+8 December 1999(Day of year=342), sorghum: 
+     Stage 5 FloralInitiation  DAS = 34
+     		Biomass       =  21.56 		 LAI            =   0.39
+     		Stover N Conc =   0.56 		 Extractable SW =  85.53
+2 January 2000(Day of year=2), sorghum: 
+     Stage 6 FlagLeaf  DAS = 59
+     		Biomass       = 293.26 		 LAI            =   2.71
+     		Stover N Conc =   5.49 		 Extractable SW =  79.42
+16 January 2000(Day of year=16), sorghum: 
+     Stage 7 Flowering  DAS = 73
+     		Biomass       = 432.21 		 LAI            =   2.72
+     		Stover N Conc =   6.75 		 Extractable SW =  55.09
+21 January 2000(Day of year=21), sorghum: 
+     Stage 8 StartGrainFill  DAS = 78
+     		Biomass       = 454.99 		 LAI            =   2.50
+     		Stover N Conc =   6.87 		 Extractable SW =  49.49
+26 February 2000(Day of year=57), sorghum: 
+     Stage 9 EndGrainFill  DAS = 114
+     		Biomass       = 606.12 		 LAI            =   0.57
+     		Stover N Conc =   3.37 		 Extractable SW =  17.64
+29 February 2000(Day of year=60), sorghum: 
+     Stage 10 Maturity  DAS = 117
+     		Biomass       = 611.89 		 LAI            =   0.50
+     		Stover N Conc =   3.31 		 Extractable SW =  16.03
+1 March 2000(Day of year=61), sorghum: 
+     Stage 11 HarvestRipe  DAS = 118
+     		Biomass       = 613.65 		 LAI            =   0.49
+     		Stover N Conc =   3.29 		 Extractable SW =  15.52
+2 March 2000(Day of year=62), manager: 
+     Manager sending message :- sorghum harvest
+2 March 2000(Day of year=62), sorghum: 
+     
+     Harvest
+     Flowering (DAS)       = 73 		 Maturity (DAS)          = 117
+     Flowering day         = 16 		 Maturity day            = 60
+     Maximum LAI           = 2.7 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 6154.4
+     Green above ground biomass    (kg/ha) = 4750.4
+     Senesced above ground biomass (kg/ha) = 1404.0
+     Stover (kg/ha)        = 3995.1 	 Grain yield (kg/ha)     = 2159.3
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 2482.0
+     Weight 1000 grains(g) = 13.4 		 Grains/m^2              = 16062.8
+     Grains/head           = 2471.2
+     Grain N percent    (%)     =      2.80 	 Grain N            (kg/ha) =    60.53
+     Total N content    (kg/ha) =     93.39 	 Senesced N content (kg/ha) =    24.69
+     Green N content    (kg/ha) =     11.43
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.9          0.9        1.0
+        Flag leaf           to Flowering                 0.5          0.4        1.0
+        Flowering           to Start grain fill          0.2          0.1        1.0
+        Start grain fill    to End grain fill            0.5          0.4        0.9
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               2159.34		    0.00
+                         N  (kg/ha) =                 60.53		    0.00
+     Manager sending message :- sorghum kill_crop
+     Kill Crop
+     Crop kill. Standing above-ground dm =  3995.1 kg/ha
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               3995.09		 1632.08
+                         N  (kg/ha) =                 32.85		    3.26
+                         P  (kg/ha) =                  0.00		    0.00
+31 December 2000(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.

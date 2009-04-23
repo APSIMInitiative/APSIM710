@@ -1,0 +1,3063 @@
+<report version="5">
+<Data>
+<ApsimFileReader name="Predicted" Left="0" Top="0">
+  <FileName type="filenames">*.out</FileName>
+  <ParseTitle type="yesno">no</ParseTitle>
+</ApsimFileReader>
+<ApsimFileReader name="Observed" Left="200" Top="0">
+  <FileName type="filenames">observed.txt</FileName>
+  <ParseTitle type="yesno">yes</ParseTitle>
+</ApsimFileReader>
+<PredObs name="PredObs" Left="400" Top="0">
+  <ObsFileName type="filename">Observed.txt</ObsFileName>
+  <source>Predicted</source>
+  <FieldName>title</FieldName>
+  <FieldName>stage_code</FieldName>
+  <source>Observed</source>
+</PredObs>
+<Filter name="Preddracup93be_t1" Left="600" Top="0">
+  <FilterString>title='dracup93be_t1'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Preddracup93be_t2" Left="0" Top="200">
+  <FilterString>title='dracup93be_t2'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Preddracup93be_t3" Left="200" Top="200">
+  <FilterString>title='dracup93be_t3'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Preddracup93be_t4" Left="400" Top="200">
+  <FilterString>title='dracup93be_t4'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="PredBeverley93" Left="600" Top="200">
+  <FilterString>title='Beverley93'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Predmoora95" Left="0" Top="400">
+  <FilterString>title='moora_95'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Predmoora_96" Left="200" Top="400">
+  <FilterString>title='moora_96'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Predwongan_98" Left="400" Top="400">
+  <FilterString>title='wongan_98'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Predwongan_99" Left="600" Top="400">
+  <FilterString>title='wongan_99'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Predmer00_duplex" Left="0" Top="600">
+  <FilterString>title='mer00_duplex'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Predicted</source>
+</Filter>
+<Filter name="Obsdracup93be_t1" Left="200" Top="600">
+  <FilterString>title='dracup93be_t1'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obsdracup93be_t2" Left="400" Top="600">
+  <FilterString>title='dracup93be_t2'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obsdracup93be_t3" Left="600" Top="600">
+  <FilterString>title='dracup93be_t3'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obsdracup93be_t4" Left="0" Top="800">
+  <FilterString>title='dracup93be_t4'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="ObsBeverley93" Left="200" Top="800">
+  <FilterString>title='Beverley93'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obsmoora95" Left="400" Top="800">
+  <FilterString>title='moora_95'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obsmoora_96" Left="600" Top="800">
+  <FilterString>title='moora_96'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obswongan_98" Left="0" Top="1000">
+  <FilterString>title='wongan_98'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obswongan_99" Left="200" Top="1000">
+  <FilterString>title='wongan_99'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Filter name="Obsmer00_duplex" Left="400" Top="1000">
+  <FilterString>title='mer00_duplex'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>Observed</source>
+</Filter>
+<Regression name="YieldRegression" Left="600" Top="1000">
+  <XFieldName type="fieldname">Obsgrain_wt</XFieldName>
+  <YFieldName type="fieldname">Predgrain_wt</YFieldName>
+  <source>PredObs</source>
+</Regression>
+<Regression name="BiomassRegression" Left="0" Top="1200">
+  <XFieldName type="fieldname">Obsbiomass_wt</XFieldName>
+  <YFieldName type="fieldname">Predbiomass_wt</YFieldName>
+  <source>PredObs</source>
+</Regression>
+<Regression name="FruitRegression" Left="200" Top="1200">
+  <XFieldName type="fieldname">Obsfruit_wt</XFieldName>
+  <YFieldName type="fieldname">Predfruit_wt</YFieldName>
+  <source>PredObs</source>
+</Regression>
+<Filter name="WaterLogFilter" Left="400" Top="1200">
+  <FilterString>NOT title like 'Beverley????'</FilterString>
+  <GroupByFieldName type="fieldnames"/>
+  <source>PredObs</source>
+</Filter>
+<Regression name="WaterLogRegression" Left="600" Top="1200">
+  <XFieldName type="fieldname">Obsgrain_wt</XFieldName>
+  <YFieldName type="fieldname">Predgrain_wt</YFieldName>
+  <source>WaterLogFilter</source>
+</Regression>
+</Data>
+   <page> <![CDATA[
+object Page1: TQuickRep
+  Left = 122
+  Top = 30
+  Width = 556
+  Height = 786
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -17
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = A4
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2970
+    0
+    2100
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 70
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 556
+    Height = 786
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2970
+      2101.54761904762)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 4
+      Top = 77
+      Width = 270
+      Height = 242
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        914.702380952381
+        15.1190476190476
+        291.041666666667
+        1020.53571428571)
+      title = 'Yield'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted yield (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed yield (g/m2)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = 'Regression line'
+      seriesTitle3 = '1:1 line'
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Yield')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 400
+        BottomAxis.MinimumOffset = 1
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed yield (g/m2)'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 200
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 400
+        LeftAxis.MinimumOffset = 1
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted yield (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.LegendStyle = lsSeries
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredObs
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Obsgrain_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Predgrain_wt'
+        end
+        object Series2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = YieldRegression
+          SeriesColor = clBlack
+          Title = 'Regression line'
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object Series3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = YieldRegression
+          SeriesColor = clBlack
+          Title = '1:1 line'
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text1: TText
+      Left = 126
+      Top = 233
+      Width = 126
+      Height = 38
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        143.630952380952
+        476.25
+        880.684523809524
+        476.25)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        ' y = 0.85 x + -15.53 (r2 = 0.66)'
+        'n = 15'
+        'RMSD = 48.0')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        '$property(yieldregression.equation)'#13#10'n = $property(yieldregressi' +
+        'on.n)'#13#10'RMSD = $decplaces($property(yieldregression.rmsd), 1)'#13#10
+      FontSize = 10
+    end
+    object Graph2: TGraph
+      Left = 4
+      Top = 361
+      Width = 270
+      Height = 242
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        914.702380952381
+        15.1190476190476
+        1364.49404761905
+        1020.53571428571)
+      title = 'Biomass'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed biomass (g/m2)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = 'Regression line'
+      seriesTitle3 = '1:1 line'
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Biomass')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 1500
+        BottomAxis.MinimumOffset = 1
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed biomass (g/m2)'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 1500
+        LeftAxis.MinimumOffset = 1
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.LegendStyle = lsSeries
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredObs
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Obsbiomass_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Predbiomass_wt'
+        end
+        object LineSeries1: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = BiomassRegression
+          SeriesColor = clBlack
+          Title = 'Regression line'
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object LineSeries2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = BiomassRegression
+          SeriesColor = clBlack
+          Title = '1:1 line'
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text2: TText
+      Left = 129
+      Top = 521
+      Width = 121
+      Height = 38
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        143.630952380952
+        487.589285714286
+        1969.25595238095
+        457.35119047619)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        ' y = 0.74 x + -4.48 (r2 = 0.76)'
+        'n = 8'
+        'RMSD = 128.5')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        '$property(biomassregression.equation)'#13#10'n = $property(biomassregr' +
+        'ession.n)'#13#10'RMSD = $decplaces($property(biomassregression.rmsd), ' +
+        '1)'#13#10
+      FontSize = 10
+    end
+    object Graph3: TGraph
+      Left = 268
+      Top = 371
+      Width = 270
+      Height = 242
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        914.702380952381
+        1012.97619047619
+        1402.29166666667
+        1020.53571428571)
+      title = 'Pod'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted pod weight (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed pod weight (g/m2)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = 'Regression line'
+      seriesTitle3 = '1:1 line'
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart3: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Pod')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 1000
+        BottomAxis.MinimumOffset = 1
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed pod weight (g/m2)'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 500
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 1000
+        LeftAxis.MinimumOffset = 1
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted pod weight (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.LegendStyle = lsSeries
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries2: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredObs
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Obsfruit_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Predfruit_wt'
+        end
+        object LineSeries3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = FruitRegression
+          SeriesColor = clBlack
+          Title = 'Regression line'
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object LineSeries4: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = FruitRegression
+          SeriesColor = clBlack
+          Title = '1:1 line'
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text3: TText
+      Left = 395
+      Top = 526
+      Width = 123
+      Height = 38
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        143.630952380952
+        1493.00595238095
+        1988.15476190476
+        464.910714285714)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        ' y = 0.70 x + 78.17 (r2 = 0.96)'
+        'n = 4'
+        'RMSD = 31.1')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        '$property(fruitregression.equation)'#13#10'n = $property(fruitregressi' +
+        'on.n)'#13#10'RMSD = $decplaces($property(fruitregression.rmsd), 1)'#13#10
+      FontSize = 10
+    end
+    object Text4: TText
+      Left = 50
+      Top = 17
+      Width = 351
+      Height = 39
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        147.410714285714
+        188.988095238095
+        64.2559523809524
+        1326.69642857143)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -48
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'APSIM Lupin Validation')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'APSIM Lupin Validation'#13#10
+      FontSize = 36
+    end
+    object Graph4: TGraph
+      Left = 284
+      Top = 77
+      Width = 270
+      Height = 242
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        914.702380952381
+        1073.45238095238
+        291.041666666667
+        1020.53571428571)
+      title = 'Yield (without water logged sites)'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted yield (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed yield (g/m2)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = 'Regression line'
+      seriesTitle3 = '1:1 line'
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart4: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Yield (without water logged sites)')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 400
+        BottomAxis.MinimumOffset = 1
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed yield (g/m2)'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 200
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 400
+        LeftAxis.MinimumOffset = 1
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted yield (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.LegendStyle = lsSeries
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries3: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = WaterLogFilter
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Obsgrain_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Predgrain_wt'
+        end
+        object LineSeries5: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = WaterLogRegression
+          SeriesColor = clBlack
+          Title = 'Regression line'
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object LineSeries6: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = WaterLogRegression
+          SeriesColor = clBlack
+          Title = '1:1 line'
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text5: TText
+      Left = 409
+      Top = 237
+      Width = 123
+      Height = 38
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        143.630952380952
+        1545.92261904762
+        895.803571428571
+        464.910714285714)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        ' y = 0.75 x + 32.71 (r2 = 0.84)'
+        'n = 10'
+        'RMSD = 29.2')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        '$property(waterlogregression.equation)'#13#10'n = $property(waterlogre' +
+        'gression.n)'#13#10'RMSD = $decplaces($property(waterlogregression.rmsd' +
+        '), 1)'#13#10
+      FontSize = 10
+    end
+    object Text8: TText
+      Left = 68
+      Top = 643
+      Width = 459
+      Height = 62
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        232.833333333333
+        256.645833333333
+        2428.875
+        1735.66666666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        
+          'Farr'#233', Imma; Robertson, Michael J. ; Asseng, Senthold  French, R' +
+          'obert J. ; Dracup, Mile; (2004) Simulating lupin development, gr' +
+          'owth, and yield in a Mediterranean environment, Australian Journ' +
+          'al of Agricultural Research, Volume: 55, Issue: 8, pp. 863 - 877' +
+          ' ')
+      Transparent = False
+      WordWrap = True
+      text = 
+        'Farr'#233', Imma; Robertson, Michael J. ; Asseng, Senthold  French, R' +
+        'obert J. ; Dracup, Mile; (2004) Simulating lupin development, gr' +
+        'owth, and yield in a Mediterranean environment, Australian Journ' +
+        'al of Agricultural Research, Volume: 55, Issue: 8, pp. 863 - 877' +
+        ' '#13#10
+      FontSize = 13
+    end
+    object Text9: TText
+      Left = 46
+      Top = 626
+      Width = 54
+      Height = 14
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        173.869047619048
+        2366.13095238095
+        204.107142857143)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'Reference')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Reference'#13#10
+      FontSize = 13
+    end
+  end
+end
+]]>
+   </page>
+   <page> <![CDATA[
+object Page2: TQuickRep
+  Left = 0
+  Top = 0
+  Width = 816
+  Height = 1056
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = Letter
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2794
+    0
+    2159
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 100
+  object TitleBand2: TQRBand
+    Left = 0
+    Top = 0
+    Width = 816
+    Height = 1056
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2794
+      2159)
+    BandType = rbTitle
+    object Graph5: TGraph
+      Left = 7
+      Top = 25
+      Width = 389
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        18.5208333333333
+        66.1458333333333
+        1029.22916666667)
+      title = 'Dracup93be'#13#10'Treatment 1'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart5: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Dracup93be'
+          'Treatment 1')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 200
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 1500
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series4: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t1
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object Series5: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t1
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object Series6: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t1
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object Series7: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t1
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object Series8: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t1
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object Series9: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t1
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Graph6: TGraph
+      Left = 407
+      Top = 25
+      Width = 389
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        1076.85416666667
+        66.1458333333333
+        1029.22916666667)
+      title = 'Dracup93be'#13#10'Treatment 2'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart6: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Dracup93be'
+          'Treatment 2')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 200
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 1500
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries4: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t2
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries7: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t2
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries5: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t2
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries8: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t2
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries6: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t2
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries9: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t2
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Graph7: TGraph
+      Left = 7
+      Top = 377
+      Width = 389
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        18.5208333333333
+        997.479166666667
+        1029.22916666667)
+      title = 'Dracup93be'#13#10'Treatment 3'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart7: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Dracup93be'
+          'Treatment 3')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 200
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 1500
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries7: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t3
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries10: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t3
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries8: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t3
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries11: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t3
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries9: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t3
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries12: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t3
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Graph8: TGraph
+      Left = 415
+      Top = 377
+      Width = 389
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        1098.02083333333
+        997.479166666667
+        1029.22916666667)
+      title = 'Dracup93be'#13#10'Treatment 4'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart8: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Dracup93be'
+          'Treatment 4')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 200
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 300
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 1500
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries10: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t4
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries13: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t4
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries11: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t4
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries14: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t4
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries12: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsdracup93be_t4
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries15: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Preddracup93be_t4
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Text6: TText
+      Left = 172
+      Top = 797
+      Width = 426
+      Height = 72
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        190.5
+        455.083333333333
+        2108.72916666667
+        1127.125)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        '1  Control (no irrigation)'#9
+        
+          '2  Irrigation from DAS 153  to 168  (total 97 mm) (irrig 1 o 2 t' +
+          'imes a week)'
+        '3  Irrigation from DAS 126 to 168 (total 210 mm)'
+        '4  Irrigation from DAS 126 to 150 (total 103 mm)')
+      Transparent = False
+      WordWrap = True
+      text = 
+        '1  Control (no irrigation)'#9#13#10'2  Irrigation from DAS 153  to 168 ' +
+        ' (total 97 mm) (irrig 1 o 2 times a week)'#13#10'3  Irrigation from DA' +
+        'S 126 to 168 (total 210 mm)'#13#10'4  Irrigation from DAS 126 to 150 (' +
+        'total 103 mm)'#13#10
+      FontSize = 10
+    end
+    object Text7: TText
+      Left = 292
+      Top = 773
+      Width = 72
+      Height = 17
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        44.9791666666667
+        772.583333333333
+        2045.22916666667
+        190.5)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      Lines.Strings = (
+        'Treatments')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Treatments'#13#10
+      FontSize = 10
+    end
+  end
+end
+]]>
+   </page>
+   <page> <![CDATA[
+object Page3: TQuickRep
+  Left = 0
+  Top = 0
+  Width = 816
+  Height = 1056
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = Letter
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2794
+    0
+    2159
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 100
+  object TitleBand3: TQRBand
+    Left = 0
+    Top = 0
+    Width = 816
+    Height = 1056
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2794
+      2159)
+    BandType = rbTitle
+    object Graph9: TGraph
+      Left = 79
+      Top = 57
+      Width = 613
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        209.020833333333
+        150.8125
+        1621.89583333333)
+      title = 'Beverley 93'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart9: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Beverley 93')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 200
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 300
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries13: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsBeverley93
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries16: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredBeverley93
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries14: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsBeverley93
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries17: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredBeverley93
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries15: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ObsBeverley93
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries18: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredBeverley93
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Graph10: TGraph
+      Left = 79
+      Top = 393
+      Width = 613
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        209.020833333333
+        1039.8125
+        1621.89583333333)
+      title = 'Moora 95'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart10: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Moora 95')
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 300
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries16: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmoora95
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries19: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmoora95
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries17: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmoora95
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries20: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmoora95
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries18: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmoora95
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries21: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmoora95
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Graph11: TGraph
+      Left = 79
+      Top = 729
+      Width = 613
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        209.020833333333
+        1928.8125
+        1621.89583333333)
+      title = 'Moora 96'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart11: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Moora 96')
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 300
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries19: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmoora_96
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries22: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmoora_96
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries20: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmoora_96
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries23: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmoora_96
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries21: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmoora_96
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries24: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmoora_96
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+  end
+end
+]]>
+   </page>
+   <page> <![CDATA[
+object Page4: TQuickRep
+  Left = 0
+  Top = 0
+  Width = 816
+  Height = 1056
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = Letter
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2794
+    0
+    2159
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 100
+  object TitleBand4: TQRBand
+    Left = 0
+    Top = 0
+    Width = 816
+    Height = 1056
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2794
+      2159)
+    BandType = rbTitle
+    object Graph12: TGraph
+      Left = 79
+      Top = 25
+      Width = 613
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        209.020833333333
+        66.1458333333333
+        1621.89583333333)
+      title = 'Wongan 98'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart12: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Wongan 98')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 200
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 300
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries22: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obswongan_98
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries25: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predwongan_98
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries23: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obswongan_98
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries26: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predwongan_98
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries24: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obswongan_98
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries27: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predwongan_98
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Graph13: TGraph
+      Left = 79
+      Top = 361
+      Width = 613
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        209.020833333333
+        955.145833333333
+        1621.89583333333)
+      title = 'Wongan 99'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart13: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Wongan 99')
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 300
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries25: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obswongan_99
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries28: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predwongan_99
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries26: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obswongan_99
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries29: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predwongan_99
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries27: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obswongan_99
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries30: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predwongan_99
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+    object Graph14: TGraph
+      Left = 79
+      Top = 697
+      Width = 613
+      Height = 325
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        859.895833333333
+        209.020833333333
+        1844.14583333333
+        1621.89583333333)
+      title = 'Mer00_duplex'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Days after sowing'
+      footTitle = ' '
+      seriesTitle1 = 'Observed Yield'
+      seriesTitle2 = 'Predicted Yield'
+      seriesTitle3 = 'Observed Biomass'
+      seriesTitle4 = 'Predicted Biomass'
+      seriesTitle5 = 'Observed Pod'
+      object QRDBChart14: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginRight = 10
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Mer00_duplex')
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Days after sowing'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 300
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Biomass (g/m2)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Frame.Visible = False
+        Legend.LegendStyle = lsSeries
+        Legend.Transparent = True
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries28: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmer00_duplex
+          Title = 'Observed Yield'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object LineSeries31: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmer00_duplex
+          SeriesColor = clRed
+          Title = 'Predicted Yield'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object PointSeries29: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmer00_duplex
+          SeriesColor = clBlue
+          Title = 'Observed Biomass'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object LineSeries32: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmer00_duplex
+          SeriesColor = clBlue
+          Title = 'Predicted Biomass'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'biomass_wt'
+        end
+        object PointSeries30: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Obsmer00_duplex
+          SeriesColor = clLime
+          Title = 'Observed Pod'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psTriangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+        object LineSeries33: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Predmer00_duplex
+          SeriesColor = clLime
+          Title = 'Predicted Pod'
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'das'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'fruit_wt'
+        end
+      end
+    end
+  end
+end
+]]>
+   </page>
+</report>

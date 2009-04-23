@@ -1,0 +1,658 @@
+! Changes jpd 9 April 1997
+!
+! jpd  1. Removed Residue, initialising with residue_wt = 0, therefore not necessary.
+! jpd  2. Soilwat and Soiln now point to "Soils.par". Same soil description now in use
+!          for both pigeonpea and millet (RCE 2 and RCE 24)
+! jpd  3.  Millet (and tiller modules) also point to "soils.par" for LL and kl.
+! jpd  4. As a result, rooting depth is now 170cm and PAWC is 189mm (from 180cm and 255mm)
+! jpd  5.  Fixed sw update with grav% in "millete.man"
+! jpd  6  Changed start date to 170. Since update with measured mineral N on day 174
+!          not necessary to apply fertiliser on day 154
+!
+! Changes gol 24 October 1997
+! gol  7. Patancheru solar radiation data calculated for 1974 to 1977 (pat74-97.aps)
+! gol  8. Jodhpur solar radiation data calculated for all years except 1993/4 when
+!          it was measured (jod63-97.aps) Oct-Dec 1974 and Dec 1977 still missing
+! gol  9. Residue module added back, Irrigate module added where irrigation used
+! gol 10. Special weather data file made with extended daylength by amending latitude
+!          (pat85ed1.aps and pat86ed.aps) located in /apswork/millet/weather IR
+! gol 11. Fertiliser proportions corrected in fertiliz par file (not ini)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU RABI 1977 NOTTINGHAM GROUP RAINFED!!!!!
+
+version = 7.0(2)
+[apsim.pat77_rf.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU RABI 1977 NOTTINGHAM GROUP IRRIGATED!!!
+
+title=val_1
+module = clock   valid_1.man [pat77] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat77_rf]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat77_rf]
+module = manager  valid_1.man [pat77]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf2] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf2]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf2]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf2]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf2]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf2]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf2]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat77_irr.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1978 NOTTINGHAM GROUP!!!!!!!!!!!
+
+title=val_2
+module = clock   valid_1.man [pat77] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat77_irr]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat77_irr]
+module = manager  valid_1.man [pat77]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf2] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf2]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf2]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf2]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf2]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf2]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf2]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat78.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1982 PS CARBERRY DENSITY 1!!!!!!
+
+title=val_3
+module = clock   valid_1.man [pat78] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat78]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat78]
+module = manager  valid_1.man [pat78]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat82_d1.control]
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1982 PS CARBERRY DENSITY 2!!!!!!
+
+title=pat82_d1
+module = clock   valid_1.man [pat82] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat82_d1]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat82_d1]
+module = manager  valid_1.man [pat82]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat82_d2.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1982 PS CARBERRY DENSITY 3!!!!!!
+
+title=pat82_d2
+module = clock   valid_1.man [pat82] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat82_d2]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat82_d2]
+module = manager  valid_1.man [pat82]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat82_d3.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1982 PS CARBERRY DENSITY 4!!!!!!
+
+title=pat82_d3
+module = clock   valid_1.man [pat82] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat82_d3]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat82_d3]
+module = manager  valid_1.man [pat82]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat82_d4.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1985 PQ CRAUFURD NORMAL DAYLENTH!!
+
+title=pat82_d4
+module = clock   valid_1.man [pat82] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat82_d4]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat82_d4]
+module = manager  valid_1.man [pat82]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat85_nd.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1985 PQ CRAUFURD 14.5 H DAYLENGTH!!!
+
+title=pat85_nd
+module = clock   valid_1.man [pat85] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat85_nd]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat85]
+module = manager  valid_1.man [pat85]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat85_ed1.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1985 PQ CRAUFURD 15.5 H DAYLENGTH!!
+
+title=pat85_ed1
+module = clock   valid_1.man [pat85] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat85_ed1]     valid_1.man [daily]
+module = input(met)      pat85ed1.aps [standard]
+module = Operations   valid_1.man [pat85]
+module = manager  valid_1.man [pat85]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat85_ed2.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1986 PQ CRAUFURD normal day low density!!
+
+title=pat85_ed2
+module = clock   valid_1.man [pat85] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat85_ed2]     valid_1.man [daily]
+module = input(met)      pat85ed2.aps [standard]
+module = Operations   valid_1.man [pat85]
+module = manager  valid_1.man [pat85]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat86_d1.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1986 PQ CRAUFURD normal day high density!!
+
+title=pat86_d1
+module = clock   valid_1.man [pat86] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat86_d1]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat86_d1]
+module = manager  valid_1.man [pat86]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat86_d2.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1986 PQ CRAUFURD extended day low density!!
+
+title=pat86_d2
+module = clock   valid_1.man [pat86] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat86_d2]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat86_d2]
+module = manager  valid_1.man [pat86]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat86_ed_d1.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1986 PQ CRAUFURD extended day high density!!
+
+title=pat86_ed_d1
+module = clock   valid_1.man [pat86] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat86_ed_d1]     valid_1.man [daily]
+module = input(met)      pat86ed.aps [standard]
+module = Operations   valid_1.man [pat86_d1]
+module = manager  valid_1.man [pat86]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat86_ed_d2.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1995 EJ VAN OOSTEROM!!!!!!!!!!!!
+
+title=pat86_ed_d2
+module = clock   valid_1.man [pat86] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat86_ed_d2]     valid_1.man [daily]
+module = input(met)      pat86ed.aps [standard]
+module = Operations   valid_1.man [pat86_d2]
+module = manager  valid_1.man [pat86]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat95_wrajpop.control]
+
+title=pat95_wrajpop
+module = clock   valid_1.man [pat95] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat95_wrajpop]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat95_wrajpop]
+module = manager  valid_1.man [pat95]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat95_rcbic911.control]
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!JODHPUR KHARIF 1995 EJ VAN OOSTEROM:  0N!!!!!!!!!
+
+title=pat95_rcbic911
+module = clock   valid_1.man [pat95] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat95_rcbic911]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat95_rcbic911]
+module = manager  valid_1.man [pat95]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.jod95_n0.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!JODHPUR KHARIF 1995 EJ VAN OOSTEROM: 20N!!!!!!!!!
+
+title=jod95_n0
+module = clock   valid_1.man [jod95] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [jod95_n0]     valid_1.man [daily]
+module = input(met)      jod63-97.aps [standard]
+module = Operations   valid_1.man [jod95] valid_1.man [jod95_n0]
+module = manager  valid_1.man [jod95]     valid_1.man [all]
+module = SoilWat   soils.par [jodhpur_aridisol] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [jodhpur_aridisol] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [jodhpur_aridisol]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.jod95_n20.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!JODHPUR KHARIF 1995 EJ VAN OOSTEROM: 40N!!!!!!!!!
+
+title=jod95_n20
+module = clock   valid_1.man [jod95] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [jod95_n20]     valid_1.man [daily]
+module = input(met)      jod63-97.aps [standard]
+module = Operations   valid_1.man [jod95] valid_1.man [jod95_n20]
+module = manager  valid_1.man [jod95]     valid_1.man [all]
+module = SoilWat   soils.par [jodhpur_aridisol] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [jodhpur_aridisol] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [jodhpur_aridisol]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.jod95_n40.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!JODHPUR KHARIF 1996 EJ VAN OOSTEROM:  0N!!!!!!!!!
+
+title=jod95_n40
+module = clock   valid_1.man [jod95] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [jod95_n40]     valid_1.man [daily]
+module = input(met)      jod63-97.aps [standard]
+module = Operations   valid_1.man [jod95] valid_1.man [jod95_n40]
+module = manager  valid_1.man [jod95]     valid_1.man [all]
+module = SoilWat   soils.par [jodhpur_aridisol] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [jodhpur_aridisol] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [jodhpur_aridisol]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.jod96_n0.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!JODHPUR KHARIF 1996 EJ VAN OOSTEROM: 20N!!!!!!!!!
+
+title=jod96_n0
+module = clock   valid_1.man [jod96] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [jod96_n0]     valid_1.man [daily]
+module = input(met)      jod63-97.aps [standard]
+module = Operations   valid_1.man [jod96] valid_1.man [jod96_n0]
+module = manager  valid_1.man [jod96]     valid_1.man [all]
+module = SoilWat   soils.par [jodhpur_aridisol] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [jodhpur_aridisol] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [jodhpur_aridisol]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.jod96_n20.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!JODHPUR KHARIF 1996 EJ VAN OOSTEROM: 40N!!!!!!!!!
+
+title=jod96_n20
+module = clock   valid_1.man [jod96] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [jod96_n20]     valid_1.man [daily]
+module = input(met)      jod63-97.aps [standard]
+module = Operations   valid_1.man [jod96] valid_1.man [jod96_n20]
+module = manager  valid_1.man [jod96]     valid_1.man [all]
+module = SoilWat   soils.par [jodhpur_aridisol] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [jodhpur_aridisol] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [jodhpur_aridisol]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.jod96_n40.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1997 EJ VAN OOSTEROM!!!!!!!!!!!!
+
+title=jod96_n40
+module = clock   valid_1.man [jod96] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [jod96_n40]     valid_1.man [daily]
+module = input(met)      jod63-97.aps [standard]
+module = Operations   valid_1.man [jod96] valid_1.man [jod96_n40]
+module = manager  valid_1.man [jod96]     valid_1.man [all]
+module = SoilWat   soils.par [jodhpur_aridisol] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [jodhpur_aridisol] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [jodhpur_aridisol]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [jodhpur_aridisol]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat97_bj104.control]
+
+title=pat97_bj104
+module = clock   valid_1.man [pat97] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat97_bj104]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat97_bj104]
+module = manager  valid_1.man [pat97]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf2] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf2]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf2]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf2]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf2]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf2]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf2]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat97_hhb67.control]
+
+title=pat97_hhb67
+module = clock   valid_1.man [pat97] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat97_hhb67]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat97_hhb67]
+module = manager  valid_1.man [pat97]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf2] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf2]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf2]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf2]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf2]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf2]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf2]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat97_rcbic911.control]
+
+title=pat97_rcbic911
+module = clock   valid_1.man [pat97] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat97_rcbic911]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat97_rcbic911]
+module = manager  valid_1.man [pat97]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf2] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf2]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf2]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf2]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf2]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf2]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf2]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat97_wrajpop.control]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!PATANCHERU KHARIF 1994 EJ VAN OOSTEROM!!!!!!!!!!!!
+
+title=pat97_wrajpop
+module = clock   valid_1.man [pat97] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat97_wrajpop]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat97_wrajpop]
+module = manager  valid_1.man [pat97]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf2] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf2]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf2]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf2]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf2]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf2]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf2]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat94_wrajpop.control]
+
+title=pat94_wrajpop
+module = clock   valid_1.man [pat94] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat94_wrajpop]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat94_wrajpop]
+module = manager  valid_1.man [pat94]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal
+[apsim.pat94_rcbic911.control]
+
+
+title=pat94_rcbic911
+module = clock   valid_1.man [pat94] %apsim%/Model/clock.xml [standard]
+module = report   valid_1.man [pat94_rcbic911]     valid_1.man [daily]
+module = input(met)      pat74-97.aps [standard]
+module = Operations   valid_1.man [pat94_rcbic911]
+module = manager  valid_1.man [pat94]     valid_1.man [all]
+module = SoilWat   soils.par [icrisat_alf1] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   soils.par [icrisat_alf1] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   valid_1.man [valid_1] %apsim%/Model/SurfaceOM.xml [standard]
+module = Fertiliser   fertiliz.par [standard]
+module = Irrigation
+module = canopy   valid_1.man [valid_1]
+module = millet (millet)        soils.par [icrisat_alf1]     %apsim%/Model/millet.xml [standard]
+module = millet (millet1)       soils.par [icrisat_alf1]     %apsim%/Model/millet1.xml [standard]
+module = millet (millet2)       soils.par [icrisat_alf1]     %apsim%/Model/millet2.xml [standard]
+module = millet (millet3)       soils.par [icrisat_alf1]     %apsim%/Model/millet3.xml [standard]
+module = millet (millet4)       soils.par [icrisat_alf1]     %apsim%/Model/millet4.xml [standard]
+module = millet (millet5)       soils.par [icrisat_alf1]     %apsim%/Model/millet5.xml [standard]
+module = sysbal

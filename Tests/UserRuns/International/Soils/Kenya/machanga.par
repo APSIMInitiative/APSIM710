@@ -1,0 +1,90 @@
+!Title = Chromic Cambisol, Machanga Site (Paper #7, p48)
+! see paper in ACIAR Proceedings No 114
+! MEP 21 Nov 2002 Modified so layer 1 is 20 cm to match analytical data of Geoff Warren
+
+[Machanga.soilwat2.parameters]
+
+   insoil          = 2.0
+   max_evap        = 6       (mm)   ! maximum evaporation.
+   runoff_filename = blank           ! input measured runoff?
+   cona            = 6.0 !3.5       ()     ! stage 2 evap coef.
+   diffus_const    = 88 !250.0   ()     ! coeffs for dbar
+   diffus_slope    = 35 !22.0    ()     !     "
+   u               = 5       (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            = 0.13    ()     ! bare soil albedo
+
+   cn2_bare        = 90 !75 !86      ()     ! MEP change 28 Nov
+   cn_red          = 20      ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8     ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+! change from 7 x 150mm layers to 6 x 200mm; remove layer 7; assume maize only roots to 1m
+     ! layer       1       2       3       4      5      6
+     ! depth      200     400     600     800   1000   1200
+dlayer =          200     200     200     200    200    200   !
+!air_dry =         0.05    0.10    0.11    0.12   0.11   0.11  (mm/mm)   ! revised 2 Feb
+!dul =             0.30    0.30    0.30    0.29   0.26   0.26  (mm/mm)   !
+!ll15 =            0.12    0.12    0.12    0.13   0.14   0.16  (mm/mm)   ! revised
+sw =              0.14    0.15    0.15    0.18   0.22   0.22  (mm/mm)   !
+sat =             0.42    0.42    0.43    0.43   0.43   0.43  (mm/mm)   ! revised
+swcon =           0.70    0.70    0.70    0.70   0.70   0.70  ()        !
+bd =              1.28    1.27    1.31    1.31   1.31   1.31  (g/cc)    !
+! MEP 28 Nov 2002 - a smaller PAWC
+air_dry =         0.05    0.10    0.11    0.12   0.11   0.11  (mm/mm)   ! revised 2 Feb
+dul =             0.25    0.27    0.27    0.27   0.26   0.26  (mm/mm)   !
+ll15 =            0.13    0.14    0.15    0.16   0.16   0.16  (mm/mm)   ! revised
+
+[Machanga.maize.parameters]
+!ll   =    0.12    0.12    0.12   0.14   0.16   0.20
+!kl   =    0.12    0.12    0.12   0.10   0.05   0.0
+!xf   =    1.0     1.0     1.0    1.0    1.0    0.0
+
+ll   =     0.13    0.14    0.15    0.18   0.22   0.22
+kl   =    0.12    0.12    0.10   0.05   0.0   0.0
+xf   =    1.0     1.0     1.0    1.0    0.0    0.0
+
+[Machanga.soiln2.parameters]
+
+! AMP&TAV from \embu\t4_feb99\Mach_met.xls
+! Soil C:N as measured, Table 1,p26
+
+   amp               =    3.8   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   22.8   (oC)       ! mean annual air temperature (oC)
+   root_cn           =   40.0   ()         !
+   root_wt           =  500.0   (kg/ha)    !
+   soil_cn           =   10.0   ()         ! soil humic pool C:N ratio
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =     off             ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+     ! layer       1       2       3      4      5      6
+     ! depth      200     400     600    800   1000   1200
+ph =              6.55    6.55    6.55   6.55   6.55   6.55      ! ph
+oc =              0.59    0.50    0.40   0.38   0.36   0.36 (%)  ! MEP org C in layer 1 based on measured data Feb 93 & Aug 93
+fbiom =           0.020   0.015   0.01   0.01   0.01   0.01  ()  ! microbe fraction of hunic pool
+!finert =          0.50    0.60    0.75   0.90   0.99   0.99  ()   ! inert fraction of humic pool
+finert =          0.50    0.90    0.99   0.99   0.99   0.99  ()   ! inert fraction of humic pool
+ureappm =         0.00    0.00    0.00   0.00   0.00   0.0
+no3ppm =          1.25    0.75    0.5    0.5    0.5    0.5   ()
+nh4ppm =          0.8     0.35    0.2    0.2    0.2    0.2   ()
+
+
+[Machanga.soilp.parameters]
+
+ !layer        1   2   3   4   5   6
+labile_P =    2.5 2.5 1.0 0.8 0.5 0.5   ! factor of 2.5 on top soil layers
+!unavail_P =   40  40  30  30  30  30  30    (mg/kg)   !unavailable p content for each layer
+banded_P =     0   0   0   0   0   0   (kg/ha)   !banded p content for each layer
+rock_P =       0   0   0   0   0   0   (kg/ha)   !rock p content for each layer ie no water soluble
+!sorption =     94  100 160 200 200 200
+sorption =     94  200 200 200 200 200
+
+residue_cp =   300 !250             ()   !c:p ratio of residues at initialisation
+root_cp =      300 !200             ()   !c:p ratio of roots at initialisation
+rate_dissol_rock_P =  0.02     (/yr)   !rate at which rock P source becomes available
+

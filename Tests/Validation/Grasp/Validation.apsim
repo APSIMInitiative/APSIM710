@@ -1,0 +1,269 @@
+<folder version="15" name="Simulations">
+  <simulation name="Site 67">
+    <metfile name="met">
+      <filename name="filename">Site67.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/1957</start_date>
+      <end_date type="date" description="Select the end date of the simulation">31/12/1999</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Site 67.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Planting rule">
+          <ui>
+            <category description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter planting date (dd-mmm) : ">1-feb</date1>
+            <category description="Sowing parameters" />
+            <crop type="crop" description="Enter name of growth module to sow : ">grasp</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">400</density>
+          </ui>
+          <script name="start_of_day">
+            <text>
+         if (date('[date1]') = today) and [crop].crop_status = 3 then
+               [crop] establish init_section = established
+         endif
+            </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Burning rule">
+          <script>
+            <text>
+ if ((date('[date1]') = today) AND ([crop].crop_status = 1)) then
+   [crop].green_pool = 0
+   [crop].dead_pool = 0
+ endif
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Burn criteria" />
+            <date1 type="ddmmmdate" description="Enter burn date (dd-mmm) : ">1-sep</date1>
+            <category name="Burn parameters" />
+            <crop type="crop" description="Enter name of module to burn : ">grasp</crop>
+          </ui>
+        </manager>
+        <manager name="Scratch">
+          <script name="init">
+            <text>
+            </text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text>
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>swdep = sw_dep() - sw_dep(4)
+no3avail = no3() - no3(4)
+swdep1_2 = sw_dep(1) + sw_dep(2)
+cover_green_pcnt = cover_green * 100.0
+
+grasp_dlt_dm = grasp.dlt_dm * 10.0
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <grasp>
+        <ini name="Standard ini file">
+          <filename>%apsim%/Model/Grasp.xml</filename>
+        </ini>
+        <ini name="Site ini file">
+          <filename>Site67.ini</filename>
+        </ini>
+      </grasp>
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" description="Organic Matter type" listvalues="inert,manure,fym,bambatsi,barley,broccoli,camaldulensis,canola,chickpea,cowpea,danthonia,globulus,grandis,fababean,fieldpea,grass,lablab,lucerne,lupin,maize,millet,mucuna,mungbean,horsegram,navybean,cotton,orobanche,peanut,pigeonpea,rice,soybean,sorghum,stylo,sugar,sunflower,sweetcorn,sweetsorghum,weed,wheat">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ratio of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <soil name="Site67">
+        <Cona>3.5</Cona>
+        <U>6</U>
+        <CN2Bare>73</CN2Bare>
+        <Salb>0.14</Salb>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <profile>
+          <layer>
+            <thickness>100</thickness>
+            <ll15>0.06</ll15>
+            <airdry>0.05</airdry>
+            <dul>0.301</dul>
+            <sat>0.351</sat>
+            <swcon>0.3</swcon>
+            <bd>1.64035</bd>
+            <ph>7</ph>
+            <oc>1.24</oc>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <ll name="nativepasture">0.06</ll>
+            <kl name="nativepasture">0.08</kl>
+            <xf name="nativepasture">1</xf>
+            <ll name="weed">0.06</ll>
+            <kl name="weed">0.08</kl>
+            <xf name="weed">1</xf>
+            <ll name="grasp">0.06</ll>
+            <kl name="grasp">0.5</kl>
+            <ll name="tree">0.05</ll>
+            <kl name="tree">0.129589</kl>
+            <xf name="grasp">0</xf>
+            <xf name="tree">0</xf>
+          </layer>
+          <layer>
+            <thickness>400</thickness>
+            <ll15>0.05</ll15>
+            <airdry>0.049</airdry>
+            <dul>0.151</dul>
+            <sat>0.201</sat>
+            <swcon>0.3</swcon>
+            <bd>2.03785</bd>
+            <ph>7</ph>
+            <oc>1.24</oc>
+            <fbiom>0.02</fbiom>
+            <finert>0.7</finert>
+            <ll name="nativepasture">0.05</ll>
+            <kl name="nativepasture">0.08</kl>
+            <xf name="nativepasture">1</xf>
+            <ll name="weed">0.05</ll>
+            <kl name="weed">0.08</kl>
+            <xf name="weed">1</xf>
+            <ll name="grasp">0.05</ll>
+            <kl name="grasp">0.5</kl>
+            <ll name="tree">0.059</ll>
+            <kl name="tree">0.446075</kl>
+            <xf name="grasp">0</xf>
+            <xf name="tree">0</xf>
+          </layer>
+          <layer>
+            <thickness>500</thickness>
+            <ll15>0.06</ll15>
+            <airdry>0.059</airdry>
+            <dul>0.101</dul>
+            <sat>0.151</sat>
+            <swcon>0.3</swcon>
+            <bd>2.17035</bd>
+            <ph>7</ph>
+            <oc>0.9</oc>
+            <fbiom>0.02</fbiom>
+            <finert>0.9</finert>
+            <ll name="nativepasture">0.06</ll>
+            <kl name="nativepasture">0.08</kl>
+            <xf name="nativepasture">1</xf>
+            <ll name="weed">0.06</ll>
+            <kl name="weed">0.08</kl>
+            <xf name="weed">1</xf>
+            <ll name="grasp">0.06</ll>
+            <kl name="grasp">1</kl>
+            <ll name="tree">0.059</ll>
+            <kl name="tree">0.424336</kl>
+            <xf name="grasp">0</xf>
+            <xf name="tree">0</xf>
+          </layer>
+          <layer>
+            <thickness>50</thickness>
+            <ll15>0.06</ll15>
+            <airdry>0.059</airdry>
+            <dul>0.061</dul>
+            <sat>0.333333</sat>
+            <swcon>0.3</swcon>
+            <bd>1.68717</bd>
+            <ph>7</ph>
+            <oc>0.5</oc>
+            <fbiom>0.2</fbiom>
+            <finert>0.95</finert>
+            <ll name="nativepasture">0.06</ll>
+            <kl name="nativepasture">0</kl>
+            <xf name="nativepasture">0</xf>
+            <ll name="weed">0.06</ll>
+            <kl name="weed">0</kl>
+            <xf name="weed">0</xf>
+            <ll name="grasp">0.06</ll>
+            <kl name="grasp">0</kl>
+            <ll name="tree">0.059</ll>
+            <kl name="tree">0.0357429</kl>
+            <xf name="grasp">0</xf>
+            <xf name="tree">0</xf>
+          </layer>
+        </profile>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <InitWater>
+          <percentmethod>
+            <percent>1</percent>
+            <distributed>filled from top</distributed>
+          </percentmethod>
+        </InitWater>
+        <InitNitrogen />
+      </soil>
+      <outputfile name="Daily">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="tsdm" description="" array="" units="kg/ha" />
+          <variable name="cover_tot" description="" array="" units="kg/ha" />
+          <variable name="crop_status" description="" array="" units="kg/ha" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" description="End of day" array="No" />
+        </events>
+      </outputfile>
+      <outputfile name="Annual">
+        <variables name="Variables">
+          <variable name="year as Year" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="grasp.n_uptake" description="" array="" units="kg/ha" />
+          <variable name="tracker.dlt_dm as total_growth" description="" array="" units="kg/ha" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="End_year" description="End of year" array="No" />
+        </events>
+      </outputfile>
+      <tracker>
+        <variable name="sum of Scratch.grasp_dlt_dm on end_of_day from Annual.reported to now as dlt_dm" />
+      </tracker>
+      <operations>
+        <operation condition="end_of_day">
+          <date>11-Oct-1991</date>
+          <action>grasp set green_pool= 702 !(kg/ha)</action>
+        </operation>
+        <operation condition="end_of_day">
+          <date>11-Oct-1991</date>
+          <action>grasp set dead_pool = 0 !(kg/ha)</action>
+        </operation>
+        <operation condition="end_of_day">
+          <date>15-Oct-1991</date>
+          <action>'Site67 Water' set sw_dep = 5 39.5 42.4 3 !(mm)</action>
+        </operation>
+        <operation condition="end_of_day">
+          <date>10-Nov-1992</date>
+          <action>grasp set green_pool= 80 !(kg/ha)</action>
+        </operation>
+        <operation condition="end_of_day">
+          <date>10-Nov-1992</date>
+          <action>grasp set dead_pool= 0 !(kg/ha)</action>
+        </operation>
+        <operation condition="end_of_day">
+          <date>29-Oct-1993</date>
+          <action>grasp set green_pool= 50 !(kg/ha)</action>
+        </operation>
+        <operation condition="end_of_day">
+          <date>29-Oct-1993</date>
+          <action>grasp set green_pool= 0 !(kg/ha)</action>
+        </operation>
+      </operations>
+    </area>
+  </simulation>
+</folder>

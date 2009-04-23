@@ -1,0 +1,152 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+
+   <title>APSIM Training Package</title>
+   <link rel="stylesheet" href="./../ApsimWebStyle.css" type="text/css">
+</head><body>
+
+
+
+
+<h1>Fallow Water Balance</h1>
+<p>In this exercise you will explore the major elements of interest in soil
+water balance during a fallow - soil water storage, drainage, runoff, and
+evaporation. Changes will be examined over a one year period in the Dalby area.</p>
+<p>The examples assume you have read and walked through the previous document:
+<a href="..\1 Introduction\2 How to Build, Run and Graph a Simulation.htm">How to Build, Run and Graph a Simulation</a></p>
+<ol>
+  <li>Create a new simulation using <i>Continuous Wheat Simulation</i> as a starting
+point.</li>
+  <li>Choose Goondiwindi weather (c:\program files\apsim61\apsim\met\sample)</li>
+  <li>Starting date: 1/1/1989 Ending date: 31/12/1989</li>
+  <li>Drag a  "Grey Vertosol-Cecilvale (Brookstead No004)" soil onto the simulation, removing the
+  old soil (You can find it under Soils->Australia->Queensland->Darling Downs). Rename the soil to something short like "Soil".
+  If you like you can also reorder the soil component so it comes straight under the paddock.</li>
+  <li>Set the starting water to 10% full - filled from the top.</li>
+  <li>Set the starting NO<sub>3</sub> to 50.34 (kg/ha) and starting NH<sub>4</sub> to 3.23
+  (kg/ha).
+  </li>
+  <li>Check that the default initial residue type is wheat and the mass is 1000
+  kg/ha.</li>
+<li>Delete the <i>Fertiliser</i>, <i>Wheat</i> and <i>Manager</i> components
+  out of the simulation. They are not needed for a fallow run.</li>
+  <li>Choose these variables to report (removing old ones):<table style="border-collapse: collapse;" id="AutoNumber1" width="64%" border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" height="223">
+    <tbody><tr>
+      <td width="34%" bgcolor="#c0c0c0" height="18">
+      <span style="font-size: 9pt;">Component</span></td>
+      <td width="66%" bgcolor="#c0c0c0" height="18">
+      <span style="font-size: 9pt;">Variable name</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"><span style="font-size: 9pt;">Global</span></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">Date (dd/mm/yyyy)</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">Day</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">Year</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">Rain</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="14"><span style="font-size: 9pt;">Soil</span></td>
+      <td width="66%" height="14"><span style="font-size: 9pt;">ESW - Extractable
+      soil water (mm)</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">ES - Evaporation</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">Runoff</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">DRAIN - Drainage</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">NO3 - <b>summed over
+      profile</b> (Do this by putting () next to the name in the "Variable name" column) eg. no3() (click "?" button next to variable list for more info)</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">DLT_N_MIN - N
+      mineralised - summed over profile</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"><span style="font-size: 9pt;">Surface organic
+      matter</span></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">SURFACEOM_WT -
+      Weight of all surface organic materials.</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">SURFACEOM_COVER -
+      Fraction of ground covered by all surface organic materials.</span></td>
+    </tr>
+  </tbody></table>
+  </li>
+    <li>Choose a daily reporting frequency for the output file. This can be found
+  under <i>Global</i> in the variables and events tree.</li>
+  
+  <li>Rename the simulation to something more meaningful: <i>
+  Brookstead
+  Fallow.
+  </i></li>
+  <li>Save the simulation file as <i>Fallow.apsim</i></li>
+  <li>Run the simulation.</li>
+  <li>Graph the output file by going clicking on the <i>Graph </i>button. This will load the output file into APSVis. Use a Scatter Chart to plot Date vs ESW.</li>
+  <li>Once you have created a chart it is then possible to make modifications by
+  pressing the modify chart properties icon <img src="1%20Fallow%20Water%20Balance_files/image1.jpg"  border="0" >. Add rain as the Y2 variable and
+  check the Y2 axis box and choose the chart type as the first bar chart in the drop down list.<br>
+&nbsp;</li>
+</ol>
+<p>This will create a chart in APSVis with date, esw, rain on the X,Y,Y2
+axis respectively. This plot should show the ESW (in mm) increasing with day of
+year. The sudden increases are due to rainfall events and the declines to
+evaporation and drainage loss. Daily rainfall will show this more clearly.</p>
+<p><img src="1%20Fallow%20Water%20Balance_files/Fallow%2520water%2520balance1.gif" width="485" border="0" height="426"><br>
+&nbsp;&nbsp; 17.&nbsp; Create a new graph by clicking the new scatter chart
+icon <img src="1%20Fallow%20Water%20Balance_files/image2.jpg"  border="0" >. Plot Date vs runoff. Choose the chart type as the first bar chart in the drop down list.<br>
+&nbsp;&nbsp; 18.&nbsp; Now add rain to this chart using the Y2 option. Once again choose the chart type as the first bar chart in the drop down list.</p>
+<p><img src="1%20Fallow%20Water%20Balance_files/Fallow%2520water%2520balance2.gif" width="483" border="0" height="429"></p>
+<h3>The effect of runoff on the water balance. </h3>
+<p><br>
+Runoff is affected by weather and soil water storage capacity. This run will
+take an additional soil into account, and compare runoff from both soil types.
+The user interface still contains all the specifications provided for the
+previous simulation. </p>
+<p>If you drag the <i>Brookstead Fallow </i>node in the Simulation Tree to the
+top node <i>Simulations</i>), a copy of it will be made and your file will then
+have 2 simulations in it. e.g.</p>
+<p><img src="1%20Fallow%20Water%20Balance_files/image3.jpg" border="0" ></p>
+<p>This second simulation can then be modified to add the characteristics of a
+Macalister, Bongeen soil.</p>
+<ol>
+  <li>Drag the "Black Vertosol-Bongeen (Macalister No026)" soil onto the paddock in the
+  simulation tree (located under Soils->Australia->Queensland->Darling Downs) and then remove the old soil . It is important you drag in a
+  new soil <b>BEFORE</b> you delete the old one, otherwise the simulation will
+  lose all your soil reporting variables. Also remember to rename your soil to something shorter.</li>
+  <li>Since now we have a new soil we will need to go and set the initial soil water (InitWater) to 10% filled from top and initial soil nitrogen (InitNitrogen) to NO3 to 50.340 kg/ha and NH4 to 3.230 kg/ha.
+  When you delete soils you also delete the initial soil water conditions and initial soil nitrogen conditions  so these
+  will need to be set to the same conditions as the "Grey Vertosol-Cecilvale (Brookstead No004)" soil.</li>
+  <li>Rename the simulation to <i>Bongeen
+  Fallow</i>.</li>
+  <li>Save the simulations </li>
+  <li>Run APSIM.</li>
+  <li>Graph both the output files by selecting the top node <i>Simulations</i> in the simulation tree and then clicking on the <i>Graph </i>button.
+  This will load all output files into APSVis.</li>
+  <li>Use a Scatter Chart to plot day vs runoff. Leave the "Chart type" drop down list to it's default and click the 'Accumulate Y' check box.</li>
+  <li>Once again modify the chart to add rain as the Y2 variable, check the Y2 axis box and choose the chart type as the first bar chart in the drop down list.
+</ol>
+<p><img src="1%20Fallow%20Water%20Balance_files/image4.gif" border="0"></p>
+
+</body></html>

@@ -1,0 +1,268 @@
+[reference.report.parameters]
+
+outputfile =referenc.out
+
+
+
+! [soil_nitrogen.no3]
+! [reset_no3.no3]
+
+! [soil_water.sw_dep]
+! [reset_sw.sw_dep]
+
+! [temperature.tt_tot]
+! [photoperiod.tt_tot]
+
+! [temperature.lai]
+! [radiation.lai]
+! [soil_moisture.lai]
+! [soil_nitrogen.lai]
+
+! [temperature.biomass]
+! [radiation.biomass]
+! [soil_moisture.biomass]
+! [soil_nitrogen.biomass]
+
+! [soil_moisture.swdef_photo]
+
+! [soil_nitrogen.nfact_photo]
+
+! [smc.root_depth]
+
+! [smc.water_log_fact]
+
+! [sow_msg.crop_status]
+! [kill_crop_msg.crop_status]
+! [end_crop_msg.crop_status]
+
+! [kill_crop_msg.crop_status]
+
+! [lodge_msg]
+! [lodge_redn_photo_set]
+
+! [lodge_redn_sucrose_set]
+
+! [lodge_redn_green_leaf_set]
+
+
+! [add_residue_msg.residue_wt]
+! [add_residue_msg.residue_n]
+
+! [incorp_fom_msg.fom_c]
+! [incorp_fom_msg.fom_n]
+
+
+variable = clock.year
+variable = clock.day
+variable = clock.dd/mm/yyyy as date
+variable = SoilN.no3
+variable = SoilWat.sw_dep
+variable = sugar.TTAfterSowing
+variable = sugar.lai
+variable = sugar.biomass
+variable = tracker.avg@swdef_photo
+variable = tracker.avg@nfact_photo
+variable = sugar.root_depth
+variable = tracker.avg@oxdef_photo
+variable = sugar.crop_status
+variable = sugar.dm_dead
+variable = sugar.lodge_redn_photo
+variable = sugar.lodge_redn_sucrose
+variable = sugar.lodge_redn_green_leaf
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_n
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+[reference.clock.parameters]
+
+start_date=30/3/1984
+end_date=10/1/1988
+
+[reference.SoilWat.parameters]
+
+runoff_filename =      blank
+insoil =       1.00 ()
+cona =      3.0 ()
+diffus_const =      40.0 ()
+diffus_slope =      16.0 ()
+u =        4.0 ()
+cn2_bare =      65
+cn_red =      20 ()
+cn_cov =      0.8 ()
+cn_canopy_fact =      1.0 ()
+salb =       0.10 ()
+air_dry =         0.050   0.050   0.050
+dlayer =        200.000 400.000 400.000
+ll15 =            0.100   0.100   0.100
+dul =             0.200   0.200   0.200
+sat =             0.300   0.300   0.300
+sw =              0.200   0.200   0.200
+swcon =           0.500   0.500   0.500
+bd =              1.00    1.000   1.000
+
+[reference.SoilN.parameters]
+
+amp =            4.1   (oC)
+tav =           19.1   (oC)
+root_cn =       45.0   ()
+root_wt =      1000.0   (kg/ha)
+soil_cn =      14.5   ()
+ph =              7.000   7.000   7.000
+no3ppm =          1.000   1.000   1.000
+nh4ppm =          1.000   1.000   1.000
+ureappm =         0.000   0.000   0.000
+oc =              1.000   0.750   0.500
+fbiom =           0.030   0.020   0.010
+finert =          0.400   0.500   0.999
+enr_a_coeff =         7.4  ()
+enr_b_coeff =         0.2  ()
+profile_reduction =      on
+
+[reference.SurfaceOM.parameters]
+
+     ! no initial residue - removes an unnecessary factor
+mass = 0.0  (kg/ha)
+cnr = 80.0 ()
+type = sugar
+
+name = sugar
+[reference.Irrigation.parameters]
+
+     ! start with high irrigation supply
+crit_fr_asw =      0.8
+asw_depth =      900
+automatic_irrigation =      on
+
+[reference.sugar.parameters]
+
+uptake_source =      calc
+ll =          0.100   0.100   0.100
+kl =          0.080   0.050   0.020
+xf =          1.000   1.000   1.000
+rlv =         0.005   0.001   0.000
+
+[reference.manager.end_of_day]
+
+   ! NB All water supply comes from the irrigation module.
+   ! ie.  Rainfall in the met file is zero.
+
+   if day = 91 and year = 1984 then
+
+      ! First Crop - plant crop, high irrigation, low N, early sow.
+      ! -----------------------------------------------------------------------
+      ! [sow_msg.sow] - crop should initiate when sown
+      sugar sow plants = 10, sowing_depth = 150, cultivar = q138, ratoon = 0 ()
+
+   elseif day = 60 and year = 1985 then
+      ! [lodge_msg] - crop growth habit should change
+      sugar lodge
+
+   elseif day = 65 and year = 1985 then
+      ! [lodge_redn_photo_set] - crop growth habit should change
+      sugar.lodge_redn_photo = 0.5
+      ! [lodge_redn_sucrose_set] - crop growth habit should change
+      sugar.lodge_redn_sucrose = 0.5
+            ! [lodge_redn_green_leaf_set] - crop growth habit should change
+      sugar.lodge_redn_green_leaf = 0.5
+
+   elseif day = 92 and year = 1985 then
+
+      ! harvest the crop
+      ! [harvest_msg.harvest] - harvesting should remove grain
+      sugar harvest
+
+      ! report the effects of harvest
+      ! [add_residue_msg.add_residue] - should place residues on soil surface
+      ! [incorp_fom_msg.incorp_fom] - should incorporate dead roots
+      report do_output
+
+      ! Add N and decrease irrigation supply
+      Fertiliser apply amount = 300 (kg/ha), type = no3_n, depth = 50 (mm)
+      irrigation set crit_fr_asw = 0.2
+
+      ! remove residues so there is one less factor to consider
+      surfaceom tillage type = burn
+
+      ! -----------------------------------------------------------------------
+      ! First crop harvest - start next
+      ! Second Crop - ratoon crop, low irrigation, high N, early ratoon.
+      ! -----------------------------------------------------------------------
+
+   elseif day = 92 and year = 1986 then
+
+      ! harvest and kill the crop
+      ! [harvest_msg.harvest] - harvesting should remove grain
+      sugar harvest
+
+      ! [kill_crop_msg.kill_crop] - kill crop should change plant status
+      sugar kill_crop
+
+      ! [end_crop_msg.end_crop] - end crop should remove crop altogether
+      ! do not end it until we have the chance to report
+      ! the effects of these messages
+      sugar end_crop
+
+      ! report  the effects of harvest
+      ! [add_residue_msg.add_residue] - should place residues on soil surface
+      ! [incorp_fom_msg.incorp_fom] - should incorporate dead roots
+      report do_output
+
+      ! remove residues so there is one less factor to consider
+      surfaceom tillage type = burn
+
+   elseif day = 244 and year = 1986 then
+
+      ! -----------------------------------------------------------------------
+      ! Third Crop - plant crop, high irrigation, low N, late sow.
+      ! -----------------------------------------------------------------------
+
+      ! [sow_msg.sow] - crop should initiate when sown
+      sugar sow plants = 10, sowing_depth = 150, cultivar = q138, ratoon = 1 ()
+
+      ! increase irrigation supply
+      irrigation set crit_fr_asw = 0.8
+
+   elseif day = 245 and year = 1987 then
+
+      ! harvest the crop
+      ! [harvest_msg.harvest] - harvesting should remove grain
+      sugar harvest
+
+      ! report  the effects of harvest
+      ! [add_residue_msg.add_residue] - should place residues on soil surface
+      ! [incorp_fom_msg.incorp_fom] - should incorporate dead roots
+
+      report do_output
+
+      ! remove residues so there is one less factor to consider
+      surfaceom tillage type = burn
+
+      ! [plant_pop_msg.plants] - change population density
+      sugar set plants = 8
+
+      ! -----------------------------------------------------------------------
+      ! Third crop harvest - start next
+      ! Fourth Crop - ratoon crop, high irrigation, low N, late ratoon,
+      !               decreased plant population, 10 days of grazing.
+      ! -----------------------------------------------------------------------
+
+   elseif day < 10 and year = 1988 then
+
+      ! [graze_msg.graze] - graze fraction of crop biomass
+      sugar graze fraction = 0.05, c_eff = 0.5, n_eff = 0.5, report = yes
+
+      ! report  the effects of grazing
+      report do_output
+
+   elseif end_week = 1 then
+
+      report do_output
+
+   endif
+
+[reference.SummaryFile.parameters]
+summaryfile = referenc.sum
+[reference.tracker.parameters]
+variable = average of sugar.swdef_photo on process from reported to now as avg@swdef_photo
+variable = average of sugar.nfact_photo on process from reported to now as avg@nfact_photo
+variable = average of sugar.oxdef_photo on process from reported to now as avg@oxdef_photo

@@ -1,0 +1,191 @@
+! Location: Tel Hadya, northwest Syria (36°N, 37°E)
+! Soil: Calcixerollic Xerochrept, Inceptisol (USDA)
+! ~ 55-60% clay, ~30% silt, ~10% sand
+! ~ 23% CaCO3, CEC > 50cmol/kg, pH ~ 8
+
+
+!******************************************************************************************************
+
+[telhadya.SoilWat.parameters]
+
+   insoil = 2                      ! 2: user defined initial soil water
+
+   diffus_const    = 88.0  ()     ! 40 88.0 coeffs for dbar 
+   diffus_slope    = 35.6  ()     ! 16 35.6     "           
+   u               = 4.5          ! 6.0 Stapper (1984) Tel Hadya: 3.5 to 4.5
+                                  ! upper limit stage 1 soil evaporation coefficient (mm)
+   cona            = 4    ()      ! 5.0  3.5 stage 2 evap coef.
+   salb = 0.2                     ! bare soil albedo, Stapper (1984)
+
+
+   cn2_bare        = 70       ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover 
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover          
+                                     ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff   
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+!************************ B7 soil water ***************************************************************
+[b7.SoilWat.parameters]                          
+ 
+ ! layer    1     2     3     4     5     6     7     8     9     10      
+ ! depth  = 150   300   450   600   750   900   1050  1200  1350  1500      
+   dlayer = 150   150   150   150   150   150   150   150   150   150
+
+  air_dry =  0.06  0.06  0.13  0.16  0.20  0.20  0.20  0.22  0.22  0.22   
+  ll15    =  0.14  0.14  0.14  0.17  0.20  0.20  0.20  0.22  0.22  0.22  
+  
+  !DUL calibrated using field and lab measurements
+  dul     =  0.36  0.36  0.36  0.37  0.37  0.37  0.36  0.34  0.32  0.32
+
+  !SAT derived from lab measurements SAT + ~0.03 = TP
+  sat     =  0.47  0.46  0.43  0.41  0.40  0.40  0.39  0.37  0.35  0.35 
+  
+  !SAT = DUL + 0.05
+  !sat     =  0.41  0.41  0.41  0.42  0.42  0.42  0.41  0.39  0.37  0.37
+  
+  !field measured BD
+  bd      =  0.96  1.09  1.15  1.18  1.24  1.24  1.24  1.24  1.24  1.24
+  
+  swcon   =  0.30  0.30  0.30  0.30  0.30  0.30  0.30  0.30  0.30  0.30 
+
+  [inig2.SoilWat.parameters]
+  !ini sw block B7 9899 ghab2 
+  sw      = 0.120  0.130 0.130 0.169 0.207 0.245 0.258 0.257 0.262 0.272  !0.280  0.290
+ 
+ ! mean ini sw over all treatments chickpea B7, 9899
+ !sw      =        0.126 0.127 0.172 0.207 0.233 0.248 0.258 0.265 0.267  !0.244  0.251
+ ! ini sw wheat B7 wheat 9899
+ !sw      =  0.140 0.138 0.139 0.175 0.216 0.229 0.229 0.177 0.140 0.146 !0.085 0.085 
+
+ [B7.chickpea.parameters]
+ ! layer    1     2     3     4     5     6     7     8     9     10
+ ll     =  0.14  0.14  0.14  0.17  0.20  0.20  0.20  0.22  0.22  0.22
+ kl     =  0.08  0.08  0.08  0.08  0.05  0.03  0.01  0.0   0.0   0.0  ! from sample simulation     
+ xf     =  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 ! weighting factor for root advance
+ 
+ 
+!************************ B2 soil water *************************************************************** 
+[b2.SoilWat.parameters] 
+ 
+ ! layer    1     2     3     4     5     6     7     8     9     10      
+ ! depth  = 150   300   450   600   750   900   1050  1200  1350  1500      
+   dlayer = 150   150   150   150   150   150   150   150   150   150                            
+ 
+  air_dry =  0.08  0.08  0.13  0.17  0.22  0.22  0.24  0.24  0.24  0.24  
+ 
+  ll15    =  0.14  0.14  0.16  0.19  0.22  0.22  0.24  0.24  0.24  0.24  
+  dul     =  0.36  0.36  0.38  0.38  0.38  0.37  0.36  0.34  0.32  0.32
+  sat     =  0.47  0.44  0.43  0.42  0.41  0.40  0.39  0.37  0.35  0.35 
+  
+  !SAT = DUL + 0.05
+  !sat     =  0.41  0.41  0.43  0.43  0.43  0.42  0.41  0.39  0.37  0.37
+  
+  
+  bd      =  1.00  1.10  1.15  1.20  1.25  1.25  1.25  1.25  1.25  1.25
+
+  swcon   =  0.30  0.30  0.25  0.25  0.25  0.25  0.25  0.30  0.30  0.30 
+ 
+  [inig2w0.SoilWat.parameters]
+  !ini sw g2w0, block B2, 9900      
+  sw      = 0.083  0.086 0.138 0.195 0.236 0.265 0.273 0.290 0.303 0.302  !0.315  0.309
+ 
+  [inig2w1.SoilWat.parameters]
+  !ini sw g2w1, block B2, 9900    
+  sw      = 0.082  0.080 0.135 0.184 0.223 0.248 0.256 0.273 0.284 0.288  !0.296  0.288
+  !0.082
+ 
+  ! mean ini sw over all treatments, chickpea B2, 9900
+  !sw  =  0.083 0.085 0.143 0.197 0.225 0.26  0.27  0.28  0.29  0.295  0.30 0.305 ! field data 22.11.99
+ 
+ [B2.chickpea.parameters]
+ ! layer    1     2     3     4     5     6     7     8     9     10
+ 
+ ll     =  0.14  0.14  0.16  0.19  0.22  0.22  0.24  0.24  0.24  0.24 
+ kl     =  0.08  0.08  0.08  0.08  0.05  0.03  0.01  0.0   0.0   0.0   ! from sample simulation
+ xf     =  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  !weighting factor for root advance
+ 
+
+
+!******************* soil nitrogen parameters ***************************************************************
+[telhadya.SoilN.parameters]
+
+amp = 22.6497  ! temperature amplitude, calc. from met.dat 1978-1999
+tav = 17.5994  ! mean ann. air temp. (oC), long term
+
+
+[b7cp99.SoilN.parameters]
+!ini values 9899 chickpea, prev. crop: wheat
+
+   root_cn           =  120.0   ()                                     
+   root_wt           =  100.0   (kg/ha)  
+   soil_cn           =   10.0   ()             
+
+   enr_a_coeff       =    7.4   ()                                           
+   enr_b_coeff       =    0.2   ()                                           
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+! layer    1     2     3     4     5     6     7     8     9     10
+!  (mm)    150   300   450   600   750   900   1050  1200  1350  1500
+ 
+ oc     =  0.43  0.376 0.324 0.324 0.251 0.269 0.287 0.2   0.2   0.10    ! OM% / 1.724 = total org. carbon %, 0-90 oberserved 
+ ph     =  7.90  8.00  8.00  8.00  8.00  8.00  8.00  8.00  8.00  8.00
+ 
+ nh4ppm =  3.53  3.69  3.20  2.56  2.59  2.69  2.79  2     2     1       ! ini nh4-N
+ no3ppm =  6.5   5.4   3.28  3.32  2.77  3.27  3.77  3     3     3       ! ini no3-N
+ 
+ !test
+ !nh4ppm =   0.0   0.0   0.0   0.0   0.0   0.0   0.0  0.0  0.0  0.0  
+ !no3ppm =   0.0   0.0   0.0   0.0   0.0   0.0   0.0  0.0  0.0  0.0
+ 
+
+ fbiom   =  0.10  0.10  0.05  0.02  0.01 0.001 0.001 0.001 0.001 0.001 () ! microbe fraction of humic pool   
+ finert  =  0.02  0.02  0.05  0.2   0.6  0.9   0.9   0.9   0.9   0.9   () ! inert fraction of humic pool
+ 
+ ! test
+ ! fbiom   =  0.0  0.0  0.0   0.0  0.0  0     0     0     0     0     ()
+ ! finert  =  1.0  1.0  1     1    1    1     1     1     1     1     ()
+
+
+ 
+ 
+ [b2cp00.SoilN.parameters]
+ !ini values 9900 chickpea, prev. crop: wheat
+ 
+ 
+    root_cn           =  120.0   ()         ! 120       
+    root_wt           =  100.0   (kg/ha)    ! guess, no visible roots were found
+    soil_cn           =   10.0   ()         ! soil humic pool C:N ratio       (default apsim)
+ 
+    enr_a_coeff       =    7.4   ()         ! (default apsim)
+    enr_b_coeff       =    0.2   ()         ! (default apsim)
+    profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                            ! soil loss occurs.
+ 
+ oc     =  0.577 0.519 0.4   0.26  0.229 0.226 0.2  0.19  0.17  0.11     ! OM% / 1.724 = total org. carbon %, 0-90 oberserved; >90 guess 
+ ph     =  7.90  8.00  8.00  8.00  8.00  8.00  8.0  8.00  8.00  8.00 
+   
+ nh4ppm =  5.22  4.26  3.27  3.00  2.64  2.77  2    2     2     1      ! initial ammonium-N
+ no3ppm =  4.26  3.56  2.76  2.93  2.76  2.92  2    2     2     2      ! initial nitrate-N
+ 
+ !test
+ !nh4ppm =   0.0   0.0   0.0   0.0   0.0   0.0   0.0  0.0  0.0  0.0  
+ !no3ppm =   0.0   0.0   0.0   0.0   0.0   0.0   0.0  0.0  0.0  0.0
+ 
+ fbiom   =  0.10  0.10  0.05  0.02  0.01 0.001 0.001 0.001 0.001 0.001 ()
+ finert  =  0.02  0.02  0.05  0.2   0.6  0.9   0.9   0.9   0.9   0.9   ()					       
+ 
+ ! test
+ !fbiom   =  0.0  0.0  0.0   0.0  0.0  0     0     0     0     0     ()
+ !finert  =  1.0  1.0  1     1    1    1     1     1     1     1     ()
+!******************** ini residues **************************************************************************
+! RESIDUES
+
+[b2cp00.SurfaceOM.parameters]
+
+mass = 300      ! initial residues (kg/ha), residues wheat harvest 9899: ~5.6t
+cnr = 100  ()  ! cn ratio of surface residues
+type = wheat    ! wheat residues
+name = wheat

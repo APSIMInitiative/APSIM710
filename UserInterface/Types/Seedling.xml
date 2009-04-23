@@ -1,0 +1,51 @@
+   <seedling>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\seedling.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Generic Growth science documentation" >../apsim/growth/docs/growth_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <cultivar name="melliodora"/>
+     <variables>
+         <variable name="lai" description ="E. grandis leaf area index"/>
+         <variable name="fw" description ="E. grandis water stress factor"/>
+         <variable name="fn" description ="E. grandis N stress factor"/>
+         <variable name="ft" description ="E. grandis Temperature stress factor"/>
+         <variable name="fvpd" description ="E. grandis VPD stress factor"/>
+         <variable name="cover_green" description ="E. grandis Canopy Cover"/>
+         <variable name="height" description ="E. grandis Tree Height"/>
+         <variable name="plants" description ="E. grandis Plant Population"/>
+         <variable name="age" description ="E. grandis Tree Age"/>
+         <variable name="sw_demand" description ="E. grandis soil water demand"/>
+         <variable name="ep" description ="E. grandis Tree water use"/>
+         <variable name="foliage_mass" description ="E. grandis foliage mass"/>
+         <variable name="foliage_n" description ="E. grandis foliage N mass"/>
+         <variable name="biomass" description ="E. grandis Total Above-ground biomass"/>
+         <variable name="adm_green" array = "T" description ="E. grandis Live Above-ground Biomass Pools"/>
+         <variable name="adm_dead" array = "T" description ="E. grandis Dead Above-ground Biomass Pools"/>
+         <variable name="adm_sen" array = "T" description ="E. grandis Senesced Above-ground Biomass Pools"/>
+     </variables>
+
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Growth.dll</dll>
+         <ini>%apsim%\Model\Seedling.xml</ini>
+         <sim>
+            <uptake_source>calc</uptake_source>
+            <n_uptake_source>calc</n_uptake_source>
+            <rlv> 0.01 0 0 0 0 0 0 0 0 0 0 0 0 0</rlv>
+         </sim>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </seedling>

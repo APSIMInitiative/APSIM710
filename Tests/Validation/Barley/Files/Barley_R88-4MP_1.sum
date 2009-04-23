@@ -1,0 +1,467 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Barley_R88-4MP_1
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component          "Fertilise at sowing" = %apsim%\Model\Manager.dll
+   Component                   "Calculator" = %apsim%\Model\Manager.dll
+   Component                    "Irrigator" = %apsim%\Model\Manager.dll
+   Component                   "Fertilizer" = %apsim%\Model\Manager.dll
+   Component                  "Bay 0 Water" = %apsim%\Model\SoilWat.dll
+   Component               "Bay 0 Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "barley" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  8/06/1988
+     Simulation end date   = 19/10/1988
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: R88-4MP.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        barley.DaysAfterSowing
+        barley.stage
+        barley.biomass_wt
+        barley.LeafGreenWt as dmLeaf
+        barley.StemGreenWt as dmStem 
+        barley.grain_wt as dmGrain
+        barley.biomass_n as nBiomass
+        barley.StemGreenN as nStem
+        barley.PodGreenN as nRachis
+        barley.grain_n as nGrain
+        barley.SenescedN as nSenLeaf
+        barley.n_conc_grain as nConcGrain
+        barley.grain_no
+        barley.lai
+        barley.root_depth
+        barley.swdef_expan
+        barley.swdef_pheno
+        barley.swdef_photo
+        barley.nfact_expan
+        barley.nfact_pheno
+        barley.nfact_photo
+        eo
+        es
+        esw
+        water_table
+        barley.leaves_per_node
+        barley.leaf_no
+        barley.node_no
+        Irrigation.irrigation
+
+     Output file = Barley_R88-4MP_1.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.90
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('8/06/1988') then
+       barley sow plants =76.4, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+      if (paddock_is_fallow() = 0) then
+        outputfile do_output
+     endif
+                if barley.stagename = 'harvest_ripe' or barley.plant_status = 'dead' then
+       barley  harvest
+       barley  end_crop
+                endif
+     END of rules
+     
+
+------- Fertilise at sowing Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- barley.sowing
+             fertiliser apply amount = 80 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Calculator Initialisation ---------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     sd = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (sw_demand > 0) then
+        sd = sw_supply / sw_demand
+     else
+        sd = 1
+     endif
+     if (sd > 1) then
+        sd = 1
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : sd = 0.00000
+
+------- Irrigator Initialisation ----------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     No manager lines were found in any parameter file.
+     Component name: Irrigator
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- Fertilizer Initialisation ---------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     No manager lines were found in any parameter file.
+     Component name: Fertilizer
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- Bay 0 Water Initialisation --------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.100  0.130  0.380  0.410  0.355  1.300  0.613  0.100
+          100.-  200.  0.150  0.190  0.410  0.460  0.410  1.300  0.243  0.100
+          200.-  300.  0.190  0.190  0.410  0.460  0.397  1.290  0.096  0.100
+          300.-  400.  0.220  0.220  0.430  0.480  0.434  1.310  0.038  0.100
+          400.-  500.  0.250  0.250  0.420  0.470  0.396  1.350  0.009  0.100
+          500.-  600.  0.250  0.250  0.420  0.470  0.395  1.360  0.000  0.100
+          600.-  800.  0.280  0.280  0.410  0.460  0.329  1.360  0.000  0.100
+          800.- 1000.  0.280  0.280  0.400  0.450  0.317  1.350  0.000  0.100
+         1000.- 1400.  0.260  0.260  0.360  0.410  0.295  1.360  0.000  0.100
+         1400.- 1600.  0.250  0.250  0.340  0.390  0.258  1.360  0.000  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      13.00      22.50      25.00       3.00
+          100.-  200.      19.00      22.00      22.00       5.00
+          200.-  300.      19.00      20.70      22.00       5.00
+          300.-  400.      22.00      21.40      21.00       5.00
+          400.-  500.      25.00      14.60      17.00       5.00
+          500.-  600.      25.00      14.50      17.00       5.00
+          600.-  800.      56.00       9.80      26.00      10.00
+          800.- 1000.      56.00       7.40      24.00      10.00
+         1000.- 1400.     104.00      14.00      40.00      20.00
+         1400.- 1600.      50.00       1.60      18.00      10.00
+          ---------------------------------------------------------
+               Totals     389.00     148.50     232.00      78.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- Bay 0 Nitrogen Initialisation -----------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type R88
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.03   10.14    1.69    0.00
+             2     8.50  0.86    1.47    1.30    0.00
+             3     8.60  0.77    1.46    1.29    0.00
+             4     8.60  0.65    1.07    1.05    0.00
+             5     7.40  0.54    0.93    1.08    0.00
+             6     5.30  0.48    1.37    0.68    0.00
+             7     5.00  0.43    1.71    1.36    0.00
+             8     7.40  0.54    1.70    1.35    0.00
+             9     5.30  0.48    3.42    2.72    0.00
+            10     5.00  0.43    1.71    1.36    0.00
+          ------------------------------------------------
+           Totals               25.00   13.88    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      13001.1   896.6   388.9    48.6     0.5     0.0
+             2      11063.8   763.0   116.2    14.5     0.4     0.0
+             3       9885.8   681.8    47.2     5.9     0.4     0.0
+             4       8483.0   585.0    32.0     4.0     0.3     0.0
+             5       7271.2   501.5    18.8     2.3     0.2     0.0
+             6       6517.0   449.4    11.0     1.4     0.2     0.0
+             7      11687.9   806.1     8.1     1.0     0.1     0.0
+             8      14569.9  1004.8    10.1     1.3     0.1     0.0
+             9      26093.9  1799.6    18.1     2.3     0.0     0.0
+            10      11687.9   806.1     8.1     1.0     0.0     0.0
+          ---------------------------------------------------------
+           Totals  120261.5  8293.9   658.5    82.3     2.4     0.1
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- barley sow  plants = 76.4, sowing_depth = 50, cultivar = grimmett, row_spacing = 250
+8 June 1988(Day of year=160), barley: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = grimmett
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.1000 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.090          0.130       1.000
+         100.0     0.090          0.190       1.000
+         100.0     0.090          0.190       1.000
+         100.0     0.090          0.220       1.000
+         100.0     0.080          0.250       1.000
+         100.0     0.080          0.250       1.000
+         200.0     0.070          0.280       1.000
+         200.0     0.060          0.280       1.000
+         400.0     0.030          0.260       1.000
+         200.0     0.010          0.250       1.000
+         -----------------------------------------------
+         Extractable SW:   232mm in  1600mm total depth ( 14%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            160   50.0   76.4  250.0   0.0   0.0 grimmett
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 80 (kg/ha), depth = 50 (mm), type = urea_n
+fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        80.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+9 June 1988(Day of year=161), barley: 
+      stage 2.0 germination
+18 June 1988(Day of year=170), barley: 
+      stage 3.0 emergence
+                     biomass =           0.35 (g/m^2)   lai          =   0.015 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   42.56 (mm)
+19 June 1988(Day of year=171), barley: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.55 (g/m^2)   lai          =   0.019 (m^2/m^2)
+                     stover N conc =     5.82 (%)    extractable sw =   42.05 (mm)
+25 August 1988(Day of year=238), barley: 
+      stage 5.0 floral_initiation
+                     biomass =         396.47 (g/m^2)   lai          =   5.112 (m^2/m^2)
+                     stover N conc =     2.02 (%)    extractable sw =   88.37 (mm)
+9 September 1988(Day of year=253), barley: 
+      stage 6.0 flowering
+                     biomass =         606.62 (g/m^2)   lai          =   3.798 (m^2/m^2)
+                     stover N conc =     1.37 (%)    extractable sw =   40.26 (mm)
+16 September 1988(Day of year=260), barley: 
+      stage 7.0 start_grain_fill
+                     biomass =         707.71 (g/m^2)   lai          =   2.716 (m^2/m^2)
+                     stover N conc =     1.07 (%)    extractable sw =   44.15 (mm)
+15 October 1988(Day of year=289), barley: 
+      stage 8.0 end_grain_fill
+                     biomass =         790.98 (g/m^2)   lai          =   0.433 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =    8.94 (mm)
+16 October 1988(Day of year=290), barley: 
+      stage 9.0 maturity
+                     biomass =         790.98 (g/m^2)   lai          =   0.433 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =    8.69 (mm)
+17 October 1988(Day of year=291), barley: 
+      stage 10.0 harvest_ripe
+                     biomass =         790.98 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =    8.53 (mm)
+17 October 1988(Day of year=291), Harvesting rule: 
+     Manager sending message :- barley harvest
+     
+      flowering day          =  253                           stover (kg/ha)         =     5415.0
+      maturity day           =  290                           grain yield (kg/ha)    =     2494.8
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2851.2
+      grain wt (g)           =    0.033                       grains/m^2             =     7455.0
+      grains/plant           =   97.6                         maximum lai            =      5.198
+      total above ground biomass (kg/ha)    =     7909.8
+      live above ground biomass (kg/ha)     =     7909.8
+      green above ground biomass (kg/ha)    =     5459.0
+      senesced above ground biomass (kg/ha) =     2450.8
+      number of leaves       =     67.6
+      DM Root:Shoot ratio    =     0.24                       Harvest Index          =       0.32
+      Stover C:N ratio       =   102.30                       Root C:N ratio         =      33.06
+      grain N percent        =     2.27                       total N content (kg/ha)=      77.72
+      grain N uptake (kg/ha) =    56.54                       senesced N content (kg/ha)=   12.25
+      green N content (kg/ha)=     8.92
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.001        0.002        0.224        0.241
+         floral_initiation    to flowering               0.030        0.039        0.239        0.258
+         flowering            to start_grain_fill        0.060        0.074        0.222        0.240
+         start_grain_fill     to end_grain_fill          0.183        0.216        0.256        0.295
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                5415.0                     0.0
+                          N  (kg/ha) =                  21.17                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2494.8                     0.0
+                          N  (kg/ha) =                  56.54                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.015 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =    8.53 (mm)
+     Manager sending message :- barley end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1897.0
+                          N  (kg/ha) =                   0.00                   22.96
+     
+19 October 1988(Day of year=293), clock: 
+     Simulation is terminating due to end criteria being met.

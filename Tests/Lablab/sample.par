@@ -1,0 +1,120 @@
+! **** output files *****
+
+[Highworth.report.parameters]
+outputfile  = Highworth.out
+
+[Highworth.SummaryFile.parameters]
+summaryfile = Highworth.sum
+
+[Endurance.report.parameters]
+outputfile  = Endurance.out
+
+[Endurance.SummaryFile.parameters]
+summaryfile = Endurance.sum
+
+! *** clock ***
+
+[Highworth.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/10/1997
+end_date=1/5/2000
+
+[Endurance.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/10/1997
+end_date=1/5/2000
+
+[Highworth.manager.init]
+crop_in = 0
+
+[Highworth.manager.end_of_day]
+
+report do_output
+
+if ((lablab.stage > 5 and lablab.biomass > 1000) or (lablab.plant_status = 'dead')) then
+    lablab harvest
+    lablab end_crop
+    crop_in = 0
+endif
+
+
+[Highworth.manager.start_of_day]
+
+if (day > 270 or day < 30) and (esw > 50) and (rain[5] > 30) and (crop_in = 0) then
+  lablab sow cultivar = highworth, plants = 10 (/m2), sowing_depth = 40 (mm)
+  report do_output
+  crop_in = 1
+endif
+
+
+[Endurance.manager.init]
+crop_in = 0
+
+[Endurance.manager.end_of_day]
+
+report do_output
+
+if day =  80 and year = 1998 then
+   lablab harvest
+endif
+
+if day = 340 and year = 1998 then
+   lablab harvest
+endif
+
+if day = 90 and year = 1999 then
+   lablab harvest
+endif
+
+if day = 340 and year = 1999 then
+   lablab harvest
+endif
+
+if day = 90 and year = 2000 then
+   lablab harvest
+endif
+
+if (mint < 5) and (lai < 0.5) and (day > 140 or day < 240) then
+   lablab kill_stem
+endif
+
+[Endurance.manager.start_of_day]
+
+if day = 330 and year  = 1997 then
+   lablab sow cultivar = endurance, crop_class = small_leaf, plants = 10 (/m2), sowing_depth = 40 (mm)
+endif
+
+[common.accum.parameters]
+
+accum_variables = rain[5]
+
+[gatton_heavy.lablab.parameters]
+! for a heavy Gatton Soil 
+ll   = .20  .28  .320 .300 .270 .240 .310  ! lower limit mm water/mm soil
+xf   = 1.00 1.00 1.00 1.00 1.00 1.00 1.00  ! Weighting factor for root advance
+kl   = 0.08 0.08 0.08 0.08 0.05 0.03 0.01  ! Water Extraction Parameter (0-1)
+
+[all.SoilN.parameters]
+
+no3ppm =  10   10   10   2.7  1.5  1.8  1.4 (ppm)   ! Nitrate Concentration
+nh4ppm =  0.30 0.30 0.30 0.30 0.30 0.50 0.50 (ppm)   ! Ammonium Concentration
+ureappm = 0    0    0    0    0    0    0    (ppm)   ! Urea Concentration
+root_cn =  20.   ! C:N ratio of initial root residues
+root_wt =  1000.   ! root residues as biomass (kg/ha)
+
+[all.SurfaceOM.parameters]
+
+mass = 0 (kg/ha)      ! Initial surface residue
+cnr = 30.0 ()       ! C:N ration of initial residue
+type = wheat        ! Type if initial residue
+
+name = wheat
+[irrigation.irrigate.parameters]  
+
+! Maunal irrigation scheduling
+! ============================
+manual_irrigation =  on   
+year =   2000  2000  2000 2000 2000 2000 2000  2000()   ! year for application date
+day =      17  25  35   42   49   56   63   70()   ! day for applciation date
+amount =   30  30  30   30   30   30   30   30(mm)   ! amount of irrigation applied
+

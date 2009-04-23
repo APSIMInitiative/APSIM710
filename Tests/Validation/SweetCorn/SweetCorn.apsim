@@ -1,0 +1,891 @@
+<simulations name="SweetCornValidation" version="15">
+  <simulation name="NZIrrigation">
+    <clock name="clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">30/10/1996</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">22/03/1997</end_date>
+    </clock>
+    <summaryfile name="summaryfile">
+      <filename name="filename">NZIrrigation.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">Lincoln9697.met</filename>
+    </metfile>
+    <area name="FI">
+      <registrations name="global" />
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">10</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <SweetCorn />
+      <outputfile name="outputfile">
+        <filename name="filename">NZIrrigation FI.out</filename>
+        <variables name="My Variables" shortcut="/SweetCornValidation/shared/My Variables" />
+        <events name="My Variables Events" shortcut="/SweetCornValidation/shared/My Variables Events" />
+      </outputfile>
+      <soil shortcut="/SweetCornValidation/shared/Lincoln" name="Lincoln">
+        <InitWater shortcut="/SweetCornValidation/shared/Lincoln/InitWater" />
+        <InitNitrogen shortcut="/SweetCornValidation/shared/Lincoln/InitNitrogen" />
+      </soil>
+      <folder shortcut="/SweetCornValidation/shared/LincolnCrop" name="LincolnCrop">
+        <manager name="Harvesting rule" shortcut="/SweetCornValidation/shared/LincolnCrop/Harvesting rule" />
+        <manager name="Sowing fertiliser" shortcut="/SweetCornValidation/shared/LincolnCrop/Sowing fertiliser" />
+        <manager name="Sow on a fixed date" shortcut="/SweetCornValidation/shared/LincolnCrop/Sow on a fixed date" />
+        <manager name="Fertilise on fixed date" shortcut="/SweetCornValidation/shared/LincolnCrop/Fertilise on fixed date" />
+      </folder>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="text" description="switch">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600.0</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency description="Efficiency of the irrigation. (0-1.0)">1.0</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+    <area name="FD">
+      <registrations name="global" />
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">10</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <SweetCorn />
+      <outputfile name="outputfile">
+        <filename name="filename">NZIrrigation FD.out</filename>
+        <variables name="My Variables" shortcut="/SweetCornValidation/shared/My Variables" />
+        <events name="My Variables Events" shortcut="/SweetCornValidation/shared/My Variables Events" />
+      </outputfile>
+      <soil shortcut="/SweetCornValidation/shared/Lincoln" name="Lincoln">
+        <InitWater shortcut="/SweetCornValidation/shared/Lincoln/InitWater" />
+        <InitNitrogen shortcut="/SweetCornValidation/shared/Lincoln/InitNitrogen" />
+      </soil>
+      <folder shortcut="/SweetCornValidation/shared/LincolnCrop" name="LincolnCrop">
+        <manager name="Harvesting rule" shortcut="/SweetCornValidation/shared/LincolnCrop/Harvesting rule" />
+        <manager name="Sowing fertiliser" shortcut="/SweetCornValidation/shared/LincolnCrop/Sowing fertiliser" />
+        <manager name="Sow on a fixed date" shortcut="/SweetCornValidation/shared/LincolnCrop/Sow on a fixed date" />
+        <manager name="Fertilise on fixed date" shortcut="/SweetCornValidation/shared/LincolnCrop/Fertilise on fixed date" />
+      </folder>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="text" description="switch">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600.0</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency description="Efficiency of the irrigation. (0-1.0)">1.0</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+  </simulation>
+  <simulation name="Lawes">
+    <clock name="clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">20/11/2005</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">16/02/2006</end_date>
+    </clock>
+    <summaryfile name="summaryfile">
+      <filename name="filename">Lawes.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">Lawes.met</filename>
+    </metfile>
+    <area name="RD">
+      <registrations name="global" />
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">10</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <SweetCorn />
+      <outputfile name="outputfile">
+        <filename name="filename">Lawes RD.out</filename>
+        <variables name="My Variables" shortcut="/SweetCornValidation/shared/My Variables" />
+        <events name="My Variables Events" shortcut="/SweetCornValidation/shared/My Variables Events" />
+      </outputfile>
+      <outputfile name="FinalOutput">
+        <filename name="filename">Lawes RD FinalOutput.out</filename>
+        <variables name="FinalVariables" shortcut="/SweetCornValidation/shared/FinalVariables" />
+        <events name="FinalVariables Events" shortcut="/SweetCornValidation/shared/FinalVariables Events" />
+      </outputfile>
+      <Soil shortcut="/SweetCornValidation/shared/DPIGatton" name="DPIGatton">
+        <InitWater shortcut="/SweetCornValidation/shared/DPIGatton/InitWater" />
+        <InitNitrogen shortcut="/SweetCornValidation/shared/DPIGatton/InitNitrogen" />
+      </Soil>
+      <folder shortcut="/SweetCornValidation/shared/LawesCrop" name="LawesCrop">
+        <manager name="Harvesting rule" shortcut="/SweetCornValidation/shared/LawesCrop/Harvesting rule" />
+        <manager name="Sow on a fixed date" shortcut="/SweetCornValidation/shared/LawesCrop/Sow on a fixed date" />
+      </folder>
+      <operations>
+        <operation condition="start_of_day">
+          <date>22-nov</date>
+          <action>Irrigation apply amount = 12</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{2}">
+          <date>8-dec</date>
+          <action>Irrigation apply amount = 3.8</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{3}">
+          <date>10-dec</date>
+          <action>Irrigation apply amount = 14.9</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{4}">
+          <date>13-dec</date>
+          <action>Irrigation apply amount = 7.6</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{5}">
+          <date>15-dec</date>
+          <action>Irrigation apply amount = 10</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{6}">
+          <date>20-dec</date>
+          <action>fertiliser apply amount = 15, type = no3_n, depth = 50</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{7}">
+          <date>20-dec</date>
+          <action>Irrigation apply amount = 9.8</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{8}">
+          <date>22-dec</date>
+          <action>Irrigation apply amount = 9.3</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{9}">
+          <date>23-dec</date>
+          <action>Irrigation apply amount = 13.6</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{10}">
+          <date>24-dec</date>
+          <action>Irrigation apply amount = 6.6</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{11}">
+          <date>29-dec</date>
+          <action>Irrigation apply amount = 21.1</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{12}">
+          <date>4-jan</date>
+          <action>Irrigation apply amount = 13.7</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{13}">
+          <date>5-jan</date>
+          <action>fertiliser apply amount = 15, type = no3_n, depth = 50</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{14}">
+          <date>6-jan</date>
+          <action>Irrigation apply amount = 14.8</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{15}">
+          <date>14-jan</date>
+          <action>Irrigation apply amount = 13</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{16}">
+          <date>17-jan</date>
+          <action>Irrigation apply amount = 19.4</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{17}">
+          <date>19-jan</date>
+          <action>Irrigation apply amount = 12.5</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{18}">
+          <date>25-jan</date>
+          <action>fertiliser apply amount = 15, type = no3_n, depth = 50</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{19}">
+          <date>26-jan</date>
+          <action>Irrigation apply amount = 13.5</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{20}">
+          <date>28-jan</date>
+          <action>Irrigation apply amount = 19.1</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{21}">
+          <date>31-jan</date>
+          <action>Irrigation apply amount = 14.1</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{22}">
+          <date>3-feb</date>
+          <action>Irrigation apply amount = 26</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{23}">
+          <date>8-feb</date>
+          <action>Irrigation apply amount = 19</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{24}">
+          <date>11-feb</date>
+          <action>Irrigation apply amount = 16.6</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{25}">
+          <date>13-feb</date>
+          <action>Sweetcorn harvest</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{26}">
+          <date>13-feb</date>
+          <action>Sweetcorn end_crop</action>
+        </operation>
+      </operations>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">off</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+    <area name="Dry">
+      <registrations name="global" />
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">10</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <SweetCorn />
+      <outputfile name="outputfile">
+        <filename name="filename">Lawes Dry.out</filename>
+        <variables name="My Variables" shortcut="/SweetCornValidation/shared/My Variables" />
+        <events name="My Variables Events" shortcut="/SweetCornValidation/shared/My Variables Events" />
+      </outputfile>
+      <Soil shortcut="/SweetCornValidation/shared/DPIGatton" name="DPIGatton">
+        <InitWater shortcut="/SweetCornValidation/shared/DPIGatton/InitWater" />
+        <InitNitrogen shortcut="/SweetCornValidation/shared/DPIGatton/InitNitrogen" />
+      </Soil>
+      <outputfile name="FinalOutput">
+        <filename name="filename">Lawes Dry FinalOutput.out</filename>
+        <variables name="FinalVariables" shortcut="/SweetCornValidation/shared/FinalVariables" />
+        <events name="FinalVariables Events" shortcut="/SweetCornValidation/shared/FinalVariables Events" />
+      </outputfile>
+      <folder shortcut="/SweetCornValidation/shared/LawesCrop" name="LawesCrop">
+        <manager name="Harvesting rule" shortcut="/SweetCornValidation/shared/LawesCrop/Harvesting rule" />
+        <manager name="Sow on a fixed date" shortcut="/SweetCornValidation/shared/LawesCrop/Sow on a fixed date" />
+      </folder>
+      <operations>
+        <operation condition="start_of_day">
+          <date>22-nov</date>
+          <action>irrigation apply amount = 12</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{2}">
+          <date>8-dec</date>
+          <action>irrigation apply amount = 4</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{3}">
+          <date>10-dec</date>
+          <action>irrigation apply amount = 14.5</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{4}">
+          <date>20-dec</date>
+          <action>irrigation apply amount = 9.2</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{5}">
+          <date>20-dec</date>
+          <action>fertiliser apply amount = 15, type = no3_n, depth = 50</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{6}">
+          <date>22-dec</date>
+          <action>irrigation apply amount = 5.6</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{7}">
+          <date>23-dec</date>
+          <action>irrigation apply amount = 6.8</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{8}">
+          <date>24-dec</date>
+          <action>irrigation apply amount = 10.1</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{9}">
+          <date>5-jan</date>
+          <action>fertiliser apply amount = 15, type = no3_n, depth = 50</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{10}">
+          <date>6-jan</date>
+          <action>irrigation apply amount = 7.2</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{11}">
+          <date>25-jan</date>
+          <action>fertiliser apply amount = 15, type = no3_n, depth = 50</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{12}">
+          <date>26-jan</date>
+          <action>irrigation apply amount = 7</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{13}">
+          <date>13-feb</date>
+          <action>Sweetcorn harvest</action>
+        </operation>
+        <operation condition="start_of_day" name="operation{14}">
+          <date>13-feb</date>
+          <action>Sweetcorn end_crop</action>
+        </operation>
+      </operations>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">off</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+  </simulation>
+  <folder name="shared">
+    <soil name="Lincoln">
+      <Site>UQ, Lawes</Site>
+      <Region>Lockyer</Region>
+      <SoilType>Black Vertosol</SoilType>
+      <NearestTown>Gatton, Q 4343</NearestTown>
+      <NaturalVegetation>Blue Gum, Moreton Bay Ash, Tea Tree</NaturalVegetation>
+      <Comment>oc and ph not measured</Comment>
+      <InitWater>
+        <PercentMethod>
+          <Percent>0.83</Percent>
+          <Distributed>Filled from top</Distributed>
+        </PercentMethod>
+      </InitWater>
+      <InitNitrogen>
+        <profile>
+          <layer>
+            <no3>6.494</no3>
+            <nh4>0.608</nh4>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <no3>2.098</no3>
+            <nh4>0.101</nh4>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <no3>2.098</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+        </profile>
+      </InitNitrogen>
+      <profile>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.320</bd>
+          <ll15>0.100</ll15>
+          <airdry>0.050</airdry>
+          <dul>0.290</dul>
+          <sat>0.350</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.030</fbiom>
+          <finert>0.400</finert>
+          <no3>6.500</no3>
+          <nh4>0.600</nh4>
+          <oc>1.240</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.100</ll>
+          <kl name="SweetCorn">0.100</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.300</bd>
+          <ll15>0.100</ll15>
+          <airdry>0.100</airdry>
+          <dul>0.290</dul>
+          <sat>0.350</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.020</fbiom>
+          <finert>0.600</finert>
+          <no3>2.100</no3>
+          <nh4>0.100</nh4>
+          <oc>1.240</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.100</ll>
+          <kl name="SweetCorn">0.100</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.230</bd>
+          <ll15>0.100</ll15>
+          <airdry>0.100</airdry>
+          <dul>0.290</dul>
+          <sat>0.350</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.800</finert>
+          <no3>2.100</no3>
+          <nh4>0.100</nh4>
+          <oc>1.250</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.100</ll>
+          <kl name="SweetCorn">0.080</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.270</bd>
+          <ll15>0.100</ll15>
+          <airdry>0.100</airdry>
+          <dul>0.290</dul>
+          <sat>0.350</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.900</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>1.100</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.100</ll>
+          <kl name="SweetCorn">0.060</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.370</bd>
+          <ll15>0.100</ll15>
+          <airdry>0.100</airdry>
+          <dul>0.290</dul>
+          <sat>0.350</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>0.710</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.100</ll>
+          <kl name="SweetCorn">0.040</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.350</bd>
+          <ll15>0.100</ll15>
+          <airdry>0.100</airdry>
+          <dul>0.290</dul>
+          <sat>0.350</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>0.340</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.100</ll>
+          <kl name="SweetCorn">0.020</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.350</bd>
+          <ll15>0.100</ll15>
+          <airdry>0.100</airdry>
+          <dul>0.290</dul>
+          <sat>0.350</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>0.260</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.100</ll>
+          <kl name="SweetCorn">0.010</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+      </profile>
+      <Cona>3.5</Cona>
+      <DiffusConst>40</DiffusConst>
+      <DiffusSlope>16</DiffusSlope>
+      <U>6</U>
+      <Salb>0.13</Salb>
+      <Cn2Bare>73</Cn2Bare>
+      <CnRed>20</CnRed>
+      <CnCov>0.8</CnCov>
+      <CnCanopyFact>1</CnCanopyFact>
+      <RootCn>40</RootCn>
+      <RootWt>200</RootWt>
+      <SoilCn>12.5</SoilCn>
+      <EnrACoeff>7.4</EnrACoeff>
+      <EnrBCoeff>0.2</EnrBCoeff>
+    </soil>
+    <folder name="LincolnCrop">
+      <manager name="Harvesting rule">
+        <script>
+          <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+          <event>end_of_day</event>
+        </script>
+        <ui>
+          <category name="Harvesting criteria" />
+          <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sweetcorn</crop>
+        </ui>
+      </manager>
+      <manager name="Sowing fertiliser">
+        <script>
+          <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+          <event>[modulename].[eventname]</event>
+        </script>
+        <ui>
+          <category name="When should fertiliser be applied" />
+          <modulename type="modulename" description="On which module should the event come from : ">SweetCorn</modulename>
+          <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+          <category name="Fertiliser application details" />
+          <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+          <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">24</fert_amount_sow>
+          <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
+        </ui>
+      </manager>
+      <manager name="Sow on a fixed date">
+        <script>
+          <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+          <event>start_of_day</event>
+        </script>
+        <ui>
+          <category name="Sowing criteria" />
+          <date type="text" description="Enter sowing date (dd-mmm) : ">30-oct</date>
+          <category name="Sowing parameters" />
+          <crop type="modulename" description="Enter name of crop to sow : ">SweetCorn</crop>
+          <density type="text" description="Enter sowing density  (plants/m2) : ">5.7</density>
+          <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+          <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">challenger</cultivar>
+          <row_spacing type="text" description="Enter row spacing (mm) : ">700</row_spacing>
+        </ui>
+      </manager>
+      <manager name="Fertilise on fixed date">
+        <script>
+          <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+          <event>start_of_day</event>
+        </script>
+        <ui>
+          <category name="When should fertiliser be applied" />
+          <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">20-nov</fert_date>
+          <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+          <category name="Fertiliser application details" />
+          <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+          <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">200</fert_amount>
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type>
+        </ui>
+      </manager>
+    </folder>
+    <Soil name="DPIGatton">
+      <region>Lockyer</region>
+      <site>UQ, Lawes</site>
+      <SoilType>Prarie</SoilType>
+      <nearesttown>Gatton, Q 4343</nearesttown>
+      <comment>oc and ph estimated</comment>
+      <naturalvegetation>Blue Gum, Moreton Bay Ash, Tea Tree</naturalvegetation>
+      <InitWater>
+        <profile>
+          <layer>
+            <sw>0.280</sw>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <sw>0.350</sw>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <sw>0.370</sw>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <sw>0.420</sw>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <sw>0.370</sw>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <sw>0.360</sw>
+            <thickness>300</thickness>
+          </layer>
+        </profile>
+      </InitWater>
+      <InitNitrogen>
+        <profile>
+          <layer>
+            <no3>18.500</no3>
+            <nh4>0.600</nh4>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <no3>9.200</no3>
+            <nh4>0.100</nh4>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <no3>11.800</no3>
+            <nh4>0.100</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>11.200</no3>
+            <nh4>0.100</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>10.300</no3>
+            <nh4>0.100</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>14.000</no3>
+            <nh4>0.100</nh4>
+            <thickness>300</thickness>
+          </layer>
+        </profile>
+      </InitNitrogen>
+      <profile>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.260</bd>
+          <ll15>0.140</ll15>
+          <airdry>0.100</airdry>
+          <dul>0.370</dul>
+          <sat>0.450</sat>
+          <swcon>0.500</swcon>
+          <fbiom>0.030</fbiom>
+          <finert>0.400</finert>
+          <oc>1.250</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.140</ll>
+          <kl name="SweetCorn">0.200</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.450</bd>
+          <ll15>0.210</ll15>
+          <airdry>0.200</airdry>
+          <dul>0.410</dul>
+          <sat>0.450</sat>
+          <swcon>0.500</swcon>
+          <fbiom>0.020</fbiom>
+          <finert>0.600</finert>
+          <oc>1.060</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.210</ll>
+          <kl name="SweetCorn">0.080</kl>
+          <xf name="SweetCorn">0.300</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.270</bd>
+          <ll15>0.300</ll15>
+          <airdry>0.200</airdry>
+          <dul>0.400</dul>
+          <sat>0.450</sat>
+          <swcon>0.500</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.800</finert>
+          <oc>0.810</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.300</ll>
+          <kl name="SweetCorn">0.080</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.330</bd>
+          <ll15>0.310</ll15>
+          <airdry>0.200</airdry>
+          <dul>0.430</dul>
+          <sat>0.470</sat>
+          <swcon>0.500</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.900</finert>
+          <oc>0.700</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.310</ll>
+          <kl name="SweetCorn">0.040</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.410</bd>
+          <ll15>0.270</ll15>
+          <airdry>0.200</airdry>
+          <dul>0.390</dul>
+          <sat>0.440</sat>
+          <swcon>0.500</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <oc>0.700</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.270</ll>
+          <kl name="SweetCorn">0.040</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.390</bd>
+          <ll15>0.360</ll15>
+          <airdry>0.200</airdry>
+          <dul>0.400</dul>
+          <sat>0.450</sat>
+          <swcon>0.500</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <oc>0.700</oc>
+          <ph>7</ph>
+          <ll name="SweetCorn">0.360</ll>
+          <kl name="SweetCorn">0.020</kl>
+          <xf name="SweetCorn">1.000</xf>
+        </layer>
+      </profile>
+      <U>6</U>
+      <Cona>3.5</Cona>
+      <Salb>0.13</Salb>
+      <DiffusConst>40</DiffusConst>
+      <DiffusSlope>16</DiffusSlope>
+      <CN2Bare>90</CN2Bare>
+      <CNRed>20</CNRed>
+      <CNCov>0.8</CNCov>
+      <RootCN>40</RootCN>
+      <RootWT>200</RootWT>
+      <SoilCN>12.5</SoilCN>
+      <EnrACoeff>7.4</EnrACoeff>
+      <EnrBCoeff>0.2</EnrBCoeff>
+    </Soil>
+    <folder name="LawesCrop">
+      <manager name="Harvesting rule">
+        <script>
+          <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+          <event>end_of_day</event>
+        </script>
+        <ui>
+          <category name="Harvesting criteria" />
+          <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sweetcorn</crop>
+        </ui>
+      </manager>
+      <manager name="Sow on a fixed date">
+        <script>
+          <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+          <event>start_of_day</event>
+        </script>
+        <ui>
+          <category name="Sowing criteria" />
+          <date type="text" description="Enter sowing date (dd-mmm) : ">21-nov</date>
+          <category name="Sowing parameters" />
+          <crop type="modulename" description="Enter name of crop to sow : ">SweetCorn</crop>
+          <density type="text" description="Enter sowing density  (plants/m2) : ">5.7</density>
+          <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+          <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">h5</cultivar>
+          <row_spacing type="text" description="Enter row spacing (mm) : ">700</row_spacing>
+        </ui>
+      </manager>
+    </folder>
+    <operations />
+    <variables name="My Variables">
+      <variable name="dd/mmm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+      <variable name="SweetCorn.zadok_stage" description="Zadok's growth developmental stage" array="?" />
+      <variable name="SweetCorn.lai" description="Leaf area index" array="?" />
+      <variable name="SweetCorn.LeafGreenWt" description="Weight of leaf" array="?" />
+      <variable name="SweetCorn.StemGreenWt" description="Weight of stem" array="?" />
+      <variable name="SweetCorn.EarTotalWt" description="Weight of heads" array="?" />
+      <variable name="SweetCorn.biomass_wt" description="Biomass weight" array="?" />
+      <variable name="SweetCorn.swdef_photo" description="Soil water deficit in photosynthesis" array="?" />
+      <variable name="SweetCorn.node_no" description="Number of leaves per plant" array="?" />
+      <variable name="SweetCorn.node_no_sen" description="Number of senesced leaves per square meter" array="?" />
+      <variable name="SweetCorn.node_no_fx" description="Number of fully expanded leaves" array="?" />
+      <variable name="SweetCorn.nfact_photo" description="N factor for photosynthesis" array="?" />
+      <variable name="SweetCorn.temp_stress_photo" description="Temperature Stress in photosynthesis" array="?" />
+      <variable name="SweetCorn.tt_tot" description="Thermal time spent in each crop stage" array="?" />
+      <variable name="SweetCorn.DaysAfterSowing" description="Days after Sowing" array="?" />
+      <variable name="Irrigation.irrigation" description="Irrigation entering the profile (mm)" array="?" />
+      <variable name="SweetCorn.root_depth" description="depth of roots" array="?" />
+      <variable name="sw_dep()" description="Soil water - layered (mm)" array="?" />
+      <variable name="sw" description="Soil water - layered (mm/mm)" array="?" />
+      <variable name="SweetCorn.dlt_lai_pot" description="Potential change in live plant lai" array="?" />
+      <variable name="SweetCorn.ep" description="Plant water uptake" array="?" />
+      <variable name="SweetCorn.sw_demand" description="Demand for sw" array="?" />
+      <variable name="SweetCorn.nfact_expan" description="N factor for leaf expansion" array="?" />
+      <variable name="SweetCorn.swdef_expan" description="Soil water deficit in leaf expansion" array="?" />
+      <variable name="runoff" description="Runoff (mm)" array="?" />
+      <variable name="es" description="Evaporation (mm)" array="?" />
+    </variables>
+    <events name="My Variables Events">
+      <event name="Daily" description="End of day" />
+    </events>
+    <variables name="FinalVariables">
+      <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+      <variable name="SweetCorn.leaf_area_max" array="?" />
+      <variable name="SweetCorn.leaf_area" array="?" />
+      <variable name="SweetCorn.LeafGreenWt" array="?" description="Weight of leaf" />
+      <variable name="SweetCorn.StemGreenWt" array="?" description="Weight of stem" />
+      <variable name="SweetCorn.EarTotalWt" array="?" description="Weight of heads" />
+      <variable name="SweetCorn.biomass_wt" array="?" description="Biomass weight" />
+      <variable name="SweetCorn.node_no" array="?" description="Number of leaves per plant" />
+      <variable name="SweetCorn.node_no_sen" array="?" description="Number of senesced leaves per square meter" />
+      <variable name="SweetCorn.node_no_fx" array="?" description="Number of fully expanded leaves" />
+      <variable name="SweetCorn.tt_tot" array="?" description="Thermal time spent in each crop stage" />
+      <variable name="SweetCorn.DaysAfterSowing" array="?" description="Days after Sowing" />
+      <variable name="SweetCorn.root_depth" array="?" description="depth of roots" />
+    </variables>
+    <events name="FinalVariables Events">
+      <event name="SweetCorn.harvesting" description="" />
+    </events>
+  </folder>
+</simulations>

@@ -1,0 +1,301 @@
+<Simulation name="Stock Supplement" executable="%apsuite\apsim\protocolmanager\lib\protocolmanager.dll">
+   <title>Stock Supplement PI SAMPLE Simulation</title>
+   <component name="Log" executable="%apsuite\apsim\log\lib\log.dll">
+      <initdata>
+         <logfile>debug.xml</logfile>
+         <debug_output>off</debug_output>
+      </initdata>
+   </component>
+   <component name="clock" executable="%apsuite\apsim\clock\lib\clock.dll">
+      <initdata>
+         <include>%apsuite\apsim\clock\clock.xml</include>
+         <start_date>1/10/1988</start_date>
+         <end_date>30/4/1989</end_date>
+      </initdata>
+   </component>
+   <component name="Met" executable="%apsuite\apsim\Input\lib\Input.dll">
+      <initdata>
+         <filename>%apsuite\apsim\met\sample\dalby.met</filename>
+      </initdata>
+   </component>
+  <system name="paddock" executable="%apsuite\apsim\protocolmanager\lib\protocolmanager.dll">
+    <registrations>
+      <event name="summaryFileWrite" type="single" />
+      <event name="error" type="string" />
+      <event name="NotifyTermination" type="string" />
+      <event name="gimme_water" type="string" />
+      <respondToEvent name="tick" type="time" />
+      <respondToEvent name="newmet" type="newmet" />
+      <respondToEvent name="prepare" type="prepare" />
+      <respondToEvent name="process" type="process" />
+      <respondToEvent name="post" type="post" />
+      <respondToEvent name="do_stock" type="single" />
+      <respondToEvent name="init_step" type="single" />
+      <respondToEvent name="do_pasture_water" type="single" />
+      <respondToEvent name="prewaterbalance" type="single" />
+      <respondToEvent name="do_pasture_growth" type="single" />
+      <respondToEvent name="end_step" type="single" />
+      <respondToEvent name="end_week" type="single" />
+      <respondToEvent name="end_month" type="single" />
+      <respondToEvent name="end_year" type="single" />
+      <respondToEvent name="water_supplied" type="single" />
+      <respondToEvent name="irrigate" type="single" />
+      <respondToEvent name="sow" type="single" />
+      <respondToEvent name="fertilize" type="single" />
+      <respondToEvent name="tillage" type="single" />
+      <get name="today" type="integer4" />
+      <get name="day" type="integer4" />
+      <get name="year" type="integer4" />
+      <get name="dd/mm/yyyy" type="string" />
+      <get name="dd/mmm/yyyy" type="string" />
+      <get name="day_length" type="single" />
+      <get name="time" type="time" />
+      <get name="rain" type="single" />
+      <get name="radn" type="single" />
+      <get name="maxt" type="single" />
+      <get name="mint" type="single" />
+      <get name="latitude" type="single" />
+      <get name="tav" type="single" />
+      <get name="amp" type="single" />
+      <get name="co2" type="single" />
+      <get name="title" type="string" />
+      <get name="components" type="string" />
+      <respondToGet name="streamflow" type="single" />
+      <respondToGet name="root_sw_uptake_vol" type="single" />
+      <respondToGet name="root_sw_supply_vol" type="single" />
+      <respondToGet name="sw_dep" array="T" type="single" />
+      <respondToGet name="ll15_dep" array="T" type="single" />
+      <respondToGet name="dul_dep" array="T" type="single" />
+      <respondToGet name="sat_dep" array="T" type="single" />
+      <respondToGet name="sw" array="T" type="single" />
+      <respondToGet name="lai" array="F" type="single" />
+      <respondToGet name="istage" array="F" type="integer4" />
+      <respondToSet name="root_sw_demand_vol" type="single" />
+    </registrations>
+   <component name="report" executable="%apsuite\apsim\report\lib\report.dll">
+      <initdata>
+        <outputfrequency>post </outputfrequency>
+         <outputfile>stock.out</outputfile>
+         <variable>dd/mm/yyyy as Date</variable>
+         <variable>supplement.no_stores</variable>
+         <variable>supplement.no_paddocks</variable>
+         <variable>supplement.padd_names</variable>
+         <variable>supplement.padd_amounts</variable>
+         <variable>stock.number</variable>
+         <variable>stock.sex</variable>
+         <variable>stock.age</variable>
+         <variable>stock.weight</variable>
+         <variable>stock.supp_intake</variable>
+         <variable>stock.wt_change</variable>
+      </initdata>
+   </component>
+   <component name="soilwat2" executable="%apsuite\apsim\soilwat2\lib\soilwat2.dll">
+      <initdata>
+         <include>%apsuite\apsim\soilwat2\soilwat2.xml</include>
+         <insoil>2.0</insoil>
+         <diffus_const>88.</diffus_const>
+         <diffus_slope>35.4</diffus_slope>
+         <cn2_bare>80</cn2_bare>
+         <cn_red>20</cn_red>
+         <cn_cov>.8</cn_cov>
+         <salb>0.13</salb>
+         <cona>2.5</cona>
+         <u>4</u>
+         <dlayer>150  150  300  300  300  300  300</dlayer>
+         <sat>.500 .509 .510 .505 .490 .480 .480</sat>
+         <dul>.450 .459  .45 .44  .42  .41  .41</dul>
+         <sw>.280 .364  .43 .43  .40  .41  .41</sw>
+         <ll15>.230 .240 .240 .250 .260 .270 .280</ll15>
+         <air_dry>.10 .20 .20 .20 .20 .20 .20</air_dry>
+         <swcon>0.2  0.2  0.2  0.2  0.2  0.2  0.2</swcon>
+         <bd>1.30 1.30 1.29 1.31 1.35 1.36 1.36</bd>
+      </initdata>
+   </component>
+   <component name="surfaceom" executable = "%apsuite\apsim\surfaceom\lib\surfaceom.dll">
+      <initdata>
+         <include>%apsuite\apsim\surfaceom\surfaceom.xml</include>
+         <name>manure       lucerne</name>
+         <type>manure       lucerne</type>
+         <mass>2000        4000</mass>
+         <cnr>200          50</cnr>
+         <standing_fraction>.1          .2</standing_fraction>
+         <report_removals>yes</report_removals>
+      </initdata>
+   </component>
+   <component name="soiln2" executable="%apsuite\apsim\soiln2\lib\soiln2.dll">
+      <initdata>
+         <include>%apsuite\apsim\soiln2\soiln2.xml</include>
+         <amp>15.0</amp>
+         <tav>20.0</tav>
+         <root_cn>20.</root_cn>
+         <root_wt>1000.</root_wt>
+         <soil_cn>14.5</soil_cn>
+         <oc>1.00 0.84 0.77 0.65 0.54 0.48 0.43</oc>
+         <ph>8.20 8.50 8.60 8.60 7.40 5.30 5.00</ph>
+         <fbiom>.035 .025 .015 0.01 0.01 0.01 0.01</fbiom>
+         <finert>0.30 0.50 0.60 0.75 0.90 0.99 0.99</finert>
+         <no3ppm>9.2  7.6  4.9  2.7  1.5  1.8  1.4</no3ppm>
+         <nh4ppm>0.30 0.30 0.30 0.30 0.30 0.50 0.50</nh4ppm>
+         <ureappm>0  0    0    0    0    0    0</ureappm>
+         <enr_a_coeff>7.4</enr_a_coeff>
+         <enr_b_coeff>0.2</enr_b_coeff>
+         <profile_reduction>off</profile_reduction>
+      </initdata>
+   </component>
+   <component name="manager" executable="%apsuite\apsim\manager\lib\manager.dll">
+      <initdata>
+         <rule name="sample.start_of_day" condition="start_of_day">
+            <![CDATA[
+            ]]>
+         </rule>
+      </initdata>
+   </component>
+   <component name="stock" executable="C:\Program Files\AusFarm\stock.dll">
+    <initdata>
+      <![CDATA[
+        <initsection>
+          <init name="rand_seed" kind="integer4">
+            <val>1</val>
+          </init>
+          <init name="genotypes" array="T">
+            <element>
+              <field name="name" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="dam_breed" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="sire_breed" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="death_rate" kind="double" unit="/y">
+                <val>0.0</val>
+              </field>
+            </element>
+          </init>
+          <init name="cattle" array="T">
+            <element>
+              <field name="name" kind="string">
+                <val>angus</val>
+              </field>
+              <field name="number" kind="integer4">
+                <val>0</val>
+              </field>
+            </element>
+          </init>
+          <init name="sheep" array="T" />
+       </initsection>
+       ]]>
+     </initdata>
+   </component>
+    <component name="cattle" executable="%apsuite\apsim\stock\lib\StockScienceConverter.dll">
+      <initdata>
+         <debug>off</debug>
+         <stock_module>stock</stock_module>
+         <fraction_faeces_added>0.5</fraction_faeces_added>
+         <fraction_urine_added>0.5</fraction_urine_added>
+         <conversion_model>nonherbage</conversion_model>
+      </initdata>
+   </component>
+   <component name="managercattle" executable="%apsuite\apsim\manager\lib\manager.dll">
+      <initdata>
+         <rule name="sample.start_of_day" condition="start_of_day">
+            <![CDATA[
+            if day = 330 and year = 1988 then
+               cattle buystock number = 5 (-), genotype = angus, sex = steer, age = 12 (months), weight = 250.0 (kg)
+               cattle movestock group = 1
+            endif
+            if day = 32 and year = 1989 then
+               cattle sellstock number = 5 (-)
+            endif
+            ]]>
+         </rule>
+      </initdata>
+   </component>
+    <component name="supplementstore" executable="%apsuite\apsim\supplement\lib\SupplementScienceConverter.dll">
+      <initdata>
+         <debug>off</debug>
+         <supplement_module>supplement</supplement_module>
+      </initdata>
+   </component>
+   <component name="supplementmanager" executable="%apsuite\apsim\manager\lib\manager.dll">
+      <initdata>
+         <rule name="sample.start_of_day" condition="start_of_day">
+            <![CDATA[
+               if (day = 280) then
+                  supplementstore buysupplement supplement = pellets, amount = 10000.0 (kg)
+               endif
+               if (day > 330) then
+                  if (day < 340) then
+                     supplementstore feedsupplement supplement = pellets, amount = 1.0 (kg)
+                  elseif (day < 350) then
+                     supplementstore feedsupplement supplement = pellets, amount = 5.0 (kg)
+                  elseif (day < 360) then
+                     supplementstore feedsupplement supplement = pellets, amount = 10.0 (kg)
+                  else
+                     supplementstore feedsupplement supplement = pellets, amount = 20.0 (kg)
+                  endif
+               endif
+           ]]>
+        </rule>
+      </initdata>
+   </component>
+   <component name="supplement" executable="C:\Program Files\AusFarm\supplement.dll">
+    <initdata>
+        <initsection>
+          <init name="spoilage_time" kind="double" unit="d">
+            <val>10.0</val>
+          </init>
+          <init name="stores" array="T">
+            <element>
+              <field name="name" kind="string">
+                <val>wheat</val>
+              </field>
+              <field name="stored" kind="double" unit="kg">
+                <val>10000000</val>
+              </field>
+              <field name="roughage" kind="boolean">
+                <val>false</val>
+              </field>
+              <field name="dm_content" kind="double" unit="kg/kg">
+                <val>0.89</val>
+              </field>
+              <field name="dmd" kind="double">
+                <val>0.9</val>
+              </field>
+              <field name="me_content" kind="double" unit="MJ/kg">
+                <val>13.8</val>
+              </field>
+              <field name="cp_conc" kind="double" unit="kg/kg">
+                <val>0.14</val>
+              </field>
+              <field name="prot_dg" kind="double" unit="kg/kg">
+                <val>0.92</val>
+              </field>
+              <field name="p_conc" kind="double" unit="kg/kg">
+                <val>0.0038</val>
+              </field>
+              <field name="s_conc" kind="double" unit="kg/kg">
+                <val>0.0014</val>
+              </field>
+              <field name="ee_conc" kind="double" unit="kg/kg">
+                <val>0.02</val>
+              </field>
+              <field name="adip2cp" kind="double" unit="kg/kg">
+                <val>0.02</val>
+              </field>
+              <field name="ash_alk" kind="double" unit="mol/kg">
+                <val>0.18</val>
+              </field>
+              <field name="max_passage" kind="double" unit="kg/kg">
+                <val>0.0</val>
+              </field>
+            </element>
+          </init>
+       </initsection>
+     </initdata>
+   </component>
+
+
+  </system>
+</Simulation>

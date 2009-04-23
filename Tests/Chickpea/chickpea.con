@@ -1,0 +1,11 @@
+version = 7.0(2)
+[sample_chickpea]
+title=chickpea Sample Simulation
+module = clock   chickpea.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     chickpea.par[sample]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    chickpea.par[sample]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   chickpea.par [sample] %apsim%/Model/chickpea.xml [standard]

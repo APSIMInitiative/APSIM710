@@ -1,0 +1,352 @@
+! ================================= Test One  =====================================
+! Test for capping of crop water use - ep should be capped proportional to Eo value
+! *** Note capping may need to be turned on in the ini file.
+
+[sample.SummaryFile.parameters]
+summaryfile = test.sum
+
+[sample.report.parameters]
+outputfile = test.out
+
+variable = clock.dd/mm/yyyy as Date
+variable = SoilWat.esw
+variable = SoilN.no3()
+variable = surfaceom.surfaceom_wt
+variable = irrigation.irrigation
+variable = sugar.lai
+variable = sugar.biomass
+variable = sugar.green_biomass
+variable = sugar.swdef_photo
+variable = sugar.nfact_photo
+variable = sugar.sw_demand
+variable = sugar.sw_demand_te
+variable = SoilWat.eo
+
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date = 9/4/1980     ! dd/mm/yyyy
+end_date = 10/4/1982     ! dd/mm/yyyy
+
+
+[sample.Irrigation.parameters]
+automatic_irrigation =  on
+crit_fr_asw =  0.5
+asw_depth =  600
+
+[sample.sugar.parameters]
+eo_crop_factor = 100
+
+uptake_source =    calc   ! calculate all uptakes
+ll =       .230 .240 .240 .250 .260 .270 .280   ! lower limit mm water/mm soil
+xf =      1.00 1.00 1.00 1.00 1.00 1.00 1.00   ! Weighting factor for root advance
+kl =      0.16 0.16 0.16 0.16 0.12 0.08 0.04   ! Water Extraction Parameter (0-1)
+rlv =     .005 .001 0.00 0.00 0.00 0.00 0.00   ! Root length density at emergence (mm/mm3)
+
+[sample.manager.init]
+
+! The management logic for sugar cane here is fairly self-contained.  Many management
+! scenarios can be handled by altering the management parameters below.  No changes to the
+! management rules further below will be required in many cases.
+
+NoRatoons = 4           ! Set the number of ratoons (max = 5)
+dryoff = 30             ! Set time before harvesting to stop irrigation (days)
+planting_day = 30.5 * 4 ! day of year to plant (day)
+plantlen = 30.5 * 15    ! duration of a plant crop (days) (30.5 days/month)
+ratoonlen = 30.5 * 13   ! duration of a ratoon crop (days) (30.5 days/month)
+plant_stalks = 10       ! stalk density of plant crop (/m2)
+ratoon_stalks = 10      ! stalk density of ratoon crop (/m2)
+sowing_reset = 0        ! reset at sowing flag (1=yes)
+irrigate_flag= 1        ! flag for irrigation (1=automatic,2=water budget)
+burn_flag = 1           ! flag for trash burning (1=yes)
+max_irr = 10            ! number of irrigations (50mm) allowable
+fasw_irr = 0.5          ! fasw trigger for irrigation (0-1)
+plant_lag = 1           ! lag from sowing to fertiliser application (days)
+plant_fert = 160        ! N to add per crop (kg/ha)
+ratoon_lag = 1          ! lag from sowing to fertiliser application (days)
+ratoon_fert = 160       ! N to add per crop (kg/ha)
+losses = 0.0
+
+! -----------------------------------------------------------------
+! Book keeping to round days to integer values
+planting_day = nearest_int(planting_day)
+plantlen = nearest_int(plantlen)
+ratoonlen = nearest_int(ratoonlen)
+! Initialise and set a time counter for entire run
+dah = 0
+! set unused variables
+sample = 0
+num_irr = 0
+
+[sample.manager.end_of_day]
+report do_output
+
+if sugar.crop_status = 'alive' then
+   dah = 0
+   ! ----------------- THE CROP IS IN THE GROUND -----------------
+
+   ! Farmers will 'dry off' the crop by stopping irrigation some
+   ! time before harvest.
+   if (DaysAfterSowing > (plantlen - dryoff) and ratoon_no = 0) or
+      (DaysAfterSowing > (ratoonlen - dryoff) and ratoon_no > 0) then
+      ! Stop all irrigation
+      if automatic_irrigation = 'on' then
+         irrigation.automatic_irrigation = 'off'
+      endif
+   else
+      ! It is not time to 'dry off' the crop yet.
+      if (irrigate_flag = 2) and
+         (sugar.fasw < fasw_irr) and
+         (num_irr <= max_irr) then
+            irrigation apply amount = 50 (mm)
+            num_irr = num_irr + 1
+      endif
+   endif
+
+   ! Set harvest dates for each crop phase
+   if (DaysAfterSowing = plantlen and ratoon_no = 0) or
+      (DaysAfterSowing = ratoonlen and ratoon_no > 0) then
+
+      sugar harvest
+
+      if burn_flag = 1 then
+         surfaceom tillage type = burn
+      endif
+
+      if ratoon_no = NoRatoons + 1 then
+         ! plough the crop out
+         sugar kill_crop
+         sugar end_crop
+      else
+         ! Set stalk density
+         sugar.plants = ratoon_stalks
+         if sowing_reset = 1 then
+            SoilWat reset
+            SoilN   reset
+            surfaceom reset
+         else
+         endif
+         if irrigate_flag = 1 and automatic_irrigation = 'off' then
+            irrigation.automatic_irrigation = 'on'
+         endif
+
+         num_irr = 0
+
+      endif
+   else
+      ! We have not reached the harvest date for this ratoon.
+   endif
+
+   if (DaysAfterSowing = plant_lag) and (ratoon_no = 0) then
+      Fertiliser apply amount = plant_fert, depth = 0, type = no3_n
+   elseif (DaysAfterSowing = ratoon_lag) and (ratoon_no > 0) then
+      Fertiliser apply amount = ratoon_fert, depth = 0, type = no3_n
+   else
+      ! we do not add fertiliser today
+   endif
+
+elseif (sugar.crop_status = 'dead') then
+   report do_output
+   sugar harvest
+   sugar end_crop
+   if burn_flag = 1 then
+      surfaceom tillage type = burn
+   endif
+
+elseif (sugar.crop_status = 'out') and (day = planting_day) then
+   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
+   sugar.plants = plant_stalks
+   if (irrigate_flag = 1) then
+      irrigation.automatic_irrigation = 'on'
+   endif
+   dah = 0
+   num_irr = 0
+
+else
+   dah = dah + 1
+endif
+
+!*****************************************************************************************
+
+! ================================= Test Two  =====================================
+! Test for defect d-514, Sugar Lodging N problem from Heidi Horan
+
+
+[sample2.SummaryFile.parameters]
+summaryfile = test2.sum
+
+[sample2.report.parameters]
+outputfile = test2.out
+format = csv
+
+variable = clock.day
+variable = clock.year
+variable = SoilWat.esw
+variable = SoilN.no3()
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_n
+variable = irrigation.irrigation
+variable = sugar.lai
+variable = sugar.biomass
+variable = sugar.green_biomass
+variable = sugar.swdef_photo
+variable = sugar.nfact_photo
+variable = sugar.SenescedWt
+variable = sugar.SenescedN
+variable = sugar.dm_dead
+variable = sugar.DetachingWt()
+variable = manager.error
+[sample2.manager.init]
+
+! The management logic for sugar cane here is fairly self-contained.  Many management
+! scenarios can be handled by altering the management parameters below.  No changes to the
+! management rules further below will be required in many cases.
+
+NoRatoons = 4           ! Set the number of ratoons (max = 5)
+dryoff = 30             ! Set time before harvesting to stop irrigation (days)
+planting_day = 30.5 * 4 ! day of year to plant (day)
+plantlen = 30.5 * 15    ! duration of a plant crop (days) (30.5 days/month)
+ratoonlen = 30.5 * 13   ! duration of a ratoon crop (days) (30.5 days/month)
+plant_stalks = 10       ! stalk density of plant crop (/m2)
+ratoon_stalks = 10      ! stalk density of ratoon crop (/m2)
+sowing_reset = 0        ! reset at sowing flag (1=yes)
+irrigate_flag= 1        ! flag for irrigation (1=automatic,2=water budget)
+burn_flag = 1           ! flag for trash burning (1=yes)
+max_irr = 10            ! number of irrigations (50mm) allowable
+fasw_irr = 0.5          ! fasw trigger for irrigation (0-1)
+plant_lag = 1           ! lag from sowing to fertiliser application (days)
+plant_fert = 160        ! N to add per crop (kg/ha)
+ratoon_lag = 1          ! lag from sowing to fertiliser application (days)
+ratoon_fert = 160       ! N to add per crop (kg/ha)
+nleach = 0
+! -----------------------------------------------------------------
+! Book keeping to round days to integer values
+planting_day = nearest_int(planting_day)
+plantlen = nearest_int(plantlen)
+ratoonlen = nearest_int(ratoonlen)
+! Initialise and set a time counter for entire run
+dah = 0
+! set unused variables
+sample = 0
+num_irr = 0
+losses = 0.0
+bal_n_old = 0
+
+[sample2.manager.end_of_day]
+
+
+! dsg now do an N balance and calculate an 'error' (units g/m2)
+
+ soil_n = (SoilN.nit_tot())/10
+ resid_n = (surfaceom.surfaceom_n)/10
+ plant_n = sugar.plant_n_tot
+
+! losses
+  leach_n = (SoilWat.no3_leach(7))/10
+  dnit_n  = (SoilN.dnit())/10
+
+ total_n = soil_n + resid_n + plant_n
+ losses = losses + leach_n + dnit_n
+
+ bal_n = total_n + losses
+ error = bal_n - bal_n_old
+ bal_n_old = bal_n
+
+
+report do_output
+
+[sample2.manager.start_of_day]
+
+
+
+if sugar.crop_status = 'alive' then
+   dah = 0
+   ! ----------------- THE CROP IS IN THE GROUND -----------------
+
+   ! Farmers will 'dry off' the crop by stopping irrigation some
+   ! time before harvest.
+   if (DaysAfterSowing > (plantlen - dryoff) and ratoon_no = 0) or
+      (DaysAfterSowing > (ratoonlen - dryoff) and ratoon_no > 0) then
+      ! Stop all irrigation
+      if automatic_irrigation = 'on' then
+         irrigation.automatic_irrigation = 'off'
+      endif
+   else
+      ! It is not time to 'dry off' the crop yet.
+      if (irrigate_flag = 2) and
+         (sugar.fasw < fasw_irr) and
+         (num_irr <= max_irr) then
+            irrigation apply amount = 50 (mm)
+            num_irr = num_irr + 1
+      endif
+   endif
+
+   ! Set harvest dates for each crop phase
+   if (DaysAfterSowing = plantlen and ratoon_no = 0) or
+      (DaysAfterSowing = ratoonlen and ratoon_no > 0) then
+
+      sugar harvest
+
+      if burn_flag = 1 then
+         surfaceom tillage type = burn
+      endif
+
+      if ratoon_no = NoRatoons + 1 then
+         ! plough the crop out
+         sugar kill_crop
+         sugar end_crop
+      else
+         ! Set stalk density
+         sugar.plants = ratoon_stalks
+         if sowing_reset = 1 then
+            SoilWat reset
+            SoilN   reset
+            surfaceom reset
+         else
+         endif
+         if irrigate_flag = 1 and automatic_irrigation = 'off' then
+            irrigation.automatic_irrigation = 'on'
+         endif
+
+         num_irr = 0
+
+      endif
+   else
+      ! We have not reached the harvest date for this ratoon.
+   endif
+
+   if (DaysAfterSowing = plant_lag) and (ratoon_no = 0) then
+      Fertiliser apply amount = plant_fert, depth = 0, type = no3_n
+   elseif (DaysAfterSowing = ratoon_lag) and (ratoon_no > 0) then
+      Fertiliser apply amount = ratoon_fert, depth = 0, type = no3_n
+   else
+      ! we do not add fertiliser today
+   endif
+
+elseif (sugar.crop_status = 'dead') then
+   report do_output
+   sugar harvest
+   sugar end_crop
+   if burn_flag = 1 then
+      surfaceom tillage type = burn
+   endif
+
+elseif (sugar.crop_status = 'out') and (day = planting_day) then
+   sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
+   sugar.plants = plant_stalks
+   if (irrigate_flag = 1) then
+      irrigation.automatic_irrigation = 'on'
+   endif
+   dah = 0
+   num_irr = 0
+
+else
+   dah = dah + 1
+endif
+
+
+!lodge the crop
+
+if day = 100 and year= 1981 then
+sugar lodge
+endif
+

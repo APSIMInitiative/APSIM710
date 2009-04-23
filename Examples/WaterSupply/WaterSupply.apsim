@@ -1,0 +1,2083 @@
+<folder name="Simulations" version="15">
+  <simulation name="WaterSupply">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+    </metfile>
+    <clock name="clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">1/01/1940</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">31/12/1942</end_date>
+    </clock>
+    <summaryfile name="summaryfile">
+      <filename name="filename">Continuous Wheat Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Sowing rule">
+          <script>
+            <text><![CDATA[
+      if (paddock_is_fallow() = 1 ) then
+         if (date_within('[date1], [date2]') = 1) then
+            if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
+                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
+               ChooseNextCrop = 'yes'   ! for rotations
+               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+            endif
+         endif
+      endif
+            ]]></text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
+            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+            <category name="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">hartog</cultivar>
+            <class type="classes" croppropertyname="crop" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+          </ui>
+        </manager>
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
+          </ui>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+          <ui>
+            <category name="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">wheat</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category name="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+        </manager>
+      </folder>
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" description="Organic Matter type" listvalues="inert,manure,fym,bambatsi,barley,broccoli,camaldulensis,canola,chickpea,cowpea,danthonia,globulus,grandis,fababean,fieldpea,grass,lablab,lucerne,lupin,maize,millet,mucuna,mungbean,horsegram,navybean,cotton,orobanche,peanut,pigeonpea,rice,soybean,sorghum,stylo,sugar,sunflower,sweetcorn,sweetsorghum,weed,wheat">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ratio of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <wheat />
+      <outputfile name="outputfile">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="wheat.biomass" description="Biomass" array="?" units="kg/ha" />
+          <variable name="wheat.yield" description="Yield" array="?" units="kg/ha" />
+          <variable name="wheat.grain_protein" description="grain protein content" array="?" units="%" />
+          <variable name="wheat.grain_size" description="Size of each grain" array="?" units="g" />
+          <variable name="esw" array="?" description="Extractable Soil Water (mm)" VariableType="Water" />
+          <variable name="dam.available_water as dam_water" array="" description="" />
+          <variable name="channel.available_water as channel_water" array="" description="" />
+          <variable name="bore.available_water as bore_water" array="" description="" />
+          <variable name="irrigation" array="No" description="Irrigation entering the profile (mm)" />
+          <variable name="logic.deficit" />
+        </variables>
+        <events name="Reporting Frequency">
+        </events>
+      </outputfile>
+      <soil name="Jimbour,Waco (#016)">
+        <Site>Jimbour</Site>
+        <Region>South East Queensland</Region>
+        <LocalName>Waco</LocalName>
+        <SoilType>Black Vertosol</SoilType>
+        <NearestTown>Jimbour, Q 4352</NearestTown>
+        <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <InitWater>
+          <PercentMethod>
+            <Percent>0.22</Percent>
+            <Distributed>Filled from top</Distributed>
+          </PercentMethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6.503</no3>
+              <nh4>0.599</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.101</no3>
+              <nh4>0.100</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.101</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.020</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.150</airdry>
+            <dul>0.540</dul>
+            <sat>0.590</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>1.040</oc>
+            <ph>8.400</ph>
+            <fbiom>0.025</fbiom>
+            <finert>0.400</finert>
+            <no3>6.500</no3>
+            <nh4>0.600</nh4>
+            <ec>0.200</ec>
+            <ll name="Barley">0.290</ll>
+            <kl name="Barley">0.100</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.290</ll>
+            <kl name="Chickpea">0.100</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.290</ll>
+            <kl name="Maize">0.100</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.290</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.290</ll>
+            <kl name="Sorghum">0.100</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.290</ll>
+            <kl name="Wheat">0.100</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.030</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.260</airdry>
+            <dul>0.530</dul>
+            <sat>0.580</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.890</oc>
+            <ph>8.800</ph>
+            <fbiom>0.020</fbiom>
+            <finert>0.600</finert>
+            <no3>2.100</no3>
+            <nh4>0.100</nh4>
+            <ec>0.250</ec>
+            <ll name="Barley">0.290</ll>
+            <kl name="Barley">0.100</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.290</ll>
+            <kl name="Chickpea">0.100</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.290</ll>
+            <kl name="Maize">0.100</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.290</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.290</ll>
+            <kl name="Sorghum">0.100</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.290</ll>
+            <kl name="Wheat">0.100</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.020</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.540</dul>
+            <sat>0.590</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.890</oc>
+            <ph>9</ph>
+            <fbiom>0.015</fbiom>
+            <finert>0.800</finert>
+            <no3>2.100</no3>
+            <nh4>0.100</nh4>
+            <ec>0.310</ec>
+            <ll name="Barley">0.320</ll>
+            <kl name="Barley">0.080</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.360</ll>
+            <kl name="Chickpea">0.080</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.340</ll>
+            <kl name="Maize">0.100</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.390</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.350</ll>
+            <kl name="Sorghum">0.100</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.320</ll>
+            <kl name="Wheat">0.080</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.020</bd>
+            <ll15>0.290</ll15>
+            <airdry>0.290</airdry>
+            <dul>0.540</dul>
+            <sat>0.580</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.890</oc>
+            <ph>9.200</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.900</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>0.400</ec>
+            <ll name="Barley">0.380</ll>
+            <kl name="Barley">0.060</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.430</ll>
+            <kl name="Chickpea">0.060</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.290</ll>
+            <kl name="Lucerne">0.100</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.340</ll>
+            <kl name="Maize">0.080</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.410</ll>
+            <kl name="Perennial Grass">0.100</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.380</ll>
+            <kl name="Sorghum">0.080</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.320</ll>
+            <kl name="Wheat">0.060</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.060</bd>
+            <ll15>0.300</ll15>
+            <airdry>0.300</airdry>
+            <dul>0.520</dul>
+            <sat>0.570</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.770</oc>
+            <ph>9.200</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>0.590</ec>
+            <ll name="Barley">0.390</ll>
+            <kl name="Barley">0.040</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.510</ll>
+            <kl name="Chickpea">0.040</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.300</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.370</ll>
+            <kl name="Maize">0.060</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0.090</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.400</ll>
+            <kl name="Sorghum">0.060</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.350</ll>
+            <kl name="Wheat">0.040</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.110</bd>
+            <ll15>0.310</ll15>
+            <airdry>0.310</airdry>
+            <dul>0.500</dul>
+            <sat>0.550</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.450</oc>
+            <ph>9.100</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>0.840</ec>
+            <ll name="Barley">0.390</ll>
+            <kl name="Barley">0.020</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.500</ll>
+            <kl name="Chickpea">0.020</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.310</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.400</ll>
+            <kl name="Maize">0.040</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0.070</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.400</ll>
+            <kl name="Sorghum">0.040</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.380</ll>
+            <kl name="Wheat">0.020</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.120</bd>
+            <ll15>0.320</ll15>
+            <airdry>0.320</airdry>
+            <dul>0.500</dul>
+            <sat>0.550</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.270</oc>
+            <ph>9</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>0.930</ec>
+            <ll name="Barley">0.410</ll>
+            <kl name="Barley">0.010</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.500</ll>
+            <kl name="Chickpea">0.010</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.320</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.420</ll>
+            <kl name="Maize">0.020</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.410</ll>
+            <kl name="Perennial Grass">0.050</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.400</ll>
+            <kl name="Sorghum">0.020</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.410</ll>
+            <kl name="Wheat">0.010</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.150</bd>
+            <ll15>0.330</ll15>
+            <airdry>0.330</airdry>
+            <dul>0.480</dul>
+            <sat>0.530</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.220</oc>
+            <ph>9</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>1.010</ec>
+            <ll name="Barley">0.480</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.480</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.330</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.480</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.410</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.480</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.480</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.180</bd>
+            <ll15>0.340</ll15>
+            <airdry>0.340</airdry>
+            <dul>0.470</dul>
+            <sat>0.520</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.160</oc>
+            <ph>8.900</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>1.060</ec>
+            <ll name="Barley">0.470</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.470</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.340</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.470</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.470</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.470</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.200</bd>
+            <ll15>0.350</ll15>
+            <airdry>0.350</airdry>
+            <dul>0.460</dul>
+            <sat>0.510</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.130</oc>
+            <ph>8.900</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>1.050</ec>
+            <ll name="Barley">0.460</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.460</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.350</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.460</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.400</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.460</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.460</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.250</bd>
+            <ll15>0.360</ll15>
+            <airdry>0.360</airdry>
+            <dul>0.440</dul>
+            <sat>0.490</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <oc>0.120</oc>
+            <ph>8.900</ph>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <ec>1.010</ec>
+            <ll name="Barley">0.440</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.440</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.360</ll>
+            <kl name="Lucerne">0.090</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.440</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.420</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.440</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.440</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+        </profile>
+        <Cona>3.5</Cona>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <U>6</U>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <CnCanopyFact>1</CnCanopyFact>
+        <RootCn>40</RootCn>
+        <RootWt>200</RootWt>
+        <SoilCn>12.5</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+      </soil>
+      <manager name="Logic">
+        <script>
+          <event>init</event>
+          <text>
+
+my_crop_area = 50
+
+</text>
+        </script>
+        <script>
+          <event>start_of_day</event>
+          <text><![CDATA[ ! hello
+
+!look at available soil water (mm) in the top 7 layers (wheat rooting depth)
+max_avail_soil_water = (dul_dep(1) - ll15_dep(1)) + (dul_dep(2) - ll15_dep(2)) +  (dul_dep(3) - ll15_dep(3)) +  (dul_dep(4) - ll15_dep(4))  +  (dul_dep(5) - ll15_dep(5))    +  (dul_dep(6) - ll15_dep(6))    +  (dul_dep(7) - ll15_dep(7))
+avail_soil_water = (sw_dep(1) - ll15_dep(1)) + (sw_dep(2) - ll15_dep(2)) +  (sw_dep(3) - ll15_dep(3)) +  (sw_dep(4) - ll15_dep(4))  +  (sw_dep(5) - ll15_dep(5))  +  (sw_dep(6) - ll15_dep(6))  +  (sw_dep(7) - ll15_dep(7))
+avail_sw_proportion = avail_soil_water / max_avail_soil_water
+
+deficit = max_avail_soil_water - avail_soil_water
+
+
+If wheat.plant_status = 'alive' and deficit >35.0 then
+     Irrigation apply amount = deficit, source = dam , crop_area = my_crop_area
+endif
+
+if dam.available_water < 20.0 then
+    dam top_up amount = 40, source = channel
+endif
+
+if channel.available_water < 900.0  then
+    channel top_up amount = 10, source = bore
+endif
+]]></text>
+        </script>
+        <script>
+          <event>end_of_day</event>
+          <text> !hello
+
+
+outputfile do_output</text>
+        </script>
+      </manager>
+      <channel name="channel">
+        <max_available_water description="Capacity (ML)">1000</max_available_water>
+        <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
+        <max_pump description="Maximum pump delivery volume per day (ML/day)">200</max_pump>
+        <min_volume description="Minimum volume in storage that the pump cannot access">2</min_volume>
+        <annual_allocation description="Annual Allocation in ML">1000</annual_allocation>
+        <allocation_renewal_day description="Day of year on which allocation is granted">180</allocation_renewal_day>
+        <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
+      </channel>
+      <bore name="bore">
+        <max_available_water description="Capacity (ML)">100</max_available_water>
+        <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
+        <max_pump description="Maximum pump delivery volume per day (ML/day)">200</max_pump>
+        <min_volume description="Minimum volume in storage below which pump cannot access">2</min_volume>
+        <annual_allocation description="Annual Allocation in ML">100</annual_allocation>
+        <allocation_renewal_day description="Day of year on which allocation is granted">180</allocation_renewal_day>
+        <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
+      </bore>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600.0</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency description="Efficiency of the irrigation. (0-1.0)">1.0</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <dam name="dam">
+        <source_type type="list" listvalues="dam_gully,dam_ring,dam_exc,sump" description="Source Type">dam_gully</source_type>
+        <max_available_water description="Capacity (ML)">100</max_available_water>
+        <max_area description="Storage water surface area at capacity (ha)">5</max_area>
+        <init_available_water description="Initial supply volume available(ML)">50</init_available_water>
+        <max_pump description="Maximum pump delivery volume per day (ML/day)">200</max_pump>
+        <min_volume description="Minimum volume in storage that the pump cannot access">2</min_volume>
+        <permeability description="Permeability of sealing layer (m/day)">0.00007</permeability>
+        <seal_thickness description="Thickness of low permeability seal (m)">0.5</seal_thickness>
+        <receive_rainfall type="list" listvalues="no,yes" description="Does the dam recieve rainfall falling directly into its surface area?">yes</receive_rainfall>
+        <receive_catchment_runoff type="list" listvalues="no,yes" description="Does the dam receive runoff from a catchment?">no</receive_catchment_runoff>
+        <receive_crop_runoff type="list" listvalues="no,yes" description="Dam collects runoff from simulated crop area">no</receive_crop_runoff>
+        <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
+        <catchment_area description="Catchment area (ha)">50.0</catchment_area>
+        <catchment_runoff_factor description="Multiplier for soilwat2 runoff to simulate catchment runoff">0.5</catchment_runoff_factor>
+        <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
+        <receive_crop_runoff type="list" listvalues="yes,no" description="Dam collects runoff from simulated crop area">yes</receive_crop_runoff>
+        <runoff_salt_conc description="Runoff chloride concentration (ppm)">700.0</runoff_salt_conc>
+        <rainfall_salt_conc description="Rainfall chloride concentration (ppm)">20.0</rainfall_salt_conc>
+      </dam>
+    </area>
+  </simulation>
+  <simulation name="Multipaddock Watersupply">
+    <memo name="Notes">e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzMwODF7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMjQgV2hhdCBzdGlsbCBuZWVkcyB0byBiZSBkb25lXHBhcg0KLSBjYW4ndCBkcmFnJmRyb3AgYSBtYW5hZ2VyIGZvbGRlciBpbnRvIHRvcCBsZXZlbCBccGFyDQpccGFyDQotIGFjY3VtIGlzIHN0dWZmZWQgLSB0eXBlcy54bWwgcHV0cyBvbmUgaW4gZWFjaCBwYWRkb2NrLlxwYXINClxwYXINCi0gcGFkZG9ja19pc19mYWxsb3cgaXMgc3R1ZmZlZCAtIG5lZWRzIG5hbWUgb2YgcGFkZG9jayBpbiBxdWVzdGlvbiAoYXMgb3B0aW9uYWwgYXJndW1lbnQ/KVxwYXINClxwYXINCi0gdG9wIGxldmVsIG91dHB1dGZpbGUgbmVlZHMgaGFuZGxlIHBhZGRvY2tzIGJldHRlciAtIHRoZSBjb21wb25lbnQgZmlsdGVyIG5lZWRzIGFsbCBtb2R1bGVzIGluIGFsbCBwYWRkb2Nrc1xwYXINClxwYXINCi0gcmVwb3J0IG1vZHVsZSAob3V0cHV0ZmlsZSkgc3BsaXRzIHNwYWNlcyBpbiB2YXJpYWJsZXMgdGhlIHdyb25nIHdheSAtIHVzZXMgYSBzdHJpbmdUb2tlbmlzZXIgY2xhc3MgdGhhdCBkb2Vzbid0IHJlc3BlY3QgcXVvdGVzLlxwYXINClxwYXINCi0gc29yZ2h1bSBicm9rZW4gKENJLzIgcHJvYmxlbSB3aXRoIGV2ZW50cz8pIGFuZCB3b250IHJ1blxwYXINClxwYXINCi0gbmVlZCB0byBiZSBhYmxlIHRvIHNlbGVjdCBhIHBhZGRvY2sgaW4gdGhlIGdlbmVyaWNVSSAoZWcgUDEgV2hlYXQgU293aW5nIHJ1bGUpIGZyb20gYSBkcm9wZG93biwgYW5kIGZpbmQgYSBub24tZG90dGVkIG5hbWVccGFyDQpccGFyDQotIG1hbmFnZXIgY2FuJ3QgZ2V0IGl0cyBoZWFkIGFyb3VuZCBtb2R1bGVzIHdpdGggc3BhY2VzIGluIHRoZWlyIG5hbWVzIChlZyB4ID0gJ3dhdGVyIGJhbGFuY2UnLmR1bF9kZXAoKSlccGFyDQpccGFyDQpccGFyDQpcZnMxN1xwYXINCn0NCg==</memo>
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="text" description="Enter the start date of the simulation (dd/mm/yyyy)">1/01/1940</start_date>
+      <end_date type="text" description="Enter the end date of the simulation (dd/mm/yyyy)">31/12/1942</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Multipaddock Watersupply Simulation.sum</filename>
+    </summaryfile>
+    <outputfile>
+      <variables name="Variables">
+        <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+        <variable name="reportKey" />
+        <variable name=".masterpm.paddock1.wheat.biomass as p1bio" array="?" description="Biomass" />
+        <variable name=".masterpm.paddock1.wheat.yield as p1yld" array="?" description="Yield" />
+        <variable name=".masterpm.paddock2.wheat.biomass as p2bio" />
+        <variable name=".masterpm.paddock2.wheat.yield as p2yld" />
+        <variable name=".masterpm.paddock1.Soil Water.sw_dep() as p1esw" array="?" description="Extractable Soil Water (mm)" />
+        <variable name=".masterpm.paddock2.Soil Water.esw as p2esw" />
+      </variables>
+      <events name="Reporting Frequency" />
+    </outputfile>
+    <folder name="Manager folder">
+      <manager name="scratch manager">
+        <script name="init">
+          <text>reportKey = 'none'</text>
+          <event>init</event>
+        </script>
+      </manager>
+      <manager name="P1 Wheat Sowing rule">
+        <ui>
+          <category description="Paddock" />
+          <paddock type="text" description="Apsim Name of paddock for this crop: ">.MasterPM.paddock1</paddock>
+          <paddockName type="text" description="Text Name of paddock for this crop: ">P1</paddockName>
+          <category description="Sowing criteria" />
+          <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-mar</date1>
+          <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-apr</date2>
+          <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+          <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+          <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+          <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+          <category description="Sowing parameters" />
+          <crop type="crop" description="Enter name of crop to sow : ">Wheat</crop>
+          <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+          <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+          <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+          <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+          <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
+        </ui>
+        <script name="start_of_day">
+          <text><![CDATA[
+      if ([paddockName]InCrop <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+         if (date_within('[date1], [date2]') = 1) then
+!            if (rain[[rainnumdays]] >= [raincrit] AND '[paddock].Soil Water.esw' >= [esw_amount]) OR
+            if ('[paddock].Soil Water.esw' >= [esw_amount]) OR
+                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
+              [paddockName]InCrop = 'yes'
+               '[paddock].[crop]' sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
+            endif
+            if today = date('[date2]') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            ]]></text>
+          <event>start_of_day</event>
+        </script>
+        <script name="init">
+          <text>
+            nextcrop = 0
+            fallowin = 0
+            [paddockName]InCrop = 'no'</text>
+          <event>init</event>
+        </script>
+      </manager>
+      <manager name="P1 Harvesting rule">
+        <ui>
+          <category description="Paddock" />
+          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock1</paddock>
+          <paddockName type="text" description="Text Name of paddock for this crop: ">P1</paddockName>
+          <category description="Harvesting criteria" />
+          <crop type="crop" description="Enter name of crop to harvest when ripe : ">Wheat</crop>
+        </ui>
+        <script name="end_of_day">
+          <text>
+
+           if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].plant_status = 'dead' then
+              reportKey = '[paddockName]'
+              .masterpm.outputfile do_output
+              [paddock].[crop]  harvest
+              [paddock].[crop]  end_crop
+
+            [paddockName]InCrop = 'no'
+
+           endif
+
+            </text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+      <manager name="P1 Sowing fertiliser">
+        <ui>
+          <category description="Paddock" />
+          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock1</paddock>
+          <category description="When should fertiliser be applied" />
+          <modulename type="modulename" description="On which module should the event come from : ">Wheat</modulename>
+          <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+          <category description="Fertiliser application details" />
+          <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+          <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
+          <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+        </ui>
+        <script name="[paddock].[modulename].[eventname]">
+          <text>
+        [paddock].[fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+          <event>[paddock].[modulename].[eventname]</event>
+        </script>
+      </manager>
+      <manager name="P2 Wheat Sowing rule">
+        <ui>
+          <category description="Paddock" />
+          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock2</paddock>
+          <paddockName type="text" description="Text Name of paddock for this crop: ">P2</paddockName>
+          <category description="Sowing criteria" />
+          <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-apr</date1>
+          <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-may</date2>
+          <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+          <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+          <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+          <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+          <category description="Sowing parameters" />
+          <crop type="crop" description="Enter name of crop to sow : ">Wheat</crop>
+          <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+          <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+          <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+          <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+          <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
+        </ui>
+        <script name="start_of_day">
+          <text><![CDATA[
+      if ([paddockName]InCrop <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+         if (date_within('[date1], [date2]') = 1) then
+!            if (rain[[rainnumdays]] >= [raincrit] AND '[paddock].Soil Water.esw' >= [esw_amount]) OR
+            if ('[paddock].Soil Water.esw' >= [esw_amount]) OR
+                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
+              [paddockName]InCrop = 'yes'
+               '[paddock].[crop]' sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
+            endif
+            if today = date('[date2]') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            ]]></text>
+          <event>start_of_day</event>
+        </script>
+        <script name="init">
+          <text>
+            nextcrop = 0
+            fallowin = 0
+            [paddockName]InCrop = 'no'</text>
+          <event>init</event>
+        </script>
+      </manager>
+      <manager name="P2 Harvesting rule">
+        <ui>
+          <category description="Paddock" />
+          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock2</paddock>
+          <paddockName type="text" description="Text Name of paddock for this crop: ">P2</paddockName>
+          <category description="Harvesting criteria" />
+          <crop type="crop" description="Enter name of crop to harvest when ripe : ">Wheat</crop>
+        </ui>
+        <script name="end_of_day">
+          <text>
+
+           if [paddock].[crop].StageName = 'harvest_ripe' or [paddock].[crop].plant_status = 'dead' then
+               reportKey = '[paddockName]'
+              .masterpm.outputfile do_output
+              [paddock].[crop]  harvest
+              [paddock].[crop]  end_crop
+
+            [paddockName]InCrop = 'no'
+
+           endif
+
+            </text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+      <manager name="P2 Sowing fertiliser">
+        <ui>
+          <category description="Paddock" />
+          <paddock type="text" description="Name of paddock for this crop: ">.MasterPM.paddock2</paddock>
+          <category description="When should fertiliser be applied" />
+          <modulename type="modulename" description="On which module should the event come from : ">Wheat</modulename>
+          <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+          <category description="Fertiliser application details" />
+          <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+          <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
+          <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+        </ui>
+        <script name="[paddock].[modulename].[eventname]">
+          <text>
+        [paddock].[fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+          <event>[paddock].[modulename].[eventname]</event>
+        </script>
+      </manager>
+      <tclmanager name="Irrigation management">
+        <ui>
+          <paddock type="text" description="Apsim Name of paddock: ">.MasterPM.paddock1</paddock>
+          <paddockName type="text" description="Text Name of paddock: ">P1</paddockName>
+          <waterBalanceModule type="text" description="Name of water balance for this paddock: ">.MasterPM.paddock1.Soil Water</waterBalanceModule>
+          <paddockArea type="text" description="Area of paddock: ">20.0</paddockArea>
+          <category description="Irrigation application details" />
+          <irrigate_module type="modulename" description="Module used to apply the irrigation : ">.masterpm.paddock1.Irrigation1</irrigate_module>
+          <irrigate_threshold type="text" description="SW deficit for irrigation to apply (mm) : ">50</irrigate_threshold>
+          <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1</irrigate_efficiency>
+        </ui>
+        <rule name="P1 Logic">
+          <script name="init">
+            <text>
+set paddock              ".MasterPM.paddock1"
+set paddockName          "P1"
+set waterBalanceModule   ".MasterPM.paddock1.Soil Water"
+set paddockArea          "20.0"
+set dam_module           ".masterpm.dam"
+set irrigate_module      ".masterpm.paddock1.Irrigation1"
+set irrigate_threshold   "30"
+set irrigate_efficiency  "0.8"
+            </text>
+            <event>init</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+
+if {[apsimGet ${paddockName}InCrop] == "yes" } {
+   set dul [apsimGet ${waterBalanceModule}.dul_dep()]
+   set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
+   set capacity [expr $dul - $sw]
+   if {($capacity - $irrigate_threshold) > 0} {
+      apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
+      apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
+   }
+}
+          ]]></text>
+            <event>prepare</event>
+          </script>
+        </rule>
+        <rule name="P2 Logic">
+          <script name="init">
+            <text>
+set paddock              ".MasterPM.paddock2"
+set paddockName          "P2"
+set waterBalanceModule   ".MasterPM.paddock2.Soil Water"
+set paddockArea          "50.0"
+set dam_module           ".masterpm.dam"
+set irrigate_module      ".masterpm.paddock2.Irrigation2"
+set irrigate_threshold   "50"
+set irrigate_efficiency  "0.6"
+            </text>
+            <event>init</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+
+if {[apsimGet ${paddockName}InCrop] == "yes" } {
+   set dul [apsimGet ${waterBalanceModule}.dul_dep()]
+   set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
+   set capacity [expr $dul - $sw]
+   if {($capacity - $irrigate_threshold) > 0} {
+      apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
+      apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
+   }
+}
+          ]]></text>
+            <event>prepare</event>
+          </script>
+        </rule>
+      </tclmanager>
+    </folder>
+    <dam>
+      <category description="Geometry" />
+      <source_type type="list" listvalues="dam_gully,dam_ring,dam_exc,sump" description="Source Type">dam_gully</source_type>
+      <max_available_water type="text" description="Capacity (ML)">100</max_available_water>
+      <max_area type="text" description="Storage water surface area at capacity (ha)">5</max_area>
+      <init_available_water type="text" description="Initial supply volume available(ML)">50</init_available_water>
+      <max_pump type="text" description="Maximum pump delivery volume per day (ML/day)">10</max_pump>
+      <min_volume type="text" description="Minimum volume in storage that the pump cannot access">2</min_volume>
+      <permeability type="text" description="Permeability of sealing layer (m/day)">0.00007</permeability>
+      <seal_thickness type="text" description="Thickness of low permeability seal (m)">0.5</seal_thickness>
+      <category description="Surface rainfall" />
+      <receive_rainfall type="list" listvalues="no,yes" description="Dam collects rainfall on surface">yes</receive_rainfall>
+      <category description="Catchment runoff" />
+      <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
+      <catchment_area type="text" description="Catchment area (ha)">50</catchment_area>
+      <catchment_runoff_factor type="text" description="soilwat2.runoff multiplier">0.5</catchment_runoff_factor>
+      <category description="Cropped runoff" />
+      <receive_crop_runoff type="list" listvalues="no,yes" description="Dam collects runoff from simulated crop area">'.masterpm.paddock1.soil water' '.masterpm.paddock2.soil water'</receive_crop_runoff>
+      <crop_area type="text" description="Area of each paddock">20 50</crop_area>
+      <category description="Solutes" />
+      <init_salt_conc type="text" description="Initial chloride concentration (ppm)">704</init_salt_conc>
+      <runoff_salt_conc type="text" description="Runoff chloride concentration (ppm)">700</runoff_salt_conc>
+      <rainfall_salt_conc type="text" description="Rainfall chloride concentration (ppm)">20</rainfall_salt_conc>
+    </dam>
+    <area name="paddock1">
+      <registrations name="global" />
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <Wheat />
+      <soil name="Soil">
+        <Site>Jimbour</Site>
+        <Region>South East Queensland</Region>
+        <LocalName>Waco</LocalName>
+        <SoilType>Black Vertosol</SoilType>
+        <NearestTown>Jimbour, Q 4352</NearestTown>
+        <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.145</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>1.04</oc>
+            <ph>8.4</ph>
+            <fbiom>0.025</fbiom>
+            <finert>0.4</finert>
+            <no3>6.5</no3>
+            <nh4>0.6</nh4>
+            <ec>0.2</ec>
+            <ll name="Barley">0.29</ll>
+            <kl name="Barley">0.1</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.29</ll>
+            <kl name="Chickpea">0.1</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.29</ll>
+            <kl name="Maize">0.1</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.29</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.29</ll>
+            <kl name="Sorghum">0.1</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.29</ll>
+            <kl name="Wheat">0.1</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.03</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.26</airdry>
+            <dul>0.53</dul>
+            <sat>0.58</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.89</oc>
+            <ph>8.8</ph>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <no3>2.1</no3>
+            <nh4>0.1</nh4>
+            <ec>0.25</ec>
+            <ll name="Barley">0.29</ll>
+            <kl name="Barley">0.1</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.29</ll>
+            <kl name="Chickpea">0.1</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.29</ll>
+            <kl name="Maize">0.1</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.29</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.29</ll>
+            <kl name="Sorghum">0.1</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.29</ll>
+            <kl name="Wheat">0.1</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.89</oc>
+            <ph>9</ph>
+            <fbiom>0.015</fbiom>
+            <finert>0.8</finert>
+            <no3>2.1</no3>
+            <nh4>0.1</nh4>
+            <ec>0.31</ec>
+            <ll name="Barley">0.32</ll>
+            <kl name="Barley">0.08</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.36</ll>
+            <kl name="Chickpea">0.08</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.34</ll>
+            <kl name="Maize">0.1</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.39</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.35</ll>
+            <kl name="Sorghum">0.1</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.32</ll>
+            <kl name="Wheat">0.08</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.58</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.89</oc>
+            <ph>9.2</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.9</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.4</ec>
+            <ll name="Barley">0.38</ll>
+            <kl name="Barley">0.06</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.43</ll>
+            <kl name="Chickpea">0.06</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.34</ll>
+            <kl name="Maize">0.08</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.41</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.38</ll>
+            <kl name="Sorghum">0.08</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.32</ll>
+            <kl name="Wheat">0.06</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.06</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.3</airdry>
+            <dul>0.52</dul>
+            <sat>0.57</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.77</oc>
+            <ph>9.2</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.59</ec>
+            <ll name="Barley">0.39</ll>
+            <kl name="Barley">0.04</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.51</ll>
+            <kl name="Chickpea">0.04</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.3</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.37</ll>
+            <kl name="Maize">0.06</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0.09</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.4</ll>
+            <kl name="Sorghum">0.06</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.35</ll>
+            <kl name="Wheat">0.04</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.11</bd>
+            <ll15>0.31</ll15>
+            <airdry>0.31</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.45</oc>
+            <ph>9.1</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.84</ec>
+            <ll name="Barley">0.39</ll>
+            <kl name="Barley">0.02</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.5</ll>
+            <kl name="Chickpea">0.02</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.31</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.4</ll>
+            <kl name="Maize">0.04</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0.07</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.4</ll>
+            <kl name="Sorghum">0.04</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.38</ll>
+            <kl name="Wheat">0.02</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.12</bd>
+            <ll15>0.32</ll15>
+            <airdry>0.32</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.27</oc>
+            <ph>9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.93</ec>
+            <ll name="Barley">0.41</ll>
+            <kl name="Barley">0.01</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.5</ll>
+            <kl name="Chickpea">0.01</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.32</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.42</ll>
+            <kl name="Maize">0.02</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.41</ll>
+            <kl name="Perennial Grass">0.05</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.4</ll>
+            <kl name="Sorghum">0.02</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.41</ll>
+            <kl name="Wheat">0.01</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.15</bd>
+            <ll15>0.33</ll15>
+            <airdry>0.33</airdry>
+            <dul>0.48</dul>
+            <sat>0.53</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.22</oc>
+            <ph>9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.01</ec>
+            <ll name="Barley">0.48</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.48</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.33</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.48</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.41</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.48</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.48</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.18</bd>
+            <ll15>0.34</ll15>
+            <airdry>0.34</airdry>
+            <dul>0.47</dul>
+            <sat>0.52</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.16</oc>
+            <ph>8.9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.06</ec>
+            <ll name="Barley">0.47</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.47</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.34</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.47</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.47</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.47</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.2</bd>
+            <ll15>0.35</ll15>
+            <airdry>0.35</airdry>
+            <dul>0.46</dul>
+            <sat>0.51</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.13</oc>
+            <ph>8.9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.05</ec>
+            <ll name="Barley">0.46</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.46</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.35</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.46</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.46</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.46</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.25</bd>
+            <ll15>0.36</ll15>
+            <airdry>0.36</airdry>
+            <dul>0.44</dul>
+            <sat>0.49</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.12</oc>
+            <ph>8.9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.01</ec>
+            <ll name="Barley">0.44</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.44</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.36</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.44</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.42</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.44</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.44</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+        </profile>
+        <Cona>3.5</Cona>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <U>6</U>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <CnCanopyFact>1</CnCanopyFact>
+        <RootCn>40</RootCn>
+        <RootWt>200</RootWt>
+        <SoilCn>12.5</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <InitWater>
+          <percentmethod>
+            <percent>1</percent>
+            <distributed>filled from top</distributed>
+          </percentmethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6.500</no3>
+              <nh4>0.600</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.100</no3>
+              <nh4>0.100</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.100</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <irrigation name="Irrigation1">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+    </area>
+    <area name="paddock2">
+      <registrations name="global" />
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" description="Organic Matter type" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ratio of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <Wheat />
+      <soil name="Soil">
+        <Site>Jimbour</Site>
+        <Region>South East Queensland</Region>
+        <LocalName>Waco</LocalName>
+        <SoilType>Black Vertosol</SoilType>
+        <NearestTown>Jimbour, Q 4352</NearestTown>
+        <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.145</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>1.04</oc>
+            <ph>8.4</ph>
+            <fbiom>0.025</fbiom>
+            <finert>0.4</finert>
+            <no3>6.5</no3>
+            <nh4>0.6</nh4>
+            <ec>0.2</ec>
+            <ll name="Barley">0.29</ll>
+            <kl name="Barley">0.1</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.29</ll>
+            <kl name="Chickpea">0.1</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.29</ll>
+            <kl name="Maize">0.1</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.29</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.29</ll>
+            <kl name="Sorghum">0.1</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.29</ll>
+            <kl name="Wheat">0.1</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.03</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.26</airdry>
+            <dul>0.53</dul>
+            <sat>0.58</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.89</oc>
+            <ph>8.8</ph>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <no3>2.1</no3>
+            <nh4>0.1</nh4>
+            <ec>0.25</ec>
+            <ll name="Barley">0.29</ll>
+            <kl name="Barley">0.1</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.29</ll>
+            <kl name="Chickpea">0.1</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.29</ll>
+            <kl name="Maize">0.1</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.29</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.29</ll>
+            <kl name="Sorghum">0.1</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.29</ll>
+            <kl name="Wheat">0.1</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.89</oc>
+            <ph>9</ph>
+            <fbiom>0.015</fbiom>
+            <finert>0.8</finert>
+            <no3>2.1</no3>
+            <nh4>0.1</nh4>
+            <ec>0.31</ec>
+            <ll name="Barley">0.32</ll>
+            <kl name="Barley">0.08</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.36</ll>
+            <kl name="Chickpea">0.08</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.34</ll>
+            <kl name="Maize">0.1</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.39</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.35</ll>
+            <kl name="Sorghum">0.1</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.32</ll>
+            <kl name="Wheat">0.08</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.58</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.89</oc>
+            <ph>9.2</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.9</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.4</ec>
+            <ll name="Barley">0.38</ll>
+            <kl name="Barley">0.06</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.43</ll>
+            <kl name="Chickpea">0.06</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.29</ll>
+            <kl name="Lucerne">0.1</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.34</ll>
+            <kl name="Maize">0.08</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.41</ll>
+            <kl name="Perennial Grass">0.1</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.38</ll>
+            <kl name="Sorghum">0.08</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.32</ll>
+            <kl name="Wheat">0.06</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.06</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.3</airdry>
+            <dul>0.52</dul>
+            <sat>0.57</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.77</oc>
+            <ph>9.2</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.59</ec>
+            <ll name="Barley">0.39</ll>
+            <kl name="Barley">0.04</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.51</ll>
+            <kl name="Chickpea">0.04</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.3</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.37</ll>
+            <kl name="Maize">0.06</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0.09</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.4</ll>
+            <kl name="Sorghum">0.06</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.35</ll>
+            <kl name="Wheat">0.04</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.11</bd>
+            <ll15>0.31</ll15>
+            <airdry>0.31</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.45</oc>
+            <ph>9.1</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.84</ec>
+            <ll name="Barley">0.39</ll>
+            <kl name="Barley">0.02</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.5</ll>
+            <kl name="Chickpea">0.02</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.31</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.4</ll>
+            <kl name="Maize">0.04</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0.07</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.4</ll>
+            <kl name="Sorghum">0.04</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.38</ll>
+            <kl name="Wheat">0.02</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.12</bd>
+            <ll15>0.32</ll15>
+            <airdry>0.32</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.27</oc>
+            <ph>9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>0.93</ec>
+            <ll name="Barley">0.41</ll>
+            <kl name="Barley">0.01</kl>
+            <xf name="Barley">1</xf>
+            <ll name="Chickpea">0.5</ll>
+            <kl name="Chickpea">0.01</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="Lucerne">0.32</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.42</ll>
+            <kl name="Maize">0.02</kl>
+            <xf name="Maize">1</xf>
+            <ll name="Perennial Grass">0.41</ll>
+            <kl name="Perennial Grass">0.05</kl>
+            <xf name="Perennial Grass">1</xf>
+            <ll name="Sorghum">0.4</ll>
+            <kl name="Sorghum">0.02</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="Wheat">0.41</ll>
+            <kl name="Wheat">0.01</kl>
+            <xf name="Wheat">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.15</bd>
+            <ll15>0.33</ll15>
+            <airdry>0.33</airdry>
+            <dul>0.48</dul>
+            <sat>0.53</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.22</oc>
+            <ph>9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.01</ec>
+            <ll name="Barley">0.48</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.48</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.33</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.48</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.41</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.48</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.48</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.18</bd>
+            <ll15>0.34</ll15>
+            <airdry>0.34</airdry>
+            <dul>0.47</dul>
+            <sat>0.52</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.16</oc>
+            <ph>8.9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.06</ec>
+            <ll name="Barley">0.47</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.47</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.34</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.47</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.47</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.47</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.2</bd>
+            <ll15>0.35</ll15>
+            <airdry>0.35</airdry>
+            <dul>0.46</dul>
+            <sat>0.51</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.13</oc>
+            <ph>8.9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.05</ec>
+            <ll name="Barley">0.46</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.46</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.35</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.46</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.4</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.46</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.46</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.25</bd>
+            <ll15>0.36</ll15>
+            <airdry>0.36</airdry>
+            <dul>0.44</dul>
+            <sat>0.49</sat>
+            <sw>9999.99</sw>
+            <swcon>0.3</swcon>
+            <oc>0.12</oc>
+            <ph>8.9</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.95</finert>
+            <no3>1.7</no3>
+            <nh4>0.1</nh4>
+            <ec>1.01</ec>
+            <ll name="Barley">0.44</ll>
+            <kl name="Barley">0</kl>
+            <xf name="Barley">0</xf>
+            <ll name="Chickpea">0.44</ll>
+            <kl name="Chickpea">0</kl>
+            <xf name="Chickpea">0</xf>
+            <ll name="Lucerne">0.36</ll>
+            <kl name="Lucerne">0.09</kl>
+            <xf name="Lucerne">1</xf>
+            <ll name="Maize">0.44</ll>
+            <kl name="Maize">0</kl>
+            <xf name="Maize">0</xf>
+            <ll name="Perennial Grass">0.42</ll>
+            <kl name="Perennial Grass">0</kl>
+            <xf name="Perennial Grass">0</xf>
+            <ll name="Sorghum">0.44</ll>
+            <kl name="Sorghum">0</kl>
+            <xf name="Sorghum">0</xf>
+            <ll name="Wheat">0.44</ll>
+            <kl name="Wheat">0</kl>
+            <xf name="Wheat">0</xf>
+          </layer>
+        </profile>
+        <Cona>3.5</Cona>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <U>6</U>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <CnCanopyFact>1</CnCanopyFact>
+        <RootCn>40</RootCn>
+        <RootWt>200</RootWt>
+        <SoilCn>12.5</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <InitWater>
+          <percentmethod>
+            <percent>1</percent>
+            <distributed>filled from top</distributed>
+          </percentmethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6.500</no3>
+              <nh4>0.600</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.100</no3>
+              <nh4>0.100</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.100</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.700</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <irrigation name="Irrigation2">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+  </simulation>
+</folder>

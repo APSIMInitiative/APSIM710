@@ -1,0 +1,57 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = SILO Sample Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\siloinput.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 11/01/1988
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.day
+        clock.year
+        met.radn
+        met.maxt
+        met.mint
+        met.rain
+
+     Output file = siloinput.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     SILOINPUT station number: 15027
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+------- Start of simulation  --------------------------------------------------
+11 January 1988(Day of year=11), clock: 
+     Simulation is terminating due to end criteria being met.

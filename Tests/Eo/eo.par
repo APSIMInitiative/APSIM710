@@ -1,0 +1,89 @@
+! Change log
+! added extinct_coef
+! added vpd_fac
+! changed units of Z0Soil from m to mm
+! Added 2 new parameters - disp_instrum, z0_instrum
+! created ini file and put new constants in there -
+!                 reference_height, zc_conversion
+!                 max_albedo, reference_height_base, rsmin_canopy
+!                 rc_method, rc
+
+
+[sample.eo.parameters]
+vpd_fac = 0.75 ()       ! Tanner Sinclair VPD factor for net positive radiation
+
+                        ! Albedo is calculated on a line between soil albedo and max_albedo, depending
+                        ! on the amount of crop cover. An lai of 3 gives an albedo of about .20   
+albedo =  0.13 ()       ! soil albedo (0-1). Used for net radiation.
+max_albedo =  0.23 ()   ! albedo at 100% green crop cover (0-1). Used for net radiation.
+                        ! Bare soil albedo must not exceed this value.
+
+z0soil =  3 (mm)        ! soil z0 (used when lai=0) (mm). This is the minimum that z0 may be.
+                        ! z0 is the roughness length of the surface for momentum transfer (mm)
+                        ! Not used for penman.
+
+default_wind =  60.0 (km/day)   ! default wind speed (km/day) if not found in system (eg met or manager)          
+default_pa =   1000 (hpa)   ! default atmospheric pressure (hPa) if not found in system (eg met or manager)
+                            ! sea level = 1013, 1000 m = 900 HPa 
+
+                        ! The site of the annemometer is described so that the wind may be converted
+                        ! to the site of the simulation, which may have different reference heights, 
+                        ! surface roughness and displacements. Most annemometors have mown grass on the site.
+default_instrum_height =  2000 (mm)   ! default instrument height (mm) if not found in system 
+                                       ! (eg met or manager). This is the actual height of the annemometer.
+disp_instrum =  37.0 (mm)   ! mown grass) ! zero plane displacement at instrument site (mm)
+                            ! Imagine that this is the height at which the apparent surface (zero plane) is, 
+                            ! under the canopy, for purposes of wind speed.
+                            ! Not used for Penman
+z0_instrum =  4.0 (mm)   ! mown grass  ! roughness length at instrument site (mm)
+                          ! mown grass - lai=1, canopy height of 50 mm
+                          ! This is the roughness length of the surface for momentum transfer at the
+                          ! site of the annemomenter.
+                          ! Not used for Penman
+
+extinct_coef = 0.8       ! extinction coefficient for adjustment of Eo_pm to obtain
+                         ! plant transpiration when using the eo_pm_x_kfunction method.
+eo_plant_method = eo_penman_d_x_cover ! method used to calculate plant transpiration (eo_plant)
+                                ! eo_transpiration, eo_pm, null, eo_pm_x_cover, eo_pm_x_kfunctio, eo_radn_x_kfunction
+                                ! eo_penman, eo_penman_x_cover, eo_priestly_taylor, eo_ritchie
+                                ! eo_penman_d, eo_penman_d_x_cover
+                                ! eo_transpiration, uses intercepted net radiation in PM equation.
+                                ! eo_pm, is Penman-Monteith (PM) equation for atmospheric demand. 
+                                ! null, prevents Eo from sending eo_plant, or receiving a modified value of it.
+                                ! eo_pm_x_cover, is the standard PM multiplied by the crop green cover.
+                                ! eo_penman, is the standard Penman.
+                                ! eo_penman_x_cover, is the standard Penman multiplied by the crop green cover.
+                                ! eo_penman_d, is the modified Penman (Doorenbos & Pruit).
+                                ! eo_penman_d_x_cover, is the modified Penman (Doorenbos & Pruit) multiplied by the crop green cover.
+                                ! eo_pm_x_kfunction, is the standard PM multiplied by a light interception
+                                !                   function (1-exp(-k*lai) where k is the extinct_coef above.
+                                ! eo_radn_x_kfunction, uses the radiation term of PM multiplied by a light interception
+                                !                   function (1-exp(-k*lai) where k is the extinct_coef above.
+                                ! eo_pm_x_cover, is the standard PM multiplied by the crop green cover.
+                                ! eo_priestly_taylor, is the standard Priestly Taylor.
+                                ! eo_ritchie, is the ritchie model.
+                                ! In adition to eo_plant being available as one of these,
+                                ! each is available under its method name, to the system.
+
+wind_day_fraction = 0.66 ()      ! optional fraction of wind in daylight hours (day:night is 2:1)
+                                 ! If the wind day fraction is not found here, the default is used.
+                                 ! FAO irrigation and drainage paper No.24 revised 1977. 
+                                 ! Guidelines for predicting crop water requirements, J Doorenbos and W.O. Pruitt
+                                 ! "The penman equation given assumes the most common conditions where radiation is
+                                 ! medium to high, maximum relative humidity is medium to high and moderate
+                                 ! daytime wind about double the night time wind." Table 16 shows day wind
+                                 ! fractions from 0.5 to 0.8.
+adjustment_factor = 1.0         ! Calibration or crop factor
+wind_multiplier = 1.0 ()        ! multiplier for wind to alter wind run for shelter effects (-)
+[sample.clock.parameters]
+start_date=1/1/1996
+end_date=1/1/1997
+[sample.report.parameters]
+outputfile =eo.out
+variable = clock.year
+variable = clock.day
+variable = eo.eo_pm
+variable = eo.ra
+variable = met.evap
+[sample.SummaryFile.parameters]
+summaryfile=eo.sum

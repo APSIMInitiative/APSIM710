@@ -1,0 +1,11 @@
+version = 7.0(2)
+[APSIM.sample_cowpea]
+title=cowpea Sample Simulation
+module = clock   cowpea.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     cowpea.par[sample]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    cowpea.par[sample]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(cowpea)   cowpea.par [sample] %apsim%/Model/cowpea.xml [standard]

@@ -1,0 +1,133 @@
+!******************************************************************************************************
+
+[sample.wheat.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+   !layer    1    2    3    4    5    6    7
+ll =       .200 .201 .215 .176 .141 .249 .279
+xf =        1.00 0.60  0.45 0.22 0.10 0.08 0.05  ! Root Exploration factor (0-1)
+kl =       0.06 0.06 0.06 0.06 0.06 0.06 0.02    ! Water Extraction parameter (0-1)
+
+latitude =  -28.0
+
+
+[sample.sunflower.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+   !layer    1    2    3    4    5    6    7
+ll =       .200 .201 .215 .176 .141 .249 .279
+xf =        1.00 0.60  0.45 0.22 0.10 0.08 0.05  ! Root Exploration factor (0-1)
+kl =       0.06 0.06 0.06 0.06 0.06 0.06 0.02    ! Water Extraction parameter (0-1)
+
+
+latitude =  -28.0   
+
+
+[sample.sorghum.parameters]
+ll =   .200    .201    .215    .176    .141    .249    .279
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+
+[sample.maize.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+   !layer    1    2    3    4    5    6    7   
+ll =        .200    .201    .215    .176    .141    .249    .279   !crop lower limit
+xf =      1.00 1.00 1.00 1.00 1.00 1.00 1.00   ! Root Exploration factor (0-1)
+kl =      0.12 0.12 0.12 0.12 0.10 0.08 0.04   ! Water Extraction parameter (0-1)
+
+
+
+
+!******************************************************************************************************
+
+
+[sample.SoilWat.parameters]
+
+!----------- CM water balance parameters--------------------------------------------------
+
+insoil   = 0.7      ! indicator for initial soil water, 0 to 1 is fraction of avail soil water
+                    ! 0=ll15, 1 = dul, >1 = input by user
+diffus_const = 88.  ! coeffs for dbar
+diffus_slope = 35.4 ! "   "   "
+
+u        = 6        ! stage 1 soil evaporation coefficient (mm)
+cona     = 3.5      ! used in evap routine
+
+cn2_bare = 60       ! runoff curve number
+cn_red   = 20       ! curve number max reduction
+cn_cov   = 0.8      !80  cover which generates max cn reduction
+
+!The value from soilwat2 sample of cn_cov is much lower than cn_cov= 80 - Question ?
+!cn_cov =    .8   ! cover for maximum reduction in curve number
+
+salb     = 0.13     ! bare soil albedo
+
+runof_filnam = blank
+
+!crop _cover  = 0.   ! initialisation of crop cover
+
+
+!THE FOLLOWING ARE THE ORIGINAL VALUES FROM APS06 (Neil's email)
+!-------- Soil layer parameters ----------------------------------------------------------
+!layer      1    2    3    4    5    6    7
+dlayer  =  150  150  300  300  300  300 300  ! layer depth mm soil
+bd      = 1.38 1.34 1.35 1.50 1.49 1.46 1.46 ! bulk density gm dry soil/cc moist soil
+air_dry = .100 .100 .100 .100 .100 .100 .100 ! not sure about these values!!!
+ll15    = .200 .201 .215 .176 .141 .200 .200 !
+dul     = .380 .380 .402 .400 .390 .380 .380 ! drained upper limit mm water/mm soil
+sat     = .430 .430 .430 .430 .420 .400 .400 ! saturation mm water/mm soil
+!sw     = .000 .000 .000 .000 .000 .000 .000 ! water content mm water/mm soil
+sw      = .100 .100 .100 .100 .100 .100 .100 ! changed to air_dry, they can not be 0.00 - Enli
+swcon   = .300 .300 .300 .300 .300 .300 .300 !
+
+
+!******************************************************************************************************
+[sample.SoilN.parameters]
+!-------  Soil Nitrogen parameters -------------------------------------------------------
+
+amp = 12.0   ! temperature amplitude (oC) - difference between highest and
+             ! lowest mean monthly air temperatures
+tav = 21.0   ! mean annual air temperature (oC)
+
+root_wt = 2000. ! root residues as biomass (kg/ha)
+root_cn = 60.   ! C:N ratio of initial root residues
+soil_cn = 14.5  ! C:N ratio of soil
+
+
+!-------- Soil layer parameters ----------------------------------------------------------
+!layer    1    2    3     4    5    6    7
+oc     = 2.20 1.60 1.15  1.00 0.80 0.45 0.45  ! organic carbon %
+ph     = 7.50 8.00 8.00  8.00 8.00 8.00 8.00  ! ph
+fbiom  = 0.03 0.02 0.013 0.01 0.01 0.01 0.01
+finert = 0.45 0.60 0.78  0.90 0.99 0.99 0.99
+no3ppm = 1.30 0.60 0.25  0.20 0.10 0.10 0.10  !trt10 ppm nitrate
+nh4ppm = 1.30 1.00 0.90  0.80 0.50 0.50 0.50  !???? ppm ammonia
+ureappm=    0    0    0  0    0    0    0     ! ppm urea
+
+
+!-------- Erosion profile reduction parameters--------------------------------------------
+! The following values are from the soiln2.par in system directory apsim   -- Question?
+
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  on
+
+
+!******************************************************************************************************
+[sample.SurfaceOM.parameters]
+
+!This part needs to talk to Holger, not found in APS06, copied from elsewhere -------------------- Question?
+
+mass = 500.0   ()   ! surface residues as biomass (kg/ha)
+cnr = 76.0   ()   ! cn ratio of surface residues
+cpr = 200.0   ()  ! cp ratio of surface residues
+type = sorghum
+
+name = sorghum
+[sample.soilp.parameters]    
+!layer         1   2   3   4   5   6   7   
+labile_P =     5   1   1   1   1   1   1   (ppm) !labile p content for each layer
+sorption =    50  100 200  200 200 200 200  ()   !soils p sorption characteristic
+root_cp =      200             ()                !c:p ratio of roots at initialisation
+rate_dissol_rock_P =  0.20     (/yr)             !rate at which rock P source becomes available
+rate_loss_avail_P =  0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC  
+                              ! Recommended value: Alfisol - 0.3; Andisol - 0.7

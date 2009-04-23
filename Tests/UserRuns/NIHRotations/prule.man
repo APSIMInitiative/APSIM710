@@ -1,0 +1,872 @@
+
+[all.manager.end_of_day]
+if end_year = 1 then
+   report do_output
+endif
+
+[AvgWindow.manager.init]
+
+wht_win1 = 140 ! start of wheat window
+wht_win2 = 160 ! change of wheat cultivar
+wht_win3 = 220 ! end of wheat window
+
+srg_win1 = 300 ! start of sorghum window
+srg_win2 = 340 ! change of sorghum cultivar
+srg_win3 = 10  ! end of sorghum window
+srg_seeding = 2 ! sorghum plant density flag (1 = low, 2 = high)
+
+
+
+[Fert_50.manager.init]
+wht_fert_target = 50  ! wheat Fertiliser N
+srg_fert_target = 50  ! sorghum Fertiliser N
+
+[Fert_200.manager.init]
+wht_fert_target = 200  ! wheat Fertiliser N
+srg_fert_target = 200  ! sorghum Fertiliser N
+
+
+[opp.manager.init]
+! management parameters specific to opportunity cropping simulations
+
+system_fallow = 10000 ! initial state of fallow - has been adequately fallowed. Number of days of fallow
+crop_in = 0
+
+wht_freq = 1
+days_since_wheat = wht_freq * 365
+wht_min_fallow = 7                 ! min fallow days
+
+srg_freq = 1
+days_since_sorg = srg_freq * 365
+srg_min_fallow = 7                 ! min fallow days
+
+wht_crops_max = 1
+
+[w3.manager.init]
+! management parameters specific to wheat-chickpea cropping simulations
+
+system_fallow = 10000 ! initial state of fallow - has been adequately fallowed. Number of days of fallow
+crop_in = 0
+
+wht_freq = 1
+days_since_wheat = wht_freq * 365
+wht_min_fallow = 7                 ! min fallow days
+
+srg_freq = 200
+days_since_sorg = 0
+srg_min_fallow = 7                 ! min fallow days
+
+wht_crops_max = 1
+
+[lf1.manager.init]
+! Assume just out of sorghum crop
+
+! management parameters specific to opportunity cropping simulations
+system_fallow = 10
+crop_in = 0
+
+wht_freq = 3
+days_since_wheat = 30 * 23         ! about 23 months ago
+wht_min_fallow = 7                 ! min fallow days
+
+srg_freq = 3
+days_since_sorg = 30 * 5           ! about 4 months ago
+srg_min_fallow = 7                 ! min fallow days
+
+wht_crops_max = 200
+
+[lf2.manager.init]
+! Assume sorghum crop previous season
+! management parameters specific to opportunity cropping simulations
+system_fallow = 12 * 30
+crop_in = 0
+
+wht_freq = 3
+days_since_wheat = 30 * 35         ! about 35 months ago
+wht_min_fallow = 7                 ! min fallow days
+
+srg_freq = 3
+days_since_sorg = 30 * 17          ! about 17 months ago
+srg_min_fallow = 7                 ! min fallow days
+
+wht_crops_max = 200
+
+[lf3.manager.init]
+! management parameters specific to opportunity cropping simulations
+system_fallow = 100
+crop_in = 0
+
+wht_freq = 3
+days_since_wheat = 11 * 30         ! about 11 months ago
+wht_min_fallow = 7                 ! min fallow days
+
+srg_freq = 3
+days_since_sorg = 29 * 30          ! about 29 months ago
+srg_min_fallow = 7                 ! min fallow days
+
+wht_crops_max = 200
+
+[w.manager.init]
+! management parameters specific to continous wheat cropping simulations
+system_fallow = 120
+crop_in = 0
+
+wht_freq = 1
+days_since_wheat = wht_freq * 365    ! about 1 year ago
+wht_min_fallow = 100                 ! min fallow days
+
+srg_freq = 41
+days_since_sorg =  30          ! about a months ago
+srg_min_fallow = 10000                 ! min fallow days
+
+wht_crops_max = 200
+
+[s.manager.init]
+! management parameters specific to continous sorghum cropping simulations
+system_fallow = 120
+crop_in = 0
+
+wht_freq = 41
+days_since_wheat = 3 * 30         ! about 12 months ago
+wht_min_fallow = 10000                 ! min fallow days
+
+srg_freq = 1
+days_since_sorg =  srg_freq * 365    ! about a months ago
+srg_min_fallow = 100                 ! min fallow days
+
+wht_crops_max = 0
+
+[all.manager.init]
+
+sow_year = 1957  ! dummy variable so can input into APSIM Outlook - initialisation
+sow_day = 1  ! dummy variable so can input into APSIM Outlook
+
+wht_fert = 0
+sor_fert = 0
+
+[all.manager.start_of_day]
+
+
+if (crop_in = 0) THEN
+
+   system_fallow = system_fallow + 1
+
+   ! Antecedant Moisture Status
+   ! ==========================
+   ! Max Available Water
+
+   maw10 = dul_dep(1) - ll15_dep(1)
+   maw30 = maw10 + dul_dep(2)- ll15_dep(2)
+   maw50 = maw30 + dul_dep(3)- ll15_dep(3)
+   maw70 = maw50 + dul_dep(4) - ll15_dep(4)
+   maw90 = maw70 + dul_dep(5) - ll15_dep(5)
+   maw110 = maw90 + dul_dep(6) - ll15_dep(6)
+   maw130 = maw110 + dul_dep(7) - ll15_dep(7)
+   maw150 = maw130 + dul_dep(8) - ll15_dep(8)
+   maw170 = maw150 + dul_dep(9) - ll15_dep(9)
+   maw190 = maw170 + dul_dep(10) - ll15_dep(10)- maw10
+
+   ! Available Soil Water
+   paw10 = sw_dep(1) - ll15_dep(1)
+   paw30 = paw10 + sw_dep(2) - ll15_dep(2)
+   paw50 = paw30 + sw_dep(3) - ll15_dep(3)
+   paw70 = paw50 + sw_dep(4) - ll15_dep(4)
+   paw90 = paw70 + sw_dep(5) - ll15_dep(5)
+   paw110 = paw90 + sw_dep(6) - ll15_dep(6)
+   paw130 = paw110 + sw_dep(7) - ll15_dep(7)
+   paw150 = paw130 + sw_dep(8) - ll15_dep(8)
+   paw170 = paw150 + sw_dep(9) - ll15_dep(9)
+   paw190 = paw170 + sw_dep(10) - ll15_dep(10)- paw10
+
+   !Available Soil Water as a fraction of Max
+   fasw10 = paw10 / maw10
+   fasw30 = paw30 / maw30
+   fasw50 = paw50 / maw50
+   fasw70 = paw70 / maw70
+   fasw90 = paw90 / maw90
+   fasw110 = paw110 / maw110
+   fasw130 = paw130 / maw130
+   fasw150 = paw150 / maw150
+   fasw170 = paw170 / maw170
+   fasw190 = paw190 / maw190
+
+endif
+
+[w1.manager.start_of_day]
+
+if (crop_in = 0) THEN
+
+
+   ! Wheat Sowing Rule
+   ! =================
+
+   if (system_fallow > wht_min_fallow) AND
+      ((days_since_wheat / 365) > wht_freq) AND
+      (day >= wht_win1 and day <= wht_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw50 >= 0.75)
+         THEN
+
+         if (wht_crop_num < wht_crops_max) then
+
+            if (day >= wht_win2) then
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
+               wht_crop_num = wht_crop_num + 1
+            else
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
+               wht_crop_num = wht_crop_num + 1
+            endif
+
+            !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+            rz_no3 = no3(1) + no3(2) + no3(3)
+
+            if rz_no3 < wht_fert_target then
+               wht_fert = wht_fert_target - rz_no3
+               Fertiliser apply amount = wht_fert, depth = 0, type = no3_n
+            endif
+
+         else
+            wht_crop_num = 0
+
+            if (day >= wht_win2) then
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            else
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            endif
+         endif
+
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         days_since_wheat = day - wht_win1
+
+      elseif day = wht_win3 then
+
+         ! reset counter in case of failed planting
+         days_since_wheat = day - wht_win1
+         wht_crop_num = 0
+
+      endif
+
+   else
+
+   endif
+
+   ! Sorghum Sowing Rule
+   ! ===================
+
+   if (system_fallow > srg_min_fallow) AND
+      ((days_since_sorg / 365) > srg_freq) AND
+      (day >= srg_win1 or day <= srg_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw70 >= 0.75)
+           THEN
+
+         if (srg_seeding = 1 ) then
+             !wht_crop_num = 0
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         else
+             !wht_crop_num = 0
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         endif
+
+         !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+         rz_no3 = no3(1) + no3(2) + no3(3)
+         if rz_no3 < srg_fert_target then
+            sor_fert = srg_fert_target - rz_no3
+               Fertiliser apply amount = sor_fert, depth = 0, type = no3_n
+         endif
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         if day <= srg_win3 then
+            days_since_sorg = day + 365 - srg_win1
+         else
+            days_since_sorg = day - srg_win1
+         endif
+      elseif day = srg_win3 then
+
+         days_since_sorg = day + 365 - srg_win1
+      endif
+
+   else
+
+   endif
+else
+
+! Wheat harvest at stage 10
+
+   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+      w_mat_day = day
+      wheat harvest
+      wheat kill_crop
+      wheat end_crop
+      crop_in = 0
+   endif
+
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
+      c_mat_day = day
+
+      chickpea harvest
+      chickpea end_crop
+      crop_in = 0
+   endif
+
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
+
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
+      s_mat_day = day
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+      crop_in = 0
+   endif
+
+endif
+
+days_since_wheat = days_since_wheat + 1
+days_since_sorg = days_since_sorg + 1
+
+[w3.manager.start_of_day]
+
+if (crop_in = 0) THEN
+
+
+   ! Wheat Sowing Rule
+   ! =================
+
+   if (system_fallow > wht_min_fallow) AND
+      ((days_since_wheat / 365) > wht_freq) AND
+      (day >= wht_win1 and day <= wht_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw50 >= 0.75)
+         THEN
+
+         if (wht_crop_num < wht_crops_max) then
+
+            if (day >= wht_win2) then
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
+               wht_crop_num = wht_crop_num + 1
+            else
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
+               wht_crop_num = wht_crop_num + 1
+            endif
+
+            !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+            rz_no3 = no3(1) + no3(2) + no3(3)
+
+            if rz_no3 < wht_fert_target then
+               wht_fert = wht_fert_target - rz_no3
+               Fertiliser apply amount = wht_fert, depth = 0, type = no3_n
+            endif
+
+         else
+            wht_crop_num = 0
+
+            if (day >= wht_win2) then
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            else
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            endif
+         endif
+
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         days_since_wheat = day - wht_win1
+
+      elseif day = wht_win3 then
+
+         ! reset counter in case of failed planting
+         days_since_wheat = day - wht_win1
+         wht_crop_num = 0
+
+      endif
+
+   else
+
+   endif
+
+   ! Sorghum Sowing Rule
+   ! ===================
+
+   if (system_fallow > srg_min_fallow) AND
+      ((days_since_sorg / 365) > srg_freq) AND
+      (day >= srg_win1 or day <= srg_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw110 >= 0.75)
+           THEN
+
+         if (srg_seeding = 1 ) then
+             !wht_crop_num = 0
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         else
+             !wht_crop_num = 0
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         endif
+
+         !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+         rz_no3 = no3(1) + no3(2) + no3(3)
+         if rz_no3 < srg_fert_target then
+            sor_fert = srg_fert_target - rz_no3
+               Fertiliser apply amount = sor_fert, depth = 0, type = no3_n
+         endif
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         if day <= srg_win3 then
+            days_since_sorg = day + 365 - srg_win1
+         else
+            days_since_sorg = day - srg_win1
+         endif
+      elseif day = srg_win3 then
+
+         days_since_sorg = day + 365 - srg_win1
+      endif
+
+   else
+
+   endif
+else
+
+! Wheat harvest at stage 10
+
+   if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+      w_mat_day = day
+      wheat harvest
+      wheat kill_crop
+      wheat end_crop
+      crop_in = 0
+   endif
+
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
+      c_mat_day = day
+
+      chickpea harvest
+      chickpea end_crop
+      crop_in = 0
+   endif
+
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
+
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
+      s_mat_day = day
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+      crop_in = 0
+   endif
+
+endif
+
+days_since_wheat = days_since_wheat + 1
+days_since_sorg = days_since_sorg + 1
+
+[s1.manager.start_of_day]
+
+if (crop_in = 0) THEN
+
+
+   ! Wheat Sowing Rule
+   ! =================
+
+   if (system_fallow > wht_min_fallow) AND
+      ((days_since_wheat / 365) > wht_freq) AND
+      (day >= wht_win1 and day <= wht_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw50 >= 0.75)
+         THEN
+
+         if (wht_crop_num < wht_crops_max) then
+
+            if (day >= wht_win2) then
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
+               wht_crop_num = wht_crop_num + 1
+            else
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
+               wht_crop_num = wht_crop_num + 1
+            endif
+
+            !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+            rz_no3 = no3(1) + no3(2) + no3(3)
+
+            if rz_no3 < wht_fert_target then
+               wht_fert = wht_fert_target - rz_no3
+               Fertiliser apply amount = wht_fert, depth = 0, type = no3_n
+            endif
+
+         else
+            wht_crop_num = 0
+
+            if (day >= wht_win2) then
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            else
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            endif
+         endif
+
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         days_since_wheat = day - wht_win1
+
+      elseif day = wht_win3 then
+
+         ! reset counter in case of failed planting
+         days_since_wheat = day - wht_win1
+         wht_crop_num = 0
+
+      endif
+
+   else
+
+   endif
+
+   ! Sorghum Sowing Rule
+   ! ===================
+
+   if (system_fallow > srg_min_fallow) AND
+      ((days_since_sorg / 365) > srg_freq) AND
+      (day >= srg_win1 or day <= srg_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw70 >= 0.75)
+           THEN
+
+         if (srg_seeding = 1 ) then
+             !wht_crop_num = 0
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         else
+             !wht_crop_num = 0
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         endif
+
+         !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+         rz_no3 = no3(1) + no3(2) + no3(3)
+         if rz_no3 < srg_fert_target then
+            sor_fert = srg_fert_target - rz_no3
+               Fertiliser apply amount = sor_fert, depth = 0, type = no3_n
+         endif
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         if day <= srg_win3 then
+            days_since_sorg = day + 365 - srg_win1
+         else
+            days_since_sorg = day - srg_win1
+         endif
+      elseif day = srg_win3 then
+
+         days_since_sorg = day + 365 - srg_win1
+      endif
+
+   else
+
+   endif
+else
+
+! Wheat harvest at stage 10
+
+   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+      w_mat_day = day
+      wheat harvest
+      wheat kill_crop
+      wheat end_crop
+      crop_in = 0
+   endif
+
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
+      c_mat_day = day
+
+      chickpea harvest
+      chickpea end_crop
+      crop_in = 0
+   endif
+
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
+
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
+      s_mat_day = day
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+      crop_in = 0
+   endif
+
+endif
+
+days_since_wheat = days_since_wheat + 1
+days_since_sorg = days_since_sorg + 1
+
+[LongFallow1.manager.start_of_day]
+
+if (crop_in = 0) THEN
+
+
+   ! Wheat Sowing Rule
+   ! =================
+
+   if (system_fallow > wht_min_fallow) AND
+      ((days_since_wheat / 365) > wht_freq) AND
+      (day >= wht_win1 and day <= wht_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw50 >= 0.75)
+         THEN
+
+         if (wht_crop_num < wht_crops_max) then
+
+            if (day >= wht_win2) then
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
+               wht_crop_num = wht_crop_num + 1
+            else
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
+               wht_crop_num = wht_crop_num + 1
+            endif
+
+            !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+            rz_no3 = no3(1) + no3(2) + no3(3)
+
+            if rz_no3 < wht_fert_target then
+               wht_fert = wht_fert_target - rz_no3
+               Fertiliser apply amount = wht_fert, depth = 0, type = no3_n
+            endif
+
+         else
+            wht_crop_num = 0
+
+            if (day >= wht_win2) then
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            else
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            endif
+         endif
+
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         days_since_wheat = day - wht_win1
+
+      elseif day = wht_win3 then
+
+         ! reset counter in case of failed planting
+         days_since_wheat = day - wht_win1
+         wht_crop_num = 0
+
+      endif
+
+   else
+
+   endif
+
+   ! Sorghum Sowing Rule
+   ! ===================
+
+   if (system_fallow > srg_min_fallow) AND
+      ((days_since_sorg / 365) > srg_freq) AND
+      (day >= srg_win1 or day <= srg_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw70 >= 0.75)
+           THEN
+
+         if (srg_seeding = 1 ) then
+             !wht_crop_num = 0
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         else
+             !wht_crop_num = 0
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         endif
+
+         !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+         rz_no3 = no3(1) + no3(2) + no3(3)
+         if rz_no3 < srg_fert_target then
+            sor_fert = srg_fert_target - rz_no3
+               Fertiliser apply amount = sor_fert, depth = 0, type = no3_n
+         endif
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         if day <= srg_win3 then
+            days_since_sorg = day + 365 - srg_win1
+         else
+            days_since_sorg = day - srg_win1
+         endif
+      elseif day = srg_win3 then
+
+         days_since_sorg = day + 365 - srg_win1
+      endif
+
+   else
+
+   endif
+else
+
+! Wheat harvest at stage 10
+
+   if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+      w_mat_day = day
+      wheat harvest
+      wheat kill_crop
+      wheat end_crop
+      crop_in = 0
+   endif
+
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
+      c_mat_day = day
+
+      chickpea harvest
+      chickpea end_crop
+      crop_in = 0
+   endif
+
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
+
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
+      s_mat_day = day
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+      crop_in = 0
+   endif
+
+endif
+
+days_since_wheat = days_since_wheat + 1
+days_since_sorg = days_since_sorg + 1
+
+[oc2.manager.start_of_day]
+
+if (crop_in = 0) THEN
+
+
+   ! Wheat Sowing Rule
+   ! =================
+
+   if (system_fallow > wht_min_fallow) AND
+      ((days_since_wheat / 365) > wht_freq) AND
+      (day >= wht_win1 and day <= wht_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw70 >= 0.75)
+         THEN
+
+         if (wht_crop_num < wht_crops_max) then
+
+            if (day >= wht_win2) then
+               wheat sow plants = 100, sowing_depth = 80, cultivar = hartog
+               wht_crop_num = wht_crop_num + 1
+            else
+               wheat sow plants = 100, sowing_depth = 80, cultivar = sunco
+               wht_crop_num = wht_crop_num + 1
+            endif
+
+            !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+            rz_no3 = no3(1) + no3(2) + no3(3)
+
+            if rz_no3 < wht_fert_target then
+               wht_fert = wht_fert_target - rz_no3
+               Fertiliser apply amount = wht_fert, depth = 0, type = no3_n
+            endif
+
+         else
+            wht_crop_num = 0
+
+            if (day >= wht_win2) then
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            else
+               chickpea sow plants = 25, sowing_depth = 80, cultivar = amethyst
+            endif
+         endif
+
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         days_since_wheat = day - wht_win1
+
+      elseif day = wht_win3 then
+
+         ! reset counter in case of failed planting
+         days_since_wheat = day - wht_win1
+         wht_crop_num = 0
+
+      endif
+
+   else
+
+   endif
+
+   ! Sorghum Sowing Rule
+   ! ===================
+
+   if (system_fallow > srg_min_fallow) AND
+      ((days_since_sorg / 365) > srg_freq) AND
+      (day >= srg_win1 or day <= srg_win3) THEN
+
+      if (fasw10 >= 0.0) AND (fasw10 <= 0.99) AND (fasw110 >= 0.75)
+           THEN
+
+         if (srg_seeding = 1 ) then
+             !wht_crop_num = 0
+             sorghum sow plants = 3.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         else
+             !wht_crop_num = 0
+             sorghum sow plants = 6.5, cultivar = early, sowing_depth = 101, tiller_no_fertile = 1.5
+         endif
+
+         !rz_no3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8)
+         rz_no3 = no3(1) + no3(2) + no3(3)
+         if rz_no3 < srg_fert_target then
+            sor_fert = srg_fert_target - rz_no3
+               Fertiliser apply amount = sor_fert, depth = 0, type = no3_n
+         endif
+         surfaceom tillage type = planter ()
+         crop_in = 1
+         system_fallow = 0
+         if day <= srg_win3 then
+            days_since_sorg = day + 365 - srg_win1
+         else
+            days_since_sorg = day - srg_win1
+         endif
+      elseif day = srg_win3 then
+
+         days_since_sorg = day + 365 - srg_win1
+      endif
+
+   else
+
+   endif
+else
+
+! Wheat harvest at stage 10
+
+   if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+      w_mat_day = day
+      wheat harvest
+      wheat kill_crop
+      wheat end_crop
+      crop_in = 0
+   endif
+
+   if (chickpea.stage = 11) OR (chickpea.plant_status = 'dead') then
+      c_mat_day = day
+
+      chickpea harvest
+      chickpea end_crop
+      crop_in = 0
+   endif
+
+! Sorghum harvest at stage 11 or on 15 June, whichever is earlier
+
+   if (sorghum.stage = 11) OR (sorghum.plant_status = 'dead') OR ((sorghum.plant_status = 'alive') AND (day = 166)) then
+      s_mat_day = day
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+      crop_in = 0
+   endif
+
+endif
+
+days_since_wheat = days_since_wheat + 1
+days_since_sorg = days_since_sorg + 1
+
+
+
+

@@ -1,0 +1,33 @@
+version = 7.0(2)
+[apsim.sample_sugar]
+
+
+title = Sugar Test for capping of crop water use
+
+
+module = clock   Test.par [sample] %apsim%/Model/clock.xml [standard]
+module = report   Test.par [sample]
+module = input(met)      %apsim%/Tests/MetFiles/Ingham.met [weather]
+module = manager  Test.par [sample]
+module = Irrigation   Test.par [sample]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [sugar_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sugar   Test.par [sample] %apsim%/Model/sugar.xml [standard]
+
+
+[apsim.sample2_sugar]
+
+title = Sugar Test for defect d-514, Sugar Lodging N problem from Heidi Horan
+
+module = clock   Test.par [sample] %apsim%/Model/clock.xml [standard]
+module = report   Test.par [sample2]
+module = input(met)      %apsim%/Tests/MetFiles/Ingham.met [weather]
+module = manager  Test.par [sample2]
+module = Irrigation   Test.par [sample]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [sugar_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = sugar   Test.par [sample] %apsim%/Model/sugar.xml [standard]

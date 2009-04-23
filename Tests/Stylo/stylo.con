@@ -1,0 +1,11 @@
+version = 7.0(2)
+[APSIM.sample_stylo]
+title=stylo Sample Simulation
+module = clock   stylo.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     stylo.par[sample]
+module = input(Met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    stylo.par[sample]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(stylo)   stylo.par [sample] %apsim%/Model/stylo.xml [standard]

@@ -1,0 +1,38 @@
+   <operations>
+      <UItype>VBUserInterface.OperationsUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/operatns/docs/operatns_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\gears32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\gears16.png</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Operations.dll</dll>
+         <sim>
+            <rule name="start_of_day" condition="start_of_day">
+               <![CDATA[
+               [foreach operations.operation]
+               [if [operation.condition] = start_of_day]
+               [operation.date] [operation.action]
+               [endif]
+               [endfor]
+               ]]>
+            </rule>
+            <rule name="end_of_day" condition="end_of_day">
+               <![CDATA[
+               [foreach operations.operation]
+               [if [operation.condition] = end_of_day]
+               [operation.date] [operation.action]
+               [endif]
+               [endfor]
+               ]]>
+            </rule>
+         </sim>
+      </ApsimToSim>
+   </operations>

@@ -1,0 +1,395 @@
+<report version="5">
+<Data>
+<ApsimFileReader name="ApsimFileReader1" Left="0" Top="0">
+  <FileName type="filenames">Barley_Well360_1.out</FileName>
+  <ParseTitle type="yesno">no</ParseTitle>
+  <FileName type="filenames">Barley_HB90Sow1_3.out</FileName>
+  <FileName type="filenames">Barley_HB90Sow2_3.out</FileName>
+  <FileName type="filenames">Barley_HB90Sow3_3.out</FileName>
+  <FileName type="filenames">Barley_HRS87-2MP_1.out</FileName>
+  <FileName type="filenames">Barley_HRS87-3MP_1.out</FileName>
+  <FileName type="filenames">Barley_HRSRO-DD_1.out</FileName>
+  <FileName type="filenames">Barley_HRSRO-DI_1.out</FileName>
+  <FileName type="filenames">Barley_HRSRO-II_1.out</FileName>
+  <FileName type="filenames">Barley_KthpeRain05_5.out</FileName>
+  <FileName type="filenames">Barley_R88-1HP_1.out</FileName>
+  <FileName type="filenames">Barley_R88-1MP_1.out</FileName>
+  <FileName type="filenames">Barley_R88-2HP_1.out</FileName>
+  <FileName type="filenames">Barley_R88-2MP_1.out</FileName>
+  <FileName type="filenames">Barley_R88-3HP_1.out</FileName>
+  <FileName type="filenames">Barley_R88-3MP_1.out</FileName>
+  <FileName type="filenames">Barley_R88-4HP_1.out</FileName>
+  <FileName type="filenames">Barley_R88-4MP_1.out</FileName>
+</ApsimFileReader>
+<ApsimFileReader name="ApsimFileReader2" Left="200" Top="0">
+  <FileName type="filenames">Barley_CombinedMaturity.dat</FileName>
+  <ParseTitle type="yesno">yes</ParseTitle>
+</ApsimFileReader>
+<Filter name="PredictedHarvest" Left="400" Top="0">
+  <FilterString>stage=10</FilterString>
+  <source>ApsimFileReader1</source>
+</Filter>
+<PredObs name="PredObsBiomass" Left="600" Top="0">
+  <obsFileName type="filename">Barley_CombinedMaturity.dat</obsFileName>
+  <source>PredictedHarvest</source>
+  <FieldName>title</FieldName>
+  <source>ApsimFileReader2</source>
+</PredObs>
+<Regression name="RegressionBiomass" Left="0" Top="200">
+  <XFieldName type="fieldname">Predbiomass_wt</XFieldName>
+  <YFieldName type="fieldname">Obsbiomass_wt</YFieldName>
+  <source>PredObsBiomass</source>
+</Regression>
+<Regression name="RegressionYield" Left="200" Top="200">
+  <XFieldName type="fieldname">PreddmGrain</XFieldName>
+  <YFieldName type="fieldname">ObsdmGrain</YFieldName>
+  <source>PredObsBiomass</source>
+</Regression>
+</Data>
+   <page> <![CDATA[
+object Page1: TQuickRep
+  Left = 0
+  Top = 0
+  Width = 873
+  Height = 1235
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -17
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = A4
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2970
+    0
+    2100
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 110
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 873
+    Height = 1235
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2970
+      2099.82954545455)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 130
+      Top = 78
+      Width = 505
+      Height = 510
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1226.70454545455
+        312.689393939394
+        187.613636363636
+        1214.67803030303)
+      title = 'Biomass at Maturity'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Observed'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Predicted'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        Title.Alignment = taLeftJustify
+        Title.Text.Strings = (
+          'Biomass at Maturity')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 1650
+        BottomAxis.Minimum = 300
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Predicted'
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 1650
+        LeftAxis.Minimum = 300
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Observed'
+        Legend.LegendStyle = lsSeries
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Frame.Visible = False
+          Marks.Transparent = True
+          Marks.Visible = False
+          DataSource = PredObsBiomass
+          XLabelsSource = 'Predbiomass_wt'
+          ClickableLine = False
+          Pointer.Brush.Color = clBlack
+          Pointer.InflateMargins = False
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Predbiomass_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Obsbiomass_wt'
+        end
+        object Series3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.DrawEvery = 2
+          Marks.Style = smsLegend
+          Marks.Visible = False
+          DataSource = RegressionBiomass
+          SeriesColor = clBlack
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object Series4: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegressionBiomass
+          SeriesColor = clBlack
+          LinePen.Style = psDash
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Graph2: TGraph
+      Left = 146
+      Top = 575
+      Width = 520
+      Height = 485
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1166.57196969697
+        351.174242424242
+        1383.04924242424
+        1250.75757575758)
+      title = 'Grain Yield'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Observed'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Predicted'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        Title.Alignment = taLeftJustify
+        Title.Text.Strings = (
+          'Grain Yield')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 650
+        BottomAxis.Minimum = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Predicted'
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 650
+        LeftAxis.Minimum = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Observed'
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series2: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredObsBiomass
+          ClickableLine = False
+          Pointer.Brush.Color = clBlack
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'PreddmGrain'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'ObsdmGrain'
+        end
+        object Series5: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Style = smsXValue
+          Marks.Visible = False
+          DataSource = RegressionYield
+          SeriesColor = clBlack
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object Series6: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegressionYield
+          SeriesColor = clBlack
+          LinePen.Style = psDash
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text1: TText
+      Left = 34
+      Top = 20
+      Width = 237
+      Height = 58
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        139.507575757576
+        81.780303030303
+        48.1060606060606
+        570.056818181818)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        'Biomass & Grain at maturity, '
+        'all Experiments')
+      Transparent = False
+      WordWrap = True
+      text = 'Biomass & Grain at maturity, '#13#10'all Experiments'#13#10
+      FontSize = 13
+    end
+  end
+end
+]]>
+   </page>
+</report>

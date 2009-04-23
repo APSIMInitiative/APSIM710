@@ -1,0 +1,237 @@
+[reference.report.parameters]
+outputfile =referenc.out
+
+
+! [soil_nitrogen.no3]
+! [reset_no3.no3]
+
+! [soil_water.sw_dep]
+! [reset_sw.sw_dep]
+
+! [temperature.tt_tot]
+! [photoperiod.tt_tot]
+
+! [temperature.lai]
+! [radiation.lai]
+! [soil_moisture.lai]
+! [soil_nitrogen.lai]
+
+! [temperature.biomass]
+! [radiation.biomass]
+! [soil_moisture.biomass]
+! [soil_nitrogen.biomass]
+
+! [soil_moisture.swdef_photo]
+
+! [soil_nitrogen.nfact_photo]
+
+! [sow_msg.crop_status]
+! [kill_crop_msg.crop_status]
+! [end_crop_msg.crop_status]
+
+! [kill_crop_msg.crop_status]
+
+! [harvest_msg.yield]
+
+! [add_residue_msg.residue_wt]
+! [add_residue_msg.residue_n]
+
+! [incorp_fom_msg.fom_c]
+! [incorp_fom_msg.fom_n]
+
+! NIH Additions
+
+
+
+variable = clock.year
+variable = clock.day
+variable = SoilN.no3
+variable = SoilWat.sw_dep
+variable = mungbean.TTAfterSowing
+variable = mungbean.lai
+variable = mungbean.biomass
+variable = tracker1.avg@mungbean_swdef_photo
+variable = tracker1.avg@mungbean_nfact_photo
+variable = mungbean.plant_status
+variable = mungbean.dm_dead()
+variable = mungbean.yield
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_n
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = mungbean.node_no
+variable = mungbean.leaf_no
+variable = mungbean.dlt_leaf_no
+variable = mungbean.dlt_node_no
+variable = mungbean.rlv
+variable = mungbean.root_length()
+variable = mungbean.RootGreenWt
+variable = mungbean.height
+variable = tracker1.sum@mungbean_dlt_n_fixed_pot
+variable = tracker1.sum@mungbean_dlt_n_fixed
+variable = tracker1.sum@mungbean_n_supply_soil
+variable = mungbean.n_conc_crit
+variable = mungbean.n_demand
+variable = mungbean.n_conc_crit
+variable = mungbean.RootGreenWt
+variable = mungbean.RootGreenN
+variable = mungbean.root_depth
+[reference.clock.parameters]
+!start_day = 1
+!start_year = 1986
+start_date=7/10/1990
+end_date=30/5/1994
+
+[reference.SurfaceOM.parameters]
+mass = 500.0 (kg/ha)
+cnr = 80.0 ()
+type = mungbean
+
+name = mungbean
+[reference.mungbean.parameters]
+uptake_source =      calc
+ll =          0.100   0.100   0.100
+kl =          0.080   0.050   0.020
+xf =          1.000   1.000   0.500
+
+[reference.SoilWat.parameters]
+
+runoff_filename =      blank
+insoil =       2.00 ()
+cona =      2.0 ()
+diffus_const =      88.0 ()
+diffus_slope =      35.4 ()
+u =        9.0 ()
+cn2_bare =      75
+cn_red =      20 ()
+cn_cov =      0.8 ()
+cn_canopy_fact =      1.0 ()
+salb =       0.13 ()
+air_dry =         0.050   0.100   0.100
+dlayer =        200.000 400.000 400.000
+ll15 =            0.100   0.100   0.100
+dul =             0.200   0.200   0.200
+sat =             0.300   0.300   0.300
+sw =              0.200   0.200   0.200
+swcon =           0.500   0.500   0.500
+bd =              1.00    1.000   1.000
+
+[reference.SoilN.parameters]
+
+amp =            4.1   (oC)
+tav =           19.1   (oC)
+root_cn =       45.0   ()
+root_wt =      1000.0   (kg/ha)
+soil_cn =      14.5   ()
+ph =              7.000   7.000   7.000
+no3ppm =          1.000   1.000   1.000
+nh4ppm =          1.000   1.000   1.000
+ureappm =         0.000   0.000   0.000
+oc =              1.200   1.000   0.500
+fbiom =           0.030   0.020   0.010
+finert =          0.400   0.500   0.999
+enr_a_coeff =         7.4  ()
+enr_b_coeff =         0.2  ()
+profile_reduction =      on
+
+[reference.manager.init]
+
+[reference.manager.start_of_day]
+
+     if year = 1990 and day = 280 then
+        ! The first crop is a high yielding crop - spring sowing, no stress (i.e. irrigated)/high population
+        ! ------------------------------------------------------------------
+        ! [sow_msg.sow] - crop should initiate when sown
+        mungbean sow crop_class = plant, cultivar = emerald, plants = 40, sowing_depth = 50
+        SoilWat set sw = 0.15 0.15 0.1
+        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        surfaceom tillage type = burn      ! Remove noise from residues
+        irrigation set crit_fr_asw = 0.9
+        irrigation set asw_depth = 900
+        irrigation set automatic_irrigation = on
+        Fertiliser apply amount = 200, type = no3_n, depth = 5
+        report do_output
+!     elseif year = 1990 and day = 300 then
+!        mungbean spray
+
+     elseif year = 1992 and day = 10 then
+        ! The Second crop is winter sown - no stress/lower population
+        ! ---------------------------------------------------------
+        mungbean sow cultivar = emerald, plants = 20, sowing_depth = 50
+        SoilWat set sw = 0.15 0.15 0.1
+        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        surfaceom tillage type = burn      ! Remove noise from residues
+        irrigation set crit_fr_asw = 0.9
+        irrigation set asw_depth = 900
+        irrigation set automatic_irrigation = on
+        Fertiliser apply amount = 100, type = no3_n, depth = 5
+        report do_output
+
+     elseif year = 1993 and day = 10 then
+        ! The Third crop fails due to water stress - High stress/high population
+        ! -----------------------------------------------------------------------
+        ! [soil_moisture.sw_dep] - water stress contributes to crop failure
+        ! [soil_nitrogen.no3]    - N stress contributes to crop failure
+        mungbean sow cultivar = emerald, plants = 40, sowing_depth = 50
+        SoilWat set sw = 0.15 0.15 0.1
+        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        surfaceom tillage type = burn      ! Remove noise from residues
+        report do_output
+
+     elseif year = 1994 and day = 30 then
+        ! The Fourth has medium water supply - some stress/low population
+        ! ---------------------------------------------------------------------
+        ! [soil_moisture.sw_dep] - water stress contributes to growth reduction
+        ! [soil_nitrogen.no3]    - N stress contributes to growth reduction
+        ! [reset_sw.dlt_sw_dep]  - soil water should decrease with extraction
+        ! [reset_no3.dlt_no3]    - soil N should decrease with extraction
+        mungbean sow cultivar = emerald, plants = 20, sowing_depth = 50
+        SoilWat set sw = 0.15 0.15 0.1
+        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        irrigation set crit_fr_asw = 0.4
+        irrigation set asw_depth = 900
+        irrigation set automatic_irrigation = on
+        surfaceom tillage type = burn      ! Remove noise from residues
+        report do_output
+
+     endif
+
+[reference.manager.end_of_day]
+
+!     if mungbean.DaysAfterEmergence > 0 and mungbean.DaysAfterEmergence <= 1 then
+!        mungbean.crop_class = 'supermung'
+!     endif
+
+     if (mungbean.plant_status = 'dead') then
+        ! [end_crop_msg.end_crop] - end crop should remove crop altogether
+        ! [add_residue_msg.add_reside] - should place residues on soil surface
+        ! [incorp_fom_msg.incorp_fom] - should incorporate dead roots
+        mungbean    end_crop
+        report do_output
+     elseif (mungbean.stage = 10) then
+        ! harvest and kill the crop
+        ! do not end it until we have the chance to report
+        ! the effects of these two messages
+        ! [harvest_msg.harvest] - harvesting should remove grain
+        ! [kill_crop_msg.kill_crop] - kill crop should change plant status
+        mungbean    harvest
+        mungbean    kill_crop
+        report do_output
+
+     elseif days_since_last_report = 7 then
+        report do_output
+     endif
+
+
+[reference.SummaryFile.parameters]
+summaryfile = referenc.sum
+[reference.tracker1.parameters]
+variable = average of mungbean.swdef_photo on process from report.reported to now as avg@mungbean_swdef_photo
+variable = average of mungbean.nfact_photo on process from report.reported to now as avg@mungbean_nfact_photo
+variable = sum of mungbean.dlt_n_fixed_pot on process from report.reported to now as sum@mungbean_dlt_n_fixed_pot
+variable = sum of mungbean.dlt_n_fixed on process from report.reported to now as sum@mungbean_dlt_n_fixed
+variable = sum of mungbean.n_supply_soil on process from report.reported to now as sum@mungbean_n_supply_soil

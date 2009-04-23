@@ -1,0 +1,67 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = PatchInput3 Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "patch" = %apsim%\Model\PatchInput.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Using start date from the met file.
+     Using end date from the met file.
+     Simulation start date =  1/01/1988
+     Simulation end date   = 30/04/1990
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        met.site
+        clock.year
+        clock.day
+        met.radn
+        met.maxt
+        met.mint
+        met.rain
+        patch.patch_rain
+
+     Output file = PatchInput3.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- patch Initialisation --------------------------------------------------
+     Sparse data is allowed
+     INPUT File name: patch3.dat
+------- Start of simulation  --------------------------------------------------
+30 April 1990(Day of year=120), clock: 
+     Simulation is terminating due to end criteria being met.

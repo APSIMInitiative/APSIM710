@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3B17567C-6BD0-49F0-BB5F-B757F696F71A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Actions</RootNamespace>
+    <AssemblyName>Actions</AssemblyName>
+    <MyType>Windows</MyType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>..\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TMGDevelopment.PrintForm, Version=2.1.0.4, Culture=neutral, PublicKeyToken=cb51e09df98aa227" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApsimUIActions.vb" />
+    <Compile Include="BaseActions.vb" />
+    <Compile Include="SoilActions.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ApsimFile\ApsimFile.csproj">
+      <Project>{416A3885-FD38-46D0-BE42-54AA33D146B7}</Project>
+      <Name>ApsimFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Controllers\Controllers.vbproj">
+      <Project>{988E68C0-5735-4849-9447-BEABDEE5BCBA}</Project>
+      <Name>Controllers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSGeneral\CSGeneral.csproj">
+      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
+      <Name>CSGeneral</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSUserInterface\CSUserInterface.csproj">
+      <Project>{25C8E90E-D464-4F49-B29E-2811F1B266DE}</Project>
+      <Name>CSUserInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIBits\UIBits.csproj">
+      <Project>{29210E34-C94B-459F-A926-8203411B93BD}</Project>
+      <Name>UIBits</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIUtility\UIUtility.csproj">
+      <Project>{BD0D614A-2EF9-411B-9884-F1EBD349A0C8}</Project>
+      <Name>UIUtility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="My Project\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

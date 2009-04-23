@@ -1,0 +1,69 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Birchip Systems Trial Site
+
+[300mm.SoilWat.parameters]
+wet_soil_depth = 300
+
+[birchip.wheat.parameters]                                           !PLP version
+ ll  = 0.172  0.205  0.224  0.244  0.274  0.274  0.300  0.390    !Neal's new values 26-03-03
+ kl  = 0.080  0.080  0.060  0.060  0.060  0.060  0.040  0.030    !original
+ xf  = 1.000  1.000  0.786  0.504  0.339  0.305  0.305  0.191    !ESP factor applied against 1.0
+
+[birchip.SoilWat.parameters]
+
+   max_evap        =  6      (mm)   ! maximum evaporation.
+   runoff_filename = blank          ! input measured runoff?
+   cona            =  3.0    ()     ! 3.5 stage 2 evap coef. PLP 3.0 winter value
+   diffus_const    = 40.0    ()     ! coeffs for dbar
+   diffus_slope    = 16.0    ()     !     "
+   u               =  6      (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            =  0.13   ()     ! bare soil albedo
+
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        = 73      ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20      ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8     ()     ! frac. cover for "cn_red" reduction in cover
+                                    ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0      ()     !  1.0 = canopy cover is fully effective in reducing runoff
+                                    !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+   ! layer      1       2       3       4       5       6       7      8
+   ! Depth    100     250     400     550     700     850    1000    1150
+   dlayer  =  100.000 150.000 150.000 150.000 150.000 150.000 150.000 150.00   (mm)    ! (NPD mod-300102*115cm deep profile) layer depth
+   air_dry =    0.100   0.205   0.224   0.244   0.274   0.274   0.300   0.390  (mm/mm) ! (NPD mod-300102*)air dry
+   ll15    =    0.172   0.205   0.224   0.244   0.274   0.274   0.300   0.390  (mm/mm) ! (PLP Neal's ne values
+   dul     =    0.380   0.370   0.384   0.386   0.381   0.381   0.388   0.391  (mm/mm) ! (NPD mod-300102*)-layer 7 mean of 2 x 15cm layers)
+   sat     =    0.430   0.420   0.430   0.436   0.431   0.431   0.439   0.439  (mm/mm) ! (NPD mod-300102*)saturated soil water
+!   sw      =    0.380   0.370   0.384   0.386   0.381   0.381   0.388   0.390  (mm/mm) ! (NPD mod-300102*)initial sw
+   swcon   =    0.700   0.300   0.300   0.300   0.300   0.300   0.300   0.300
+   bd      =    1.330   1.36    1.39    1.42    1.44    1.43    1.41    1.40   (g/cc)  ! (NPD mod-300102*)bulk density gm dry soil/cc moist soil
+!   insoil = 1.0
+
+[birchip.SoilN.parameters]
+
+   root_cn           =   45.0   ()         !
+   root_wt           = 1500.0   (kg/ha)    !
+   soil_cn           =   12.5   ()         ! soil humic pool C:N ratio
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+      ! layer        1       2       3       4       5       6      7     8
+   oc      =     1.050   0.450   0.300   0.250   0.200   0.160   0.120  0.120  ()    ! organic carbon
+   ph      =     8.500   8.800   8.900   8.900   8.900   8.900   8.900  8.900  ()    ! (NPD mod-300102* P25 data from 151101) ph
+   fbiom   =     0.025   0.020   0.015   0.010   0.010   0.010   0.010  0.010  ()    ! microbe fraction of hunic pool
+   finert  =     0.400   0.600   0.800   0.900   0.900   0.900   0.950  0.950        ! inert fraction of humic pool
+   ureappm =     0.000   0.000   0.000   0.000   0.000   0.000   0.000  0.000  (ppm) ! ppm urea
+   nh4ppm  =     1.240   0.180   0.180   0.130   0.110   0.160   0.160  0.160  ()    ! ppm ammonia
+   no3ppm  =     20.00   10.90    2.90    1.200   1.300   1.100   1.000  1.000  ()    ! ppm nitrate (NPD mod-300102*P25 data)
+

@@ -1,0 +1,128 @@
+<folder version="15" name="Graph" image="%apsim%\UserInterface\Images\Chart24.png">
+  <folder name="Graphs">
+     <Graph name="XY">
+       <Plot name="">
+         <SeriesType>Solid line</SeriesType>
+         <PointType>Circle</PointType>
+         <GDApsimFileReader name="ApsimFileReader"/>
+       </Plot>
+     </Graph>
+     <Graph name="Probability Exceedence">
+       <Plot name="">
+         <SeriesType>Solid line</SeriesType>
+         <PointType>None</PointType>
+         <Y>Probability</Y>
+         <GDProbability>
+           <GDApsimFileReader name="ApsimFileReader"/>
+           <Exceedence>Yes</Exceedence>
+         </GDProbability>
+       </Plot>
+     </Graph>
+     <Graph name="CDF Chart">
+       <Plot name="">
+         <SeriesType>Solid line</SeriesType>
+         <PointType>None</PointType>
+         <Y>Probability</Y>
+         <GDProbability>
+           <GDApsimFileReader name="ApsimFileReader"/>
+           <Exceedence>No</Exceedence>
+         </GDProbability>
+       </Plot>
+     </Graph>
+    <Graph name="Box Plot">
+      <Plot>
+        <SeriesType>Box</SeriesType>
+        <PointType>None</PointType>
+        <X>Title</X>
+        <GDProbability name="Probability Exceedence">
+          <Exceedence>Yes</Exceedence>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </GDProbability>
+      </Plot>
+    </Graph>
+    <Graph name="SOI Probability Exceedence">
+      <Plot>
+        <Y>Probability</Y>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <GDProbability name="Probability Exceedence">
+          <Exceedence>Yes</Exceedence>
+          <GDSOI name="SOI">
+            <Month>1</Month>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDSOI>
+        </GDProbability>
+      </Plot>
+    </Graph>
+    <Graph name="SOI CDF">
+      <Plot>
+        <Y>Probability</Y>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <GDProbability name="Probability Exceedence">
+          <Exceedence>No</Exceedence>
+          <GDSOI name="SOI">
+            <Month>1</Month>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDSOI>
+        </GDProbability>
+      </Plot>
+    </Graph>
+    <Graph name="SOI Box Plot">
+      <Plot>
+        <SeriesType>Box</SeriesType>
+        <PointType>None</PointType>
+        <X>Title</X>
+        <GDProbability name="Probability Exceedence">
+          <Exceedence>Yes</Exceedence>
+          <GDSOI name="SOI">
+            <Month>1</Month>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </GDSOI>
+        </GDProbability>
+      </Plot>
+    </Graph>
+     <Graph name="Depth">
+       <Plot>
+         <SeriesType>Solid line</SeriesType>
+         <PointType>None</PointType>
+         <Y>Depth</Y>
+         <GDDepth name="Depth">
+           <AllXOnTopAxis>Yes</AllXOnTopAxis>
+           <Date>28/10/1943</Date>
+           <GDApsimFileReader name="ApsimFileReader" />
+         </GDDepth>
+       </Plot>
+     </Graph>
+      <RegressionGraph name="PredictedObserved">
+        <Plot>
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <GDPredObs name="PredictedObserved">
+            <GDApsimFileReader name="Observed">
+              <FileName></FileName>
+            </GDApsimFileReader>
+            <GDApsimFileReader name="Predicted">
+              <FileName></FileName>
+            </GDApsimFileReader>
+          </GDPredObs>
+        </Plot>
+      </RegressionGraph>
+
+  </folder>
+  <folder name="GraphBits">
+     <Graph/>
+     <RegressionGraph/>
+     <Plot/>
+     <GDApsimFileReader name="ApsimFileReader"/>
+     <GDProbability name="CDF"><Exceedence>No</Exceedence></GDProbability>
+     <GDProbability name="Probability Exceedence"><Exceedence>Yes</Exceedence></GDProbability>
+     <GDSOI name="SOI"><Month>1</Month></GDSOI>
+     <GDDepth name="Depth"><date>1/1/2000</date></GDDepth>
+     <GDFilter name="Filter"></GDFilter>
+     <GDPredObs name="PredictedObserved"></GDPredObs>
+     <GraphReport/>
+  </folder>
+</folder>

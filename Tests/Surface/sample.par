@@ -1,0 +1,169 @@
+[sample.surface.parameters]
+model_no =  2
+precip_const =  25.
+effpar =  0.184
+seal_decay_rate =  0.0021071
+rr_decay_rate =  0.0021071
+rr_max =  3.9
+rr_min =  0.02
+
+
+[sample.report.parameters]
+
+
+outputfile =sample.out
+
+variable = clock.day
+variable = SWIM2.scon
+variable = surface.rr
+[sample.clock.parameters]
+start_date=1/1/1995
+end_date=31/1/1995
+
+
+[sample.manager.start_of_day]
+if (day = 1) then
+   slurp sow cultivar=slurpcultivar
+endif
+if day = 10 or day = 20 then
+   SWIM2 tillage
+endif
+
+[sample.manager.end_of_day]
+report do_output
+
+[sample.SWIM2.init]
+! -------------------- initial layer information ----------------------
+
+x =             0   10   50  150  300  450  600  750  900 1200 1500 1800 2000
+soil_type =  soil1   -    -    -    -    -    -    -    -    -    -    - soil1
+psi =        -300 -300 -300 -300 -300 -300 -300 -300 -300 -300 -300 -300 -300
+
+slmin =  -3.0
+slmax =  7.0
+
+bypass_flow =  off   ! Bypass Flow  - On/Off
+                              !
+runoff =      2   ! Runoff Flag  - 0) No ponding (all runoff)
+                              ! -----------    1) All ponded (no runoff)
+                              !                2) Use runoff functions
+                              !
+top_boundary_condition =  2   ! Surface Flag - 0) infinite surface conductance
+                              ! ------------   1) constant potential
+                              !                2) conductance function
+                              !
+bottom_boundary_condition =  0   ! Bottom Flag  - 0) constant gradient
+                              ! -----------    1) water table
+                              !                2) zero flux
+                              !                3) free drainage (seepage)
+
+vapour_conductivity =  off   ! Vapour Conductivity flag (0=off, 1=on)
+                              ! ------------------------
+
+run_solutes = none   ! solutes to be moved by SWIM during simulation
+
+! --------------------- soil type information -------------------------
+[sample.SWIM2.soil1]
+sl =   -3.000000  0.300000  1.000000  1.382826  1.522915  3.193159  5.424551  7.000000
+wc =    0.370000  0.369841  0.365994  0.346648  0.325635  0.124500  0.034460  0.013914
+wcd =   0.000000 -0.000734 -0.018447 -0.107542 -0.187450 -0.071668 -0.019837 -0.008010
+hkl =   2.113943  2.111884  2.061942  1.802495  1.503760 -3.089412 -9.225739 -13.558224
+hkld =  -0.000000 -0.009486 -0.240784 -1.482061 -2.750000 -2.750000 -2.750000 -2.750000
+
+bulk_density =  1
+
+                  ! ---------------------------
+solute_name =                      cl   br no3
+                  ! ---------------------------
+exco =                              0    0    0
+fip =                               1    1    1
+dis =                               2    2    2
+alpha =                             0    0    0
+beta =                              0    0    0
+                  ! ---------------------------
+
+! ---------------------- solute information ---------------------------
+[sample.SWIM2.solute]
+
+               ! ----------------------------
+solute_name =                    cl   br no3
+               ! ----------------------------
+slupf =                           1    1    1
+slos =                         0.001 0.001 0.001
+d0 =                              0    0    0
+a =                               0    0    0
+dthc =                            0    0    0
+dthp =                            1    1    1
+disp =                            1    1    1
+ground_water_conc =               0    0    0
+               ! ----------------------------
+
+
+! ------------------ swim calculation parameters ---------------------
+[sample.SWIM2.calc]
+dtmin =  0.0   ! min timestep (min)
+dtmax =  30.   ! max timestep (min)
+ersoil =  0.000001   !
+ernode =  0.000001   !
+errex =  0.01   !
+dppl =  2   !
+dpnl =  1   !
+max_water_increment =  1.   ! max water increment (mm)
+swt =  0.0   ! Space Weighting Factor (gravity flow)
+                              ! -------------------------------------
+                              ! 0.5 -> 1.0 (central to fully upstream)
+                              ! < -1 (central diffs by factor of -1*SWF)
+slcerr =  0.000001
+slswt =  0.0
+
+
+! ------------------------ climatic inputs ---------------------------
+[sample.SWIM2.climate]
+rainfall_source =  apsim
+evap_source =  eo
+salb =  0.23
+
+! ------------------------ runoff functions --------------------------
+[sample.SWIM2.runoff]
+maximum_surface_storage =  20   ! (mm)
+minimum_surface_storage =  10   ! (mm)
+initial_surface_storage =  20   ! (mm)
+precipitation_constant =   50   ! (mm)
+runoff_rate_factor =       .2   ! (mm/h)/mm^P
+runoff_rate_power =        2   ! =P ______/
+
+! ------------------- bottom boundary conditions --------------------
+[sample.SWIM2.bottom_boundary]
+constant_gradient =    0
+
+! --------------------- top boundary conditions ---------------------
+[sample.SWIM2.top_boundary]
+maximum_conductance =  3.9   ! (/h) initial soil surface conductance
+minimum_conductance =  .02   ! (/h) minimum soil surface conductance
+initial_conductance =  3.9   ! (/h) initial soil surface conductance
+precipitation_constant =  25.   ! (mm)
+
+! -------------------------- bypass flow ---------------------------
+[sample.SWIM2.bypass_flow]
+depth =       11   ! (node number)
+conductance =  .10   ! (??)
+storage =     .10   ! (cm water/cm of +ve Psi)
+
+[sample.SWIM2.crop]
+   ! ------------------------------------------
+crop_name =                  wheat sugar   tree
+   ! ------------------------------------------
+min_xylem_potential =      -1500. -1500. -1500.
+root_radius =                 1      1      1
+root_conductance =         1.4d-7 1.4d-7 1.4d-7
+   ! ------------------------------------------
+
+[sample.SummaryFile.parameters]
+summaryfile=sample.sum
+
+[sample.micromet.parameters]
+soil_albedo = 0.23
+a_interception = 0.0
+b_interception = 0.0
+c_interception = 0.0
+d_interception = 0.0

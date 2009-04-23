@@ -1,0 +1,688 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Paddy Transplanted Aman
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                "climatechange" = %apsim%\Model\Manager.dll
+Paddock:
+   Component                       "Output" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component             "Rice sowing rule" = %apsim%\Model\Manager.dll
+   Component             "Fertilise_sowing" = %apsim%\Model\Manager.dll
+   Component          "First_Fertilise_DAS" = %apsim%\Model\Manager.dll
+   Component         "Second_Fertilise_DAS" = %apsim%\Model\Manager.dll
+   Component          "Third_Fertilise_DAS" = %apsim%\Model\Manager.dll
+   Component      "BholaSouthBalia06 Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component   "BholaSouthBalia06 Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "rice" = %apsim%\Model\Oryza.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 30/06/1989
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\bhola.met
+
+------- climatechange Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+        co2 = 350
+     
+     SECTION:- prenewmet
+        met.maxt = met.maxt + 0
+        met.mint = met.mint + 0
+        met.rain = met.rain * 1
+        met.radn = met.radn * 1.5
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 350.00000
+
+------- Output Initialisation -------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        year
+        crop_type
+        DaysAfterSowing
+        dae as Rice.DaysAfterSowing
+        cropsta
+        wagt
+        wso
+        rlai
+        zrt
+        ldstrs
+        lestrs
+        lrstrs
+        ancr
+        irrigation_amount as irrig
+        evap_amount 
+        biomass
+        yield
+        TopsTotalN
+        esw
+        tnsoil as N_avail_4_rice
+        NO3()
+        surfaceom_wt
+        water_table
+
+     Output file = Paddy Transplanted Aman Output.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.60
+           depth for calculating available soil water =     500.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Rice sowing rule Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     irrigation_amount = 0
+     evap_amount = 0
+     
+     SECTION:- start_of_day
+     if (day = 213) then
+         rice sow cultivar = br23, establishment = transplant, sbdur = 44, nplh = 4 , nh = 28, nplsb = 112
+     endif
+     
+     SECTION:- end_of_day
+     if (rice.plant_status = 'dead') then
+       rice end_crop
+       irrigation_amount = 0
+       evap_amount = 0
+       surfaceom tillage type = burn, remove = 0.95
+     endif
+      irrigation_amount = irrigation_amount + irrig_tot
+      evap_amount = evap_amount + es
+     END of rules
+     
+     Manager creating a new local real variable : irrigation_amount = 0.00000
+     Manager creating a new local real variable : evap_amount = 0.00000
+
+------- Fertilise_sowing Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('15-aug') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- First_Fertilise_DAS Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('15-aug') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 25 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Second_Fertilise_DAS Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('30-aug') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 30 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Third_Fertilise_DAS Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('15-sep') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 50 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- BholaSouthBalia06 Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     diffus_slope =     188.0000
+             exceeds upper limit of    100.0000
+     Component name: BholaSouthBalia06 Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mwcon is being replaced with a saturated conductivity. See documentation for details.
+     Component name: BholaSouthBalia06 Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.180  0.180  0.345  0.420  0.340  1.458  0.762  0.100
+          150.-  300.  0.190  0.190  0.311  0.461  0.284  1.348  0.190  0.100
+          300.-  600.  0.190  0.200  0.387  0.437  0.382  1.413  0.048  0.100
+          600.-  900.  0.200  0.250  0.392  0.442  0.426  1.400  0.000  0.100
+          900.- 1200.  0.250  0.270  0.407  0.457  0.422  1.360  0.000  0.100
+         1200.- 1500.  0.280  0.300  0.407  0.457  0.451  1.320  0.000  0.100
+         1500.- 1800.  0.300  0.340  0.407  0.457  0.425  1.320  0.000  0.100
+         1800.- 2300.  0.340  0.380  0.410  0.457  0.425  1.320  0.000  0.100
+         2300.- 2800.  0.360  0.380  0.410  0.457  0.425  1.320  0.000  0.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      27.00      24.00      24.75      11.25
+          150.-  300.      28.50      14.10      18.15      22.50
+          300.-  600.      60.00      54.60      56.10      15.00
+          600.-  900.      75.00      52.80      42.60      15.00
+          900.- 1200.      81.00      45.60      41.10      15.00
+         1200.- 1500.      90.00      45.30      32.10      15.00
+         1500.- 1800.     102.00      25.50      20.10      15.00
+         1800.- 2300.     190.00      22.50      15.00      23.50
+         2300.- 2800.     190.00      22.50      15.00      23.50
+          ---------------------------------------------------------
+               Totals     843.50     306.90     264.90     155.75
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.14      450.00      188.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              84.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     2.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- BholaSouthBalia06 Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  1.50    0.87    1.31    0.00
+             2     7.00  1.20    1.21    0.20    0.00
+             3     7.40  0.75    2.54    0.42    0.00
+             4     8.10  0.38    1.26    0.42    0.00
+             5     8.30  0.23    2.86    0.41    0.00
+             6     8.50  0.15    1.58    0.40    0.00
+             7     8.50  0.15    0.40    0.40    0.00
+             8     8.50  0.15    0.66    0.66    0.00
+             9     8.50  0.15    0.66    0.66    0.00
+          ------------------------------------------------
+           Totals               12.05    4.88    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      32048.0  2563.8   757.0    94.6   157.7     3.9
+             2      24073.7  1925.9   190.3    23.8   134.2     3.4
+             3      31667.8  2533.4   124.7    15.6    97.3     2.4
+             4      15928.7  1274.3    31.3     3.9    70.6     1.8
+             5       9384.0   750.7     0.0     0.0    51.2     1.3
+             6       5940.0   475.2     0.0     0.0    37.1     0.9
+             7       5940.0   475.2     0.0     0.0    26.9     0.7
+             8       9900.0   792.0     0.0     0.0    15.7     0.4
+             9       9900.0   792.0     0.0     0.0     9.2     0.2
+          ---------------------------------------------------------
+           Totals  144782.2 11582.6  1103.3   137.9   600.0    15.0
+          ---------------------------------------------------------
+
+------- rice Initialisation ---------------------------------------------------
+        - Initialising
+------- Start of simulation  --------------------------------------------------
+31 July 1988(Day of year=213), Rice sowing rule: 
+     Manager sending message :- rice sow  cultivar = br23, establishment = transplant, sbdur = 44, nplh = 4, nh = 28, nplsb = 112
+31 July 1988(Day of year=213), rice: 
+        - Reading Parameters
+        - Reading br23 Cultivar Parameters
+        - Reading transplant Establishment Parameters
+        Duration of seed on nursery bed: 44 (days)
+        Number of plants per hill:   4.0 ()
+        Number of hills:  28.0 ()
+        Number of plants in seedbed: 112.0 (/m2)
+31 July 1988(Day of year=213): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96194    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 August 1988(Day of year=228), Fertilise_sowing: 
+     Manager creating a new local real variable : n_topsoil = 33.06851
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+15 August 1988(Day of year=228), First_Fertilise_DAS: 
+     Manager sending message :- fertiliser apply  amount = 25 (kg/ha), depth = 50 (mm), type = urea_n
+15 August 1988(Day of year=228), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        25.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+30 August 1988(Day of year=243), Second_Fertilise_DAS: 
+     Manager sending message :- fertiliser apply  amount = 30 (kg/ha), depth = 50 (mm), type = urea_n
+30 August 1988(Day of year=243), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+15 September 1988(Day of year=259), Third_Fertilise_DAS: 
+     Manager sending message :- fertiliser apply  amount = 50 (kg/ha), depth = 50 (mm), type = urea_n
+15 September 1988(Day of year=259), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+8 October 1988(Day of year=282): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94702    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 October 1988(Day of year=283): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94651    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 October 1988(Day of year=284): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96603    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 October 1988(Day of year=288): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.92364    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 October 1988(Day of year=296): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.95060    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 October 1988(Day of year=297): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.95541    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 October 1988(Day of year=298): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.95490    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 October 1988(Day of year=299): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.95436    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 October 1988(Day of year=300): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96463    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 October 1988(Day of year=301): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96409    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 October 1988(Day of year=302): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.95804    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 October 1988(Day of year=303): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.97391    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 October 1988(Day of year=304): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96778    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 October 1988(Day of year=305): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.97267    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 November 1988(Day of year=306): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.92171    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 November 1988(Day of year=310): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94021    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 November 1988(Day of year=312): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94367    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 November 1988(Day of year=313): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.95401    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 November 1988(Day of year=314): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94696    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 November 1988(Day of year=315): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.95728    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 November 1988(Day of year=316): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.93831    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 November 1988(Day of year=319): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94530    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 November 1988(Day of year=320): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94950    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 November 1988(Day of year=321): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94765    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 November 1988(Day of year=325): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.93919    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 November 1988(Day of year=326): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94904    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 November 1988(Day of year=327): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96500    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 November 1988(Day of year=328): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96247    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 November 1988(Day of year=329): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.94123    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 November 1988(Day of year=330): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      Oryza_SSKYC: ATMTR = 0.96322    , value very large
+     Component name: rice
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 November 1988(Day of year=331), rice: 
+     Maturity
+26 November 1988(Day of year=331), Rice sowing rule: 
+     Manager sending message :- rice end_crop
+         Crop ended. Rough Rice Yield (dw) =  9384.9 (kg/ha)
+                             straw residue =  7515.4 (kg/ha)
+                             straw N       =    27.0 (kg/ha)
+                             root residue  =  1603.2 (kg/ha)
+                             root N        =     5.9 (kg/ha)
+     Manager sending message :- surfaceom tillage  type = burn, remove = 0.95
+26 November 1988(Day of year=331), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using burn
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+30 June 1989(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.

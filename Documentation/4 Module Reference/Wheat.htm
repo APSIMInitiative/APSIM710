@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM-Wheat Module - (Wheat)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p align="left" class="Title1">The APSIM-Wheat Module - (Wheat)</p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Title2">WHEAT Module Scope</p>
+<p align="left" class="Normal"><strong>APSIM-Wheat </strong>module simulates the growth and development of a wheat crop in a daily time-step on an area basis (per square meter, not single plant). Wheat growth and development in this module respond to weather (radiation, temperature), soil water and soil nitrogen. The wheat module returns information on its soil water and nitrogen uptake to the soil water and nitrogen modules on a daily basis for reset of these systems. Information on crop cover is also provided to the water balance module for calculation of evaporation rates and runoff. Wheat stover and root residues are ‘passed' from wheat to the surface residue and soil nitrogen modules respectively at harvest of the wheat crop. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Approaches used in modelling crop processes balance the need for comprehensive description of the observed variation in crop performance over diverse production environments and the need to avoid reductionist approaches of ever-greater complexity with large numbers of parameters that are difficult to measure. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">A list of the module outputs is provided in the ‘Wheat module outputs' section below. Basically the module simulates phenological development, leaf area growth, biomass and N concentration of leaves, stems, roots and grains on a daily basis. It also predicts grain size and grain number. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Title2">Wheat Module History</p>
+<p align="left" class="Normal">APSIM-Wheat was developed from a combination of the approaches used in previous APSIM wheat modules: Asseng et al. 1998a,b, Meinke et al. 1997a,b and Wang et al. 2003. The current version of the model is implemented within the APSIM Plant model framework which is currently used for other crops such as grain legumes and canola. Most of the model constants (species-specific) and parameters (cultivar specific) are externalised from the code. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Title2">Wheat Module Structure</p>
+<p align="left" class="Normal">Figure 1 shows the modular structure of APSIM-Wheat. </p>
+<p align="left"><img width="514" height="1076" src="Wheat/wheat_science_clip_image001_0001.gif"></p>
+<p align="left" class="Title2">Wheat Module Components</p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Phenology</strong></p>
+<p align="left" class="Normal">APSIM-Wheat uses 11 crop stages and ten phases (time between stages). It can output stage code and names as well as equivalent Zadok's stage. Table 2 lists the stage code, name and the key processes starting at the commencement of each stage. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Table 2: Stages of phenological development simulated in APSIM_Wheat. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<div align="left">
+  <table cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal"><strong>Stage Code </strong></p></td>
+      <td width="142" valign="top"><p class="Normal"><strong>Stage Name </strong></p></td>
+      <td width="255" valign="top"><p class="Normal"><strong>Starting processes </strong></p></td>
+      <td width="85" valign="top"><p align="center" class="Normal"><strong>Equivalent Zadok's </strong></p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">1 </p></td>
+      <td width="142" valign="top"><p class="Normal">Sowing </p></td>
+      <td width="255" valign="top"><p class="Normal">Seed germination </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">0 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">2 </p></td>
+      <td width="142" valign="top"><p class="Normal">Germination </p></td>
+      <td width="255" valign="top"><p class="Normal">Emergence, leaf initiation </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">5 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">3 </p></td>
+      <td width="142" valign="top"><p class="Normal">Emergence </p></td>
+      <td width="255" valign="top"><p class="Normal">Vegetative growth (LAI, DM), water/N uptake </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">10 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">4 </p></td>
+      <td width="142" valign="top"><p class="Normal">End of Juvenile Stage </p></td>
+      <td width="255" valign="top"><p class="Normal">Photoperiodism </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">10 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">5 </p></td>
+      <td width="142" valign="top"><p class="Normal">Floral Initiation / terminal spikelet* </p></td>
+      <td width="255" valign="top"><p class="Normal">Spikelet initiation / </p>
+          <p class="Normal">Rapid stem growth </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">15 / </p>
+          <p align="center" class="Normal">30 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">6 </p></td>
+      <td width="142" valign="top"><p class="Normal">Anthesis </p></td>
+      <td width="255" valign="top"><p class="Normal">Setting grain numbers </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">60 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">7 </p></td>
+      <td width="142" valign="top"><p class="Normal">Start of Grain Filling </p></td>
+      <td width="255" valign="top"><p class="Normal">Active grain growth </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">71 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">8 </p></td>
+      <td width="142" valign="top"><p class="Normal">End of Grain Filling </p></td>
+      <td width="255" valign="top"><p class="Normal">Maturity </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">87 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">9 </p></td>
+      <td width="142" valign="top"><p class="Normal">Physiological Maturity </p></td>
+      <td width="255" valign="top"><p class="Normal">Grain moisture loss </p></td>
+      <td width="85" valign="top"><p align="center" class="Normal">90 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">10 </p></td>
+      <td width="142" valign="top"><p class="Normal">Harvest Ripe </p></td>
+      <td width="255" valign="top"></td>
+      <td width="85" valign="top"><p align="center" class="Normal">93 </p></td>
+    </tr>
+    <tr>
+      <td width="85" valign="top"><p align="center" class="Normal">11 </p></td>
+      <td width="142" valign="top"><p class="Normal">End Crop </p></td>
+      <td width="255" valign="top"></td>
+      <td width="85" valign="top"><p align="center" class="Normal">100 </p></td>
+    </tr>
+  </table>
+</div>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>*Because the CERES-Wheat phenology approach is used (see text below), terminal spikelet, instead of floral initiation, is simulated in the current wheat model. </em></p>
+<p align="left" class="Normal">The commencement of each stage (except for sowing to germination, which is driven by soil water content) is determined by accumulation of thermal time. Each day the phenology routines calculate today's thermal time (in degree-days) from 3-hourly air temperatures interpolated from the daily maximum and minimum crown temperatures. Crown temperatures are simulated according to the original routines in CERES-Wheat. Thermal time is calculated using the relationship in Figure 2 with the eight 3-hour estimates averaged to obtain the daily value of thermal time (in degree-days) for the day. These daily thermal time values are cumulated into a thermal time sum, which is used to determine the duration of each phase. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><img width="309" height="214" src="Wheat/wheat_science_clip_image016.gif"></p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Figure 2. Relationship between crown temperature and thermal time used in APSIM-Wheat.</p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Between the stage of emergence and flowering the calculated daily_thermal_time can be reduced by water or nitrogen stresses, resulting in delayed phenology when the plant is under stress. These stress factors can be specified in wheat.ini by changing the values of <em>x_sw_avail_ratio/y_swdef_pheno </em> and <em>N_fact_pheno </em>. Currently these values are set so that there are no water and nitrogen stress effects on phenological development. Research showed that moderate water stress may accelerate development, while severe water stress may delay phenology (Angus, 1977). </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Germination is considered as a quick process. Germination is assumed to occur as long as the extractable soil water in the seed layer is above a given value <em>pesw_germ </em> specified in Wheat.ini. <em>pesw_germ </em>is the soil water content above the crop lower limit (mm/mm) in the seed layer inadequate for germination. The default setting is zero, meaning that germination will occur one day after sowing regardless of soil water content. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">The phase between germination and emergence includes an effect of the depth of sowing on the thermal time target. The phase is comprised of an initial period of fixed thermal time during which shoot elongation is slow (the “lag” phase) and a linear period, where the rate of shoot elongation towards the soil surface is linearly related to air temperature (measured in o Cd mm -1 ). Most studies on seedling emergence have simply recorded the accumulated thermal time between germination and 50% emergence from a given sowing depth. For the purposes of model parameterisation the value of <em>shoot_lag </em> has been assumed to be around 40 o Cd, while <em>shoot_rate </em> has been derived from studies where thermal time to emergence was measured and where sowing depth was known and it is set to 1.5 o Cd per mm. This means that at a sowing depth of 4 cm emergence occurs 100 o Cd after germination (40+1.5*40). </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">There is the capability of increasing the time taken to reach emergence due to a dry soil layer in which the seed is germinating, through the relationship between <em>fasw_emerg </em> and <em>rel_emerg_rate </em>. Currently this effect is “turned off” in the Wheat.ini file. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">The phase between emergence and end of juvenile stage is composed of a cultivar-specific period of fixed thermal time, commonly called the basic vegetative or juvenile phase, which is a period when development rate is not affected by photoperiod. The end of the juvenile phase in wheat is currently timed as occurring on the day after emergence, because it is known that the development rate of wheat is sensitive to photoperiod from emergence. The end of the juvenile phase is included in the model to make the stages compatible with other cereal crops in APSIM that do have a definable juvenile phase. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">After the end of the juvenile phase the crop takes 400 o Cdays to reach terminal spikelet stage. The rate at which the crop attains this target depends upon photoperiod and vernalisation. The daily rate of accumulation of thermal development rate is sensitive to photoperiod and accumulation of vernalising days. The sensitivities to photoperiod ( <em>photop_sens </em>) and vernalisation ( <em>vern_sens </em>) are cultivar-specific. The model assumes that wheat, as a long day plant, will have a longer phase (dependent upon cultivar) between the end of the juvenile phase and terminal spikelet under short days. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Photoperiod is calculated from day of year and latitude using standard astronomical equations accounting for civil twlight using the parameter <em>twilight, </em> which is assumed to be –6 o . Twilight is defined as the interval between sunrise or sunset and the time when the true centre of the sun is 2.2 degrees below the horizon. </p>
+<p align="left" class="Normal">Vernalisation is simulated from daily average crown temperature and daily maximum and minimum temperatures using the original CERES approach. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Devernalisation can occur if daily maximum temperature is above 30 o C. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">There are fixed thermal time durations for the subsequent phases between terminal spikelet and flag leaf (3 phyllochrons), from flag leaf to flowering (2 phyllochrons + 80 o C days). In the original CERES phenology routines, 2 phyllochrons from flag leaf marked the end of ear growth and then 80 o C days was required to reach anthesis. From flowering to the start of grain fill the thermal duration is assumed to be 120 o C days (= 200-80 o C days, in CERES 200 o C days was assumed to elapse between the end of ear growth and the start of grain filling). The duration of grain filling ( <em>tt_startgf_to_mat </em>) is cultivar specific and usually lies between 500 and 800 o C days. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Biomass accumulation (Photosynthesis) </strong></p>
+<p align="left" class="Normal"><em>Radiation interception </em></p>
+<p align="left" class="Normal">Radiation interception is calculated from leaf area index and a radiation extinction coefficient ( <em>extinct_coeff </em>) that varies with row spacing. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Radiation Use Efficiency </em></p>
+<p align="left" class="Normal">The intercepted radiation is converted to above ground biomass via a RUE (radiation-use efficiency), which is 1.24 g MJ -1 from emergence to the end of grain-filling, and does not vary as a function of daily incident radiation as in NWHEAT. RUE is reduced by extremes of daily mean temperature as sown in the following figure. It is also reduced by a nitrogen stress factor <em>n_fact_photo </em> specified in Wheat.ini. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><img width="349" height="229" src="Wheat/wheat_science_clip_image018.gif"></p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Figure 3: Response of wheat radiation-use efficiency to temperature </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Water-nonlimiting </em></p>
+<p align="left" class="Normal">Under water non-limiting condition, the biomass growth rate is given by: </p>
+<p align="left" class="Normal">dlt_dm_rue = RUE *radiation_interception eqn 1. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Water-limiting </em></p>
+<p align="left" class="Normal">Each day two estimates of the daily biomass production are calculated, one limited by available water for transpiration (eqn 2), and the other limited by radiant energy (eqn 1). The minimum of these two estimates is the actual biomass production for the day. </p>
+<p align="left" class="Normal">dlt_dm_water = soil_ water_ supply * transpiration_efficiency eqn 2. </p>
+<p align="left" class="Normal">dlt_dm = min(dlt_dm_water, dlt_dm_rue) </p>
+<p align="left" class="Normal">transpiration_efficiency is derived from the transpiration_efficiency_coefficient (=0.006 kPa) and the vapour pressure deficit (vpd) estimated from daily temperatures. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Biomass partitioning and retranslocation </strong></p>
+<p align="left" class="Normal"><em>Partitioning </em></p>
+<p align="left" class="Normal">On the day of emergence, biomass in plant parts (leaf, root, and stem) is initialised to user-specified values. Daily biomass production is then partitioned to different plant parts in different ratios depending on crop stage. In the wheat module, leaf includes only leaf blade. Stem is defined in a functional rather than a morphological manner and includes stem proper, leaf sheaths and stem-like petioles. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">The biomass increase calculated each day only accounts for the above ground organs. The minimum fraction of biomass going to roots is calculated from the stage dependent <em>root_shoot_ratio </em> specified in Wheat.ini. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Between emergence and grain filling, the above ground biomass is partitioned to leaf, stem and head based on stage dependant partitioning rules. If, on any day, the estimated specific leaf area (based on leaf biomass and LAI deltas) goes below the minimum specific leaf area, the extra biomass is diverted to stems. </p>
+<p align="left" class="Normal">At anthesis, the number of grains set per plant is determined by the stem weight. From start to end of grain filling biomass increase is used to meet grain demand first, the rest is put into stems. <strong>Grain demand for carbohydrate </strong> (biomass) is calculated by multiplying the grain number by the potential grain growth rate ( <em>potential_grain_filling_rate, g/grain/day </em>) specified in Wheat.ini . </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Re-translocation </em></p>
+<p align="left" class="Normal">If the supply of assimilate (daily biomass increase) is insufficient to meet grain demand then re-translocation may be used to meet the shortfall. The wheat module allows a total retranslocation of no more than 20% of stem biomass present at the start of grainfilling </p>
+<p align="left" class="Normal">Grain yield on a commercial moisture basis is calculated using the parameter <em>grn_water_cont </em> = 0.125. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Leaf initiation/appearance and tillering </strong></p>
+<p align="left" class="Normal">Leaves appear at a fixed phyllochron of thermal time, currently set to 95 o Cd in the wheat.ini. No effect from water and N stress on leaf appearance is accounted for. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"> <strong>Leaf area growth </strong> </p>
+<p align="left" class="Normal">On the day of emergence leaf area per plant is initialised to a value of 200 mm 2 per plant. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Potential LAI growth rate </em></p>
+<p align="left" class="Normal">Potential increase in plant leaf area is calculated from main stem node appearance rate multiplied by the leaf size (as a function of node number) multiplied by the number of leaves per main stem node (i.e. tiller number) </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Leaf area growth rate under stress </em></p>
+<p align="left" class="Normal">Water and nitrogen limitations affect leaf area development directly rather than via dry matter production. Water and nitrogen limitations result in either a reduction of leaf expansion or in number of tillers produced. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Two stress factors are introduced to account for the effect of water and nitrogen stress respectively on leaf area growth. It is assumed that leaf expansion growth is reduced when the supply/demand ratio for water is below 1.1 and stops when supply/demand ratio reaches 0.1. This relationship is specified in Wheat.ini in the look-up table <em>x_sw_demand_ratio/y_swdef_leaf </em>. The nitrogen stress factor is defined as: </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">where n_conc_ratio_leaf is the relative N concentration in leaves (N_conc_leaf - N_conc_leaf_min)/(N_conc_leaf_crit - N_conc_leaf_min). N_fact_expansion is a modifying constant specified in Wheat.ini. It is currently set to 1.0, ie. leaf expansion is reduced once leaf N concentration is below the critical N concentration, and stops when leaf minimum concentration is reached. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">The leaf area growth rate under stress is given by: </p>
+<p align="left" class="Normal">g_dlt_lai_stressed = g_dlt_LAI_pot * min (g_swdef_expansion, g_nfact_expansion) </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Actual leaf area growth rate </em></p>
+<p align="left" class="Normal">Actual leaf area growth rate differs from stressed leaf area expansion rate (g_dlt_lai_stressed) only if carbon supply is insufficient to meet a maximum specific leaf area for the daily increase in leaf area ( <em>sla_max </em>). Carbon supply may become limiting, for example, at high plant population densities. The current model specifies <em>sla_max </em> as varying from 27 000 to 22000 mm 2 g -1 t o constrain daily leaf area increase where carbon is limiting. However, as the value of the maximum specific leaf area operates on the daily increase in leaf area it is not readily derived from experimental data and must be calibrated by trial-and error. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Root growth and distribution</strong></p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Root depth growth </em></p>
+<p align="left" class="Normal">Between germination and start of grain filling, the increase in root depth is a daily rate multiplied by a number of factors. Root depth is constrained by the soil profile depth </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">The optimum rate of elongation is 30mm d -1 . This can be limited by supra- or sub-optimal temperatures. Dry soil can slow roots through a layer if the soil water content is less than 25% of the way between the lower limit and drained upper limit. The increase of root depth through a layer can be constrained by known soil constraints through the use of the 0-1 parameter <strong>xf, </strong>which is input for each soil layer. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Root length density </em></p>
+<p align="left" class="Normal">Growth of root biomass is partitioned with depth using a branching function and converted to root length density using a fixed specific root length of 105,000 mm g -1 . </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Root biomass is grown daily in proportion to the tops production. This proportion ( <em>ratio_root_shoot </em>) is specified for each growth stage, and varies from 1.0 at emergence, to 0.09 at flowering. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Senescence </strong></p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Root senescence </em></p>
+<p align="left" class="Normal">A rate of 0.5% of root biomass and root length is senesced each day and detaches immediately being sent to the soil nitrogen module and distributed as fresh organic matter in the profile. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Leaf senescence </em></p>
+<p align="left" class="Normal">There are four causes of leaf senescence: age, water stress, nitrogen stress and high temperature stress. The wheat senescence routines calculate stress factors for water, N and high temperature. The maximum of these is multiplied by the senesced LAI due to age each day to obtain the day's total senescence. </p>
+<p align="left" class="Normal">The stress factor for water is calculated from <em>swdef_photo </em>, for N from <em>nfact_photo. </em>Senescence due to frost commences when temperatures decrease below -5 &ordm; C. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p class="Normal"><em>Nitrogen in seneseced leaves </em></p>
+<p class="Normal">When leaf is senesced, only a small amount of nitrogen is retained in the senesced leaf, the rest is made available for re-translocation by putting it into stem N pool. The concentration of nitrogen in senesced material is specified in the wheat ini file.
+</p>
+<p class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Crop Water Relations </strong></p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Potential water extraction rate </em></p>
+<p align="left" class="Normal">When the Wheat module is coupled to APSIM-SOILWAT2, potential soil water uptake is calculated using the approach first advocated by Monteith (1986). It is the sum of root water uptake from each profile layer occupied by roots. If roots are only partially through a layer available soil water is scaled to that portion that contains roots. The potential rate of extraction in a layer is calculated using a rate constant ( <em>kl </em>), which defines the fraction of available water able to be extracted per day. The kl factor is empirically derived, incorporating both plant and soil factors which limit rate of water uptake. Root water extraction constants ( <em>kl </em>) must be defined for each combination of crop species and soil type. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Crop water demand </em></p>
+<p align="left" class="Normal">Following Sinclair (1986) and Monteith (1986), transpiration demand is modelled as a function of the current day's crop growth rate (dlt_dm_rue, see Biomass Accumulation Section), divided by the transpiration efficiency. Transpiration efficiency is related to the daylight averaged vapour pressure deficit ( <em>vpd </em>). Transpiration demand is calculated from the daily crop growth rate limited by RUE (dlt_dm_rue), <em>vpd </em>, and the transpiration efficiency coefficient. In the model <em>vpd </em> is estimated using the method proposed by Tanner and Sinclair (1983), which requires only daily maximum and minimum temperatures. In this method, it is assumed that the air is saturated at the minimum temperature. The saturated vapour pressure is calculated at both the maximum and minimum temperatures, and the default vapour pressure deficit for the day is taken as 75% of the difference between these two vapour pressures. Crop water demand is capped to below a given multiple of potential ET (taken as Priestly-Taylor Eo from the water balance module) as specified in the wheat ini file. This limits water use to reasonable values on days with high VPD or in more arid environments. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Water uptake </em></p>
+<p align="left" class="Normal">The actual rate of water extraction is the lesser of the potential extraction rate and the transpiration demand. If the computed potential extraction rate from the profile exceeds demand, then the extracted water is removed from the occupied layers in proportion to the values of potential root water uptake in each layer. If the computed potential extraction from the profile is less than the demand then, and the actual root water uptake from a layer is equal to the computed potential uptake. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Water stresses affecting plant growth</em></p>
+<p align="left" class="Normal">Soil water deficit factors are calculated to simulate the effects of water stress on different plant growth processes. Three water deficit factors are calculated which correspond to four plant processes each having different sensitivity to water stress i.e. photosynthesis (photo), leaf-expansion (expansion), phenology (pheno), and tillering (tiller). A factor of 0 is complete stress and 1 no stress. Leaf expansion is considered more sensitive to stress than photosynthesis. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Nitrogen uptake and re-translocation </strong></p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Potential nitrogen supply </em></p>
+<p align="left" class="Normal">The model uses a simplified formulation for NO3 uptake somewhat similar in structure to that employed in water uptake. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Potential NO3 uptake in a layer is given as </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Uptake = NO3 kg/ha x (Kln x NO3 ppm x SWFAC) </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Where Kln is a parameter constant and SWFAC is a soil water content factor based on relative soil water content between lower limit and drained upper limit. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Nitrogen demand by vegetative organs </em></p>
+<p align="left" class="Normal">The crop has a defined minimum, critical and maximum N concentration for each plant part. These concentration limits change with phenological stages. The maximum and minimum N concentrations can be found in Wheat.ini. Demand for N in each part attempts to maintain N at the critical (non-stressed) level. N demand on any day is the sum of the demands from the pre-existing biomass of each part required to reach critical N content, plus the N required to maintain critical N concentrations in that day's produced biomass. For each plant part (leaf, stem, root) the N demand is given by: </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">N_demand = dm_green * (n_conc_critic - n_conc) + dlt_dm_green * n_conc_critic. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Where dm_green and dlt_dm_green are the existing live biomass and biomass growth rate today. N_conc and n_conc_critic are the actual and critical N concentration respectively of this plant part. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Total crop N demand is the sum of the n demand in all vegetative parts. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Nitrogen partition in the plant </em></p>
+<p align="left" class="Normal">Daily total nitrogen uptake is distributed to the plant parts in proportion to their individual demands. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Grain N demand </em></p>
+<p align="left" class="Normal">Grain nitrogen demand starts at anthesis and is calculated from grain number, thermal time and a potential grain nitrogen filling rate (g/grain/degree day). </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><em>Nitrogen re-translocation </em></p>
+<p align="left" class="Normal">If there is insufficient nitrogen supplied from senescing material or soil nitrogen uptake, grain nitrogen demand is met by re-translocating nitrogen from other plant parts. Nitrogen is available for re-translocation from leaves and stems until they reach their defined minimum N concentration. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">Nitrogen deficits affecting plant growth</p>
+<p align="left" class="Normal">There are four N availability factors (0-1), one each for the photosynthesis, expansion, phenology and tillering. A N concentration ratio is calculated for the stover (stem + leaf) which is used as a measure of N stress, then different constants are used to convert that ratio to a deficit factor for each of the processes. A factor of 1.5 is used to restrict photosynthesis (reduces rue), 1.0 for expansion (reduces leaf area expansion) and 100 to slow phenological development (effectively disabled). For tillering a squared n_conc_ratio is used as the stress factor. As a value of 1 is no stress and 0 complete stress, phenology is least sensitive to nitrogen deficiency and grain N the most. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal">N_conc_ratio=(N_conc_stover-N_conc_stover_min)/(N_conc_stover_crit-N_conc_stover_min) </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Plant death</strong></p>
+<p align="left" class="Normal">All or some of the plants can be killed due to a variety of stresses. </p>
+<p align="left" class="Normal">If the crop hasn't germinated within 40 days of sowing, due to lack of germinating moisture, all plants are killed. </p>
+<p align="left" class="Normal">If the crop does not emerge with 300 o Cdays of sowing, because it was sown too deep, then all plants are killed. </p>
+<p align="left" class="Normal">If crop is past floral initiation and LAI = 0, then all plants are killed due to total senescence. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Detachment </strong></p>
+<p align="left" class="Normal">The detachment routines in <strong> wheat </strong>are disabled in the wheat.ini file, except the detachment of senesced roots. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><strong>Effects of elevated atmospheric CO 2 </strong></p>
+<p align="left" class="Normal">Elevated levels of atmospheric CO 2 affect plant growth in this module via three mechanisms. Carbon dioxide concentration can affect radiation use efficiency, transpiration efficiency and critical leaf nitrogen concentration. The following graph shows the relative change in RUE for C4 and C3 plants (at 20 o C), TE and critical nitrogen concentration. More information can be found in Reyenga et al (1999). </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Normal"><img width="575" height="381" src="Wheat/wheat_science_clip_image020.gif"></p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Title2">Wheat Module Parameterisation</p>
+<p align="left" class="Normal">Crop lower limit (LL) and water extraction coefficients (KL) and root exploration factors (XF) values are need for each soil layer. The following example is used in the sample run. </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Code">[sample.wheat.parameters] </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Code">uptake_source = calc &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;! calculate own uptakes. </p>
+<p align="left" class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!layer 1 2 3 4 5 6 7 </p>
+<p align="left" class="Code">ll = &nbsp;.200 &nbsp;.201 &nbsp;.215 &nbsp;.176 &nbsp;.141 &nbsp;.249 &nbsp;.279 ! Crop lower limit </p>
+<p align="left" class="Code">kl = 0.06 &nbsp;0.06 &nbsp;0.06 &nbsp;0.06 &nbsp;0.06 &nbsp;0.06 &nbsp;0.02 &nbsp;! Water Extraction parameter (0-1) </p>
+<p align="left" class="Code">xf = 1.00 &nbsp;1.00 &nbsp;1.00 &nbsp;1.00 &nbsp;1.00 1.00 &nbsp;&nbsp;1.00 &nbsp;! Root Exploration factor (0-1) </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Title2">Module Dependencies</p>
+<p align="left" class="Normal">The minimum module configuration required to run <strong>wheat </strong>in APSIM is the inclusion of the report, input, manager, soilwat2, soiln2, residue2 and wheat modules. </p>
+<p align="left" class="Normal">In the sample folder, within the manager file the following syntax is used for harvest and planting the wheat crop: </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Code">[wheat.manager.start_of_day] </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Code">if day = 169 and year = 1992 then </p>
+<p align="left" class="Code">&nbsp;&nbsp;wheat sow cultivar = hartog, plants = 121.61, sowing_depth = 30 (mm), </p>
+<p align="left" class="Code">endif </p>
+<p align="left" class="Code">if wheat.stage_name = 'harvest_ripe' or wheat.plant_status = 'dead' then </p>
+<p align="left" class="Code">&nbsp;&nbsp;wheat harvest </p>
+<p align="left" class="Code">&nbsp;&nbsp;wheat end_crop </p>
+<p align="left" class="Code">endif </p>
+<p align="left" class="Normal">&nbsp;</p>
+<p align="left" class="Title2"><strong>REFERENCES </strong></p>
+<p align="left" class="Normal">Angus, 1977. Water stress and phenology in wheat. Australian Journal of Agricultural Research 28:177-181. </p>
+<p align="left" class="Normal">Asseng, S., Fillery, I.R.P, Anderson, G.C., Dolling, P.J., Dunin, F.X., Keating, B.A. 1998a. Use of the ASPIM wheat model to predict yield, drainage, and NO3 leaching for a deep sand. Australian Journal of Agricultural Research 49: 363-377. </p>
+<p align="left" class="Normal">Asseng, S., Keating, B.A., Gregory, P.J., Fillery, I.R.P, Bowden, J.W., Turner, N.C., Palta, J.A., Abrecht, D.G. 1998b. Performance of the APSIM wheat model in Western Australia. Field Crops Research 57:163-179. </p>
+<p align="left" class="Normal">Asseng, S, van Keulen, H, Stol, W. 2000. Performance and application of the APSIM Nwheat model in the Netherlands. European Journal of Agronomy 12: 37-54. </p>
+<p align="left" class="Normal">Gallagher, J N, 1979. Field Studies of Cereal Leaf Growth: I. Initiation and expansion in relation to temperature and ontogeny. Journal of Experimental Botany 30: 625-636. </p>
+<p align="left" class="Normal">Meinke, H, Rabbinge, R., Hammer, G.L., van Keulen, H., Jamieson, P.D. 1997a. Improving wheat simulation capabilities in Australia from a cropping systems perspective. II. Testing simulation capabilities of wheat growth. European Journal of Agronomy 8: 83-99. </p>
+<p align="left" class="Normal">Meinke,H, Hammer, G.L., van Keulen, H., Rabbinge, R., 1997b. Improving wheat simulation capabilities in Australia from a cropping systems perspective. III. The integrated wheat model (I_WHEAT). European Journal of Agronomy 8: 101-116. </p>
+<p align="left" class="Normal">Monteith, J.L., 1986. How do crops manipulate water supply and demand? Philos. Trans. R. Soc. London A, 316:245-259. </p>
+<p align="left" class="Normal">Otter-Nacke, S., Godwin, D.G., Ritchie, J.T 1986. Testing and validating the CERES-Wheat model in diverse environments. AGRISTARS Yield Model Development. USDA-ARS, Temple, TX. </p>
+<p align="left" class="Normal">Reyenga, P.J., Howden, S. M., Meinke, H., McKeon, G.M., 1999. Modelling global change impacts on wheat cropping in south-east Queensland, Australia. Environmental Modelling &amp; Software 14: 297-306. </p>
+<p align="left" class="Normal">Sinclair, T.R. 1986. Water and nitrogen limitations in soybean grain production. Field Crops Research 15:125-141. </p>
+<p align="left" class="Normal">Sinclair, T.R. and Amir, J. 1992. A model to assess nitrogen limitations on the growth and yield of spring wheat. Field Crops Research 30: 63-78. </p>
+<p align="left" class="Normal">Strong, W.M., R. C. Dalal, E. J. Weston, J. E. Cooper, K. J. Lehane, A. J. King, C. J. Chicken, 1996. Sustaining productivity of a Vertisol at Warra, Queensland, with fertilisers, no-tillage or legumes. 2. Long-term fertiliser nitrogen needs to enhance wheat yields and grain protein. Australian Journal of Experimental Agriculture 36: 665-674. </p>
+<p align="left" class="Normal">Tanner, C.B. and Sinclair, T.R., 1983. Efficient water use in crop production: research or re-search? In: H.M. Taylor, W.R. Jordan and T. R. Sinclair (Eds), Limitations to Efficient Water Use in Crop Production. American Socieity of Agronomy. Madison, WI, pp1-27. </p>
+<p align="left" class="Normal">Wang, E., van Oosterom, E. J., Meinke, H., Asseng, S., Robertson, M. J., Huth, N. I., Keating, B. A., and Probert, M. E. The new APSIM-Wheat model - performance and future improvements. Solutions for a better environment: Proceedings of the 11th Australian Agronomy Conference Geelong, Victoria. (794). 2003. </p>
+<p align="left" class="Normal">Zadoks, J.C., Chang, T.T., Konzak, C.F. 1974. A decimal code for the growth stages of cereals. Weed Research 14: 415-421. </p>
+</body>
+</html>

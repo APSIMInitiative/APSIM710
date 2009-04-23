@@ -1,0 +1,218 @@
+[run1.manager.init]
+   crop_in = 0
+   lucerne_in = 0
+   blank = '.'
+   next_crop = blank
+   crop_current = blank
+   crop_sow = blank
+   ready_for_next = 1
+   ready_to_fert_pre_sow = 0
+   days_last_year = 365
+   fert_day_pre_sow = 0
+   ready_to_till_pre_sow = 0
+   till_day_pre_sow = 0
+
+cotton = 'cotton'
+
+!.
+!.
+!1-Sep
+!15-Nov
+!no
+!50
+!10
+!30
+!2
+!0
+
+!.
+!.
+!9
+!1.5
+!5
+!.
+!.
+!4
+!urea_N
+!.
+!.
+!60
+!0
+!0
+!urea_N
+
+!   .
+!   .
+!   planter
+!   0
+!   0
+!   .
+!   .
+!   0
+!   disc
+!   .
+!   0
+!   0
+
+
+
+[run1.manager.start_of_day]
+
+
+  if (today = date('29-May')) then
+   SoilN reset
+   SoilN set no3ppm =  40.4  31.6  31.6  16.3  16.3  0.3 0.3 (ppm)
+  endif
+
+
+
+
+
+
+  if (today = date('20-Jul')) then
+   SoilWat reset
+   surfaceom reset
+   SoilWat set sw =  0.35  0.45  0.46  0.44  0.38  0.4  0.43 (mm/mm)
+  endif
+
+
+
+[run1.manager.end_of_day]
+
+
+days_this_year = 364 + (date('1-mar') - date('28-feb'))
+
+
+   if ((today = date('23-aug')+1 OR today = date('15-mar')+1)then
+      if (crop_sow = 'waiting') then
+      report do_end_day_output
+
+      endif
+   endif
+
+   if ((today = date('23-aug')+1 OR today = date('15-mar')+1)then
+      crop_sow = blank
+   endif
+
+
+
+
+
+   if (ozcot_status > 0) then
+      report do_end_day_output
+
+      ozcot harvest
+      crop_in = 0
+   endif
+
+
+
+[run1.manager.process]
+   ! The date_within function returns 1 when todays date lies
+   ! between the 2 dates inclusively.
+   ! It must have its arguments enclosed in quotes.
+
+if (next_crop = cotton OR next_crop = blank) then
+      !  Presowing  fertiliser application
+
+   if (0 > 0 OR 0 > 0 ) then
+      !  calculate day to fertilise
+      fert_day_pre_sow = date('1-Sep') - 60
+      ! Need to correct for possible year boundary condition
+      if (fert_day_pre_sow < today) then
+         fert_day_pre_sow = days_this_year + fert_day_pre_sow
+      endif
+      if (today = fert_day_pre_sow) then
+         ready_to_fert_pre_sow = 1
+      endif
+      if (crop_in = 0 and ready_to_fert_pre_sow = 1) then
+         if (0 > 0) then
+            !   Top up soil N of top 3 layers
+            N_deficit = 0 - (no3(1) + nh4(1) + no3(2) + nh4(2) + no3(3) + nh4(3))
+            if (N_deficit < 20) then
+               Fertiliser apply amount = 20 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 40) then
+               Fertiliser apply amount = 40 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 60) then
+               Fertiliser apply amount = 60 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 80) then
+               Fertiliser apply amount = 80 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 100) then
+               Fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 120) then
+               Fertiliser apply amount = 120 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 140) then
+               Fertiliser apply amount = 140 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 160) then
+               Fertiliser apply amount = 160 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 180) then
+               Fertiliser apply amount = 180 (kg/ha), depth = 50 (mm), type = urea_N ()
+            elseif (N_deficit < 200) then
+               Fertiliser apply amount = 200 (kg/ha), depth = 50 (mm), type = urea_N ()
+            else
+               ! N deficit is more than 200 kg/ha, so apply a maximum of 220.
+               Fertiliser apply amount = 220 (kg/ha), depth = 50 (mm), type = urea_N ()
+            endif
+         else
+            ! just put on a fixed amount of N
+            Fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_N ()
+         endif
+         ready_to_fert_pre_sow = 0
+         fert_day_pre_sow = 0
+      endif
+   endif
+
+   !   Tillage - presowing seedbed preparation
+   if ( 0 > 0) then
+      ! calculate presowing tillage date
+      till_day_pre_sow = date('1-Sep') - 0
+      ! Need to correct for possible year boundary condition
+      if (till_day_pre_sow < today) then
+         till_day_pre_sow = days_this_year + till_day_pre_sow
+      endif
+      if (today = till_day_pre_sow) then
+         ready_to_till_pre_sow = 1
+      endif
+      if (crop_in = 0 and ready_to_till_pre_sow = 1) then
+         ! tillage
+         if ('disc' = 'user_defined') then
+             surfaceom tillage type = disc, f_incorp = 0 (), tillage_depth = 0
+         else
+             surfaceom tillage type = disc ()
+         endif
+         ready_to_till_pre_sow = 0
+         till_day_pre_sow = 0
+      endif
+   endif
+
+
+
+   if (today = date('15-Nov')) then
+      ready_for_next = 1
+   endif
+   if (crop_in = 0) then
+      if (date_within('1-Sep, 15-Nov') = 1) then
+         crop_sow = 'waiting'
+         surface_moist = (sw(1) - ll15(1)) / (dul(1)- ll15(1))
+         if ((rain[10] >= 50  AND  esw >= 30 AND
+               (surface_moist <= 2 and surface_moist >= 0)) OR
+             ('no' = 'yes' AND today = date('15-Nov'))) THEN
+ozcot sow cultivar = siok, sowing_depth = 50 (mm), row_spacing = 1500 (mm), plants_pm = 9.0 ()
+!ozcot sow 4 5 1.5 9
+            crop_in = 1
+            ready_for_next = 1
+            crop_current = cotton
+            crop_sow = cotton
+
+            ready_to_fert_pre_sow = 0
+            if (4 > 0) then
+               Fertiliser apply amount = 4 (kg/ha), depth = 50 (mm), type = urea_N ()
+            endif
+         endif
+      endif
+   endif
+
+endif
+
+
+

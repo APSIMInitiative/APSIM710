@@ -1,0 +1,31 @@
+   <soiltemp>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/soiltemp/docs/soiltemp_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\thermometer32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\thermometer16.png</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <variables>
+         <variable name="final_soil_temp_surface" description="Soil surface temperature at the end of the final internal canopy timestep. (oC)"/>
+         <variable name="final_soil_temp" array="T" description="Soil temperature at the end of the final internal canopy timestep. oC"/>
+         <variable name="ave_soil_temp_surface" description="Average soil surface temperature during the Apsim timestep. (oC)"/>
+         <variable name="ave_soil_temp" array="T" description="Average soil surface temperature during the Apsim timestep. (oC)"/>
+         <variable name="mint_soil_surface" description="Minimum soil surface temperature found on surface during the Apsim timestep. (oC)"/>
+         <variable name="mint_soil" array="T" description="Minimum soil surface temperature found in each layer during the Apsim timestep. (oC)"/>
+         <variable name="maxt_soil_surface" description="Maximum soil surface temperature found on surface during the Apsim timestep. (oC)"/>
+         <variable name="maxt_soil" array="T" description="Maximum soil surface temperature found in each layer during the Apsim timestep. (oC)"/>
+         <variable name="therm_cond" description="Thermal conductivity for each layer. (J s-1 m-1 K-1)"/>
+         <variable name="heat_store" description="Volumetric specific heat for each layer. (J m-3 K-1)"/>
+      </variables>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\SoilTemp.dll</dll>
+         <ini>%apsim%\Model\SoilTemp.xml</ini>
+      </ApsimToSim>
+   </soiltemp>

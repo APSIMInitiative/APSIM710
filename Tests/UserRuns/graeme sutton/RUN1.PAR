@@ -1,0 +1,149 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  clock  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[run1.clock.parameters]
+start_date = 30/4/1960     ! dd/mm/yyyy
+end_date = 26/5/1998     ! dd/mm/yyyy
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  report  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[run1.report.parameters]
+Outputfile = run1.out
+APSIM_progress_form = Off
+
+
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  soil_water  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                ! These LL must be above SoilWat parameters
+                ! because of insoil being inserted by Dean.
+![run1.chickpea.parameters]
+!   ll   =  0.230  0.220   0.210   0.230  0.240   0.250  0.310       !Example values
+!   kl   =  0.080  0.080   0.080   0.060  0.040   0.020  0.010  ()   !
+!   xf   =  1.000  1.000   1.000   1.000  1.000   1.000  1.000  ()   !root exploration factor
+
+![run1.mungbean.parameters]
+!   ll  =  0.23   0.22    0.25    0.28    0.31    0.38    0.37       !Example values
+!   kl  =  0.12   0.10    0.08    0.06    0.03    0.01    0.01
+!   xf   = 1.000  1.000   1.000   1.000   1.000   1.000   1.000 ()
+
+variable = clock.dd/mm/yyyy as Date
+variable = clock.year
+variable = ozcot.yield as oz_yield
+[run1.sorg.parameters]
+   ll   =   0.29   0.29    0.35    0.38    0.40    0.40   0.40      !Values from ND Database 11/4/01
+   kl   =   0.080  0.080   0.080   0.060   0.040   0.020  0.010()
+   xf   =   1.0    1.0     1.0     1.0     1.0     1.0    1.0
+
+![run1.nwheat.parameters]
+!    ll   = 0.20    0.20    0.20    0.20    0.24    0.26   0.31      !Example values
+!    wr   = 1.00    0.86    0.64    0.40    0.10    0.10   0.10
+!    nem  = 0.6     0.6     0.6     0.6     0.6     0.6    0.6
+
+[run1.ozcot.parameters]
+    ll   =   0.25   0.26    0.31    0.33    0.35    0.37   0.40     !Values calculated from Zvi's Crop Factors
+    title = XXXX
+    asoil = 3.0
+
+![run1.fababean.parameters]
+!    ll  =  0.23    0.22    0.25    0.28    0.31    0.38    0.37      !Example values
+!    kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.030  () !rate of soil water extraction
+!    xf  =  1.000   1.000   1.000   1.000   1.000   1.000   1.000
+
+![run1.lucerne.parameters]
+!    ll  =  0.19   0.19    0.22    0.25    0.27    0.31   0.36        !Example values
+!    kl  =  0.080   0.080   0.080   0.080   0.060   0.040   0.040  () !rate of soil water extraction
+!    xf  =  1.000   1.000   1.000   1.000   1.000   1.000   1.000
+
+![run1.sunflowr.parameters]
+!    ll   =  0.23   0.22    0.25    0.32    0.39    0.39   0.39       !Example values
+!    kl   =  0.070  0.070   0.070   0.060   0.050   0.030  0.010
+
+
+[run1.SoilWat.parameters]
+
+   max_evap        = 6        (mm)   ! maximum evaporation.
+   runoff_filename = blank           ! input measured runoff?
+   cona            = 3.5    ()     ! stage 2 evap coef.
+   diffus_const    =  40.0    ()     ! coeffs for dbar
+   diffus_slope    =  16.0    ()     !     "
+   u               = 6.0  (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            =   0.13   ()     ! bare soil albedo
+
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        = 73       ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+   ! layer       1       2       3       4       5       6    7
+   dlayer  =  150.000 150.000 300.000 300.000 300.000 300.000 300.00   (mm)    ! layer depth
+   air_dry =    0.084   0.26    0.31    0.33    0.35    0.37   0.40    (mm/mm) ! example air dry
+   ll15    =    0.25    0.26    0.31    0.33    0.35    0.37   0.40            ! ll15 to match lowest crop LL
+   dul     =    0.540   0.530   0.540   0.540   0.520   0.500   0.500  (mm/mm) ! lower limit
+   sat     =    0.590   0.580   0.590   0.590   0.570   0.550   0.550  (mm/mm) ! saturated soil water
+   sw      =    0.440   0.430   0.440   0.440   0.420   0.400   0.400  (mm/mm) ! initial sw
+   swcon   =    0.300   0.300   0.300   0.300   0.300   0.300   0.300  ()      ! soil conductivity
+   bd      =    1.02    1.03    1.02    1.02    1.06    1.11    1.12   (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+   insoil = 0.235119
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Soil_nitrogen  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[run1.SoilN.parameters]
+
+   amp               =   15.0   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   20.0   (oC)       ! mean annual air temperature (oC)
+   root_cn           =   50.0   ()         !
+   root_wt           = 1000.0   (kg/ha)    !
+   soil_cn           =   12.5   ()         ! soil humic pool C:N ratio
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+      ! layer        1       2       3       4       5       6      7
+   oc      =     1.190   1.01    0.450   0.300   0.200   0.160   0.17   (%)   ! organic carbon %
+   ph      =     8.200   8.500   8.600   8.600   7.400   5.300   5.300  ()    ! ph
+   fbiom   =     0.050   0.020   0.015   0.010   0.010   0.010   0.010  ()    ! microbe fraction of hunic pool
+   finert  =     0.390   0.470   0.520   0.620   0.740   0.830   0.850  ()    ! inert fraction of humic pool
+   ureappm =     0.000   0.000   0.000   0.000   0.000   0.000   0.000  (ppm) ! ppm urea
+   no3ppm  =      3.25    1.05    1.05    0.85    0.85    0.85   0.875 (ppm) ! ppm nitrate
+   nh4ppm  =       0.3    0.05    0.05    0.05    0.05    0.05    0.05 (ppm) ! ppm ammonia
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  residue  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[run1.SurfaceOM.parameters]
+
+mass = 500.0   ()  ! surface residues as biomass (kg/ha)
+cnr = 76.0   ()  ! cn ratio of surface residues
+type = sorghum
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ozcot  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  accum  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+name = sorghum
+[run1.accum.parameters]
+
+Accum_variables = rain[10]
+
+[run1.SummaryFile.parameters]
+summaryfile = run1.sum
+

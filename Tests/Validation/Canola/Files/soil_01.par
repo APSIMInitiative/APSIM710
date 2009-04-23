@@ -1,0 +1,168 @@
+!************************* Galong (modified from Normans) ***************************************
+
+[Galong.canola.parameters]    
+
+LL       =      0.103   0.128   0.135   0.153   0.170   0.180   0.180   0.180   0.180   0.180
+kl       =      0.08    0.08    0.08    0.08    0.08    0.07    0.06    0.05    0.03    0.03
+xf       =       1       1       1       1       1       1       1       1       1       1
+
+[Galong.SoilWat.parameters] 
+
+u =                     6.0   (mm)   ! stage 1 soil evaporation coefficient (mm)
+cn2_bare =             72     ()   ! runoff curve number for BARE soil at AMC2
+cn_red =               20     ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+cn_cov =                0.8   ()   ! frac. cover for "cn_red" reduction in cover 
+                                     ! & max. cover for reduction 
+cn_canopy_fact =       1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                     !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+salb =                  0.13  ()   ! bare soil albedo
+cona =                  3.5   ()   ! stage 2 evap coef.
+diffus_const =         88.0   ()   ! coeffs for dbar
+diffus_slope =         35.4   ()   !     "
+
+! Cumdepth   =       10      20      30      45      65      85     105     125     145     165
+  dlayer     =      100     100     100     150     200     200     200     200     200     800
+    bd       =      1.22    1.45    1.45    1.45    1.45    1.5     1.5     1.5     1.5     1.5
+ air_dry     =     0.073   0.098   0.105   0.123   0.163   0.160   0.160   0.160   0.160   0.160
+   LL15      =     0.103   0.128   0.135   0.153   0.170   0.180   0.180   0.180   0.180   0.180
+   DUL       =     0.200   0.220   0.220   0.230   0.250   0.260   0.260   0.260   0.260   0.260
+   SAT       =     0.510   0.423   0.423   0.423   0.423   0.404   0.404   0.404   0.404   0.404
+    SW       =      0.11    0.16    0.16    0.2     0.23    0.23    0.21    0.2     0.2     0.2
+  SWCON      =      0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4
+
+[Galong.SoilN.parameters]    
+
+  no3ppm     =       60      17      11      6       5       8       9       7       5       3
+  nh4ppm     =       0       0       0       0       0       0       0       0       0       0
+    OC       =      1.3      1      0.8     0.62    0.42    0.22    0.19    0.17    0.15    0.12
+    pH       =      5.8     5.9     6.6     6.8      7      7.1     7.2     7.3     7.4     7.4
+  fbiom      =      0.04    0.02    0.02    0.01    0.01    0.01    0.01    0.01    0.01    0.01
+  finert     =      0.45    0.47    0.5     0.55    0.59    0.6     0.84    0.8     0.8     0.99
+
+amp =          16.1   (oC)   ! temperature amplitude (oC) - difference between highest and
+                            ! lowest mean monthly air temperatures
+tav =          15.4   (oC)   ! mean annual air temperature (oC)
+dmod =          1.0   ()   ! weighting factor to adjust the rate of humus mineralization
+                            ! for soils in which organic matter is chemically or physically
+                            ! protected.
+root_cn           =   50.0   () 
+root_wt           = 1000.0   (kg/ha)    !
+soil_cn =      14.5   ()   ! soil humic pool C:N ratio
+   
+enr_a_coeff =    7.4  ()   
+enr_b_coeff =    0.2  ()   
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                            ! soil loss occurs. 
+
+!************************* Wallendbeen (modified from Normans) ***************************************
+
+[wallendbeen.canola.parameters]    
+
+layer =      0-10   10-20   20-30   30-40   40-50   50-60   60-70   70-80   80-90  90-100 100-110 110-120 120-130 130-140 140-150 150-160 160-170 170-180 180-190 190-200   
+LL =          0.100   0.100   0.100   0.120   0.160   0.190   0.200  0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   
+kl =         0.08    0.08    0.08    0.08    0.08    0.08    0.08    0.08    0.08    0.07    0.07    0.06    0.06    0.05    0.05    0.05    0.05    0.05    0.05    0.05   
+xf =         1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0   
+
+[wallendbeen.SoilWat.parameters] ! note bottom layer 400 mm deep
+
+u =                     6.0   (mm)   ! stage 1 soil evaporation coefficient (mm)
+cn2_bare =             72     ()   ! runoff curve number for BARE soil at AMC2
+cn_red =               20     ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+cn_cov =                0.8   ()   ! frac. cover for "cn_red" reduction in cover 
+                                     ! & max. cover for reduction 
+cn_canopy_fact =       1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                     !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+salb =                  0.13  ()   ! bare soil albedo
+cona =                  3.5   ()   ! stage 2 evap coef.
+diffus_const =         88.0   ()   ! coeffs for dbar
+diffus_slope =         35.4   ()   !     "
+
+!      layer      =       0-10   10-20   20-30   30-40   40-50   50-60   60-70   70-80   80-90  90-100 100-110 110-120 120-130 130-140 140-150 150-160 160-170 170-180 180-190 190-200
+dlayer =                     100     100     100     100     100     100     100     100     100     100     100     100     100     100     100     100     100     100     100     800   
+BD =                        1.40     1.42   1.43     1.45    1.46    1.49    1.52     1.52   1.52    1.52    1.52     1.52   1.52    1.52    1.52    1.52    1.52    1.52    1.52    1.52   
+LL15 =                     0.100   0.100   0.100   0.120   0.160   0.190   0.200   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210   0.210
+DUL =                      0.270   0.270   0.270   0.290   0.293   0.320   0.340   0.360   0.360   0.360   0.360   0.360   0.360   0.360   0.360   0.360   0.360   0.360   0.360   0.360   
+SW =                       0.250   0.250   0.250   0.250   0.160   0.190   0.200   0.210   0.220   0.230   0.230   0.230   0.230   0.230   0.230   0.230   0.230   0.230   0.230   0.230   
+SAT =                      0.453   0.445   0.441   0.434   0.430   0.418   0.406   0.406   0.406   0.406   0.406   0.406   0.406   0.406   0.406   0.406   0.406   0.406   0.406   0.406   
+SWCON =                      0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+air_dry =                   0.100   0.100   0.100   0.120   0.160   0.190   0.200   0.200   0.200   0.200   0.200   0.200   0.200   0.200   0.200   0.200   0.200   0.200   0.200   0.200   
+
+[wallendbeen.SoilN.parameters]    
+
+!       layer              0-10   10-20   20-30   30-40   40-50   50-60   60-70   70-80   80-90  90-100 100-110 110-120 120-130 130-140 140-150 150-160 160-170 170-180 180-190 190-200
+OC =                        2.30    1.50    0.90    0.42    0.32    0.22    0.19    0.17    0.15    0.12    0.11     0.1     0.1     0.1     0.1     0.1    0.08    0.06    0.05    0.04   
+pH =                         5.8     5.9     6.6     6.8       7     7.1     7.2     7.3     7.4     7.4     7.6     7.8       8     8.2     8.3     8.4     8.4     8.5     8.5     8.5   
+fbiom =                    0.06    0.06    0.06    0.02    0.02    0.02    0.02    0.02   0.01    0.01    0.01   0.01   0.01    0.01     0.01   0.01    0.01    0.01    0.01    0.01   
+finert =                   0.05    0.05    0.10    0.45     0.59    0.60    0.84    0.80   0.80    0.99    0.99    0.99  0.99    0.99     0.99   0.99    0.99    0.99    0.99    0.99   
+no3ppm  =                  0.65     0.5     0.5     0.4     0.4    0.25    0.25    0.25    0.25    0.25    0.25   0.25    0.25   0.25    0.25    0.25    0.25    0.25    0.25    0.25(ppm) ! ppm nitrate !MikeR to check
+nh4ppm  =                  0.62    0.09    0.09   0.065   0.055    0.08    0.08    0.08    0.08    0.08    0.08   0.08    0.08   0.08    0.08    0.08    0.08    0.08    0.08    0.08(ppm) ! ppm ammonia !MikeR to check
+
+amp =          16.1   (oC)   ! temperature amplitude (oC) - difference between highest and
+                            ! lowest mean monthly air temperatures
+tav =          15.4   (oC)   ! mean annual air temperature (oC)
+dmod =          1.0   ()   ! weighting factor to adjust the rate of humus mineralization
+                            ! for soils in which organic matter is chemically or physically
+                            ! protected.
+root_cn           =   15.0   () 
+root_wt           = 6000.0   (kg/ha)    !
+soil_cn =      10.0 ! 14.5   ()   ! soil humic pool C:N ratio
+   
+enr_a_coeff =    7.4  ()   
+enr_b_coeff =    0.2  ()   
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                            ! soil loss occurs. 
+
+!************************* Harden soil ***************************************
+
+[harden.canola.parameters]    
+
+!layer =      0-10   10-20   20-30   30-45   45-65   65-85   85-105   105-125 125-145 145-165 165-185
+! grav from JAK LL =         0.042   0.043   0.045   0.085   0.104   0.104   0.114   0.119   0.103   0.09   0.086 
+LL =         0.055   0.073   0.076   0.144   0.177   0.177   0.182   0.194   0.190   0.144  0.144
+kl =         0.08    0.08    0.08    0.08    0.08    0.07    0.06    0.05    0.03    0.01    0.01   
+xf =         1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0    
+
+[harden.SoilWat.parameters]    
+
+u =                     6.0   (mm)   ! stage 1 soil evaporation coefficient (mm)
+cn2_bare =             72     ()   ! runoff curve number for BARE soil at AMC2
+cn_red =               20     ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+cn_cov =                0.8   ()   ! frac. cover for "cn_red" reduction in cover 
+                                     ! & max. cover for reduction 
+cn_canopy_fact =       1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                     !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+salb =                  0.13  ()   ! bare soil albedo
+cona =                  3.5   ()   ! stage 2 evap coef.
+diffus_const =         88.0   ()   ! coeffs for dbar
+diffus_slope =         35.4   ()   !     "
+
+!layer =                    0-10   10-20   20-30   30-45   45-65   65-85  85-105  105-125 125-145 145-165 165-185
+dlayer =                     100     100     100     150     200     200     200     200     200     200     200     
+! from JAK BD =             1.32    1.70    1.68    1.68    1.70    1.74    1.79    1.83    1.94    1.84    1.81     
+BD =                        1.32    1.70    1.68    1.68    1.70    1.60    1.60    1.60    1.60    1.60    1.55     
+LL15 =                     0.055   0.073   0.076   0.144   0.177   0.177   0.182   0.194   0.190   0.144  0.144
+DUL =                      0.155   0.175   0.213   0.320   0.332   0.371   0.360   0.373   0.312   0.252   0.273
+SW =                       0.181  0.179    0.176   0.188   0.160   0.146   0.155   0.242   0.245   0.318   0.279 
+SAT =                      0.452   0.308   0.316   0.330   0.340   0.393   0.375   0.390   0.348   0.356   0.400   
+SWCON =                      0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4     0.4   
+air_dry =                   0.03    0.03    0.03    0.03     0.05   0.05    0.05    0.05    0.05    0.05    0.04   
+
+[harden.SoilN.parameters]    
+
+OC =                        1.30    1.00    0.80    0.62    0.42    0.22    0.19    0.17    0.15    0.12    0.11  
+pH =                         5.8     5.9     6.6     6.8       7     7.1     7.2     7.3     7.4     7.4     7.6  
+fbiom =                    0.04    0.03    0.03    0.02    0.02    0.02    0.02    0.02   0.01    0.01    0.01   
+finert =                   0.36    0.35    0.45    0.45     0.59    0.60    0.84    0.80   0.80    0.99    0.99  
+no3ppm  =                  0.65     0.5     0.5     0.4     0.4    0.25    0.25    0.25    0.25    0.25    0.25 
+nh4ppm  =                  0.62    0.09    0.09   0.065   0.055    0.08    0.08    0.08    0.08    0.08    0.08   
+
+dmod =          1.0   ()   ! weighting factor to adjust the rate of humus mineralization
+                            ! for soils in which organic matter is chemically or physically
+                            ! protected.
+soil_cn =      14.5   ()   ! soil humic pool C:N ratio
+root_cn           =   20.0   () 
+root_wt           = 3000.0   (kg/ha)    !
+enr_a_coeff =    7.4  ()   
+enr_b_coeff =    0.2  ()   
+profile_reduction =    on   ! (on|off) whether to remap N+C if 
+                            ! soil loss occurs.

@@ -1,0 +1,26 @@
+   <StockHerbageConverter>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <LargeIcon>%apsim%\UserInterface\Images\stock32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\stock16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <variables>
+         <variable name="dm_feed_on_offer" description="Dry matter of feed on offer (kg/ha)" array="T" units="kg/ha" />
+         <variable name="dm_feed_removed"  description="Dry matter of feed removed (kg/ha)" array="T" units="kg/ha"/>
+      </variables>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\StockScienceConverter.dll</dll>
+         <ini>%apsim%\Model\StockScienceConverter.xml</ini>
+         <recurse>yes</recurse>
+         <sim>
+            [StockHerbageConverter.innerxml]
+         </sim>
+      </ApsimToSim>
+   </StockHerbageConverter>

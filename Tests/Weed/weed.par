@@ -1,0 +1,143 @@
+[all.log.parameters]
+debug_output=on
+logfile=weed.log
+[all.report.parameters]
+
+
+
+variable = clock.day
+variable = clock.year
+variable = weed.lai as weed_lai
+variable = weed.biomass as weed_biomass
+variable = weed.green_biomass as weed_grn_biomass
+[sample_weed.report.parameters]
+outputfile  =winterfallow.out
+
+[wheat_weed.report.parameters]
+outputfile  =wheatgrass.out
+
+
+variable = wheat.lai
+variable = wheat.biomass
+variable = wheat.green_biomass
+[sorghum_weed.report.parameters]
+outputfile  =Sorgrass.out
+
+
+
+variable = sorghum.lai
+variable = sorghum.biomass
+variable = sorghum.green_biomass
+variable = sorghum.yield
+[all.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=9/4/1988
+end_date=30/5/1989
+
+[all.manager.init]
+weed_in = 0
+
+[all.manager.end_of_day]
+report do_output
+
+[sample_weed.manager.start_of_day]
+
+if day = 120 and year = 1988 then
+   weed sow cultivar = late, plants = 15 (/m2), crop_class = winter_dicot, sowing_depth = 40 (mm)
+   weed_in = 1
+endif
+
+if weed.stage = 10 or weed.plant_status = 'dead' then
+   weed kill_crop
+   weed end_crop
+endif
+
+[wheat_weed.manager.start_of_day]
+
+if day = 169 and year = 1988 then
+   wheat sow cultivar = hartog, plants = 121.61, sowing_depth = 30 (mm), tiller_no_fertile = 0
+   weed sow cultivar = late, plants = 15 (/m2), crop_class = winter_grass, sowing_depth = 40 (mm)
+   weed_in = 1
+endif
+
+if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+  wheat harvest
+  wheat kill_crop
+  wheat end_crop
+endif
+
+[sorghum_weed.manager.start_of_day]
+
+if day = 305 and year = 1988 then
+      sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 ()
+      weed sow cultivar = late, plants = 15 (/m2), crop_class = summer_grass, sowing_depth = 40 (mm)
+      weed_in = 1
+endif
+
+if (sorghum.stage = 11) then
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+endif
+
+! if crop killed due to stress, end simulation
+if (sorghum.plant_status = 'dead')  then
+      sorghum harvest
+      sorghum kill_crop
+      sorghum end_crop
+endif
+
+[all_weeding.manager.start_of_day]
+
+! weeding by removing the crop of weeds with a kill_crop command
+! if the weed is alive and it is within the bounds
+! of the weeding period and within the bounds of the
+! rain amount or above the biomass limit
+
+if weed_in = 1 AND
+   weed.DaysAfterSowing >= 20 AND
+   weed.DaysAfterSowing <= 120 AND
+   rain[5] >= 5 AND
+   rain[5] <= 30 OR
+   weed.biomass > 500 THEN
+      weed kill_crop
+      weed end_crop
+      weed_in = 0
+endif
+
+[sorghum_weed.canopy.parameters]
+
+intercrop = sorghum weed
+
+[wheat_weed.canopy.parameters]
+
+intercrop = wheat weed
+
+[all.accum.parameters]
+! Accumulate rainfall for 5 days.
+! We can then use this variable in manager
+accum_variables =  rain[5]
+
+[sample_weed.weed.parameters]
+
+   ll    = .230 .240 .240 .250 .260 .270 .280  ! lower limit mm water/mm soil
+   xf   = 1.00 1.00 1.00 1.00 1.00 1.00 1.00  ! Weighting factor for root advance
+   kl   = 0.08 0.08 0.08 0.08 0.05 0.03 0.01  ! Water Extraction Parameter (0-1)
+
+[sample_wheat.wheat.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+   !layer    1    2    3    4    5    6    7
+ll =       .200 .201 .215 .176 .141 .249 .279
+xf =        1.00 0.60  0.45 0.22 0.10 0.08 0.05  ! Root Exploration factor (0-1)
+kl =       0.06 0.06 0.06 0.06 0.06 0.06 0.02    ! Water Extraction parameter (0-1)
+
+[sample_sorghum.sorghum.parameters]
+ll =  0.1     0.1     0.1     0.1     0.1     0.1     0.1   ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+[sample_weed.SummaryFile.parameters]
+summaryfile=winterfallow.sum
+[wheat_weed.SummaryFile.parameters]
+summaryfile=wheatgrass.sum
+[sorghum_weed.SummaryFile.parameters]
+summaryfile=Sorgrass.sum

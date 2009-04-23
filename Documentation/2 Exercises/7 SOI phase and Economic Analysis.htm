@@ -1,0 +1,107 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+
+   <title>APSIM Training Package</title>
+   <link rel="stylesheet" href="./../ApsimWebStyle.css" type="text/css">
+</head><body>
+
+
+
+
+<h1>SOI phase and Economic analysis</h1>
+
+<p>In this exercise, you will examine the effect of SOI phase on yield 
+probability, and gross margin outcomes. Exercises will also be conducted using 
+manual generation of a probability distribution and the application of economic 
+principles.<br>
+&nbsp;</p>
+<ol>
+  <li>Create a new simulation using <i>Continuous Wheat Simulation</i>.</li>
+  <li>Rename simulation to <i>Wheat_SOI_s</i></li>
+  <li>Choose Goondiwindi weather (long term 1940 to 1989) </li>
+  <li>Starting date 01/01/1940 Ending date 31/12/1989</li>
+  <li>Choose "Black Vertosol-Anchorfield (Brookstead No006)" soil. (remember to rename)</li>
+  <li>Set the starting soil water to 33% full &#8211; filled from the top</li>
+  <li>Use default initial soil nitrogen</li>
+  <li>Set initial surface organic matter is sorghum and is 1500 kg/ha. (rename the pool name, but leave everything else)</li>
+  <li>Modify sowing rule to:<br>
+<p>Force sowing to 10-Dec <br>
+Enter sowing density at 5 pl/m2<br>
+Cultivar as medium<br>
+Skip row as soild<br>
+(leave everything else as is)
+</p>
+</li>
+<li>Set fertiliser at sowing to 100 kg/ha of urea_no3. (move this rule up so that it comes before harvesting rule)</li>
+<li>From the Standard toolbox drag in a "Yield moisture correction" and a "Simple gross margin (put before harvesting rule)" rule. 
+(make sure the "Yield moisture correction" rule comes before the "Simple gross margin" which obviously comes before the harvest rule)
+<li>Report year, yield and Bank in the output file. (Just type "Bank" in manually into the variable list)</li>
+<li>Create a <i>linked</i> copy of this simulation via drag and drop and rename this new one 
+to <i>Sorghum_SOI_skip</i> (to find out how to do this see: 
+<a href="..\3 How To\Use linking to reduce simulation duplication.htm">How To: Use linking to reduce simulation duplication</a>)</li>
+<li><i>Unlink</i> the sowing rule and change it to double skip </li>
+<li>Run both simulations (check the simulations run error-free) </li>
+
+<li>Graph Yield of both simulations using an <i>SOI Box Plot</i> from the Graph toolbox. (There is an error in the "Phase filename" you need to
+change it so that it is <i>%apsuite\Soi\phases.soi</i>, we will fix this in the next release.)</li>
+<li>We want to look at the Yield in the Box Plot so tick "Yield" in the FieldNames
+<li>Given we used a sowing date of December, use the SOI from November to split 
+the years. ("Month" drop down list)</li>
+<li>Deselect all SOI phases except negative and positive Years</li>
+<li>You will notice that the labels on the X axis can not be read, so expand the width of the graph until they become readable (to find out how to do this see: 
+<a href="..\3 How To\Modify a Graph component.htm">How To: Modify a Graph component</a>)</li>
+
+
+
+<p><img src="7%20SOI%20phase%20and%20Economic%20Analysis_files/image1.gif" border="0"></p>
+
+<p>The output demonstrates the differing probability distributions of solid vs 
+double skip configuration in negative and positive SOI phases <br>
+&nbsp;</p>
+
+<li>Compare with "SOI CDF" and "SOI Probability Exceedence" graphs. (If you notice that when you click on something else and click 
+back on the graph it has disappeared, just tick the "Yield" in the FieldNames. This is another error that will be fixed in the next release) </li>
+
+</ol>
+
+<h3>Economic analysis</h3>
+
+
+
+  <p>This simulation has two rules from the Standard toolbox that we dragged in. A "Yield moisture correction" and a 
+  "Simple gross margin" rule.</p> 
+  <p>You also remember how you manually typed in Bank into the output variable list. 
+  To see where it comes from click on the "post" tab of the "Simple gross margin" rule.</p>
+  <p>You can create your own economic calculations by using these kind of manager rules.</p>
+  <p>Keep in mind though when using these rules, that yield in APSIM is calculated as <i>dry</i> yield. So this assumes no water content.
+  Much economic analysis requires a <i>wet</i> yield which is what a farmer will actually harvest from his paddock. This is why in our simulations
+  we used a "Yield moisture correction" to do a simple calculation to work out this wet yield. (see its "start_of_day" tab) </p>
+ <ol> 
+  <li>Graph gross margin using the SOI graphs you have already created. (In FieldNames untick Yield, and tick Bank)</li>
+
+  <li>Change the Y axis title to "Gross Margin".
+  <p><img src="7%20SOI%20phase%20and%20Economic%20Analysis_files/image2.gif" border="0" ></p>
+  <br>
+  <br>
+  <b>Note</b>: Similar output can be obtained via the WhopperCropper program 
+  that allows selection of the required input variables from a pre-determined 
+  set (usually 3 to 6 options for each variable).</li>
+</ol>  
+
+  
+  
+  <h3>Further economic analysis in Excel</h3>
+  <ol>
+  <li>Select the top component <i>Simulations</i> then click the <i>Excel</i> button on the top toolbar.</li>
+<li>You will notice that the output files have been exported to 2 separate Excel windows.</li>
+  <br>
+  <br>
+ <li> *** At this point you can manipulate the data however you like in the EXCEL program ***<br>
+&nbsp;</li>
+</ol>
+  
+  
+
+
+</body></html>

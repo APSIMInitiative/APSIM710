@@ -1,0 +1,433 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Naibonat_Cavalcade_23Dec
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
+   Component "Vertic Inceptisol (Naibonat No675) Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component "Vertic Inceptisol (Naibonat No675) Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "centro" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 16/12/2006
+     Simulation end date   = 10/07/2007
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Naibonat.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        year
+        day
+        DaysAfterSowing
+        flowering_das
+        flowering_date
+        StageName
+        yield
+        biomass_wt
+        LeafTotalWt
+        StemTotalWt
+        podTotalWt
+        LeafSenescedWt
+        green_biomass
+        LeafGreenWt
+        StemGreenWt
+        leaf_no
+        leaf_no_sen
+        leaf_area()
+        node_no
+        lai
+        stover_wt
+        ep
+        esw_layr()
+        root_depth
+        no3()
+        manager.total_minN
+        height
+        dlt_dm_green_grain
+        dlt_dm_green_leaf
+        dlt_dm_green_meal
+        dlt_dm_green_pod
+        dlt_dm_green_root
+        dlt_dm_green_stem
+
+     Output file = Naibonat_Cavalcade_23Dec.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'centro')) then
+              if (date_within('23-dec-2006, 23-dec-2006') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('yes' = 'yes' and today = date('23-dec-2006'))) then
+        choosenextcrop = 'yes'
+        centro sow plants =15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
+     endif
+     if today = date('23-dec-2006') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if centro.stagename = 'harvest_ripe' or centro.plant_status = 'dead' then
+       centro  harvest
+       centro  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- centro.sowing
+             fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     cuts = 0
+      total_minn = 0
+     biom = 0
+     
+     SECTION:- start_of_day
+      biom = leaf_wt + stem_wt
+     
+     SECTION:- end_of_day
+       total_minn = total_minn + dlt_n_min_tot()
+     END of rules
+     
+     Manager creating a new local real variable : cuts = 0.00000
+     Manager creating a new local real variable : total_minn = 0.00000
+     Manager creating a new local real variable : biom = 0.00000
+
+------- Vertic Inceptisol (Naibonat No675) Water Initialisation ---------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.099  0.197  0.394  0.548  0.350  1.118  0.762  0.300
+          150.-  300.  0.155  0.194  0.388  0.514  0.300  1.208  0.190  0.300
+          300.-  600.  0.212  0.212  0.354  0.508  0.264  1.224  0.048  0.300
+          600.-  900.  0.212  0.212  0.356  0.516  0.250  1.202  0.000  0.300
+          900.- 1200.  0.212  0.212  0.383  0.469  0.266  1.328  0.000  0.300
+         1200.- 1500.  0.212  0.212  0.329  0.499  0.242  1.247  0.000  0.300
+         1500.- 1800.  0.212  0.212  0.380  0.491  0.323  1.270  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      29.55      22.95      29.55      23.10
+          150.-  300.      29.10      15.90      29.10      18.90
+          300.-  600.      63.60      15.60      42.60      46.20
+          600.-  900.      63.60      11.40      43.20      48.00
+          900.- 1200.      63.60      16.20      51.30      25.80
+         1200.- 1500.      63.60       9.00      35.10      51.00
+         1500.- 1800.      63.60      33.30      50.40      33.30
+          ---------------------------------------------------------
+               Totals     376.65     124.35     281.25     246.30
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            0.00 (mm^0.5)
+            CONA:                     0.00 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          centro    centro         500.0   200.0     5.0     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- Vertic Inceptisol (Naibonat No675) Nitrogen Initialisation ------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Vertic Inceptisol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.50  1.30   16.77    0.17    0.00
+             2     7.50  0.80   16.31    0.18    0.00
+             3     7.50  0.30   29.38    0.37    0.00
+             4     7.50  0.15   18.03    0.36    0.00
+             5     7.50  0.10   11.95    0.40    0.00
+             6     7.50  0.10    7.48    0.37    0.00
+             7     7.50  0.05    0.38    0.38    0.00
+          ------------------------------------------------
+           Totals              100.30    2.23    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      21297.9  1774.8   503.1    62.9   138.9     3.5
+             2      14382.3  1198.5   113.7    14.2   108.1     2.7
+             3      10972.8   914.4    43.2     5.4    65.6     1.6
+             4       5409.0   450.8     0.0     0.0    39.8     1.0
+             5       3984.0   332.0     0.0     0.0    24.1     0.6
+             6       3741.0   311.8     0.0     0.0    14.6     0.4
+             7       1905.0   158.7     0.0     0.0     8.9     0.2
+          ---------------------------------------------------------
+           Totals   61692.0  5141.0   660.0    82.5   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+16 December 2006(Day of year=350): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "fallowin".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : fallowin = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "nextcrop".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "leaf_wt".
+     Variables should have a value before they are used in an expression.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : leaf_wt = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "stem_wt".
+     Variables should have a value before they are used in an expression.
+     Component name: Manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : stem_wt = 0.00000
+23 December 2006(Day of year=357), Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- centro sow  plants = 15, sowing_depth = 30, cultivar = cavalcade_timor, row_spacing = 200, crop_class = plant
+23 December 2006(Day of year=357), centro: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = cavalcade_timor
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      40 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      40 (vd)
+              tt_emergence               =     320     360 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     600     305     300 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      73      73 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     740     740 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     650     650 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     400 (dd)
+           maturity
+              tt_maturity                =     400 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.10       0.20
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.197       1.000
+         150.0     0.080          0.194       1.000
+         300.0     0.080          0.212       1.000
+         300.0     0.080          0.231       1.000
+         300.0     0.070          0.268       1.000
+         300.0     0.070          0.264       1.000
+         300.0     0.070          0.323       1.000
+         -----------------------------------------------
+         Extractable SW:   210mm in  1800mm total depth ( 12%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            357   30.0   15.0  200.0   0.0   0.0 cavalcade_timor
+         ------------------------------------------------
+     
+23 December 2006(Day of year=357), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+24 December 2006(Day of year=358), centro: 
+      stage 2.0 germination
+5 January 2007(Day of year=5), centro: 
+      stage 3.0 emergence
+                     biomass =          10.50 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   38.45 (mm)
+31 January 2007(Day of year=31), centro: 
+      stage 4.0 end_of_juvenile
+                     biomass =          14.82 (g/m^2)   lai          =   0.083 (m^2/m^2)
+                     stover N conc =     5.79 (%)    extractable sw =  154.54 (mm)
+24 February 2007(Day of year=55), centro: 
+      stage 5.0 floral_initiation
+                     biomass =         194.50 (g/m^2)   lai          =   2.303 (m^2/m^2)
+                     stover N conc =     3.80 (%)    extractable sw =  201.50 (mm)
+1 March 2007(Day of year=60), centro: 
+      stage 6.0 flowering
+                     biomass =         244.38 (g/m^2)   lai          =   2.871 (m^2/m^2)
+                     stover N conc =     3.20 (%)    extractable sw =  239.05 (mm)
+25 April 2007(Day of year=115), centro: 
+      stage 7.0 start_grain_fill
+                     biomass =         944.41 (g/m^2)   lai          =   4.953 (m^2/m^2)
+                     stover N conc =     2.58 (%)    extractable sw =   46.95 (mm)
+11 June 2007(Day of year=162), centro: 
+      stage 8.0 end_grain_fill
+                     biomass =        1063.49 (g/m^2)   lai          =   0.713 (m^2/m^2)
+                     stover N conc =     3.81 (%)    extractable sw =    1.08 (mm)
+10 July 2007(Day of year=191), centro: 
+      stage 9.0 maturity
+                     biomass =        1068.64 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     7.42 (%)    extractable sw =    0.47 (mm)
+10 July 2007(Day of year=191), clock: 
+     Simulation is terminating due to end criteria being met.

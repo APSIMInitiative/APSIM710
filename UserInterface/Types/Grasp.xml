@@ -1,0 +1,123 @@
+   <grasp>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+      </drops>
+      <variables>
+         <variable name="height" description="height: Sward height"/>
+         <variable name="cover_tot" description="cover_tot: Total cover"/>
+         <variable name="green_cover" description="green_cover: Green cover"/>
+         <variable name="cover_green" description="cover_green: Green cover"/>
+         <variable name="crop_type" description="crop_type: Name of crop"/>
+         <variable name="runoff_cover" description ="runoff_cover: Cover"/>
+         <variable name="radn_cover" description ="radn_cover: Cover"/>
+         <variable name="transp_cover" description ="transp_cover: Cover"/>
+         <variable name="clothesline" description ="clothesline: Clothesline effect"/>
+         <variable name="tfact" description ="tfact: Temperature index"/>
+         <variable name="nfact" description ="nfact: Nitrogen index"/>
+         <variable name="vpd_estimation" description ="vpd_estimation: What Grasp used for daily VPD"/>
+         <variable name="tsdm" description ="tsdm: Total standing dry matter"/>
+         <variable name="root_depth" description ="root_depth: depths of roots"/>
+         <variable name="green_leaf" description ="green_leaf: Green leaf pool "/>
+         <variable name="green_stem" description ="green_stem: Green stem pool"/>
+         <variable name="green_pool" description ="green_pool: Green pool"/>
+         <variable name="dead_leaf" description ="dead_leaf: Dead leaf pool"/>
+         <variable name="dead_stem" description ="dead_stem: Dead stem pool"/>
+         <variable name="dead_pool" description ="dead_pool: Dead pool"/>
+         <variable name="basal_area" description ="basal_area: Basal area of tussocks"/>
+         <variable name="acc_growth" description ="acc_growth: Accumulated growth"/>
+         <variable name="ep" description ="ep: Water uptake"/>
+         <variable name="sw_pot" description ="sw_pot: Potential uptake"/>
+         <variable name="sw_index" description ="sw_index: "/>
+         <variable name="growth" description ="growth: daily growth (or death)"/>
+         <variable name="growth_transp" description ="growth_transp: Potential growth by mass flow"/>
+         <variable name="growth_photo" description ="growth_photo: Potential growth by radiation"/>
+         <variable name="growth_regrowth" description ="growth_regrowth: Pot growth basal area"/>
+         <variable name="death" description ="death: Total death"/>
+         <variable name="death_frost" description ="death_frost: Death by frost"/>
+         <variable name="death_frost_leaf" description ="death_frost_leaf: Leaf death by frost"/>
+         <variable name="death_frost_stem" description ="death_frost_stem: Stem death by frost"/>
+         <variable name="death_water" description ="death_water; Leaf death by water stress"/>
+         <variable name="death_water_leaf" description ="death_w_leaf: Leaf death water stress"/>
+         <variable name="death_water_stem" description ="death_w_stem: Stem death by water stress"/>
+         <variable name="death_pheno" description ="death_pheno: Background death"/>
+         <variable name="death_pheno_leaf" description ="death_pheno_leaf: Background leaf death"/>
+         <variable name="death_pheno_stem" description ="death_pheno_stem: Background stem death"/>
+         <variable name="sw_demand" description ="sw_demand: SW demand"/>
+         <variable name="n_uptake" description ="n_uptake: N uptake"/>
+      </variables>
+      <events>
+      </events>
+     <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Grasp.dll</dll>
+         <ini>%apsim%\Model\Grasp.xml</ini>
+         <sim>
+          <establishment>
+           <root_depth_init>[grasp.root_depth_init]</root_depth_init>
+           <dm_dead_leaf_init>[grasp.dm_dead_leaf_init]</dm_dead_leaf_init>
+           <dm_dead_stem_init>[grasp.dm_dead_stem_init]</dm_dead_stem_init>
+           <dm_dead_root_init>[grasp.dm_dead_root_init]</dm_dead_root_init>
+           <dm_green_leaf_init>[grasp.dm_green_leaf_init]</dm_green_leaf_init>
+           <dm_green_stem_init>[grasp.dm_green_stem_init]</dm_green_stem_init>
+           <dm_green_root_init>[grasp.dm_green_root_init]</dm_green_root_init>
+           <basal_area_init>[grasp.basal_area_init]</basal_area_init>
+           <acc_trans_for_n_init>[grasp.acc_trans_for_n_init]</acc_trans_for_n_init>
+           <acc_growth_for_n_init>[grasp.acc_growth_for_n_init]</acc_growth_for_n_init>
+          </establishment>
+          <crop_type>[grasp.crop_type]</crop_type>
+          <uptake_source>[grasp.uptake_source]</uptake_source>
+          <max_n_avail>[grasp.max_n_avail]</max_n_avail>
+          <max_n_avail_dist>[grasp.max_n_avail_dist]</max_n_avail_dist>
+          <ll>[grasp.ll]</ll>
+          <kl>[grasp.kl]</kl>
+          <kl2rlv>[grasp.kl2rlv]</kl2rlv>
+          <height_max>[grasp.height_max]</height_max>
+          <hgt_vpd_screen>[grasp.hgt_vpd_screen]</hgt_vpd_screen>
+          <height_1000kg>[grasp.height_1000kg]</height_1000kg>
+          <et_use_efficiency>[grasp.et_use_efficiency]</et_use_efficiency>
+          <frac_leaf2total>[grasp.frac_leaf2total]</frac_leaf2total>
+          <yld_cover_slope>[grasp.yld_cover_slope]</yld_cover_slope>
+          <yld_fpc50>[grasp.yld_fpc50]</yld_fpc50>
+          <yld_cov50>[grasp.yld_cov50]</yld_cov50>
+          <yld_tcov50>[grasp.yld_tcov50]</yld_tcov50>
+          <swi_fullgreen>[grasp.swi_fullgreen]</swi_fullgreen>
+          <swi_nogrow>[grasp.swi_nogrow]</swi_nogrow>
+          <pot_regrow>[grasp.pot_regrow]</pot_regrow>
+          <te_std>[grasp.te_std]</te_std>
+          <rad_factor>[grasp.rad_factor]</rad_factor>
+          <residual_plant_N>[grasp.residual_plant_N]</residual_plant_N>
+          <litter_n>[grasp.litter_n]</litter_n>
+          <n_uptk_per100>[grasp.n_uptk_per100]</n_uptk_per100>
+          <frost_start>[grasp.frost_start]</frost_start>
+          <frost_kill>[grasp.frost_kill]</frost_kill>
+          <death_slope>[grasp.death_slope]</death_slope>
+          <death_intercept>[grasp.death_intercept]</death_intercept>
+          <leaf_death_ratio>[grasp.leaf_death_ratio]</leaf_death_ratio>
+          <stem_death_ratio>[grasp.stem_death_ratio]</stem_death_ratio>
+          <n_conc_dm_crit>[grasp.n_conc_dm_crit]</n_conc_dm_crit>
+          <n_conc_dm_min>[grasp.n_conc_dm_min]</n_conc_dm_min>
+          <n_conc_dm_max>[grasp.n_conc_dm_max]</n_conc_dm_max>
+          <stem_thresh>[grasp.stem_thresh]</stem_thresh>
+          <detach_dryseason>[grasp.detach_dryseason]</detach_dryseason>
+          <detach_wetseason>[grasp.detach_wetseason]</detach_wetseason>
+          <day_start_summer>[grasp.day_start_summer]</day_start_summer>
+          <day_end_summer>[grasp.day_end_summer]</day_end_summer>
+          <acc_et_reset>[grasp.acc_et_reset]</acc_et_reset>
+          <acc_growth_reset>[grasp.acc_growth_reset]</acc_growth_reset>
+          <trans_for_n_reset>[grasp.trans_for_n_reset]</trans_for_n_reset>
+          <growth_for_n_reset>[grasp.growth_for_n_reset]</growth_for_n_reset>
+          <day_start_wet>[grasp.day_start_wet]</day_start_wet>
+          <day_start_dry>[grasp.day_start_dry]</day_start_dry>
+          <enr_a_coeff>[grasp.enr_a_coeff]</enr_a_coeff>
+          <enr_b_coeff>[grasp.enr_b_coeff]</enr_b_coeff>
+         </sim>
+     </ApsimToSim>
+   </grasp>

@@ -1,0 +1,88 @@
+!Title = Maseno site in Western Kenya (Nitisol)
+! see paper in ACIAR Proceedings No 114
+
+[Maseno.soilwat2.parameters]
+
+   insoil          = 2.0
+   max_evap        = 6       (mm)   ! maximum evaporation.
+   runoff_filename = blank           ! input measured runoff?
+   cona            = 6  !3.5       ()     ! stage 2 evap coef.
+   diffus_const    = 88    ()     ! coeffs for dbar
+   diffus_slope    = 35    ()     !     "
+   u               = 10  !5       (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            = 0.13    ()     ! bare soil albedo
+
+   cn2_bare        = 55      ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20      ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8     ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+!MEP 23/4/2002 soil P data (of Mutuo) and mineral N data are for 0-15cm layer 1
+     ! layer       1       2       3       4       5    6      7
+     ! depth      150     300     600     900    1200   1500   1800
+air_dry =         0.14   0.20    0.28    0.30   0.30    0.29    0.30 (mm/mm)   !
+dlayer =          150     150     300     300    300    300    300  (mm)   ! layer depth
+dul =             0.35   0.38    0.40   0.37    0.360   0.35    0.37  (mm/mm)   ! 23/7/97
+ll15 =            0.22    0.24    0.280   0.30   0.30   0.29    0.30 (mm/mm)   ! 15/7/97
+sw =              0.287  0.333   0.396   0.371   0.361  0.349   0.369  (mm/mm) !  obs soil water prior to sr96
+sat =             0.50   0.49    0.46    0.48    0.50   0.50   0.49  (mm/mm)   ! saturated soil water
+!swcon =           0.500   0.500   0.500   0.500  0.500  0.50  0.50 ()   ! soil conductivity
+swcon =           0.70    0.70   0.70    0.70    0.70   0.70   0.70 ()   ! soil conductivity
+bd =              1.1     1.22    1.31    1.23   1.19   1.15   1.21   (g/cc)   ! bulk density gm dry soil/cc moist soil
+
+
+[Maseno.maize.parameters]
+!ll15 =    0.22    0.24    0.280   0.30   0.30   0.29   0.30 (mm/mm)   ! 15/7/97
+ll   =     0.22    0.24    0.280   0.30   0.30   0.29   0.30
+kl   =     0.12    0.12    0.10    0.08   0.07   0.05   0.05
+xf   =     1.0     1.0     1.0     1.0    1.0    1.0    0.0
+
+[Maseno.soiln2.parameters]
+
+   amp               =    2.8   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   21.6  (oC)       ! mean annual air temperature (oC)
+   root_cn           =   40.0   ()         !
+   root_wt           =  500.0   (kg/ha)    !
+   soil_cn           =   12.0 !9.3    ()   ! MEP
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =     off             ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+
+     ! layer       1      2     3      4      5      6     7
+ph =              5.1    5.1    5.1    5.1    5.1   5.1   5.1   ()   ! ph
+!oc =              1.0    0.60   0.50   0.40   0.40  0.35  0.30  (%)  ! organic carbon %
+!oc =              1.4    0.97   0.72   0.57   0.45  0.35  0.30  (%)  ! organic carbon %
+!oc =              2.0    1.0   0.72   0.57   0.45  0.35  0.30  (%)  ! higher values (James)
+oc =              1.8    1.0   0.72   0.57   0.45  0.35  0.30  (%)  ! higher values (James)
+
+fbiom =           0.020  0.015  0.01    0.01    0.01   0.01  0.01  ()
+!finert =          0.7    0.8    0.9    0.95    0.95   0.95   0.99  ()
+!finert =           0.4    0.6    0.8    0.9    0.95   0.99   0.99  ()
+finert =          0.35   0.7    0.8    0.9    0.95   0.99   0.99  ()  !Sept 2002
+!finert =          0.2   0.5   0.8    0.9    0.95   0.99   0.99  ()  !23/4/2002
+
+ureappm =         0.00  0.00  0.00  0.00  0.00  0.00  0.00
+no3ppm =          1.0   1.0   1.0   1.0   1.0   1.0   1.0
+nh4ppm =          0.2   0.2   0.2   0.2   0.2   0.2   0.2
+
+
+[Maseno.soilp.parameters]
+
+ !layer        1    2    3    4    5    6   7
+labile_P =     8.5   5   2    2    2   2   2  ! 27/2/2003 resin + bicarb P in layer 1
+
+!unavail_P =   40  40  30  30  30  30  30    (mg/kg)   !unavailable p content for each layer
+banded_P =     0   0   0   0   0   0   0   (kg/ha)   !banded p content for each layer
+rock_P =       0   0   0   0   0   0   0   (kg/ha)   !rock p content for each layer ie no water soluble
+sorption =     260 400 400 400 400 400 400   ()   !P sorbed at 0.2ppm
+
+residue_cp =   400 !250             ()   !c:p ratio of residues at initialisation
+root_cp =      300 !200             ()   !c:p ratio of roots at initialisation
+rate_dissol_rock_P =  0.7     (/yr)  !rate at which rock P source becomes available
+

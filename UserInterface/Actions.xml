@@ -1,0 +1,501 @@
+<?xml version="1.0"?>
+
+<Folder>
+   <Actions>
+      <FileNew>
+         <Text>New...</Text>
+         <Description>Create a new file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\document_new16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\document_new24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>FileNew</method>
+            </call>
+         </OnInvoke>
+      </FileNew>
+      <Open>
+         <Text>Open...</Text>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_document16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\folder_document24.png</MediumIcon>
+      </Open>
+      <FileOpen>
+         <Text>Open...</Text>
+         <Description>Open an existing file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_document16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\folder_document24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileOpen</method>
+            </call>
+         </OnInvoke>
+      </FileOpen>
+      <FileSave>
+         <Text>Save</Text>
+         <Description>Save all simulations to disk</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\disk_blue16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\disk_blue24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileSave</method>
+            </call>
+         </OnInvoke>
+      </FileSave>
+      <FileSaveAs>
+         <Text>Save as...</Text>
+         <Description>Save all simulations under a different file name</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\disk_blue_window16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\disk_blue_window24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileSaveAs</method>
+            </call>
+         </OnInvoke>
+      </FileSaveAs>
+      <Help>
+         <text>Help</text>
+         <MediumIcon>%apsim%\UserInterface\Images\help224.png</MediumIcon>
+      </Help>
+      <HelpDocumentation>
+         <text>Documentation</text>
+         <MediumIcon>%apsim%\UserInterface\Images\help216.png</MediumIcon>
+         <Description>View documentation</Description>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>HelpDocumentation</method>
+            </call>
+         </OnInvoke>
+      </HelpDocumentation>
+      <ApsimSearchEngine>
+         <text>Apsim Search Engine</text>
+         <MediumIcon>%apsim%\UserInterface\Images\help216.png</MediumIcon>
+         <Description>Customised Google Search</Description>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>ApsimSearchEngine</method>
+            </call>
+         </OnInvoke>
+      </ApsimSearchEngine>
+      <ApsimInternetGroup>
+         <text>Apsim Internet Group</text>
+         <MediumIcon>%apsim%\UserInterface\Images\help216.png</MediumIcon>
+         <Description>Google Group for Apsim</Description>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>ApsimInternetGroup</method>
+            </call>
+         </OnInvoke>
+      </ApsimInternetGroup>
+      <HelpAbout>
+         <text>About...</text>
+         <MediumIcon>%apsim%\UserInterface\Images\about16.png</MediumIcon>
+         <Description>View version information</Description>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>HelpAbout</method>
+            </call>
+         </OnInvoke>
+      </HelpAbout>
+      <Run>
+         <text>Run</text>
+         <SmallIcon>%apsim%\UserInterface\Images\media_play16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\media_play24.png</MediumIcon>
+         <Description>Run the current simulation</Description>
+         <ShortCut>F5</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>Run</method>
+            </call>
+         </OnInvoke>
+      </Run>
+      <Graph>
+         <text>Graph</text>
+         <SmallIcon>%apsim%\UserInterface\Images\chart16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\chart24.png</MediumIcon>
+         <Description>Graph output files using APSVis</Description>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>Graph</method>
+            </call>
+         </OnInvoke>
+      </Graph>
+      <Excel>
+         <text>Excel</text>
+         <SmallIcon>%apsim%\UserInterface\Images\excel16.bmp</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\excel24.bmp</MediumIcon>
+         <Description>Send output files to Microsoft Excel</Description>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>Excel</method>
+            </call>
+         </OnInvoke>
+      </Excel>
+
+      <AddFolder>
+         <text>Add folder</text>
+         <Description>Add a child folder to the selected folder</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_add16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <AppliesTo>Folder</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>AddFolder</method>
+            </call>
+         </OnInvoke>
+      </AddFolder>
+      <Delete>
+         <text>Delete</text>
+         <Location>AllNodes</Location>
+         <Description>Delete the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\delete216.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <ShortCut>Delete</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Delete</method>
+            </call>
+         </OnInvoke>
+      </Delete>
+      <Rename>
+         <text>Rename</text>
+         <Location>AllNodes</Location>
+         <Description>Rename the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\pen_blue16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <ShortCut>F2</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Rename</method>
+            </call>
+         </OnInvoke>
+      </Rename>
+      <Cut>
+         <text>Cut</text>
+         <Location>AllNodes</Location>
+         <Description>Cut the selected node to the clipboard</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\cut16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <ShortCut>X, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Cut</method>
+            </call>
+         </OnInvoke>
+      </Cut>
+      <Copy>
+         <text>Copy</text>
+         <Location>AllNodes</Location>
+         <Description>Copy the selected node to the clipboard</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\copy16.png</SmallIcon>
+         <ShortCut>C, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Copy</method>
+            </call>
+         </OnInvoke>
+      </Copy>
+      <Paste>
+         <text>Paste</text>
+         <Location>AllNodes</Location>
+         <Description>Paste the clipboard contents below the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\paste16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <ShortCut>V, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Paste</method>
+            </call>
+         </OnInvoke>
+      </Paste>
+      <MoveUp>
+         <text>Move up</text>
+         <Location>AllNodes</Location>
+         <Description>Move the selected nodes up</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\nav_up_green16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <ShortCut>Up, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>MoveUp</method>
+            </call>
+         </OnInvoke>
+      </MoveUp>
+      <MoveDown>
+         <text>Move down</text>
+         <Location>AllNodes</Location>
+         <Description>Move the selected nodes down</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\nav_down_green16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <ShortCut>Down, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>MoveDown</method>
+            </call>
+         </OnInvoke>
+      </MoveDown>
+      <ExpandAll>
+         <text>Expand all</text>
+         <Location>AllNodes</Location>
+         <Description>Expand all nodes</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\down_plus16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>ExpandAll</method>
+            </call>
+         </OnInvoke>
+      </ExpandAll>
+      <CollapseAll>
+         <text>Collapse all</text>
+         <Location>AllNodes</Location>
+         <Description>Collapse all nodes</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\up_minus16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>CollapseAll</method>
+            </call>
+         </OnInvoke>
+      </CollapseAll>
+      <MakeConcrete>
+         <text>Unlink</text>
+         <Location>AllNodes</Location>
+         <Description>Turn link node into a non-link node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\link_delete16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>NotShortcut</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>MakeConcrete</method>
+            </call>
+         </OnInvoke>
+      </MakeConcrete>
+      <Enable>
+         <Text>Enable</Text>
+         <Description>Enable this node in an APSIM run</Description>
+         <DisabledWhen>Enabled</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>Enable</method>
+            </call>
+         </OnInvoke>
+      </Enable>
+      <Disable>
+         <Text>Disable</Text>
+         <Description>Disable this node when running APSIM</Description>
+         <DisabledWhen>Disabled</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>Disable</method>
+            </call>
+         </OnInvoke>
+      </Disable>
+
+
+
+      <SoilCropManagement>
+         <text>Manage crops</text>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>SoilCropManagement</method>
+            </call>
+         </OnInvoke>
+      </SoilCropManagement>
+      <ChangePHUnits>
+         <text>Change PH Units</text>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ChangePHUnits</method>
+            </call>
+         </OnInvoke>
+      </ChangePHUnits>
+      <GraphWizard>
+         <text>Insert a new graph</text>
+         <SmallIcon>%apsim%\UserInterface\Images\chart16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\chart24.png</MediumIcon>
+         <Description>Add a new graph under the specified node using the Graph Wizard</Description>
+         <AppliesTo>Folder</AppliesTo>
+         <AppliesTo>OutputFile</AppliesTo>
+         <AppliesTo>Area</AppliesTo>
+         <AppliesTo>Simulation</AppliesTo>
+
+         <OnInvoke>
+            <call>
+               <class>GraphDataUserInterface.GraphActions</class>
+               <method>GraphWizardAction</method>
+            </call>
+         </OnInvoke>
+      </GraphWizard>
+      <Options>
+         <text>Options...</text>
+         <SmallIcon>%apsim%\UserInterface\Images\wrench16.png</SmallIcon>
+         <Description>Modify user interface options</Description>
+         <DisabledWhen>InToolbox</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>ApsimUI.MainUI</class>
+               <method>Options</method>
+            </call>
+         </OnInvoke>
+      </Options>
+      <Print>
+         <Text>Print...</Text>
+         <Description>Print the currently selected graph(s)</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\printer16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\printer24.png</MediumIcon>
+         <AppliesTo>Graph</AppliesTo>
+         <AppliesTo>GraphReport</AppliesTo>
+         <AppliesTo>Simulation</AppliesTo>
+         <AppliesTo>folder</AppliesTo>
+         <AppliesTo>area</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Print</method>
+            </call>
+         </OnInvoke>
+      </Print>
+      <Export>
+         <Text>Export...</Text>
+         <Description>Export the currently selected graph(s) to a bitmap file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
+         <AppliesTo>Graph</AppliesTo>
+         <AppliesTo>GraphReport</AppliesTo>
+         <AppliesTo>Folder</AppliesTo>
+         <AppliesTo>Simulation</AppliesTo>
+         <AppliesTo>Area</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Export</method>
+            </call>
+         </OnInvoke>
+      </Export>
+      <Checkpoint>
+         <Text>Checkpoint simulation</Text>
+         <Description>Save all simulation, output and summary files to a checkpoint folder.</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\disk_yellow_into16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>CheckPoint</method>
+            </call>
+         </OnInvoke>
+      </Checkpoint>
+      <RevertFromCheckPoint>
+         <Text>Revert from checkpoint</Text>
+         <Description>Revert all simulation changes, output and summary files from the checkpoint folder.</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\disk_yellow_out16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>RevertFromCheckPoint</method>
+            </call>
+         </OnInvoke>
+      </RevertFromCheckPoint>
+   </Actions>
+
+
+   <MainToolBar ImageAboveText="yes">
+      <ImageSize>MediumIcon</ImageSize>
+      <Item>FileNew</Item>
+      <DropDownItem action="Open">
+         <Item>FileOpen</Item>
+         <Separator/>
+         <RecentFileList/>
+      </DropDownItem>
+      <Item>FileSave</Item>
+      <Item>FileSaveAs</Item>
+      <Separator/>
+      <Item>Run</Item>
+      <Separator/>
+      <Item>GraphWizard</Item>
+      <Item>Excel</Item>
+      <Separator/>
+      <DropDownItem action="Help">
+         <Item>HelpDocumentation</Item>
+         <Item>ApsimSearchEngine</Item>
+         <Item>ApsimInternetGroup</Item>
+         <Item>HelpAbout</Item>
+      </DropDownItem>
+   </MainToolBar>
+
+   <ContextMenu>
+      <ImageSize>SmallIcon</ImageSize>
+      <Item>FileNew</Item>
+      <DropDownItem action="Open">
+         <Item>FileOpen</Item>
+         <Separator/>
+         <RecentFileList/>
+      </DropDownItem>
+      <Item>FileSave</Item>
+      <Item>FileSaveAs</Item>
+      <Item>Checkpoint</Item>
+      <Item>RevertFromCheckPoint</Item>
+      <Separator/>
+      <Item>AddFolder</Item>
+      <Item>Run</Item>
+      <Item>GraphWizard</Item>
+      <Item>Excel</Item>
+      <Item>Print</Item>
+      <Item>Export</Item>
+      <Separator/>
+      <Item>Delete</Item>
+      <Item>Rename</Item>
+      <Item>MakeConcrete</Item>
+      <Separator/>
+      <Item>Cut</Item>
+      <Item>Copy</Item>
+      <Item>Paste</Item>
+      <Item>MoveUp</Item>
+      <Item>MoveDown</Item>
+      <Separator/>
+      <Item>CollapseAll</Item>
+      <Item>ExpandAll</Item>
+      <Separator/>
+      <Item>Enable</Item>
+      <Item>Disable</Item>
+      <Separator/>
+      <Item>Options</Item>
+   </ContextMenu>
+
+   <ContextMenu_SoilUI_Management>
+      <ImageSize>SmallIcon</ImageSize>
+      <Item>SoilCropManagement</Item>
+   </ContextMenu_SoilUI_Management>
+   <ContextMenu_SoilUI_PH>
+      <ImageSize>SmallIcon</ImageSize>
+      <Item>ChangePHUnits</Item>
+   </ContextMenu_SoilUI_PH>
+
+
+</Folder>

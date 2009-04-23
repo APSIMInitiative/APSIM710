@@ -1,0 +1,158 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Soilwat2 test set method
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 31/01/1988
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.dd/mmm/yyyy as date
+        SoilWat.sw
+
+     Output file = set.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if day = 10 then
+        soilwat set sw = .250 .250 .250 .250 .250 .250 .250
+     elseif day = 11 then
+        soilwat set sw = 0.3 0.3
+     endif
+     report do_output
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     u =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: SoilWat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     cona =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: SoilWat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mwcon is being replaced with a saturated conductivity. See documentation for details.
+     Component name: SoilWat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.200  0.400  0.500  0.200  1.300  0.762  0.200
+          150.-  300.  0.200  0.200  0.400  0.500  0.200  1.300  0.190  0.200
+          300.-  600.  0.200  0.200  0.400  0.500  0.200  1.300  0.048  0.200
+          600.-  900.  0.200  0.200  0.400  0.500  0.200  1.300  0.000  0.200
+          900.- 1200.  0.200  0.200  0.400  0.500  0.200  1.300  0.000  0.100
+         1200.- 1500.  0.200  0.200  0.400  0.500  0.200  1.300  0.000  0.200
+         1500.- 1800.  0.200  0.200  0.400  0.500  0.200  1.300  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      30.00       0.00      30.00      15.00
+          150.-  300.      30.00       0.00      30.00      15.00
+          300.-  600.      60.00       0.00      60.00      30.00
+          600.-  900.      60.00       0.00      60.00      30.00
+          900.- 1200.      60.00       0.00      60.00      30.00
+         1200.- 1500.      60.00       0.00      60.00      30.00
+         1500.- 1800.      60.00       0.00      60.00      30.00
+          ---------------------------------------------------------
+               Totals     360.00       0.00     360.00     180.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13        0.00        0.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+             100.00    0.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            0.00 (mm^0.5)
+            CONA:                     0.00 ()
+            Eo from priestly-taylor
+------- Start of simulation  --------------------------------------------------
+31 January 1988(Day of year=31), clock: 
+     Simulation is terminating due to end criteria being met.

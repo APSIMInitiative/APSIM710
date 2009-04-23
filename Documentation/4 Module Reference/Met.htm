@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Meteorological Data Module (Met)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM Meteorological Data Module (Met)</p>
+<p class="Normal"><strong><em>&nbsp; </em></strong></p>
+<p class="Title2"><strong><em>Description</em></strong></p>
+<p class="Normal">The APSIM Met module provided daily meteorological information to all modules within an APSIM simulation. Encapsulating the functionality of meteorological data provision in a single module will allow further enhancement of this important component of agricultural production systems simulation. </p>
+<p class="Normal"><strong><em> </em></strong></p>
+<p class="Title2"><strong><em>Operation</em></strong></p>
+<p class="Normal">The APSIM Met module is operated in a way similar to other APSIM modules. The specification of this module in the simulation control file, and its parameters in the parameter files follow normal APSIM module protocols. </p>
+<p class="Normal"><strong><em> </em></strong></p>
+<p class="Title2"><strong><em>Parameter file settings</em></strong></p>
+<p class="Normal">The APSIM Met Module requires parameters to specify the climate of the site for each APSIM time step. This information is included in a ‘ weather' , or ‘ met' , file. Climate information can exist in the met file either of two formats: Keyword or Column format.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>Keyword Climate Constants </strong></p>
+<p class="Normal">Climate information for the simulation site that is independent of time can be specified at the top of the data section using standard APSIM keyword syntax. Examples of data that is specified in this manner are shown in the example below.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><strong>Time step Column Values </strong></p>
+<p class="Normal">Information that needs to be specified for each APSIM time step can be arranged in space-delimited columns. The data columns can be arranged in any order and contain any data of any type. The line following the list of column names must be followed by a line containing the units, in brackets ‘ ()' , for the information in each column.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The only restraints are as follows </p>
+<ul>
+  <li class="Normal">column headers for standard APSIM state variables must use the standard APSIM state variable names so that the data can be recognised by the module communications. </li>
+  <li class="Normal">The list of columns must contain adequate information for identifying time for each row. This means that the list of columns must contain either ‘ day' and ‘ year' or ‘ day_of_month' , ‘ month' and ‘ year' . </li>
+</ul>
+<p class="Normal"><strong>AN EXAMPLE</strong></p>
+<p class="Normal">The control file would require a specification such as</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[apsim.sample simulation] </p>
+<p class="Code">module = clock sample.par[all_treatments] </p>
+<p class="Code">module = report sample.par[all_treatments] </p>
+<p class="Code">module = met sample.met[toowoomba] </p>
+<p class="Code"><strong>. </strong></p>
+<p class="Code"><strong>. </strong></p>
+<p class="Code"><strong>&nbsp; </strong></p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The file “sample.met” could then have the following:-</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[toowoomba.met.weather] </p>
+<p class="Code">site = toowoomba </p>
+<p class="Code">latitude = -26.8 (degrees)</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">year day radn maxt mint rain </p>
+<p class="Code">() () (MJ/m2) (oC) (oC) (mm) </p>
+<p class="Code">1996 65 20 29 20.5 0 </p>
+<p class="Code">1996 66 20 29 20 0 </p>
+<p class="Code">1996 67 20 29 21 0 </p>
+<p class="Code">1996 68 20 22.5 20 0 </p>
+<p class="Code">1996 69 20 27.5 18.5 0 </p>
+<p class="Code">. . . . . . </p>
+<p class="Code">. . . . . . </p>
+<p class="Code">. . . . . .</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2"><strong><em>Module Output Variables </em></strong></p>
+<p class="Normal"><strong><em>&nbsp;</em></strong>The APSIM Met Module can provide the values of several state variables for reporting to an output file or use by other modules.</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="175" valign="top"><p class="Normal">Name </p></td>
+    <td width="174" valign="top"><p class="Normal">Units </p></td>
+    <td width="289" valign="top"><p class="Normal">Description </p></td>
+  </tr>
+  <tr>
+    <td width="175" valign="top"><p class="Normal"><em>keyword </em></p></td>
+    <td width="174" valign="top"><p class="Normal">as specified </p></td>
+    <td width="289" valign="top"><p class="Normal">Each keyword climate constant is </p>
+        <p class="Normal">available for output by the user. </p></td>
+  </tr>
+  <tr>
+    <td width="175" valign="top"><p class="Normal"><em>Column name </em></p></td>
+    <td width="174" valign="top"><p class="Normal">as specified </p></td>
+    <td width="289" valign="top"><p class="Normal">Each column data field is available </p>
+        <p class="Normal">for output by the user. The value </p>
+        <p class="Normal">for the current simulation timestep </p>
+        <p class="Normal">will be returned. The time </p>
+        <p class="Normal">specifiers (ie day, year, </p>
+        <p class="Normal">day_of_month, month) are not </p>
+        <p class="Normal">available for output. </p></td>
+  </tr>
+  <tr>
+    <td width="175" valign="top"><p class="Normal">Day_length </p></td>
+    <td width="174" valign="top"><p class="Normal">hours </p></td>
+    <td width="289" valign="top"><p class="Normal">Day length (hours of sunlight) for </p>
+        <p class="Normal">the current simulation <em>day. </em>This </p>
+        <p class="Normal">value is calculated using time of </p>
+        <p class="Normal">year and latitude and assumes a </p>
+        <p class="Normal">civil twilight angle of 6 degrees. </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<a name="cchange">
+ <p class="Title2"><strong><em>Resetting Met Variables (eg Climate Change scenario)</em></strong></p>
+</a>
+<p class="Normal">The APSIM Met Module can reset the values of any variables specified in the met file. Both keyword climate constants and data column values (apart from the time specification column values) for the current timestep can be reset using standard APSIM communication techniques. However, changing met data dynamically during a simulation must only occur at a predefined stage during daily simulation execution. See example below.  Resetting met variables at 'start_of_day' or 'end_of_day' could result in critical modules (eg Soilwat2) missing the information due to process ordering.  Setting met variables at the 'preNewMet' stage (see example) will avoid this risk. </p>
+<p class="Normal"><strong>&nbsp; </strong></p>
+<p class="Normal"><strong>AN EXAMPLE</strong></p>
+<p class="Normal">Most modules in APSIM get their weather data from a newmet event that is produced by the MET module, so we need to change the weather variables before this event gets sent out. The MET module produces an event that makes this easy. It is called prenewmet. This event is fired just before a newmet event. So all we have to do is to trap this event and change the weather variables.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">From the manager\sample\manager.par file:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">[modify_met.manager.preNewmet] </p>
+<p class="Normal">maxt = maxt + 2 </p>
+<p class="Normal">mint = mint + 2</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">When the prenewmet event fires, we increase the maximum and minimum temperature by 2 degrees, which then gets propagated to all other APSIM modules when the newmet event is sent by the MET module.</p>
+</body>
+</html>

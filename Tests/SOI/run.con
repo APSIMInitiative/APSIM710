@@ -1,0 +1,11 @@
+version = 7.0(2)
+[apsim.SOI]
+
+title= Goondiwindi may phase 4
+
+module = clock   run1.par [run1] %apsim%/Model/clock.xml [standard]
+module = report     run1.par [run1]
+module = Input(Met) %apsim%/Examples/MetFiles/goond.met [weather]
+module = manager    run1.man [run1]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = soi       %apsim%/Examples/Climate/Phases.soi [soi]

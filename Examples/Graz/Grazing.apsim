@@ -1,0 +1,3963 @@
+<folder version="17" name="Simulations">
+  <simulation name="Wheat Grazing">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\dalby.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">14/06/1988</start_date>
+      <end_date type="date" description="Select the end date of the simulation">17/11/1988</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Wheat Managment">
+          <script name="init">
+            <text>
+ready_to_graze = 0</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[! Graze paddock when wheat is ready
+if (wheat.stage > 5) then
+   ready_to_graze = 1
+endif
+
+
+if day = 169 and year = 1988 then
+   wheat sow cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+endif
+
+if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   wheat harvest
+   wheat end_crop
+endif]]></text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Grazing management">
+          <script name="init">
+            <text>annual_lwg = 0.0
+paddockState = 'empty'
+</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[
+if (ready_to_graze = 1 AND paddockState = 'empty') then
+   graz set stocking_rate = 0.8
+   graz set alw =  400.0                 ! p084
+   annual_lwg = 0.0
+   paddockState = 'stocked'
+endif
+
+! 'GRAZEON' stocking rate resets (%Use of TSDM for next year)
+if (graz.stocking_rate > 0.0 AND today = date('1-jun') then                ! p081
+   graz set alw = 400.0
+   avgDailyIntake = (annual_lwg/365.25 + 1.058) / 0.304
+   targetUtil = 30.0 / 100.0
+   annualIntake = avgDailyIntake * 365.5
+   stock_equiv_ratio = targetUtil * grasp.tsdm / annualIntake
+
+   weight_ratio = graz.alw / 200
+   factor = weight_ratio ** 0.75
+   beasts_ha = stock_equiv_ratio / factor
+   graz set stocking_rate = beasts_ha
+
+   annual_lwg = 0.0
+endif
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>
+annual_lwg = annual_lwg + graz.lwg</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <wheat />
+      <soil name="Soil">
+        <state>Queensland</state>
+        <region>South East Queensland</region>
+        <nearesttown>Generic</nearesttown>
+        <site>Generic</site>
+        <SoilType>Black Vertosol</SoilType>
+        <Latitude>999999</Latitude>
+        <Longitude>999999</Longitude>
+        <LocationAccuracy>Regional Soil Type</LocationAccuracy>
+        <comment>estimated cotton LL</comment>
+        <SummerCona>3.5</SummerCona>
+        <WinterCona>2.5</WinterCona>
+        <SummerU>6</SummerU>
+        <WinterU>4</WinterU>
+        <SummerDate>1-Nov</SummerDate>
+        <WinterDate>1-apr</WinterDate>
+        <Salb>0.12</Salb>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <CN2Bare>73</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.145</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.04</oc>
+            <ec>0.2</ec>
+            <ph>8.4</ph>
+            <ll name="wheat">0.29</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.29</ll>
+            <kl name="barley">0.07</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.29</ll>
+            <kl name="canola">0.06</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.29</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.29</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.29</ll>
+            <kl name="sorghum">0.07</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.29</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.29</ll>
+            <kl name="sunflower">0.1</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.29</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.29</ll>
+            <kl name="maize">0.06</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.29</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.29</ll>
+            <kl name="cowpea">0.06</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.29</ll>
+            <kl name="navybean">0.06</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.29</ll>
+            <kl name="peanut">0.06</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.29</ll>
+            <kl name="pigeonpea">0.06</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.29</ll>
+            <kl name="soybean">0.06</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.29</ll>
+            <kl name="stylo">0.1</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.29</ll>
+            <kl name="sugar">0.1</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.29</ll>
+            <kl name="lablab">0.1</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.03</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.232</airdry>
+            <dul>0.53</dul>
+            <sat>0.58</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>0.89</oc>
+            <ec>0.3</ec>
+            <ph>8.8</ph>
+            <ll name="wheat">0.29</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.29</ll>
+            <kl name="barley">0.07</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.29</ll>
+            <kl name="canola">0.06</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.29</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.29</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.29</ll>
+            <kl name="sorghum">0.07</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.29</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.29</ll>
+            <kl name="sunflower">0.1</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.29</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.29</ll>
+            <kl name="maize">0.06</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.29</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.29</ll>
+            <kl name="cowpea">0.06</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.29</ll>
+            <kl name="navybean">0.06</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.29</ll>
+            <kl name="peanut">0.06</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.29</ll>
+            <kl name="pigeonpea">0.06</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.29</ll>
+            <kl name="soybean">0.06</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.29</ll>
+            <kl name="stylo">0.1</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.29</ll>
+            <kl name="sugar">0.1</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.29</ll>
+            <kl name="lablab">0.1</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.8</finert>
+            <oc>0.89</oc>
+            <ec>0.3</ec>
+            <ph>9</ph>
+            <ll name="wheat">0.32</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.32</ll>
+            <kl name="barley">0.07</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.32</ll>
+            <kl name="canola">0.06</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.36</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.35</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.35</ll>
+            <kl name="sorghum">0.07</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.32</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.32</ll>
+            <kl name="sunflower">0.08</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.32</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.34</ll>
+            <kl name="maize">0.06</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.39</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.32</ll>
+            <kl name="cowpea">0.06</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.32</ll>
+            <kl name="navybean">0.06</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.32</ll>
+            <kl name="peanut">0.06</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.32</ll>
+            <kl name="pigeonpea">0.06</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.32</ll>
+            <kl name="soybean">0.06</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.32</ll>
+            <kl name="stylo">0.08</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.32</ll>
+            <kl name="sugar">0.08</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.32</ll>
+            <kl name="lablab">0.08</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.58</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>1</finert>
+            <oc>0.89</oc>
+            <ec>0.4</ec>
+            <ph>9.2</ph>
+            <ll name="wheat">0.32</ll>
+            <kl name="wheat">0.04</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.38</ll>
+            <kl name="barley">0.05</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.32</ll>
+            <kl name="canola">0.04</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.43</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.36</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.38</ll>
+            <kl name="sorghum">0.05</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.32</ll>
+            <kl name="mungbean">0.04</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.32</ll>
+            <kl name="sunflower">0.06</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.32</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.34</ll>
+            <kl name="maize">0.04</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.41</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.32</ll>
+            <kl name="cowpea">0.04</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.32</ll>
+            <kl name="navybean">0.04</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.32</ll>
+            <kl name="peanut">0.04</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.32</ll>
+            <kl name="pigeonpea">0.05</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.32</ll>
+            <kl name="soybean">0.04</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.32</ll>
+            <kl name="stylo">0.06</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.32</ll>
+            <kl name="sugar">0.06</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.32</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.06</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.52</dul>
+            <sat>0.57</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.77</oc>
+            <ec>0.6</ec>
+            <ph>9.2</ph>
+            <ll name="wheat">0.35</ll>
+            <kl name="wheat">0.04</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.39</ll>
+            <kl name="barley">0.05</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.35</ll>
+            <kl name="canola">0.04</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.51</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.38</ll>
+            <kl name="cotton">0.09</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.4</ll>
+            <kl name="sorghum">0.05</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.35</ll>
+            <kl name="mungbean">0.04</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.35</ll>
+            <kl name="sunflower">0.04</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.35</ll>
+            <kl name="fababean">0.06</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.3</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.37</ll>
+            <kl name="maize">0.04</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0.09</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.35</ll>
+            <kl name="cowpea">0.04</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.35</ll>
+            <kl name="navybean">0.04</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.35</ll>
+            <kl name="peanut">0.04</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.35</ll>
+            <kl name="pigeonpea">0.04</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.35</ll>
+            <kl name="soybean">0.04</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.35</ll>
+            <kl name="stylo">0.04</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.35</ll>
+            <kl name="sugar">0.04</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.35</ll>
+            <kl name="lablab">0.04</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.11</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.45</oc>
+            <ec>0.8</ec>
+            <ph>9.1</ph>
+            <ll name="wheat">0.38</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0.42</xf>
+            <ll name="barley">0.39</ll>
+            <kl name="barley">0.03</kl>
+            <xf name="barley">0.42</xf>
+            <ll name="canola">0.38</ll>
+            <kl name="canola">0.02</kl>
+            <xf name="canola">0.42</xf>
+            <ll name="chickpea">0.5</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">0.42</xf>
+            <ll name="cotton">0.39</ll>
+            <kl name="cotton">0.07</kl>
+            <xf name="cotton">0.42</xf>
+            <ll name="sorghum">0.4</ll>
+            <kl name="sorghum">0.04</kl>
+            <xf name="sorghum">0.42</xf>
+            <ll name="mungbean">0.38</ll>
+            <kl name="mungbean">0.01</kl>
+            <xf name="mungbean">0.42</xf>
+            <ll name="sunflower">0.38</ll>
+            <kl name="sunflower">0.02</kl>
+            <xf name="sunflower">0.42</xf>
+            <ll name="fababean">0.38</ll>
+            <kl name="fababean">0.04</kl>
+            <xf name="fababean">0.42</xf>
+            <ll name="lucerne">0.31</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.42</xf>
+            <ll name="maize">0.4</ll>
+            <kl name="maize">0.02</kl>
+            <xf name="maize">0.42</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0.07</kl>
+            <xf name="perennial grass">0.42</xf>
+            <ll name="cowpea">0.38</ll>
+            <kl name="cowpea">0.02</kl>
+            <xf name="cowpea">0.42</xf>
+            <ll name="navybean">0.38</ll>
+            <kl name="navybean">0.01</kl>
+            <xf name="navybean">0.42</xf>
+            <ll name="peanut">0.38</ll>
+            <kl name="peanut">0.01</kl>
+            <xf name="peanut">0.42</xf>
+            <ll name="pigeonpea">0.38</ll>
+            <kl name="pigeonpea">0.02</kl>
+            <xf name="pigeonpea">0.42</xf>
+            <ll name="soybean">0.38</ll>
+            <kl name="soybean">0.02</kl>
+            <xf name="soybean">0.42</xf>
+            <ll name="stylo">0.38</ll>
+            <kl name="stylo">0.02</kl>
+            <xf name="stylo">0.42</xf>
+            <ll name="sugar">0.38</ll>
+            <kl name="sugar">0.02</kl>
+            <xf name="sugar">0.42</xf>
+            <ll name="lablab">0.38</ll>
+            <kl name="lablab">0.02</kl>
+            <xf name="lablab">0.42</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.12</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.27</oc>
+            <ec>0.9</ec>
+            <ph>9</ph>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0.37</xf>
+            <ll name="barley">0.41</ll>
+            <kl name="barley">0.02</kl>
+            <xf name="barley">0.37</xf>
+            <ll name="canola">0.41</ll>
+            <kl name="canola">0.01</kl>
+            <xf name="canola">0.37</xf>
+            <ll name="chickpea">0.5</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">0.37</xf>
+            <ll name="cotton">0.39</ll>
+            <kl name="cotton">0.05</kl>
+            <xf name="cotton">0.37</xf>
+            <ll name="sorghum">0.4</ll>
+            <kl name="sorghum">0.03</kl>
+            <xf name="sorghum">0.37</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.01</kl>
+            <xf name="mungbean">0.37</xf>
+            <ll name="sunflower">0.41</ll>
+            <kl name="sunflower">0.01</kl>
+            <xf name="sunflower">0.37</xf>
+            <ll name="fababean">0.41</ll>
+            <kl name="fababean">0.03</kl>
+            <xf name="fababean">0.37</xf>
+            <ll name="lucerne">0.32</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.37</xf>
+            <ll name="maize">0.42</ll>
+            <kl name="maize">0.01</kl>
+            <xf name="maize">0.37</xf>
+            <ll name="perennial grass">0.41</ll>
+            <kl name="perennial grass">0.05</kl>
+            <xf name="perennial grass">0.37</xf>
+            <ll name="cowpea">0.41</ll>
+            <kl name="cowpea">0.01</kl>
+            <xf name="cowpea">0.37</xf>
+            <ll name="navybean">0.41</ll>
+            <kl name="navybean">0.01</kl>
+            <xf name="navybean">0.37</xf>
+            <ll name="peanut">0.41</ll>
+            <kl name="peanut">0.01</kl>
+            <xf name="peanut">0.37</xf>
+            <ll name="pigeonpea">0.41</ll>
+            <kl name="pigeonpea">0.01</kl>
+            <xf name="pigeonpea">0.37</xf>
+            <ll name="soybean">0.41</ll>
+            <kl name="soybean">0.01</kl>
+            <xf name="soybean">0.37</xf>
+            <ll name="stylo">0.41</ll>
+            <kl name="stylo">0.01</kl>
+            <xf name="stylo">0.37</xf>
+            <ll name="sugar">0.41</ll>
+            <kl name="sugar">0.01</kl>
+            <xf name="sugar">0.37</xf>
+            <ll name="lablab">0.41</ll>
+            <kl name="lablab">0.01</kl>
+            <xf name="lablab">0.37</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.15</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.48</dul>
+            <sat>0.53</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.22</oc>
+            <ec>1</ec>
+            <ph>9</ph>
+            <ll name="wheat">0.48</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.48</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.48</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.48</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.48</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.48</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.48</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.48</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.48</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.33</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.33</xf>
+            <ll name="maize">0.48</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.41</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.48</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.48</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.48</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.48</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.48</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.48</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.48</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.48</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.18</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.47</dul>
+            <sat>0.52</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.16</oc>
+            <ec>1.1</ec>
+            <ph>8.9</ph>
+            <ll name="wheat">0.47</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.47</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.47</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.47</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.47</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.47</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.47</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.47</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.47</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.34</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.31</xf>
+            <ll name="maize">0.47</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.47</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.47</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.47</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.47</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.47</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.47</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.47</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.47</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.2</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.46</dul>
+            <sat>0.51</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.13</oc>
+            <ec>1.1</ec>
+            <ph>8.9</ph>
+            <ll name="wheat">0.46</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.46</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.46</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.46</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.46</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.46</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.46</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.46</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.46</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.35</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.31</xf>
+            <ll name="maize">0.46</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.46</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.46</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.46</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.46</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.46</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.46</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.46</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.46</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.25</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.44</dul>
+            <sat>0.49</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.12</oc>
+            <ec>1</ec>
+            <ph>8.9</ph>
+            <ll name="wheat">0.44</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.44</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.44</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.44</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.44</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.44</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.44</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.44</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.44</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.36</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.33</xf>
+            <ll name="maize">0.44</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.42</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.44</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.44</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.44</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.44</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.44</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.44</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.44</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.44</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+        </profile>
+        <InitWater>
+          <percentmethod>
+            <percent>1</percent>
+            <distributed>filled from top</distributed>
+          </percentmethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6.50300344798776</no3>
+              <nh4>0.599004378686977</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.10100111398159</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.10100111398159</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <outputfile name="Outputfile">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="LeafGreenWt" />
+          <variable name="StemGreenWt" />
+          <variable name="paddockState" />
+          <variable name="alw" />
+          <variable name="stocking_rate" />
+          <variable name="acc_eaten" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" description="End of daily simulation time step" />
+        </events>
+      </outputfile>
+      <graz>
+        <intake_util_intercept type="text" description="Intercept in eqn reln between intake and utilization">1</intake_util_intercept>
+        <intake_util_slope type="text" description="Slope in eqn reln between intake and utilization">-0.3</intake_util_slope>
+        <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies">300</yld_eat_restr>
+        <summer_lwg type="text" description="Expected lwg @ low SR">70</summer_lwg>
+        <autumn_lwg type="text" description="Expected lwg @ low SR">35</autumn_lwg>
+        <winter_lwg type="text" description="Expected lwg @ low SR">10</winter_lwg>
+        <spring_lwg type="text" description="Expected lwg @ low SR">35</spring_lwg>
+        <leaf_diet type="text" description="Proportion of leaf in diet">0.85</leaf_diet>
+        <std_alw type="text" description="std_alw">200</std_alw>
+        <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
+        <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
+        <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
+        <allow_supplements type="text" description="allow_supplements">0</allow_supplements>
+      </graz>
+    </area>
+  </simulation>
+  <simulation name="Grass Grazing">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\dalby.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">14/06/1988</start_date>
+      <end_date type="date" description="Select the end date of the simulation">17/11/1988</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Grasp Managment">
+          <script name="init">
+            <text>pasture_in = 0
+ready_to_graze = 0</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text>if pasture_in = 0 then
+   grasp establish init_section = establishment 
+   pasture_in = 1
+endif
+
+if (day = 222) then
+   ready_to_graze = 1
+endif</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Grazing management">
+          <script name="init">
+            <text>annual_lwg = 0.0
+paddockState = 'empty'
+</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[
+if (ready_to_graze = 1 AND paddockState = 'empty') then
+   graz set stocking_rate = 0.8
+   graz set alw =  400.0                 ! p084
+   annual_lwg = 0.0
+   paddockState = 'stocked'
+endif
+
+! 'GRAZEON' stocking rate resets (%Use of TSDM for next year)
+if (graz.stocking_rate > 0.0 AND today = date('1-jun') then                ! p081
+   graz set alw = 400.0
+   avgDailyIntake = (annual_lwg/365.25 + 1.058) / 0.304
+   targetUtil = 30.0 / 100.0
+   annualIntake = avgDailyIntake * 365.5
+   stock_equiv_ratio = targetUtil * grasp.tsdm / annualIntake
+
+   weight_ratio = graz.alw / 200
+   factor = weight_ratio ** 0.75
+   beasts_ha = stock_equiv_ratio / factor
+   graz set stocking_rate = beasts_ha
+
+   annual_lwg = 0.0
+endif
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+          <script name="end_of_day">
+            <text>
+annual_lwg = annual_lwg + graz.lwg</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <soil name="Soil">
+        <state>Queensland</state>
+        <region>South East Queensland</region>
+        <nearesttown>Generic</nearesttown>
+        <site>Generic</site>
+        <SoilType>Black Vertosol</SoilType>
+        <Latitude>999999</Latitude>
+        <Longitude>999999</Longitude>
+        <LocationAccuracy>Regional Soil Type</LocationAccuracy>
+        <comment>estimated cotton LL</comment>
+        <SummerCona>3.5</SummerCona>
+        <WinterCona>2.5</WinterCona>
+        <SummerU>6</SummerU>
+        <WinterU>4</WinterU>
+        <SummerDate>1-Nov</SummerDate>
+        <WinterDate>1-apr</WinterDate>
+        <Salb>0.12</Salb>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <CN2Bare>73</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.145</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.04</oc>
+            <ec>0.2</ec>
+            <ph>8.4</ph>
+            <ll name="wheat">0.29</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.29</ll>
+            <kl name="barley">0.07</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.29</ll>
+            <kl name="canola">0.06</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.29</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.29</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.29</ll>
+            <kl name="sorghum">0.07</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.29</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.29</ll>
+            <kl name="sunflower">0.1</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.29</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.29</ll>
+            <kl name="maize">0.06</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.29</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.29</ll>
+            <kl name="cowpea">0.06</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.29</ll>
+            <kl name="navybean">0.06</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.29</ll>
+            <kl name="peanut">0.06</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.29</ll>
+            <kl name="pigeonpea">0.06</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.29</ll>
+            <kl name="soybean">0.06</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.29</ll>
+            <kl name="stylo">0.1</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.29</ll>
+            <kl name="sugar">0.1</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.29</ll>
+            <kl name="lablab">0.1</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.03</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.232</airdry>
+            <dul>0.53</dul>
+            <sat>0.58</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>0.89</oc>
+            <ec>0.3</ec>
+            <ph>8.8</ph>
+            <ll name="wheat">0.29</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.29</ll>
+            <kl name="barley">0.07</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.29</ll>
+            <kl name="canola">0.06</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.29</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.29</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.29</ll>
+            <kl name="sorghum">0.07</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.29</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.29</ll>
+            <kl name="sunflower">0.1</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.29</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.29</ll>
+            <kl name="maize">0.06</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.29</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.29</ll>
+            <kl name="cowpea">0.06</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.29</ll>
+            <kl name="navybean">0.06</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.29</ll>
+            <kl name="peanut">0.06</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.29</ll>
+            <kl name="pigeonpea">0.06</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.29</ll>
+            <kl name="soybean">0.06</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.29</ll>
+            <kl name="stylo">0.1</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.29</ll>
+            <kl name="sugar">0.1</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.29</ll>
+            <kl name="lablab">0.1</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.59</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.8</finert>
+            <oc>0.89</oc>
+            <ec>0.3</ec>
+            <ph>9</ph>
+            <ll name="wheat">0.32</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.32</ll>
+            <kl name="barley">0.07</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.32</ll>
+            <kl name="canola">0.06</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.36</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.35</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.35</ll>
+            <kl name="sorghum">0.07</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.32</ll>
+            <kl name="mungbean">0.06</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.32</ll>
+            <kl name="sunflower">0.08</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.32</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.34</ll>
+            <kl name="maize">0.06</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.39</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.32</ll>
+            <kl name="cowpea">0.06</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.32</ll>
+            <kl name="navybean">0.06</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.32</ll>
+            <kl name="peanut">0.06</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.32</ll>
+            <kl name="pigeonpea">0.06</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.32</ll>
+            <kl name="soybean">0.06</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.32</ll>
+            <kl name="stylo">0.08</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.32</ll>
+            <kl name="sugar">0.08</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.32</ll>
+            <kl name="lablab">0.08</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.02</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.54</dul>
+            <sat>0.58</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>1</finert>
+            <oc>0.89</oc>
+            <ec>0.4</ec>
+            <ph>9.2</ph>
+            <ll name="wheat">0.32</ll>
+            <kl name="wheat">0.04</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.38</ll>
+            <kl name="barley">0.05</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.32</ll>
+            <kl name="canola">0.04</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.43</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.36</ll>
+            <kl name="cotton">0.1</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.38</ll>
+            <kl name="sorghum">0.05</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.32</ll>
+            <kl name="mungbean">0.04</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.32</ll>
+            <kl name="sunflower">0.06</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.32</ll>
+            <kl name="fababean">0.08</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.29</ll>
+            <kl name="lucerne">0.1</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.34</ll>
+            <kl name="maize">0.04</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.41</ll>
+            <kl name="perennial grass">0.1</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.32</ll>
+            <kl name="cowpea">0.04</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.32</ll>
+            <kl name="navybean">0.04</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.32</ll>
+            <kl name="peanut">0.04</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.32</ll>
+            <kl name="pigeonpea">0.05</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.32</ll>
+            <kl name="soybean">0.04</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.32</ll>
+            <kl name="stylo">0.06</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.32</ll>
+            <kl name="sugar">0.06</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.32</ll>
+            <kl name="lablab">0.06</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.06</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.52</dul>
+            <sat>0.57</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.77</oc>
+            <ec>0.6</ec>
+            <ph>9.2</ph>
+            <ll name="wheat">0.35</ll>
+            <kl name="wheat">0.04</kl>
+            <xf name="wheat">1</xf>
+            <ll name="barley">0.39</ll>
+            <kl name="barley">0.05</kl>
+            <xf name="barley">1</xf>
+            <ll name="canola">0.35</ll>
+            <kl name="canola">0.04</kl>
+            <xf name="canola">1</xf>
+            <ll name="chickpea">0.51</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">1</xf>
+            <ll name="cotton">0.38</ll>
+            <kl name="cotton">0.09</kl>
+            <xf name="cotton">1</xf>
+            <ll name="sorghum">0.4</ll>
+            <kl name="sorghum">0.05</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="mungbean">0.35</ll>
+            <kl name="mungbean">0.04</kl>
+            <xf name="mungbean">1</xf>
+            <ll name="sunflower">0.35</ll>
+            <kl name="sunflower">0.04</kl>
+            <xf name="sunflower">1</xf>
+            <ll name="fababean">0.35</ll>
+            <kl name="fababean">0.06</kl>
+            <xf name="fababean">1</xf>
+            <ll name="lucerne">0.3</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">1</xf>
+            <ll name="maize">0.37</ll>
+            <kl name="maize">0.04</kl>
+            <xf name="maize">1</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0.09</kl>
+            <xf name="perennial grass">1</xf>
+            <ll name="cowpea">0.35</ll>
+            <kl name="cowpea">0.04</kl>
+            <xf name="cowpea">1</xf>
+            <ll name="navybean">0.35</ll>
+            <kl name="navybean">0.04</kl>
+            <xf name="navybean">1</xf>
+            <ll name="peanut">0.35</ll>
+            <kl name="peanut">0.04</kl>
+            <xf name="peanut">1</xf>
+            <ll name="pigeonpea">0.35</ll>
+            <kl name="pigeonpea">0.04</kl>
+            <xf name="pigeonpea">1</xf>
+            <ll name="soybean">0.35</ll>
+            <kl name="soybean">0.04</kl>
+            <xf name="soybean">1</xf>
+            <ll name="stylo">0.35</ll>
+            <kl name="stylo">0.04</kl>
+            <xf name="stylo">1</xf>
+            <ll name="sugar">0.35</ll>
+            <kl name="sugar">0.04</kl>
+            <xf name="sugar">1</xf>
+            <ll name="lablab">0.35</ll>
+            <kl name="lablab">0.04</kl>
+            <xf name="lablab">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.11</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.45</oc>
+            <ec>0.8</ec>
+            <ph>9.1</ph>
+            <ll name="wheat">0.38</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0.42</xf>
+            <ll name="barley">0.39</ll>
+            <kl name="barley">0.03</kl>
+            <xf name="barley">0.42</xf>
+            <ll name="canola">0.38</ll>
+            <kl name="canola">0.02</kl>
+            <xf name="canola">0.42</xf>
+            <ll name="chickpea">0.5</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">0.42</xf>
+            <ll name="cotton">0.39</ll>
+            <kl name="cotton">0.07</kl>
+            <xf name="cotton">0.42</xf>
+            <ll name="sorghum">0.4</ll>
+            <kl name="sorghum">0.04</kl>
+            <xf name="sorghum">0.42</xf>
+            <ll name="mungbean">0.38</ll>
+            <kl name="mungbean">0.01</kl>
+            <xf name="mungbean">0.42</xf>
+            <ll name="sunflower">0.38</ll>
+            <kl name="sunflower">0.02</kl>
+            <xf name="sunflower">0.42</xf>
+            <ll name="fababean">0.38</ll>
+            <kl name="fababean">0.04</kl>
+            <xf name="fababean">0.42</xf>
+            <ll name="lucerne">0.31</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.42</xf>
+            <ll name="maize">0.4</ll>
+            <kl name="maize">0.02</kl>
+            <xf name="maize">0.42</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0.07</kl>
+            <xf name="perennial grass">0.42</xf>
+            <ll name="cowpea">0.38</ll>
+            <kl name="cowpea">0.02</kl>
+            <xf name="cowpea">0.42</xf>
+            <ll name="navybean">0.38</ll>
+            <kl name="navybean">0.01</kl>
+            <xf name="navybean">0.42</xf>
+            <ll name="peanut">0.38</ll>
+            <kl name="peanut">0.01</kl>
+            <xf name="peanut">0.42</xf>
+            <ll name="pigeonpea">0.38</ll>
+            <kl name="pigeonpea">0.02</kl>
+            <xf name="pigeonpea">0.42</xf>
+            <ll name="soybean">0.38</ll>
+            <kl name="soybean">0.02</kl>
+            <xf name="soybean">0.42</xf>
+            <ll name="stylo">0.38</ll>
+            <kl name="stylo">0.02</kl>
+            <xf name="stylo">0.42</xf>
+            <ll name="sugar">0.38</ll>
+            <kl name="sugar">0.02</kl>
+            <xf name="sugar">0.42</xf>
+            <ll name="lablab">0.38</ll>
+            <kl name="lablab">0.02</kl>
+            <xf name="lablab">0.42</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.12</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.5</dul>
+            <sat>0.55</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.27</oc>
+            <ec>0.9</ec>
+            <ph>9</ph>
+            <ll name="wheat">0.41</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">0.37</xf>
+            <ll name="barley">0.41</ll>
+            <kl name="barley">0.02</kl>
+            <xf name="barley">0.37</xf>
+            <ll name="canola">0.41</ll>
+            <kl name="canola">0.01</kl>
+            <xf name="canola">0.37</xf>
+            <ll name="chickpea">0.5</ll>
+            <kl name="chickpea">0.06</kl>
+            <xf name="chickpea">0.37</xf>
+            <ll name="cotton">0.39</ll>
+            <kl name="cotton">0.05</kl>
+            <xf name="cotton">0.37</xf>
+            <ll name="sorghum">0.4</ll>
+            <kl name="sorghum">0.03</kl>
+            <xf name="sorghum">0.37</xf>
+            <ll name="mungbean">0.41</ll>
+            <kl name="mungbean">0.01</kl>
+            <xf name="mungbean">0.37</xf>
+            <ll name="sunflower">0.41</ll>
+            <kl name="sunflower">0.01</kl>
+            <xf name="sunflower">0.37</xf>
+            <ll name="fababean">0.41</ll>
+            <kl name="fababean">0.03</kl>
+            <xf name="fababean">0.37</xf>
+            <ll name="lucerne">0.32</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.37</xf>
+            <ll name="maize">0.42</ll>
+            <kl name="maize">0.01</kl>
+            <xf name="maize">0.37</xf>
+            <ll name="perennial grass">0.41</ll>
+            <kl name="perennial grass">0.05</kl>
+            <xf name="perennial grass">0.37</xf>
+            <ll name="cowpea">0.41</ll>
+            <kl name="cowpea">0.01</kl>
+            <xf name="cowpea">0.37</xf>
+            <ll name="navybean">0.41</ll>
+            <kl name="navybean">0.01</kl>
+            <xf name="navybean">0.37</xf>
+            <ll name="peanut">0.41</ll>
+            <kl name="peanut">0.01</kl>
+            <xf name="peanut">0.37</xf>
+            <ll name="pigeonpea">0.41</ll>
+            <kl name="pigeonpea">0.01</kl>
+            <xf name="pigeonpea">0.37</xf>
+            <ll name="soybean">0.41</ll>
+            <kl name="soybean">0.01</kl>
+            <xf name="soybean">0.37</xf>
+            <ll name="stylo">0.41</ll>
+            <kl name="stylo">0.01</kl>
+            <xf name="stylo">0.37</xf>
+            <ll name="sugar">0.41</ll>
+            <kl name="sugar">0.01</kl>
+            <xf name="sugar">0.37</xf>
+            <ll name="lablab">0.41</ll>
+            <kl name="lablab">0.01</kl>
+            <xf name="lablab">0.37</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.15</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.48</dul>
+            <sat>0.53</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.22</oc>
+            <ec>1</ec>
+            <ph>9</ph>
+            <ll name="wheat">0.48</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.48</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.48</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.48</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.48</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.48</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.48</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.48</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.48</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.33</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.33</xf>
+            <ll name="maize">0.48</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.41</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.48</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.48</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.48</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.48</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.48</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.48</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.48</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.48</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.18</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.47</dul>
+            <sat>0.52</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.16</oc>
+            <ec>1.1</ec>
+            <ph>8.9</ph>
+            <ll name="wheat">0.47</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.47</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.47</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.47</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.47</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.47</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.47</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.47</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.47</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.34</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.31</xf>
+            <ll name="maize">0.47</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.47</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.47</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.47</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.47</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.47</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.47</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.47</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.47</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.2</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.46</dul>
+            <sat>0.51</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.13</oc>
+            <ec>1.1</ec>
+            <ph>8.9</ph>
+            <ll name="wheat">0.46</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.46</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.46</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.46</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.46</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.46</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.46</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.46</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.46</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.35</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.31</xf>
+            <ll name="maize">0.46</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.4</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.46</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.46</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.46</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.46</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.46</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.46</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.46</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.46</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.25</bd>
+            <ll15>0.29</ll15>
+            <airdry>0.29</airdry>
+            <dul>0.44</dul>
+            <sat>0.49</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>1</finert>
+            <oc>0.12</oc>
+            <ec>1</ec>
+            <ph>8.9</ph>
+            <ll name="wheat">0.44</ll>
+            <kl name="wheat">0</kl>
+            <xf name="wheat">0</xf>
+            <ll name="barley">0.44</ll>
+            <kl name="barley">0</kl>
+            <xf name="barley">0</xf>
+            <ll name="canola">0.44</ll>
+            <kl name="canola">0</kl>
+            <xf name="canola">0</xf>
+            <ll name="chickpea">0.44</ll>
+            <kl name="chickpea">0</kl>
+            <xf name="chickpea">0</xf>
+            <ll name="cotton">0.44</ll>
+            <kl name="cotton">0</kl>
+            <xf name="cotton">0</xf>
+            <ll name="sorghum">0.44</ll>
+            <kl name="sorghum">0</kl>
+            <xf name="sorghum">0</xf>
+            <ll name="mungbean">0.44</ll>
+            <kl name="mungbean">0</kl>
+            <xf name="mungbean">0</xf>
+            <ll name="sunflower">0.44</ll>
+            <kl name="sunflower">0</kl>
+            <xf name="sunflower">0</xf>
+            <ll name="fababean">0.44</ll>
+            <kl name="fababean">0</kl>
+            <xf name="fababean">0</xf>
+            <ll name="lucerne">0.36</ll>
+            <kl name="lucerne">0.09</kl>
+            <xf name="lucerne">0.33</xf>
+            <ll name="maize">0.44</ll>
+            <kl name="maize">0</kl>
+            <xf name="maize">0</xf>
+            <ll name="perennial grass">0.42</ll>
+            <kl name="perennial grass">0</kl>
+            <xf name="perennial grass">0</xf>
+            <ll name="cowpea">0.44</ll>
+            <kl name="cowpea">0</kl>
+            <xf name="cowpea">0</xf>
+            <ll name="navybean">0.44</ll>
+            <kl name="navybean">0</kl>
+            <xf name="navybean">0</xf>
+            <ll name="peanut">0.44</ll>
+            <kl name="peanut">0</kl>
+            <xf name="peanut">0</xf>
+            <ll name="pigeonpea">0.44</ll>
+            <kl name="pigeonpea">0</kl>
+            <xf name="pigeonpea">0</xf>
+            <ll name="soybean">0.44</ll>
+            <kl name="soybean">0</kl>
+            <xf name="soybean">0</xf>
+            <ll name="stylo">0.44</ll>
+            <kl name="stylo">0</kl>
+            <xf name="stylo">0</xf>
+            <ll name="sugar">0.44</ll>
+            <kl name="sugar">0</kl>
+            <xf name="sugar">0</xf>
+            <ll name="lablab">0.44</ll>
+            <kl name="lablab">0</kl>
+            <xf name="lablab">0</xf>
+          </layer>
+        </profile>
+        <InitWater>
+          <percentmethod>
+            <percent>1</percent>
+            <distributed>filled from top</distributed>
+          </percentmethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6.50300344798776</no3>
+              <nh4>0.599004378686977</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.10100111398159</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.10100111398159</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70100090189562</no3>
+              <nh4>0.100000730999496</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <outputfile name="Outputfile">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="green_pool" />
+          <variable name="dead_pool" />
+          <variable name="paddockState" />
+          <variable name="alw" />
+          <variable name="stocking_rate" />
+          <variable name="acc_eaten" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" description="End of daily simulation time step" />
+        </events>
+      </outputfile>
+      <graz>
+        <intake_util_intercept type="text" description="Intercept in eqn reln between intake and utilization">1</intake_util_intercept>
+        <intake_util_slope type="text" description="Slope in eqn reln between intake and utilization">-0.3</intake_util_slope>
+        <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies">300</yld_eat_restr>
+        <summer_lwg type="text" description="Expected lwg @ low SR">70</summer_lwg>
+        <autumn_lwg type="text" description="Expected lwg @ low SR">35</autumn_lwg>
+        <winter_lwg type="text" description="Expected lwg @ low SR">10</winter_lwg>
+        <spring_lwg type="text" description="Expected lwg @ low SR">35</spring_lwg>
+        <leaf_diet type="text" description="Proportion of leaf in diet">0.85</leaf_diet>
+        <std_alw type="text" description="std_alw">200</std_alw>
+        <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
+        <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
+        <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
+        <allow_supplements type="text" description="allow_supplements">0</allow_supplements>
+      </graz>
+      <grasp>
+        <category description="Initial values at establishment" />
+        <root_depth_init type="text" description="Initial depth of roots (mm)">750</root_depth_init>
+        <dm_dead_leaf_init type="text" description="Initial Dead Leaf weight (kg/ha)">0</dm_dead_leaf_init>
+        <dm_dead_stem_init type="text" description="Initial Dead Stem weight (kg/ha)">0</dm_dead_stem_init>
+        <dm_dead_root_init type="text" description="Initial Dead Root weight (kg/ha)">0</dm_dead_root_init>
+        <dm_green_leaf_init type="text" description="Initial Green Leaf weight (kg/ha)">0</dm_green_leaf_init>
+        <dm_green_stem_init type="text" description="Initial Green Stem weight (kg/ha)">0</dm_green_stem_init>
+        <dm_green_root_init type="text" description="Initial Green Root weight (kg/ha)">0</dm_green_root_init>
+        <basal_area_init type="text" description="Initial Basal area of tussocks (%)">0.5</basal_area_init>
+        <acc_trans_for_n_init type="text" description="Initial accumulated transpiration, used for N uptake (mm)">0</acc_trans_for_n_init>
+        <acc_growth_for_n_init type="text" description="Initial accumulated growth, used for N uptake (kg/ha)">0</acc_growth_for_n_init>
+        <category description="Soil Properties" />
+        <max_n_avail type="text" description="Limit to total N (kg/year)">15</max_n_avail>
+        <max_n_avail_dist type="text" description="Distribution of N in profile">0.8 0.1 0.05  0.05  0.0 0.0  0.0</max_n_avail_dist>
+        <ll type="text" description="Lower limit (ll) of water extraction (mm/mm)">0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  </ll>
+        <kl type="text" description="Rate of water extraction (kl)">0.5      0.5      0.5    0.5  0.0  0.0  0.0</kl>
+        <kl2rlv type="text" description="kl2rlv">1</kl2rlv>
+        <category description="Parameter values" />
+        <crop_type type="text" description="crop_type">grass</crop_type>
+        <uptake_source type="text" description="uptake_source">calc</uptake_source>
+        <height_max type="text" description="Maximum canopy height (mm)">1200</height_max>
+        <hgt_vpd_screen type="text" description="Height at which surface effects on vpd are 0 (mm)">200</hgt_vpd_screen>
+        <height_1000kg type="text" description="Sward Height per tonne (p096*10, mm)">100</height_1000kg>
+        <et_use_efficiency type="text" description="Evapotranspiration use efficiency used in BA calc (kg/ha/mm) (p288)">0</et_use_efficiency>
+        <frac_leaf2total type="text" description="Fraction of total dm produced that goes into leaf pool (0-1) (p123)">0.5</frac_leaf2total>
+        <yld_cover_slope type="text" description="Shape of exponential curve relating yield and cover">0.693147</yld_cover_slope>
+        <yld_fpc50 type="text" description="yld_fpc50 (p046)">1000</yld_fpc50>
+        <yld_cov50 type="text" description="Yield transpiring at 50% of pan evap (p045)">1000</yld_cov50>
+        <yld_tcov50 type="text" description="Tsdm yield at which cover for runoff is 50% (p271)">1000</yld_tcov50>
+        <swi_fullgreen type="text" description="Min soil water for 100% green (p009)">0.1</swi_fullgreen>
+        <swi_nogrow type="text" description="SWI when growth stops">0.4</swi_nogrow>
+        <pot_regrow type="text" description="Max rate regrowth from tussocks (kg/ha/unit grass ba) (p006)">3</pot_regrow>
+        <te_std type="text" description="Transpiration efficiency at vpd=20mb (p007)">10</te_std>
+        <rad_factor type="text" description="rad_factor">8.97</rad_factor>
+        <residual_plant_N type="text" description="Always this much n in plant (p097, kg/ha)">5</residual_plant_N>
+        <litter_n type="text" description="N conc of detached stems and roots ((p110-p111)/2)">0.3</litter_n>
+        <n_uptk_per100 type="text" description="Nitrogen uptake per 100mm water (p098, kg/ha)">5</n_uptk_per100>
+        <frost_start type="text" description="Minimum screen temp at which green cover=100% (oC,p125)">2</frost_start>
+        <frost_kill type="text" description="Minimum screen temp at which frost kills all green (oC,p011)">0</frost_kill>
+        <death_slope type="text" description="Rate of green death per soil water(p051)">0.013</death_slope>
+        <death_intercept type="text" description="Background death rate (p010)">0.002</death_intercept>
+        <leaf_death_ratio type="text" description="Proportion of leaf death to total death (p133)">1</leaf_death_ratio>
+        <stem_death_ratio type="text" description="Proportion of stem death to total death (p134)">1</stem_death_ratio>
+        <n_conc_dm_crit type="text" description="Level of plant N at which no N stress occurs (p102)">2.5</n_conc_dm_crit>
+        <n_conc_dm_min type="text" description="Level of soil N at which no N stress occurs (p101)">0.4</n_conc_dm_min>
+        <n_conc_dm_max type="text" description="Level of soil N at which soil N to high for growth (p100)">0.5</n_conc_dm_max>
+        <stem_thresh type="text" description="stem_thresh (p124)">0</stem_thresh>
+        <detach_dryseason type="text" description="detach_dryseason: root, leaf, stem">0.0   0.002     0.002</detach_dryseason>
+        <detach_wetseason type="text" description="detach_wetseason: root, leaf, stem">0.0   0.002     0.002</detach_wetseason>
+        <category description="Date resets" />
+        <day_start_summer type="text" description="day_start_summer">335</day_start_summer>
+        <day_end_summer type="text" description="day_end_summer">59</day_end_summer>
+        <acc_et_reset type="text" description="acc_et_reset">273</acc_et_reset>
+        <acc_growth_reset type="text" description="acc_growth_reset">273</acc_growth_reset>
+        <trans_for_n_reset type="text" description="trans_for_n_reset">273</trans_for_n_reset>
+        <growth_for_n_reset type="text" description="growth_for_n_reset">273</growth_for_n_reset>
+        <day_start_wet type="text" description="day_start_wet">274</day_start_wet>
+        <day_start_dry type="text" description="day_start_dry">91</day_start_dry>
+        <enr_a_coeff type="text" description="enr_a_coeff">7.4</enr_a_coeff>
+        <enr_b_coeff type="text" description="enr_b_coeff">0.2</enr_b_coeff>
+      </grasp>
+    </area>
+  </simulation>
+  <simulation name="Wheat Lucerne Rotation">
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/1940</start_date>
+      <end_date type="date" description="Select the end date of the simulation">1/01/1988</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Wheat Lucerne Rotation.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">C:\apsim\Examples\MetFiles\goond.met</filename>
+    </metfile>
+    <area name="Paddock">
+      <registrations name="global" />
+      <wheat />
+      <lucerne />
+      <graz>
+        <intake_util_intercept type="text" description="Intercept in eqn reln between intake and utilization">1</intake_util_intercept>
+        <intake_util_slope type="text" description="Slope in eqn reln between intake and utilization">-0.3</intake_util_slope>
+        <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies">300</yld_eat_restr>
+        <summer_lwg type="text" description="Expected summer lwg @ low SR">70</summer_lwg>
+        <autumn_lwg type="text" description="Expected autumn lwg @ low SR">35</autumn_lwg>
+        <winter_lwg type="text" description="Expected winter lwg @ low SR">10</winter_lwg>
+        <spring_lwg type="text" description="Expected spring lwg @ low SR">35</spring_lwg>
+        <leaf_diet type="text" description="Proportion of leaf in diet">0.85</leaf_diet>
+        <std_alw type="text" description="std_alw">200</std_alw>
+        <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
+        <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
+        <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
+        <allow_supplements type="text" description="allow_supplements">0</allow_supplements>
+      </graz>
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <tclmanager name="Manager">
+        <rule name="Rotation Initialisation">
+          <script name="init">
+            <text><![CDATA[
+
+# Initial state of the system
+set state "lucernePrepn"
+
+# Support procedures for (single paddock) rotations
+
+# Return the current state of the system
+proc currentState {} {
+   global state 
+   return $state   
+}
+
+# Default log option is to do nothing. May be overridden later.
+proc log {msg} { }
+
+############### The decision routine. 
+# Return the score for planting "what"
+proc checkRules {} {
+  log "State is [currentState]. (esw=[format %.0f [apsimGet esw]])"
+
+  set bestScore -1.0; set bestTarget {}
+  foreach arc [stateGraph arcs -out [currentState]] {
+     set expr {}
+     set target [stateGraph arc target $arc]
+     foreach rule [stateGraph arc get $arc rules] {
+        set value [uplevel #0 expr $rule]
+        log "target=$target,rule=$rule, value=$value"
+        lappend expr $value
+     }  
+     set score [expr [join $expr "*"]]
+     if {$score > $bestScore} {
+        set bestScore $score
+        set bestTarget $target
+     }
+  }
+  return [list $bestTarget $bestScore]
+}
+
+# Change state to another
+proc changeState {newState} {
+   global state
+   set arcs {}
+   foreach arc [stateGraph arcs -out [currentState]] {
+      if {[stateGraph arc target $arc] == "$newState" } {
+         lappend arcs $arc
+      }
+   }   
+   if {[llength $arcs] == 0} {error "No paths from [currentState] to $newState!"}
+   if {[llength $arcs] > 1} {
+      # More than 1 path - evaluate best option
+      set bestScore -1.0; set bestArc {}
+      foreach arc $arcs {
+         set expr {}
+         foreach rule [stateGraph arc get $arc rules] {
+            set value [uplevel #0 expr $rule]
+            lappend expr $value
+         }
+         set score [expr [join $expr "*"]]
+         if {$score > $bestScore} {
+            set bestScore $score
+            set bestArc $arc
+         }
+      }  
+      if {$bestScore > 0.0} {
+         apsimWriteToSummaryFile "Taking arc $bestArc from [currentState] to $newState"
+         set arc $bestArc
+      } else {
+         error "No viable paths from [currentState] to $newState! (candidates are $arcs)"
+      }
+   } else {
+      # Only 1 path - take it.
+      set arc $arcs
+   }
+   foreach action [stateGraph arc get $arc actions] { uplevel #0 $action }
+   set state $newState
+   log "changeState $newState"
+}
+
+proc doProcess {} {
+   log "[apsimGet day],[apsimGet year]"
+   set more 1
+   while {$more} {
+      set more 0
+      foreach  {target score} [checkRules] {break}
+      if {$score > 0} {changeState $target; set more 1}
+   }
+}
+
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+log "changeState [currentState]"
+</text>
+            <event>start_simulation</event>
+          </script>
+          <script name="process">
+            <text>
+doProcess
+</text>
+            <event>process</event>
+          </script>
+        </rule>
+        <tclui name="Wheat Lucerne Rotation">
+          <uiscript><![CDATA[source $apsuite/UserInterface/APSFarm/RotationsUI.tcl]]></uiscript>
+          <canvas_height>487</canvas_height>
+          <rules_height>40</rules_height>
+          <graph_name>stateGraph</graph_name>
+          <node>
+            <x1>661.0</x1>
+            <name>Wheat</name>
+            <y1>174.0</y1>
+            <x2>761.0</x2>
+            <desc>A wheat crop</desc>
+            <fill>green</fill>
+            <y2>274.0</y2>
+          </node>
+          <node>
+            <x1>481.0</x1>
+            <name>Reestablish</name>
+            <y1>161.0</y1>
+            <x2>581.0</x2>
+            <desc>Lucerne has died - wait 5 days and re-plant</desc>
+            <fill>purple</fill>
+            <y2>261.0</y2>
+          </node>
+          <node>
+            <x1>315.0</x1>
+            <name>Lucerne</name>
+            <y1>158.0</y1>
+            <x2>415.0</x2>
+            <desc>A lucerne crop</desc>
+            <fill>white</fill>
+            <y2>258.0</y2>
+          </node>
+          <node>
+            <x1>506.0</x1>
+            <name>wheatPrepn</name>
+            <y1>312.0</y1>
+            <x2>606.0</x2>
+            <desc>wheat seedbed preparation</desc>
+            <fill>gray</fill>
+            <y2>412.0</y2>
+          </node>
+          <node>
+            <x1>497.0</x1>
+            <name>lucernePrepn</name>
+            <y1>25.0</y1>
+            <x2>597.0</x2>
+            <desc>Lucerne seedbed preparation</desc>
+            <fill>gray</fill>
+            <y2>125.0</y2>
+          </node>
+          <arc>
+            <name>arc2</name>
+            <source>Lucerne</source>
+            <target>Reestablish</target>
+            <x>447.5</x>
+            <actions>apsimSendMessage lucerne end_crop</actions>
+            <actions>set waiting 0</actions>
+            <y>256.0</y>
+            <rules>[string match [apsimGet lucerne.plant_status]  dead] </rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc11</name>
+            <source>wheatPrepn</source>
+            <target>Wheat</target>
+            <x>715.5</x>
+            <actions>sow_wheat</actions>
+            <y>368.5</y>
+            <rules>[canPlant_wheat]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc3</name>
+            <source>Reestablish</source>
+            <target>Lucerne</target>
+            <x>451.5</x>
+            <actions>sow_lucerne</actions>
+            <y>149.0</y>
+            <rules>[incr waiting] == 2</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc12</name>
+            <source>Lucerne</source>
+            <target>wheatPrepn</target>
+            <x>369.5</x>
+            <actions>apsimSendMessage lucerne end_crop</actions>
+            <actions>set nLucerneDays 0</actions>
+            <y>364.5</y>
+            <rules>[incr nLucerneDays] &gt; 700</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc8</name>
+            <source>lucernePrepn</source>
+            <target>Lucerne</target>
+            <x>386.5</x>
+            <actions>sow_lucerne</actions>
+            <actions>set nLucerneDays 0</actions>
+            <y>59.0</y>
+            <rules>[canPlant_lucerne]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc0</name>
+            <source>Wheat</source>
+            <target>lucernePrepn</target>
+            <x>720.5</x>
+            <actions>apsimSendMessage wheat harvest</actions>
+            <actions>apsimSendMessage wheat end_crop</actions>
+            <y>74.0</y>
+            <rules>[canHarvest_wheat]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <paddock>
+            <name>toplevel</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <paddock>
+            <name>paddock</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <paddock>
+            <name>Paddock</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <paddock>
+            <name>p1</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <paddock>
+            <name>p2</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <paddock>
+            <name>p3</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <paddock>
+            <name>p4</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <paddock>
+            <name>BCS</name>
+            <isManaged>0</isManaged>
+            <initialState>
+            </initialState>
+          </paddock>
+          <rule name="Wheat Lucerne Rotation Init rule" invisible="yes" condition="init"><![CDATA[package require struct
+::struct::graph stateGraph
+stateGraph node insert "Wheat"
+set colour(Wheat) "green"
+stateGraph node insert "Reestablish"
+set colour(Reestablish) "purple"
+stateGraph node insert "Lucerne"
+set colour(Lucerne) "white"
+stateGraph node insert "wheatPrepn"
+set colour(wheatPrepn) "gray"
+stateGraph node insert "lucernePrepn"
+set colour(lucernePrepn) "gray"
+stateGraph arc insert "Lucerne" "Reestablish" "arc2"
+stateGraph arc lappend "arc2" actions {apsimSendMessage lucerne end_crop}
+stateGraph arc lappend "arc2" actions {set waiting 0}
+stateGraph arc lappend "arc2" rules {[string match [apsimGet lucerne.plant_status]  dead] }
+stateGraph arc lappend "arc2" actions {}
+stateGraph arc insert "wheatPrepn" "Wheat" "arc11"
+stateGraph arc lappend "arc11" actions {sow_wheat}
+stateGraph arc lappend "arc11" rules {[canPlant_wheat]}
+stateGraph arc lappend "arc11" actions {}
+stateGraph arc insert "Reestablish" "Lucerne" "arc3"
+stateGraph arc lappend "arc3" actions {sow_lucerne}
+stateGraph arc lappend "arc3" rules {[incr waiting] == 2}
+stateGraph arc lappend "arc3" actions {}
+stateGraph arc insert "Lucerne" "wheatPrepn" "arc12"
+stateGraph arc lappend "arc12" actions {apsimSendMessage lucerne end_crop}
+stateGraph arc lappend "arc12" actions {set nLucerneDays 0}
+stateGraph arc lappend "arc12" rules {[incr nLucerneDays] > 700}
+stateGraph arc lappend "arc12" actions {}
+stateGraph arc insert "lucernePrepn" "Lucerne" "arc8"
+stateGraph arc lappend "arc8" actions {sow_lucerne}
+stateGraph arc lappend "arc8" actions {set nLucerneDays 0}
+stateGraph arc lappend "arc8" rules {[canPlant_lucerne]}
+stateGraph arc lappend "arc8" actions {}
+stateGraph arc insert "Wheat" "lucernePrepn" "arc0"
+stateGraph arc lappend "arc0" actions {apsimSendMessage wheat harvest}
+stateGraph arc lappend "arc0" actions {apsimSendMessage wheat end_crop}
+stateGraph arc lappend "arc0" rules {[canHarvest_wheat]}
+stateGraph arc lappend "arc0" actions {}
+]]></rule>
+        </tclui>
+        <tclui name="Wheat Sowing Rule">
+          <rule name="Wheat Lucerne Rotation Wheat Sowing Rule.out - Sowing rule - initialisation" condition="init" invisible="yes">
+# Support procedures
+# Can we plant a crop today?
+proc canPlant_wheat {} {
+  if {"variable" == "variable"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-may-$year"] -format %j]
+     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
+
+     if {"yes" == "yes" &amp;&amp; $day == $d2} {return 1}
+
+     if {$d1 &gt; $d2} {
+        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
+     } else {   
+        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
+     }
+     set rainOK [expr [apsimGet rain\[3\]] &gt;= 25]
+     set eswOK [expr [apsimGet esw] &gt;= 50]
+     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
+  } elseif {"variable" == "fixed"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-may-$year"] -format %j]
+     return [expr $day == $d1]
+  } else {
+     error "Unknown sowing criteria \"variable\"."
+  }
+  return "notreached"
+}
+
+# Plant a crop now
+proc sow_wheat {} {
+  if {"plant" == "plant"} {
+     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+             {cultivar hartog} {row_spacing 250} \
+             {skipplant 0} {skiprow 0} {crop_class plant} 
+  } elseif {"plant" == "cropmod"} {
+     apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
+             {cultivar hartog} {row_spacing 250} {skiprow 0} 
+  } elseif {"plant" == "growth"} {
+     apsimSendMessage wheat ???
+  } elseif {"plant" == "ozcot"} {
+     apsimSendMessage wheat sow {plants_pm [plants_pm]} {sowing_depth 30} \
+             {row_spacing 250} {skiprow 0} {cultivar hartog}
+  } elseif {"plant" == "oryza"} {
+     apsimSendMessage wheat sow {cultivar hartog} 
+  } elseif {"plant" == "sorghum"} {
+     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+             {cultivar hartog} {row_spacing 250} {skiprow 0} \
+             {tiller_no_fertile [tiller_no_fertile]}
+  } elseif {"plant" == "sugar"} {
+     apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
+  } else {
+    error "Unknown crop module \"plant\"."
+  }
+}
+
+
+proc canHarvest_wheat {} {
+   return [expr [string match [apsimGet wheat.stagename] "harvest_ripe"] &amp;&amp;\
+                [string match [apsimGet wheat.plant_status] "dead"]]
+}
+
+
+
+
+
+
+
+
+</rule>
+          <ruletemplate name="Sowing rule - initialisation" condition="init">
+# Support procedures
+# Can we plant a crop today?
+proc canPlant_[crop] {} {
+  if {"[criteria]" == "variable"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "[date1]-$year"] -format %j]
+     set d2 [clock format [clock scan "[date2]-$year"] -format %j]
+
+     if {"[must_sow]" == "yes" &amp;&amp; $day == $d2} {return 1}
+
+     if {$d1 &gt; $d2} {
+        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
+     } else {   
+        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
+     }
+     set rainOK [expr [apsimGet rain\[[rainnumdays]\]] &gt;= [raincrit]]
+     set eswOK [expr [apsimGet esw] &gt;= [esw_amount]]
+     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
+  } elseif {"[criteria]" == "fixed"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "[date1]-$year"] -format %j]
+     return [expr $day == $d1]
+  } else {
+     error "Unknown sowing criteria \"[criteria]\"."
+  }
+  return "notreached"
+}
+
+# Plant a crop now
+proc sow_[crop] {} {
+  if {"[module]" == "plant"} {
+     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+             {cultivar [cultivar]} {row_spacing [row_spacing]} \
+             {skipplant [skipplant]} {skiprow [skiprow]} {crop_class [class]} 
+  } elseif {"[module]" == "cropmod"} {
+     apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} \
+             {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]} 
+  } elseif {"[module]" == "growth"} {
+     apsimSendMessage [crop] ???
+  } elseif {"[module]" == "ozcot"} {
+     apsimSendMessage [crop] sow {plants_pm [plants_pm]} {sowing_depth [sowing_depth]} \
+             {row_spacing [row_spacing]} {skiprow [skiprow]} {cultivar [cultivar]}
+  } elseif {"[module]" == "oryza"} {
+     apsimSendMessage [crop] sow {cultivar [cultivar]} 
+  } elseif {"[module]" == "sorghum"} {
+     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+             {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]} \
+             {tiller_no_fertile [tiller_no_fertile]}
+  } elseif {"[module]" == "sugar"} {
+     apsimSendMessage [crop] sow {plants [plants]} {cultivar [cultivar]} {sowing_depth [sowing_depth]}
+  } else {
+    error "Unknown crop module \"[module]\"."
+  }
+}
+
+
+proc canHarvest_[crop] {} {
+   return [expr [string match [apsimGet [crop].stagename] "harvest_ripe"] &amp;&amp;\
+                [string match [apsimGet [crop].plant_status] "dead"]]
+}
+
+
+
+
+
+
+
+
+</ruletemplate>
+          <uiscript>source $apsuite/UserInterface/APSFarm/GenericSowingUI.tcl</uiscript>
+          <state>Wheat</state>
+          <crop>wheat</crop>
+          <date1>15-may</date1>
+          <date2>10-jul</date2>
+          <raincrit>25</raincrit>
+          <rainnumdays>3</rainnumdays>
+          <esw_amount>50</esw_amount>
+          <must_sow>yes</must_sow>
+          <cultivar>hartog</cultivar>
+          <plants>100</plants>
+          <sowing_depth>30</sowing_depth>
+          <row_spacing>250</row_spacing>
+          <sowing_costs>
+          </sowing_costs>
+          <sow_tractor>
+          </sow_tractor>
+          <sow_implement>
+          </sow_implement>
+          <fert_type>
+          </fert_type>
+          <fert_cost>???</fert_cost>
+          <target_n>
+          </target_n>
+          <harvest_costs>
+          </harvest_costs>
+          <price>
+          </price>
+          <moisture>
+          </moisture>
+          <harv_tractor>
+          </harv_tractor>
+          <harv_implement>
+          </harv_implement>
+          <criteria>variable</criteria>
+          <skipplant>0</skipplant>
+          <skiprow>0</skiprow>
+          <class>plant</class>
+          <module>plant</module>
+        </tclui>
+        <tclui name="Lucerne Sowing Rule">
+          <rule name="Wheat Lucerne Rotation Lucerne Sowing Rule.out - Sowing rule - initialisation" condition="init" invisible="yes">
+# Support procedures
+# Can we plant a crop today?
+proc canPlant_lucerne {} {
+  if {"variable" == "variable"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-oct-$year"] -format %j]
+     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
+
+     if {"yes" == "yes" &amp;&amp; $day == $d2} {return 1}
+
+     if {$d1 &gt; $d2} {
+        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
+     } else {   
+        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
+     }
+     set rainOK [expr [apsimGet rain\[3\]] &gt;= 25]
+     set eswOK [expr [apsimGet esw] &gt;= 50]
+     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
+  } elseif {"variable" == "fixed"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-oct-$year"] -format %j]
+     return [expr $day == $d1]
+  } else {
+     error "Unknown sowing criteria \"variable\"."
+  }
+  return "notreached"
+}
+
+# Plant a crop now
+proc sow_lucerne {} {
+  if {"plant" == "plant"} {
+     apsimSendMessage lucerne sow {plants 200} {sowing_depth 10} \
+             {cultivar hunter_river} {row_spacing 250} \
+             {skipplant 0} {skiprow 0} {crop_class plant} 
+  } elseif {"plant" == "cropmod"} {
+     apsimSendMessage lucerne sow {plants [density]} {sowing_depth [depth]} \
+             {cultivar hunter_river} {row_spacing 250} {skiprow 0} 
+  } elseif {"plant" == "growth"} {
+     apsimSendMessage lucerne ???
+  } elseif {"plant" == "ozcot"} {
+     apsimSendMessage lucerne sow {plants_pm [plants_pm]} {sowing_depth 10} \
+             {row_spacing 250} {skiprow 0} {cultivar hunter_river}
+  } elseif {"plant" == "oryza"} {
+     apsimSendMessage lucerne sow {cultivar hunter_river} 
+  } elseif {"plant" == "sorghum"} {
+     apsimSendMessage lucerne sow {plants 200} {sowing_depth 10} \
+             {cultivar hunter_river} {row_spacing 250} {skiprow 0} \
+             {tiller_no_fertile [tiller_no_fertile]}
+  } elseif {"plant" == "sugar"} {
+     apsimSendMessage lucerne sow {plants 200} {cultivar hunter_river} {sowing_depth 10}
+  } else {
+    error "Unknown crop module \"plant\"."
+  }
+}
+
+</rule>
+          <ruletemplate name="Sowing rule - initialisation" condition="init">
+# Support procedures
+# Can we plant a crop today?
+proc canPlant_[crop] {} {
+  if {"[criteria]" == "variable"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "[date1]-$year"] -format %j]
+     set d2 [clock format [clock scan "[date2]-$year"] -format %j]
+
+     if {"[must_sow]" == "yes" &amp;&amp; $day == $d2} {return 1}
+
+     if {$d1 &gt; $d2} {
+        set dateOK [expr $day &gt;= $d1 || $day &lt;= $d2]
+     } else {   
+        set dateOK [expr $day &gt;= $d1 &amp;&amp; $day &lt;= $d2]
+     }
+     set rainOK [expr [apsimGet rain\[[rainnumdays]\]] &gt;= [raincrit]]
+     set eswOK [expr [apsimGet esw] &gt;= [esw_amount]]
+     return [expr $dateOK &amp;&amp; $rainOK &amp;&amp; $eswOK]
+  } elseif {"[criteria]" == "fixed"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "[date1]-$year"] -format %j]
+     return [expr $day == $d1]
+  } else {
+     error "Unknown sowing criteria \"[criteria]\"."
+  }
+  return "notreached"
+}
+
+# Plant a crop now
+proc sow_[crop] {} {
+  if {"[module]" == "plant"} {
+     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+             {cultivar [cultivar]} {row_spacing [row_spacing]} \
+             {skipplant [skipplant]} {skiprow [skiprow]} {crop_class [class]} 
+  } elseif {"[module]" == "cropmod"} {
+     apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} \
+             {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]} 
+  } elseif {"[module]" == "growth"} {
+     apsimSendMessage [crop] ???
+  } elseif {"[module]" == "ozcot"} {
+     apsimSendMessage [crop] sow {plants_pm [plants_pm]} {sowing_depth [sowing_depth]} \
+             {row_spacing [row_spacing]} {skiprow [skiprow]} {cultivar [cultivar]}
+  } elseif {"[module]" == "oryza"} {
+     apsimSendMessage [crop] sow {cultivar [cultivar]} 
+  } elseif {"[module]" == "sorghum"} {
+     apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+             {cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]} \
+             {tiller_no_fertile [tiller_no_fertile]}
+  } elseif {"[module]" == "sugar"} {
+     apsimSendMessage [crop] sow {plants [plants]} {cultivar [cultivar]} {sowing_depth [sowing_depth]}
+  } else {
+    error "Unknown crop module \"[module]\"."
+  }
+}
+
+</ruletemplate>
+          <uiscript>source $apsuite/UserInterface/APSFarm/GenericSowingUI.tcl</uiscript>
+          <state>Lucerne</state>
+          <crop>lucerne</crop>
+          <date1>15-oct</date1>
+          <date2>10-jul</date2>
+          <raincrit>25</raincrit>
+          <rainnumdays>3</rainnumdays>
+          <esw_amount>50</esw_amount>
+          <must_sow>yes</must_sow>
+          <cultivar>hunter_river</cultivar>
+          <plants>200</plants>
+          <sowing_depth>10</sowing_depth>
+          <row_spacing>250</row_spacing>
+          <sowing_costs>
+          </sowing_costs>
+          <sow_tractor>
+          </sow_tractor>
+          <sow_implement>
+          </sow_implement>
+          <fert_type>
+          </fert_type>
+          <fert_cost>???</fert_cost>
+          <target_n>
+          </target_n>
+          <harvest_costs>
+          </harvest_costs>
+          <price>
+          </price>
+          <moisture>
+          </moisture>
+          <harv_tractor>
+          </harv_tractor>
+          <harv_implement>
+          </harv_implement>
+          <criteria>variable</criteria>
+          <skipplant>0</skipplant>
+          <skiprow>0</skiprow>
+          <class>plant</class>
+          <module>plant</module>
+        </tclui>
+        <rule name="Grazing management">
+          <script name="init">
+            <text># Initialisation
+set nLucerneDays 0
+set annual_lwg  0.0
+set paddockState "empty"
+set ready_to_graze 0
+set growth 0.0
+
+# Tell the grazing module we only graze lucerne. This is needed when there is more than one crop
+# in the paddock - even though only one may be "alive".
+apsimSet graz.pasture_source "lucerne"
+
+</text>
+            <event>init</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+# Start grazing 90 days after sowing
+if {$paddockState == "empty"  && $nLucerneDays > 90} {
+   apsimSet graz.stocking_rate 0.4
+   apsimSet graz.alw  200.0
+   set annual_lwg 0.0
+   set paddockState stocked
+}
+
+# Stop grazing when the crop comes off
+if { $paddockState != "empty"  && $nLucerneDays == 0} {
+   apsimSet graz.stocking_rate 0.0
+   apsimSet graz.alw  0.0
+   set annual_lwg 0.0
+   set paddockState empty
+}
+
+# This is needed by graz (for some obscure reason).
+if { $paddockState != "empty" } {
+  set growth [apsimGet lucerne.dlt_dm]
+}
+
+]]></text>
+            <event>prepare</event>
+          </script>
+          <script name="post">
+            <text>if  {[apsimGet day_of_month] == 1}  {
+  apsimSendMessage outputfile do_output
+}
+</text>
+            <event>post</event>
+          </script>
+        </rule>
+      </tclmanager>
+      <outputfile name="Outputfile">
+        <filename name="filename">sample.out</filename>
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="wheat.yield as whtYield" array="No" description="Yield" />
+          <variable name="lucerne.biomass as lucerneBiomass" />
+          <variable name="alw" array="No" description="Weight of beast" />
+          <variable name="stocking_rate" array="No" description="Stocking rate" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="harvesting" />
+        </events>
+      </outputfile>
+      <soil name="Black Vertosol-Bongeen (Tipton No116)">
+        <state>Queensland</state>
+        <region>Darling Downs</region>
+        <nearesttown>Pittsworth, Q 4356</nearesttown>
+        <site>Tipton</site>
+        <SoilType>Black Vertosol</SoilType>
+        <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</comment>
+        <naturalvegetation>Qld Bluegrass</naturalvegetation>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>0.970</bd>
+            <ll15>0.270</ll15>
+            <airdry>0.140</airdry>
+            <dul>0.550</dul>
+            <sat>0.600</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.040</fbiom>
+            <finert>0.400</finert>
+            <oc>1.900</oc>
+            <ph>8.400</ph>
+            <ll name="wheat">0.270</ll>
+            <kl name="wheat">0.060</kl>
+            <xf name="wheat">1</xf>
+            <ll name="Cotton">0.270</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.270</ll>
+            <kl name="Sorghum">0.070</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="lucerne">0.270</ll>
+            <kl name="lucerne">0.070</kl>
+            <xf name="lucerne">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1</bd>
+            <ll15>0.270</ll15>
+            <airdry>0.220</airdry>
+            <dul>0.540</dul>
+            <sat>0.590</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.020</fbiom>
+            <finert>0.600</finert>
+            <oc>1.210</oc>
+            <ph>8.600</ph>
+            <ll name="wheat">0.270</ll>
+            <kl name="wheat">0.060</kl>
+            <xf name="wheat">1</xf>
+            <ll name="Cotton">0.270</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.270</ll>
+            <kl name="Sorghum">0.070</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="lucerne">0.270</ll>
+            <kl name="lucerne">0.070</kl>
+            <xf name="lucerne">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.020</bd>
+            <ll15>0.270</ll15>
+            <airdry>0.270</airdry>
+            <dul>0.540</dul>
+            <sat>0.590</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.020</fbiom>
+            <finert>0.800</finert>
+            <oc>0.450</oc>
+            <ph>8.900</ph>
+            <ll name="wheat">0.350</ll>
+            <kl name="wheat">0.060</kl>
+            <xf name="wheat">1</xf>
+            <ll name="Cotton">0.290</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.350</ll>
+            <kl name="Sorghum">0.070</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="lucerne">0.290</ll>
+            <kl name="lucerne">0.070</kl>
+            <xf name="lucerne">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.070</bd>
+            <ll15>0.270</ll15>
+            <airdry>0.270</airdry>
+            <dul>0.520</dul>
+            <sat>0.570</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.020</fbiom>
+            <finert>1</finert>
+            <oc>0.300</oc>
+            <ph>8.900</ph>
+            <ll name="wheat">0.330</ll>
+            <kl name="wheat">0.040</kl>
+            <xf name="wheat">1</xf>
+            <ll name="Cotton">0.310</ll>
+            <kl name="Cotton">0.100</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.370</ll>
+            <kl name="Sorghum">0.050</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="lucerne">0.310</ll>
+            <kl name="lucerne">0.050</kl>
+            <xf name="lucerne">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.110</bd>
+            <ll15>0.270</ll15>
+            <airdry>0.270</airdry>
+            <dul>0.500</dul>
+            <sat>0.550</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.200</oc>
+            <ph>8.800</ph>
+            <ll name="wheat">0.360</ll>
+            <kl name="wheat">0.040</kl>
+            <xf name="wheat">1</xf>
+            <ll name="Cotton">0.340</ll>
+            <kl name="Cotton">0.090</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.380</ll>
+            <kl name="Sorghum">0.050</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="lucerne">0.340</ll>
+            <kl name="lucerne">0.050</kl>
+            <xf name="lucerne">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.110</bd>
+            <ll15>0.270</ll15>
+            <airdry>0.270</airdry>
+            <dul>0.500</dul>
+            <sat>0.550</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.160</oc>
+            <ph>8.600</ph>
+            <ll name="wheat">0.410</ll>
+            <kl name="wheat">0.020</kl>
+            <xf name="wheat">1</xf>
+            <ll name="Cotton">0.370</ll>
+            <kl name="Cotton">0.070</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.410</ll>
+            <kl name="Sorghum">0.040</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="lucerne">0.370</ll>
+            <kl name="lucerne">0.040</kl>
+            <xf name="lucerne">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.110</bd>
+            <ll15>0.270</ll15>
+            <airdry>0.270</airdry>
+            <dul>0.500</dul>
+            <sat>0.550</sat>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>1</finert>
+            <oc>0.170</oc>
+            <ph>8.800</ph>
+            <ll name="wheat">0.490</ll>
+            <kl name="wheat">0.020</kl>
+            <xf name="wheat">1</xf>
+            <ll name="Cotton">0.420</ll>
+            <kl name="Cotton">0.050</kl>
+            <xf name="Cotton">1</xf>
+            <ll name="Sorghum">0.420</ll>
+            <kl name="Sorghum">0.030</kl>
+            <xf name="Sorghum">1</xf>
+            <ll name="lucerne">0.420</ll>
+            <kl name="lucerne">0.030</kl>
+            <xf name="lucerne">1</xf>
+          </layer>
+        </profile>
+        <Cona>3.5</Cona>
+        <U>6</U>
+        <Salb>0.12</Salb>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <CN2Bare>73</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <InitWater>
+          <profile>
+            <layer>
+              <sw>0.270</sw>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <sw>0.270</sw>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <sw>0.290</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.310</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.340</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.370</sw>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <sw>0.420</sw>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6</no3>
+              <nh4>1</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>5</no3>
+              <nh4>1</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>3</no3>
+              <nh4>0.900</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>2</no3>
+              <nh4>0.700</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.200</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1</no3>
+              <nh4>0.010</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+    </area>
+  </simulation>
+  <simulation name="Kilmore_Buffel">
+    <memo name="notes on Buffel_AVG"><![CDATA[parameters:
+
+Average buffel for qld (p1, p3)
+ buffel3sortedfile.mrx Feb2009 by JO
+
+Native grass (p2, p4)
+ average native C4 grass parameters for qld. checked by jo&pete feb2009
+
+BCS
+ parameters from Site67.mrx - Feb2009 by JO
+
+P3 &P4 are grazed
+
+
+]]></memo>
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\Metfiles\Goond.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="text" description="Enter the start date of the simulation (dd/mm/yyyy)">1/10/1957</start_date>
+      <end_date type="text" description="Enter the end date of the simulation (dd/mm/yyyy)">31/12/1987</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <graz name="Cull_Cows">
+      <intake_util_intercept type="text" description="Intercept in intake and utilization eqn (p142)">1</intake_util_intercept>
+      <intake_util_slope type="text" description="Slope in intake and utilization eqn (p143)">-0.3</intake_util_slope>
+      <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies (p144)">300</yld_eat_restr>
+      <summer_lwg type="text" description="Expected summer lwg @ low SR (p145)">80</summer_lwg>
+      <autumn_lwg type="text" description="Expected autumn lwg @ low SR (p146)">40</autumn_lwg>
+      <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
+      <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">40</spring_lwg>
+      <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
+      <std_alw type="text" description="std_alw">200</std_alw>
+      <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
+      <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
+      <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
+      <allow_supplements type="text" description="allow_supplements">0</allow_supplements>
+    </graz>
+    <graz name="Bollocks">
+      <intake_util_intercept type="text" description="Intercept in intake and utilization eqn (p142)">1</intake_util_intercept>
+      <intake_util_slope type="text" description="Slope in intake and utilization eqn (p143)">-0.3</intake_util_slope>
+      <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies (p144)">300</yld_eat_restr>
+      <summer_lwg type="text" description="Expected summer lwg @ low SR (p145)">80</summer_lwg>
+      <autumn_lwg type="text" description="Expected autumn lwg @ low SR (p146)">40</autumn_lwg>
+      <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
+      <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">40</spring_lwg>
+      <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
+      <std_alw type="text" description="std_alw">200</std_alw>
+      <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
+      <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
+      <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
+      <allow_supplements type="text" description="allow_supplements">0</allow_supplements>
+    </graz>
+    <area name="p1">
+      <grasp name="Buffel_AVG">
+        <category description="Initial values at establishment" />
+        <root_depth_init type="text" description="Initial depth of roots (mm)">750</root_depth_init>
+        <dm_dead_leaf_init type="text" description="Initial Dead Leaf weight (kg/ha)">750</dm_dead_leaf_init>
+        <dm_dead_stem_init type="text" description="Initial Dead Stem weight (kg/ha)">750</dm_dead_stem_init>
+        <dm_dead_root_init type="text" description="Initial Dead Root weight (kg/ha)">100</dm_dead_root_init>
+        <dm_green_leaf_init type="text" description="Initial Green Leaf weight (kg/ha)">1000</dm_green_leaf_init>
+        <dm_green_stem_init type="text" description="Initial Green Stem weight (kg/ha)">1000</dm_green_stem_init>
+        <dm_green_root_init type="text" description="Initial Green Root weight (kg/ha)">300</dm_green_root_init>
+        <basal_area_init type="text" description="Initial Basal area of tussocks (%)">2.5</basal_area_init>
+        <acc_trans_for_n_init type="text" description="Initial accumulated transpiration, used for N uptake (mm)">0</acc_trans_for_n_init>
+        <acc_growth_for_n_init type="text" description="Initial accumulated growth, used for N uptake (kg/ha)">0</acc_growth_for_n_init>
+        <category description="Soil Properties" />
+        <max_n_avail type="text" description="Limit to total N (kg/year) (p99)">25</max_n_avail>
+        <max_n_avail_dist type="text" description="Distribution of N in profile">0.8 0.1 0.05  0.05  0.0 0.0  0.0</max_n_avail_dist>
+        <ll type="text" description="Lower limit (ll) of water extraction (mm/mm)">0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  </ll>
+        <kl type="text" description="Rate of water extraction (kl)">0.5      0.5      0.5    0.5  0.0  0.0  0.0</kl>
+        <kl2rlv type="text" description="kl2rlv">1</kl2rlv>
+        <category description="Parameter values" />
+        <crop_type type="text" description="crop_type">grass</crop_type>
+        <uptake_source type="text" description="uptake_source">calc</uptake_source>
+        <hgt_vpd_screen type="text" description="Height at which surface effects on vpd are 0 (mm) (p95)">200</hgt_vpd_screen>
+        <height_1000kg type="text" description="Sward Height per tonne (p096*10, mm)">200</height_1000kg>
+        <et_use_efficiency type="text" description="Evapotranspiration use efficiency used in BA calc (kg/ha/mm) (p288)">6</et_use_efficiency>
+        <frac_leaf2total type="text" description="Fraction of total dm produced that goes into leaf pool (0-1) (p123)">0.5</frac_leaf2total>
+        <yld_cover_slope type="text" description="Shape of exponential curve relating yield and cover">0.693147</yld_cover_slope>
+        <yld_fpc50 type="text" description="yld_fpc50 (p046)">1000</yld_fpc50>
+        <yld_cov50 type="text" description="Yield transpiring at 50% of pan evap (p045)">1000</yld_cov50>
+        <yld_tcov50 type="text" description="Tsdm yield at which cover for runoff is 50% (p271)">1150</yld_tcov50>
+        <swi_fullgreen type="text" description="Min soil water for 100% green (p009)">0.2</swi_fullgreen>
+        <swi_nogrow type="text" description="SWI when growth stops (p149)">0.2</swi_nogrow>
+        <pot_regrow type="text" description="Max rate regrowth from tussocks (kg/ha/unit grass ba) (p006)">5</pot_regrow>
+        <te_std type="text" description="Transpiration efficiency at vpd=20mb (p007)">17</te_std>
+        <rad_factor type="text" description="rad_factor">8.97</rad_factor>
+        <residual_plant_N type="text" description="Always this much n in plant (p097, kg/ha)">7.5</residual_plant_N>
+        <litter_n type="text" description="N conc of detached stems and roots ((p110-p111)/2)">0.3</litter_n>
+        <n_uptk_per100 type="text" description="Nitrogen uptake per 100mm water (p098, kg/ha)">8</n_uptk_per100>
+        <frost_start type="text" description="Minimum screen temp at which green cover=100% (oC,p125)">2</frost_start>
+        <frost_kill type="text" description="Minimum screen temp at which frost kills all green (oC,p011)">0</frost_kill>
+        <death_slope type="text" description="Rate of green death per soil water(p051)">0.013</death_slope>
+        <death_intercept type="text" description="Background death rate (p010)">0.002</death_intercept>
+        <leaf_death_ratio type="text" description="Proportion of leaf death to total death (p133)">1</leaf_death_ratio>
+        <stem_death_ratio type="text" description="Proportion of stem death to total death (p134)">1</stem_death_ratio>
+        <n_conc_dm_crit type="text" description="Level of plant N at which no N stress occurs (p100)">2.5</n_conc_dm_crit>
+        <n_conc_dm_min type="text" description="Level of soil N at which no N stress occurs (p101)">0.68</n_conc_dm_min>
+        <n_conc_dm_max type="text" description="Level of soil N at which soil N to high for growth (p102)">0.78</n_conc_dm_max>
+        <stem_thresh type="text" description="stem_thresh (p124)">0</stem_thresh>
+        <detach_dryseason type="text" description="detach_dryseason: root, leaf, stem (p130,131)">0.0   0.002     0.002</detach_dryseason>
+        <detach_wetseason type="text" description="detach_wetseason: root, leaf, stem (p128, 129)">0.0   0.004     0.004</detach_wetseason>
+        <category description="Date resets" />
+        <day_start_summer type="text" description="day_start_summer">335</day_start_summer>
+        <day_end_summer type="text" description="day_end_summer">59</day_end_summer>
+        <acc_et_reset type="text" description="acc_et_reset">273</acc_et_reset>
+        <acc_growth_reset type="text" description="acc_growth_reset">273</acc_growth_reset>
+        <trans_for_n_reset type="text" description="trans_for_n_reset">273</trans_for_n_reset>
+        <growth_for_n_reset type="text" description="growth_for_n_reset">273</growth_for_n_reset>
+        <day_start_wet type="text" description="day_start_wet">274</day_start_wet>
+        <day_start_dry type="text" description="day_start_dry">91</day_start_dry>
+        <enr_a_coeff type="text" description="enr_a_coeff">7.4</enr_a_coeff>
+        <enr_b_coeff type="text" description="enr_b_coeff">0.2</enr_b_coeff>
+        <basal_area_option type="text" description="Dynamic Basal Area calculation (0=off,1,2=on) (p268)">2</basal_area_option>
+      </grasp>
+      <soil name="Kilmore 150">
+        <Region>Central Queensland</Region>
+        <LocalName>Open Downs</LocalName>
+        <SoilType>Black Vertosol</SoilType>
+        <NearestTown>Capella, Q 4702</NearestTown>
+        <Comment>Data provided by D. Lack (oc and ph not measured)</Comment>
+        <NaturalVegetation>Qld. Bluegrass, Mountain Coolibah</NaturalVegetation>
+        <site>Capella</site>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.360</bd>
+            <ll15>0.200</ll15>
+            <airdry>0.125</airdry>
+            <dul>0.400</dul>
+            <sat>0.450</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <fbiom>0.030</fbiom>
+            <finert>0.400</finert>
+            <no3>6.500</no3>
+            <nh4>0.600</nh4>
+            <oc>1.240</oc>
+            <ph>7</ph>
+            <ll name="Wheat">0.25</ll>
+            <kl name="Wheat">0.1</kl>
+            <xf name="Wheat">1</xf>
+            <ll name="sorghum">0.25</ll>
+            <kl name="sorghum">0.1</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="maize">0.25</ll>
+            <kl name="maize">0.1</kl>
+            <xf name="maize">1</xf>
+            <ll name="Chickpea">0.25</ll>
+            <kl name="Chickpea">0.1</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="weed">0.25</ll>
+            <kl name="weed">0.1</kl>
+            <xf name="weed">1</xf>
+            <ll name="pigeonp">0.2</ll>
+            <kl name="pigeonp">0.06</kl>
+            <xf name="pigeonp">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.410</bd>
+            <ll15>0.240</ll15>
+            <airdry>0.150</airdry>
+            <dul>0.380</dul>
+            <sat>0.430</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <fbiom>0.020</fbiom>
+            <finert>0.600</finert>
+            <no3>2.100</no3>
+            <nh4>0.100</nh4>
+            <oc>1.240</oc>
+            <ph>7</ph>
+            <ll name="Wheat">0.26</ll>
+            <kl name="Wheat">0.1</kl>
+            <xf name="Wheat">1</xf>
+            <ll name="sorghum">0.26</ll>
+            <kl name="sorghum">0.1</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="maize">0.26</ll>
+            <kl name="maize">0.1</kl>
+            <xf name="maize">1</xf>
+            <ll name="Chickpea">0.26</ll>
+            <kl name="Chickpea">0.1</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="weed">0.26</ll>
+            <kl name="weed">0.1</kl>
+            <xf name="weed">1</xf>
+            <ll name="pigeonp">0.24</ll>
+            <kl name="pigeonp">0.06</kl>
+            <xf name="pigeonp">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.390</bd>
+            <ll15>0.240</ll15>
+            <airdry>0.170</airdry>
+            <dul>0.390</dul>
+            <sat>0.470</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>0.800</finert>
+            <no3>2.100</no3>
+            <nh4>0.100</nh4>
+            <oc>1.250</oc>
+            <ph>7</ph>
+            <ll name="Wheat">0.28</ll>
+            <kl name="Wheat">0.08</kl>
+            <xf name="Wheat">1</xf>
+            <ll name="sorghum">0.28</ll>
+            <kl name="sorghum">0.08</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="maize">0.28</ll>
+            <kl name="maize">0.08</kl>
+            <xf name="maize">1</xf>
+            <ll name="Chickpea">0.28</ll>
+            <kl name="Chickpea">0.08</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="weed">0.28</ll>
+            <kl name="weed">0.08</kl>
+            <xf name="weed">1</xf>
+            <ll name="pigeonp">0.24</ll>
+            <kl name="pigeonp">0.06</kl>
+            <xf name="pigeonp">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.350</bd>
+            <ll15>0.240</ll15>
+            <airdry>0.200</airdry>
+            <dul>0.410</dul>
+            <sat>0.460</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>0.900</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <oc>1.100</oc>
+            <ph>7</ph>
+            <ll name="Wheat">0.3</ll>
+            <kl name="Wheat">0.06</kl>
+            <xf name="Wheat">1</xf>
+            <ll name="sorghum">0.3</ll>
+            <kl name="sorghum">0.08</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="maize">0.3</ll>
+            <kl name="maize">0.08</kl>
+            <xf name="maize">1</xf>
+            <ll name="Chickpea">0.3</ll>
+            <kl name="Chickpea">0.06</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="weed">0.3</ll>
+            <kl name="weed">0.06</kl>
+            <xf name="weed">1</xf>
+            <ll name="pigeonp">0.24</ll>
+            <kl name="pigeonp">0.06</kl>
+            <xf name="pigeonp">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.350</bd>
+            <ll15>0.240</ll15>
+            <airdry>0.170</airdry>
+            <dul>0.410</dul>
+            <sat>0.450</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <oc>0.710</oc>
+            <ph>7</ph>
+            <ll name="Wheat">0.33</ll>
+            <kl name="Wheat">0.04</kl>
+            <xf name="Wheat">1</xf>
+            <ll name="sorghum">0.33</ll>
+            <kl name="sorghum">0.06</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="maize">0.33</ll>
+            <kl name="maize">0.06</kl>
+            <xf name="maize">1</xf>
+            <ll name="Chickpea">0.33</ll>
+            <kl name="Chickpea">0.04</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="weed">0.33</ll>
+            <kl name="weed">0.04</kl>
+            <xf name="weed">1</xf>
+            <ll name="pigeonp">0.24</ll>
+            <kl name="pigeonp">0.06</kl>
+            <xf name="pigeonp">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.350</bd>
+            <ll15>0.300</ll15>
+            <airdry>0.250</airdry>
+            <dul>0.400</dul>
+            <sat>0.450</sat>
+            <sw>9999.990</sw>
+            <swcon>0.300</swcon>
+            <fbiom>0.010</fbiom>
+            <finert>0.950</finert>
+            <no3>1.700</no3>
+            <nh4>0.100</nh4>
+            <oc>0.340</oc>
+            <ph>7</ph>
+            <ll name="Wheat">0.33</ll>
+            <kl name="Wheat">0.02</kl>
+            <xf name="Wheat">1</xf>
+            <ll name="sorghum">0.33</ll>
+            <kl name="sorghum">0.04</kl>
+            <xf name="sorghum">1</xf>
+            <ll name="maize">0.33</ll>
+            <kl name="maize">0.04</kl>
+            <xf name="maize">1</xf>
+            <ll name="Chickpea">0.33</ll>
+            <kl name="Chickpea">0.02</kl>
+            <xf name="Chickpea">1</xf>
+            <ll name="weed">0.33</ll>
+            <kl name="weed">0.02</kl>
+            <xf name="weed">1</xf>
+            <ll name="pigeonp">0.3</ll>
+            <kl name="pigeonp">0.06</kl>
+            <xf name="pigeonp">1</xf>
+          </layer>
+        </profile>
+        <Cona>3.5</Cona>
+        <DiffusConst>40</DiffusConst>
+        <DiffusSlope>16</DiffusSlope>
+        <U>6</U>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <CnCanopyFact>1</CnCanopyFact>
+        <RootCn>40</RootCn>
+        <RootWt>200</RootWt>
+        <SoilCn>12.5</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <InitWater>
+          <PercentMethod>
+            <Percent>1.00</Percent>
+            <Distributed>Evenly distributed</Distributed>
+          </PercentMethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6.50006898235112</no3>
+              <nh4>0.600097799511005</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.10002228660575</no3>
+              <nh4>0.1000162999185</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.10002228660575</no3>
+              <nh4>0.1000162999185</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70001804153799</no3>
+              <nh4>0.1000162999185</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70001804153799</no3>
+              <nh4>0.1000162999185</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.70001804153799</no3>
+              <nh4>0.1000162999185</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type type="text" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ration of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+    </area>
+    <area name="p2">
+      <grasp name="Native_grass">
+        <category description="Initial values at establishment" />
+        <root_depth_init type="text" description="Initial depth of roots (mm)">750</root_depth_init>
+        <dm_dead_leaf_init type="text" description="Initial Dead Leaf weight (kg/ha)">750</dm_dead_leaf_init>
+        <dm_dead_stem_init type="text" description="Initial Dead Stem weight (kg/ha)">750</dm_dead_stem_init>
+        <dm_dead_root_init type="text" description="Initial Dead Root weight (kg/ha)">100</dm_dead_root_init>
+        <dm_green_leaf_init type="text" description="Initial Green Leaf weight (kg/ha)">1000</dm_green_leaf_init>
+        <dm_green_stem_init type="text" description="Initial Green Stem weight (kg/ha)">1000</dm_green_stem_init>
+        <dm_green_root_init type="text" description="Initial Green Root weight (kg/ha)">300</dm_green_root_init>
+        <basal_area_init type="text" description="Initial Basal area of tussocks (%)">2.5</basal_area_init>
+        <acc_trans_for_n_init type="text" description="Initial accumulated transpiration, used for N uptake (mm)">0</acc_trans_for_n_init>
+        <acc_growth_for_n_init type="text" description="Initial accumulated growth, used for N uptake (kg/ha)">0</acc_growth_for_n_init>
+        <category description="Soil Properties" />
+        <max_n_avail type="text" description="Limit to total N (kg/year)">15</max_n_avail>
+        <max_n_avail_dist type="text" description="Distribution of N in profile">0.8 0.1 0.05  0.05  0.0 0.0  0.0</max_n_avail_dist>
+        <ll type="text" description="Lower limit (ll) of water extraction (mm/mm)">0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  </ll>
+        <kl type="text" description="Rate of water extraction (kl)">0.5      0.5      0.5    0.5  0.0  0.0  0.0</kl>
+        <kl2rlv type="text" description="kl2rlv">1</kl2rlv>
+        <category description="Parameter values" />
+        <crop_type type="text" description="crop_type">grass</crop_type>
+        <uptake_source type="text" description="uptake_source">calc</uptake_source>
+        <hgt_vpd_screen type="text" description="Height at which surface effects on vpd are 0 (mm) (p95)">200</hgt_vpd_screen>
+        <height_1000kg type="text" description="Sward Height per tonne (p096*10, mm)">100</height_1000kg>
+        <et_use_efficiency type="text" description="Evapotranspiration use efficiency used in BA calc (kg/ha/mm) (p288)">0</et_use_efficiency>
+        <frac_leaf2total type="text" description="Fraction of total dm produced that goes into leaf pool (0-1) (p123)">0.5</frac_leaf2total>
+        <yld_cover_slope type="text" description="Shape of exponential curve relating yield and cover">0.693147</yld_cover_slope>
+        <yld_fpc50 type="text" description="yld_fpc50 (p046)">1600</yld_fpc50>
+        <yld_cov50 type="text" description="Yield transpiring at 50% of pan evap (p045)">1600</yld_cov50>
+        <yld_tcov50 type="text" description="Tsdm yield at which cover for runoff is 50% (p271)">1150</yld_tcov50>
+        <swi_fullgreen type="text" description="Min soil water for 100% green (p009)">0.2</swi_fullgreen>
+        <swi_nogrow type="text" description="SWI when growth stops (p149)">0.2</swi_nogrow>
+        <pot_regrow type="text" description="Max rate regrowth from tussocks (kg/ha/unit grass ba) (p006)">3.5</pot_regrow>
+        <te_std type="text" description="Transpiration efficiency at vpd=20mb (p007)">13.5</te_std>
+        <rad_factor type="text" description="rad_factor">8.97</rad_factor>
+        <residual_plant_N type="text" description="Always this much n in plant (p097, kg/ha)">5</residual_plant_N>
+        <litter_n type="text" description="N conc of detached stems and roots ((p110-p111)/2)">0.3</litter_n>
+        <n_uptk_per100 type="text" description="Nitrogen uptake per 100mm water (p098, kg/ha)">6</n_uptk_per100>
+        <frost_start type="text" description="Minimum screen temp at which green cover=100% (oC,p125)">2</frost_start>
+        <frost_kill type="text" description="Minimum screen temp at which frost kills all green (oC,p011)">0</frost_kill>
+        <death_slope type="text" description="Rate of green death per soil water(p051)">0.013</death_slope>
+        <death_intercept type="text" description="Background death rate (p010)">0.002</death_intercept>
+        <leaf_death_ratio type="text" description="Proportion of leaf death to total death (p133)">1</leaf_death_ratio>
+        <stem_death_ratio type="text" description="Proportion of stem death to total death (p134)">1</stem_death_ratio>
+        <n_conc_dm_crit type="text" description="Level of plant N at which no N stress occurs (p100)">2.5</n_conc_dm_crit>
+        <n_conc_dm_min type="text" description="Level of soil N at which no N stress occurs (p101)">0.68</n_conc_dm_min>
+        <n_conc_dm_max type="text" description="Level of soil N at which soil N to high for growth (p102)">0.78</n_conc_dm_max>
+        <stem_thresh type="text" description="stem_thresh (p124)">0</stem_thresh>
+        <detach_dryseason type="text" description="detach_dryseason: root, leaf, stem (p130,131)">0.0   0.004     0.004</detach_dryseason>
+        <detach_wetseason type="text" description="detach_wetseason: root, leaf, stem (p128, 129)">0.0   0.002     0.002</detach_wetseason>
+        <category description="Date resets" />
+        <day_start_summer type="text" description="day_start_summer">335</day_start_summer>
+        <day_end_summer type="text" description="day_end_summer">59</day_end_summer>
+        <acc_et_reset type="text" description="acc_et_reset">273</acc_et_reset>
+        <acc_growth_reset type="text" description="acc_growth_reset">273</acc_growth_reset>
+        <trans_for_n_reset type="text" description="trans_for_n_reset">273</trans_for_n_reset>
+        <growth_for_n_reset type="text" description="growth_for_n_reset">273</growth_for_n_reset>
+        <day_start_wet type="text" description="day_start_wet">274</day_start_wet>
+        <day_start_dry type="text" description="day_start_dry">91</day_start_dry>
+        <enr_a_coeff type="text" description="enr_a_coeff">7.4</enr_a_coeff>
+        <enr_b_coeff type="text" description="enr_b_coeff">0.2</enr_b_coeff>
+      </grasp>
+      <soil name="Kilmore 150" shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150">
+        <InitWater shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitNitrogen" />
+      </soil>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Kilmore_Buffel/p1/surface organic matter" />
+    </area>
+    <area name="p3">
+      <grasp name="Buffel_AVG" shortcut="/Simulations/Kilmore_Buffel/p1/Buffel_AVG" />
+      <soil name="Kilmore 150" shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150">
+        <InitWater shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitNitrogen" />
+      </soil>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Kilmore_Buffel/p1/surface organic matter" />
+    </area>
+    <area name="p4">
+      <grasp name="Native_grass" shortcut="/Simulations/Kilmore_Buffel/p2/Native_grass" />
+      <soil name="Kilmore 150" shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150">
+        <InitWater shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitNitrogen" />
+      </soil>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Kilmore_Buffel/p1/surface organic matter" />
+    </area>
+    <area name="BCS">
+      <grasp name="Buffel_BCS">
+        <category description="Initial values at establishment" />
+        <root_depth_init type="text" description="Initial depth of roots (mm)">750</root_depth_init>
+        <dm_dead_leaf_init type="text" description="Initial Dead Leaf weight (kg/ha)">750</dm_dead_leaf_init>
+        <dm_dead_stem_init type="text" description="Initial Dead Stem weight (kg/ha)">750</dm_dead_stem_init>
+        <dm_dead_root_init type="text" description="Initial Dead Root weight (kg/ha)">100</dm_dead_root_init>
+        <dm_green_leaf_init type="text" description="Initial Green Leaf weight (kg/ha)">1000</dm_green_leaf_init>
+        <dm_green_stem_init type="text" description="Initial Green Stem weight (kg/ha)">1000</dm_green_stem_init>
+        <dm_green_root_init type="text" description="Initial Green Root weight (kg/ha)">300</dm_green_root_init>
+        <basal_area_init type="text" description="Initial Basal area of tussocks (%)">2.5</basal_area_init>
+        <acc_trans_for_n_init type="text" description="Initial accumulated transpiration, used for N uptake (mm)">0</acc_trans_for_n_init>
+        <acc_growth_for_n_init type="text" description="Initial accumulated growth, used for N uptake (kg/ha)">0</acc_growth_for_n_init>
+        <category description="Soil Properties" />
+        <max_n_avail type="text" description="Limit to total N (kg/year) (p99)">50</max_n_avail>
+        <max_n_avail_dist type="text" description="Distribution of N in profile">0.8 0.1 0.05  0.05  0.0 0.0  0.0</max_n_avail_dist>
+        <ll type="text" description="Lower limit (ll) of water extraction (mm/mm)">0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  0.290  </ll>
+        <kl type="text" description="Rate of water extraction (kl)">0.5      0.5      0.5    0.5  0.0  0.0  0.0</kl>
+        <kl2rlv type="text" description="kl2rlv">1</kl2rlv>
+        <category description="Parameter values" />
+        <crop_type type="text" description="crop_type">grass</crop_type>
+        <uptake_source type="text" description="uptake_source">calc</uptake_source>
+        <hgt_vpd_screen type="text" description="Height at which surface effects on vpd are 0 (mm) (p95)">200</hgt_vpd_screen>
+        <height_1000kg type="text" description="Sward Height per tonne (p096*10, mm)">100</height_1000kg>
+        <et_use_efficiency type="text" description="Evapotranspiration use efficiency used in BA calc (kg/ha/mm) (p288)">0</et_use_efficiency>
+        <frac_leaf2total type="text" description="Fraction of total dm produced that goes into leaf pool (0-1) (p123)">0.5</frac_leaf2total>
+        <yld_cover_slope type="text" description="Shape of exponential curve relating yield and cover">0.693147</yld_cover_slope>
+        <yld_fpc50 type="text" description="yld_fpc50 (p046)">1600</yld_fpc50>
+        <yld_cov50 type="text" description="Yield transpiring at 50% of pan evap (p045)">1600</yld_cov50>
+        <yld_tcov50 type="text" description="Tsdm yield at which cover for runoff is 50% (p271)">1150</yld_tcov50>
+        <swi_fullgreen type="text" description="Min soil water for 100% green (p009)">0.8</swi_fullgreen>
+        <swi_nogrow type="text" description="SWI when growth stops (p149)">0.01</swi_nogrow>
+        <pot_regrow type="text" description="Max rate regrowth from tussocks (kg/ha/unit grass ba) (p006)">10</pot_regrow>
+        <te_std type="text" description="Transpiration efficiency at vpd=20mb (p007)">25</te_std>
+        <rad_factor type="text" description="rad_factor">8.97</rad_factor>
+        <residual_plant_N type="text" description="Always this much n in plant (p097, kg/ha)">5</residual_plant_N>
+        <litter_n type="text" description="N conc of detached stems and roots ((p110-p111)/2)">0.3</litter_n>
+        <n_uptk_per100 type="text" description="Nitrogen uptake per 100mm water (p098, kg/ha)">50</n_uptk_per100>
+        <frost_start type="text" description="Minimum screen temp at which green cover=100% (oC,p125)">2</frost_start>
+        <frost_kill type="text" description="Minimum screen temp at which frost kills all green (oC,p011)">0</frost_kill>
+        <death_slope type="text" description="Rate of green death per soil water(p051)">0.013</death_slope>
+        <death_intercept type="text" description="Background death rate (p010)">0.002</death_intercept>
+        <leaf_death_ratio type="text" description="Proportion of leaf death to total death (p133)">1</leaf_death_ratio>
+        <stem_death_ratio type="text" description="Proportion of stem death to total death (p134)">1</stem_death_ratio>
+        <n_conc_dm_crit type="text" description="Level of plant N at which no N stress occurs (p100)">2.5</n_conc_dm_crit>
+        <n_conc_dm_min type="text" description="Level of soil N at which no N stress occurs (p101)">0.4</n_conc_dm_min>
+        <n_conc_dm_max type="text" description="Level of soil N at which soil N to high for growth (p102)">0.5</n_conc_dm_max>
+        <stem_thresh type="text" description="stem_thresh (p124)">0</stem_thresh>
+        <detach_dryseason type="text" description="detach_dryseason: root, leaf, stem (p130,131)">0.0   0.005     0.005</detach_dryseason>
+        <detach_wetseason type="text" description="detach_wetseason: root, leaf, stem (p128, 129)">0.0   0.000     0.000</detach_wetseason>
+        <category description="Date resets" />
+        <day_start_summer type="text" description="day_start_summer">335</day_start_summer>
+        <day_end_summer type="text" description="day_end_summer">59</day_end_summer>
+        <acc_et_reset type="text" description="acc_et_reset">273</acc_et_reset>
+        <acc_growth_reset type="text" description="acc_growth_reset">273</acc_growth_reset>
+        <trans_for_n_reset type="text" description="trans_for_n_reset">273</trans_for_n_reset>
+        <growth_for_n_reset type="text" description="growth_for_n_reset">273</growth_for_n_reset>
+        <day_start_wet type="text" description="day_start_wet">274</day_start_wet>
+        <day_start_dry type="text" description="day_start_dry">91</day_start_dry>
+        <enr_a_coeff type="text" description="enr_a_coeff">7.4</enr_a_coeff>
+        <enr_b_coeff type="text" description="enr_b_coeff">0.2</enr_b_coeff>
+        <basal_area_option type="text" description="Dynamic Basal Area calculation (0=off,1,2=on) (p268)">0</basal_area_option>
+      </grasp>
+      <soil name="Kilmore 150" shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150">
+        <InitWater shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Kilmore_Buffel/p1/Kilmore 150/InitNitrogen" />
+      </soil>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Kilmore_Buffel/p1/surface organic matter" />
+    </area>
+    <tclmanager name="Farm Manager">
+      <rule name="Farm logic">
+        <script name="init">
+          <text><![CDATA[
+
+## Grazing stuff here
+set config(p1,state)  "off"
+set config(p1,area)   100.0
+set config(p2,state)  "off"
+set config(p2,area)   100.0
+set config(p3,state)  "off"
+set config(p3,area)   100.0
+set config(p4,state)  "off"
+set config(p4,area)   100.0
+set config(BCS,state) "off"
+set config(BCS,area)  100.0      
+
+set config(cull_cows,state) "off"
+set config(bollocks,state) "off"
+
+set config(paddocks) [list p1 p2 p3 p4 BCS]
+set config(animals)  [list cull_cows bollocks]
+
+set grass_in 0
+
+#Move stock somewhere. 
+# which   = name of the animal module
+# paddock = the paddock they're going to
+# crop    = The name of the crop they'll eat
+proc moveStockTo {which paddock crop} {
+   global config
+   if {$crop == "feedlot"} {
+      apsimSet .masterpm.$which.pasture_source ".masterpm.farm manager"
+   } else {
+      apsimSet .masterpm.$which.pasture_source ".masterpm.$paddock.$crop"
+      set newSr [expr $config($which,number) / $config($paddock,area)]
+      apsimSet .masterpm.$which.stocking_rate $newSr
+      apsimSet .masterpm.$which.alw $config($which,alw)
+      apsimSet .masterpm.$which.acc_eaten 0.0
+      apsimSet .masterpm.$which.acc_growth 100.0
+   }
+   set config($which,state) "$paddock.$crop"
+}
+
+# This "dlt_dm" variable is accumulated by the grazing module - it uses 
+# the ratio of (grass eaten / grass growth) internlly. Here's it's requested, but not used.
+proc doPrepareAnimals {} {
+   global config
+   foreach animal $config(animals) {
+      if {$config($animal,state) == "feedlot"} {
+         uplevel #0 set dlt_dm 100.0
+      } 
+   } 
+}
+
+# Keep track of each animals alw. When on pasture, lwg is calculated,
+# when in the feedlot, we provide a book value of lwg.
+proc doProcessAnimals {} {
+   global config
+   foreach animal $config(animals) {
+      if {$config($animal,state) == "feedlot"} {
+         set config($animal,alw) [expr $config($animal,alw) + 2.0]      ;# 2.0 kg/hd/day
+      } else {
+         set config($animal,alw) [apsimGet .masterpm.$animal.alw]
+      }
+   } 
+}
+
+# Kick off the animals
+proc animalsOn {which number liveWeight} {
+   global config
+
+   # initial live weight & stocking rate isn't set until we have a paddock with area
+   apsimSet .masterpm.$which.stocking_rate 0.0
+   apsimSet .masterpm.$which.alw 0.0
+
+   set config($which,state)   on
+   set config($which,alw)     $liveWeight
+   set config($which,number)  $number
+   set config($which,annLwg) 0.0
+   # send an economics event here
+}
+
+# Kill off the animals (taking animals out the system)
+proc animalsOff {which } {
+   global config
+   set config($which,state)  off
+   set config($which,alw)    0.0
+   set config($which,number) 0.0
+   set config($which,annLwg) 0.0
+
+   apsimSet .masterpm.$which.stocking_rate 0.0
+   apsimSet .masterpm.$which.alw 0.0
+
+   # send econ event here
+}
+
+# Extra bits (needed to fool animals talking to top level when in feedlot)
+set dlt_dm         100.0
+set leafgreenwt    0.0
+set stemgreenwt    0.0
+set leafsenescedwt 0.0
+set stemsenescedwt 0.0
+
+
+# Utility functions##############################
+proc dateWithin {t0 t1} {
+   set d0 [date2day $t0]
+   set d1 [date2day $t1]
+   return dayWithin $d0 $d1
+}
+proc dateIs {t} {
+   set d [date2day $t]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc date2day {d} {
+   set year [apsimGet year]
+   return [string trimleft [clock format [clock scan "$d-$year"] -format %j] "0"]
+}
+]]></text>
+          <event>init</event>
+        </script>
+        <script name="prepare">
+          <text># Establish grass if it isn't there.
+
+if {!$grass_in} {
+   apsimSendMessage .masterpm.p1.Buffel_AVG establish {init_section establishment}
+   apsimSendMessage .masterpm.p2.Native_grass establish {init_section establishment}
+   apsimSendMessage .masterpm.p3.Buffel_AVG establish {init_section establishment}
+   apsimSendMessage .masterpm.p4.Native_grass establish {init_section establishment}
+   apsimSendMessage .masterpm.BCS.Buffel_BCS establish {init_section establishment}
+
+   set grass_in 1 ;# Do this once only. grass never dies.. :)
+
+   foreach animal $config(animals) {
+      apsimSet .masterpm.$animal.pasture_source ".masterpm.farm manager"
+   
+      set config($animal,state) off
+      set config($animal,alw) 0.0
+      set config($animal,number) 0.0
+      set config($animal,annLwg) 0.0
+
+      apsimSet .masterpm.$animal.stocking_rate 0.0
+      apsimSet .masterpm.$animal.alw 0.0
+   }
+}
+
+doPrepareAnimals
+
+</text>
+          <event>prepare</event>
+        </script>
+        <script name="process">
+          <text>
+doProcessAnimals
+
+# Native grass
+set animal "cull_cows"
+set paddock "p4"
+set pasture "native_grass"
+
+if {[dateIs 1-jun]} {                            ;# p081
+   if {$config($animal,state) == "off"} {
+    animalsOn $animal 20 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   } else {
+    set avgDailyIntake [expr ( $config($animal,annLwg) / 365.25 + 1.058) / 0.304 ]
+    set targetUtil [expr 20.0 / 100.0]            ;# p083 = 20%
+    set annualIntake [expr $avgDailyIntake * 365.5]
+
+    set tsdm  [apsimGet .masterpm.$paddock.$pasture.tsdm] 
+ 
+    set stock_equiv_ratio [expr $targetUtil * \
+                              $tsdm/  \
+                               $annualIntake]
+    set alw [apsimGet .masterpm.$animal.alw]
+    set weight_ratio [expr $alw / 200.0]
+    set factor [expr pow($weight_ratio , 0.75)]
+    set beasts_ha [expr $stock_equiv_ratio / $factor]
+    set nBeasts [expr $beasts_ha * $config($paddock,area)]
+
+    animalsOff $animal
+    animalsOn $animal $nBeasts 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   }
+   set config($animal,annLwg) 0.0
+}
+
+set animal "bollocks"
+set paddock "p3"
+set pasture "buffel_avg"
+
+if {[dateIs 1-sep]} {                            ;# p081
+   if {$config($animal,state) == "off"} {
+    animalsOn $animal 20 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   } else {
+    set avgDailyIntake [expr ( $config($animal,annLwg) / 365.25 + 1.058) / 0.304 ]
+    set targetUtil [expr 20.0 / 100.0]            ;# p083 = 20%
+    set annualIntake [expr $avgDailyIntake * 365.5]
+
+    set tsdm  [apsimGet .masterpm.$paddock.$pasture.tsdm] 
+ 
+    set stock_equiv_ratio [expr $targetUtil * \
+                              $tsdm/  \
+                               $annualIntake]
+    set alw [apsimGet .masterpm.$animal.alw]
+    set weight_ratio [expr $alw / 200.0]
+    set factor [expr pow($weight_ratio , 0.75)]
+    set beasts_ha [expr $stock_equiv_ratio / $factor]
+    set nBeasts [expr $beasts_ha * $config($paddock,area)]
+
+    animalsOff $animal
+    animalsOn $animal $nBeasts 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   }
+   set config($animal,annLwg) 0.0
+}
+
+</text>
+          <event>process</event>
+        </script>
+        <script name="post">
+          <text>
+          </text>
+          <event>post</event>
+        </script>
+      </rule>
+    </tclmanager>
+    <tracker>
+      <variable name="sum of .masterpm.p1.buffel_avg.dlt_dm on post from start_year to now as p1Growth" />
+      <variable name="sum of .masterpm.p2.native_grass.dlt_dm on post from start_year to now as p2Growth" />
+      <variable name="sum of .masterpm.p3.buffel_avg.dlt_dm on post from start_year to now as p3Growth" />
+      <variable name="sum of .masterpm.p4.native_grass.dlt_dm on post from start_year to now as p4Growth" />
+      <variable name="sum of cull_cows.lwg on post from start_year to now as cull_lwg" />
+      <variable name="sum of bollocks.lwg on post from start_year to now as bull_lwg" />
+    </tracker>
+    <outputfile name="Outputfile">
+      <variables name="Variables">
+        <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+        <variable name="cull_lwg" />
+        <variable name="bull_lwg" />
+        <variable name="p1Growth" />
+        <variable name="p2Growth" />
+        <variable name="p3Growth" />
+        <variable name="p4Growth" />
+      </variables>
+      <events name="Reporting Frequency">
+        <event name="end_year" array="End of year" description="End of daily simulation time step" />
+      </events>
+      <Graph name="Box Plot">
+        <Plot>
+          <SeriesType>Box</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <X>Title</X>
+          <Y>p1Growth</Y>
+          <Y>p2Growth</Y>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>Kilmore_Buffel.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+      </Graph>
+    </outputfile>
+  </simulation>
+</folder>

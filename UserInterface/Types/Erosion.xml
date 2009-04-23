@@ -1,0 +1,36 @@
+   <erosion>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/erosion/docs/erosion_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\shovel32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\shovel16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <variables>
+         <variable name="soil_loss" description="Soil loss (t/ha)"/>
+         <variable name="soil_loss_mm" description="Soil loss (mm)"/>
+         <variable name="sed_conc" description="Sediment concentration (g/l)"/>
+         <variable name="bed_depth" description="Depth to bedrock (mm)"/>
+      </variables>
+     <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Erosion.dll</dll>
+         <ini>%apsim%\Model\Erosion.xml</ini>
+         <sim>
+          <model>[erosion.model]</model>
+          <slope>[erosion.slope]</slope>
+          <slope_length>[erosion.slope_length]</slope_length>
+          <bed_depth>[erosion.bed_depth]</bed_depth>
+          <profile_reduction>[erosion.profile_reduction]</profile_reduction>
+          <profile_layer_merge>[erosion.profile_layer_merge]</profile_layer_merge>
+          <minimum_depth>[erosion.minimum_depth]</minimum_depth>
+          <k_factor>[erosion.k_factor]</k_factor>
+          <p_factor>[erosion.p_factor]</p_factor>
+         </sim>
+      </ApsimToSim>
+   </erosion>

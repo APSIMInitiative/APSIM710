@@ -1,0 +1,68 @@
+[main]
+module =  erosion
+owner =   Mark Silburn
+contact = silburm@prose.dpi.qld.gov.au, devoil@usq.edu.au
+Notes = 
+
+; Inward State Stimuli
+; --------------------
+[runoff]
+name = Runoff
+direction = inward
+type = state
+description = Water moving over the soil surface removes soil
+apsimname = runoff
+internalname= g_runoff
+indicators= soil_loss
+
+[cover]
+name = Cover
+direction = inward
+type = state
+description = Surface cover reduces erosion 
+apsimname = total_cover, residue_cover        (NB. This is WRONG. FIXME!!!)
+internalname= g_erosion_cover
+indicators= soil_loss
+
+[profile]
+name = Profile depth
+direction = inward
+type = state
+description = Profile depth changes with erosion
+apsimname = dlayer
+internalname= g_dlayer
+indicators= dlt_dlayer
+
+[bulk_density]
+name = Bulk density of soil
+type = state
+direction = inward
+description = Used to convert kg/ha -> mm/layer
+apsimname = bd
+internalname= g_bd
+indicators= dlt_dlayer
+
+; Outward State Stimuli
+; ---------------------
+[reset_depth]
+name = Resetting soil profile
+direction = outward
+type = state
+description = The new profile after erosion. All other modules must know how remap their own variables to this.
+apsimname = dlt_dlayer
+internalname= g_dlt_dlayer
+indicators= dlayer
+
+; Inward Message Stimuli
+; ----------------------
+[fudge_cover]
+name = cover_extra
+type = state
+direction = inward
+description = Used as a fudge that caters for rocks, weeds etc.
+apsimname = cover_extra
+internalname= g_cover_extra
+indicators= erosion_cover
+
+; Outward Message Stimuli
+; -----------------------

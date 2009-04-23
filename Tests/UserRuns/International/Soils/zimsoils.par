@@ -1,0 +1,305 @@
+! ***** Makoholi soil *****!
+! *************************!
+
+[makoholi.soilwat2.parameters]
+
+insoil = 0.1
+u =    8  (mm)       ! stage 1 soil evaporation coefficient (mm)
+
+runoff_filename =    blank   ! runoff predicted using CN2
+
+cum_eos_max =     10 (mm)   ! (mm)cumulative eos at which decomposition of surface residues cease (mm)
+
+cn2_bare =             85     ()   ! runoff curve number for BARE soil at AMC2
+cn_red =               20     ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+cn_cov =                0.8   ()   ! frac. cover for "cn_red" reduction in cover 
+                                     ! & max. cover for reduction 
+cn_canopy_fact =       1.0    ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                                     !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+salb =    0.2  ()   ! bare soil albedo
+cona =     3.5   !5.0 !3.5 ! 6.6  ()     ! stage 2 evap coef.
+diffus_const =    88.0 ()   !250. ()  !   coeffs for dbar
+diffus_slope =    35.4 ()   !22.  ()  !     "
+
+   !layer      1       2       3       4       5       6   
+dlayer =      150.0   150.0   150.0   150.0   150.0   250.0 (mm)   ! layer depth mm soil
+air_dry =     0.03    0.07    0.09    0.09    0.09    0.09   
+ll15 =        0.04    0.07    0.13    0.13    0.18    0.22   
+dul =         0.14    0.15    0.20    0.20    0.22    0.24   
+sw  =         0.14    0.15    0.20    0.20    0.22    0.24   
+sat =         0.44    0.45    0.45    0.40    0.40    0.38   
+swcon =       0.7     0.7     0.7     0.7     0.7     0.7   ()   ! soil conductivity
+bd =          1.431   1.420   1.418   1.546   1.551   1.61 ()   ! bulk density gm dry soil/cc moist soil
+
+[makoholi.maize.parameters]  
+uptake_source =    calc   ! calculate own uptakes.
+!layer     1       2       3       4       5       6  
+ll =      0.04    0.07    0.13    0.13    0.18    0.22   
+xf =      1.00    1.00    1.00    1.00    1.00    1.00
+kl =      0.12   0.12     0.10    0.04    0.02    0.01
+
+! ****************************!
+! *** generic coarse sand ****!
+! ****************************!
+! profile is 17o cm deep
+! PAWC varied by rooting depth in crop parameters
+
+[sand.soilwat2.parameters]
+
+          !  set_default
+     insoil =  0.10 () ! indicator for initial soil water
+                       ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul,
+                       !                                         >1 = input by user)
+
+           ! soil_evaporation
+     cona = 3.0 ()    ! stage 2 evap coef.
+     u =  6.0 ()    ! stage 1 soil evaporation coefficient (mm)
+
+          ! unsat_flow
+     diffus_const = 88.0 () !   coeffs for dbar
+     diffus_slope = 35.4 () !     "       
+
+          ! runoff
+     cn2_bare = 72.0 ()        ! runoff curve number for BARE soil at AMC2
+     cn_red = 20 ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+     cn_cov = 0.8 ()  ! frac. cover for "cn_red" reduction in cover 
+                    ! & max. cover for reduction 
+
+          ! pot_evapotranspiration
+     salb =  0.1 ()   ! bare soil albedo
+
+   ! layer     1      2      3      4      5      6      7      8      9     10
+   dlayer  =  100.   100.   100.   200.   200.   200.   200.   200.   200.   200. (mm)    ! layer depth
+   air_dry = 0.100  0.100  0.100  0.150  0.150  0.150  0.150  0.150  0.150  0.150 (mm/mm) ! air dry
+   ll15    = 0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 (mm/mm) ! drained upper limit
+   DUL     = 0.300  0.300  0.300  0.300  0.300  0.300  0.300  0.300  0.300  0.300 (mm/mm) ! lower limit
+   sat     = 0.320  0.320  0.320  0.320  0.320  0.320  0.320  0.320  0.320  0.320 (mm/mm) ! saturated soil water
+   sw      = 0.300  0.300  0.300  0.300  0.300  0.300  0.300  0.300  0.300  0.300 (mm/mm) ! lower limit
+   swcon   = 0.700  0.700  0.700  0.700  0.700  0.700  0.700  0.700  0.700  0.700 ()      ! soil conductivity
+   bd      = 1.400  1.400  1.400  1.400  1.400  1.400  1.400  1.400  1.400  1.400 (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+! ********* crops with 50 cm rooting depth *********
+
+[sand_50cm.pigeonp.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   0.00   0.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_50cm.peanut.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   0.00   0.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_50cm.mucuna.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   0.00   0.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_50cm.soybean.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   0.00   0.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_50cm.cowpea.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   0.00   0.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_50cm.maize.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   0.00   0.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_50cm.weed.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   0.00   0.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+! ********* crops with 110 cm rooting depth *********
+
+[sand_110cm.pigeonp.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_110cm.peanut.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   1.00   1.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_110cm.mucuna.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_110cm.soybean.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_110cm.cowpea.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_110cm.maize.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_110cm.weed.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   0.00   0.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+! ********* crops with 170 cm rooting depth *********
+
+[sand_170cm.pigeonp.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   0.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_170cm.peanut.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   0.00   1.00   1.00   1.00   1.00   1.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_170cm.mucuna.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_170cm.soybean.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_170cm.cowpea.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_170cm.maize.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+[sand_170cm.weed.parameters]  
+   !layer  1     2      3      4      5      6      7      8      9      10
+ll =      0.200  0.200  0.200  0.200  0.200  0.200  0.230  0.250  0.270  0.290 ! lower limit
+xf =      1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00 ! Root Exploration factor (0-1)
+kl =      0.12   0.12   0.12   0.12   0.10   0.08   0.04   0.02   0.01   0.01 ! Water Extraction parameter (0-1)
+
+!********************************!
+!**** soil N params for sand ****!
+!********************************!
+
+[low_fert.soiln2.parameters]
+
+     amp     =  4.0   (oC)      ! temperature amplitude (oC) - difference between highest and
+                                ! lowest mean monthly air temperatures
+     tav     = 22.0   (oC)      ! mean annual air temperature (oC)
+     root_cn = 45.0 ()      ! initial root C:N ratio
+     root_wt = 400.0 (kg/ha) ! initial root DW 
+     soil_cn = 14.5   ()        ! soil humic pool C:N ratio
+
+! for remapping erosion
+     enr_a_coeff    = 7.4  ()
+     enr_b_coeff    = 0.2  ()
+     profile_reduction = on           ! (on|off) whether to remap N+C if
+                                      ! soil loss occurs.
+
+     ! layer      1      2      3      4      5      6      7      8      9     10
+     oc      =  0.400  0.400  0.200  0.200  0.200  0.200  0.200  0.200  0.200  0.100  (%)   ! organic carbon %
+     ph      =  6.000  6.000  6.000  6.200  6.500  6.700  6.800  6.800  6.800  6.800  ()    ! ph
+     ureappm =  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  (ppm) ! ppm urea
+     fbiom   =  0.030  0.020  0.015  0.010  0.010  0.010  0.010  0.010  0.010  0.010  ()    ! microbe fraction of hunic pool
+     finert  =  0.400  0.600  0.750  0.900  0.950  0.990  0.990  0.990  0.990  0.990  ()    ! inert fraction of humic pool
+     no3ppm  =  1.000  0.500  0.500  0.500  0.300  0.300  0.300  0.200  0.200  0.200  (ppm) ! ppm nitrate
+     nh4ppm  =  0.500   0.500   0.500   0.400   0.400   0.400   0.200   0.200   0.200  0.200  (ppm) ! ppm ammonia
+
+[mod_fert.soiln2.parameters]
+
+     amp     =  4.0   (oC)      ! temperature amplitude (oC) - difference between highest and
+                                ! lowest mean monthly air temperatures
+     tav     = 22.0   (oC)      ! mean annual air temperature (oC)
+     root_cn = 45.0 ()      ! initial root C:N ratio
+     root_wt = 400.0 (kg/ha) ! initial root DW 
+     soil_cn = 14.5   ()        ! soil humic pool C:N ratio
+
+! for remapping erosion
+     enr_a_coeff    = 7.4  ()
+     enr_b_coeff    = 0.2  ()
+     profile_reduction = on           ! (on|off) whether to remap N+C if
+                                      ! soil loss occurs.
+
+     ! layer      1      2      3      4      5      6      7      8      9     10
+     oc      =  1.000  0.900  0.700  0.500  0.500  0.400  0.400  0.400  0.400  0.300  (%)   ! organic carbon %
+     ph      =  6.000  6.000  6.000  6.200  6.500  6.700  6.800  6.800  6.800  6.800  ()    ! ph
+     ureappm =  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  (ppm) ! ppm urea
+     fbiom   =  0.030  0.020  0.015  0.010  0.010  0.010  0.010  0.010  0.010  0.010  ()    ! microbe fraction of hunic pool
+     finert  =  0.400  0.600  0.750  0.900  0.950  0.990  0.990  0.990  0.990  0.990  ()    ! inert fraction of humic pool
+     no3ppm  =  2.000   1.500   1.000   0.500   0.300   0.300   0.300   0.200   0.200  0.200  (ppm) ! ppm nitrate
+     nh4ppm  =  0.500   0.500   0.500   0.400   0.400   0.400   0.200   0.200   0.200  0.200  (ppm) ! ppm ammonia
+
+ [hi_fert.soiln2.parameters]
+
+     amp     =  4.0   (oC)      ! temperature amplitude (oC) - difference between highest and
+                                ! lowest mean monthly air temperatures
+     tav     = 22.0   (oC)      ! mean annual air temperature (oC)
+     root_cn = 45.0 ()      ! initial root C:N ratio
+     root_wt = 400.0 (kg/ha) ! initial root DW 
+     soil_cn = 14.5   ()        ! soil humic pool C:N ratio
+
+! for remapping erosion
+     enr_a_coeff    = 7.4  ()
+     enr_b_coeff    = 0.2  ()
+     profile_reduction = on           ! (on|off) whether to remap N+C if
+                                      ! soil loss occurs.
+
+     ! layer      1      2      3      4      5      6      7      8      9     10
+     oc      =  1.400  1.200  0.900  0.600  0.500  0.400  0.400  0.400  0.400  0.300  (%)   ! organic carbon %
+     ph      =  6.000  6.000  6.000  6.200  6.500  6.700  6.800  6.800  6.800  6.800  ()    ! ph
+     ureappm =  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  (ppm) ! ppm urea
+     fbiom   =  0.030  0.020  0.015  0.010  0.010  0.010  0.010  0.010  0.010  0.010  ()    ! microbe fraction of hunic pool
+     finert  =  0.400  0.600  0.750  0.900  0.950  0.990  0.990  0.990  0.990  0.990  ()    ! inert fraction of humic pool
+     no3ppm  =  3.000   2.000   1.500   0.500   0.300   0.300   0.300   0.200   0.200  0.200  (ppm) ! ppm nitrate
+     nh4ppm  =  0.500   0.500   0.500   0.400   0.400   0.400   0.200   0.200   0.200  0.200  (ppm) ! ppm ammonia
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+

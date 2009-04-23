@@ -1,0 +1,39 @@
+!Title = Muguga test soil (PAWC = 164mm)
+
+
+[*attributes]
+
+   module_usage  = soil_nitrogen
+   must_have     = soil_nitrogen
+
+[*contents]
+
+[run%.soiln2.parameters]
+
+! Calculated from 40 years of Muguga climate data 1954-1994
+   amp               =   4.2   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   15.4  (oC)       ! mean annual air temperature (oC)
+
+   root_cn           =   40.0   ()         !
+   root_wt           =  500.0   (kg/ha)    !
+   soil_cn           =   10.0   ()         ! soil humic pool C:N ratio
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =     off             ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+     ! layer       1       2       3       4       5       6       
+ph =              6.00    6.00    6.20    6.40    6.50   6.50   ()   ! ph
+oc =              3.00    1.50    1.00    0.50    0.50    0.30  (%)   ! organic carbon %
+fbiom =           0.040   0.020   0.010   0.010   0.010   0.010 ()   ! microbe fraction of hunic pool
+finert =          0.500   0.75    0.90    0.99    0.99    0.99  ()   ! inert fraction of humic pool
+ureappm =         0.00    0.00    0.00    0.00    0.00    0.00   
+                                           
+#stop
+no3ppm =          2.0     1.0     1.0     1.0     1.0     1.0   ()
+nh4ppm =          1.0     1.0     1.0     0.5     0.5     0.5   ()
+                 
+
+

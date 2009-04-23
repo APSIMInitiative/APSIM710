@@ -1,0 +1,98 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A0DE87B8-E80C-4C69-B789-1B6FAAD89DB9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Plant</RootNamespace>
+    <AssemblyName>Plant2</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSGeneral.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetComponentInterface, Version=3.0.3215.23476, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DotNetComponentInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VBMet, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\VBMet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Arbitrator.cs" />
+    <Compile Include="Organs\BaseOrgan.cs" />
+    <Compile Include="Biomass.cs" />
+    <Compile Include="Functions\Constant.cs" />
+    <Compile Include="AnnualPlantArbitrator.cs" />
+    <Compile Include="Population.cs" />
+    <Compile Include="SimpleArbitrator.cs" />
+    <Compile Include="Organs\SimpleReproductiveOrgan.cs" />
+    <Compile Include="Organs\SimpleLeaf.cs" />
+    <Compile Include="Organs\SimpleRoot.cs" />
+    <Compile Include="Phenology\LeafAppearancePhase.cs" />
+    <Compile Include="Organs\ReserveOrgan.cs" />
+    <Compile Include="Phenology\ChillingPhase.cs" />
+    <Compile Include="Phenology\LeafDeathPhase.cs" />
+    <Compile Include="Phenology\RewindPhase.cs" />
+    <Compile Include="Functions\StageLookup.cs" />
+    <Compile Include="Functions\Function.cs" />
+    <Compile Include="Functions\GenericFunction.cs" />
+    <Compile Include="Organs\LeafCohort.cs" />
+    <Compile Include="Organs\Organ.cs" />
+    <Compile Include="Functions\PhaseLookupValue.cs" />
+    <Compile Include="Functions\PhaseLookup.cs" />
+    <Compile Include="Phenology\VernalPhase.cs" />
+    <Compile Include="Phenology\EndPhase.cs" />
+    <Compile Include="Phenology\Function.cs" />
+    <Compile Include="Phenology\FixedPhase.cs" />
+    <Compile Include="Phenology\Phase.cs" />
+    <Compile Include="Phenology\Phenology.cs" />
+    <Compile Include="Plant.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Organs\Leaf.cs" />
+    <Compile Include="Organs\Root.cs" />
+    <Compile Include="Organs\RootSWIM.cs" />
+    <Compile Include="Organs\ReproductiveOrgan.cs" />
+    <Compile Include="RUEModel.cs" />
+    <Compile Include="Organs\GenericOrgan.cs" />
+    <Compile Include="Summary.cs" />
+    <Compile Include="Functions\TemperatureFunction.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

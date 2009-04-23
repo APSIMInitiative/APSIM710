@@ -1,0 +1,77 @@
+[300mm.soilwat2.parameters]
+wet_soil_depth = 300
+
+[600mm.soilwat2.parameters]
+wet_soil_depth = 600
+
+[900mm.soilwat2.parameters]
+wet_soil_depth = 900
+
+[1200mm.soilwat2.parameters]
+wet_soil_depth = 1200
+
+[1500mm.soilwat2.parameters]
+wet_soil_depth = 1500
+
+
+[warra.soilwat2.parameters]
+
+insoil =  2.0
+u =  6
+cn2_bare =  80
+cn_red =  20 ()
+cn_cov =  0.8 ()
+salb =  0.13
+cona =  4.0   !5.0
+diffus_const =  40.
+diffus_slope =  16.0
+
+
+!layer    1    2    3    4    5    6    7
+dlayer =  100  100  100  300  300  300  300   ! layer depth mm soil
+bd =    1.30 1.30 1.29 1.31 1.35 1.36 1.36   ! bulk density gm dry soil/cc moist soil
+ll15 =  .22  .22  .23  .24  .26  .27  .28   ! 16 Dec 97 to match changed LL for wheat
+dul =   .450 .459  .45 .44  .42  .41  .41   ! reduced in lower layers 9/6/95
+sat =   .500 .509 .510 .505 .490 .480 .480   ! saturation mm water/mm soil
+swcon =  0.2  0.2  0.2  0.2  0.2  0.2  0.2
+air_dry =  .10 .20 .20 .20 .20 .20 .20
+
+
+[common.soiln2.warra]
+!layer    1    2    3    4    5    6    7
+oc =    1.00 0.84 0.77 0.65 0.54 0.48 0.43   !in May 87 adjusted to allow for fallow
+ph =    8.20 8.50 8.60 8.60 7.40 5.30 5.00   ! ph
+nh4ppm =  0.3 0.3 0.3 0.3 0.3 0.50 0.50   ! reduced to match simulation after fallow
+no3ppm =  10.0  5.0  4.0  2.0  1.0  1.0  1.0   ! mean of Tz day 148, 1987
+ureappm =  0    0    0    0    0    0    0   ! ppm urea
+fbiom =  0.045 0.025 0.015 0.01 0.01 0.01 0.01
+finert =  0.3 0.5 0.6 0.75 0.9 0.99 0.99   !28-9-95
+
+
+root_wt =  10.   ! root residues as biomass (kg/ha)
+root_cn =  40.
+
+soil_cn =  14.5
+
+enr_a_coeff =  7.4 ()   !stuff for mapping erosion
+enr_b_coeff =  0.2
+profile_reduction =  on
+
+[warran50.soiln2.parameters]
+derived_from = warra
+no3ppm =  10.0  10.0  4.0  2.0  1.0  1.0  1.0
+
+[warran100.soiln2.parameters]
+derived_from = warra
+no3ppm =  20.0  20.0  8.0  4.0  2.0  2.0  2.0
+
+
+[warra.wheat.parameters]
+
+!ll15=  .22  .22  .23  .24  .26  .27  .28   ! 16 Dec 97 to match changed LL for wheat
+!dul =  .450 .459  .45 .44  .42  .41  .41   ! reduced in lower layers 9/6/95
+ll   =  .22  .22  .23  .24  .285  .33  .39   ! revised 16 Dec 97
+xf   =  1.0  1.0  1.0  1.0  1.0  1.0  1.0
+kl   =  .06  .06  .06  .06  .04  .03  .02
+
+

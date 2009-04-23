@@ -1,0 +1,197 @@
+!********************************************************************
+!    Parameter values required by the soilwat module
+!********************************************************************
+
+[bw1.soilwat2.parameters]  
+
+insoil =               2.0   ()   ! indicator for initial soil water
+                                     ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul, >1 = input by user)
+
+!   max_evap        = 6        (mm)   ! maximum evaporation.
+runoff_filename =    blank   !if blank, runoff predicted using CN2                   
+cona =               6.0   !3.5      ()     ! stage 2 evap coef.                       
+diffus_const =        40.0    ()   !(?)   ! coeffs for rate of water movement by diffusion
+diffus_slope =        16.0    ()   !(?)   !     "
+u =                   3.0   !6.0    (mm)   ! stage 1 soil evaporation coefficient (mm)    
+salb =                0.05   ()   ! bare soil albedo                         
+                              
+cn2_bare =           80.0 ()   !73.0  ! runoff curve number for BARE soil at AMC2
+cn_red =             20   ()   ! reduction in CN2_bare for "cn_cov" increase in cover
+cn_cov =             0.8  ()   ! frac. cover for "cn_red" reduction in cover
+                                   ! & max. cover for reduction
+
+cn_canopy_fact =    1.0 ()   !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+   ! layer       1       2       3       4       5       6       7   
+dlayer =       150.000  150.000 300.000 300.000 300.000 300.000 300.000  (mm)   ! layer depth                            
+
+air_dry =        0.120    0.240   0.282   0.289   0.314   0.310   0.310  (mm/mm)   ! air dry                               
+
+! ll15,dul,sat  from USDA Survey BW1 (soilsurv.xls)
+
+ll15 =           0.239    0.253   0.282   0.289   0.314   0.310   0.310  (mm/mm)   ! lower limit                    
+dul =            0.401    0.415   0.430   0.460   0.466   0.474   0.470  (mm/mm)   ! drained upper limit
+sat =            0.477    0.481   0.469   0.488   0.487   0.507   0.507  (mm/mm)   ! saturated soil water                  
+! crop LL  =     0.239    0.253   0.282   0.31    0.35    0.39    0.43
+! assume starting sw is slightly above crop LL
+sw =             0.28     0.30    0.32    0.35    0.37    0.42    0.45   !MEP increased to try to improve fit in 1st year of BW2
+swcon =          0.200    0.200   0.200   0.200   0.200   0.200   0.200  ()   ! soil conductivity                     
+
+! bd from USDA Survey BW1
+
+bd =             1.280    1.270   1.310   1.240   1.250   1.190   1.080  (g/cc)   ! bulk density gm dry soil/cc moist soil
+!   bd      =     1.200    1.200   1.200   1.200   1.200   1.200   1.200  (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+
+!
+!********************************************************************
+!    Soil parameter values required by crop modules
+!********************************************************************
+!
+! Sorgham  ######################
+
+[bw1.sorg.parameters]  
+
+ll =        0.239    0.253   0.282   0.310   0.350   0.390   0.430  (mm/mm)   ! initial sw                             
+!! ll =     0.239    0.253   0.276   0.291   0.318   0.305   0.269  (mm/mm) ! initial sw                             
+! From mep
+kl =        0.10     0.10    0.07    0.07    0.05    0.05    0.05    ()   
+!kl    =     0.07     0.07    0.07    0.07    0.05    0.05    0.04    ()
+xf     =    1.0      1.0      1.0     1.0     1.0     1.0     1.0     ()
+
+[bw1.chick.parameters]  
+
+ll =        0.239    0.253   0.276   0.291   0.318   0.305   0.269  (mm/mm)   ! initial sw                             
+kl =        0.08    0.08    0.08    0.08    0.08    0.08    0.08   
+
+
+[bw1.pigeonp.parameters]  
+
+! Pigeonpea
+
+ll =        0.239    0.253   0.276   0.291   0.318   0.305   0.269  (mm/mm)   ! initial sw                             
+kl =       0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()   ! rate of soil water extraction
+
+
+
+! The LL values here are inconsistent with LL15
+[bw1.maizeken.parameters]  
+ll =            0.134    0.174   0.195   0.244   0.250   0.250   0.260    (mm/mm)   ! pigeonpea lower limit
+kl =            0.120    0.120   0.120   0.120   0.060   0.050   0.030    ()   ! rate of soil water extraction
+
+[bw1.maize.parameters]  
+ll =            0.134    0.174   0.195   0.244   0.250   0.250   0.260    (mm/mm)   ! pigeonpea lower limit
+kl =            0.120    0.120   0.120   0.120   0.060   0.050   0.030    ()   ! rate of soil water extraction
+xf =            1.0      1.0     1.0     1.0     1.0     1.0     1.0      ()   
+
+!
+!********************************************************************
+!    Parameter values required by the soiln module
+!********************************************************************
+!
+
+[bw1.soiln2.parameters]  
+
+amp =                    11.9   (oC)   ! temperature amplitude (oC) - difference between highest and
+                                                ! lowest mean monthly air temperatures                       
+tav =                    25.9   (oC)   ! mean annual air temperature (oC)                           
+root_cn =                20.0   ()   !                                                            
+root_wt =              1400.0   (kg/ha)   !                                                            
+!   soil_cn           =   10.0  ! MEP BW2 without inputs yields too little
+soil_cn =                12.0   ()   ! soil humic pool C:N ratio
+
+enr_a_coeff =             7.4   ()   
+enr_b_coeff =             0.2   ()   
+profile_reduction =        on   ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+                                           
+      ! layer        1       2       3       4       5       6       7 
+!   dlayer  =   150.000  150.000 300.000 300.000 300.000 300.000 300.000  (mm)    ! layer depth                            
+
+! Meas surface layer- assume already Adj by 1.3. Scalar Dist in SOILSURV.XLS 
+oc =              0.72    0.58    0.45    0.35    0.26    0.20    0.15  (%)   ! MEP derived from Survey data X 1.3
+
+! ph from USDA Survey BW1
+ph =             7.200   7.000   7.000   7.000   7.000   8.000   8.000  ()   ! ph (from DSSAT)
+
+fbiom =          0.025   0.020   0.015   0.010   0.010   0.010   0.010  ()   ! microbe fraction of hunic pool
+! MEP suggestion
+finert =        0.50   0.60   0.80   0.90   0.95   0.99   0.99  ()   !MEP 4/6 increased because now include atmos accessions
+!  finert  =     0.300   0.600   0.800   0.900   0.940   0.980   0.990  () !as used by MEP
+!   finert  =     0.390   0.470   0.520   0.620   0.740   0.830   0.930  ()    ! inert fraction of humic pool
+ureappm =        0.000   0.000   0.000   0.000   0.000   0.000   0.000  (ppm)   ! ppm urea
+!  Following Rabi Sorghum crop
+no3ppm =         2.000   2.000   1.500   1.000   0.500   0.500   0.500  ()   
+!   no3ppm  =     5.100   4.600   3.000   1.300   1.100   1.700   0.950  ()
+nh4ppm =         0.600   0.500   0.300   0.100   0.100   0.100   0.100  ()   
+
+
+[bw2.soiln2.parameters]  
+
+amp =                    11.9   (oC)   ! temperature amplitude (oC) - difference between highest and
+                                                ! lowest mean monthly air temperatures                       
+tav =                    25.9   (oC)   ! mean annual air temperature (oC)                           
+! roots based on average (1992-96) simulated without manure or NPK
+root_cn =                40.0   ()   !
+root_wt =              1300.0   (kg/ha)   !                                                            
+!   soil_cn           =   10.0  ! MEP BW2 without inputs yilds too little
+soil_cn =               12.0   ()   ! soil humic pool C:N ratio
+
+enr_a_coeff =             7.4   ()   
+enr_b_coeff =             0.2   ()   
+profile_reduction =        on   ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+                                           
+      ! layer        1       2       3       4       5       6       7 
+!   dlayer  =   150.000  150.000 300.000 300.000 300.000 300.000 300.000  (mm)    ! layer depth                            
+
+! Meas surface layer- assume already Adj by 1.3. Scalar Dist in SOILSURV.XLS 
+oc =              0.72    0.58    0.45    0.35    0.26    0.20    0.15  (%)   ! MEP derived from Survey data X 1.3
+!   oc      =     0.803   0.660   0.459   0.325   0.261   0.261   0.261  (%)   ! organic carbon %
+!   oc      =     0.614   0.505   0.351   0.248   0.200   0.200   0.200  (%)   ! organic carbon %
+!   oc      =     0.960   0.870   0.690   0.630   0.600   0.530   0.300  (%)   ! organic carbon %
+
+! ph from USDA Survey BW1
+ph =             7.200   7.000   7.000   7.000   7.000   8.000   8.000  ()   ! ph (from DSSAT)
+!   ph      =     8.400   8.400   8.500   8.500   8.500   8.500   8.500  ()    ! ph (from DSSAT)
+
+fbiom =          0.025   0.020   0.015   0.010   0.010   0.010   0.010  ()   ! microbe fraction of hunic pool
+! MEP suggestion
+finert =        0.50   0.60   0.80   0.90   0.95   0.99   0.99  ()   !MEP 4/6 increased because now include atmos accessions
+!  finert  =     0.300   0.600   0.800   0.900   0.940   0.980   0.990  () !as used by MEP
+!   finert  =     0.390   0.470   0.520   0.620   0.740   0.830   0.930  ()    ! inert fraction of humic pool
+ureappm =        0.000   0.000   0.000   0.000   0.000   0.000   0.000  (ppm)   ! ppm urea
+
+!  Following Rabi Sorghum crop Low mineral N for BW2 expt
+no3ppm =         1.000   1.000   0.500   0.500   0.500   0.500   0.500  ()   
+nh4ppm =         0.600   0.500   0.300   0.100   0.100   0.100   0.100  ()   
+
+!********************************************************************
+!    Parameter values required by the residue module
+!********************************************************************
+ 
+
+[bw1.residue2.parameters]  
+
+residue_wt =         100. ()   ! surface residues as biomass (kg/ha)
+residue_cnr =        76.  ()   ! cn ratio of surface residues
+residue_type =       sorghum   
+pot_decomp_rate =    0.05  ()   
+
+!********************************************************************
+!    Parameter values required by the MANURE module
+!********************************************************************
+
+[bw1.manure.parameters]  
+
+manure_wt =             0.0 (kg/ha)   ! dry weight of manure applicatoin
+manure_pcnt_N =         0.76   (%)   ! %N (drywt basis) in applied manure.
+manure_pcnt_C =         8.0   (%)   ! %C (drywt basis) in applied manure
+manure_nh4ppm =        10.0   (ppm)   ! nh4-N (drywt basis) in applied manure
+manure_no3ppm =        10.0   (ppm)   ! no3-N (drywt basis) in applied manure
+manure_pot_decomp_rate =      0.1  ()   
+manure_type =        manure   
+manure_report_additions =      yes   
+manure_pcnt_P =         8.0   (%)   ! %C (drywt basis) in applied manure
+manure_po4ppm =        10.0   (ppm)   ! nh4-N (drywt basis) in applied manure
+

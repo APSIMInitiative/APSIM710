@@ -1,0 +1,150 @@
+version = 7.0(2)
+[APSIM.test1_chickpea]
+title=Test sowing before out
+module = clock   test.par [all] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test1]  test.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test1]   test.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   test.par [all] %apsim%/Model/chickpea.xml [standard]
+
+[APSIM.test2_chickpea]
+title=Test sowing after out on same day
+module = clock   test.par [all] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test2]  test.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test2]   test.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   test.par [all] %apsim%/Model/chickpea.xml [standard]
+
+[APSIM.test3_chickpea]
+title=Test sowing next day after out
+module = clock   test.par [all] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test3]  test.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test3]   test.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   test.par [all] %apsim%/Model/chickpea.xml [standard]
+
+[APSIM.test4_chickpea]
+title=Test kill_stem before sowing
+module = clock   test.par [all] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test4]  test.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test4]   test.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   test.par [all] %apsim%/Model/chickpea.xml [standard]
+
+[APSIM.test5_long array]
+title=Test long array reporting
+module = clock   test.par [test5] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test5] test.par[test5out]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test5]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(lablab)   test.par [test5] %apsim%/Model/lablab.xml [standard]
+
+
+
+[APSIM.test6]
+title=Test report variables 1
+module = clock   test.par [test5] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test6]
+module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test5]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(lablab)   test.par [test5] %apsim%/Model/lablab.xml [standard]
+
+[APSIM.test6_grain_hi]
+title=Test report variables 1
+module = clock   test.par [test5] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test6_grain_hi]
+module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test5]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(lablab)   test.par [test5] %apsim%/Model/lablab.xml [standard]
+
+[APSIM.test6_grain_grno]
+title=Test report variables 1
+module = clock   test.par [test5] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test6_grain_grno]
+module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[wheat]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(wheat)   test.par [test5] %apsim%/Model/wheat.xml [standard]
+
+
+
+[APSIM.test7]
+title=Test report variables 2
+module = clock   test.par [test5] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test7]
+module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[test5]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(lablab)   test.par [test5] %apsim%/Model/lablab.xml [standard]
+
+
+[APSIM.test8]
+title=Test report variables 3
+module = clock   test.par [test5] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test8]
+module = input(met) %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[wheat]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(wheat)   test.par [sample] %apsim%/Model/wheat.xml [standard]
+
+
+[APSIM.test9_missingLL]
+title=Test missing LL
+module = clock   test.par [all] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test9_missingLL]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   test.par [test9_missingLL] %apsim%/Model/chickpea.xml [standard]
+
+[APSIM.test9_missingKL]
+title=Test missing KL
+module = clock   test.par [all] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test9_missingKL]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   test.par [test9_missingKL] %apsim%/Model/chickpea.xml [standard]
+
+[APSIM.test9_missingXF]
+title=Test missing XF
+module = clock   test.par [all] %apsim%/Model/clock.xml [standard]
+module = report     test.par[test9_missingXF]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    test.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(chickpea)   test.par [test9_missingXF] %apsim%/Model/chickpea.xml [standard]
+

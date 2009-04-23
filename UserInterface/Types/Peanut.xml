@@ -1,0 +1,40 @@
+   <peanut>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\peanut.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Peanut science documentation">../apsim/peanut/docs/peanut_science.htm</Documentation>
+      <Documentation name="Generic plant" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+      <class    name="plant"/>
+      <cultivar name="early_bunch"/>
+      <cultivar name="mccubbin"/>
+      <cultivar name="chico"/>
+      <cultivar name="virginia_bunch"/>
+      <cultivar name="nc7"/>
+      <cultivar name="streeton"/>
+      <cultivar name="vb97"/>
+      <cultivar name="condor"/>
+      <cultivar name="florunner"/>
+      <cultivar name="TMV_2"/>
+      <cultivar name="SO95"/>
+      <variables link="%apsim%\Documentation\ModelInfo\peanut.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\peanut.xml"/>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Plant.dll</dll>
+         <ini>%apsim%\Model\Peanut.xml</ini>
+         <calldll>
+            <class>Actions.SoilActions</class>
+            <method>WriteCropSim</method>
+         </calldll>
+      </ApsimToSim>
+   </peanut>

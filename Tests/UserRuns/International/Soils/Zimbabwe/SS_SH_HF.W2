@@ -1,0 +1,95 @@
+!Title = Shallow Sand - high carbon, (PAWC = 59mm, 1.0m)
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+[run%.sorg.parameters]
+
+ll =#LL
+kl =  0.07    0.07    0.07    0.07    0.07    0.07   !JH 0.04   ()
+xf =  1.00    1.00    1.00    1.00    1.00    1.00   !JH 1.00   ()
+
+
+[run%.cowpea.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040 !JH  0.030  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000 !JH  1.000  () ! root exploration factor
+
+[run%.maize.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040 !JH  0.030  () ! rate of soil water extraction
+xf  =  1.0     1.0     1.0     1.0     1.0     1.0   !JH  1.0    ()
+
+[run%.mucuna.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040 !JH  0.030  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000 !JH  1.000  () ! root exploration factor
+
+[run%.peanut.parameters]
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040 !JH  0.030  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000 !JH  1.000  () ! root exploration factor
+
+[run%.pigeonp.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040 !JH  0.030  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000 !JH  1.000  () ! root exploration factor
+
+[run%.soybean.parameters]
+
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040 !JH  0.030   () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000 !JH  1.000   () ! root exploration factor
+
+
+
+[run%.soilwat2.parameters]
+
+   max_evap        = 10        (mm)   ! maximum evaporation.
+   runoff_filename = blank           !if blank, runoff predicted using CN2
+   cona            = $cona      ()     ! stage 2 evap coef.
+   diffus_const    = 250.0    ()     !(?)   ! coeffs for rate of water movement by diffusion
+   diffus_slope    =  22.0    ()     !(?)   !     "
+   u               =  $uritch     (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            =  0.20    ()     ! bare soil albedo
+
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        =  $cn2    ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+  ! layer       1       2       3       4       5       6
+dlayer =      150.0   150.0   150.0   150.0   150.0   250.0 (mm)   ! layer depth mm soil
+air_dry =     0.03    0.07    0.09    0.09    0.09    0.09  ()
+ll15 =        0.04    0.07    0.13    0.13    0.18    0.22  ()
+dul =         0.14    0.15    0.20    0.20    0.22    0.24  ()
+! sw  =         0.14    0.15    0.20    0.20    0.22    0.24  ()
+sat =         0.44    0.45    0.45    0.40    0.40    0.38  ()
+swcon =       0.7     0.7     0.7     0.7     0.7     0.7   ()   ! soil conductivity
+bd =          1.431   1.420   1.418   1.546   1.551   1.61  ()   ! bulk density gm dry soil/cc moist soil
+
+[*variables]
+
+   $cona = "Cona : " 3.5 real
+   $uritch = "Uritch : " 8 real
+   $cn2 = "Runoff curve number for BARE soil : " 85.0 real
+

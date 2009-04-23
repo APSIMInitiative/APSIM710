@@ -1,0 +1,1196 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Continuous Maize Bimodal
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component "Sow using a variable rule with intercropping" = %apsim%\Model\Manager.dll
+   Component "Sow using a variable rule with intercropping{2}" = %apsim%\Model\Manager.dll
+   Component "Output at harvesting for intercropping" = %apsim%\Model\Manager.dll
+   Component "Harvesting rule for intercropping" = %apsim%\Model\Manager.dll
+   Component "Remove all residues on a fixed date" = %apsim%\Model\Manager.dll
+   Component "Remove all residues on a fixed date{2}" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "maize" = %apsim%\Model\Maize.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/06/1985
+     Simulation end date   =  1/05/1989
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        esw
+        day
+        year
+        yield
+        stover
+        biomass
+        swdef_expan
+        swdef_photo
+        nfact_expan
+        nfact_photo
+        grain_no
+        no3()
+
+     Output file = Continuous Maize Bimodal.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sow using a variable rule with intercropping Initialisation -----------
+     Manager rules:
+     
+     SECTION:- init
+              next = 1
+              crop_in = 0
+              blank = 'fallow'
+              next_crop = blank
+              crop_current = blank
+              crop_current1 = blank
+              crop_current2 = blank
+              crop_sow = blank
+              ready_for_next = 1
+              ready_to_manure_pre_sow = 0
+              days_last_year = 365
+              manure_day_pre_sow = 0
+              ready_to_till_pre_sow = 0
+              till_day_pre_sow = 0
+              days_after_weed_kill = 0
+              ready_to_fert_pre_sow = 0
+              wd_sow_opp_num = 0
+              wht_sow_opp_num = 0
+              wht_sow_opp_days = 0
+              days_this_year = 0
+     
+     SECTION:- end_of_day
+              if (date_within('10-mar, 01-may') = 1) then
+              else
+     wht_sow_opp_num = 0
+     wht_sow_opp_days = 0
+              endif
+     
+     SECTION:- process
+              if (next_crop = 'maize' or next_crop = blank or 'no' = 'yes') then
+     if (0 > 0) then
+        manure_day_pre_sow = date('10-mar') - 30
+        if (manure_day_pre_sow < today) then
+           manure_day_pre_sow = days_this_year + manure_day_pre_sow
+        endif
+        if (today = manure_day_pre_sow) then
+           ready_to_manure_pre_sow = 1
+        endif
+        if (crop_in = 0 and ready_to_manure_pre_sow = 1) then
+           'surface organic matter' add_surfaceom type=manure, name=manure, mass=0, cnr=25, cpr=50
+           ready_to_manure_pre_sow = 0
+           manure_day_pre_sow = 0
+        endif
+     endif
+     if (0 > 0 or 0 > 0 ) then
+        fert_day_pre_sow = date('10-mar') - 30
+        if (fert_day_pre_sow < today) then
+           fert_day_pre_sow = days_this_year + fert_day_pre_sow
+        endif
+        if (today = fert_day_pre_sow) then
+           ready_to_fert_pre_sow = 1
+        endif
+        if (crop_in = 0 and ready_to_fert_pre_sow = 1) then
+           if (0 > 0) then
+              n_deficit = 0 - (no3(1) + nh4(1) + no3(2) + nh4(2) + no3(3) + nh4(3))
+              if (n_deficit < 0) then
+                 n_deficit = 0
+              else
+                 fertiliser apply amount = n_deficit (kg/ha), depth = 50 (mm), type = urea_n ()
+              endif
+           else
+              n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+              if (n_topsoil > 1000) then
+              else
+                 fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
+              endif
+           endif
+           ready_to_fert_pre_sow = 0
+           fert_day_pre_sow = 0
+        endif
+     endif
+     if ( 0 > 0) then
+        till_day_pre_sow = date('10-mar') - 0
+        if (till_day_pre_sow < today) then
+           till_day_pre_sow = days_this_year + till_day_pre_sow
+        endif
+        if (today = till_day_pre_sow) then
+           ready_to_till_pre_sow = 1
+        endif
+        if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
+         if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
+           if (weed.plant_status <> 'out') then
+                 weed harvest, remove=0
+                 weed kill_crop
+                 weed end_crop
+                 days_after_weed_kill = 0
+                crop_in = crop_in - 1
+                if (crop_current = 'weed') then
+                    crop_current = crop_current1
+                    crop_current1 = crop_current2
+                    crop_current2 = blank
+                 elseif (crop_current1 = 'weed') then
+                    crop_current1 = crop_current2
+                    crop_current2 = blank
+                 elseif (crop_current2 = 'weed') then
+                    crop_current2 = blank
+                 endif
+           endif
+          endif
+           if ('disc' = 'user_defined') then
+               'surface organic matter' tillage type = disc, f_incorp = 1 (), tillage_depth = 100
+               'soil water' type = disc, cn_red = 0, cn_rain = 0
+           else
+               'surface organic matter' tillage type = disc ()
+               'soil water' type = user_defined
+           endif
+           ready_to_till_pre_sow = 0
+           till_day_pre_sow = 0
+        endif
+     endif
+     if (today = date('01-may')) then
+        if ('no' = 'no') then
+           ready_for_next = 1
+        endif
+     endif
+     if (wht_sow_opp_num > 0) then
+        wht_sow_opp_days = wht_sow_opp_days + 1
+     else
+     endif
+              if (crop_in = 0 or ('sole' = 'intercrop'
+      and maize.plant_status = 'out')) then
+        if (date_within('10-mar, 01-may') = 1) then
+           crop_sow = 'waiting'
+           surface_moist = (sw(1) - ll15(1)) / (dul(1)- ll15(1))
+           if ((rain[8] >= 40  and  esw >= 30 and
+                 (surface_moist <= 2 and surface_moist >= 0)) or
+               ('no' = 'yes' and today = date('01-may'))) then
+              if (wht_sow_opp_days >= 8 or wht_sow_opp_num = 0) then
+                 wht_sow_opp_num = wht_sow_opp_num + 1
+                 wht_sow_opp_days = 0
+              endif
+              if ((wht_sow_opp_num >= 1) or ('no' = 'yes' and today = date('01-may')) then
+                 if ('maize' = 'sorghum') then
+                    maize sow plants =2, sowing_depth = 30, cultivar = katumani, row_spacing = 1, tiller_no_fertile = 1 (), skip = solid
+                 else
+                   maize sow cultivar = katumani, plants = 2 (plants/m2), sowing_depth = 30, row_spacing = 1
+                 endif
+                 crop_in = crop_in + 1
+                 if ('no' = 'no') then
+                    ready_for_next = 1
+                 endif
+                 crop_current2 = crop_current1
+                 crop_current1 = crop_current
+                 crop_current = 'maize'
+                 crop_sow = 'maize'
+                 ready_to_manure_pre_sow = 0
+                 if (0 > 0) then
+                    fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
+                 endif
+                 if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
+                    if (weed.plant_status <> 'out' and 1 > 0) then
+                       weed kill_crop plants_kill_fraction = 1
+                       if (1 = 1.0) then
+                          weed end_crop
+                          days_after_weed_kill = 0
+                       else
+                       endif
+                       if (1 = 1.0) then
+                             crop_in = crop_in - 1
+                            if (crop_current = 'weed') then
+                                crop_current = crop_current1
+                                crop_current1 = crop_current2
+                                crop_current2 = blank
+                             elseif (crop_current1 = 'weed') then
+                                crop_current1 = crop_current2
+                                crop_current2 = blank
+                             elseif (crop_current2 = 'weed') then
+                                crop_current2 = blank
+                             endif
+                       endif
+                    endif
+                 endif
+                 if ('user_defined' = 'user_defined') then
+                     'surface organic matter' tillage type = user_defined, f_incorp = 1 (), tillage_depth = 150
+                     'soil water' type = user_defined, cn_red = 0, cn_rain = 0
+                 else
+                     'surface organic matter' tillage type = user_defined ()
+                     'soil water' type = user_defined
+                 endif
+              else
+              endif
+           endif
+        endif
+     endif
+              endif
+              if (0 > 0.0) then
+     if (maize.daysaftersowing = 35) then
+        fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type =  nh4no3 ()
+     else
+     endif
+              else
+              endif
+     END of rules
+     
+     Manager creating a new local real variable : next = 1.00000
+     Manager creating a new local real variable : crop_in = 0.00000
+     Manager creating a new local string variable : blank = fallow
+     Manager creating a new local string variable : next_crop = fallow
+     Manager creating a new local string variable : crop_current = fallow
+     Manager creating a new local string variable : crop_current1 = fallow
+     Manager creating a new local string variable : crop_current2 = fallow
+     Manager creating a new local string variable : crop_sow = fallow
+     Manager creating a new local real variable : ready_for_next = 1.00000
+     Manager creating a new local real variable : ready_to_manure_pre_sow = 0.00000
+     Manager creating a new local real variable : days_last_year = 365.00000
+     Manager creating a new local real variable : manure_day_pre_sow = 0.00000
+     Manager creating a new local real variable : ready_to_till_pre_sow = 0.00000
+     Manager creating a new local real variable : till_day_pre_sow = 0.00000
+     Manager creating a new local real variable : days_after_weed_kill = 0.00000
+     Manager creating a new local real variable : ready_to_fert_pre_sow = 0.00000
+     Manager creating a new local real variable : wd_sow_opp_num = 0.00000
+     Manager creating a new local real variable : wht_sow_opp_num = 0.00000
+     Manager creating a new local real variable : wht_sow_opp_days = 0.00000
+     Manager creating a new local real variable : days_this_year = 0.00000
+
+------- Sow using a variable rule with intercropping{2} Initialisation --------
+     Manager rules:
+     
+     SECTION:- init
+              next = 1
+              crop_in = 0
+              blank = 'fallow'
+              next_crop = blank
+              crop_current = blank
+              crop_current1 = blank
+              crop_current2 = blank
+              crop_sow = blank
+              ready_for_next = 1
+              ready_to_manure_pre_sow = 0
+              days_last_year = 365
+              manure_day_pre_sow = 0
+              ready_to_till_pre_sow = 0
+              till_day_pre_sow = 0
+              days_after_weed_kill = 0
+     
+     SECTION:- end_of_day
+              if (date_within('10-oct, 20-nov') = 1) then
+              else
+     wht_sow_opp_num = 0
+     wht_sow_opp_days = 0
+              endif
+     
+     SECTION:- process
+              if (next_crop = 'maize' or next_crop = blank or 'no' = 'yes') then
+     if (0 > 0) then
+        manure_day_pre_sow = date('10-oct') - 30
+        if (manure_day_pre_sow < today) then
+           manure_day_pre_sow = days_this_year + manure_day_pre_sow
+        endif
+        if (today = manure_day_pre_sow) then
+           ready_to_manure_pre_sow = 1
+        endif
+        if (crop_in = 0 and ready_to_manure_pre_sow = 1) then
+           'surface organic matter' add_surfaceom type=manure, name=manure, mass=0, cnr=25, cpr=50
+           ready_to_manure_pre_sow = 0
+           manure_day_pre_sow = 0
+        endif
+     endif
+     if (0 > 0 or 0 > 0 ) then
+        fert_day_pre_sow = date('10-oct') - 30
+        if (fert_day_pre_sow < today) then
+           fert_day_pre_sow = days_this_year + fert_day_pre_sow
+        endif
+        if (today = fert_day_pre_sow) then
+           ready_to_fert_pre_sow = 1
+        endif
+        if (crop_in = 0 and ready_to_fert_pre_sow = 1) then
+           if (0 > 0) then
+              n_deficit = 0 - (no3(1) + nh4(1) + no3(2) + nh4(2) + no3(3) + nh4(3))
+              if (n_deficit < 0) then
+                 n_deficit = 0
+              else
+                 fertiliser apply amount = n_deficit (kg/ha), depth = 50 (mm), type = urea_n ()
+              endif
+           else
+              n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+              if (n_topsoil > 1000) then
+              else
+                 fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
+              endif
+           endif
+           ready_to_fert_pre_sow = 0
+           fert_day_pre_sow = 0
+        endif
+     endif
+     if ( 0 > 0) then
+        till_day_pre_sow = date('10-oct') - 0
+        if (till_day_pre_sow < today) then
+           till_day_pre_sow = days_this_year + till_day_pre_sow
+        endif
+        if (today = till_day_pre_sow) then
+           ready_to_till_pre_sow = 1
+        endif
+        if ((crop_in = 0 or 'no' = 'yes') and (ready_to_till_pre_sow = 1)) then
+         if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
+           if (weed.plant_status <> 'out') then
+                 weed harvest, remove=0.0
+                 weed kill_crop
+                 weed end_crop
+                 days_after_weed_kill = 0
+                crop_in = crop_in - 1
+                if (crop_current = 'weed') then
+                    crop_current = crop_current1
+                    crop_current1 = crop_current2
+                    crop_current2 = blank
+                 elseif (crop_current1 = 'weed') then
+                    crop_current1 = crop_current2
+                    crop_current2 = blank
+                 elseif (crop_current2 = 'weed') then
+                    crop_current2 = blank
+                 endif
+           endif
+          endif
+           if ('disc' = 'user_defined') then
+               'surface organic matter' tillage type = disc, f_incorp = 1 (), tillage_depth = 100
+               'soil water' type = disc, cn_red = 0, cn_rain = 0
+           else
+               'surface organic matter' tillage type = disc ()
+               'soil water' type = user_defined
+           endif
+           ready_to_till_pre_sow = 0
+           till_day_pre_sow = 0
+        endif
+     endif
+     if (today = date('20-nov')) then
+        if ('no' = 'no') then
+           ready_for_next = 1
+        endif
+     endif
+     if (wht_sow_opp_num > 0) then
+        wht_sow_opp_days = wht_sow_opp_days + 1
+     else
+     endif
+              if (crop_in = 0 or ('sole' = 'intercrop'
+      and maize.plant_status = 'out')) then
+        if (date_within('10-oct, 20-nov') = 1) then
+           crop_sow = 'waiting'
+           surface_moist = (sw(1) - ll15(1)) / (dul(1)- ll15(1))
+           if ((rain[8] >= 40  and  esw >= 30 and
+                 (surface_moist <= 2 and surface_moist >= 0)) or
+               ('no' = 'yes' and today = date('20-nov'))) then
+              if (wht_sow_opp_days >= 8 or wht_sow_opp_num = 0) then
+                 wht_sow_opp_num = wht_sow_opp_num + 1
+                 wht_sow_opp_days = 0
+              endif
+              if ((wht_sow_opp_num >= 1) or ('no' = 'yes' and today = date('20-nov')) then
+                 if ('maize' = 'sorghum') then
+                    maize sow plants =2, sowing_depth = 30, cultivar = katumani, row_spacing = 1, tiller_no_fertile = 1 (), skip = solid
+                 else
+                   maize sow cultivar = katumani, plants = 2 (plants/m2), sowing_depth = 30, row_spacing = 1
+                 endif
+                 crop_in = crop_in + 1
+                 if ('no' = 'no') then
+                    ready_for_next = 1
+                 endif
+                 crop_current2 = crop_current1
+                 crop_current1 = crop_current
+                 crop_current = 'maize'
+                 crop_sow = 'maize'
+                 ready_to_manure_pre_sow = 0
+                 if (0 > 0) then
+                    fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n ()
+                 endif
+                 if (crop_current = 'weed' or crop_current1 = 'weed' or crop_current2 = 'weed') then
+                    if (weed.plant_status <> 'out' and 1.0 > 0) then
+                       weed kill_crop plants_kill_fraction = 1.0
+                       if (1.0 = 1.0) then
+                          weed end_crop
+                          days_after_weed_kill = 0
+                       else
+                       endif
+                       if (1.0 = 1.0) then
+                             crop_in = crop_in - 1
+                            if (crop_current = 'weed') then
+                                crop_current = crop_current1
+                                crop_current1 = crop_current2
+                                crop_current2 = blank
+                             elseif (crop_current1 = 'weed') then
+                                crop_current1 = crop_current2
+                                crop_current2 = blank
+                             elseif (crop_current2 = 'weed') then
+                                crop_current2 = blank
+                             endif
+                       endif
+                    endif
+                 endif
+                 if ('user_defined' = 'user_defined') then
+                     'surface organic matter' tillage type = user_defined, f_incorp = 1 (), tillage_depth = 150
+                     'soil water' type = user_defined, cn_red = 0, cn_rain = 0
+                 else
+                     'surface organic matter' tillage type = user_defined ()
+                     'soil water' type = user_defined
+                 endif
+              else
+              endif
+           endif
+        endif
+     endif
+              endif
+              if (27 > 0.0) then
+     if (maize.daysaftersowing = 35) then
+        fertiliser apply amount = 27 (kg/ha), depth = 50 (mm), type =  nh4no3 ()
+     else
+     endif
+              else
+              endif
+     END of rules
+     
+
+------- Output at harvesting for intercropping Initialisation -----------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+              if (maize_to_harvest = 1) then
+     'outputfile' do_output
+              endif
+     END of rules
+     
+
+------- Harvesting rule for intercropping Initialisation ----------------------
+     Manager rules:
+     
+     SECTION:- init
+               maize_to_harvest = 0
+     
+     SECTION:- end_of_day
+              if (maize_to_harvest = 1) then
+     maize harvest, remove=0.95
+     maize kill_crop
+     maize end_crop
+           crop_in = crop_in - 1
+     maize_to_harvest = 0
+     fert_tot = 0
+     sow_year = 0
+     if (crop_current = 'maize') then
+        crop_current = crop_current1
+        crop_current1 = crop_current2
+        crop_current2 = blank
+     elseif (crop_current1 = 'maize') then
+        crop_current1 = crop_current2
+        crop_current2 = blank
+     elseif (crop_current2 = 'maize') then
+        crop_current2 = blank
+     endif
+              endif
+              if (maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead') then
+     maize_to_harvest = 1
+              endif
+     END of rules
+     
+     Manager creating a new local real variable : maize_to_harvest = 0.00000
+
+------- Remove all residues on a fixed date Initialisation --------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if today = date('1-sep') then
+     'surface organic matter' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
+              endif
+     END of rules
+     
+
+------- Remove all residues on a fixed date{2} Initialisation -----------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if today = date('1-may') then
+     'surface organic matter' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
+              endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.110  0.150  0.280  0.320  0.280  1.280  0.762  0.500
+          150.-  300.  0.120  0.150  0.280  0.320  0.280  1.270  0.190  0.500
+          300.-  600.  0.170  0.170  0.285  0.340  0.176  1.340  0.048  0.500
+          600.-  900.  0.170  0.170  0.270  0.330  0.170  1.330  0.000  0.300
+          900.- 1200.  0.170  0.170  0.270  0.330  0.170  1.310  0.000  0.300
+         1200.- 1500.  0.170  0.170  0.270  0.330  0.170  1.310  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      22.50      19.50      19.50       6.00
+          150.-  300.      22.50      19.50      19.50       6.00
+          300.-  600.      51.00       1.80      34.50      16.50
+          600.-  900.      51.00       0.00      30.00      18.00
+          900.- 1200.      51.00       0.00      30.00      18.00
+         1200.- 1500.      51.00       0.00      30.00      18.00
+          ---------------------------------------------------------
+               Totals     249.00      40.80     163.50      82.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       32.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  0.92    3.84    1.92    0.00
+             2     6.00  0.77    1.90    1.90    0.00
+             3     6.20  0.57    4.02    4.02    0.00
+             4     6.40  0.46    3.99    2.00    0.00
+             5     6.50  0.43    3.93    1.96    0.00
+             6     6.50  0.29    3.93    1.96    0.00
+          ------------------------------------------------
+           Totals               21.61   13.77    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      17490.8  1749.1   173.2    21.6    62.5     1.4
+             2      14614.3  1461.4    54.2     6.8    46.3     1.0
+             3      22891.3  2289.1    22.7     2.8    25.4     0.6
+             4      18352.2  1835.2     1.8     0.2    13.9     0.3
+             5      16897.3  1689.7     1.7     0.2     7.7     0.2
+             6      11395.9  1139.6     1.1     0.1     4.2     0.1
+          ---------------------------------------------------------
+           Totals  101641.8 10164.2   254.7    31.8   160.0     3.6
+          ---------------------------------------------------------
+
+------- maize Initialisation --------------------------------------------------
+      Initialising, V1.0 2000.01.21
+     
+         - Reading constants
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+1 September 1985(Day of year=244), Remove all residues on a fixed date: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1985(Day of year=244), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+10 October 1985(Day of year=283), Sow using a variable rule with intercropping{2}: 
+     Manager creating a new local real variable : surface_moist = 0.72048
+1 May 1986(Day of year=121), Remove all residues on a fixed date{2}: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1986(Day of year=121), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+1 September 1986(Day of year=244), Remove all residues on a fixed date: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1986(Day of year=244), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+14 November 1986(Day of year=318), Sow using a variable rule with intercropping{2}: 
+     Manager sending message :- maize sow  cultivar = katumani, plants = 2 (plants/m2), sowing_depth = 30, row_spacing = 1
+14 November 1986(Day of year=318), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            318   30.0    2.0    1.0    0.0   katumani      0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.080    0.150    1.000
+          150.000    0.080    0.150    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.060    0.170    1.000
+          300.000    0.040    0.170    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = katumani
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  150.00
+         tt_flower_to_maturity    =  660.00
+         head_grain_no_max        =  450.00
+         grain_gth_rate           =   10.50
+         tt_flag_to_flower        =   10.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+14 November 1986(Day of year=318), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =   150.00
+     Manager sending message :- soil water type
+15 November 1986(Day of year=319), maize: 
+      stage    2.0 germination
+17 November 1986(Day of year=321), maize: 
+      stage    3.0 emergence
+                          biomass =          0.4000000E-01   lai =    0.7600000E-03
+                          stover N conc =    4.400000       extractable sw =    12.01178
+27 November 1986(Day of year=331), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =          0.5082049       lai =    0.8431341E-02
+                          stover N conc =    3.432818       extractable sw =    22.91425
+28 November 1986(Day of year=332), maize: 
+      stage    5.0 floral_initiation
+                          biomass =          0.6098032       lai =    0.1057670E-01
+                          stover N conc =    3.319821       extractable sw =    22.38287
+19 December 1986(Day of year=353), Sow using a variable rule with intercropping{2}: 
+     Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
+19 December 1986(Day of year=353), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.00 of ammonium nitrate (nh4no3)
+                                         added at depth   50.00 (layer   1)
+26 December 1986(Day of year=360), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           131.0792       lai =    0.8004397
+                          stover N conc =    2.154297       extractable sw =    64.83161
+27 December 1986(Day of year=361), maize: 
+      stage    7.0 flowering
+                          biomass =           141.4745       lai =    0.7923945
+                          stover N conc =    2.160280       extractable sw =    60.22713
+2 January 1987(Day of year=2), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           199.0034       lai =    0.7818041
+                          stover N conc =    1.997111       extractable sw =    51.12167
+29 January 1987(Day of year=29), maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           384.9868       lai =    0.6156396
+                          stover N conc =    1.318149       extractable sw =    65.99478
+30 January 1987(Day of year=30), maize: 
+      stage   10.0 maturity
+                          biomass =           391.6325       lai =    0.6156396
+                          stover N conc =    1.295261       extractable sw =    60.55098
+31 January 1987(Day of year=31), maize: 
+      stage   11.0 harvest_ripe
+                          biomass =           391.6325       lai =    0.2833962E-02
+                          stover N conc =    1.357426       extractable sw =    56.89125
+1 February 1987(Day of year=32), maize: 
+      stage   11.0 harvest_ripe
+                          biomass =           391.6324       lai =    0.2833962E-02
+                          stover N conc =    1.357426       extractable sw =    55.31267
+1 February 1987(Day of year=32), Harvesting rule for intercropping: 
+     Manager sending message :- maize harvest,  remove = 0.95
+     Manager sending message :- maize kill_crop
+         kill. Standing above-ground dm =  3916.3 (kg/ha)
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =  1376.1
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               3916.32                  450.25
+                          N  (kg/ha) =                 50.02                    4.79
+                          P  (kg/ha) =                  0.00                    0.00
+     
+     Manager creating a new local real variable : fert_tot = 0.00000
+     Manager creating a new local real variable : sow_year = 0.00000
+1 May 1987(Day of year=121), Remove all residues on a fixed date{2}: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1987(Day of year=121), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+1 September 1987(Day of year=244), Remove all residues on a fixed date: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1987(Day of year=244), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+18 October 1987(Day of year=291), Sow using a variable rule with intercropping{2}: 
+     Manager sending message :- maize sow  cultivar = katumani, plants = 2 (plants/m2), sowing_depth = 30, row_spacing = 1
+18 October 1987(Day of year=291), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            291   30.0    2.0    1.0    0.0   katumani      0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.080    0.150    1.000
+          150.000    0.080    0.150    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.060    0.170    1.000
+          300.000    0.040    0.170    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = katumani
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  150.00
+         tt_flower_to_maturity    =  660.00
+         head_grain_no_max        =  450.00
+         grain_gth_rate           =   10.50
+         tt_flag_to_flower        =   10.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+18 October 1987(Day of year=291), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =   150.00
+     Manager sending message :- soil water type
+19 October 1987(Day of year=292), maize: 
+      stage    2.0 germination
+22 October 1987(Day of year=295), maize: 
+      stage    3.0 emergence
+                          biomass =          0.4000000E-01   lai =    0.7600000E-03
+                          stover N conc =    4.400000       extractable sw =    10.97950
+1 November 1987(Day of year=305), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =          0.4496680       lai =    0.7506152E-02
+                          stover N conc =    3.347842       extractable sw =    26.23272
+2 November 1987(Day of year=306), maize: 
+      stage    5.0 floral_initiation
+                          biomass =          0.5513587       lai =    0.9046351E-02
+                          stover N conc =    3.296355       extractable sw =    25.36481
+22 November 1987(Day of year=326), Sow using a variable rule with intercropping{2}: 
+     Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
+22 November 1987(Day of year=326), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.00 of ammonium nitrate (nh4no3)
+                                         added at depth   50.00 (layer   1)
+1 December 1987(Day of year=335), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           126.4025       lai =    0.7593120
+                          stover N conc =    2.174167       extractable sw =    88.02792
+2 December 1987(Day of year=336), maize: 
+      stage    7.0 flowering
+                          biomass =           133.1751       lai =    0.7585950
+                          stover N conc =    2.151226       extractable sw =    92.69038
+9 December 1987(Day of year=343), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           209.8633       lai =    0.7519074
+                          stover N conc =    1.994010       extractable sw =    62.53695
+6 January 1988(Day of year=6), maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           407.9604       lai =    0.6037546
+                          stover N conc =    1.337599       extractable sw =    11.90528
+7 January 1988(Day of year=7), maize: 
+      stage   10.0 maturity
+                          biomass =           410.7557       lai =    0.5848854
+                          stover N conc =    1.330174       extractable sw =    10.33523
+8 January 1988(Day of year=8), maize: 
+      stage   11.0 harvest_ripe
+                          biomass =           410.7557       lai =    0.7597804E-03
+                          stover N conc =    1.392059       extractable sw =    9.640280
+9 January 1988(Day of year=9), maize: 
+      stage   11.0 harvest_ripe
+                          biomass =           410.7557       lai =    0.7597804E-03
+                          stover N conc =    1.392059       extractable sw =    9.629089
+9 January 1988(Day of year=9), Harvesting rule for intercropping: 
+     Manager sending message :- maize harvest,  remove = 0.95
+     Manager sending message :- maize kill_crop
+         kill. Standing above-ground dm =  4107.6 (kg/ha)
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =  1900.5
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               4107.56                  443.41
+                          N  (kg/ha) =                 53.91                    4.72
+                          P  (kg/ha) =                  0.00                    0.00
+     
+2 April 1988(Day of year=93), Sow using a variable rule with intercropping: 
+     Manager sending message :- maize sow  cultivar = katumani, plants = 2 (plants/m2), sowing_depth = 30, row_spacing = 1
+2 April 1988(Day of year=93), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+             93   30.0    2.0    1.0    0.0   katumani      0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.080    0.150    1.000
+          150.000    0.080    0.150    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.060    0.170    1.000
+          300.000    0.040    0.170    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = katumani
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  150.00
+         tt_flower_to_maturity    =  660.00
+         head_grain_no_max        =  450.00
+         grain_gth_rate           =   10.50
+         tt_flag_to_flower        =   10.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+2 April 1988(Day of year=93), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =   150.00
+     Manager sending message :- soil water type
+3 April 1988(Day of year=94), maize: 
+      stage    2.0 germination
+5 April 1988(Day of year=96), maize: 
+      stage    3.0 emergence
+                          biomass =          0.4000000E-01   lai =    0.7600000E-03
+                          stover N conc =    4.400000       extractable sw =    18.95484
+16 April 1988(Day of year=107), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =          0.3091589       lai =    0.8452490E-02
+                          stover N conc =    3.293811       extractable sw =    31.65172
+17 April 1988(Day of year=108), maize: 
+      stage    5.0 floral_initiation
+                          biomass =          0.3989686       lai =    0.9874811E-02
+                          stover N conc =    3.186431       extractable sw =    30.30176
+1 May 1988(Day of year=122), Remove all residues on a fixed date{2}: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1988(Day of year=122), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+7 May 1988(Day of year=128), Sow using a variable rule with intercropping{2}: 
+     Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
+7 May 1988(Day of year=128), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.00 of ammonium nitrate (nh4no3)
+                                         added at depth   50.00 (layer   1)
+27 May 1988(Day of year=148), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           95.43354       lai =    0.7385346
+                          stover N conc =    2.183121       extractable sw =    137.6776
+28 May 1988(Day of year=149), maize: 
+      stage    7.0 flowering
+                          biomass =           98.80405       lai =    0.7381516
+                          stover N conc =    2.183615       extractable sw =    137.3011
+11 June 1988(Day of year=163), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           148.3612       lai =    0.7324482
+                          stover N conc =    2.023602       extractable sw =    135.1254
+21 August 1988(Day of year=234), maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           324.8846       lai =    0.3711926
+                          stover N conc =    1.268133       extractable sw =    125.8561
+22 August 1988(Day of year=235), maize: 
+      stage   10.0 maturity
+                          biomass =           325.7815       lai =    0.3711926
+                          stover N conc =    1.264505       extractable sw =    124.7281
+23 August 1988(Day of year=236), maize: 
+      stage   11.0 harvest_ripe
+                          biomass =           325.7815       lai =    0.7600784E-03
+                          stover N conc =    1.295235       extractable sw =    147.1642
+24 August 1988(Day of year=237), maize: 
+      stage   11.0 harvest_ripe
+                          biomass =           325.7815       lai =    0.7600784E-03
+                          stover N conc =    1.295235       extractable sw =    147.5213
+24 August 1988(Day of year=237), Harvesting rule for intercropping: 
+     Manager sending message :- maize harvest,  remove = 0.95
+     Manager sending message :- maize kill_crop
+         kill. Standing above-ground dm =  3257.8 (kg/ha)
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =  1082.8
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               3257.82                  296.36
+                          N  (kg/ha) =                 40.26                    3.17
+                          P  (kg/ha) =                  0.00                    0.00
+     
+1 September 1988(Day of year=245), Remove all residues on a fixed date: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1988(Day of year=245), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+19 March 1989(Day of year=78), Sow using a variable rule with intercropping: 
+     Manager sending message :- maize sow  cultivar = katumani, plants = 2 (plants/m2), sowing_depth = 30, row_spacing = 1
+19 March 1989(Day of year=78), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+             78   30.0    2.0    1.0    0.0   katumani      0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.080    0.150    1.000
+          150.000    0.080    0.150    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.080    0.170    1.000
+          300.000    0.060    0.170    1.000
+          300.000    0.040    0.170    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = katumani
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  150.00
+         tt_flower_to_maturity    =  660.00
+         head_grain_no_max        =  450.00
+         grain_gth_rate           =   10.50
+         tt_flag_to_flower        =   10.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+19 March 1989(Day of year=78), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =   150.00
+     Manager sending message :- soil water type
+20 March 1989(Day of year=79), maize: 
+      stage    2.0 germination
+21 March 1989(Day of year=80), maize: 
+      stage    3.0 emergence
+                          biomass =          0.4000000E-01   lai =    0.7600000E-03
+                          stover N conc =    4.400000       extractable sw =    13.22123
+31 March 1989(Day of year=90), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =          0.2977012       lai =    0.8950349E-02
+                          stover N conc =    3.468627       extractable sw =    42.44399
+1 April 1989(Day of year=91), maize: 
+      stage    5.0 floral_initiation
+                          biomass =          0.3820415       lai =    0.1250203E-01
+                          stover N conc =    2.679543       extractable sw =    37.63718
+23 April 1989(Day of year=113), Sow using a variable rule with intercropping{2}: 
+     Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
+23 April 1989(Day of year=113), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.00 of ammonium nitrate (nh4no3)
+                                         added at depth   50.00 (layer   1)
+1 May 1989(Day of year=121), Remove all residues on a fixed date{2}: 
+     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1989(Day of year=121), surface organic matter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+1 May 1989(Day of year=121), clock: 
+     Simulation is terminating due to end criteria being met.

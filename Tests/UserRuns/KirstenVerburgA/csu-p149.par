@@ -1,0 +1,824 @@
+!********** CLOCK MODULE **********
+[all.clock.parameters]
+start_date = 15/12/1992     ! dd/mm/yyyy
+end_date = 31/03/1998     ! dd/mm/yyyy
+
+!********** ACCUM MODULE **********
+[all.accum.parameters]
+! Accumulate rainfall for 2 days.
+! We can then use this variable in manager
+
+accum_variables = rain[2]
+
+!********** REPORT MODULE **********
+[csu-S.report1.parameters]
+outputfile = csu-S09.out
+
+[cropS.report2.parameters]
+outputfile = cropS09.out
+
+[profileS.report3.parameters]
+outputfile = profS09.out
+
+[dailyS.report4.parameters]
+outputfile = dailyS09.out
+
+[neutronS.report5.parameters]
+outputfile = neutS09.out
+
+[bromideS.report6.parameters]
+outputfile = bromS09.out
+
+[csu-N.report1.parameters]
+outputfile = csu-N09.out
+
+[cropN.report2.parameters]
+outputfile = cropN09.out
+
+[profileN.report3.parameters]
+outputfile = profN09.out
+
+[dailyN.report4.parameters]
+outputfile = dailyN09.out
+
+[neutronN.report5.parameters]
+outputfile = neutN09.out
+
+[bromideN.report6.parameters]
+outputfile  =  bromN09.out
+
+!********** MANAGER MODULE **********
+[all.manager.init]
+!selected terms to be calculated in the manager
+period       = 0
+cum_drain_25 = 0
+cum_drain_90 = 0
+cum_leach_25 = 0
+cum_leach_90 = 0
+cum_rain     = 0
+cum_ET       = 0
+cum_drain    = 0
+cum_drain180 = 0
+
+no3_025      = 0
+no3_2590     = 0
+nh4_025      = 0
+nh4_2590     = 0
+sw_dep_025   = 0
+sw_dep_2590  = 0
+sw_dep_90180 = 0
+
+no3_030      = 0
+no3_3080     = 0
+nh4_030      = 0
+nh4_3080     = 0
+sw_dep_030   = 0
+sw_dep_3080  = 0
+
+cum_nmin010  = 0
+cum_nmin1020 = 0
+cum_nmin2030 = 0
+sw_dep_010   = 0
+nh4_010      = 0
+no3_010      = 0
+fom_n_010    = 0
+biom_n_010   = 0
+hum_n_010    = 0
+
+print_flag   = 0
+zero_flag    = 0
+crop_in      = 0
+cult         = 0
+
+cum_E        = 0
+cum_T        = 0
+
+[all.manager.start_of_day]
+!resetting of cumulative water balance terms and stages
+if (year = 1993 and (day = 91 or day = 145 or day = 330)) then
+   zero_flag = 1
+endif
+if (year = 1994 and (day = 152 or day = 335)) then
+   zero_flag = 1
+endif
+if (year = 1995 and (day = 128 or day = 335)) then
+   zero_flag = 1
+endif
+if (year = 1996 and (day = 121 or day = 336)) then
+   zero_flag = 1
+endif
+if (year = 1997 and (day = 126 or day = 335)) then
+   zero_flag = 1
+endif
+if (year = 1998 and (day = 121 or day = 310)) then
+   zero_flag = 1
+endif
+if (year = 1999 and (day = 141 or day = 343)) then
+   zero_flag = 1
+endif
+if (year = 2000 and (day = 132))  then
+   zero_flag = 1
+endif
+
+if (zero_flag = 1) then
+   period = period + 1
+   cum_drain_25 = 0
+   cum_drain_90 = 0
+   cum_leach_25 = 0
+   cum_leach_90 = 0
+   cum_rain     = 0
+   cum_ET       = 0
+   cum_drain    = 0
+   cum_drain180 = 0
+   cum_E        = 0
+   cum_T        = 0
+   zero_flag    = 0
+endif
+
+if ((year = 1993 and day = 121) or
+    (year = 1994 and day = 145) or
+    (year = 1995 and day = 129) or
+    (year = 1996 and day = 22) or
+    (year = 1997 and day = 8)) then
+   cum_nmin010  = 0
+   cum_nmin1020 = 0
+   cum_nmin2030 = 0
+endif
+
+!Temporary assumption about cut at flowering
+!if (lucerne.StageName = 'flowering') then
+!   lucerne harvest height = 50 (mm), remove = 0.95
+!endif
+
+if (year = 1992 and day = 350) then
+   SoilN IncorpFOM Amount=500 2500 1500 1000 500 300 200 150 50 10 0 0 0 0 0 0 0 0 0 0 (kg/ha), CNR=50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 ()
+endif
+
+[csu-S.manager.start_of_day]
+! bromide additions
+if (year = 1993 and day = 174) then
+   solute set brA = 0 79.89 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+endif
+
+if (year = 1993 and day = 202) then
+   solute set brB = 0 79.89 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+endif
+
+if (year = 1993 and day = 279) then
+   solute set brC = 0 79.89 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+endif
+
+if (year = 1993 and day = 342) then
+   solute set brD = 0 79.89 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+endif
+
+[all.manager.end_of_day]
+!water balance terms
+!drainage and leaching strictly at 100 cm(?)
+cum_drain_25 = cum_drain_25 + SWIM2.flow(4)
+cum_drain_90 = cum_drain_90 + SWIM2.flow(9)
+cum_leach_25 = cum_leach_25 + SWIM2.flow_no3(4)
+cum_leach_90 = cum_leach_90 + SWIM2.flow_no3(9)
+cum_rain     = cum_rain + met.rain
+cum_ET       = cum_ET + SWIM2.es + weed.ep + lucerne.ep + canola.ep
+cum_drain    = cum_drain + SWIM2.drain
+cum_drain180 = cum_drain180 + SWIM2.flow(13)
+cum_E        = cum_E + SWIM2.es
+cum_T        = cum_T + weed.ep + lucerne.ep + canola.ep
+
+!summary terms
+no3_025      = no3(1) + no3(2) + no3(3) + no3(4)
+no3_2590     = no3(5) + no3(6) + no3(7) + no3(8) + (0.5 * no3(9))
+nh4_025      = nh4(1) + nh4(2) + nh4(3) + nh4(4)
+nh4_2590     = nh4(5) + nh4(6) + nh4(7) + nh4(8) + (0.5 * nh4(9))
+sw_dep_025   = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4)
+sw_dep_2590  = sw_dep(5) + sw_dep(6) + sw_dep(7) + sw_dep(8) + (0.5 * sw_dep(9))
+sw_dep_90180 = (0.5 * sw_dep(9)) + sw_dep(10) + sw_dep(11) + sw_dep(12) + sw_dep(13)
+
+no3_030      = no3(1) + no3(2) + no3(3) + no3(4) + (0.5 * no3(5))
+no3_3080     = (0.5 * no3(5)) + no3(6) + no3(7) + no3(8)
+nh4_030      = nh4(1) + nh4(2) + nh4(3) + nh4(4) + (0.5 * nh4(5))
+nh4_3080     = (0.5 * nh4(5)) + nh4(6) + nh4(7) + nh4(8)
+sw_dep_030   = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + (0.5 * sw_dep(5))
+sw_dep_3080  = (0.5 * sw_dep(5)) + sw_dep(6) + sw_dep(7) + sw_dep(8)
+
+!mineralisation analysis
+cum_nmin010  = cum_nmin010 + dlt_n_min(1) + dlt_n_min(2) + (dlt_n_min(3) / 3)
+cum_nmin1020 = cum_nmin1020 + (dlt_n_min(3) / 3) + (dlt_n_min(4) / 2)
+cum_nmin2030 = cum_nmin2030 + (dlt_n_min(4) / 2) + (dlt_n_min(5) / 2)
+sw_dep_010   = sw_dep(1) + sw_dep(2) + (0.5 * sw_dep(3))
+no3_010      = no3(1) + no3(2) + (no3(3) / 3)
+nh4_010      = nh4(1) + nh4(2) + (nh4(3) / 3)
+fom_n_010    = fom_n(1) + fom_n(2) + (fom_n(3) / 3)
+biom_n_010   = biom_n(1) + biom_n(2) + (biom_n(3) / 3)
+hum_n_010    = hum_n(1) + hum_n(2) + (hum_n(3) / 3)
+
+if (year = 1993 and (day = 90 or day = 91 or day = 105 or day = 121 or day = 144 or day = 145 or day = 157)) then
+   print_flag = 1
+endif
+if (year = 1993 and (day = 218 or day = 329 or day = 330 or day = 349)) then
+   print_flag = 1
+endif
+if (year = 1994 and (day = 103 or day = 118 or day = 145 or day = 151 or day = 152 or day = 161)) then
+   print_Flag = 1
+endif
+if (year = 1994 and (day = 334 or day = 335 or day = 348)) then
+   print_flag = 1
+endif
+if (year = 1995 and (day = 32 or day = 127 or day = 128 or day = 129 or day = 154 or day = 334 or day = 335)) then
+   print_flag = 1
+endif
+if (year = 1996 and (day = 22 or day = 120 or day = 121 or day = 335 or day = 336)) then
+   print_flag = 1
+endif
+if (year = 1997 and (day = 8 or day = 125 or day = 126 or day = 265 or day = 270 or day = 334 or day = 335)) then
+   print_flag = 1
+endif
+if (year = 1998 and (day = 120 or day = 121 or day = 124 or day = 309 or day = 310 or day = 317)) then
+   print_flag = 1
+endif
+if (year = 1999 and (day = 140 or day = 141 or day = 342 or day = 343)) then
+   print_flag = 1
+endif
+if (year = 2000 and (day = 90 or day = 105 or day = 131 or day = 132 or day = 327)) then
+   print_flag = 1
+endif
+if ((print_flag = 1) or (report1.days_since_last_report = 14)) then
+   report1 do_end_day_output
+   report2 do_end_day_output
+   print_flag = 0
+endif
+
+report4 do_end_day_output
+
+[weeds.manager.start_of_day]
+if ((day = 361) and (year = 1992)) then
+   weed sow plants = 40, sowing_depth = 40,crop_class = winter_grass, cultivar = early
+   cult = 2
+   crop_in = 1
+endif
+
+if ((crop_in = 0) and (lucerne.plant_status = 'out')) then
+   if (date_within('1-dec, 30-apr') = 1) then
+      ! weeds allowed to germinate
+      if ((date_within('1-dec,28-feb') and (rain[2] >= 25)) or
+          (date_within('1-mar,30-apr') and (rain[2] >= 20))) then
+         weed sow plants = 40, sowing_depth = 40, crop_class = winter_grass, cultivar = early
+         cult = 2
+         crop_in = 1
+      endif
+   endif
+endif
+if ((cult = 2) and ((weed.StageName = 'harvest_ripe') or (today = date('1-may')))) then
+      weed harvest
+      weed end_crop
+      crop_in = 0
+      cult = 0
+endif
+
+!********** OPERATIONS MODULE **********
+[all.Operations.parameters]
+!-------1992 wheat------
+!assumed date for harvest of 1992 crop - profile for root residues
+!350 1992 soiln2 incorp_fom dlt_fom_wt = 500 2500 1500 1000 500 300 200 150 50 10 0 0 0 0 0 0 0 0 0 0 (kg/ha), dlt_fom_cnr = 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 ()
+
+!-------1993 fallow-------
+!tillage
+ 90 1993 surfaceom tillage type = burn_95 ()
+105 1993 surfaceom tillage type = chisel ()
+
+!------1993 wheat-------
+!wheat sown and DAP (17 kg N/ha, 25 kg P/ha) applied on 6/6/93
+157 1993 wheat sow plants = 210, sowing_depth = 40, cultivar = janz
+157 1993 Fertiliser apply amount = 17 (kg/ha), type = nh4_n, depth = 60 (mm)
+!wheat harvest on 15/12/93
+349 1993 wheat harvest
+349 1993 wheat end_crop
+
+!-------1994 fallow-------
+!tillage: stubble burnt 13/4/94, assumed tilled not long after
+103 1994 surfaceom tillage type = burn_95
+118 1994 surfaceom tillage type = chisel ()
+
+!-------1994 lucerne-------
+!lucerne sown on 10/6/94 (plant density 10/m2, after 1/12 5/m2)
+161 1994 lucerne sow cultivar = hunter_river, plants = 100 (/m2), sowing_depth = 30 (mm)
+!no dates for lucerne cuts. Cut at flowering would occur 25/11.
+!with cut at flowering ET matches up to 22/11, but falls away before next 30/11
+!daily ET suggests that drop in ET may starty before cut - 11/11 - try a cut at this date (315)
+!315 1994 lucerne harvest height = 50 (mm), remove = 0.95, plants = 50
+!-------1995 fallow/lucerne-------
+
+!removal of lucerne
+!lucerne ploughed out Feb - but not fully removed - reduce number on that date, remove fully day 120
+ 32 1995 lucerne harvest height = 50 (mm), remove = 0.95, plants = 25
+120 1995 lucerne harvest
+120 1995 lucerne end_crop
+ !120 1995 surfaceom tillage type = chisel ()
+
+!-------1995-97 lucerne-------
+!lucerne direct drilled on 3/6/95 (plant density 30 until 1/12/96, then 15 until 1/12/97, then 10/m2)
+!some uncertainty about date: lys file: 8/5; Dunin et al: 10/5, 29/5)
+154 1995 lucerne sow cultivar = hunter_river, plants = 300 (/m2), sowing_depth = 30 (mm)
+
+!intermediate cuts - removed from lysimeter
+!299 1995 lucerne harvest height = 50 (mm), remove = 0.95, plants = 300
+ 22 1996 lucerne harvest height = 50 (mm), remove = 0.95, plants = 300
+171 1996 lucerne harvest height = 50 (mm), remove = 0.95, plants = 300
+268 1996 lucerne harvest height = 50 (mm), remove = 0.95, plants = 300
+338 1996 lucerne harvest height = 50 (mm), remove = 0.95, plants = 150
+ 64 1997 lucerne harvest height = 50 (mm), remove = 0.95, plants = 150
+164 1997 lucerne harvest height = 50 (mm), remove = 0.95, plants = 150
+175 1997 lucerne harvest height = 50 (mm), remove = 0.95, plants = 150
+
+!-------1997-8 fallow-------
+!need to add grazing and spraying of upcoming lucerne as well as upcoming itself. Maybe need to delay end_crop.
+!lucerne removal
+! Sep spraying, followed by crash grazing - not fully succesful
+!daily ET comparison suggests still lucerne until 23 Feb 1998 (day 54)?
+!daily ET suggests grazing around 15/10/97 (day 288)
+259 1997 lucerne harvest height = 50 (mm), remove = 0.95, plants = 100
+288 1997 lucerne harvest height = 50 (mm), remove = 0.95, plants = 100
+ 54 1998 lucerne harvest
+ 54 1998 lucerne end_crop
+ 56 1998 surfaceom tillage type = graze ()
+!need to add N to compensate for residueN loss
+
+!-------1998 canola-------
+!lysimeters sown on 4/5/98 ; field plots direct drilled on 29/4/98 with 130 kg/ha DAP
+124   1998     canola sow plants = 35, crop_class = triazine, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
+!124   1998     canola sow plants = 35, row_spacing = 180, sowing_depth = 20, cultivar = Karoo
+124   1998     Fertiliser apply amount = 27.3 (kg/ha), type = nh4_n, depth = 40 (mm)
+!canola windrowed on 13/11/98
+!may need to delay harvest for yield purposes - check whether it still uses water or not.
+317 1998 canola harvest
+317 1998 canola end_crop
+
+!-------1999 fallow-------
+!Goal&Roundup on 13/5/99
+
+!-------1999 triticale-------
+!tritiale sown with 120 kg/ha DAP on 21/5/99 (=25 kg N/ha, 28 kg P/ha)
+141 1999 wheat sow plants = 194, depth = 40, cultivar = janz
+141 1999 Fertiliser apply amount = 25 (kg/ha), type = nh4_n, depth = 60 (mm)
+!wheat harvest on 7/12/99 or 9/12/99 - assume 8/12/99
+342 1999 wheat harvest
+
+!-------2000 fallow------
+!tillage - temporary assumptions due to lack of info
+ 90 2000 surfaceom tillage type = burn_95
+105 2000 surfaceom tillage type = chisel ()
+
+!-------2000 lupin-------
+!lupins on lysimeter sown on 11/5/00, days prior in field
+!replace lupins by chickpeas
+
+
+!Reporting dates
+!soil profiles
+!wheat93
+62  1993 report3 do_end_day_output    ! 03-Mar-93
+91  1993 report3 do_end_day_output    ! 01-Apr-93
+110 1993 report3 do_end_day_output    ! 20-Apr-93
+126 1993 report3 do_end_day_output    ! 06-May-93
+140 1993 report3 do_end_day_output    ! 20-May-93
+158 1993 report3 do_end_day_output    ! 07-Jun-93
+167 1993 report3 do_end_day_output    ! 16-Jun-93
+193 1993 report3 do_end_day_output    ! 12-Jul-93
+209 1993 report3 do_end_day_output    ! 28-Jul-93
+216 1993 report3 do_end_day_output    ! 04-Aug-93
+223 1993 report3 do_end_day_output    ! 11-Aug-93
+237 1993 report3 do_end_day_output    ! 25-Aug-93
+252 1993 report3 do_end_day_output    ! 09-Sep-93
+265 1993 report3 do_end_day_output    ! 22-Sep-93
+285 1993 report3 do_end_day_output    ! 12-Oct-93
+299 1993 report3 do_end_day_output    ! 26-Oct-93
+312 1993 report3 do_end_day_output    ! 08-Nov-93
+329 1993 report3 do_end_day_output    ! 25-Nov-93
+21  1994 report3 do_end_day_output    ! 21-Jan-94
+!lucerne94-97
+145 1994 report3 do_end_day_output    ! 25-May-94
+166 1994 report3 do_end_day_output    ! 15-Jun-94
+207 1994 report3 do_end_day_output    ! 26-Jul-94
+222 1994 report3 do_end_day_output    ! 10-Aug-94
+250 1994 report3 do_end_day_output    ! 07-Sep-94
+279 1994 report3 do_end_day_output    ! 06-Oct-94
+312 1994 report3 do_end_day_output    ! 08-Nov-94
+348 1994 report3 do_end_day_output    ! 14-Dec-94
+45  1995 report3 do_end_day_output    ! 14-Feb-95
+129 1995 report3 do_end_day_output    ! 09-May-95
+159 1995 report3 do_end_day_output    ! 08-Jun-95
+181 1995 report3 do_end_day_output    ! 30-Jun-95
+214 1995 report3 do_end_day_output    ! 02-Aug-95
+249 1995 report3 do_end_day_output    ! 06-Sep-95
+283 1995 report3 do_end_day_output    ! 10-Oct-95
+326 1995 report3 do_end_day_output    ! 22-Nov-95
+22  1996 report3 do_end_day_output    ! 22-Jan-96
+65  1996 report3 do_end_day_output    ! 05-Mar-96
+93  1996 report3 do_end_day_output    ! 02-Apr-96
+135 1996 report3 do_end_day_output    ! 14-May-96
+163 1996 report3 do_end_day_output    ! 11-Jun-96
+191 1996 report3 do_end_day_output    ! 09-Jul-96
+227 1996 report3 do_end_day_output    ! 14-Aug-96
+261 1996 report3 do_end_day_output    ! 17-Sep-96
+289 1996 report3 do_end_day_output    ! 15-Oct-96
+318 1996 report3 do_end_day_output    ! 13-Nov-96
+345 1996 report3 do_end_day_output    ! 10-Dec-96
+8   1997 report3 do_end_day_output    ! 08-Jan-97
+163 1997 report3 do_end_day_output    ! 12-Jun-97
+300 1997 report3 do_end_day_output    ! 27-Oct-97
+345 1997 report3 do_end_day_output    ! 11-Dec-97
+!csu98-00
+168 1998 report3 do_end_day_output    ! 17-Jun-98
+308 1998 report3 do_end_day_output    ! 04-Nov-98
+167 1999 report3 do_end_day_output    ! 16-Jun-99
+266 1999 report3 do_end_day_output    ! 23-Sep-99
+
+!neutron probe
+238 1998 report5 do_end_day_output    ! 26-Aug-98
+267 1998 report5 do_end_day_output    ! 24-Sep-98
+286 1998 report5 do_end_day_output    ! 13-Oct-98
+308 1998 report5 do_end_day_output    ! 04-Nov-98
+344 1998 report5 do_end_day_output    ! 10-Dec-98
+34  1999 report5 do_end_day_output    ! 03-Feb-99
+83  1999 report5 do_end_day_output    ! 24-Mar-99
+167 1999 report5 do_end_day_output    ! 16-Jun-99
+196 1999 report5 do_end_day_output    ! 15-Jul-99
+209 1999 report5 do_end_day_output    ! 28-Jul-99
+237 1999 report5 do_end_day_output    ! 25-Aug-99
+258 1999 report5 do_end_day_output    ! 15-Sep-99
+288 1999 report5 do_end_day_output    ! 15-Oct-99
+307 1999 report5 do_end_day_output    ! 03-Nov-99
+323 1999 report5 do_end_day_output    ! 19-Nov-99
+347 1999 report5 do_end_day_output    ! 13-Dec-99
+11  2000 report5 do_end_day_output    ! 11-Jan-00
+42  2000 report5 do_end_day_output    ! 11-Feb-00
+68  2000 report5 do_end_day_output    ! 08-Mar-00
+94  2000 report5 do_end_day_output    ! 03-Apr-00
+110 2000 report5 do_end_day_output    ! 19-Apr-00
+131 2000 report5 do_end_day_output    ! 10-May-00
+165 2000 report5 do_end_day_output    ! 13-Jun-00
+194 2000 report5 do_end_day_output    ! 12-Jul-00
+215 2000 report5 do_end_day_output    ! 02-Aug-00
+242 2000 report5 do_end_day_output    ! 29-Aug-00
+271 2000 report5 do_end_day_output    ! 27-Sep-00
+297 2000 report5 do_end_day_output    ! 23-Oct-00
+325 2000 report5 do_end_day_output    ! 20-Nov-00
+353 2000 report5 do_end_day_output    ! 18-Dec-00
+
+[csu-N.Operations.parameters]
+!broadcast urea Fertiliserer (140 kg N/ha) added in North plots on 6/8/93
+!value below accounts for volatilisation losses
+218 1993 Fertiliser apply amount = 120 (kg/ha), type = urea_n (), depth = 10 (mm)
+
+
+[csu-S.Operations.parameters]
+!adjust layers...................
+!bromide additions
+!174 1993 solute set brA = 0 319.574 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+!202 1993 solute set brB = 0 319.574 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+!279 1993 solute set brC = 0 319.574 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+!342 1993 solute set brD = 0 319.574 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+!Reporting dates
+!bromide
+202 1993 report6 do_end_day_output    ! 21-Jul-93
+238 1993 report6 do_end_day_output    ! 26-Aug-93
+279 1993 report6 do_end_day_output    ! 06-Oct-93
+312 1993 report6 do_end_day_output    ! 08-Nov-93
+342 1993 report6 do_end_day_output    ! 08-Dec-93
+123 1994 report6 do_end_day_output    ! 03-May-94
+
+!******************** Apswim module ********************
+[all.SWIM2.init]
+! -------------------- initial layer information ----------------------
+
+!                  1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
+x         =        0      50     100     200     300     400     500     700     900    1100    1300    1500    1700    1900    2100    2300    2500    2700    2900    3000
+soil_type =    soil1   soil1   soil2   soil2   soil2   soil3       -   soil4   soil5   soil6   soil5   soil7   soil7   soil6   soil7   soil6       -   soil7   soil7   soil7
+!theta    =    0.081     0.1    0.13    0.19    0.22    0.25    0.26    0.28     0.3    0.29   0.285    0.28     0.3    0.28    0.28    0.28    0.28    0.28    0.28    0.28
+!DUL from 110
+theta     =    0.081     0.1    0.13    0.19    0.22    0.25    0.26    0.28     0.3   0.323   0.314   0.335   0.335   0.323   0.335   0.323   0.329   0.335   0.335   0.335
+
+slmin =  -3.0
+slmax =  7.0
+
+bypass_flow =  off            ! Bypass Flow  - On/Off
+                              !
+runoff                    = 2 ! Runoff Flag  - 0) No ponding (all runoff)
+                              ! -----------    1) All ponded (no runoff)
+                              !                2) Use runoff functions
+                              !
+top_boundary_condition    = 0 ! Surface Flag - 0) infinite surface conductance
+                              ! ------------   1) constant potential
+                              !                2) conductance function
+                              !
+bottom_boundary_condition = 0 ! Bottom Flag  - 0) constant gradient
+                              ! -----------    1) water table
+                              !                2) zero flux
+                              !                3) seepage
+
+vapour_conductivity =  on     ! Vapour Conductivity flag (on/off)
+                              ! ------------------------
+
+run_solutes =  no3 nh4 urea bra brb brc brd   ! solutes to be moved by SWIM during simulation
+
+extra_solute_supply =  on
+solute_exclusion =  on
+
+[all.SWIM2.solute]
+               ! Note - Urea is just the same as no3 for now
+               ! ----------------------------------------------------
+solute_name =                    no3   nh4  urea  bra  brb  brc  brd
+               ! ----------------------------------------------------
+slupf =                          1.0   0    0     0    0    0    0
+slos =                           0.4   1.4  0.0   0.4  0.4  0.4  0.4
+d0 =                           .0684 .07056 .0684 .072 .072 .072 .072
+a =                              1.0   1.0  1.0   1.0  1.0  1.0  1.0
+dthc =                            0    0    0     0    0    0    0
+dthp =                            1    1    1     1    1    1    1
+disp =                            1    1    1     1    1    1    1
+ground_water_conc =               0    0    0     0    0    0    0
+               ! ----------------------------------------------------
+
+
+! ------------------ swim calculation parameters ---------------------
+[all.SWIM2.calc]
+dtmin =  0.0   ! min timestep (min)
+dtmax =  60.   ! max timestep (min)
+!dtmax_sol = 60.                       ! max solute uptake timestep (min)
+ersoil =  0.000001   !
+ernode =  0.000001   !
+errex =  0.0001   !
+dppl =  2   !
+dpnl =  1   !
+max_water_increment =  5.   ! max water increment (mm)
+swt =  0.0   ! Space Weighting Factor (gravity flow)
+                              ! -------------------------------------
+                              ! 0.5 -> 1.0 (central to fully upstream)
+                              ! < -1 (central diffs by factor of -1*SWF)
+                              ! 0.0 (central until instable, then upstream)
+slcerr =  0.000001
+slswt =  0.0
+
+! ------------------------ climatic inputs ---------------------------
+[all.SWIM2.climate]
+rainfall_source =  apsim
+evap_source =  calc
+salb =  0.13
+
+! ------------------------ runoff functions --------------------------
+[all.SWIM2.runoff]
+maximum_surface_storage =  5.2   ! (mm)
+minimum_surface_storage =  5.0   ! (mm)
+initial_surface_storage =  5.1   ! (mm)
+precipitation_constant =   10   ! (mm)
+runoff_rate_factor =       2   ! (mm/h)/mm^P
+runoff_rate_power =        2   ! =P ______/
+
+! ------------------- bottom boundary conditions --------------------
+[all.SWIM2.bottom_boundary]
+constant_gradient =    0
+
+! --------------------- top boundary conditions ---------------------
+! not used due to infinite conductance
+[all.SWIM2.top_boundary]
+maximum_conductance =  1.   ! (/h) initial soil surface conductance
+minimum_conductance =  .1   ! (/h) minimum soil surface conductance
+initial_conductance =  1.   ! (/h) initial soil surface conductance
+precipitation_constant =  50.   ! (mm)
+
+! -------------------------- bypass flow ---------------------------
+! not used
+[all.SWIM2.bypass_flow]
+depth =       4   ! (node number)
+conductance =  .10   ! (??)
+storage =     .10   ! (cm water/cm of +ve Psi)
+
+! --------------------crop apswim parameters ----------------------
+[all.SWIM2.crop]
+   ! ---------------------------------------------------
+crop_name =                  weed    wheat  lucerne canola
+   ! ---------------------------------------------------
+min_xylem_potential =       -15000.  -15000. -15000.  -15000. (mbar)
+root_radius =                0.24     0.24     0.24   0.24    (mm)
+root_conductance =         1.4d-7   1.4d-7   1.4d-7   1.4d-7
+   ! ---------------------------------------------------
+
+! --------------------- soil type information -------------------------
+[all.SWIM2.soil1]
+bulk_density =                      1.38
+                  ! ---------------------------------------------
+solute_name =                       no3 nh4  urea bra brb brc brd
+                  ! ---------------------------------------------
+exco =                              0   0.5  0    0   0   0   0
+fip =                               1   1    1    1   1   1   1
+dis =                               2   2    2    2   2   2   2
+alpha =                             0   0    0    0   0   0   0
+beta =                              0   0    0    0   0   0   0
+                  ! ---------------------------------------------
+
+[all.SWIM2.soil2]
+bulk_density =                      1.55
+                  ! ---------------------------------------------
+solute_name =                       no3 nh4  urea bra brb brc brd
+                  ! ---------------------------------------------
+exco =                              0   0.5  0    0   0   0   0
+fip =                               1   1    1    1   1   1   1
+dis =                               2   2    2    2   2   2   2
+alpha =                             0   0    0    0   0   0   0
+beta =                              0   0    0    0   0   0   0
+                  ! ---------------------------------------------
+
+[all.SWIM2.soil3]
+bulk_density =                     1.37
+                  ! ---------------------------------------------
+solute_name =                       no3 nh4  urea bra brb brc brd
+                  ! ---------------------------------------------
+exco =                              0   0.5  0    0   0   0   0
+fip =                               1   1    1    1   1   1   1
+dis =                               2   2    2    2   2   2   2
+alpha =                             0   0    0    0   0   0   0
+beta =                              0   0    0    0   0   0   0
+                  ! ---------------------------------------------
+
+[all.SWIM2.soil4]
+bulk_density =                      1.5
+                  ! ---------------------------------------------
+solute_name =                       no3 nh4  urea bra brb brc brd
+                  ! ---------------------------------------------
+exco =                              0   0.5  0    0   0   0   0
+fip =                               1   1    1    1   1   1   1
+dis =                               2   2    2    2   2   2   2
+alpha =                             0   0    0    0   0   0   0
+beta =                              0   0    0    0   0   0   0
+                  ! ---------------------------------------------
+
+[all.SWIM2.soil5]
+bulk_density =                      1.63
+                  ! ---------------------------------------------
+solute_name =                       no3 nh4  urea bra brb brc brd
+                  ! ---------------------------------------------
+exco =                              0   0.5  0    0   0   0   0
+fip =                               1   1    1    1   1   1   1
+dis =                               2   2    2    2   2   2   2
+alpha =                             0   0    0    0   0   0   0
+beta =                              0   0    0    0   0   0   0
+                  ! ---------------------------------------------
+
+[all.SWIM2.soil6]
+bulk_density =                      1.64
+                  ! ---------------------------------------------
+solute_name =                       no3 nh4  urea bra brb brc brd
+                  ! ---------------------------------------------
+exco =                              0   0.5  0    0   0   0   0
+fip =                               1   1    1    1   1   1   1
+dis =                               2   2    2    2   2   2   2
+alpha =                             0   0    0    0   0   0   0
+beta =                              0   0    0    0   0   0   0
+                  ! ---------------------------------------------
+
+[all.SWIM2.soil7]
+bulk_density =                      1.49
+                  ! ---------------------------------------------
+solute_name =                       no3 nh4  urea bra brb brc brd
+                  ! ---------------------------------------------
+exco =                              0   0.5  0    0   0   0   0
+fip =                               1   1    1    1   1   1   1
+dis =                               2   2    2    2   2   2   2
+alpha =                             0   0    0    0   0   0   0
+beta =                              0   0    0    0   0   0   0
+                  ! ---------------------------------------------
+
+!******************** wheat module ********************
+[all.wheat.parameters]
+uptake_source =  apsim
+
+!                  1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
+!x        =        0      50     100     200     300     400     500     700     900    1100    1300    1500    1700    1900    2100    2300    2500    2700    2900    3000
+xf        =        1       1       1     0.9    0.75     0.5    0.35    0.15    0.05    0.01       0       0       0       0       0       0       0       0       0       0
+ll        =    0.112   0.112   0.163   0.163   0.163   0.166   0.182   0.214   0.261   0.267   0.261   0.284   0.284   0.267   0.284   0.267   0.276   0.284   0.284   0.284
+kl        =     0.07    0.07    0.07    0.07    0.05    0.05    0.04    0.04    0.04    0.04       0       0       0       0       0       0       0       0       0       0
+
+[all.weed.parameters]
+uptake_source =  apsim
+
+!                  1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
+!x        =        0      50     100     200     300     400     500     700     900    1100    1300    1500    1700    1900    2100    2300    2500    2700    2900    3000
+xf        =        1       1       1     0.9     0.7     0.4     0.1       0       0       0       0       0       0       0       0       0       0       0       0       0
+ll        =    0.112   0.112   0.163   0.163   0.163   0.166   0.182   0.214   0.261   0.267   0.261   0.284   0.284   0.267   0.284   0.267   0.276   0.284   0.284   0.284
+kl        =     0.07    0.07    0.07    0.07    0.05    0.05    0.04       0       0       0       0       0       0       0       0       0       0       0       0       0
+
+!********************** Canola module ********************
+[all.canola.parameters]
+uptake_source =  apsim
+
+!                  1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
+!x        =        0      50     100     200     300     400     500     700     900    1100    1300    1500    1700    1900    2100    2300    2500    2700    2900    3000
+rlv       =    0.005   0.004   0.003   0.002   0.001       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+kl        =     0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16     0.1     0.1    0.01    0.01   0.005   0.005   0.005
+xf        =        1       1       1     0.9    0.75     0.5    0.35    0.15    0.05    0.01       0       0       0       0       0       0       0       0       0       0
+ll        =    0.112   0.112   0.163   0.163   0.163   0.166   0.182   0.214   0.261   0.267   0.261   0.284   0.284   0.267   0.284   0.267   0.276   0.284   0.284   0.284
+
+!******************** Lucerne module *******************
+[all.lucerne.parameters]
+uptake_source =  apsim
+!                  1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
+!x        =        0      50     100     200     300     400     500     700     900    1100    1300    1500    1700    1900    2100    2300    2500    2700    2900    3000
+rlv       =    0.005   0.004   0.003   0.002   0.001       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+kl        =     0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16    0.16     0.1     0.1    0.01    0.01   0.005   0.005   0.005
+xf        =        1       1       1     0.9     0.9    0.75    0.75     0.5     0.5    0.35    0.35    0.15    0.05       0       0       0       0       0       0       0
+ll        =    0.112   0.112   0.163   0.163   0.163   0.166   0.182   0.214   0.261   0.267   0.261   0.284   0.284   0.267   0.284   0.267   0.276   0.284   0.284   0.284
+
+!******************** surfaceom module ********************
+[all.SurfaceOM.parameters]
+mass = 11000.
+cnr = 70.
+type = wheat
+
+!******************** Soiln2 module ********************
+name = wheat
+[all.SoilN.parameters]
+
+!                  1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
+!x        =        0      50     100     200     300     400     500     700     900    1100    1300    1500    1700    1900    2100    2300    2500    2700    2900    3000
+ph        =      5.8     5.4     4.8     5.1     5.2     5.4     5.6     5.8     5.8     5.8     5.8     5.8     5.8     5.8     5.8     5.8     5.8     5.8     5.8     5.8
+no3ppm    =     11.9       8    3.35       1     0.9     0.9    0.55    0.55    0.45    0.75    0.45    0.45    0.45    0.45    0.45    0.45    0.45    0.45    0.45    0.45
+nh4ppm    =      2.7     1.4       1    0.75     0.9     0.9    0.45    0.35    0.15     0.3    0.15    0.15    0.15    0.15    0.15    0.15    0.15    0.15    0.15    0.15
+uppm      =        0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+fbiom     =     0.06    0.04    0.03    0.02   0.015    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01
+oc        =     1.42     1.2     0.8     0.5     0.4     0.3     0.3     0.2     0.1    0.08    0.06    0.06    0.06    0.06    0.06    0.06    0.06    0.06    0.06    0.06
+finert    =     0.04     0.1     0.2     0.7     0.7     0.7    0.75     0.8    0.85     0.9    0.95    0.95    0.95    0.95    0.95    0.95    0.95    0.95    0.95    0.95
+
+root_cn =               50       (C)   !initial root C:N (rough avg from mimic runs)
+root_wt =               0 !9500     (kg/ha)   !initial root weight
+soil_cn =               12        (kgC/kgN)   !soil initial C:N ratio
+amp =                   15.9     (C)   !air temperature amplitude
+tav =                   15.4     (C)   !average annual temperature
+enr_a_coeff =           7.4      ()   !only used in erosion simultion
+enr_b_coeff =           0.2      ()   !only used in erosion simultion
+profile_reduction =     off      ()   !only used in erosion simultion
+
+dmod =  1.0 ()   ! weighting factor to adjust the rate of humus mineralization
+               ! for soils in which organic matter is chemically or physically
+               ! protected.
+
+
+!******************** Solute module ********************
+[all.solute.parameters]
+solute_names =  bra brb brc brd
+!                  1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
+!x        =        0      50     100     200     300     400     500     700     900    1100    1300    1500    1700    1900    2100    2300    2500    2700    2900    3000
+bra       =        0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+brb       =        0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+brc       =        0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+brd       =        0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+
+
+
+[csu-S.SummaryFile.parameters]
+summaryfile = csu-S09.sum
+
+[all.tracker1.parameters]
+variable = sum of met.rain on end_of_day from report1.reported to now as sum@met_rain
+variable = sum of weed.ep on end_of_day from report1.reported to now as sum@weed_ep
+variable = sum of wheat.ep on end_of_day from report1.reported to now as sum@wheat_ep
+variable = sum of lucerne.ep on end_of_day from report1.reported to now as sum@lucerne_ep
+variable = sum of canola.ep on end_of_day from report1.reported to now as sum@canola_ep
+variable = sum of SWIM2.es on end_of_day from report1.reported to now as sum@apswim_es
+variable = sum of SWIM2.runoff on end_of_day from report1.reported to now as sum@apswim_runoff
+variable = sum of SWIM2.drain on end_of_day from report1.reported to now as sum@apswim_drain
+variable = sum of SWIM2.eo on end_of_day from report1.reported to now as sum@apswim_eo
+variable = sum of SWIM2.leach_no3 on end_of_day from report1.reported to now as sum@apswim_leach_no3
+variable = sum of SoilN.dnit() on end_of_day from report1.reported to now as sum@soiln2_dnit[]
+variable = sum of SoilN.dlt_n_min() on end_of_day from report1.reported to now as sum@soiln2_dlt_n_min[]
+variable = sum of lucerne.dlt_n_fixed on end_of_day from report1.reported to now as sum@lucerne_dlt_n_fixed
+variable = sum of canola.dlt_n_fixed on end_of_day from report1.reported to now as sum@canola_dlt_n_fixed
+
+[all.tracker2.parameters]
+variable = sum of lucerne.dlt_n_fixed on end_of_day from report2.reported to now as sum@lucerne_dlt_n_fixed
+variable = sum of canola.dlt_n_fixed on end_of_day from report2.reported to now as sum@canola_dlt_n_fixed
+
+[all.tracker3.parameters]
+variable = sum of met.rain on end_of_day from report4.reported to now as sum@met_rain
+variable = sum of weed.ep on end_of_day from report4.reported to now as sum@weed_ep
+variable = sum of wheat.ep on end_of_day from report4.reported to now as sum@wheat_ep
+variable = sum of lucerne.ep on end_of_day from report4.reported to now as sum@lucerne_ep
+variable = sum of canola.ep on end_of_day from report4.reported to now as sum@canola_ep
+variable = sum of SWIM2.es on end_of_day from report4.reported to now as sum@apswim_es
+variable = sum of SWIM2.runoff on end_of_day from report4.reported to now as sum@apswim_runoff
+variable = sum of SWIM2.drain on end_of_day from report4.reported to now as sum@apswim_drain
+variable = sum of SWIM2.eo on end_of_day from report4.reported to now as sum@apswim_eo
+
+[all.tracker4.parameters]
+variable = sum of SWIM2.leach_brA on end_of_day from report6.reported to now as sum@apswim_leach_brA
+variable = sum of SWIM2.leach_brB on end_of_day from report6.reported to now as sum@apswim_leach_brB
+variable = sum of SWIM2.leach_brC on end_of_day from report6.reported to now as sum@apswim_leach_brC
+variable = sum of SWIM2.leach_brD on end_of_day from report6.reported to now as sum@apswim_leach_brD
+variable = sum of SWIM2.uptake_brA_wheat() on end_of_day from report6.reported to now as sum@apswim_uptake_brA_wheat[]
+variable = sum of SWIM2.uptake_brB_wheat() on end_of_day from report6.reported to now as sum@apswim_uptake_brB_wheat[]
+variable = sum of SWIM2.uptake_brC_wheat() on end_of_day from report6.reported to now as sum@apswim_uptake_brC_wheat[]
+variable = sum of SWIM2.uptake_brD_wheat() on end_of_day from report6.reported to now as sum@apswim_uptake_brD_wheat[]
+
+[csu-N.SummaryFile.parameters]
+summaryfile = csu-N09.sum

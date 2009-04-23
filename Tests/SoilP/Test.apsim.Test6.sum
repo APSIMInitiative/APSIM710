@@ -1,0 +1,251 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Surface Organic Matter Module Test 6
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                        "soilp" = %apsim%\Model\soilp.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 30/01/1988
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.day
+        clock.day
+        clock.year
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_p
+        soilp.fom_p
+        soilp.labile_p
+        soilp.unavail_p
+        soilp.rock_p
+        soilp.banded_p
+        soilp.biom_p()
+        soilp.hum_p()
+        SoilN.fom_c()
+        SoilN.fom_n()
+        SoilN.fom_c_pool1
+        SoilN.fom_c_pool2
+        SoilN.fom_c_pool3
+        SoilN.fom_n_pool1
+        SoilN.fom_n_pool2
+        SoilN.fom_n_pool3
+
+     Output file = test6.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: optimum.MET
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 10 then
+         fertiliser apply amount = 100, type = banded_p, depth = 10
+         fertiliser apply amount = 100, type = broadcast_p, depth = 400
+         fertiliser apply amount = 100, type = rock_p, depth = 600
+     endif
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  300.  0.150  0.240  0.450  0.509  0.364  1.300  0.952  0.200
+          300.-  600.  0.200  0.260  0.430  0.500  0.430  1.340  0.048  0.200
+          600.-  900.  0.200  0.280  0.410  0.480  0.410  1.360  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  300.      72.00      37.20      63.00      17.70
+          300.-  600.      78.00      51.00      51.00      21.00
+          600.-  900.      84.00      39.00      39.00      21.00
+          ---------------------------------------------------------
+               Totals     234.00     127.20     153.00      59.70
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     2.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          lucerne   lucerne       4000.0  1600.0    16.0     8.0   0.551     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.6
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  0.84   29.64    1.17    0.00
+             2     7.00  0.60    9.25    1.21    0.00
+             3     7.00  0.43    6.53    2.04    0.00
+          ------------------------------------------------
+           Totals               45.41    4.42    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      32320.5  2229.0   439.5    54.9   266.1    13.3
+             2      24072.2  1660.2    47.8     6.0    97.9     4.9
+             3      17542.3  1209.8     1.7     0.2    36.0     1.8
+          ---------------------------------------------------------
+           Totals   73935.0  5099.0   489.0    61.1   400.0    20.0
+          ---------------------------------------------------------
+
+------- soilp Initialisation --------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+     
+     
+     
+                   Phosphorus Initial Data
+          ---------------------------------------------------------
+           Layer    Labile  Unavailable Banded     Rock    Sorption
+                    (kg/ha)   (kg/ha)   (kg/ha)   (kg/ha)     ()
+          ---------------------------------------------------------
+             1       19.5     195.0       0.0       0.0      50.0
+             2        4.0      40.2       0.0       0.0     100.0
+             3        4.1      40.8       0.0       0.0     200.0
+          ---------------------------------------------------------
+           Totals    27.6     276.0       0.0       0.0
+          ---------------------------------------------------------
+     
+     
+     
+           Dissolution rate of rock P :    0.00061   (/yr)
+           Root C:P :                    200.0
+------- Start of simulation  --------------------------------------------------
+10 January 1988(Day of year=10), manager: 
+     Manager sending message :- fertiliser apply  amount = 100, type = banded_p, depth = 10
+10 January 1988(Day of year=10), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of Banded Phosphorus (banded_p)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 100, type = broadcast_p, depth = 400
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of Broadcast Phosporus (broadcast_p)
+                                         added at depth  400.00 (layer   2)
+     Manager sending message :- fertiliser apply  amount = 100, type = rock_p, depth = 600
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of Rock Phosphorus (rock_p)
+                                         added at depth  600.00 (layer   2)
+30 January 1988(Day of year=30), clock: 
+     Simulation is terminating due to end criteria being met.

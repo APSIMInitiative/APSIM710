@@ -1,0 +1,15 @@
+version = 7.0(2)
+
+[apsim.Sweet Corn Sample]
+title= Sweet Corn Sample Simulation
+screen_output=on
+module = clock   SweetCorn.par [sample] %apsim%/Model/clock.xml [standard]
+module = report          SweetCorn.par [sample]
+module = input(Met)      %apsim%/Tests/MetFiles/Gatton.met [weather]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = manager         SweetCorn.par [sample]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = Plant(SweetCorn)   SweetCorn.par [sample] %apsim%/Model/SweetCorn.xml [standard]
+
+ 

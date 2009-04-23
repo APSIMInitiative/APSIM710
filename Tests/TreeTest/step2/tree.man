@@ -1,0 +1,32 @@
+[tree.manager.start_of_day]
+
+dateser = day + (year - 1901) * 365 + (year - 1901) / 4
+
+[tree.manager.end_of_day]
+
+report do_output
+
+
+[tree.report.parameters]
+
+
+!Input stuff
+
+
+
+outputfile =model.out
+
+variable = clock.year
+variable = clock.day
+variable = manager.dateser as date
+variable = SoilWat.sw_dep()
+variable = SoilWat.sw_dep
+variable = SoilWat.eos
+variable = SoilWat.es
+variable = SoilWat.total_cover as cover
+variable = tree.basal_area
+variable = tree.sw_demand
+[tree.clock.parameters]
+
+start_date=1/1/1986     ! dd/mm/yyyy
+end_date=1/1/1996     ! dd/mm/yyyy

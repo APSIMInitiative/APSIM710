@@ -1,0 +1,44 @@
+version = 7.0(2)
+
+# Tests for module configurations - with/without soils etc
+[non water limited]
+title = oryza Sample Simulation - non limited
+module = clock      oryza.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     oryza.par [sample] oryza.par [fp]
+module = input(met) %apsim%/Tests/MetFiles/DarlingtonPoint.met [weather]
+module = manager    oryza.par [sample]
+module = oryza      oryza.par [sample] %apsim%/Model/oryza.xml [standard]
+
+[water limited]
+title = oryza Sample Simulation - water limited
+module = clock      oryza.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     oryza.par [sample] oryza.par [wl]
+module = input(met) %apsim%/Tests/MetFiles/DarlingtonPoint.met [weather]
+module = irrigation oryza.par [sample]
+module = manager    oryza.par [sample] oryza.par [wl]
+module = soilwat    %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/soilwat.xml [standard]
+module = oryza      oryza.par [sample] %apsim%/Model/oryza.xml [standard]
+
+[water n limited]
+title = oryza Sample Simulation - water and N limited
+module = clock      oryza.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     oryza.par [sample] oryza.par [wnl]
+module = input(met) %apsim%/Tests/MetFiles/DarlingtonPoint.met [weather]
+module = irrigation oryza.par [sample]
+module = manager    oryza.par [sample] oryza.par [wl] oryza.par [wnl]
+module = soilwat    %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/soilwat.xml [standard]
+module = soiln      %apsim%/Tests/Soils/BlackVertosol.par [BlackVertosol] %apsim%/Tests/Soils/BlackVertosol.par [1500mm] %apsim%/Model/soiln.xml [standard]
+module = oryza      oryza.par [sample] %apsim%/Model/oryza.xml [standard]
+
+[swim]
+title = oryza Sample Simulation - swim
+module = clock      oryza.par [sample] %apsim%/Model/clock.xml [standard]
+module = report     oryza.par [sample] oryza.par [swim]
+module = input(met) %apsim%/Tests/MetFiles/DarlingtonPoint.met [weather]
+module = irrigation oryza.par [sample]
+module = manager    oryza.par [sample] oryza.par [wl] oryza.par [wnl]
+module = SWIM2      oryza.par [sample] %apsim%/Model/SWIM2.xml [standard]
+module = SoilN      oryza.par [sample] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM  oryza.par [sample] %apsim%/Model/SurfaceOM.xml [standard]
+module = oryza      oryza.par [sample] oryza.par [swim] %apsim%/Model/oryza.xml [standard]
+

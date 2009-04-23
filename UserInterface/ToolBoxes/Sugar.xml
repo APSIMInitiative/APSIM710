@@ -1,0 +1,397 @@
+<folder name="Sugar Tools" version="15" image="%apsim%\UserInterface\Images\Leaf24.bmp">
+  <folder name="Manager folder">
+    <manager name="Crop lodging">
+      <script>
+        <text><![CDATA[ 
+      if DaysAfterSowing = 1 then
+         LodgeFlag = 0
+      endif
+
+      if (cane_wt > [lodge_wt]) and (rain > [lodge_rain]) and (LodgeFlag=0) then
+         sugar lodge
+         chk_lodge = chk_lodge + 1
+         LodgeAge = DaysAfterSowing
+         LodgeDate = dd_mmm_yyyy
+         LodgeFlag = 1
+      endif
+            ]]></text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="Conditions for lodging" />
+        <lodge_wt type="text" description="Weight after which lodging can occur :">2000</lodge_wt>
+        <lodge_rain type="text" description="Amount of daily rain to trigger lodging (-1 = off) :">-1</lodge_rain>
+      </ui>
+    </manager>
+    <manager name="Residue management pre plantiing">
+      <script>
+        <text>if (today = date('[tillage_date]') and (sugar.crop_status = 'out')) then
+            if ('[tillage_type]' = 'user_defined') then
+                '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
+            else
+                '[surfaceommodule]' tillage type = [tillage_type]
+            endif
+endif
+</text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="When should tillage be done" />
+        <tillage_date type="ddmmmdate" description="Enter tillage date (dd-mmm) :">8-jul</tillage_date>
+        <category name="Tillage application details" />
+        <surfaceommodule type="modulename" description="Module used to apply the tillage :">Surface Organic Matter</surfaceommodule>
+        <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type :">user_defined</tillage_type>
+        <tillage_depth description="User_defined depth of incorporation (mm) :">200</tillage_depth>
+        <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1):">1</tillage_f_incorp>
+      </ui>
+    </manager>
+    <manager name="Irrigate at DAS">
+      <script>
+        <text>if (sugar.DaysAfterSowing = [irrig_das]) then
+            [irrigatemodule] apply amount = [irrig_amount] (mm)
+         endif
+</text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="When should irrigation be applied" />
+        <irrig_das type="text" description="How many das should irrigation be applied :">20</irrig_das>
+        <category name="Irrigation application details" />
+        <irrigatemodule type="modulename" description="Module used to apply the irrigation :">irrigation</irrigatemodule>
+        <irrig_amount type="text" description="Amount of irrigation to apply (mm) :">30</irrig_amount>
+      </ui>
+    </manager>
+    <manager name="Irrigate Schedule1">
+      <script>
+        <text>delaycount = 0
+         rain3day = 0
+         rain3 = 0
+         rain2 = 0
+         rain1 = 0
+         num_irr = 0
+         irr_count = 0
+         irr_applied = 0
+</text>
+        <event>init</event>
+      </script>
+      <script>
+        <text><![CDATA[! Limited irrigation is applied on schedule which is altered by significant rainfall events
+ 
+
+         rain3 = rain2    !set rain fall 2 days ago
+         rain2 = rain1    !set rain fall yesterday
+         rain1 = rain      !set rain fall today
+         rain3day = rain1 + rain2 + rain3   !total rainfall over last three days
+
+         if (DaysAfterSowing > (plantlen - [dryoff]) and (ratoon_no = 0)) or (DaysAfterSowing > (ratoonlen - [dryoff]) and (ratoon_no > 0)) then
+             ! STOP IRRIGATION FOR DRYOFF
+             num_irr = 0
+             irr_applied = 0
+             irr_count = 0
+         else
+             if delaycount > 0 then
+                 delaycount = delaycount - 1
+             endif
+             if rain3day > [totrain3d] and delaycount < [rain_delay] then
+                 delaycount = [rain_delay]
+             endif
+             if delaycount = 0 and (DaysAfterSowing >= [irrigstart]) and (num_irr < [max_irr]) then
+                 [irrigatemodule] apply amount = [irrig_amt] (mm)
+                 delaycount = [dai]
+                 num_irr = num_irr + [irrig_amt]
+                 irr_count = irr_count + 1
+                 if irr_applied = 0 then
+                     irr_applied = 1
+                     chk_first_irr = dd_mmm_yyyy
+                 endif
+                 chk_last_irr  = dd_mmm_yyyy
+             endif
+         endif
+]]></text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="When should irrigation be applied" />
+        <irrigstart type="text" description="How many das should irrigation be applied :">57</irrigstart>
+        <max_irr type="text" description="Irrigation allocation (mm) :">375</max_irr>
+        <dryoff type="text" description="Number of days before harvest to stop irrigating :">98</dryoff>
+        <totrain3d type="text" description="How much rain in the last 3 days will delay irrigation :">25</totrain3d>
+        <rain_delay type="text" description="How many days is irrigation delayed due to rain :">8</rain_delay>
+        <dai type="text" description="Minimum days between irrigations :">14</dai>
+        <category name="Irrigation application details" />
+        <irrigatemodule type="modulename" description="Module used to apply the irrigation :">irrigation</irrigatemodule>
+        <irrig_amt type="text" description="Amount per irrigation (mm) :">37.5</irrig_amt>
+      </ui>
+    </manager>
+    <manager name="Residue application on DAS">
+      <script>
+        <text>if (sugar.crop_status = 'out') and (day = [surfaceom_date]) then
+            '[surfaceommodule]' add_surfaceom name=[surfaceom_name], type = [surfaceom_type], mass=[millmud_amt], cnr=[millmud_cnr] 
+            [irrigatemodule] apply amount = [millmud_water]
+         endif
+</text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="When should surface organic matter be applied" />
+        <surfaceom_date type="ddmmmdate" description="Enter organic matter aplication date (dd-mmm) :">dd-mmm</surfaceom_date>
+        <category name="Residue application details" />
+        <surfaceommodule type="modulename" description="Module used to apply the residue :">Surface Organic Matter</surfaceommodule>
+        <irrigatemodule type="modulename" description="Module used to apply the irrigation :">Irrigation</irrigatemodule>
+        <surfaceom_name type="text" description="Name of organic matter :">Manure</surfaceom_name>
+        <surfaceom_type type="text" description="Type of organic matter :">manure</surfaceom_type>
+        <surfaceom_amt type="text" description="Amount of organic matter to apply (kgDM/ha) :">30000</surfaceom_amt>
+        <surfaceom_cnr type="text" description="C:N of organic matter :">28.7</surfaceom_cnr>
+        <surfaceom_water type="text" description="Water in organic matter (mm) :">9.0</surfaceom_water>
+      </ui>
+    </manager>
+    <manager name="Tillage on fixed date">
+      <script>
+        <text>if (today = date('[tillage_date]') and (sugar.crop_status = 'out')) then
+            if ('[tillage_type]' = 'user_defined') then
+                '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
+            else
+                '[surfaceommodule]' tillage type = [tillage_type]
+            endif
+            ready_to_till_pre_sow = 0
+            till_day_pre_sow = 0
+         endif
+</text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="When should tillage be done" />
+        <tillage_date type="ddmmmdate" description="Enter tillage date (dd-mmm) :">8-jul</tillage_date>
+        <category name="Tillage application details" />
+        <surfaceommodule type="modulename" description="Module used to apply the tillage :">Surface Organic Matter</surfaceommodule>
+        <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type :">user_defined</tillage_type>
+        <tillage_depth description="User_defined depth of seedbed preparation (mm) :">200</tillage_depth>
+        <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1):">1</tillage_f_incorp>
+      </ui>
+    </manager>
+    <manager name="Irrigate at planting">
+      <script>
+        <text><![CDATA[
+         if ([irrig_amount_evt] > 0) then
+            '[irrigatemodule]' apply amount = [irrig_amount_evt] (mm)
+         endif
+         totalirrigation = totalirrigation + Irrigation.irrigation
+
+   ]]></text>
+        <event>[modulename].[eventname]</event>
+      </script>
+      <ui>
+        <category name="When should irrigation be applied" />
+        <modulename type="modulename" description="The module the event come from : ">sugar</modulename>
+        <eventname type="text" description="Which event should irrigation be applied : ">sowing</eventname>
+        <category name="Irrigation application details" />
+        <irrigatemodule type="modulename" description="Module used to apply the irrigation : ">Irrigation</irrigatemodule>
+        <irrig_amount_evt type="text" description="Amount of irrigation to apply (mm) : ">20</irrig_amount_evt>
+      </ui>
+    </manager>
+    <manager name="Fertilise at X das">
+      <script>
+        <text><![CDATA[   if (ratoon_no = 0) and (sugar.DaysAfterSowing = [fertpl_lag]) then
+         [fertmodule] apply amount = [fertpl_amt] (kg/ha) , type =  [fert_type] , depth =  80 (mm)
+   endif
+
+   if (ratoon_no > 0) and (sugar.DaysAfterSowing = [fertrat_lag]) then
+         [fertmodule] apply amount = [fertrat_amt] (kg/ha) , type =  [fert_type] , depth =  80 (mm)
+   endif
+
+   totalfertiliser = totalfertiliser + fertiliser.fertilizer]]></text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="When should fertiliser be applied" />
+        <fertpl_lag type="text" description="Days after planting :">31</fertpl_lag>
+        <fertrat_lag type="text" description="Days after harvest :">31</fertrat_lag>
+        <category name="Fertiliser application details" />
+        <fertmodule type="modulename" description="Module used to apply the fertiliser :">fertiliser</fertmodule>
+        <fertpl_amt type="text" description="Amount of fertiliser to apply to plant crop (kg/ha) :">22.5</fertpl_amt>
+        <fertrat_amt type="text" description="Amount of fertiliser to apply to ratoon crop (kg/ha) :">30</fertrat_amt>
+        <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type :">urea_N</fert_type>
+      </ui>
+    </manager>
+    <manager name="SUGAR management">
+      <script>
+        <text>cropcycle = 0
+</text>
+        <event>init</event>
+      </script>
+      <script>
+        <text><![CDATA[            ! -----------------------------------------------------------------
+            ! Book keeping to round days to integer values
+            plantlen = [plantlen]
+
+            totalrain = totalrain + rain
+            totaldnit = totaldnit + dnit
+            totalleach = totalleach + flow_no3
+
+            ! Initialise and set a time counter for entire run
+            dah = 0
+
+
+            if (sugar.crop_status = 'alive') then
+               dah = 0
+
+               ! Set harvest dates for each crop phase
+              if (sugar.DaysAfterSowing = [plantlen] and ratoon_no = 0) or
+                  (sugar.DaysAfterSowing = ratoonlen and ratoon_no > 0) then
+
+                  replace_kgNha = cane_wt * 10 * replace_pcN
+
+                  sugar harvest
+                  totalfertiliser = 0
+                  totalirrigation = 0
+                  totalrain = 0
+                  totaldnit = 0
+                  totalleach = 0
+
+                  if '[burn_flag]' = 1 then
+                      if ('[tillage_type]' = 'user_defined') then
+                      '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
+                  else
+                      '[surfaceommodule]' tillage type = [tillage_type]
+                  endif
+              endif
+
+                  if (ratoon_no = [NoRatoons] + 1) then
+                     ! plough the crop out
+                     sugar kill_crop
+                     sugar end_crop
+                  else
+                     ! Set stalk density
+                     if ratoon_no = 1 then
+                        ratoonlen = [ratoonlen1]
+                        sugar.plants = [ratoon1_stalks]
+                     elseif ratoon_no = 2 then
+                        ratoonlen = [ratoonlen2]
+                        sugar.plants = [ratoon2_stalks]
+                     elseif ratoon_no = 3 then
+                        ratoonlen = [ratoonlen3]
+                        sugar.plants = [ratoon3_stalks]
+                     elseif ratoon_no = 4 then
+                        ratoonlen = [ratoonlen4]
+                        sugar.plants = [ratoon4_stalks]
+                     endif
+!                     !sugar.plants = [ratoon_stalks]
+                  endif
+               else
+                  ! We have not reached the harvest date for this ratoon.
+               endif
+
+            elseif (sugar.crop_status = 'dead') then
+               sugar harvest
+               sugar end_crop
+
+            elseif (sugar.crop_status = 'out') and (today = date('[planting_day]') then
+               cropcycle = cropcycle + 1
+               sugar sow plants = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
+               sugar.plants = [plant_stalks]
+               dah = 0
+
+            else
+               dah = dah + 1
+            endif
+               ]]></text>
+        <event>start_of_day</event>
+      </script>
+      <ui>
+        <category name="Sugar plant crop management parameters" />
+        <crop type="crop" description="Enter name of crop to sow :">sugar</crop>
+        <planting_day type="ddmmmdate" description="Enter planting date (dd-mmm) :">12-may</planting_day>
+        <plantlen type="text" description="Duration of a plant crop (days) (30 days/month * 15 months) :">461</plantlen>
+        <plant_stalks type="text" description="Stalk density of plant crop (/m2) :">6</plant_stalks>
+        <variety type="list" listvalues="q117,q96,q138,ts65-28,h73,q141,nco376,n12,n14,cp51,r570,m1356,m55560,q124" description="Planting variety :">q117</variety>
+        <sowing_depth type="text" description="Planting depth mm) :">150</sowing_depth>
+        <category name="Ratoon management parameters" />
+        <NoRatoons type="text" description="Number of ratoons (max = 5):">4</NoRatoons>
+        <ratoonlen1 type="text" description="Duration of a 1st ratoon (days) :">366</ratoonlen1>
+        <ratoonlen2 type="text" description="Duration of a 2nd ratoon (days) :">366</ratoonlen2>
+        <ratoonlen3 type="text" description="Duration of a 3rd ratoon (days) :">366</ratoonlen3>
+        <ratoonlen4 type="text" description="Duration of a 4th ratoon (days) :">366</ratoonlen4>
+        <ratoon1_stalks type="text" description="Stalk density of 1st ratoon (/m2) :">6</ratoon1_stalks>
+        <ratoon2_stalks type="text" description="Stalk density of 2nd ratoon (/m2) :">6</ratoon2_stalks>
+        <ratoon3_stalks type="text" description="Stalk density of 3rd ratoon (/m2) :">6</ratoon3_stalks>
+        <ratoon4_stalks type="text" description="Stalk density of 4th ratoon (/m2) :">6</ratoon4_stalks>
+        <category name="Residue management at harvest" />
+        <burn_flag type="text" description="Was the cane burnt? 1 = Yes">1</burn_flag>
+        <surfaceommodule type="modulename" description="Module used to apply the tillage :">Surface Organic Matter</surfaceommodule>
+        <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type :">user_defined</tillage_type>
+        <tillage_depth description="User_defined depth of incorporation. 0 = removed. (mm) :">0</tillage_depth>
+        <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1):">0.7</tillage_f_incorp>
+      </ui>
+    </manager>
+      <operations>
+    <operation condition="start_of_day">
+      <date>1/12/2000</date>
+      <action>sugar sow plants = 11, sowing_depth = 150, row_spacing = 0.0155, cultivar = Q124, tiller_no_fertile = 0 ! originally 335</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>14/1/2001</date>
+      <action>irrigation apply amount = 50 (mm)</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>16/1/2001</date>
+      <action>fertiliser apply amount = 165     (kg/ha), type = urea_N, depth = 100 (mm)</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>15/10/2001</date>
+      <action>sugar harvest                                                                                                           </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>16/10/2001</date>
+      <action>'Surface Organic Matter' tillage type = user_defined, f_incorp = 0.9, tillage_depth = 200. (mm)                                        </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>28/12/2001</date>
+      <action>fertiliser apply amount = 164.5   (kg/ha), type = urea_N, depth = 100 (mm)</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>28/9/2002</date>
+      <action>sugar harvest                                                                                                           </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>7/10/2002</date>
+      <action>'Surface Organic Matter' tillage type = user_defined, f_incorp = 0.9, tillage_depth = 200. (mm)                                        </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>14/11/2002</date>
+      <action>fertiliser apply amount = 158.1   (kg/ha), type = urea_N, depth = 100 (mm)</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>2/11/2003</date>
+      <action>sugar harvest                                                                                                           </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>11/11/2003</date>
+      <action>'Surface Organic Matter' tillage type = user_defined, f_incorp = 0.9, tillage_depth = 200. (mm)                                        </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>13/12/2003</date>
+      <action>fertiliser apply amount = 158   (kg/ha), type = urea_N, depth = 100 (mm)</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>20/11/2004</date>
+      <action>sugar harvest                                                                                                           </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>27/11/2004</date>
+      <action>'Surface Organic Matter' tillage type = user_defined, f_incorp = 0.9, tillage_depth = 200. (mm)                                        </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>17/12/2004</date>
+      <action>fertiliser apply amount = 158   (kg/ha), type = urea_N, depth = 100 (mm)</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>20/11/2005</date>
+      <action>sugar harvest                                                                                                           </action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>27/11/2005</date>
+      <action>'Surface Organic Matter' tillage type = user_defined, f_incorp = 0.9, tillage_depth = 200. (mm)                                        </action>
+    </operation>
+  </operations>
+  </folder>
+</folder>

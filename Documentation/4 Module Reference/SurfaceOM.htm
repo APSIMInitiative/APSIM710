@@ -1,0 +1,2163 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>The APSIM Surface Organic Matter Model</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>gay022</o:Author>
+  <o:LastAuthor>gay022</o:LastAuthor>
+  <o:Revision>3</o:Revision>
+  <o:TotalTime>11</o:TotalTime>
+  <o:Created>2005-07-19T01:51:00Z</o:Created>
+  <o:LastSaved>2005-07-19T01:52:00Z</o:LastSaved>
+  <o:Pages>13</o:Pages>
+  <o:Words>3733</o:Words>
+  <o:Characters>21281</o:Characters>
+  <o:Company>CSIRO</o:Company>
+  <o:Lines>177</o:Lines>
+  <o:Paragraphs>42</o:Paragraphs>
+  <o:CharactersWithSpaces>26134</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<link rel=Stylesheet type="text/css" media=all
+href="../ApsimWebStyle.css">
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Courier;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-alt:"Courier New";
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Arial Narrow";
+	panose-1:2 11 5 6 2 2 2 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:647 0 0 0 159 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-font-kerning:0pt;
+	font-weight:bold;}
+h2
+	{mso-style-next:Normal;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.MsoCommentReference
+	{mso-ansi-font-size:8.0pt;
+	mso-bidi-font-size:8.0pt;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:blue;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	mso-text-animation:none;
+	text-decoration:none;
+	text-underline:none;
+	text-decoration:none;
+	text-line-through:none;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:blue;
+	mso-text-animation:none;
+	text-decoration:none;
+	text-underline:none;
+	text-decoration:none;
+	text-line-through:none;}
+p
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.title1, li.title1, div.title1
+	{mso-style-name:title1;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:18.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:#FF9900;}
+p.title2, li.title2, div.title2
+	{mso-style-name:title2;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:blue;
+	font-weight:bold;
+	font-style:italic;}
+p.code, li.code, div.code
+	{mso-style-name:code;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:8.0pt;
+	font-family:Courier;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.formula, li.formula, div.formula
+	{mso-style-name:formula;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-style:italic;}
+p.formula2, li.formula2, div.formula2
+	{mso-style-name:formula2;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-weight:bold;}
+p.formulasym, li.formulasym, div.formulasym
+	{mso-style-name:formulasym;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";}
+p.tabletitle, li.tabletitle, div.tabletitle
+	{mso-style-name:tabletitle;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	background:#CCCCCC;
+	border:none;
+	mso-border-bottom-alt:solid #666666 .5pt;
+	padding:0cm;
+	mso-padding-alt:0cm 0cm 0cm 0cm;
+	font-size:14.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.tableborder, li.tableborder, div.tableborder
+	{mso-style-name:tableborder;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	border:none;
+	mso-border-alt:solid #666666 .5pt;
+	padding:0cm;
+	mso-padding-alt:0cm 0cm 0cm 0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.tableodd, li.tableodd, div.tableodd
+	{mso-style-name:tableodd;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	background:#EEEEEE;
+	font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.tableeven, li.tableeven, div.tableeven
+	{mso-style-name:tableeven;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	background:#DDDDDD;
+	font-size:10.0pt;
+	font-family:"Arial Narrow";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor="#f3f3f3" lang=EN-AU link=blue vlink=blue style='tab-interval:
+36.0pt'>
+
+<div class=Section1>
+
+<p class=title1>The APSIM Surface Organic Matter (SurfaceOM) Model</p>
+
+<p class=title2><span style='font-weight:normal;font-style:normal'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=title2><span style='font-weight:normal;font-style:normal'>In the APSIM
+v4.0 release, the functionality previously found in the RESIDUE and MANURE
+modules was incorporated into this new module, SurfaceOM.<o:p></o:p></span></p>
+
+<p class=title2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=title2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=title2>Description</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+processes included in the SurfaceOM module are depicted in Figure 1.&nbsp;
+Briefly, the above ground material can be burnt (or removed from the system in
+some other way, e.g. baling), incorporated into the soil during tillage
+operations, or decomposed.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Above
+ground residues are considered as consisting of a mixture of one or more
+different materials (or component parts), each of which is defined in terms of:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Mass (kg/ha)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Overall C:N ratio ()</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Overall C:P ratio ()</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Standing Fraction (0-1)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Type (eg wheat, lucerne, eucalyptus leaves etc) &#8211; from which SURFACEOM will
+determine the following information:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Overall Carbon fraction (0-1)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specific Area (ha/kg)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Potential Decomposition Rate (/day)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Mineral Composition (nh4, no3,and po4 (in ppm))</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+C,N,P fractions in each of the fresh organic matter (FOM) pools (i.e.
+carbohydrate, cellulose, lignin)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>SURFACEOM
+module outputs can either refer to the entire mixture of surface materials, or
+to specific components.&nbsp;&nbsp; When new material is added (e.g. at
+harvest), the material will either enter an existing surface organic matter
+component (eg wheat) or may start a new component, if that residue is a new
+addition to what is already present in the system (for example, wheat trash
+being added to existing lucerne residues, at harvest).&nbsp;&nbsp; Each
+component is kept separate for calculations of&nbsp; C:N ratio, decomposition,
+and specific area.&nbsp; An overall effective cover value (0-1) is calculated
+using all surface organic matter components present, for the purposes of
+subsequently calculating surface material effect on soil evaporation and
+runoff.&nbsp; If a particular surface organic matter type has soluble inorganic
+N components (NO3-N and NH4-N), these may be transferred to the respective soil
+pools by leaching due to rainfall or irrigation. The cumulative amount of rain
+and irrigation to transfer all of the soluble components is specified as an
+input; the amount leached is proportional to cumulative rain.&nbsp; It is
+possible to specify that a certain proportion of any particular surface organic
+matter is &#8216;standing&#8217;, that is, inert from the processes of decomposition.&nbsp;
+The default value for this proportion is zero, in other words, all the material
+is decomposable.&nbsp; See section below on &#8216;Standing/Lying Components&#8217;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;
+</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Tillage
+results in a transfer of some surface OM into the soil FOM pool.&nbsp; With
+tillage, surfaceOM N and C is incorporated into soil layers to the nominated
+tillage depth, and added to the respective soil mineral N and the fresh organic
+matter pools (FOM). Incorporated surfaceOM C and N is partitioned into the
+rapid, medium and slowly decomposing FOM pools according to nominated
+fractions. This fractionation is dependant upon the type of OM and so
+differences between crop residues and animal manures, for example, can be
+specified. </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Decomposition
+results in loss of some carbon as CO<sub>2</sub> and transfer of carbon and
+nitrogen to the soil.&nbsp; Decomposition of residues with a high C:N ratio
+creates an immobilisation demand, which is satisfied from mineral-N in the
+uppermost soil layers; in extreme situations, inadequate mineral-N in soil
+restricts decomposition of residues.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+auto;text-align:center'><img width=609 height=508 id="_x0000_i1025"
+src="SurfaceOM\image002.gif"></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+auto;text-align:center'>Figure 1. Schematic representation of the processes in
+the SURFACEOM module. (Note that default values of zero are used for mineral N
+and P components in plant residues)</p>
+
+<p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+text-align:center'>&nbsp;</p>
+
+<p class=title2>&nbsp;Surface Organic Material Decomposition</p>
+
+<p><span style='font-family:"Arial Narrow"'>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Decomposition
+of surface OM&#8217;s is calculated using a simple exponential decay algorithm where
+the fraction of each component decaying on any day (F<sub>decomp</sub>) is
+calculated as follows:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>F<sub>decomp</sub>
+= Potential Decomposition Rate* Moisture Factor</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Temperature Factor</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C:N ratio Factor</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Contact Factor</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>From
+this fraction, potential amounts of carbon and nitrogen to move into the soil
+are calculated for each component.&nbsp; Any module responsible for soil
+organic matter pools (such as the SOILN module) can use this potential supply
+of carbon and nitrogen in its calculations.&nbsp; The actual value of
+decomposition (that is a final soil limited value) for each component is passed
+back to the SURFACEOM module and above-ground component pools are updated using
+this value of decomposition.&nbsp; Descriptions of the various factors
+affecting decomposition follows:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>The moisture factor for decomposition</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+moisture factor affecting decomposition in the SURFACEOM module uses cumulative
+potential soil evaporation (E<sub>OS</sub>) to capture the effect that dry
+residues decompose more slowly than wet residues.&nbsp; It is assumes that
+residues dry out at a rate proportional to E<sub>os</sub>, and that a critical
+cumulative evaporation (cum_eos_max) results in residues becoming so dry that
+decomposition ceases.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+auto;text-align:center'>Moisture Factor = 1.0 - SE<sub>OS</sub>/cum_eos_max</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+factor is constrained to values between 0 and 1.&nbsp; </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>The temperature factor for decomposition</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+effect of temperature on residue decomposition is described by:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+auto;text-align:center'>Temperature Factor = (average air temperature/opt_temp)<sup>2</sup></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>where
+average air temperature = (maxt + mint)/2 </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>This
+factor is then constrained to values between 0 and 1.&nbsp; The resultant
+relationship is shown in the following figure for three values of optimum
+temperature. (tf = 20 is the default).&nbsp; If average temperature is less
+than zero, the temperature factor is zero.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+text-align:center'><img width=302 height=223 id="_x0000_i1026"
+src="SurfaceOM\image004.gif"></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>&nbsp;</p>
+
+<p class=title2>The C:N ratio factor for decomposition</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+text-align:center'><sub><img width=235 height=42 id="_x0000_i1027"
+src="SurfaceOM\image006.gif"></sub></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>where
+&nbsp; CN &nbsp;&nbsp;&nbsp;&nbsp; = C:N ratio of surface residues</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CN<sub>opt&nbsp;&nbsp;&nbsp; </sub>= Optimum C:N ratio for decomposition</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+k&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = coefficient
+determining slope of curve.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>This
+factor is calculated for individual residue types rather than for the entire
+mixture and is constrained to values between 0 and 1.&nbsp; </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+standard values used with SURFACEOM are k = 0.277 and CN<sub>opt</sub> = 25.
+The resultant curve is as follows:</p>
+
+<p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+text-align:center'><img width=312 height=246 id="_x0000_i1028"
+src="SurfaceOM\image008.gif"></p>
+
+<p class=title2>&nbsp;</p>
+
+<p class=title2>The soil contact factor on decomposition</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Where
+large amounts of surface residues are present, overall rates of decomposition
+will be lower.&nbsp; It is presumed that the material in immediate contact with
+the soil decomposes more rapidly than that piled on top (a &#8220;haystack&#8221;
+effect).&nbsp; To account for this a contact factor discounts decomposition
+according to the amount of residue.&nbsp; The relation currently used is based
+on work by Thorburn et al.(2001) , and involves the concept of a critical mass
+of surface organic matter at which the &#8216;haystack effect&#8217; is deemed to become
+relevant.&nbsp; It may be summarized as </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;&nbsp;&nbsp;&nbsp;
+If surfaceom_wt &lt; critical mass then cf = 1.0, or </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;&nbsp;&nbsp;&nbsp;
+If surfaceom_wt &gt; critical mass then cf = critical mass/surfaceom_wt</p>
+
+<p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span
+style='font-family:"Times New Roman"'><br clear=all style='mso-special-character:
+line-break'>
+<o:p></o:p></span></p>
+
+<p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+text-align:center'>&nbsp;</p>
+
+<table border=0 cellspacing=0 cellpadding=0 align=left style='mso-cellspacing:
+ 0cm;mso-table-anchor-vertical:paragraph;mso-table-anchor-horizontal:column;
+ mso-table-left:left;mso-padding-alt:0cm 0cm 0cm 0cm'>
+ <tr style='height:6.75pt'>
+  <td width=138 style='width:103.5pt;padding:0cm 0cm 0cm 0cm;height:6.75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><span
+  style='font-size:7.0pt;mso-bidi-font-size:12.0pt;font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><span
+  style='font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+  <td style='padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span
+  style='font-family:"Times New Roman"'><img width=318 height=220
+  id="_x0000_i1029" src="SurfaceOM\image010.gif"><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span
+style='font-family:"Times New Roman"'><br clear=all style='mso-special-character:
+line-break'>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Not
+all surface residues contribute to this &#8216;haystack effect&#8217;.&nbsp; Standing
+residues are excluded, and some residues on the soil surface can be specified
+to only contribute partially to the effect. For example, course woody debris
+would not contribute but fine leaf litter would.</p>
+
+<p class=title2>&nbsp;</p>
+
+<p class=title2>Tillage of above-ground residues.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Residues
+are incorporated into the soil profile using a tillage command.&nbsp; For
+example, the following manager command will incorporate 50% of residues into
+the top 100mm of soil.&nbsp; (Note:&nbsp; the following information needs to be
+specified on a single line in APSIM manager logic)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>&nbsp;surfaceom tillage type = <i>user_defined</i>, f_incorp =
+0.5 (0-1), tillage_depth = 100. (mm)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Alternatively,
+the user can specify tillage operations in terms of an implement, with the
+corresponding values of f_incorp and tillage_depth being defined in the
+SURFACEOM module&#8217;s constants file.&nbsp; Some examples are</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>&nbsp;surfaceom tillage type = disc ()</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>or</p>
+
+<p class=code>&nbsp;surfaceom tillage type = burn ()</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>In
+the &#8220;burn&#8221; example, the tillage type is specified to incorporate to a zero
+depth, and the fraction of organic matter specified to be incorporated will be
+lost from the system.&nbsp; </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Each
+time a &#8216;tillage&#8217; is specified, all surface organic materials are effected.<span
+style="mso-spacerun: yes">&nbsp; </span>If the user is wanting to simulate a
+situation where only one of the surface materials is incorporated (eg. Digging
+manure into row spaces between existing crop stubbles) leaving the remainder
+intact, there is a specific command available called &#8216;tillage_single&#8217;.<span
+style="mso-spacerun: yes">&nbsp; </span>The syntax is as follows</p>
+
+<p class=code><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=code>&nbsp;surfaceom tillage_single name = manure , type = <i>disc</i>
+()</p>
+
+<p class=code><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=code><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=code><span style='font-size:12.0pt;mso-bidi-font-size:8.0pt;
+font-family:"Arial Narrow"'>The &#8216;name&#8217; refers to the specific name in the
+system of the surfaceom to be tilled.<span style="mso-spacerun: yes">&nbsp;
+</span>Subsequent arguments are as for the standard &#8216;tillage&#8217; command (see
+above).<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span
+style="mso-spacerun: yes">&nbsp; </span>&nbsp;&nbsp;</p>
+
+<p class=title2>SurfaceOM Cover</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>SurfaceOM
+cover is calculated by combining the individual masses of surface OM types and
+their specific areas (i.e. an area of cover per unit mass).&nbsp; Currently,
+both &#8216;standing&#8217; and &#8216;lying&#8217; fractions are considered to contribute to
+cover.&nbsp; However, increasing amounts of surface OM have diminishing effects
+due to the additional residue overlaying other residues rather than covering
+bare soil. This can be described as:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>dC/dS&nbsp;
+= 1 -
+C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;(1)</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>where
+&nbsp; C is the effective fractional residue cover</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>and&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+S is the total surface area of residues per unit area</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>and
+hence</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>C
+= 1 - e<sup>-S</sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;(2)</p>
+
+<p class=title2>&nbsp;</p>
+
+<p class=title2>SurfaceOM Input Parameters</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<table border=1 cellpadding=0 style='mso-cellspacing:1.5pt;border:solid #666666 .75pt;
+ mso-padding-alt:0cm 0cm 0cm 0cm'>
+ <tr>
+  <td width=225 valign=top style='width:168.75pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>Name<o:p></o:p></span></b></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>Units<o:p></o:p></span></b></p>
+  </td>
+  <td width=309 valign=top style='width:231.75pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=225 valign=top style='width:168.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>name</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  text-align:center'><span style='font-size:10.0pt;font-family:"Arial Narrow"'>-<o:p></o:p></span></p>
+  </td>
+  <td width=309 valign=top style='width:231.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Individual
+  residue name</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=225 valign=top style='width:168.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>type</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  text-align:center'><span style='font-size:10.0pt;font-family:"Arial Narrow"'>-<o:p></o:p></span></p>
+  </td>
+  <td width=309 valign=top style='width:231.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Specific
+  residue type (referenced to .ini file)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=225 valign=top style='width:168.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>mass</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=309 valign=top style='width:231.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Initial
+  amount of surface OM</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=225 valign=top style='width:168.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>cnr</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  text-align:center'><span style='font-size:10.0pt;font-family:"Arial Narrow"'>-<o:p></o:p></span></p>
+  </td>
+  <td width=309 valign=top style='width:231.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Initial
+  C:N ratio of surface OM</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=225 valign=top style='width:168.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>cpr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  (optional ) *</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  text-align:center'><span style='font-size:10.0pt;font-family:"Arial Narrow"'>-<o:p></o:p></span></p>
+  </td>
+  <td width=309 valign=top style='width:231.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Initial
+  C:P ratio of surface OM</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=225 valign=top style='width:168.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>standing_fraction&nbsp;
+  (optional)*</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p align=center style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  text-align:center'><span style='font-size:10.0pt;font-family:"Arial Narrow"'>(0-1)<o:p></o:p></span></p>
+  </td>
+  <td width=309 valign=top style='width:231.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Standing
+  or inert component&nbsp; of surface material</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>*
+- if optional parameters are not supplied then defaults from constants file are
+used.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>All
+SurfaceOM module input parameters are arrays, hence several surface OM types
+can be initially specified as existing in the simulation.&nbsp; For example:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>[all.surfaceom.parameters]&nbsp; </p>
+
+<p class=code>name =&nbsp;&nbsp; wheat_old&nbsp; wheat_new&nbsp;
+lucerne&nbsp;&nbsp;&nbsp; ! name of surface OM material</p>
+
+<p class=code>type =&nbsp;&nbsp;&nbsp; wheat&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;wheat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lucerne&nbsp;&nbsp;
+! type of surface OM material</p>
+
+<p class=code>mass =&nbsp;&nbsp;&nbsp; 350.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2000.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 400.0&nbsp;&nbsp;&nbsp; ! mass of surface
+OM (kg/ha)</p>
+
+<p class=code>cnr =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+100.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 75.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+35.0 ()&nbsp; ! C:N ratio of surface OM</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>If
+desired, only a single surface OM may be specified (in similar fashion to the
+old APSIM RESIDUE2 module), or up to a maximum of 100 materials.&nbsp; </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+&#8216;name&#8217; of the surfaceom is a unique identifier of that surfaceom pool.&nbsp;
+The &#8216;type&#8217; is the specific type of material, used to reference further
+information for that type.&nbsp; In other words, there can be several
+surfaceom&#8217;s of the same &#8216;type&#8217; in the system, but only one instance of each
+&#8216;name&#8217; is allowed.&nbsp; See the above example, where residues from an old
+wheat crop are present together with new residues from a more recent wheat
+crop.&nbsp; They are both of the same &#8216;type&#8217;, but are considered as separate
+pools, each with an individual &#8216;name&#8217;, <i>wheat_old</i> and <i>wheat_new</i>. </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>When
+a crop discards leaves/stems etc, they are added to the SURFACEOM module in a
+pool with the &#8216;name&#8217; and &#8216;type&#8217; equal to the crop name, i.e. wheat, chickpea.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>SurfaceOM Standing/Lying Components</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>For
+individual surface materials, it is possible to specify how much of that
+material is &#8216;standing&#8217; using an optional input parameter called
+&#8216;standing_fraction&#8217;.&nbsp; If it is not supplied, the default value of 0.0 is
+applied.&nbsp; The standing fraction is considered to be the inert component of
+the material, i.e. not subject to daily decomposition.&nbsp; It is however,
+subject to incorporation during tillage events.&nbsp;&nbsp; Currently there is
+no algorithm describing the movement of material from the &#8216;standing&#8217; pool to
+the &#8216;lying&#8217; (decomposable) pool, however in future it is planned to convert
+standing material to lying material on a daily basis as a function of such
+parameters as time, rainfall, stocking rates, field operations&#8230; etc.&nbsp;
+Information on the &#8216;standing&#8217; component can be supplied to the SurfaceOM module
+as follows:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>[all.surfaceom.parameters]&nbsp; </p>
+
+<p class=code>name =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+wheat_old&nbsp; wheat_new&nbsp;&nbsp; ! name of surface OM material</p>
+
+<p class=code>type
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;wheat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wheat&nbsp;&nbsp;&nbsp;&nbsp; ! type
+of surface OM </p>
+
+<p class=code>mass
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+350.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2000.0&nbsp;&nbsp; ! mass of surface OM
+(kg/ha)</p>
+
+<p class=code>cnr
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+100.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 75.0&nbsp;&nbsp;&nbsp;&nbsp; ! C:N ratio of
+surface OM</p>
+
+<p class=code>standing_fraction = 0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! standing (or inert) fraction </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>SurfaceOM Phosphorus</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>It
+is possible to trace the addition and decomposition of phosphorus through
+surface residues in conjunction with the APSIM SoilP module.&nbsp; The user is
+required to provide an extra parameter to state the initial C:P ratio for
+surface residues.&nbsp; </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>[all.surfaceom.parameters]&nbsp; </p>
+
+<p class=code>name
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+maize&nbsp; ! name of surface OM material</p>
+
+<p class=code>type
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+maize&nbsp; ! type of surface OM material</p>
+
+<p class=code>mass
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2000 (kg/ha)&nbsp; ! mass of surface OM material</p>
+
+<p class=code>cnr
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+75.0 ()&nbsp;&nbsp; ! C:N ratio surface OM material</p>
+
+<p class=code>cpr
+=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+250.0 ()&nbsp; ! C:P ratio surface OM material</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+addition of this extra parameter will result in the SurfaceOM module becoming
+aware of the need for maintaining a phosphorus balance, and daily interactions
+with the SoilP module will occur.&nbsp; (Note, if the &#8216;cpr&#8217; parameter is
+provided, the SoilP module must be included in the simulation). </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span
+style="mso-spacerun: yes">&nbsp;</span>In the above example, 2000 kg/ha of
+maize residue is added with a C:P ratio of 250.&nbsp; This will result in </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>2000
+kg x 0.4 (kg C/kg biomass)/250 (kg C/kg P) = 3.2 kg P/ha in surface OM.&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><i><span
+style='font-family:"Times New Roman"'><br clear=all style='mso-special-character:
+line-break'>
+</span></i></b><span style='font-family:"Times New Roman"'><o:p></o:p></span></p>
+
+<p class=title2>Resetting SurfaceOM</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>The
+reset action can be invoked to reset the module to the state specified within
+the module's input data, which includes the surfaceom weight, nitrogen and
+phosphorus contents, and cover.&nbsp; This is identical to the initialise
+action used by the simulation engine at the start of the simulation except that
+a description of the reinitialised state is not printed in the simulation
+summary file. </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><i>APSIM
+Manager Example:</i></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>[sample.manager.start_of_day]</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=code>! reinitialise residues at the beginning of each sowing window</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=code>&nbsp;&nbsp; If day = 100 then</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom reset</p>
+
+<p class=code>&nbsp;&nbsp; endif</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>Summary Report</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>At
+initialisation, at series of tables and useful information is printed to the
+simulation summary file for perusal by the user.&nbsp; These tables can also be
+printed to the summary file at any instance during the simulation as a detailed
+record of the system state at a particular time.&nbsp; For the surfaceom
+module, this output consists of surfaceom names, types, weights, organic
+carbon, nitrogen, and phosphorus, mineral components, and standing fraction.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><i>APSIM
+Manager Example:</i></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>[sample.manager.start_of_day]</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=code>! Print out a summary of module state to the summary file</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=code>&nbsp;&nbsp; If day = 100 then</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom sum_report</p>
+
+<p class=code>&nbsp;&nbsp; endif</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>Addition of Surface Organic Materials</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Organic
+materials can be added to the soil surface using the add_surfaceom action. </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><i>APSIM
+Manager Example:</i></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><i>NOTE:
+actions must be specified as a single line in the manager file rather than as
+shown below.</i></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>If day = 100 then</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name =
+wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,type = wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,mass = 1000. (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,n = 5 (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp; endif</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>or
+to specify nitrogen content using a C:N ratio </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>If day = 100 then</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name =
+wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+, type = wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+, mass = 1000. (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+, cnr = 80 ()</p>
+
+<p class=code>&nbsp;&nbsp; endif</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>If
+the simulation is to contain a phosphorus balance then the phosphorus content
+of the added residue must also be added.&nbsp; For the examples above the user
+would add the extra information as follows:</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>&nbsp;&nbsp; If day = 100 then</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name =
+wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,type = wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,mass = 1000. (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,n = 5 (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,p = 2 (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp; endif</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>or
+to specify phosphorus content using a C:P ratio </p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=code>&nbsp;&nbsp; If day = 100 then</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name =
+wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;,type = wheat</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,mass = 1000. (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,n = 5 (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,cpr = 200 (kg/ha)</p>
+
+<p class=code>&nbsp;&nbsp; endif</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>An
+example of how a source of manure (named FYM which will have its C content
+specified in the surfaceOM.ini file) would be applied at 10 t ha<sup>-1</sup>
+and incorporated using the C:N and C:P ratios to specify the N and P contents
+is:</p>
+
+<p class=code>&nbsp;&nbsp; If day = 100 then</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name =
+fym1</p>
+
+<p class=code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span lang=SV style='mso-ansi-language:SV'>,type = fym<o:p></o:p></span></p>
+
+<p class=code><span lang=SV style='mso-ansi-language:SV'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,mass = 10000. (kg/ha)<o:p></o:p></span></p>
+
+<p class=code><span lang=SV style='mso-ansi-language:SV'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=FR style='mso-ansi-language:FR'>,cnr = 15 ()<o:p></o:p></span></p>
+
+<p class=code><span lang=FR style='mso-ansi-language:FR'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+,cpr = 30 ()<o:p></o:p></span></p>
+
+<p class=code><span lang=FR style='mso-ansi-language:FR'><span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>surfaceom
+tillage_single<span style="mso-spacerun: yes">&nbsp; </span>name = fym1, type =
+hoe ()<o:p></o:p></span></p>
+
+<p class=code><span lang=FR style='mso-ansi-language:FR'>&nbsp;&nbsp; endif<o:p></o:p></span></p>
+
+<p class=code><span lang=FR style='mso-ansi-language:FR'>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Note
+that the &#8216;tillage_single&#8217; action will only incorporate the surface OM specified
+by &#8216;name&#8217; as fym1.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Guidelines
+on characterization of manures are provided in Appendix 1.&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=title2>&nbsp;Use of variables in user-defined manager commands</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><i>APSIM
+Manager Example:</i></p>
+
+<p class=code>if surfaceom.surfaceom_wt &gt; 4.0 then</p>
+
+<p class=code>&nbsp;&nbsp; remove_amount = surfaceom.surfaceom_wt - 4.0</p>
+
+<p class=code>&nbsp;&nbsp; remove_fraction =
+remove_amount/surfaceom.surfaceom_wt</p>
+
+<p class=code>&nbsp;&nbsp; surfaceom tillage type=user_defined, f_incorp =
+remove_fraction , tillage_depth=0.0 </p>
+
+<p class=code>endif</p>
+
+<p class=code>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><i><span
+style='font-family:"Times New Roman"'><br clear=all style='mso-special-character:
+line-break'>
+</span></i></b><span style='font-family:"Times New Roman"'><o:p></o:p></span></p>
+
+<p class=title2>SurfaceOM module outputs</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<table border=1 cellpadding=0 style='mso-cellspacing:1.5pt;border:solid #666666 .75pt;
+ mso-padding-alt:0cm 0cm 0cm 0cm'>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>Name<o:p></o:p></span></b></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>Units<o:p></o:p></span></b></p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='font-size:14.0pt;color:black'>TOTAL Surface OM <o:p></o:p></span></b></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>&nbsp;<o:p></o:p></span></b></p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>&nbsp;<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_wt</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Total
+  mass of all surface organic materials</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_c</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Total
+  mass of organic carbon </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_n</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Total
+  mass of organic nitrogen </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_p</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Total
+  mass of organic nitrogen </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_no3</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Total
+  mass of nitrate </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_nh4</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Total
+  mass of ammonium </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_labile_p</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Total
+  mass of labile phosphorus </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_cover</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>0-1</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Fraction
+  of ground covered by all surface OM&#8217;s</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>tf</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>0-1</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Temperature
+  factor for decomposition</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>wf</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>0-1</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Water
+  factor for decomposition</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>cf</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>0-1</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Contact
+  factor for decomposition</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='font-size:14.0pt;color:black'>INDIVIDUAL Surface Om&#8217;s <o:p></o:p></span></b></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>&nbsp;<o:p></o:p></span></b></p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#CCCCCC;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span
+  style='color:black'>&nbsp;<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_wt_<i>xxxx&nbsp;&nbsp;
+  </i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of the SurfaceOM named &#8216;<i>xxxx&#8217;</i>&nbsp; *</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_c_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic carbon in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_n_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic nitrogen in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_p_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic nitrogen in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_no3_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of nitrate in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_nh4_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of ammonium in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_labile_p_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of labile phosphorus in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_c1_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic carbon in &#8216;<i>xxxx&#8217;</i> in fpool1</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_c2_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic carbon in &#8216;<i>xxxx&#8217;</i> in fpool2</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_c3_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic carbon in &#8216;<i>xxxx&#8217;</i> in fpool3</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_n1_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic nitrogen in &#8216;<i>xxxx&#8217;</i> in fpool1</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_n2_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic nitrogen in &#8216;<i>xxxx&#8217;</i> in fpool2</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_n3_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic nitrogen in &#8216;<i>xxxx&#8217;</i> in fpool3</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_p1_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic phosphorus in &#8216;<i>xxxx&#8217;</i> in fpool1</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_p2_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic phosphorus in &#8216;<i>xxxx&#8217;</i> in fpool2</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_p3_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Mass
+  of organic phosphorus in &#8216;<i>xxxx&#8217;</i> in fpool3</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>pot_c_decomp_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Potential
+  organic C decomposition in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>pot_n_decomp_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Potential
+  organic N decomposition in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>pot_p_decomp_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>kg/ha</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Potential
+  organic P decomposition in &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>standing_fraction_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>0-1</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Fraction
+  of &#8216;<i>xxxx&#8217;</i> which is inert, ie not in contact with the ground</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>surfaceom_cover_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>0-1</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Fraction
+  of ground covered by &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>cnrf_<i>xxxx</i></p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>0-1</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#EEEEEE;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>C:N
+  ratio factor for decomposition for &#8216;<i>xxxx&#8217;</i></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=215 valign=top style='width:161.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+  </td>
+  <td width=57 valign=top style='width:42.75pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+  </td>
+  <td width=319 valign=top style='width:239.25pt;border:none;background:#DDDDDD;
+  padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>*&nbsp;
+-&nbsp;&nbsp; &#8216;<i>xxxx&#8217;</i> is the &#8216;name&#8217; of an individual surface organic
+material, for example &#8216;wheat&#8217;, &#8216;lucerne&#8217;, &#8216;ox_manure&#8217; etc</p>
+
+<p class=title1>&nbsp;</p>
+
+<p class=title2>References</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Probert
+M.E., Dimes J.P., Keating B.A., Dalal R.C., Strong W.M.&nbsp; <i>APSIM&#8217;s water
+and nitrogen modules and simulation of the dynamics of water and nitrogen in
+fallow systems, </i>Agric. Syst. 56 (1998), pp 1-28.</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Thorburn
+P.J., Probert M.E., Robertson F.A.&nbsp; <i>Modelling decomposition of sugar
+cane surface residues with APSIM-Residue,</i> Field Crops Research 70 (2001),
+pp 223-232</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;</p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=title2>&nbsp;APPENDIX</p>
+
+<h1>Guidelines for characterizing manure</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In APSIM the organic forms of C, N and P in OM additions are
+distributed between three pools.<span style="mso-spacerun: yes">&nbsp;
+</span>Upon incorporation these pools are added to the corresponding FPOOLs
+(i.e. carbohydrate, cellulose, lignin) that comprise FOM (fresh organic matter)
+in the SoilN module.<span style="mso-spacerun: yes">&nbsp; </span>To date all
+efforts to simulate the effects of manure have been for situations where the
+manure has been fully incorporated soon after application.<span
+style="mso-spacerun: yes">&nbsp; </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The minimum data required to specify a manure source are the
+same as those required for any other OM source:<span style="mso-spacerun:
+yes">&nbsp; </span>a name (to specify a particular batch of manure), a type (to
+distinguish the type of manure), its composition (C, N and P) and the allocation
+of C, N and P to the three pools.<span style="mso-spacerun: yes">&nbsp; </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The fraction of C in the manure and the allocation of C, N
+and P between the pools is stipulated for the particular manure type in the
+SurfaceOM.ini file (as in the example below) but the contents of N and P are input
+as part of the manager command when manure is added to the system (either as
+amounts (kg/ha) or as C:N and C:P ratios) as shown in the previous sections of
+this document.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>[standard.surfaceom.fym]<br>
+fom_type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp; fym<br>
+fraction_C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp;
+0.30&nbsp;&nbsp;&nbsp;<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;
+</span>! The fraction of carbon in HQM (0-1)<br>
+pot_decomp_rate&nbsp; =&nbsp; 0.01 ! Decomposition rate (day<sup>-1</sup>) for
+manure on soil surface<br>
+fr_c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp; 0.1 0.5 0.4<span style="mso-spacerun: yes">&nbsp; </span>! The
+fractional allocation of carbon to each of the three pools<o:p></o:p></span></p>
+
+<p class=MsoBodyText><span style='color:windowtext'>fr_n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp; 0.1 0.5 0.4<span style="mso-spacerun: yes">&nbsp; </span>! The fractional
+allocation of nitrogen to each of the three pools<br>
+fr_p&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp; 0.1 0.5 0.4<span style="mso-spacerun: yes">&nbsp; </span>! The
+fractional allocation of phosphorus to each of the three pools<br>
+po4ppm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp;
+10.0&nbsp;&nbsp;&nbsp;&nbsp;<span style="mso-spacerun: yes">&nbsp;&nbsp;
+</span>! labile P concentration (ppm)<br>
+nh4ppm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp;
+100.0&nbsp;&nbsp;&nbsp;<span style="mso-spacerun: yes">&nbsp; </span>!
+ammonium-N concentration (ppm)<br>
+no3ppm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp;
+10.0&nbsp;&nbsp;&nbsp;<span style="mso-spacerun: yes">&nbsp; </span>&nbsp; !
+nitrate-N concentration (ppm)<br>
+specific_area&nbsp;&nbsp;&nbsp; =&nbsp; 0.0001<span style="mso-spacerun:
+yes">&nbsp; </span>! specific area (ha/kg)<br>
+cf_contrib&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp; 1<o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In this example, the allocation of C, N and P to the three
+pools is identical and so the C:N and C:P ratios of all three pools will be
+equal to those based on the total C, N and P concentrations.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>Modelling short-term dynamics</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Using data from laboratory incubation studies, it has been
+shown that the assumption of the same allocation of C and N across all three
+pools is not consistent with the observed pattern of mineralization for a range
+of manures (Probert et al. 2005).<span style="mso-spacerun: yes">&nbsp;
+</span>The initial period of immobilization of N (in the first few weeks) and the
+period before the system showed net mineralization could be simulated only if
+the FPOOLs had different C:N ratios.<span style="mso-spacerun: yes">&nbsp;
+</span>Probert et al. (2005) used information from proximate analysis of the
+manures to distribute C and N between the pools.<span style="mso-spacerun:
+yes">&nbsp; </span>They identified FPOOL1 with the soluble C and N components,
+FPOOL3 with the lignin carbon (ADL), and FPOOL3 by difference.<span
+style="mso-spacerun: yes">&nbsp; </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>An example: </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>fr_c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp; 0.10 0.70 0.20<span style="mso-spacerun: yes">&nbsp; </span>! The
+fractional allocation of carbon to each of the three pools<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Arial'>fr_n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp; 0.04 0.86 0.10<span style="mso-spacerun: yes">&nbsp; </span>! The
+fractional allocation of nitrogen to each of the three pools<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal>In this example there is relatively less N than C in pool 1
+so that this pool will have a wider C:N ratio than the whole manure.<span
+style="mso-spacerun: yes">&nbsp; </span>Because pool 1 is the fraction that
+decomposes fastest, there will be greater initial immobilization than if C:N
+ratio was the same in all three pools. <br>
+<span style="mso-spacerun: yes">&nbsp;</span><br style='mso-special-character:
+line-break'>
+<![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+<![endif]></p>
+
+<h2>Modelling long-term multi-season dynamics</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>To date, modelling exercises have not been done to
+investigate whether distribution of C, N and P between the pools affects the
+effectiveness of manures as sources of nutrients for crops in the
+longer&#8211;term.<span style="mso-spacerun: yes">&nbsp; </span>Experimental data to
+explore such effects are also lacking.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Simulation of short-term effects suggest that the
+consequence of different allocation of C and N between the pools diminishes
+over time so that the longer-term effects can be expected to be dependent more
+on the overall C:N ratio than the C:N ratios of the different pools.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In modelling field studies of the response by crops to
+inputs of manure (Dimes and Revanuru 2004), the quality aspect has been limited
+to varying the distribution of OM between the three pools, with the C:N being
+the same in each pool.<span style="mso-spacerun: yes">&nbsp; </span>Lower
+quality manures are assumed to have a greater proportion of C in FPOOL3 thereby
+releasing its nutrients more slowly.<span style="mso-spacerun: yes">&nbsp;
+</span>The values used to simulate the high (HQM) and low (LQM) quality manures
+were as shown in the Table. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Table.<span style="mso-spacerun: yes">&nbsp; </span>Values
+used by Dimes and Revanuru (2004) to simulate high and low quality manures. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0cm 5.4pt 0cm 5.4pt'>
+ <tr>
+  <td width=127 valign=top style='width:95.4pt;border:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>fract_C</p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>cnr</p>
+  </td>
+  <td width=297 valign=top style='width:222.7pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>Allocation to pools</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=127 valign=top style='width:95.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>HQM</p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>0.16</p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>22</p>
+  </td>
+  <td width=297 valign=top style='width:222.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>fr_c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  =&nbsp; 0.0<span style="mso-spacerun: yes">&nbsp; </span>0.20<span
+  style="mso-spacerun: yes">&nbsp; </span>0.80<span style="mso-spacerun:
+  yes">&nbsp; </span><o:p></o:p></span></p>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+  font-family:Arial'>fr_n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  =&nbsp; 0.0<span style="mso-spacerun: yes">&nbsp; </span>0.20<span
+  style="mso-spacerun: yes">&nbsp; </span>0.80<span style="mso-spacerun:
+  yes">&nbsp; </span></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=127 valign=top style='width:95.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=297 valign=top style='width:222.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=127 valign=top style='width:95.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>LQM</p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>0.25</p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal>35</p>
+  </td>
+  <td width=297 valign=top style='width:222.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>fr_c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  =&nbsp;<span style="mso-spacerun: yes">&nbsp; </span>0.0<span
+  style="mso-spacerun: yes">&nbsp; </span>0.01<span style="mso-spacerun:
+  yes">&nbsp; </span>0.99<span style="mso-spacerun: yes">&nbsp; </span><o:p></o:p></span></p>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+  font-family:Arial'>fr_n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  =&nbsp;<span style="mso-spacerun: yes">&nbsp; </span>0.0<span
+  style="mso-spacerun: yes">&nbsp; </span>0.01<span style="mso-spacerun:
+  yes">&nbsp; </span>0.99<span style="mso-spacerun: yes">&nbsp; </span></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=127 valign=top style='width:95.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=72 valign=top style='width:54.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=297 valign=top style='width:222.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>References</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Dimes, J.P. and Revanuru, S. (2004).<span
+style="mso-spacerun: yes">&nbsp; </span>Evaluation of APSIM to simulate plant
+growth response to applications of organic and inorganic N and P on an Alfisol
+and Vertisol in India.<span style="mso-spacerun: yes">&nbsp; </span><i
+style='mso-bidi-font-style:normal'>In </i>&#8220;Modelling Nutrient Management in
+Tropical Cropping Systems&#8221; (eds R.J. Delve and M.E. Probert) pp 118-125.<span
+style="mso-spacerun: yes">&nbsp; </span><span lang=PT style='mso-ansi-language:
+PT'>ACIAR Proceedings No. 114.<span style="mso-spacerun: yes">&nbsp;
+</span>(ACIAR: Canberra).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=PT style='mso-ansi-language:PT'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=PT style='mso-ansi-language:PT'>Probert, M.E., Delve,
+R.J., Kimani, S.K. and Dimes, J.P. (2005).<span style="mso-spacerun:
+yes">&nbsp; </span></span>Modelling nitrogen mineralization from manures:
+representing quality aspects by varying C:N ratios of sub-pools.<span
+style="mso-spacerun: yes">&nbsp;&nbsp; </span><i>Soil Biology &amp;
+Biochemistry </i><b>37</b>, 279-287<i>.</i></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

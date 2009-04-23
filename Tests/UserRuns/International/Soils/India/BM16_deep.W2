@@ -1,0 +1,73 @@
+!Title = BM16C_deep, Vertisol, Typic pellustert (PAWC = 154mm, 1.5m)
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+[run%.sorg.parameters]
+
+ll =#LL
+kl =  0.07    0.07    0.07    0.07    0.07    0.07  ()
+xf =  1.00    1.00    1.00    1.00    1.00    1.00  ()
+
+
+[run%.maize.parameters]
+   
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040 () ! rate of soil water extraction
+xf  =  1.0     1.0     1.0     1.0     1.0     1.0   () 
+
+[run%.pigeonp.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040    () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000    () ! root exploration factor
+
+[run%.soilwat2.parameters]
+
+   max_evap        = 6        (mm)   ! maximum evaporation.
+   runoff_filename = blank           !if blank, runoff predicted using CN2                   
+   cona            = $cona    ()     ! stage 2 evap coef.                       
+   diffus_const    =  40.0    ()     !(?)   ! coeffs for rate of water movement by diffusion
+   diffus_slope    =  16.0    ()     !(?)   !     "
+   u               =  $uritch (mm)   ! stage 1 soil evaporation coefficient (mm)    
+   salb            =   0.05   ()     ! bare soil albedo                         
+                              
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        =  $cn2    ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+   ! layer       1       2       3       4       5       6         
+   dlayer  =   150.000  150.000 300.000 300.000 300.000 300.000   (mm)    ! layer depth                            
+   air_dry =     0.080    0.148   0.150   0.119   0.118   0.104   (mm/mm) ! air dry                               
+   ll15    =     0.130    0.148   0.150   0.119   0.118   0.104   (mm/mm) ! lower limit                    
+   dul     =     0.252    0.244   0.258   0.226   0.210   0.201   (mm/mm) ! drained upper limit                             
+   sat     =     0.439    0.422   0.384   0.384   0.346   0.346   (mm/mm) ! saturated soil water                  
+!   sw      =     0.206    0.253   0.241   0.192   0.189   0.209   (mm/mm) ! initial sw sorg+pp plots kharif 99                            
+   swcon   =     0.200    0.200   0.200   0.200   0.200   0.200   ()      ! soil conductivity                     
+   bd      =     1.300    1.400   1.500   1.500   1.600   1.600   (g/cc)  ! bulk density gm dry soil/cc moist soil
+!  sw      =     0.080    0.099   0.079   0.079   0.082   0.083   (mm/mm) ! initial sw rabi 99, irrig, post-pp                                                                    
+!  sw      =     0.110    0.148   0.173   0.119   0.118   0.104   (mm/mm) ! initial sw rabi 99, rf, post-pp                                                                    
+
+
+[*variables]
+
+   $cona = "Cona : " 3.5 real
+   $uritch = "Uritch : " 6.0 real
+   $cn2 = "Runoff curve number for BARE soil : " 75.0 real
+
+

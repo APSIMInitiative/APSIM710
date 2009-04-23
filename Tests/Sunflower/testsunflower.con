@@ -1,0 +1,34 @@
+version = 7.0(2)
+[APSIM.test1_Sunflower]
+title=Test sowing before out
+module = clock   testsunflower.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testsunflower.par[test1]  testsunflower.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testsunflower.par[test1]   testsunflower.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = CropMod(sunflower)   testsunflower.par [all] %apsim%/Model/sunflower.xml [standard]
+
+[APSIM.test2_Sunflower]
+title=Test sowing after out on same day
+module = clock   testsunflower.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testsunflower.par[test2]  testsunflower.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testsunflower.par[test2]   testsunflower.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = CropMod(sunflower)   testsunflower.par [all] %apsim%/Model/sunflower.xml [standard]
+
+[APSIM.test3_Sunflower]
+title=Test sowing next day after out
+module = clock   testsunflower.par [all] %apsim%/Model/clock.xml [standard]
+module = report     testsunflower.par[test3]  testsunflower.par[all]
+module = input(met)        %apsim%/Examples/MetFiles/dalby.met[weather]
+module = manager    testsunflower.par[test3]   testsunflower.par[all]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
+module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [legume_residue] %apsim%/Model/SurfaceOM.xml [standard]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = CropMod(sunflower)   testsunflower.par [all] %apsim%/Model/sunflower.xml [standard]
+

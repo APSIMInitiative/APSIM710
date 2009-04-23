@@ -1,0 +1,198 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = APSwim Test 1
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                       "solute" = %apsim%\Model\solute.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1995
+     Simulation end date   = 10/01/1995
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.day
+        clock.year
+        SWIM2.subsurface_drain
+        SWIM2.drain
+        SWIM2.water_table
+        SWIM2.sw
+        solute.br
+
+     Output file = test1.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: SAMPLE.MET
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     imperm_depth =     3000.000
+             exceeds upper limit of    2000.000
+     Component name: SWIM2
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.00  0.247  0.070  0.247  0.370
+            25.0  1.00  0.247  0.070  0.247  0.370
+            70.0  1.00  0.247  0.070  0.247  0.370
+           125.0  1.00  0.247  0.070  0.247  0.370
+           150.0  1.00  0.247  0.070  0.247  0.370
+           150.0  1.00  0.247  0.070  0.247  0.370
+           150.0  1.00  0.247  0.070  0.247  0.370
+           200.0  1.00  0.247  0.070  0.247  0.370
+           225.0  1.00  0.370  0.070  0.247  0.370
+           250.0  1.00  0.370  0.070  0.247  0.370
+           300.0  1.00  0.370  0.070  0.247  0.370
+           250.0  1.00  0.370  0.070  0.247  0.370
+           100.0  1.00  0.370  0.070  0.247  0.370
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.2471183     -0.100    130.000
+            10.0  -             0.2471183     -0.100    130.000
+            50.0  -             0.2471183     -0.100    130.000
+           150.0  -             0.2471183     -0.100    130.000
+           300.0  -             0.2471183     -0.100    130.000
+           450.0  -             0.2471183     -0.100    130.000
+           600.0  -             0.2471183     -0.100    130.000
+           750.0  -             0.2471183     -0.100    130.000
+          1000.0  -             0.3700000      0.000    130.000
+          1200.0  -             0.3700000      0.020    130.000
+          1500.0  -             0.3700000      0.050    130.000
+          1800.0  -             0.3700000      0.080    130.000
+          2000.0  soil1         0.3700000      0.100    130.000
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.07023    0.07023    0.07023    0.07023    0.07023    0.07023    0.07023
+            -1.00 |    0.13907    0.13907    0.13907    0.13907    0.13907    0.13907    0.13907
+            -0.10 |    0.24712    0.24712    0.24712    0.24712    0.24712    0.24712    0.24712
+            -0.01 |    0.36599    0.36599    0.36599    0.36599    0.36599    0.36599    0.36599
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00277    0.00277    0.00277    0.00277    0.00277    0.00277    0.00277
+            -0.10 |    1.55516    1.55516    1.55516    1.55516    1.55516    1.55516    1.55516
+            -0.01 |  115.32992  115.32992  115.32992  115.32992  115.32992  115.32992  115.32992
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-05 .100E-05 .100E-01 2.00 1.00        0.100
+     
+     
+     
+     
+          Bypass flow is active
+          depth(node)   conductance  storage
+          ----------------------------------
+           180.(  11)        0.1000    0.100
+     
+     
+     
+          Runoff calculated using runoff functions
+          p%hm1   p%hm0   p%hrc   p%roff0   p%roff1
+          2.0   1.0   5.0    2.00    2.00
+     
+     
+     
+          top boundary condition = conductance function
+            initial      minimum    precipitation
+          conductance  conductance     constant
+          ---------------------------------------
+               4.0000       0.0200         2.5000
+     
+     
+     
+          bottom boundary condition = specified potential
+     
+     
+     
+     
+          vapour conductivity = off
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- solute Initialisation -------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+10 January 1995(Day of year=10), clock: 
+     Simulation is terminating due to end criteria being met.

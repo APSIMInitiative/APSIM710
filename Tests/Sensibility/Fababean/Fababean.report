@@ -1,0 +1,443 @@
+<report version="5">
+<Data>
+<ApsimFileReader name="Dalby600File" Left="0" Top="0">
+    <FileName type="filenames">Dalby600.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="roma400File" Left="200" Top="0">
+    <FileName type="filenames">roma400.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="roma800File" Left="400" Top="0">
+    <FileName type="filenames">roma800.out</FileName>
+  </ApsimFileReader>
+<ApsimFileReader name="Dalby1500File" Left="600" Top="0">
+    <FileName type="filenames">Dalby1500.out</FileName>
+  </ApsimFileReader>
+<Probability name="Dalby600Prob" Left="0" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>Dalby600File</source>
+  </Probability>
+<Probability name="roma400Prob" Left="200" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>roma400File</source>
+  </Probability>
+<Probability name="roma800Prob" Left="400" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>roma800File</source>
+  </Probability>
+<Probability name="Dalby1500Prob" Left="600" Top="200">
+    <FieldName type="fieldnames">yield</FieldName>
+    <source>Dalby1500File</source>
+  </Probability>
+</Data>
+   <page> <![CDATA[
+object QuickRepPage1: TQuickRep
+  Left = 43
+  Top = 0
+  Width = 714
+  Height = 1010
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = A4
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2970
+    0
+    2100
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 90
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 714
+    Height = 1010
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2970
+      2099.02777777778)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 84
+      Top = 171
+      Width = 576
+      Height = 342
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1005.41666666667
+        248.046875
+        502.708333333333
+        1693.33333333333)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = 'Cumulative probability (%)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Fababean Grain Yield (kg/ha)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.Increment = 500
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Fababean Grain Yield (kg/ha)'
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 10
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Cumulative probability (%)'
+        Legend.CustomPosition = True
+        Legend.Left = 100
+        Legend.LegendStyle = lsSeries
+        Legend.Top = 30
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series1: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Dalby600Prob
+          Title = 'Dalby 600'
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Dalby1500Prob
+          Title = 'Dalby1500'
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = roma400Prob
+          Title = 'roma400'
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+        object Series4: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = roma800Prob
+          Title = 'roma800'
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'yield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Probability'
+        end
+      end
+    end
+    object Graph2: TGraph
+      Left = 84
+      Top = 549
+      Width = 576
+      Height = 342
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1005.41666666667
+        248.046875
+        1613.95833333333
+        1693.33333333333)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = 'Fababean Grain Yield (kg/ha)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Fababean Transpiration (mm)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.Increment = 10
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 239.636
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Fababean Transpiration (mm)'
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 10
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Fababean Grain Yield (kg/ha)'
+        Legend.CustomPosition = True
+        Legend.Left = 100
+        Legend.LegendStyle = lsSeries
+        Legend.Top = 30
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object LineSeries1: TPointSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Callout.Length = 8
+          Marks.Visible = False
+          DataSource = Dalby600File
+          Title = 'Dalby 600'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'sum_ep'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'yield'
+        end
+        object LineSeries2: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Callout.Length = 8
+          Marks.Visible = False
+          DataSource = Dalby1500File
+          Title = 'Dalby1500'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'sum_ep'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'yield'
+        end
+        object LineSeries3: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Callout.Length = 8
+          Marks.Visible = False
+          DataSource = roma400File
+          Title = 'roma400'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'sum_ep'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'yield'
+        end
+        object LineSeries4: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Callout.Length = 8
+          Marks.Visible = False
+          DataSource = roma800File
+          Title = 'roma800'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'sum_ep'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'yield'
+        end
+      end
+    end
+    object Text1: TText
+      Left = 241
+      Top = 36
+      Width = 267
+      Height = 27
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        79.375
+        708.49537037037
+        105.833333333333
+        784.930555555556)
+      Alignment = taCenter
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -24
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      Lines.Strings = (
+        'Fababean Sensibility Test')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Fababean Sensibility Test'#13#10
+      FontSize = 18
+    end
+    object Text2: TText
+      Left = 83
+      Top = 94
+      Width = 569
+      Height = 23
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        67.6157407407407
+        244.00462962963
+        276.342592592593
+        1672.75462962963)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        
+          'Fababean yields for 1957 to 2002 for Dalby and Roma on a Waco Bl' +
+          'ack Earth for 600 or 1500 mm of wet soil.')
+      Transparent = False
+      WordWrap = True
+      text = 
+        'Fababean yields for 1957 to 2002 for Dalby and Roma on a Waco Bl' +
+        'ack Earth for 600 or 1500 mm of wet soil.'#13#10
+      FontSize = 10
+    end
+  end
+end
+]]>
+   </page>
+</report>

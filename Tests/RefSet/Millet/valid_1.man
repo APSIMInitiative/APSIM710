@@ -1,0 +1,772 @@
+! Changes jpd 9 April 1997
+!
+! jpd  1. Removed Residue, initialising with residue_wt = 0, therefore not necessary.
+! jpd  2. Soilwat and Soiln now point to "Soils.par". Same soil description now in use 
+!          for both pigeonpea and millet (RCE 2 and RCE 24)
+! jpd  3. Millet (and tiller modules) also point to "soils.par" for LL and kl.
+! jpd  4. As a result, rooting depth is now 170cm and PAWC is 189mm (from 180cm and 255mm)
+! jpd  5. Fixed sw update with grav% in the manager 
+! jpd  6  Changed start date to 170. Since update with measured mineral N on day 174
+!          not necessary to apply Fertiliserr on day 154
+!
+! Changes gol 24 October 1997
+! gol  7. Patancheru solar radiation data calculated for 1974 to 1977 (pat74-97.aps) 
+! gol  8. Jodhpur solar radiation data calculated for all years except 1993/4 when
+!          it was measured (jod63-97.aps) Oct-Dec 1974 and Dec 1977 still missing 
+! gol  9. Residue module added back, Irrigate module added where irrigation used
+! gol 10. Special weather data file made with extended daylength by amending latitude
+!          (pat85ed1.aps and pat86ed.aps) located in c:\apsim_~3\millet\millet DIR
+! gol 11. Fertiliserr proportions corrected in Fertiliser par file (not ini)
+ 
+[pat77_rf.report.parameters]    
+Outputfile =val_1.out   
+
+[pat77_irr.report.parameters]    
+Outputfile =val_2.out   
+
+[pat78.report.parameters]    
+Outputfile =val_3.out   
+
+[pat82_d1.report.parameters]    
+Outputfile =val_4.out   
+
+[pat82_d2.report.parameters]    
+Outputfile =val_5.out   
+
+[pat82_d3.report.parameters]    
+Outputfile =val_6.out   
+
+[pat82_d4.report.parameters]    
+Outputfile =val_7.out   
+
+[pat85_nd.report.parameters]    
+Outputfile =val_8.out   
+
+[pat85_ed1.report.parameters]    
+Outputfile =val_9.out   
+
+[pat85_ed2.report.parameters]    
+Outputfile =val_10.out   
+
+[pat86_d1.report.parameters]    
+Outputfile =val_11.out   
+
+[pat86_d2.report.parameters]    
+Outputfile =val_12.out   
+
+[pat86_ed_d1.report.parameters]    
+Outputfile =val_13.out   
+
+[pat86_ed_d2.report.parameters]    
+Outputfile =val_14.out   
+
+[pat95_wrajpop.report.parameters]    
+Outputfile =val_15.out   
+
+[pat95_rcbic911.report.parameters]    
+Outputfile =val_16.out   
+
+[jod95_n0.report.parameters]    
+Outputfile =val_17.out   
+
+[jod95_n20.report.parameters]    
+Outputfile =val_18.out   
+
+[jod95_n40.report.parameters]    
+Outputfile =val_19.out   
+
+[jod96_n0.report.parameters]    
+Outputfile =val_20.out   
+
+[jod96_n20.report.parameters]    
+Outputfile =val_21.out   
+
+[jod96_n40.report.parameters]    
+Outputfile =val_22.out   
+
+[pat97_bj104.report.parameters]    
+Outputfile =val_23.out   
+
+[pat97_hhb67.report.parameters]    
+Outputfile =val_24.out   
+
+[pat97_rcbic911.report.parameters]    
+Outputfile =val_25.out   
+
+[pat97_wrajpop.report.parameters]    
+Outputfile =val_26.out   
+
+[pat94_wrajpop.report.parameters]    
+Outputfile =val_27.out   
+
+[pat94_rcbic911.report.parameters]    
+Outputfile =val_28.out   
+
+[pat77.clock.parameters]    
+start_date=1/10/1977
+end_date=1/3/1978
+
+[pat78.clock.parameters]    
+start_date=1/6/1978
+end_date=30/9/1978
+
+[pat82.clock.parameters]    
+start_date=9/6/1982
+end_date=24/9/1982
+
+[pat83.input.parameters]    
+simulation_start_day =    20   
+simulation_start_year =  1983   
+simulation_end_day =     150   
+simulation_end_year =   1983   
+
+[pat85.clock.parameters]    
+start_date=1/6/1985
+end_date=30/9/1985
+
+[pat86.clock.parameters]    
+start_date=1/6/1986
+end_date=30/9/1986
+
+[pat94.clock.parameters]    
+start_date=9/6/1994
+end_date=31/10/1994
+
+[pat95.clock.parameters]    
+start_date=19/6/1995
+end_date=31/10/1995
+
+[pat97.clock.parameters]    
+start_date=19/6/1997
+end_date=31/10/1997
+
+[jod95.clock.parameters]    
+start_date=18/6/1995
+end_date=31/10/1995
+
+[jod96.clock.parameters]    
+start_date=9/5/1996
+end_date=30/10/1996
+
+[daily.report.parameters]    
+!for daily output
+
+
+
+
+                                                              
+variable = clock.year
+variable = clock.day
+variable = millet.yield as y0
+variable = millet1.yield as y1
+variable = millet2.yield as y2
+variable = millet3.yield as y3
+variable = millet4.yield as y4
+variable = millet5.yield as y5
+variable = millet.biomass as bio0
+variable = millet1.biomass as bio1
+variable = millet2.biomass as bio2
+variable = millet3.biomass as bio3
+variable = millet4.biomass as bio4
+variable = millet5.biomass as bio5
+variable = millet.lai as lai0
+variable = millet1.lai as lai1
+variable = millet2.lai as lai2
+variable = millet3.lai as lai3
+variable = millet4.lai as lai4
+variable = millet5.lai as lai5
+[pat77_rf.Operations.parameters]    
+285  1977  Fertiliser apply amount = 25.6 (kg/ha), depth=10(mm), type=no3_n  !160 kg @ 16N:45P
+286  1977  millet sow plants =  26.7, sowing_depth = 30, cultivar = bj104  !for BK560
+287  1977  SoilWat set sw =  0.166  0.190  0.197  0.203  0.189  0.197  0.208
+288  1977  Irrigation apply amount = 15 (mm)
+289  1977  Irrigation apply amount = 15 (mm)
+299  1977  Irrigation apply amount = 20 (mm)
+
+[pat77_irr.Operations.parameters]    
+285  1977  Fertiliser apply amount = 25.6 (kg/ha), depth=10(mm), type=no3_n  !160 kg @ 16N:45P
+286  1977  millet sow plants =  26.7, sowing_depth = 30, cultivar = bj104  !for BK560
+287  1977  SoilWat set sw =  0.166  0.190  0.197  0.203  0.189  0.197  0.208
+288  1977  Irrigation apply amount = 15 (mm)
+289  1977  Irrigation apply amount = 15 (mm)
+299  1977  Irrigation apply amount = 20 (mm)
+316  1977  Irrigation apply amount = 25 (mm)
+328  1977  Irrigation apply amount = 25 (mm)
+344  1977  Irrigation apply amount = 25 (mm)
+
+[pat78.Operations.parameters]    
+176  1978  millet sow plants =  22.2, sowing_depth = 30, cultivar = bj104 !for BK 560
+188  1978  Fertiliser apply amount = 80 (kg/ha), depth=10(mm), type=no3_n                          
+209  1978  Fertiliser apply amount = 80 (kg/ha), depth=10(mm), type=no3_n                          
+
+[pat82_d1.Operations.parameters]    
+170  1982  millet sow plants =  5.0, sowing_depth = 30, cultivar = bj104
+185  1982  Fertiliser apply amount = 23 (kg/ha), depth=10(mm), type=can                         
+192  1982  Fertiliser apply amount =  5 (kg/ha), depth=10(mm), type=can                         
+
+[pat82_d2.Operations.parameters]    
+170  1982  millet sow plants =  14.9, sowing_depth = 30, cultivar = bj104
+185  1982  Fertiliser apply amount = 23 (kg/ha), depth=10(mm), type=can                         
+192  1982  Fertiliser apply amount =  5 (kg/ha), depth=10(mm), type=can                         
+
+[pat82_d3.Operations.parameters]    
+170  1982  millet sow plants =  28.8, sowing_depth = 30, cultivar = bj104
+185  1982  Fertiliser apply amount = 23 (kg/ha), depth=10(mm), type=can                         
+192  1982  Fertiliser apply amount =  5 (kg/ha), depth=10(mm), type=can                         
+
+[pat82_d4.Operations.parameters]    
+170  1982  millet sow plants =  40, sowing_depth = 30, cultivar = bj104
+185  1982  Fertiliser apply amount = 23 (kg/ha), depth=10(mm), type=can                         
+192  1982  Fertiliser apply amount =  5 (kg/ha), depth=10(mm), type=can                         
+
+[pat85.Operations.parameters]    
+171  1985  Fertiliser apply amount = 40 (kg/ha), depth=10(mm), type=NO3_N                         
+172  1985  millet sow plants =  9.0, sowing_depth = 30, cultivar = bj104
+196  1985  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+200  1985  Irrigation apply amount = 15 (mm) ! 15 used approx. as amount not known
+233  1985  Irrigation apply amount = 15 (mm) ! 15 used approx. as amount not known
+
+[pat86_d1.Operations.parameters]    
+169  1986  Fertiliser apply amount = 40 (kg/ha), depth=10(mm), type=urea 
+170  1986  millet sow plants =  4.5, sowing_depth = 30, cultivar = bj104
+182  1986  Irrigation apply amount = 15 (mm) ! 15 used approx. as amount not known
+204  1986  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type= urea 
+239  1986  Irrigation apply amount = 15 (mm) ! 15 used approx. as amount not known
+
+[pat86_d2.Operations.parameters]    
+169  1986  Fertiliser apply amount = 40 (kg/ha), depth=10(mm), type=urea 
+170  1986  millet sow plants = 12, sowing_depth = 30, cultivar = bj104
+182  1986  Irrigation apply amount = 15 (mm) ! 15 used approx. as amount not known
+204  1986  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea 
+239  1986  Irrigation apply amount = 15 (mm) ! 15 used approx. as amount not known
+
+[pat94_wrajpop.Operations.parameters]    
+161  1994  Fertiliser apply amount = 150 (kg/ha), depth=10(mm), type=dap!best guess for date and amount 
+166  1994  millet sow plants =  6.7, sowing_depth = 30, cultivar = wrajpop
+188  1994  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+
+[pat94_rcbic911.Operations.parameters]    
+161  1994  Fertiliser apply amount = 150 (kg/ha), depth=10(mm), type=dap!best guess for date and amount 
+166  1994  millet sow plants =  6.7, sowing_depth = 30, cultivar = rcbic911
+188  1994  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+
+[pat95_wrajpop.Operations.parameters]    
+171  1995  millet sow plants =  6.7, sowing_depth = 30, cultivar = wrajpop
+174  1995  SoilWat set sw = 0.168   0.197   0.226   0.257   0.257   0.190 0.190
+174  1995  SoilN set no3ppm= 6 16 11  4  2  2  2 ! last layer not observed
+174  1995  SoilN set nh4ppm= 3  2  3  4  10 5  5 ! last layer not observed 
+192  1995  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+249  1995  SoilWat set sw = 0.140   0.197   0.277   0.271   0.222   0.205 0.205
+249  1995  SoilN set no3ppm= 1  1  1  2  3  3  3   ! last layer not observed
+249  1995  SoilN set nh4ppm= 9  4  8  5  5  5  5   ! last layer not observed
+
+[pat95_rcbic911.Operations.parameters]    
+171  1995  millet sow plants =  6.7, sowing_depth = 30, cultivar = rcbic911
+174  1995  SoilWat set sw = 0.168   0.197   0.226   0.257   0.257   0.190 0.190
+174  1995  SoilN set no3ppm= 6 16 11  4  2  2  2 ! last layer not observed
+174  1995  SoilN set nh4ppm= 3  2  3  4 10  5  5 ! last layer not observed 
+192  1995  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+249  1995  SoilWat set sw = 0.140   0.197   0.277   0.271   0.222   0.205 0.205
+249  1995  SoilN set no3ppm= 1  1  1  2  3  3   3   ! last layer not observed
+249  1995  SoilN set nh4ppm= 9  4  8  5  5  5   5   ! last layer not observed
+
+[pat97_bj104.Operations.parameters]    
+182  1997  Fertiliser apply amount = 150 (kg/ha), depth=10(mm), type=dap
+183  1997  millet sow plants =  7.5, sowing_depth = 30, cultivar = bj104
+!189  1997  SoilN set oc=   0.48    0.53    0.49    0.42    0.30    0.18    0.18
+189  1997  SoilN set nh4ppm=   24.9    14.1    13.00   13.10   10.75   11.80   11.80
+189  1997  SoilN set no3ppm=   3.0     8.1     1.80    0.10    0.10    0.10    0.10
+189  1997  SoilWat set sw = 0.235   0.250   0.249   0.194   0.196   0.240   0.240
+211  1997  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+!225  1997  SoilN set oc=   0.94    0.62    0.53    0.44    0.30    0.26    0.26
+225  1997  SoilN set nh4ppm=   16.1    14.7    17.10   13.40   13.65   11.00   11.00
+225  1997  SoilN set no3ppm=   0.1     0.1     0.25    0.50    0.25    0.50    0.50
+225  1997  SoilWat set sw = 0.121   0.162   0.209   0.198   0.223   0.241   0.241
+!255  1997  SoilN set oc=   1.46    0.60    0.73    0.57    0.54    0.50    0.34
+255  1997  SoilN set nh4ppm=   11.3    18.1    10.85   10.50   10.35   8.65    9.5
+255  1997  SoilN set no3ppm=   0.1     0.1     0.10    0.10    0.10    0.10    0.1
+255  1997  SoilWat set sw = 0.263   0.270   0.277   0.202   0.217   0.231   0.236
+
+[pat97_hhb67.Operations.parameters]    
+182  1997  Fertiliser apply amount = 150 (kg/ha), depth=10(mm), type=dap
+183  1997  millet sow plants =  7.5, sowing_depth = 30, cultivar = hhb67
+!189  1997  SoilN set oc=   0.48    0.53    0.49    0.42    0.30    0.18    0.18
+189  1997  SoilN set nh4ppm=   24.9    14.1    13.00   13.10   10.75   11.80   11.80
+189  1997  SoilN set no3ppm=   3.0     8.1     1.80    0.10    0.10    0.10    0.10
+189  1997  SoilWat set sw = 0.235   0.250   0.249   0.194   0.196   0.240   0.240
+211  1997  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+!225  1997  SoilN set oc=   0.94    0.62    0.53    0.44    0.30    0.26    0.26
+225  1997  SoilN set nh4ppm=   16.1    14.7    17.10   13.40   13.65   11.00   11.00
+225  1997  SoilN set no3ppm=   0.1     0.1     0.25    0.50    0.25    0.50    0.50
+225  1997  SoilWat set sw = 0.121   0.162   0.209   0.198   0.223   0.241   0.241
+!255  1997  SoilN set oc=   1.46    0.60    0.73    0.57    0.54    0.50    0.34
+255  1997  SoilN set nh4ppm=   11.3    18.1    10.85   10.50   10.35   8.65    9.5
+255  1997  SoilN set no3ppm=   0.1     0.1     0.10    0.10    0.10    0.10    0.1
+255  1997  SoilWat set sw = 0.263   0.270   0.277   0.202   0.217   0.231   0.236
+
+[pat97_rcbic911.Operations.parameters]    
+182  1997  Fertiliser apply amount = 150 (kg/ha), depth=10(mm), type=dap
+183  1997  millet sow plants =  7.5, sowing_depth = 30, cultivar = rcbic911
+!189  1997  SoilN set oc=   0.48    0.53    0.49    0.42    0.30    0.18    0.18
+189  1997  SoilN set nh4ppm=   24.9    14.1    13.00   13.10   10.75   11.80   11.80
+189  1997  SoilN set no3ppm=   3.0     8.1     1.80    0.10    0.10    0.10    0.10
+189  1997  SoilWat set sw = 0.235   0.250   0.249   0.194   0.196   0.240   0.240
+211  1997  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+!225  1997  SoilN set oc=   0.94    0.62    0.53    0.44    0.30    0.26    0.26
+225  1997  SoilN set nh4ppm=   16.1    14.7    17.10   13.40   13.65   11.00   11.00
+225  1997  SoilN set no3ppm=   0.1     0.1     0.25    0.50    0.25    0.50    0.50
+225  1997  SoilWat set sw = 0.121   0.162   0.209   0.198   0.223   0.241   0.241
+!255  1997  SoilN set oc=   1.46    0.60    0.73    0.57    0.54    0.50    0.34
+255  1997  SoilN set nh4ppm=   11.3    18.1    10.85   10.50   10.35   8.65    9.5
+255  1997  SoilN set no3ppm=   0.1     0.1     0.10    0.10    0.10    0.10    0.1
+255  1997  SoilWat set sw = 0.263   0.270   0.277   0.202   0.217   0.231   0.236
+
+[pat97_wrajpop.Operations.parameters]    
+182  1997  Fertiliser apply amount = 150 (kg/ha), depth=10(mm), type=dap
+183  1997  millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
+!189  1997  SoilN set oc=   0.48    0.53    0.49    0.42    0.30    0.18    0.18
+189  1997  SoilN set nh4ppm=   24.9    14.1    13.00   13.10   10.75   11.80   11.80
+189  1997  SoilN set no3ppm=   3.0     8.1     1.80    0.10    0.10    0.10    0.10
+189  1997  SoilWat set sw = 0.235   0.250   0.249   0.194   0.196   0.240   0.240
+211  1997  Fertiliser apply amount = 100 (kg/ha), depth=10(mm), type=urea                        
+!225  1997  SoilN set oc=   0.94    0.62    0.53    0.44    0.30    0.26    0.26
+225  1997  SoilN set nh4ppm=   16.1    14.7    17.10   13.40   13.65   11.00   11.00
+225  1997  SoilN set no3ppm=   0.1     0.1     0.25    0.50    0.25    0.50    0.50
+225  1997  SoilWat set sw = 0.121   0.162   0.209   0.198   0.223   0.241   0.241
+!255  1997  SoilN set oc=   1.46    0.60    0.73    0.57    0.54    0.50    0.34
+255  1997  SoilN set nh4ppm=   11.3    18.1    10.85   10.50   10.35   8.65    9.5
+255  1997  SoilN set no3ppm=   0.1     0.1     0.10    0.10    0.10    0.10    0.1
+255  1997  SoilWat set sw = 0.263   0.270   0.277   0.202   0.217   0.231   0.236
+
+[jod95.Operations.parameters]    
+! SW set to LL15 on day 170, just before the first premonsoon rains
+180  1995  SoilWat set sw = 0.066   0.090   0.117   0.123   0.129   0.137   0.148 
+202  1995  millet sow plants =  9.0, sowing_depth = 40, cultivar = wrajpop
+
+[jod95_n0.Operations.parameters]    
+181  1995  SoilN set nh4ppm=   4.95    3.65    2.31    2.31    3.62    3.22    2.54
+181  1995  SoilN set no3ppm=   10.23   5.64    2.31    2.31    1.32    1.29    1.10
+187  1995  Fertiliser apply amount = 0 (kg/ha), depth=70(mm), type=no3_n                         
+209  1995  SoilWat set sw =   0.158   0.130   0.177   0.147   0.162   0.162   0.119 
+212  1995  SoilWat set sw =   0.168   0.140   0.172   0.137   0.142   0.151   0.143 
+215  1995  SoilWat set sw =   0.103   0.110   0.146   0.126   0.137   0.149   0.151 
+219  1995  SoilWat set sw =   0.094   0.108   0.137   0.118   0.126   0.139   0.148 
+221  1995  SoilWat set sw =   0.089   0.102   0.127   0.111   0.120   0.134   0.146 
+229  1995  SoilWat set sw =   0.087   0.084   0.107   0.101   0.109   0.123   0.137 
+236  1995  SoilWat set sw =   0.057   0.072   0.088   0.091   0.099   0.118   0.132 
+238  1995  SoilWat set sw =   0.130   0.133   0.128   0.091   0.094   0.109   0.128 
+241  1995  SoilWat set sw =   0.146   0.140   0.167   0.119   0.103   0.110   0.126 
+244  1995  SoilWat set sw =   0.106   0.113   0.137   0.115   0.112   0.113   0.123 
+251  1995  SoilWat set sw =   0.032   0.077   0.093   0.094   0.093   0.111   0.116 
+258  1995  SoilWat set sw =   0.020   0.062   0.062   0.070   0.074   0.086   0.099 
+265  1995  SoilWat set sw =   0.029   0.055   0.057   0.063   0.061   0.070   0.081 
+272  1995  SoilWat set sw =   0.027   0.050   0.056   0.059   0.058   0.066   0.073 
+279  1995  SoilWat set sw =   0.015   0.048   0.048   0.060   0.057   0.063   0.068 
+283  1995  SoilN set nh4ppm=   5.96    4.46    2.49    2.49    2.61    2.64    3.59
+283  1995  SoilN set no3ppm=   2.65    0.99    0.99    0.99    0.98    1.32    1.64
+286  1995  SoilWat set sw =   0.010   0.047   0.048   0.057   0.057   0.064   0.066 
+293  1995  SoilWat set sw =   0.017   0.045   0.048   0.057   0.055   0.063   0.065 
+300  1995  SoilWat set sw =   0.009   0.043   0.045   0.058   0.057   0.063   0.066 
+307  1995  SoilWat set sw =   0.021   0.044   0.045   0.059   0.057   0.064   0.063 
+314  1995  SoilWat set sw =   0.012   0.043   0.044   0.056   0.056   0.063   0.064 
+321  1995  SoilWat set sw =   0.012   0.043   0.046   0.057   0.055   0.062   0.066 
+328  1995  SoilWat set sw =   0.026   0.043   0.048   0.058   0.055   0.063   0.066 
+335  1995  SoilWat set sw =   0.020   0.041   0.045   0.056   0.055   0.063   0.064 
+342  1995  SoilWat set sw =   0.013   0.041   0.045   0.054   0.055   0.063   0.066 
+
+[jod95_n20.Operations.parameters]    
+181  1995  SoilN set nh4ppm=   4.95    3.65    2.31    2.31    3.62    3.22    2.54
+181  1995  SoilN set no3ppm=   10.23   5.64    2.31    2.31    1.32    1.29    1.10
+187  1995  Fertiliser apply amount = 20 (kg/ha), depth=70(mm), type=no3_n                         
+209  1995  SoilWat set sw =   0.117   0.132   0.173   0.155   0.163   0.158   0.113 
+212  1995  SoilWat set sw =   0.157   0.142   0.174   0.149   0.151   0.152   0.134 
+215  1995  SoilWat set sw =   0.092   0.114   0.147   0.130   0.141   0.150   0.137 
+219  1995  SoilWat set sw =   0.091   0.108   0.135   0.120   0.131   0.141   0.138 
+221  1995  SoilWat set sw =   0.063   0.100   0.126   0.116   0.126   0.136   0.137 
+229  1995  SoilWat set sw =   0.076   0.089   0.108   0.107   0.115   0.126   0.133 
+236  1995  SoilWat set sw =   0.061   0.073   0.093   0.099   0.108   0.117   0.131 
+238  1995  SoilWat set sw =   0.115   0.130   0.131   0.100   0.103   0.113   0.128 
+241  1995  SoilWat set sw =   0.139   0.133   0.149   0.124   0.112   0.113   0.126 
+244  1995  SoilWat set sw =   0.083   0.111   0.134   0.121   0.118   0.115   0.125 
+251  1995  SoilWat set sw =   0.032   0.068   0.086   0.092   0.101   0.108   0.117 
+258  1995  SoilWat set sw =   0.011   0.057   0.063   0.068   0.072   0.090   0.105 
+265  1995  SoilWat set sw =   0.024   0.052   0.055   0.064   0.064   0.073   0.087 
+272  1995  SoilWat set sw =   0.020   0.050   0.054   0.060   0.061   0.070   0.078 
+279  1995  SoilWat set sw =   0.010   0.047   0.049   0.060   0.061   0.067   0.073 
+283  1995  SoilN set nh4ppm=   4.97    4.32    2.99    2.99    1.99    3.61    3.91
+283  1995  SoilN set no3ppm=   3.31    1.33    1.33    1.33    1.66    1.63    0.98
+286  1995  SoilWat set sw =   0.013   0.045   0.050   0.060   0.061   0.066   0.068 
+293  1995  SoilWat set sw =   0.017   0.046   0.047   0.060   0.059   0.066   0.066 
+300  1995  SoilWat set sw =   0.010   0.040   0.049   0.060   0.059   0.066   0.068 
+307  1995  SoilWat set sw =   0.017   0.044   0.050   0.060   0.059   0.065   0.067 
+314  1995  SoilWat set sw =   0.018   0.042   0.048   0.058   0.059   0.065   0.068 
+321  1995  SoilWat set sw =   0.012   0.040   0.047   0.058   0.060   0.067   0.066 
+328  1995  SoilWat set sw =   0.029   0.040   0.046   0.057   0.059   0.065   0.068 
+335  1995  SoilWat set sw =   0.019   0.042   0.044   0.056   0.056   0.066   0.067 
+342  1995  SoilWat set sw =   0.013   0.041   0.046   0.059   0.059   0.066   0.066 
+
+[jod95_n40.Operations.parameters]    
+181  1995  SoilN set nh4ppm=   4.95    3.65    2.31    2.31    3.62    3.22    2.54
+181  1995  SoilN set no3ppm=   10.23   5.64    2.31    2.31    1.32    1.29    1.10
+187  1995  Fertiliser apply amount = 40 (kg/ha), depth=70(mm), type=no3_n                         
+209  1995  SoilWat set sw =   0.136   0.126   0.167   0.147   0.160   0.160   0.125 
+212  1995  SoilWat set sw =   0.168   0.135   0.163   0.136   0.144   0.150   0.148 
+215  1995  SoilWat set sw =   0.100   0.102   0.139   0.119   0.134   0.146   0.150 
+219  1995  SoilWat set sw =   0.092   0.103   0.128   0.115   0.122   0.139   0.145 
+221  1995  SoilWat set sw =   0.071   0.091   0.120   0.107   0.120   0.134   0.141 
+229  1995  SoilWat set sw =   0.041   0.074   0.100   0.096   0.108   0.124   0.135 
+236  1995  SoilWat set sw =   0.078   0.057   0.074   0.082   0.094   0.111   0.126 
+238  1995  SoilWat set sw =   0.130   0.133   0.147   0.101   0.093   0.107   0.122 
+241  1995  SoilWat set sw =   0.143   0.137   0.172   0.129   0.113   0.109   0.119 
+244  1995  SoilWat set sw =   0.095   0.109   0.135   0.117   0.116   0.113   0.119 
+251  1995  SoilWat set sw =   0.034   0.066   0.080   0.089   0.096   0.104   0.112 
+258  1995  SoilWat set sw =   0.017   0.052   0.053   0.060   0.070   0.079   0.091 
+265  1995  SoilWat set sw =   0.029   0.049   0.049   0.056   0.060   0.069   0.074 
+272  1995  SoilWat set sw =   0.045   0.048   0.048   0.057   0.058   0.065   0.065 
+279  1995  SoilWat set sw =   0.014   0.044   0.045   0.057   0.055   0.065   0.062 
+283  1995  SoilN set nh4ppm=   4.63    3.98    3.32    3.32    2.30    2.62    3.31
+283  1995  SoilN set no3ppm=   2.31    1.66    1.66    1.66    1.63    0.98    1.65
+286  1995  SoilWat set sw =   0.011   0.041   0.044   0.056   0.056   0.065   0.062 
+293  1995  SoilWat set sw =   0.015   0.042   0.044   0.056   0.054   0.063   0.061 
+300  1995  SoilWat set sw =   0.009   0.039   0.043   0.056   0.056   0.063   0.061 
+307  1995  SoilWat set sw =   0.015   0.043   0.041   0.054   0.055   0.061   0.061 
+314  1995  SoilWat set sw =   0.012   0.041   0.045   0.055   0.055   0.062   0.061 
+321  1995  SoilWat set sw =   0.012   0.040   0.042   0.054   0.056   0.061   0.062 
+328  1995  SoilWat set sw =   0.017   0.027   0.042   0.054   0.055   0.062   0.062 
+335  1995  SoilWat set sw =   0.075   0.038   0.042   0.054   0.055   0.062   0.061 
+342  1995  SoilWat set sw =   0.016   0.038   0.059   0.054   0.055   0.062   0.061 
+
+[jod96.Operations.parameters]    
+! SW set to LL15 on day 131, just before the first premonsoon rains
+131  1996  SoilWat set sw = 0.066   0.090   0.117   0.123   0.129   0.137   0.148 
+183  1996  millet sow plants =  9.0, sowing_depth = 40, cultivar = wrajpop
+
+[jod96_n0.Operations.parameters]    
+!observed NH4 data were suspiciously high and have been omitted 
+!observed NO3 data were suspiciously high and have been omiited (except initial)
+!(note increase of no3 day 201 compared to NO3 day 180 for even zero N treatment)
+!180  1996  SoilN set nh4 =   3.80    5.20    8.87    8.87    13.22   5.26    22.4
+180  1996  SoilN set no3 =   5.25    5.94    8.42    8.42    8.32    10.43   45.8
+183  1996  Fertiliser apply amount = 0 (kg/ha), depth=70(mm), type=no3_n                         
+190  1996  SoilWat set sw =   0.0645  0.0992  0.1099  0.1054  0.1152  0.1188  0.091
+197  1996  SoilWat set sw =   0.0545  0.0886  0.1036  0.0991  0.1085  0.1148  0.099
+199  1996  SoilWat set sw =   0.1601  0.1022  0.1005  0.0985  0.1065  0.1112  0.097
+200  1996  SoilWat set sw =   0.1557  0.1581  0.1722  0.1321  0.1124  0.1092  0.099
+!201  1996  SoilN set nh4 =   6.23    5.30    12.24   12.24   12.46   13.82   36.7
+!201  1996  SoilN set no3 =   11.48   9.65    18.69   18.69   8.82    11.75   69.3
+205  1996  SoilWat set sw =   0.0732  0.1091  0.1183  0.1187  0.1212  0.1231  0.114
+206  1996  SoilWat set sw =   0.1535  0.1516  0.1873  0.1483  0.1385  0.1262  0.112
+213  1996  SoilWat set sw =   0.0566  0.0977  0.1070  0.1064  0.1158  0.1251  0.121
+219  1996  SoilWat set sw =   0.1753  0.1601  0.1789  0.1616  0.1671  0.1642  0.150
+221  1996  SoilWat set sw =   0.1312  0.1302  0.1479  0.1346  0.1483  0.1510  0.161
+!222  1996  SoilN set nh4 =   9.32    6.32    13.23   13.23   11.97   10.03   21.3
+!222  1996  SoilN set no3 =   9.21    4.78    8.57    8.57    9.17    8.93    29.7
+225  1996  SoilWat set sw =   0.0737  0.1040  0.1179  0.1104  0.1232  0.1330  0.155
+228  1996  SoilWat set sw =   0.0464  0.0897  0.1010  0.1059  0.1135  0.1224  0.145
+232  1996  SoilWat set sw =   0.1011  0.0857  0.0884  0.0976  0.1059  0.1156  0.139
+236  1996  SoilWat set sw =   0.1481  0.1337  0.1593  0.1299  0.1263  0.1238  0.135
+!238  1996  SoilN set nh4 =   9.17    9.25    12.48   12.48   13.14   22.01   74.4
+!238  1996  SoilN set no3 =   9.36    8.29    14.51   14.51   13.22   11.12   53.4
+239  1996  SoilWat set sw =   0.0738  0.1128  0.1263  0.1141  0.1205  0.1215  0.136
+243  1996  SoilWat set sw =   0.0370  0.0928  0.0969  0.1010  0.1112  0.1163  0.130
+246  1996  SoilWat set sw =   0.0644  0.0902  0.0929  0.0955  0.1060  0.1111  0.129
+249  1996  SoilWat set sw =   0.0537  0.0847  0.0922  0.0928  0.1013  0.1090  0.125
+253  1996  SoilWat set sw =   0.0383  0.0735  0.0829  0.0840  0.0933  0.1028  0.120
+!254  1996  SoilN set nh4 =   7.87    8.36    12.78   12.78   14.38   13.94   39.0
+!254  1996  SoilN set no3 =   8.66    8.33    13.83   13.83   13.22   15.04   46.8
+257  1996  SoilWat set sw =   0.0382  0.0708  0.0774  0.0821  0.0898  0.1008  0.117
+261  1996  SoilWat set sw =   0.0241  0.0677  0.0685  0.0761  0.0835  0.0954  0.108
+265  1996  SoilWat set sw =   0.0288  0.0673  0.0671  0.0739  0.0813  0.0923  0.106
+269  1996  SoilWat set sw =   0.0233  0.0622  0.0652  0.0733  0.0792  0.0899  0.100
+273  1996  SoilWat set sw =   0.0142  0.0655  0.0637  0.0741  0.0758  0.0912  0.097
+!273  1996  SoilN set nh4 =   15.15   11.72   26.22   26.22   19.06   19.54   89.3
+!273  1996  SoilN set no3 =   5.10    5.18    13.90   13.90   6.32    3.51    16.8
+276  1996  SoilWat set sw =   0.0084  0.0642  0.0607  0.0686  0.0772  0.0999  0.096
+280  1996  SoilWat set sw =   0.0065  0.0598  0.0579  0.0690  0.0765  0.0858  0.095
+284  1996  SoilWat set sw =   0.0113  0.0617  0.0576  0.0690  0.0723  0.0846  0.090
+288  1996  SoilWat set sw =   0.0139  0.0572  0.0594  0.0673  0.0740  0.0833  0.090
+292  1996  SoilWat set sw =   0.0020  0.0617  0.0633  0.0727  0.0763  0.0860  0.091
+299  1996  SoilWat set sw =   0.0211  0.0602  0.0610  0.0700  0.0749  0.0843  0.088
+305  1996  SoilWat set sw =   0.0132  0.0593  0.0590  0.0675  0.0763  0.0841  0.090
+311  1996  SoilWat set sw =   0.0077  0.0595  0.0600  0.0704  0.0721  0.0837  0.088
+318  1996  SoilWat set sw =   0.0167  0.0598  0.0579  0.0690  0.0746  0.0826  0.089
+325  1996  SoilWat set sw =   0.0138  0.0604  0.0597  0.0693  0.0739  0.0819  0.088
+332  1996  SoilWat set sw =   0.0158  0.0588  0.0562  0.0697  0.0741  0.0823  0.087
+
+[jod96_n20.Operations.parameters]    
+!observed NH4 data were suspiciously high and have been omitted 
+!observed NO3 data were suspiciously high and have been omiited (except initial)
+!(note increase of no3 day 201 compared to NO3 day 180 for even zero N treatment)
+!180  1996  SoilN set nh4 =   3.80    5.20    8.87    8.87    13.22   5.26    22.4
+180  1996  SoilN set no3 =   5.25    5.94    8.42    8.42    8.32    10.43   45.8
+183  1996  Fertiliser apply amount = 20 (kg/ha), depth=70(mm), type=no3_n                         
+190  1996  SoilWat set sw =   0.0713  0.1006  0.1152  0.1108  0.1135  0.1176  0.095
+197  1996  SoilWat set sw =   0.0558  0.0916  0.1090  0.1045  0.1097  0.1127  0.103
+199  1996  SoilWat set sw =   0.1511  0.1000  0.1086  0.1061  0.1081  0.1116  0.105
+200  1996  SoilWat set sw =   0.1488  0.1377  0.1685  0.1295  0.1112  0.1100  0.103
+!201  1996  SoilN set nh4 =   18.80   5.81    8.07    8.07    16.53   14.87   58.3
+!201  1996  SoilN set no3 =   19.11   24.89   18.16   18.16   8.86    9.79    93.7
+205  1996  SoilWat set sw =   0.0683  0.1082  0.1295  0.1177  0.1198  0.1199  0.113
+206  1996  SoilWat set sw =   0.1542  0.1546  0.1693  0.1400  0.1301  0.1232  0.115
+213  1996  SoilWat set sw =   0.0468  0.0934  0.1104  0.1076  0.1119  0.1168  0.126
+219  1996  SoilWat set sw =   0.1648  0.1543  0.1931  0.1592  0.1644  0.1641  0.160
+221  1996  SoilWat set sw =   0.1344  0.1290  0.1608  0.1426  0.1475  0.1467  0.168
+!222  1996  SoilN set nh4 =   7.17    7.29    7.52    7.52    14.00   14.96   44.0
+!222  1996  SoilN set no3 =   10.26   5.63    7.44    7.44    7.62    8.15    24.2
+225  1996  SoilWat set sw =   0.0597  0.1019  0.1218  0.1157  0.1220  0.1286  0.153
+228  1996  SoilWat set sw =   0.0416  0.0899  0.1049  0.1055  0.1106  0.1187  0.135
+232  1996  SoilWat set sw =   0.0957  0.0842  0.0900  0.0957  0.1010  0.1135  0.136
+236  1996  SoilWat set sw =   0.1438  0.1413  0.1642  0.1364  0.1204  0.1108  0.126
+!238  1996  SoilN set nh4 =   9.68    8.06    13.53   13.53   18.58   17.39   42.7
+!238  1996  SoilN set no3 =   8.23    9.37    15.41   15.41   14.38   15.28   54.1
+239  1996  SoilWat set sw =   0.0650  0.1134  0.1322  0.1244  0.1232  0.1181  0.129
+243  1996  SoilWat set sw =   0.0435  0.0901  0.1102  0.1033  0.1075  0.1116  0.126
+246  1996  SoilWat set sw =   0.0637  0.0857  0.1009  0.0978  0.1027  0.1091  0.125
+249  1996  SoilWat set sw =   0.0476  0.0814  0.0914  0.0913  0.0958  0.1057  0.123
+253  1996  SoilWat set sw =   0.0387  0.0716  0.0757  0.0805  0.0853  0.0969  0.114
+!254  1996  SoilN set nh4 =   3.02    3.05    9.17    9.17    5.99    11.05   25.0
+!254  1996  SoilN set no3 =   4.94    5.28    9.55    9.55    10.11   10.65   25.2
+257  1996  SoilWat set sw =   0.0311  0.0679  0.0697  0.0746  0.0800  0.0943  0.110
+261  1996  SoilWat set sw =   0.0282  0.0628  0.0603  0.0692  0.0718  0.0836  0.099
+265  1996  SoilWat set sw =   0.0232  0.0602  0.0577  0.0689  0.0703  0.0819  0.095
+269  1996  SoilWat set sw =   0.0194  0.0600  0.0568  0.0657  0.0663  0.0797  0.088
+273  1996  SoilWat set sw =   0.0171  0.0594  0.0546  0.0626  0.0656  0.0777  0.084
+!273  1996  SoilN set nh4 =   11.03   13.12   13.38   13.38   23.86   12.51   43.8
+!273  1996  SoilN set no3 =   3.90    3.29    6.42    6.42    6.86    3.07    24.4
+276  1996  SoilWat set sw =   0.0096  0.0582  0.0576  0.0620  0.0634  0.0755  0.080
+280  1996  SoilWat set sw =   0.0076  0.0597  0.0532  0.0651  0.0635  0.0715  0.075
+284  1996  SoilWat set sw =   0.0100  0.0555  0.0547  0.0635  0.0619  0.0717  0.075
+288  1996  SoilWat set sw =   0.0141  0.0560  0.0541  0.0639  0.0607  0.0714  0.075
+292  1996  SoilWat set sw =   0.0036  0.0557  0.0552  0.0630  0.0633  0.0726  0.077
+299  1996  SoilWat set sw =   0.0113  0.0545  0.0522  0.0629  0.0623  0.0725  0.076
+305  1996  SoilWat set sw =   0.0091  0.0575  0.0524  0.0622  0.0637  0.0728  0.076
+311  1996  SoilWat set sw =   0.0065  0.0544  0.0543  0.0631  0.0621  0.0716  0.073
+318  1996  SoilWat set sw =   0.0162  0.0561  0.0544  0.0610  0.0628  0.0733  0.075
+325  1996  SoilWat set sw =   0.0110  0.0558  0.0530  0.0612  0.0622  0.0745  0.075
+332  1996  SoilWat set sw =   0.0157  0.0548  0.0517  0.0636  0.0623  0.0733  0.075
+
+[jod96_n40.Operations.parameters]    
+!observed NH4 data were suspiciously high and have been omitted 
+!observed NO3 data were suspiciously high and have been omiited (except initial)
+!(note increase of no3 day 201 compared to NO3 day 180 for even zero N treatment)
+! given a default for nh4, try to find amount of no3 that will give proper prediction for 40N
+!180  1996  SoilN set no3 =   7.00    7.00    4.20    2.80    2.80     2.80    8.40
+!180  1996  SoilN set nh4 =   3.80    5.20    8.87    8.87    13.22   5.26    22.4
+180  1996  SoilN set no3 =   5.25    5.94    8.42    8.42    8.32    10.43   45.8
+183  1996  Fertiliser apply amount = 40 (kg/ha), depth=70(mm), type=no3_n                         
+190  1996  SoilWat set sw =   0.0714  0.1004  0.1140  0.1067  0.1177  0.1201  0.106
+197  1996  SoilWat set sw =   0.0512  0.0919  0.1063  0.1016  0.1119  0.1129  0.111
+199  1996  SoilWat set sw =   0.1542  0.1050  0.1057  0.0982  0.1083  0.1136  0.112
+200  1996  SoilWat set sw =   0.1561  0.1572  0.1620  0.1186  0.1102  0.1106  0.113
+!201  1996  SoilN set nh4 =   8.49    5.47    17.30   17.30   13.73   16.34   41.0
+!201  1996  SoilN set no3 =   20.79   22.86   27.69   27.69   8.74    13.85   72.6
+205  1996  SoilWat set sw =   0.0701  0.1066  0.1241  0.1142  0.1197  0.1160  0.115
+206  1996  SoilWat set sw =   0.1524  0.1540  0.1720  0.1384  0.1277  0.1195  0.123
+213  1996  SoilWat set sw =   0.0485  0.0943  0.1043  0.1046  0.1160  0.1169  0.129
+219  1996  SoilWat set sw =   0.1716  0.1573  0.1913  0.1648  0.1732  0.1619  0.160
+221  1996  SoilWat set sw =   0.1333  0.1299  0.1545  0.1409  0.1482  0.1559  0.178
+!222  1996  SoilN set nh4 =   5.56    7.25    7.14    7.14    8.55    6.74    19.8
+!222  1996  SoilN set no3 =   10.77   5.97    9.17    9.17    6.38    9.48    30.7
+225  1996  SoilWat set sw =   0.0772  0.1043  0.1212  0.1144  0.1262  0.1337  0.165
+228  1996  SoilWat set sw =   0.0509  0.0874  0.1004  0.1027  0.1118  0.1210  0.156
+232  1996  SoilWat set sw =   0.1026  0.0777  0.0841  0.0914  0.1050  0.1109  0.145
+236  1996  SoilWat set sw =   0.1421  0.1380  0.1563  0.1274  0.1242  0.1139  0.137
+!238  1996  SoilN set nh4 =   11.09   6.17    21.12   21.12   15.08   16.76   66.9
+!238  1996  SoilN set no3 =   11.13   7.17    15.49   15.49   14.62   15.59   47.4
+239  1996  SoilWat set sw =   0.0799  0.1139  0.1316  0.1131  0.1258  0.1228  0.145
+243  1996  SoilWat set sw =   0.0362  0.0928  0.1063  0.1031  0.1112  0.1153  0.143
+246  1996  SoilWat set sw =   0.0589  0.0807  0.0907  0.0926  0.1043  0.1112  0.138
+249  1996  SoilWat set sw =   0.0511  0.0798  0.0827  0.0891  0.1004  0.1075  0.137
+253  1996  SoilWat set sw =   0.0367  0.0697  0.0696  0.0772  0.0885  0.0978  0.128
+!254  1996  SoilN set nh4 =   13.91   8.79    13.98   13.98   13.22   6.19    23.2
+!254  1996  SoilN set no3 =   12.30   9.79    15.86   15.86   15.39   14.65   47.6
+257  1996  SoilWat set sw =   0.0390  0.0686  0.0695  0.0725  0.0832  0.0973  0.123
+261  1996  SoilWat set sw =   0.0241  0.0652  0.0656  0.0705  0.0749  0.0872  0.115
+265  1996  SoilWat set sw =   0.0255  0.0629  0.0601  0.0667  0.0686  0.0825  0.109
+269  1996  SoilWat set sw =   0.0265  0.0622  0.0572  0.0648  0.0692  0.0773  0.102
+273  1996  SoilWat set sw =   0.0169  0.0573  0.0546  0.0640  0.0689  0.0763  0.097
+!273  1996  SoilN set nh4 =   13.17   9.83    16.32   16.32   15.47   16.90   93.7
+!273  1996  SoilN set no3 =   3.57    1.89    6.11    6.11    7.63    6.37    23.0
+276  1996  SoilWat set sw =   0.0090  0.0622  0.0580  0.0629  0.0682  0.0760  0.093
+280  1996  SoilWat set sw =   0.0124  0.0579  0.0546  0.0656  0.0661  0.0763  0.089
+284  1996  SoilWat set sw =   0.0103  0.0597  0.0526  0.0621  0.0664  0.0728  0.087
+288  1996  SoilWat set sw =   0.0179  0.0595  0.0563  0.0626  0.0636  0.0714  0.087
+292  1996  SoilWat set sw =   0.0036  0.0586  0.0573  0.0646  0.0651  0.0738  0.088
+299  1996  SoilWat set sw =   0.0112  0.0547  0.0545  0.0637  0.0637  0.0743  0.087
+305  1996  SoilWat set sw =   0.0224  0.0569  0.0535  0.0643  0.0650  0.0735  0.092
+311  1996  SoilWat set sw =   0.0080  0.0562  0.0510  0.0630  0.0631  0.0729  0.087
+318  1996  SoilWat set sw =   0.0205  0.0546  0.0536  0.0621  0.0644  0.0724  0.088
+325  1996  SoilWat set sw =   0.0134  0.0582  0.0524  0.0590  0.0640  0.0721  0.088
+332  1996  SoilWat set sw =   0.0141  0.0560  0.0509  0.0644  0.0656  0.0741  0.088
+
+[valid_1.canopy.parameters]    
+intercrop =  millet millet1 millet2 millet3 millet4 millet5   
+
+[valid_1.SurfaceOM.parameters]    
+
+mass = 0.0   ()   ! surface residues as biomass (kg/ha)
+cnr = 33.0   ()   ! cn ratio of surface residues
+type = millet
+
+name = millet
+[pat77.manager.start_of_day]    
+  if (day = 286 and year = 1977) then
+     crop_in = 1
+   endif
+
+[pat78.manager.start_of_day]    
+  if (day = 176 and year = 1978) then
+     crop_in = 1
+   endif
+
+[pat82.manager.start_of_day]    
+  if (day =170 and year = 1982) then
+     crop_in = 1
+   endif
+
+[pat85.manager.start_of_day]    
+  if (day = 172 and year = 1985) then
+     crop_in = 1
+   endif
+
+[pat86.manager.start_of_day]    
+  if (day = 170 and year = 1986) then
+     crop_in = 1
+   endif
+
+[pat94.manager.start_of_day]    
+  if (day = 166 and year = 1994) then
+     crop_in = 1
+   endif
+
+[pat95.manager.start_of_day]    
+  if (day = 171 and year = 1995) then
+     crop_in = 1
+   endif
+
+[pat97.manager.start_of_day]    
+  if (day = 183 and year = 1997) then
+     crop_in = 1
+   endif
+
+[jod95.manager.start_of_day]    
+  if (day = 202 and year = 1995) then
+     crop_in = 1
+   endif
+
+[jod96.manager.start_of_day]    
+  if (day = 183 and year = 1996) then
+     crop_in = 1
+   endif
+
+[all.manager.init]                           
+   crop_in = 0
+   tiller0_finished = 0
+   tiller1_finished = 0
+   tiller2_finished = 0
+   tiller3_finished = 0
+   tiller4_finished = 0
+   tiller5_finished = 0
+ 
+[all.manager.end_of_day]    
+! daily output
+   report do_output
+
+if (millet.StageName = 'initiate' or millet.StageName = 'emergence') then
+    tiller0_finished = 1
+endif
+if (millet1.StageName = 'initiate' or millet1.StageName = 'emergence') then
+    tiller1_finished = 1
+endif
+if (millet2.StageName = 'initiate' or millet2.StageName = 'emergence') then
+    tiller2_finished = 1
+endif
+if (millet3.StageName = 'initiate' or millet3.StageName = 'emergence') then
+    tiller3_finished = 1
+endif
+if (millet4.StageName = 'initiate' or millet4.StageName = 'emergence') then
+    tiller4_finished = 1
+endif
+if (millet5.StageName = 'initiate' or millet5.StageName = 'emergence') then
+    tiller5_finished = 1
+endif
+
+     if (millet.StageName = 'harvest_ripe' and millet.plant_status = 'alive') or
+        (millet.StageName = 'end_crop' and millet.plant_status = 'dead') or
+        (tiller0_finished = 1 and millet.plant_status = 'out')   then
+
+     millet harvest 
+     millet kill_crop 
+     millet end_crop
+     surfaceom tillage type = burn
+     tiller0_finished = 2
+     endif
+
+     if (millet1.StageName = 'harvest_ripe' and millet1.plant_status = 'alive') or
+        (millet1.StageName = 'end_crop' and millet1.plant_status = 'dead') or
+        (tiller1_finished = 1 and millet1.plant_status = 'out')  then
+
+     millet1 harvest 
+     millet1 kill_crop 
+     millet1 end_crop
+     surfaceom tillage type = burn
+     tiller1_finished = 2
+     endif
+
+     if (millet2.StageName = 'harvest_ripe' and millet2.plant_status = 'alive') or
+        (millet2.StageName = 'end_crop' and millet2.plant_status = 'dead') or
+        (tiller2_finished = 1 and millet2.plant_status = 'out')  then
+
+     millet2 harvest 
+     millet2 kill_crop 
+     millet2 end_crop
+     surfaceom tillage type = burn
+     tiller2_finished = 2
+     endif
+
+     if (millet3.StageName = 'harvest_ripe' and millet3.plant_status = 'alive') or
+        (millet3.StageName = 'end_crop' and millet3.plant_status = 'dead') or
+        (tiller3_finished = 1 and millet3.plant_status = 'out')  then
+
+     millet3 harvest 
+     millet3 kill_crop 
+     millet3 end_crop
+     surfaceom tillage type = burn
+     tiller3_finished = 2
+     endif
+
+     if (millet4.StageName = 'harvest_ripe' and millet4.plant_status = 'alive') or
+        (millet4.StageName = 'end_crop' and millet4.plant_status = 'dead') or
+        (tiller4_finished = 1 and millet4.plant_status = 'out')  then
+
+     millet4 harvest 
+     millet4 kill_crop 
+     millet4 end_crop
+     surfaceom tillage type = burn
+     tiller4_finished = 2
+     endif
+
+     if (millet5.StageName = 'harvest_ripe' and millet5.plant_status = 'alive') or
+        (millet5.StageName = 'end_crop' and millet5.plant_status = 'dead') or
+        (tiller5_finished = 1 and millet5.plant_status = 'out')  then
+
+     millet5 harvest 
+     millet5 kill_crop 
+     millet5 end_crop
+     surfaceom tillage type = burn
+     tiller5_finished = 2
+     endif
+
+
+if (tiller0_finished = 2 and tiller1_finished = 2 and tiller2_finished = 2) and
+   (tiller3_finished = 2 and tiller4_finished = 2 and tiller5_finished = 2) then
+   crop_in = 0
+   tiller0_finished = 0
+   tiller1_finished = 0
+   tiller2_finished = 0
+   tiller3_finished = 0
+   tiller4_finished = 0
+   tiller5_finished = 0
+endif
+
+

@@ -1,0 +1,96 @@
+version = 7.0(2)
+! Derived from McKeon's 7 steps.
+
+! All off.
+[apsim.step1]
+title = Step 1. All off.
+module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
+module = report   refdata.par [all]     refdata.par [step1]
+module = Input(Met)      Narayen.met [climate]
+module = manager  refdata.par [all]
+module = SoilWat   refdata.par [all] soilwat2.ini [standard]
+module = SoilN   refdata.par [all] %apsim%/Model/SoilN.xml [standard]
+module = grasp   refdata.par [all] refdata.par [step1] refdata.par [soilwat] %apsim%/Model/grasp.xml [standard]
+module = SurfaceOM   refdata.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = sysbal
+
+! Introduce dead grass
+[apsim.step3]
+title = Step 3. Declining dead pool.
+module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
+module = report   refdata.par [all]     refdata.par [step3]
+module = input(met)      Narayen.met [climate]
+module = manager  refdata.par [all]
+module = SoilWat   refdata.par [all] soilwat2.ini [standard]
+module = SoilN   refdata.par [all] %apsim%/Model/SoilN.xml [standard]
+module = grasp   refdata.par [all] refdata.par [step3] refdata.par [soilwat] %apsim%/Model/grasp.xml [standard]
+module = SurfaceOM   refdata.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = sysbal
+
+! Add growth by regrowth
+[apsim.step5]
+title = Step 5. growth by regrowth
+module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
+module = report   refdata.par [all]     refdata.par [step5]
+module = input(met)      Narayen.met [climate]
+module = manager  refdata.par [all]
+module = SoilWat   refdata.par [all] soilwat2.ini [standard]
+module = SoilN   refdata.par [all] %apsim%/Model/SoilN.xml [standard]
+module = grasp   refdata.par [all] refdata.par [step5] refdata.par [soilwat] %apsim%/Model/grasp.xml [standard]
+module = SurfaceOM   refdata.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = sysbal
+
+! And growth by transpiration
+[apsim.step6]
+title = Step 6. growth by regrowth + transpiration
+module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
+module = report   refdata.par [all]     refdata.par [step6]
+module = input(met)      Narayen.met [climate]
+module = manager  refdata.par [all]
+module = SoilWat   refdata.par [all] soilwat2.ini [standard]
+module = SoilN   refdata.par [all] %apsim%/Model/SoilN.xml [standard]
+module = grasp   refdata.par [all] refdata.par [step6] refdata.par [soilwat] %apsim%/Model/grasp.xml [standard]
+module = SurfaceOM   refdata.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = sysbal
+
+! SWIM interface.
+[apsim.step8]
+title = Step 8. swim
+module = clock   refdata.par [gmtb0] %apsim%/Model/clock.xml [standard]
+module = report   refdata.par [allswim] refdata.par [wupt] refdata.par [step8]
+module = report(sysbalreport) refdata.par[sysbal]
+module = input(met)      GMTAPSIM.DAT [weather]
+module = manager  refdata.par [all]
+module = SWIM2   refdata.par [gmtb0] %apsim%/Model/SWIM2.xml [standard]
+module = SoilN   refdata.par [gmtbo] %apsim%/Model/SoilN.xml [standard]
+module = grasp   refdata.par [all] refdata.par [step8] refdata.par [swim] %apsim%/Model/grasp.xml [standard]
+module = SurfaceOM   refdata.par [gmtb0] %apsim%/Model/SurfaceOM.xml [standard]
+module = surface  refdata.par [gmtb0]
+module = canopy   refdata.par [gmtb0]
+!module = sysbal
+
+! EP effect on Nitrogen uptake
+[apsim.ep-on]
+title = erosion productivity on
+module = clock   refdata.par [ep] %apsim%/Model/clock.xml [standard]
+module = report   refdata.par [ep]     refdata.par [ep-on]
+module = input(met)      Narayen.met [climate]
+module = SoilWat   refdata.par [all] soilwat2.ini [standard]
+module = SoilN   refdata.par [all] %apsim%/Model/SoilN.xml [standard]
+module = erosion  refdata.par [ep]
+module = grasp   refdata.par [all] refdata.par [ep] refdata.par [soilwat] %apsim%/Model/grasp.xml [standard]
+module = SurfaceOM   refdata.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = manager  refdata.par [ep]
+module = sysbal
+
+[apsim.ep-off]
+title = erosion productivity off
+module = clock   refdata.par [ep] %apsim%/Model/clock.xml [standard]
+module = report   refdata.par [ep]     refdata.par [ep-off]
+module = input(met)      Narayen.met [climate]
+module = SoilWat   refdata.par [all] soilwat2.ini [standard]
+module = SoilN   refdata.par [all] %apsim%/Model/SoilN.xml [standard]
+module = grasp   refdata.par [all] refdata.par [ep] refdata.par [soilwat] %apsim%/Model/grasp.xml [standard]
+module = SurfaceOM   refdata.par [all] %apsim%/Model/SurfaceOM.xml [standard]
+module = manager  refdata.par [ep]
+module = sysbal

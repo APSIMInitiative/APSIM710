@@ -1,0 +1,50 @@
+!Title = Kiboko (1700mm)
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+ [run%.soilwat2.parameters]
+
+          !  set_default
+     insoil =  2.00 () ! indicator for initial soil water
+                       ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul,
+                       !                                         >1 = input by user)
+
+           ! soil_evaporation
+     cona = $cona   ()    ! stage 2 evap coef.
+     u    = $uritch ()    ! stage 1 soil evaporation coefficient (mm)
+
+          ! unsat_flow
+     diffus_const = 88.0 () !   coeffs for dbar
+     diffus_slope = 35.4 () !     "       
+
+          ! runoff
+     runoff_filename = blank  ! runoff predicted using CN2_bare
+     cn2_bare    = $cn2 ()   ! runoff curve number for BARE soil at AMC2
+     cn_red      = 20   ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+     cn_cov      = 0.8  ()   ! frac. cover for "cn_red" reduction in cover 
+                            ! & max. cover for reduction 
+     cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                             !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+          ! pot_evapotranspiration
+     salb =  0.13 ()   ! bare soil albedo
+
+     ! layer       1       2       3       4       5       6       7       8       9     10 
+     air_dry =    0.030   0.140   0.150   0.150   0.160   0.170   0.180   0.170   0.170  0.170   (mm/mm) ! air dry
+     dlayer  =  100.000 100.000 100.000 200.000 200.000 200.000 200.000 200.000 200.000  200.000 (mm)    ! layer depth
+     dul     =    0.220   0.220   0.230   0.230   0.240   0.250   0.260   0.250   0.250  0.250   (mm/mm) ! drained upper limit
+     ll15    =    0.140   0.140   0.150   0.150   0.160   0.170   0.180   0.170   0.170  0.170   (mm/mm) ! lower limit
+     sat     =    0.300   0.300   0.310   0.320   0.320   0.330   0.340   0.330   0.330  0.330   (mm/mm) ! saturated soil water
+     sw      =    0.164   0.164   0.174   0.174   0.184   0.194   0.204   0.194   0.196  0.200   (mm/mm) ! initial sw 
+     swcon   =    0.800   0.800   0.800   0.800   0.800   0.800   0.800   0.800   0.800  0.800   ()      ! soil conductivity
+     bd      =    1.350   1.350   1.350   1.350   1.350   1.350   1.350   1.350   1.350  1.350   (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+[*variables]
+
+   $cona = "Cona : " 3.0 real
+   $uritch = "Uritch : " 9.0 real
+   $cn2 = "Runoff curve number for BARE soil : " 70.0 real

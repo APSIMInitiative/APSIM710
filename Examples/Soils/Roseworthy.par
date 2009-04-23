@@ -1,0 +1,95 @@
+[200mm.soilwat2.parameters]
+wet_soil_depth = 200
+
+[300mm.soilwat2.parameters]
+wet_soil_depth = 300
+
+[Roseworthy.soilwat2.parameters]
+
+          !  set_default
+     insoil =  2 () ! indicator for initial soil water
+                       ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul,
+                       !                                         >1 = input by user)
+
+           ! soil_evaporation
+     cona = 2.0 () !3.0   ! stage 2 evap coef.
+     u    = 2.0 !4.2 () !6.0   ! stage 1 soil evaporation coefficient (mm)
+
+          ! unsat_flow
+     diffus_const = 44 () !88.0 () !   coeffs for dbar
+     diffus_slope = 16 () !35.4 () !     "
+
+          ! runoff
+     cn2_bare = 76  () !72.0 () ! runoff curve number for BARE soil at AMC2
+     cn_red   = 20  () ! reduction in CN2_bare for "cn_cov" increase in cover
+     cn_cov   = 0.8 () ! frac. cover for "cn_red" reduction in cover
+                       ! & max. cover for reduction
+
+          ! pot_evapotranspiration
+     salb =  0.14 () !0.16 ()   ! bare soil albedo
+
+   ! layer     1      2      3      4      5      6      7      8      9     10
+   !          100    200    400    600    800    1000   1200   1400   1600  1800
+   ! =================================================================================
+   dlayer  = 100.   100.   200.   200.   200.   200.   200.   200.   200.   200. (mm)   ! layer depth
+   air_dry = 0.05   0.06   0.06   0.08   0.08   0.08   0.08   0.08   0.08   0.08 (mm/mm)! BAK change
+   dul     = 0.26   0.26   0.27   0.3    0.31   0.32   0.32   0.32   0.32   0.32 (mm/mm)!wdb 30/4/99 reduce mid profile esw
+   ll15    = 0.11   0.11   0.14   0.15   0.16   0.18   0.23   0.25   0.27   0.28 (mm/mm)!wdb 30/4/99 reduce mid profile esw
+   sat     = 0.52   0.43   0.47   0.45   0.45   0.40   0.38   0.35   0.34   0.33 (mm/mm)!WDB 30/3/99 from ua325soils5
+   !sw      = 0.24   0.23   0.20   0.16   0.17   0.20   0.25   0.27   0.27   0.28 (mm/mm)!wdb for reset for hypothetical 15 May (change made 2004)
+   swcon   = 0.70   0.70   0.70   0.30   0.10   0.10   0.10   0.10   0.10   0.10 ()     ! try to 'perch' water on B horizon
+   bd      = 1.17   1.42   1.30   1.34   1.36   1.48   1.54   1.61   1.63   1.68 (g/cc) !WDB 30/3/99 from ua325soils5
+
+
+
+
+[common.soiln2.Roseworthy]
+! oc% from west7, roseworthy
+
+     amp     = 14.7 (oC) !4.0  (oC)  ! temperature amplitude (oC) - difference between highest and
+                                     ! lowest mean monthly air temperatures
+     tav     = 16.3 (oC) !22.0 (oC)  ! mean annual air temperature (oC)
+     root_cn = 45.0 ()      ! initial root C:N ratio
+     root_wt = 400.0 (kg/ha) ! initial root DW
+     soil_cn = 14.2 () !14.5   ()    ! soil humic pool C:N ratio
+
+! for remapping erosion
+     enr_a_coeff    = 7.4  ()
+     enr_b_coeff    = 0.2  ()
+     profile_reduction = off          ! (on|off) whether to remap N+C if
+                                      ! soil loss occurs.
+
+     ! layer      1      2      3      4      5      6      7      8      9     10
+     oc      =  1.48   0.90   0.47   0.32   0.22   0.15   0.10   0.07   0.05   0.03   ! from UA325soils5.mdb  WDB
+!    pH      =  7.86   8.23   8.60   9.15   9.55   9.63   9.55   9.47   9.30   9.30  ! pH from ua325soils5.mdb WDB
+     pH      =  7.86   8.23   8.60   9.00   9.00   9.00   9.00   9.00   9.00   9.00  ! max pH set = 9.00 to avoid warning error WDB
+     ureappm =  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  (ppm) ! ppm urea
+     fbiom   =  0.05   0.05   0.02   0.015  0.01   0.01   0.01   0.01   0.01  0.010 ()    !12/5/99 wdb based on biom_n simulation microbe fraction of humic pool
+     finert  =  0.1    0.1    0.4    0.9   0.95   0.97   0.98   0.98   0.99  0.990 ()    ! increase nitrate avail. to barley after wheat?
+
+
+[RoseworthyN40.soiln2.parameters]
+derived_from = Roseworthy
+     no3ppm  =  7.00  4.00  2.00  2.00  1.50  0.68  0.65  0.31  0.31  0.30  (ppm) ! ppm nitrate
+     nh4ppm  =  0.50  0.50  0.50  0.40  0.10  0.10  0.05  0.05  0.05  0.05  (ppm) ! ppm ammonia
+
+
+[RoseworthyN120.soiln2.parameters]
+derived_from = Roseworthy
+     no3ppm  = 15.00 15.00 10.00  8.00  5.00  3.00  1.00  0.50  0.30  0.30  (ppm) ! ppm nitrate
+     nh4ppm  =  0.50  0.50  0.50  0.40  0.10  0.10  0.05  0.05  0.05  0.05  (ppm) ! ppm ammonia
+[RoseworthyN100.soiln2.parameters]
+derived_from = Roseworthy
+     no3ppm  = 10.00 10.00 10.00  8.00  5.00  3.00  1.00  0.50  0.30  0.30  (ppm) ! ppm nitrate
+     nh4ppm  =  0.50  0.50  0.50  0.40  0.10  0.10  0.05  0.05  0.05  0.05  (ppm) ! ppm ammonia
+
+
+[Roseworthy.wheat.parameters]
+
+!ll =  0.230   0.240   0.240   0.250   0.260   0.270   0.280 0.30 0.30 0.30 ()! NIH THESE SEEM STRANGE
+ll = 0.11   0.11   0.14   0.15   0.16   0.18   0.23   0.25   0.27   0.28  ! USE LL15 VALUES INSTEAD
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  0.03 0.02 0.01 ()
+XF =  1.0     1.0     0.70    0.60    0.50    0.40    0.30  0.20 0.10 0.05 ()
+
+
+

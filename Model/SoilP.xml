@@ -1,0 +1,68 @@
+<soilp>
+   <!--  CHANGES by MEP
+    -->
+   <!-- rate_loss_avail_P =   0.7 !0.5 !0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC
+    moved to parameter as changes with soil types
+    -->
+   <rate_decr_placement description="0.5 ()   ! (, 1) Fractional loss of placement effect per yr">0.8   </rate_decr_placement>
+   <act_energy_loss_avail_P units="kJ/mole" description="Effect of soil temperature on P availability">90</act_energy_loss_avail_P>
+   <availP_ratio description="Ratio of available P : unavailable P at steady state">0.1</availP_ratio>
+   <eff_band description="3.0 ()   ! Relative effectiveness of banded_p compared with broadcast_p">2.0 </eff_band>
+   <biom_cp description="80 !40.0 ()   ! c:p ratio of biom pool">60.0 </biom_cp>
+   <hum_cp description="c:p ratio of hum pool">100.0</hum_cp>
+   <!-- ______________________________________________________________________-
+   Specifying the water factor for the loss of available Phosphorus is
+   by referring to water content via an indexing system and linear interpolation
+   between specified coordinates.
+    (see example)
+                       __________
+               1 |    /    .    .
+                 |  / .    .    .          In this example
+              .5 |/   .    .    .          wf_loss_index = 0.0 0.5 1.0 2.0
+                 |    .    .    .          wf_loss_values= 0.5 1.0 1.0 1.0
+                 |    .    .    .
+               0 ______________________-
+                 LL       DUL   SAT
+                 =0       =1    =2
+   
+    -->
+   <wf_loss_index description="index specifying water content">0.0 0.5  1.0  2.0   </wf_loss_index>
+   <!--  for water factor for loss of
+    availability
+    -->
+   <wf_loss_values description="value of water factor function">0.6 1.0  1.0  1.0   </wf_loss_values>
+   <!--  at given index values
+    PHOSPHORUS UPTAKE
+    Potential P uptake from a layer is assumed to be related to the notional P concentration in solution
+    which is non-linearly related to effective P
+    -->
+   <sorption_coeff description="0.5 !0.4  ! exponent of Freundlich isotherm">0.7  </sorption_coeff>
+   <!--  Note that sorption_coeff and p_supply_factor will need to be varied together
+    provision for other crops, but only maize has been tested against measured data
+    -->
+   <crop_name description="name of crop">maize   wheat  navybean  cowpea  pigeonpea  soybean  peanut  mungbean weed sorghum butterflypea centro lablab</crop_name>
+   <!--  **************************************************
+    -->
+   <p_supply_factor units="??" description="used with sorpt_coeff = 0.7">0.45   0.4    0.4       0.4     0.6        0.4      0.4          0.4      0.4   0.4</p_supply_factor>
+   <!-- ! FIXME - navybean reduced because of correction to P demand in Plant - switched off in code
+   !p_supply_factor =   0.45   0.4    0.24       0.4     0.6        0.4      0.4          0.4      0.4   0.4   (??)        ! used with sorpt_coeff = 0.7
+   p_supply_factor =   0.1    0.1                                      (??)   ! used with sorpt_coeff = 1
+   p_supply_factor =   4      4.0                                         (??)   ! used with sorpt_coeff = 0.5
+    **************************************************
+    -->
+   <crit_p_rlv units="mm/mm^3" description="critical P rlv">0.00001  0.00001  0.00001  0.00001  0.00001  0.00001  0.00001</crit_p_rlv>
+   <!-- upper and lower bounds for soil P pools
+    -->
+   <lb_labile_p_ppm>0</lb_labile_p_ppm>
+   <ub_labile_p_ppm>1000</ub_labile_p_ppm>
+   <lb_unavail_p>0</lb_unavail_p>
+   <ub_unavail_p>10000</ub_unavail_p>
+   <lb_banded_p>0</lb_banded_p>
+   <ub_banded_p>1000</ub_banded_p>
+   <lb_rock_p>0</lb_rock_p>
+   <ub_rock_p>1000</ub_rock_p>
+   <lb_fom_p>0.0</lb_fom_p>
+   <ub_fom_p>1000</ub_fom_p>
+   <lb_fom_cp>0.0</lb_fom_cp>
+   <ub_fom_cp>3000.0</ub_fom_cp>
+</soilp>

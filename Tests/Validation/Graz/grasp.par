@@ -1,0 +1,79 @@
+! Initial sward values
+[establishment.grasp.mature_sward]
+root_depth_init =  750      (mm)       ! Initial depth of roots
+dm_dead_leaf_init = 800        (kg/ha)
+dm_dead_stem_init = 400       (kg/ha)
+dm_dead_root_init =  400       (kg/ha)
+dm_green_leaf_init = 800        (kg/ha) ! Leaf weight at emergence (p135)
+dm_green_stem_init = 400       (kg/ha) ! Stem weight at emergence (p136)
+dm_green_root_init = 400        (kg/ha) ! Root weight at emergence
+basal_area_init =  1.0         (%)     ! Basal area (p005)
+acc_trans_for_n_init =  120        (mm)  ! Accumulated transpiration, used for N uptake
+acc_growth_for_n_init = 10    (kg/ha) ! Accumulated growth, used for N uptake
+
+
+[establishment.grasp.seedling]
+! Initial values
+root_depth_init =  750      (mm)       ! Initial depth of roots
+dm_dead_leaf_init =  0        (kg/ha)
+dm_dead_stem_init =  0        (kg/ha)
+dm_dead_root_init =  0        (kg/ha)
+dm_green_leaf_init =  0        (kg/ha) ! Leaf weight at emergence (p135)
+dm_green_stem_init =  0        (kg/ha) ! Stem weight at emergence (p136)
+dm_green_root_init =  0        (kg/ha) ! Root weight at emergence
+basal_area_init =  0.5         (%)     ! Basal area (p005)
+acc_trans_for_n_init =  0        (mm)  ! Accumulated transpiration, used for N uptake
+acc_growth_for_n_init =  0     (kg/ha) ! Accumulated growth, used for N uptake
+
+[BSc4past.grasp.parameters]
+crop_type     =  grass
+uptake_source =  calc
+
+kl2rlv =  1.0                                           () !
+! grass parameters
+height_max =       1200      (mm)  ! Maximum canopy height
+hgt_vpd_screen =   200       (mm)  ! Height at which surface effects on vpd are 0 (p095*10)
+height_1000kg =    200       (mm)  ! (p096*10)
+et_use_efficiency =  0        ()   ! Evapotranspiration use efficiency used in BA calc (kg/ha/mm) (p288)
+frac_leaf2total =  0.5       ()    ! Fraction of total dm produced that goes into leaf pool (0-1) (p123)
+yld_cover_slope =  0.693147  ()    ! Shape of exponential curve relating yield and cover (was hard coded)
+yld_fpc50 =        1000      ()    ! (p046)
+yld_cov50 =        1000      ()    ! Yield transpiring at 50% of pan evap (p045)
+yld_tcov50 =       1000     (kg/ha)! Tsdm yield at which cover for runoff is 50% (p271)
+runoff_power =     0.95      ()    ! Shape factor in cover for runoff eq(2.2)(p272)
+swi_fullgreen =    0.3       ()    ! Min soil water for 100% green (p009)
+swi_nogrow =       0.4       ()
+pot_regrow =       3.5        ()   ! Max rate regrowth from tussocks (kg/ha/unit grass ba) (p006)
+te_std =           13.5        ()  ! Transpiration efficiency at vpd=20mb (p007)
+rad_factor =       8.97      ()    ! Was hard coded from rad_index
+residual_plant_N =  5      (kg/ha) ! Always this much n in plant (p097)
+litter_n =         0.3       ()    ! N conc of detached stems and roots ((p110-p111)/2)
+n_uptk_per100 =    6        (kg/ha)! Nitrogen uptake per 100mm water (p098)
+frost_start =      2         (oC)  ! Minimum screen temp at which green cover=100%     (p125)
+frost_kill =       0         (oC)  ! Minimum screen temp at which frost kills all green (p011)
+death_slope =      0.013     ()    ! Rate of green death per soil water(p051)
+death_intercept =  0.002     ()    ! Background death rate (p010)
+leaf_death_ratio =  1        ()    ! Proportion of leaf death to total death (p133)
+stem_death_ratio =  1        ()    ! Proportion of stem death to total death (p134)
+n_conc_dm_crit =   2.5       ()    ! Level of plant N at which no N stress occurs (p102)
+n_conc_dm_min =    0.68       ()    ! Level of soil N at which no N stress occurs (p101)
+n_conc_dm_max =    0.78       ()    ! Level of soil N at which soil N to high for growth (p100)
+stem_thresh =      0         ()    ! (p124)
+
+! detachment rates:
+! parts:        root      leaf      stem
+detach_dryseason =  0.0   0.004     0.004
+detach_wetseason =  0.0   0.002     0.002
+
+! Date resets
+day_start_summer =  335      ()
+day_end_summer =   59        ()
+acc_et_reset =     244       ()
+acc_growth_reset =  244      ()
+trans_for_n_reset =  244     ()
+growth_for_n_reset =  244    ()
+day_start_wet =    274       ()
+day_start_dry =    91        ()
+
+
+

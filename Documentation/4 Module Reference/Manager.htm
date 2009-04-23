@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Manager Module (MANAGER)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="Title1">The APSIM Manager Module (MANAGER)</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">What is the manager module?</p>
+<p class="Normal">The manager module provides the capability to specify a set of rules using conditional logic during simulations to control the actions of modules within APSIM. It does this by using “if” constructs created by the user. It also allows the user to create their own variables and define these as a function of other variables within APSIM. This documentation only gives a brief insight into the possibilities achievable via the APSIM manager module.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">How does it manage?</p>
+<p class="Normal">This module manages by issuing messages to modules in the system, many of which are conditional upon states or events within the modules during simulation. </p>
+<p class="Normal">For example:-</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">if (day = 100) then </p>
+<p class="Code">&nbsp;&nbsp;fertiliz apply amount = 10 (kg/ha), type = urea (), depth = 50(mm) </p>
+<p class="Code">endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Here the fertiliz module will be sent a message containing a directive to apply (the action) fertiliser when the condition is satisfied. It receives a data string (the underlined text) which further describes the action.</p>
+<p class="Normal">As of version 4 of APSIM, the manager module can broadcast a message to all modules by substituting the keyword 'act_mods' in the place of the module name. This capability is useful for multi-point simulations where a sow message needs to be sent to multiple points.</p>
+<p class="Normal">&nbsp;</p>
+
+<p class="Title2">Parameter file settings</p>
+<p class="Normal">As shown above, the manager module input consists of a set of rules and calculations to be used during a simulation. There is no “parameters” data section for the manager module. The manager module is different to most other APSIM modules in that it breaks its input data into event sections. These sections can be the name of any event in APSIM, for example, init, prepare, process, post, tick and prenewmet. For convenience, the MANAGER module also allows “start_of_day ” and “end_of_day ” aliases for prepare and post respectively. The user can have a set of rules to be applied at the start of the day(PREPARE event) or end of the day (POST event) of any APSIM timestep. For example<br>
+</p>
+<p class="Code">[all_treatments.manager.start_of_day ] </p>
+<p class="Code">. </p>
+<p class="Code">. <em> rules for evaluation during prepare stage </em></p>
+<p class="Code">. </p>
+<p class="Code">[all_treatments.manager.end_of_day] </p>
+<p class="Code">. </p>
+<p class="Code">. <em> rules for evaluation during post stage </em></p>
+<p class="Code">.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Now let's add some rules and calculations to this example.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[all_treatments.manager.start_of_day ]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;total_n = no3(1) + nh4(1) </p>
+<p class="Code">&nbsp;&nbsp;if (total_n &lt; 5.0) then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;fertiliz apply amount=60 (kg/ha), type=urea (), depth=50 (mm) </p>
+<p class="Code">&nbsp;&nbsp;endif</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;avail_sw = sw_dep(1) - crop.ll_dep(1)</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;if (avail_sw &lt; 10) then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;if (rain &lt; 20) then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irrigate apply amount = 50 (mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;else </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irrigate apply amount = 30 (mm) </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;endif </p>
+<p class="Code">&nbsp;&nbsp;endif</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">[all_treatments.manager.end_of_day ]</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;report do_output</p>
+<p class="Code">&nbsp;</p>
+<p class="Code">&nbsp;&nbsp;if (crop.stage_name = ‘maturity') then </p>
+<p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;crop harvest </p>
+<p class="Code">&nbsp;&nbsp;endif</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Here, at the beginning of any day (ie. APSIM timestep ) the conditions of Nitrogen and soil water are used to determine whether irrigation or fertiliser should be applied. The rules above state that</p>
+<ol>
+  <li class="Normal">if the total amount of Nitrogen (as nitrate or ammonia) in the top layer of the soil profile drops below 5 kg/ha then 60 kg/ha of urea is applied at a depth of 50 mm. </li>
+  <li class="Normal">if the available soil water (ie. water content above a lower limit of plant extraction) drops below 10 mm then irrigation is applied. The amount of irrigation to apply depends on the amount of rainfall falling today. If there is less than 20 mm of rainfall then 50 mm or irrigation is applied whereas only 30 mm is applied when rainfall exceeds 20mm.</li>
+</ol>
+<p><span class="Normal">At the end of the day (ie. APSIM timestep ) there is a separate set of rules that are evaluated.</span></p>
+<ol>
+  <li class="Normal"> We have a direction for the report module to perform an output. No criteria is supplied and so the action will be performed at the end of every day resulting in an output file with columns of daily output. </li>
+  <li class="Normal">if the current growth stage of the crop module is “maturity” then the crop is ready for harvest (“harvest” is a action that is recognised by the module called “crop”). The syntax “ <em>module.variable_name </em>” allows the user to specify from which module to get a particular value instead of using the messaging system's ability to find an owner module. </li>
+</ol>
+<p class="Title2">Trapping another event </p>
+<p class="Normal">Let's consider another example where we modify some climate variables provided by the MET module to simulate a greenhouse effect.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Most modules in APSIM get their weather data from a <strong>newmet </strong> event that is produced by the MET module, so we need to change the weather variables before this event gets sent out. The MET module produces an event that makes this easy. It is called <strong>prenewmet </strong>. This event is fired just before a <strong>newmet </strong>. So all we have to do is to trap this event and change the weather variables.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">From the manager\sample\manager.par file:</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>[modify_met.manager.preNewmet] </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>maxt = maxt + 2 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span>mint = mint + 2</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">When the prenewmet event fires, we increase the maximum and minimum temperature by 2 degrees, which then gets propagated to all other APSIM modules when the <strong>newmet </strong> event is sent by the MET module. </p>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Mathematical operators</p>
+<p class="Normal">The following mathematical operators and reserved words are allowed in APSIM manager files.</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">Operator </p></td>
+    <td width="302" valign="top"><p class="Normal">Description </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">- </p></td>
+    <td width="302" valign="top"><p class="Normal">Subtraction </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">+ </p></td>
+    <td width="302" valign="top"><p class="Normal">Addition </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">* </p></td>
+    <td width="302" valign="top"><p class="Normal">Multiplication </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">/ </p></td>
+    <td width="302" valign="top"><p class="Normal">Division </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">^ or ** </p></td>
+    <td width="302" valign="top"><p class="Normal">Exponent (eg. x**2 is the same as x 2 ) </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">= </p></td>
+    <td width="302" valign="top"><p class="Normal">Equality </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">&lt; &nbsp; </p></td>
+    <td width="302" valign="top"><p class="Normal">Less than </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">&gt; &nbsp; </p></td>
+    <td width="302" valign="top"><p class="Normal">Greater than </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">&lt;&gt; &nbsp; </p></td>
+    <td width="302" valign="top"><p class="Normal">Not equal to </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">&lt;= </p></td>
+    <td width="302" valign="top"><p class="Normal">Less than or equal to </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">&gt;= </p></td>
+    <td width="302" valign="top"><p class="Normal">Greater than or equal to </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">( ) </p></td>
+    <td width="302" valign="top"><p class="Normal">Brackets </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">If </p></td>
+    <td width="302" valign="top"><p class="Normal">Logical IF </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">then </p></td>
+    <td width="302" valign="top"><p class="Normal">Logical THEN </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">elseif </p></td>
+    <td width="302" valign="top"><p class="Normal">Logical ELSEIF </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">else </p></td>
+    <td width="302" valign="top"><p class="Normal">Logical ELSE (for alternate logic) </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">endif </p></td>
+    <td width="302" valign="top"><p class="Normal">Logical ENDIF </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">or </p></td>
+    <td width="302" valign="top"><p class="Normal">Logical OR </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">and </p></td>
+    <td width="302" valign="top"><p class="Normal">Logical AND </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Variable naming</p>
+<p class="Normal">The manager variable names may consist of the following characters:</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">Character </p></td>
+    <td width="302" valign="top"><p class="Normal">Description </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">a to z </p></td>
+    <td width="302" valign="top"><p class="Normal">letters – case insensitive </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">0 to 9 </p></td>
+    <td width="302" valign="top"><p class="Normal">Digits </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">_ </p></td>
+    <td width="302" valign="top"><p class="Normal">Underscore </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">% </p></td>
+    <td width="302" valign="top"><p class="Normal">Percent </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">. </p></td>
+    <td width="302" valign="top"><p class="Normal">Period – separator between module name and module variable name eg. input.rain </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">[] </p></td>
+    <td width="302" valign="top"><p class="Normal">Square brackets – enclose number of days to accumulate. eg. rain[3] see the accum module </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">() </p></td>
+    <td width="302" valign="top"><p class="Normal">Brackets – enclose array index number </p>
+        <p class="Normal">eg. x(1) </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Names must begin with a letter. </p>
+<p class="Normal">Numbers must begin with a digit. </p>
+<p class="Normal">Literals must begin and end with an apostrophe. </p>
+<p class="Normal">Character set</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The manager uses the following character set:</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">Character </p></td>
+    <td width="302" valign="top"><p class="Normal">Description </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">a to z </p></td>
+    <td width="302" valign="top"><p class="Normal">letters – case insensitive </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">0 to 9 </p></td>
+    <td width="302" valign="top"><p class="Normal">Digits </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">_ </p></td>
+    <td width="302" valign="top"><p class="Normal">Underscore </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">% </p></td>
+    <td width="302" valign="top"><p class="Normal">Percent sign </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">. </p></td>
+    <td width="302" valign="top"><p class="Normal">Period or decimal point </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">[] </p></td>
+    <td width="302" valign="top"><p class="Normal">Square brackets </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">() </p></td>
+    <td width="302" valign="top"><p class="Normal">Parentheses </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">- </p></td>
+    <td width="302" valign="top"><p class="Normal">Minus sign </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">+ </p></td>
+    <td width="302" valign="top"><p class="Normal">Plus sign </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">* </p></td>
+    <td width="302" valign="top"><p class="Normal">Asterisk </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">/ </p></td>
+    <td width="302" valign="top"><p class="Normal">Slash </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">‘ </p></td>
+    <td width="302" valign="top"><p class="Normal">Apostrophe </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">= </p></td>
+    <td width="302" valign="top"><p class="Normal">Equal sign </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">&lt; &nbsp; </p></td>
+    <td width="302" valign="top"><p class="Normal">Less than </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">&gt; &nbsp; </p></td>
+    <td width="302" valign="top"><p class="Normal">Greater than </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"></td>
+    <td width="302" valign="top"><p class="Normal">Blank </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">^ </p></td>
+    <td width="302" valign="top"><p class="Normal">Caret </p></td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Manager Functions</p>
+<p class="Normal">Manager functions may not have any spaces. This applies from the first character of the function name to the terminating bracket. The manager has the following functions:-</p>
+<p class="Normal">&nbsp;</p>
+<table cellspacing="0" cellpadding="0" width="560">
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">Function name </p></td>
+    <td width="439" valign="top"><p class="Normal">Description </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">date </p></td>
+    <td width="439" valign="top"><p class="Normal">returns the julian day number of specified date. eg. date(‘1-oct'). </p>
+        <p class="Normal">The date must be a literal enclosed in single quotes. </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">date_within </p></td>
+    <td width="439" valign="top"><p class="Normal">returns 1 if “today's” date is within the range specified, otherwise returns 0. </p>
+        <p class="Normal">eg. date_within('1-oct,31-oct') </p>
+        <p class="Normal">The pair of dates must be two date literals separated by a comma, and the whole argument must be enclosed in quotes. Note the lack of quotes near the comma. </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">nearest_int </p></td>
+    <td width="439" valign="top"><p class="Normal">Returns the nearest integer to the value specified. </p>
+        <p class="Normal">eg. nearest_int(var1) </p>
+        <p class="Normal">Here ‘var1' must be a numeric variable. It cannot be a literal or an expression. </p></td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">
+    paddock_is_fallow </p></td>
+    <td width="439" valign="top"><p class="Normal">Returns 1 if there are no 
+    crops in the ground.</p>
+        <p class="Normal">e.g. </p>
+        <p class="Normal">&nbsp;&nbsp; if (paddock_is_fallow() = 1 and today = 
+        date('1-jun')) then</p>
+        <p class="Normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wheat sow ...</p>
+        <p class="Normal">&nbsp;&nbsp; endif</p>
+        </td>
+  </tr>
+  <tr>
+    <td width="121" valign="top"><p align="center" class="Normal">
+    add_months </p></td>
+    <td width="439" valign="top">
+    <p class="Normal">Takes 2 parameters, a date and the number of months to add 
+    to the date. The new date is then returned.</p>
+    <p class="Normal">e.g.</p>
+    <p class="Normal">&nbsp;&nbsp;&nbsp; gsrDate = date('1/9/2005')<br>
+&nbsp;&nbsp;&nbsp; gsrDate = add_months('gsrDate, 1')<br>
+&nbsp;</p>
+    <p class="Normal">The whole argument to add_months must be enclosed in 
+    single quotes. The number of months can be positive or negative.</td>
+  </tr>
+</table>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Dates may take the following forms: </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>30/6/95 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>30/6/1995 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>Jun </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>30_Jun </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>30_Jun_1995 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>30-jun </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>30-jun-1995</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">For example: </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>date('30/6/95') -- returns the julian day number for 30 jun 1995 </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>date('Jun') -- returns the julian day number for 1 jun for current year. </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>date('30_jun') -- returns the julian day number for 30 jun for current year. </p>
+<p class="Normal"><span class="Code">&nbsp;&nbsp;</span><span class="Code">&nbsp;&nbsp;</span>date('30_jun_1995') -- returns the julian day number for 30 jun 1995</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">For related chronological or date variables which can be used by the manager module, see the documentation for the CLOCK module. For example </p>
+<p class="Normal">day - returns the day of the month </p>
+<p class="Normal">dd/mm/yyy - returns the day, month and year of the given day.</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">See the CLOCK module for further details. <br>
+  Using the manager to send actions to other modules</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">The APSIM manager module can be used to invoke any action available by any module. Possible actions include:</p>
+<ul>
+  <li> <span class="Normal">Resetting individual module values </span></li>
+  <li class="Normal"> Reinitialising all data in modules to a given state </li>
+  <li class="Normal"> Sowing, harvesting or killing crops. </li>
+  <li class="Normal">Applications of fertilizer, irrigation or tillage to soil. </li>
+</ul>
+<p class="Normal">Refer to the individual module's documentation for a list of available actions and examples of usage. Refer also to the module's sample files for further examples.</p>
+</body>
+</html>

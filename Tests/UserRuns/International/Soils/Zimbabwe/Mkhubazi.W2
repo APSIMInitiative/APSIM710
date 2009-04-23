@@ -1,0 +1,91 @@
+!Title = Mkhubazi, Loamy sand, (PAWC = 100mm, 1.2m) 
+!  Soil description as estimated in Soils_Zim.xls  - 11/9/02
+
+
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+[run%.sorg.parameters]
+
+ll =#LL
+kl =  0.07    0.07    0.07    0.07    0.07    0.07   ()
+xf =  1.00    1.00    1.00    1.00    1.00    1.00   ()
+
+
+[run%.cowpea.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000  () ! root exploration factor
+
+[run%.maize.parameters]
+   
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.0     1.0     1.0     1.0     1.0     1.0    () 
+
+[run%.mucuna.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000  () ! root exploration factor
+
+[run%.peanut.parameters]
+ll  =  #LL
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040  () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000  () ! root exploration factor
+
+[run%.pigeonp.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   () ! root exploration factor
+
+[run%.soybean.parameters]
+
+ll  =  #LL  
+kl  =  0.080   0.080   0.080   0.080   0.060   0.040   () ! rate of soil water extraction
+xf  =  1.000   1.000   1.000   1.000   1.000   1.000   () ! root exploration factor
+
+
+[run%.soilwat2.parameters]
+
+!   insoil          =    2.0   ()     ! indicator for initial soil water
+!                                     ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul, >1 = input by user)
+!
+   max_evap        = 6        (mm)   ! maximum evaporation.
+   runoff_filename = blank           !if blank, runoff predicted using CN2                   
+   cona            = $cona      ()     ! stage 2 evap coef.                       
+   diffus_const    = 250.0    ()     !(?)   ! coeffs for rate of water movement by diffusion
+   diffus_slope    =  22.0    ()     !(?)   !     "
+   u               =  $uritch     (mm)   ! stage 1 soil evaporation coefficient (mm)    
+   salb            =  0.13    ()     ! bare soil albedo                         
+                              
+   cn2_bare        =  $cn2    ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+   ! layer       1       2       3       4       5       6     
+   dlayer  =   100.000  100.000 100.000 300.000 300.000 300.000  (mm)    ! layer depth                            
+   air_dry =     0.020    0.040   0.070   0.150   0.240   0.280  (mm/mm) ! air dry                               
+   ll15    =     0.050    0.080   0.100   0.150   0.240   0.280  (mm/mm) ! lower limit                    
+   dul     =     0.180    0.200   0.220   0.260   0.300   0.320  (mm/mm) ! drained upper limit                             
+   sat     =     0.370    0.370   0.380   0.380   0.400   0.400  (mm/mm) ! saturated soil water                  
+!   sw      =    0.050    0.080   0.100   0.150   0.240   0.280  (mm/mm) ! initial sw
+   swcon   =     0.700    0.700   0.700   0.700   0.100   0.700  ()      ! soil conductivity                     
+   bd      =     1.550    1.530   1.500   1.500   1.450   1.400  (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+
+[*variables]
+
+   $cona = "Cona : " 6.0 real
+   $uritch = "Uritch : " 3.0 real
+   $cn2 = "Runoff curve number for BARE soil : " 80.0 real
+

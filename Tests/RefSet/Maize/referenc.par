@@ -1,0 +1,222 @@
+[reference.summaryfile.parameters]
+summaryfile =  referenc.sum
+
+[reference.report.parameters]
+outputfile =  referenc.out
+variable = clock.year
+variable = clock.day
+variable = SoilN.no3
+variable = SoilWat.sw_dep
+variable = maize.TTAfterSowing
+variable = maize.lai
+variable = maize.biomass
+variable = maize.root_length
+variable = maize.root_depth
+variable = tracker.avg_swdef_photo
+variable = tracker.avg_nfact_photo
+variable = maize.plant_status
+variable = maize.yield
+variable = maize.height
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_n
+variable = SoilN.fom_c()
+variable = SoilN.fom_n()
+variable = maize.leaf_no
+
+
+! [soil_nitrogen.no3]
+! [reset_no3.no3]
+
+! [soil_water.sw_dep]
+! [reset_sw.sw_dep]
+
+! [temperature.tt_tot]
+! [photoperiod.tt_tot]
+
+! [temperature.lai]
+! [radiation.lai]
+! [soil_moisture.lai]
+! [soil_nitrogen.lai]
+
+! [temperature.biomass]
+! [radiation.biomass]
+! [soil_moisture.biomass]
+! [soil_nitrogen.biomass]
+! [soil_nitrogen.root_length]
+! [soil_moisture.swdef_photo]
+
+! [soil_nitrogen.nfact_photo]
+
+! [sow_msg.crop_status]
+! [kill_crop_msg.crop_status]
+! [end_crop_msg.crop_status]
+
+! [kill_crop_msg.crop_status]
+
+! [harvest_msg.yield]
+
+! [add_residue_msg.residue_wt]
+! [add_residue_msg.residue_n]
+
+! [incorp_fom_msg.fom_c]
+! [incorp_fom_msg.fom_n]
+
+
+[reference.tracker.parameters]
+variable = average of maize.nfact_photo on process from reported to now as avg_nfact_photo
+variable = average of maize.swdef_photo on process from reported to now as avg_swdef_photo
+
+[reference.clock.parameters]
+start_date=1/1/1993
+end_date=31/12/1994
+
+[reference.SurfaceOM.parameters]
+mass = 500.0 (kg/ha)
+cnr = 80.0 ()
+type = maize
+
+name = maize
+[reference.maize.parameters]
+uptake_source =      calc
+ll =          0.100   0.100   0.100
+kl =          0.080   0.050   0.020
+xf =          1.000   1.000   0.500
+
+[reference.SoilWat.parameters]
+
+insoil =       2.00 ()
+cona =      2.0 ()
+diffus_const =      88.0 ()
+diffus_slope =      35.4 ()
+u =        9.0 ()
+cn2_bare =      75
+cn_red =      20 ()
+cn_cov =      0.8 ()
+cn_canopy_fact =      1.0 ()
+salb =       0.13 ()
+air_dry =         0.050   0.100   0.100
+dlayer =        200.000 400.000 400.000
+ll15 =            0.100   0.100   0.100
+dul =             0.200   0.200   0.200
+sat =             0.300   0.300   0.300
+sw =              0.200   0.200   0.200
+swcon =           0.500   0.500   0.500
+bd =              1.00    1.000   1.000
+
+[reference.SoilN.parameters]
+
+amp =            4.1   (oC)
+tav =           19.1   (oC)
+root_cn =       45.0   ()
+root_wt =      1000.0   (kg/ha)
+soil_cn =      14.5   ()
+ph =              7.000   7.000   7.000
+no3ppm =          1.000   1.000   1.000
+nh4ppm =          1.000   1.000   1.000
+ureappm =         0.000   0.000   0.000
+oc =              1.200   1.000   0.500
+fbiom =           0.030   0.020   0.010
+finert =          0.400   0.500   0.999
+enr_a_coeff =         7.4  ()
+enr_b_coeff =         0.2  ()
+profile_reduction =      on
+
+[reference.Irrigation.parameters]
+automatic_irrigation =      off
+crit_fr_asw =      0.5
+asw_depth =      500
+
+[reference.manager.init]
+
+[reference.manager.start_of_day]
+
+     if year = 1993 and day = 10 then
+        ! The first crop is a high yielding crop - no stress/high population
+        ! ------------------------------------------------------------------
+        ! [sow_msg.sow] - crop should initiate when sown
+        maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 50, tiller_no_fertile = 1
+        SoilWat set sw = 0.15 0.15 0.1
+        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        surfaceom tillage type = burn      ! Remove noise from residues
+        irrigation set crit_fr_asw = 0.9
+        irrigation set asw_depth = 900
+        irrigation set automatic_irrigation = on
+        Fertiliser apply amount = 200, type = no3_n, depth = 5
+        report do_output
+
+     elseif year = 1993 and day = 160 then
+        ! The Second crop is winter sown - no stress/low population
+        ! ---------------------------------------------------------
+        maize sow cultivar = katumani, plants = 5, sowing_depth = 50, tiller_no_fertile = 1
+        SoilWat set sw = 0.15 0.15 0.1
+        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        surfaceom tillage type = burn      ! Remove noise from residues
+        irrigation set crit_fr_asw = 0.9
+        irrigation set asw_depth = 900
+        irrigation set automatic_irrigation = on
+        Fertiliser apply amount = 100, type = no3_n, depth = 5
+        report do_output
+
+     elseif year = 1993 and day = 300 then
+        ! The Third crop fails due to N/water stress - High stress/low population
+        ! -----------------------------------------------------------------------
+        ! [soil_moisture.sw_dep] - water stress contributes to crop failure
+        ! [soil_nitrogen.no3]    - N stress contributes to crop failure
+        maize sow cultivar = dekalb_xl82, plants = 5, sowing_depth = 50, tiller_no_fertile = 1
+!        SoilWat set sw = 0.15 0.15 0.1
+        SoilWat set sw = 0.25 0.25 0.2
+!        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set no3 = 10 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        surfaceom tillage type = burn      ! Remove noise from residues
+        irrigation set crit_fr_asw = 0.3
+        irrigation set asw_depth = 900
+        irrigation set automatic_irrigation = on
+        report do_output
+
+     elseif year = 1994 and day = 80 then
+        ! The Fourth has medium N and water supply - some stress/low population
+        ! ---------------------------------------------------------------------
+        ! [soil_moisture.sw_dep] - water stress contributes to growth reduction
+        ! [soil_nitrogen.no3]    - N stress contributes to growth reduction
+        ! [reset_sw.dlt_sw_dep]  - soil water should decrease with extraction
+        ! [reset_no3.dlt_no3]    - soil N should decrease with extraction
+        maize sow cultivar = dekalb_xl82, plants = 5, sowing_depth = 50, tiller_no_fertile = 1
+!        SoilWat set sw = 0.15 0.15 0.1
+        SoilWat set sw = 0.25 0.25 0.2
+        SoilN   set no3 = 1 1 1          ! Reset the soil profile
+        SoilN   set nh4 = 1 1 1
+        surfaceom tillage type = burn      ! Remove noise from residues
+        irrigation set crit_fr_asw = 0.4
+        irrigation set asw_depth = 900
+        irrigation set automatic_irrigation = on
+        Fertiliser apply amount = 50, type = no3_n, depth = 5
+        report do_output
+
+     endif
+
+[reference.manager.end_of_day]
+
+     if (maize.plant_status = 'dead') then
+        ! [end_crop_msg.end_crop] - end crop should remove crop altogether
+        ! [add_residue_msg.add_reside] - should place residues on soil surface
+        ! [incorp_fom_msg.incorp_fom] - should incorporate dead roots
+        maize    end_crop
+        report do_output
+     elseif (maize.stage = 11) then
+        ! harvest and kill the crop
+        ! do not end it until we have the chance to report
+        ! the effects of these two messages
+        ! [harvest_msg.harvest] - harvesting should remove grain
+        ! [kill_crop_msg.kill_crop] - kill crop should change plant status
+        maize    harvest
+        maize    kill_crop
+        report do_output
+
+     elseif days_since_last_report = 7 then
+        report do_output
+     endif
+
+

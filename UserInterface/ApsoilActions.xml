@@ -1,0 +1,510 @@
+<?xml version="1.0"?>
+
+<Folder>
+   <Actions>
+      <FileNew>
+         <Text>New...</Text>
+         <Description>Open a new file</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\document_new24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>FileNew</method>
+            </call>
+         </OnInvoke>
+      </FileNew>
+      <Open>
+         <Text>Open...</Text>
+         <MediumIcon>%apsim%\UserInterface\Images\folder_document24.png</MediumIcon>
+      </Open>
+      <FileOpen>
+         <Text>Open...</Text>
+         <Description>Open an existing file</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\folder_document24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileOpen</method>
+            </call>
+         </OnInvoke>
+      </FileOpen>
+      <FileSave>
+         <Text>Save</Text>
+         <Description>Save all soils to disk</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\disk_blue24.png</MediumIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileSave</method>
+            </call>
+         </OnInvoke>
+      </FileSave>
+      <FileSaveAs>
+         <Text>Save as...</Text>
+         <Description>Save all soils under a different file name</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\disk_blue_window24.png</MediumIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileSaveAs</method>
+            </call>
+         </OnInvoke>
+      </FileSaveAs>
+
+
+      <AddFolder>
+         <text>Add folder</text>
+         <Description>Add a child folder to the selected folder</Description>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <AppliesTo>Folder</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>AddFolder</method>
+            </call>
+         </OnInvoke>
+      </AddFolder>
+      <Delete>
+         <text>Delete</text>
+         <Description>Delete the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\delete216.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <ShortCut>Delete</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Delete</method>
+            </call>
+         </OnInvoke>
+      </Delete>
+      <Rename>
+         <text>Rename</text>
+         <Description>Rename the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\pen_blue16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <ShortCut>F2</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Rename</method>
+            </call>
+         </OnInvoke>
+      </Rename>
+      <Cut>
+         <text>Cut</text>
+         <Description>Cut the selected node to the clipboard</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\cut16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <ShortCut>X, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Cut</method>
+            </call>
+         </OnInvoke>
+      </Cut>
+      <Copy>
+         <text>Copy</text>
+         <Description>Copy the selected node to the clipboard</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\copy16.png</SmallIcon>
+         <ShortCut>C, Control</ShortCut>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Copy</method>
+            </call>
+         </OnInvoke>
+      </Copy>
+      <Paste>
+         <text>Paste</text>
+         <Description>Paste the clipboard contents below the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\paste16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <ShortCut>V, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Paste</method>
+            </call>
+         </OnInvoke>
+      </Paste>
+      <MoveUp>
+         <text>Move up</text>
+         <Description>Move the selected nodes up</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\nav_up_green16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <ShortCut>Up, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>MoveUp</method>
+            </call>
+         </OnInvoke>
+      </MoveUp>
+      <MoveDown>
+         <text>Move down</text>
+         <Description>Move the selected nodes down</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\nav_down_green16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <ShortCut>Down, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>MoveDown</method>
+            </call>
+         </OnInvoke>
+      </MoveDown>
+      <ExpandAll>
+         <text>Expand all</text>
+         <Description>Expand all nodes</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\down_plus16.png</SmallIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>ExpandAll</method>
+            </call>
+         </OnInvoke>
+      </ExpandAll>
+      <CollapseAll>
+         <text>Collapse all</text>
+         <Description>Collapse all nodes</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\up_minus16.png</SmallIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>CollapseAll</method>
+            </call>
+         </OnInvoke>
+      </CollapseAll>
+      <Add>
+         <text>Add</text>
+         <MediumIcon>%apsim%\UserInterface\Images\add24.png</MediumIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\add16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+      </Add>
+      <AddSoil>
+         <text>Add a blank soil</text>
+         <AppliesTo>folder</AppliesTo>
+         <Description>Add a blank soil to the selected folder</Description>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>AddSoil</method>
+            </call>
+         </OnInvoke>
+      </AddSoil>
+      <Import>
+         <text>Import</text>
+         <MediumIcon>%apsim%\UserInterface\Images\import124.png</MediumIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\import116.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+      </Import>
+      <ImportFromSoilsFile>
+         <text>From another .soil file</text>
+         <Description>Import all soils from another .soils file to the selected folder</Description>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <AppliesTo>folder</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ImportFromSoils</method>
+            </call>
+         </OnInvoke>
+      </ImportFromSoilsFile>
+      <ImportFromParFile>
+         <text>From a .par file</text>
+         <Description>Import all soils from a .par file to the selected folder</Description>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <AppliesTo>folder</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ImportFromPar</method>
+            </call>
+         </OnInvoke>
+      </ImportFromParFile>
+      <ImportFromSpreadsheet>
+         <text>From a spreadsheet</text>
+         <Description>Import all soils from a spreadsheet to the selected folder</Description>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <AppliesTo>folder</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ImportFromSpreadsheet</method>
+            </call>
+         </OnInvoke>
+      </ImportFromSpreadsheet>
+      <ImportFromW2N2>
+         <text>From .w2/.n2</text>
+         <Description>Import all soils from a .W2/.N2 files to the selected folder</Description>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <AppliesTo>folder</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ImportFromW2N2</method>
+            </call>
+         </OnInvoke>
+      </ImportFromW2N2>
+      <Export>
+         <text>Export</text>
+         <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+      </Export>
+      <ExportToSoilsFile>
+         <text>To another .soil file</text>
+         <Description>Export selected soils to another .soils file</Description>
+         <AppliesTo>folder</AppliesTo>
+         <AppliesTo>soil</AppliesTo>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ExportToSoils</method>
+            </call>
+         </OnInvoke>
+      </ExportToSoilsFile>
+      <ExportToParFile>
+         <text>To a .par file</text>
+         <Description>Export selected soils to a .par file</Description>
+         <AppliesTo>folder</AppliesTo>
+         <AppliesTo>soil</AppliesTo>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ExportToPar</method>
+            </call>
+         </OnInvoke>
+      </ExportToParFile>
+      <ExportToSpreadsheet>
+         <text>To a spreadsheet</text>
+         <Description>Export selected soils to a spreadsheet</Description>
+         <AppliesTo>folder</AppliesTo>
+         <AppliesTo>soil</AppliesTo>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ExportToSpreadsheet</method>
+            </call>
+         </OnInvoke>
+      </ExportToSpreadsheet>
+      <Check>
+         <text>Check soils</text>
+         <Description>Check all soils</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\check216.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\check224.png</MediumIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>CheckSoils</method>
+            </call>
+         </OnInvoke>
+      </Check>
+      <Sort>
+         <text>Sort soils</text>
+         <Description>Sort all soils</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\sort_ascending24.png</MediumIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <AppliesTo>folder</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>SortSoils</method>
+            </call>
+         </OnInvoke>
+      </Sort>
+      <Version>
+         <text>Version</text>
+         <Description>Show APSoil version number</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\help224.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>Version</method>
+            </call>
+         </OnInvoke>
+      </Version>
+      <ReleaseNotes>
+         <text>Release notes</text>
+         <Description>Show what has changed in this version of APSoil</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\window_information24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ReleaseNotes</method>
+            </call>
+         </OnInvoke>
+      </ReleaseNotes>
+      <PrintSoil>
+         <text>Print</text>
+         <Description>Print soil</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\printer24.png</MediumIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\printer16.png</SmallIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <AppliesTo>soilwater</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>PrintSoil</method>
+            </call>
+         </OnInvoke>
+      </PrintSoil>
+      <PHUnitChange>
+         <text>Change PH units</text>
+         <Description>Change the units of PH</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\potion_yellow24.png</MediumIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\potion_yellow16.png</SmallIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <AppliesTo>soil</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>ChangePHUnits</method>
+            </call>
+         </OnInvoke>
+      </PHUnitChange>
+      <SoilCropManagement>
+         <text>Manage Crops</text>
+         <Description>Add, delete and reorder crops</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\leaf24.png</MediumIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\leaf16.png</SmallIcon>
+         <DisabledWhen>NothingLoaded</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <AppliesTo>soil</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>SoilCropManagement</method>
+            </call>
+         </OnInvoke>
+      </SoilCropManagement>
+      <CheckWebForNewSoilData>
+         <text>Get latest data</text>
+         <Description>Check www.apsim.info for the latest soil data</Description>
+         <MediumIcon>%apsim%\UserInterface\Images\client_network24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>CheckWebForDataUpdate</method>
+            </call>
+         </OnInvoke>
+      </CheckWebForNewSoilData>
+   </Actions>
+
+   <MainToolBar ImageAboveText="yes">
+      <ImageSize>MediumIcon</ImageSize>
+      <Item>FileNew</Item>
+      <DropDownItem action="Open">
+         <Item>FileOpen</Item>
+         <Separator/>
+         <RecentFileList/>
+      </DropDownItem>
+      <Item>FileSave</Item>
+      <Item>FileSaveAs</Item>
+      <Separator/>
+      <DropDownItem action="Add">
+         <Item>AddFolder</Item>
+         <Item>AddSoil</Item>
+      </DropDownItem>
+      <DropDownItem action="Import">
+         <Item>ImportFromSoilsFile</Item>
+         <Item>ImportFromParFile</Item>
+         <Item>ImportFromSpreadsheet</Item>
+         <Item>ImportFromW2N2</Item>
+      </DropDownItem>
+      <DropDownItem action="Export">
+         <Item>ExportToSoilsFile</Item>
+         <Item>ExportToParFile</Item>
+         <Item>ExportToSpreadsheet</Item>
+      </DropDownItem>
+      <Item>Check</Item>
+      <Item>Sort</Item>
+      <Separator/>
+      <Item>Version</Item>
+      <Item>ReleaseNotes</Item>
+      <Item>CheckWebForNewSoilData</Item>
+   </MainToolBar>
+
+   <ContextMenu>
+      <ImageSize>SmallIcon</ImageSize>
+      <DropDownItem action="Add">
+         <Item>AddFolder</Item>
+         <Item>AddSoil</Item>
+      </DropDownItem>
+      <DropDownItem action="Import">
+         <Item>ImportFromSoilsFile</Item>
+         <Item>ImportFromParFile</Item>
+         <Item>ImportFromSpreadsheet</Item>
+         <Item>ImportFromW2N2</Item>
+      </DropDownItem>
+      <DropDownItem action="Export">
+         <Item>ExportToSoilsFile</Item>
+         <Item>ExportToParFile</Item>
+         <Item>ExportToSpreadsheet</Item>
+      </DropDownItem>
+      <Item>Check</Item>
+      <Item>SoilCropManagement</Item>
+      <Item>PrintSoil</Item>
+      <Separator/>
+      <Item>Delete</Item>
+      <Item>Rename</Item>
+      <Separator/>
+      <Item>Cut</Item>
+      <Item>Copy</Item>
+      <Item>Paste</Item>
+      <Separator/>
+      <Item>MoveUp</Item>
+      <Item>MoveDown</Item>
+      <Separator/>
+      <Item>CollapseAll</Item>
+      <Item>ExpandAll</Item>
+   </ContextMenu>
+
+   <SoilToolBar ImageAboveText="yes">
+      <ImageSize>MediumIcon</ImageSize>
+      <Item>PHUnitChange</Item>
+   </SoilToolBar>
+
+</Folder>

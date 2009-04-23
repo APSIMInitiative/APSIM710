@@ -1,0 +1,691 @@
+! this file is retrieved from \pp_radha\pigeonp.sol
+
+! #######################################################################
+!                             SOIL 1.
+!
+!            Alfisol soil on ICRISAT Farm (RCE area 2)
+!            (For Pigeon Pea calibrations - 1991 data sets)
+
+! JPD 2/5/97
+!   Compared to icrisat_alf1 in SOILS.PAR
+! 1. STANDARD DEPTH INCREMENTS MODIFIED TO COINCIDE WITH MEASURED (all 15cm increments)
+! 2. LL & Airdry adjusted to measured minimum values
+! 3. SAT adjusted to measured maximum values
+! 4. DUL and BD adjusted where appropriate
+
+
+
+!********************************************************************
+! Section 1.   Parameter values required by the "soilwat" module
+!********************************************************************
+
+ [icrisat_alf1.soilwat2.parameters]
+
+! Initialisation of soil water content: 
+
+! Either
+! "insoil" can be used here as a general estimate based on % full of PAWC.
+! OR
+! "sw =" can be used in the soil layer section to specify soil water content
+! for each layer. To do this, insoil must be > 1.0.
+! i.e. insoil <= than 1.0 overrides "sw =".
+
+
+   insoil          =    0.8   ()     ! indicator for initial soil water
+                                     ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul, >1 = input by user)
+
+
+! JPD 8/4/97
+! The soil evap, re-distribution and runoff parameters are best bet values
+! based on experience with alfisols at Katherine in Northern Australia.
+
+! soil evaporation parameters
+
+   u               =    1.5   (mm)   ! stage 1 soil evaporation coefficient (mm)
+   cona            =    6.6   ()     ! stage 2 evap coef.
+   salb            =    0.13  ()     ! bare soil albedo
+
+! Re-distribution parameters (for water movement between layers, mainly for SW <= DUL)
+ 
+  diffus_const    =  250.0   ()     ! coeffs for dbar
+  diffus_slope    =   22.0   ()     !     "
+
+! Runoff parameters
+
+   runoff_filename =  blank  ! Supply filename with measured runoff for calibration purposes.
+                             ! "blank" = measured runoff not available, it is predicted.
+ 
+! SOILWAT uses only cn2.  cn_red & cn_cov are in soilwat.ini file
+  cn2             =   85 () ! runoff curve number
+
+
+! SOILWAT2 parameters for Runoff
+   cn2_bare    = 85 ()   ! runoff curve number for BARE soil at AMC2
+
+ ! CN2b CN_red CN_cov
+ !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+ !                      & well structured grey clays (ackland)
+ !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+ !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+ !  90   ??     0.8   - Billa Billa (rainsim)
+ !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+ !  94   42     0.8   - hard set pasture solodics
+
+   cn_red = 20 ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+   cn_cov = 0.8 ()  ! frac. cover for "cn_red" reduction in cover 
+                    ! & max. cover for reduction 
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+
+! JPD 8/4/97
+! Unless otherwise stated SW parameters are based on gravimetric data at 15 and 1/3 bar from 
+! El-Swaify et al 1985 - Table 5, modified to the specified depth increments
+! and BD.
+
+! Airdry for 2 top layers are estimates. 
+! SAT = DUL +.05 except for 0-30 which is based on max measured in field. 
+
+! SWCON of 0.7 is based on calibrations at Katherine for a clay loam Alfisol.
+
+! The PAWC for the following profile description is 166mm to 1.5m.
+! and Drainable Porosity is 96mm. 
+
+
+! layer       1       2       3       4       5       6       7       8       9       10            
+   dlayer  =  150.000 150.000 150.000 150.000 150.000 150.000 150.000 150.000 150.000 150.000 (mm)    ! layer depth
+! JPD 2/5/97
+! changed soil water parameters for AD,LL, DUL(120-150), SAT (0-30,120-150) & BD(0-15)
+   air_dry =    0.050   0.135   0.220   0.230   0.230   0.230   0.236   0.233   0.231   0.231 (mm/mm) ! air dry
+   ll15    =    0.146   0.207   0.220   0.230   0.230   0.230   0.236   0.233   0.231   0.231 (mm/mm) ! lower limit
+   dul     =    0.282   0.327   0.354   0.354   0.341   0.341   0.325   0.325   0.325   0.325 (mm/mm) ! drained upper limit
+   sat     =    0.443   0.404   0.404   0.404   0.391   0.391   0.375   0.375   0.375   0.375 (mm/mm) ! saturated soil water
+   bd      =    1.475   1.520   1.460   1.460   1.420   1.420   1.460   1.460   1.500   1.500 (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+! Standard soil parameters for alfisol described by El-sawify et al
+!   air_dry =    0.050   0.150   0.244   0.244   0.236   0.236   0.218   0.218   0.173   0.173 (mm/mm) ! air dry
+!   ll15    =    0.146   0.207   0.244   0.244   0.236   0.236   0.218   0.218   0.173   0.173 (mm/mm) ! lower limit
+!   dul     =    0.282   0.327   0.354   0.354   0.341   0.341   0.325   0.325   0.281   0.281 (mm/mm) ! drained upper limit
+!   sat     =    0.332   0.377   0.404   0.404   0.391   0.391   0.375   0.375   0.331   0.331 (mm/mm) ! saturated soil water
+!   bd      =    1.560   1.520   1.460   1.460   1.420   1.420   1.460   1.460   1.500   1.500 (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+   sw      =    0.146   0.207   0.220   0.230   0.230   0.230   0.236   0.233   0.231   0.231 (mm/mm) ! lower limit
+   swcon   =    0.700   0.700   0.700   0.700   0.700   0.700   0.700   0.700   0.700   0.700 ()      ! soil conductivity
+
+
+!*******************************************************************************
+! Section 2.   Soil water parameter values required by "crop" modules
+!*******************************************************************************
+
+
+!JPD 2/5/97
+! set LL = LL15 = driest observed under rainfed crop. 
+! June 97 - kl values are from [\pp_radha\pp_kl_sw..xls]
+
+! Pigeonpea
+
+ [icrisat_alf1.pigeonp.parameters]
+
+   ll  =    0.146   0.207   0.220   0.230   0.230   0.230   0.236   0.233   0.231   0.231 (mm/mm) !pigeonp lower limit
+   kl  =    0.120   0.083   0.049   0.032   0.040   0.041   0.048   0.050   0.044   0.044 ()      ! rate of soil water extraction
+
+
+!********************************************************************
+! Section 3. Parameter values required by the "soiln" module
+!********************************************************************
+
+
+
+[icrisat_alf1.soiln2.parameters]
+
+! JPD, 7/4/97 amp & tav calculated from El-Swaify et al 1985, Table 2.
+! see [amp_tav.xls]
+
+! Parameters used in soil temperature routine
+
+   amp               =   11.9   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   25.9   (oC)       ! mean annual air temperature (oC)
+
+! Initialise Fresh Organic Matter pool in soil layers
+
+   root_cn           =   45.0   ()         !
+   root_wt           = 1000.0   (kg/ha)    !
+
+! Parameter to initialise soil organic N ("humic" N pool) in soil layers
+! from OC%. Assummed constant for all layers.
+
+   soil_cn           =   14.5   ()         ! soil humic pool C:N ratio
+                                         
+
+! JPD. 7/4/97 - OC% from El Swaify et al Table 5.
+
+! depth         150.    300.    450.    600.     750.    900.   1050.   1200.   1350.   1500. 
+
+! Initialise (from OC% and soil C:N ratio) and define active portion of "humic"
+! N in soil layers.
+
+   oc      =    0.535   0.608   0.446   0.446   0.210   0.210   0.121   0.121   0.180   0.180  (%)   ! organic carbon %
+   fbiom   =    0.040   0.020   0.015   0.015   0.010   0.010   0.010   0.010   0.010   0.010  ()    ! microbe fraction of humic pool
+   finert  =    0.390   0.470   0.520   0.520   0.620   0.620   0.740   0.740   0.830   0.930  ()    ! inert fraction of humic pool
+
+! Initialise Mineral N (& Urea-N) content in soil layers.
+
+   no3ppm  =    3.000   9.000   9.000   9.000   7.000   7.000   5.000   5.000   5.000   3.000  (ppm) ! ppm nitrate
+   nh4ppm  =    2.500   2.500   1.500   1.500   1.000   1.000   0.500   0.500   0.500   0.500  (ppm) ! ppm ammonia
+   ureappm =    0.000   0.000   0.000   0.000   0.000   0.000   0.000   0.000   0.000   0.000  (ppm) ! ppm urea
+
+
+! soil ph is a factor in Urea hydrolysis.
+
+   ph      =    6.000   6.000   6.000   6.000   6.200   6.200   6.500   6.500   6.700   6.800  ()    ! ph
+
+
+
+
+! Parameters for describing organic N concentration in soil removed by erosion.
+
+   enr_a_coeff       =    7.4   ()       
+   enr_b_coeff       =    0.2   ()       
+   profile_reduction =     on              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+
+
+! ############################################################################
+!                                  SOIL 2.
+!
+!            Vertisol soil, Kasireddipalli Soil Series, a Typic Pellustert,
+!            generally accepted as typical of black soil on ICRISAT farm.
+!            (For pigeon pea test data sets)
+!            JPD 15/5/97 (data from ICRISA~1.XLS)
+! ############################################################################
+
+
+!********************************************************************
+! Section 1.   Parameter values required by the "soilwat" module
+!********************************************************************
+
+ [icrisat_vert.soilwat2.parameters]
+
+! Initialisation of soil water content: 
+
+! Either
+! "insoil" can be used here as a general estimate based on % full of PAWC.
+! OR
+! "sw =" can be used in the soil layer section to specify soil water content
+! for each layer. To do this, insoil must be > 1.0.
+! i.e. insoil <= than 1.0 overrides "sw =".
+
+
+   insoil          =    1.8   ()     ! indicator for initial soil water
+                                     ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul, >1 = input by user)
+
+
+! The soil evap parameters are typical of those used in CERES and DSSAT.
+! Salb is from ? and Freebairn, Darling Downs, Australia.
+
+! soil evaporation parameters
+
+   u               =    6.0   (mm)   ! stage 1 soil evaporation coefficient (mm)
+   cona            =    3.5   ()     ! stage 2 evap coef.
+   salb            =    0.05  ()     ! bare soil albedo
+
+! Re-distribution parameters (for water movement between layers, mainly at SW <= DUL)
+! From Probert et al 1996
+ 
+  diffus_const    =   40.0   ()     ! coeffs for dbar
+  diffus_slope    =   16.0   ()     !     "
+
+! Runoff parameters
+
+   runoff_filename =  blank  ! Supply filename with measured runoff. (For calibration purposes.)
+ 
+ 
+! SOILWAT uses only cn2.  cn_red & cn_cov are in soilwat.ini file
+  cn2             =   73 () ! runoff curve number
+
+
+! SOILWAT2 parameters for Runoff
+   cn2_bare    = 73 ()   ! runoff curve number for BARE soil at AMC2
+
+ ! CN2b CN_red CN_cov
+ !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+ !                      & well structured grey clays (ackland)
+ !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+ !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+ !  90   ??     0.8   - Billa Billa (rainsim)
+ !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+ !  94   42     0.8   - hard set pasture solodics
+
+   cn_red = 20 ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+   cn_cov = 0.8 ()  ! frac. cover for "cn_red" reduction in cover 
+                    ! & max. cover for reduction 
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+
+! JPD 8/4/97
+! LL15 and DUL following are based on gravimetric data at 15 and 1/3 bar from 
+! El-Swaify et al 1985 - Table 4, modified to the specified depth increments
+! and BD.
+
+! Layer depths are standards used at ICRISAT for sampling water & NO3 (PKC Rao and Rego)
+
+! BD data are estimated. 
+
+! Airdry for 2 top layers are estimates. 
+! SAT = DUL +.05. 
+
+! SWCON of 0.1 is based on experience with cracking clays on the Darling Downs
+
+! The PAWC for the following profile description is 300mm to 1.8m.
+! and Drainable Porosity is 90mm. 
+
+
+! layer       1       2       3       4       5       6       7      
+   dlayer  =  150.000 150.000 300.000 300.000 300.000 300.000 300.000 (mm)    ! layer depth
+   air_dry =    0.100   0.200   0.246   0.246   0.247   0.256   0.256 (mm/mm) ! air dry
+   ll15    =    0.224   0.245   0.246   0.246   0.247   0.256   0.256 (mm/mm) ! lower limit
+   dul     =    0.390   0.417   0.417   0.401   0.403   0.430   0.430 (mm/mm) ! drained upper limit
+   sat     =    0.440   0.467   0.467   0.451   0.453   0.480   0.480 (mm/mm) ! saturated soil water
+! sw = 48mm PAW.
+   sw      =    0.390   0.400   0.246   0.246   0.247   0.256   0.256 (mm/mm) ! soil water content
+   swcon   =    0.100   0.100   0.100   0.100   0.100   0.100   0.100 ()      ! soil conductivity
+   bd      =    1.200   1.200   1.200   1.200   1.200   1.200   1.200 (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+
+
+!*******************************************************************************
+! Section 2.   Soil water parameter values required by "crop" modules
+!*******************************************************************************
+
+
+
+!JPD 15/5/97 - set LL = LL15. 
+! *******************************************************************************
+! Being based on pressure plate data, LL15 here does not reflect rooting distrib.
+! effects on water extraction at depth.
+! LL will need to be modified when water extraction profiles become available.
+! *******************************************************************************
+! kl values are same as those in SITES.PAR for Brigalow, Waco and Box soils.
+
+ [icrisat_vert.pigeonp.parameters]
+
+   ll    =    0.224   0.245   0.246   0.246   0.247   0.256   0.256 (mm/mm) ! pigeonp lower limit
+   kl    =    0.08    0.08    0.08    0.08    0.08    0.08    0.08  ()      ! rate of soil water extraction
+   xf    =    1.0     1.0     1.0     1.0     1.0     1.0     1.0     ()
+
+ [icrisat_vert.sorg.parameters]
+
+   ll    =    0.224   0.245   0.246   0.246   0.247   0.256   0.256 (mm/mm) ! pigeonp lower limit
+!  kl    =    0.08    0.08    0.08    0.08    0.08    0.08    0.08  ()      ! rate of soil water extraction
+! From mep
+   kl    =    0.10    0.10    0.07    0.07    0.05    0.05    0.05    ()   
+   xf    =    1.0     1.0     1.0     1.0     1.0     1.0     1.0     ()
+
+
+!********************************************************************
+! Section 3. Parameter values required by the "soiln" module
+!********************************************************************
+
+[icrisat_vert.soiln2.parameters]
+
+! JPD, 7/4/97 amp & tav calculated from El-Swaify et al 1985, Table 2.
+! see [amp_tav.xls]
+
+! Parameters used in soil temperature routine
+
+   amp               =   11.9   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   25.9   (oC)       ! mean annual air temperature (oC)
+
+! Initialise Fresh Organic Matter pool in soil layers
+
+   root_cn           =   45.0   ()         !
+!   root_wt           = 1000.0   (kg/ha)    !
+   root_wt           =  000.0   (kg/ha)    !
+
+! Parameter to initialise soil organic N ("humic" N pool) in soil layers
+! from OC%. Assummed constant for all layers.
+! Could be too high for Icrisat farm!!!! (Try 10:1 otherwise)
+
+   soil_cn           =   14.5   ()         ! soil humic pool C:N ratio
+                                         
+
+! JPD. 15/5/97 - OC% from Murthy & Swindale 1993, ICRISAT Field Number: BW_11
+
+! depth         150.    300.    600.    900.    1200.   1500.   1800. 
+
+! Initialise (from OC% and soil C:N ratio) and define active portion of "humic"
+! N in soil layers.
+
+   oc      =    0.960   0.870   0.690   0.630   0.600   0.530   0.300  (%)   ! organic carbon %
+!   fbiom   =    0.040   0.020   0.015   0.010   0.010   0.010   0.010  ()    ! microbe fraction of humic pool
+!   finert  =    0.390   0.470   0.520   0.620   0.740   0.830   0.930  ()    ! inert fraction of humic pool
+
+! MEP suggestion
+     fbiom =    0.025   0.020   0.015   0.010   0.010   0.010   0.010  ()   ! microbe fraction of hunic pool
+    finert =    0.300   0.600   0.800   0.900   0.940   0.980   0.990  () !as used by MEP
+!    finert =    0.50    0.60    0.80    0.90    0.95    0.99    0.99   ()   !MEP 4/6 increased because now include atmos accessions
+
+! Initialise Mineral N (& Urea-N) content in soil layers.
+! all data are estimates (34 kgN/ha as NO3 and 23 as NH4)
+
+!  no3ppm  =    5.000   3.000   2.000   1.000   1.000   1.000   0.500  (ppm) ! ppm nitrate
+!  nh4ppm  =    2.500   2.500   1.500   1.000   0.500   0.500   0.500  (ppm) ! ppm ammonia
+
+! (17 kgN/ha as NO3 and 11.5 as NH4)
+
+   no3ppm  =    1.500   1.000   0.500   0.500   0.500   0.500   0.250  (ppm) ! ppm nitrate
+   nh4ppm  =    1.000   0.750   0.300   0.300   0.250   0.250   0.250  (ppm) ! ppm ammonia
+
+   ureappm =    0.000   0.000   0.000   0.000   0.000   0.000   0.000  (ppm) ! ppm urea
+
+! soil ph is a factor in Urea hydrolysis. (Data from SITES.PAR)
+
+   ph      =    7.500   8.000   8.000   8.000   8.000   8.000   8.000  ()    ! ph
+
+! Parameters for describing organic N concentration in soil removed by erosion.
+
+   enr_a_coeff       =    7.4   ()       
+   enr_b_coeff       =    0.2   ()       
+   profile_reduction =     on              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+
+
+
+!######################################################################
+!
+!                              SOIL 3.
+!
+!                         Aridisol soil at Jodphur
+!           (Mostly from DSSAT database, for Millet experiments)
+!
+!######################################################################
+
+!********************************************************************
+! Section 1.   Parameter values required by the "soilwat" module
+!********************************************************************
+
+ [jodphur_aridisol.soilwat2.parameters]
+
+! Initialisation of soil water content: 
+
+! Either
+! "insoil" can be used here as a general estimate based on % full of PAWC.
+! OR
+! "sw =" can be used in the soil layer section to specify soil water content
+! for each layer. To do this, insoil must be > 1.0.
+! i.e. insoil <= than 1.0 overrides "sw =".
+
+
+   insoil          =    0.2   ()     ! indicator for initial soil water
+                                     ! 0 to 1 is fraction of avail soil water (0=ll15, 1 = dul, >1 = input by user)
+
+
+! soil evaporation parameters
+! Following data is from DSSAT
+
+   u               =    7.0   (mm)   ! stage 1 soil evaporation coefficient (mm)
+   cona            =    3.5   ()     ! stage 2 evap coef.
+   salb            =    0.17  ()     ! bare soil albedo
+
+! Re-distribution parameters (for water movement between layers at SW <= DUL)
+! Best estimate JPD
+
+  diffus_const    =  250.0   ()     ! coeffs for dbar
+  diffus_slope    =   22.0   ()     !     "
+
+! Runoff parameters
+
+   runoff_filename =  blank  ! Supply filename with measured runoff. (For calibration purposes.)
+
+! CN2 data is from DSSAT
+! SOILWAT uses only cn2.  cn_red & cn_cov are in soilwat.ini file
+   cn2             =   81 () ! runoff curve number
+
+! SOILWAT2 parameters for Runoff
+   cn2_bare    = 81 ()   ! runoff curve number for BARE soil at AMC2
+
+ ! CN2b CN_red CN_cov
+ !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+ !                      & well structured grey clays (ackland)
+ !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+ !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+ !  90   ??     0.8   - Billa Billa (rainsim)
+ !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+ !  94   42     0.8   - hard set pasture solodics
+
+   cn_red = 20 ()   ! reduction in CN2_bare for "cn_cov" increase in cover 
+   cn_cov = 0.8 ()  ! frac. cover for "cn_red" reduction in cover 
+                    ! & max. cover for reduction 
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+
+! layer       1       2       3       4       5       6       7      
+   dlayer  =  150.000 150.000 150.000 150.000 300.000 300.000 1000.000 (mm)    ! layer depth
+! Following are estimates
+   air_dry =    0.010   0.020   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! air dry
+   swcon   =    0.700   0.700   0.700   0.700   0.700   0.700   0.700 ()      ! soil conductivity
+ 
+! Following data is from DSSAT
+   ll15    =    0.040   0.043   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! lower limit
+   dul     =    0.140   0.155   0.155   0.140   0.132   0.132   0.132 (mm/mm) ! drained upper limit
+   sat     =    0.282   0.323   0.306   0.281   0.273   0.262   0.262 (mm/mm) ! saturated soil water
+   sw      =    0.055   0.055   0.053   0.045   0.050   0.046   0.046 (mm/mm) ! lower limit
+   bd      =    1.530   1.540   1.550   1.550   1.530   1.500   1.500 (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+
+
+!*******************************************************************************
+! Section 2.   Soil water parameter values required by "crop" modules
+!*******************************************************************************
+
+
+
+! set LL = LL15. 
+! kl is the same as [icrisat_alf1]
+
+! Millet
+
+ [jodphur_aridisol.millet.parameters]
+
+   ll  =    0.040   0.043   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! millet lower limit
+
+! kl values here are same as for icrisat_alf1. Needs to be changed for sandy soil texture of soil at Jodphur.
+   kl  =    0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()      ! rate of soil water extraction
+
+! Millet - tiller 1.
+
+ [jodphur_aridisol.millet1.parameters]
+
+   ll  =    0.040   0.043   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! millet lower limit
+   kl  =    0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()      ! rate of soil water extraction
+
+! Millet - tiller 2.
+
+ [jodphur_aridisol.millet2.parameters]
+
+
+   ll  =    0.040   0.043   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! millet lower limit
+   kl  =    0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()      ! rate of soil water extraction
+
+! Millet - tiller 3.
+
+ [jodphur_aridisol.millet3.parameters]
+
+
+   ll  =    0.040   0.043   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! millet lower limit
+   kl  =    0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()      ! rate of soil water extraction
+
+! Millet - tiller 4.
+
+ [jodphur_aridisol.millet4.parameters]
+
+
+   ll  =    0.040   0.043   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! millet lower limit
+   kl  =    0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()      ! rate of soil water extraction
+
+! Millet - tiller 5.
+
+ [jodphur_aridisol.millet5.parameters]
+
+
+   ll  =    0.040   0.043   0.043   0.043   0.040   0.040   0.040 (mm/mm) ! millet lower limit
+   kl  =    0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()      ! rate of soil water extraction
+
+
+
+
+!********************************************************************
+! Section 3. Parameter values required by the "soiln" module
+!********************************************************************
+
+
+
+[jodphur_aridisol.soiln2.parameters]
+
+! Parameters used in soil temperature routine
+
+! From DSSAT 
+   amp               =   17.0   (oC)       ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures
+   tav               =   26.3   (oC)       ! mean annual air temperature (oC)
+
+! Initialise Fresh Organic Matter pool in soil layers
+!  NLJ estimates
+   root_cn           =   40.0   ()         !
+   root_wt           =  250.0   (kg/ha)    !
+
+! Parameter to initialise soil organic N ("humic" N pool) in soil layers
+! from OC%. Assummed constant for all layers.
+
+! Best estimate JPD
+   soil_cn           =   14.5   ()         ! soil humic pool C:N ratio
+                                         
+
+
+! depth         150.    300.    450.    600.     900.   1200.   2400. 
+
+! Initialise (from OC% and soil C:N ratio) and define active portion of "humic"
+! N in soil layers.
+
+! OC from DSSAT, fbiom etc from JPD
+   oc      =    0.230   0.170   0.150   0.120   0.090   0.040   0.040  (%)   ! organic carbon %
+   fbiom   =    0.040   0.020   0.015   0.010   0.010   0.010   0.010  ()    ! microbe fraction of humic pool
+   finert  =    0.390   0.470   0.520   0.620   0.740   0.830   0.930  ()    ! inert fraction of humic pool
+
+! Initialise Mineral N (& Urea-N) content in soil layers.
+! To be filled in when available. Current values from DSSAT - too high.
+   no3ppm  =    7.900   8.000   8.100   8.200   7.800   7.800   7.800  (ppm) ! ppm nitrate
+   nh4ppm  =   10.000   9.500   7.300   6.600   3.300   1.600   1.600  (ppm) ! ppm ammonia
+   ureappm =    0.000   0.000   0.000   0.000   0.000   0.000   0.000  (ppm) ! ppm urea
+
+! soil ph is a factor in Urea hydrolysis.
+! data from DSSAT
+   ph      =    8.600   7.500   6.000   5.500   5.300   4.000   4.000  ()    ! ph
+
+! Parameters for describing organic N concentration in soil removed by erosion.
+
+   enr_a_coeff       =    7.4   ()       
+   enr_b_coeff       =    0.2   ()       
+   profile_reduction =     on              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+! ############################################################################
+!                                  SOIL 4.
+!
+!            Vertisol soil, BW3
+!            JPD 10/11/98 (data from BW3_9596.XLS)
+! ############################################################################
+
+ [bw3.soilwat2.parameters]
+
+
+   insoil          =    1.8   ()
+   u               =    6.0   (mm)   ! stage 1 soil evaporation coefficient (mm)
+   cona            =    3.5   ()     ! stage 2 evap coef.
+   salb            =    0.05  ()     ! bare soil albedo
+   diffus_const    =   40.0   ()     ! coeffs for dbar
+   diffus_slope    =   16.0   ()     !     "
+   runoff_filename =   blank  
+       cn2_bare    =   73     ()   
+            cn_red =   20     ()   
+            cn_cov =    0.8   ()  
+    cn_canopy_fact =    1.0 () 
+                            
+! LL15 = mean of N0&N80 (3 reps) at Jan 12 1996.
+! DUL  = Jul31/95 (L1-L3) & SoilSurvey L4-L6. (Jul31 L4-L6 may be still draining)
+! SAT  = TP - .04 
+! BD data are from USDA Soil Survey
+! Airdry (1) - estimated from Jan12/96 data. 
+! SWCON of 0.1 is based on experience
+! The PAWC for the following profile description is 265mm to 1.5m.
+! and Drainable Porosity is 82mm. 
+
+
+! layer       1       2       3       4       5       6       !7      
+   dlayer  =  150.000 150.000 300.000 300.000 300.000 300.000 !300.000 (mm)    ! layer depth
+   air_dry =    0.100   0.184   0.223   0.280   0.296   0.300 !  0.310 (mm/mm) ! air dry
+   ll15    =    0.184   0.184   0.223   0.280   0.296   0.300 !  0.310 (mm/mm) ! lower limit
+   dul     =    0.324   0.349   0.430   0.460   0.466   0.474 !  0.490 (mm/mm) ! drained upper limit
+   sat     =    0.477   0.481   0.480   0.488   0.487   0.507 !  0.510 (mm/mm) ! saturated soil water
+! sw = 53mm PAW.
+   sw      =    0.290   0.300   0.280   0.290   0.296   0.300 !  0.310 (mm/mm) ! soil water content
+   swcon   =    0.100   0.100   0.100   0.100   0.100   0.100 !  0.100 ()      ! soil conductivity
+   bd      =    1.280   1.270   1.270   1.240   1.250   1.200 !  1.200 (g/cc)  ! bulk density gm dry soil/cc moist soil
+!                              (1.310 soil survey)
+
+
+!*******************************************************************************
+! Section 2.   Soil water parameter values required by "crop" modules
+!*******************************************************************************
+
+! set LL = LL15. 
+
+ [bw3.sorg.parameters]
+
+   ll    =    0.184   0.184   0.223   0.280   0.296   0.300  !0.310 (mm/mm) ! pigeonp lower limit
+! From mep
+   kl    =    0.10    0.10    0.07    0.07    0.05    0.05   !0.05    ()   
+   xf    =    1.0     1.0     1.0     1.0     1.0     1.0    !1.0     ()
+
+
+!********************************************************************
+! Section 3. Parameter values required by the "soiln" module
+!********************************************************************
+
+[bw3.soiln2.parameters]
+
+
+   amp               =   11.9   (oC)      
+   tav               =   25.9   (oC)      
+   root_cn           =   40.0   ()         !
+   root_wt           =  100.0   (kg/ha)    !
+
+! C:N from BW123_92.XLS
+
+   soil_cn           =   17.0   ()         ! soil humic pool C:N ratio
+                                         
+
+! depth        150.    300.    600.    900.    1200.   1500.    ! 1800. 
+
+    oc      =    0.716   0.540   0.527   0.492   0.470   0.454
+
+! MEP suggestions
+    fbiom   =    0.025   0.020   0.015   0.010   0.010   0.010  ! 0.010  ()   ! microbe fraction of hunic pool
+    finert  =    0.300   0.600   0.800   0.900   0.940   0.980  ! 0.990  () !as used by MEP
+
+    ureappm =    0.000   0.000   0.000   0.000   0.000   0.000  ! 0.000  (ppm) ! ppm urea
+    ph      =    7.500   8.000   8.000   8.000   8.000   8.000  ! 8.000  ()    ! ph
+! 13 kgN/ha as NO3 and 7 as NH4 = 20kgN/ha avail. (see BW3_9596.XLS)
+    no3ppm  =    1.500   1.000   0.500   0.500   0.500   0.500  ! 0.250  (ppm) ! ppm nitrate
+    nh4ppm  =    1.000   0.750   0.300   0.300   0.250   0.250  ! 0.250  (ppm) ! ppm ammonia
+
+   enr_a_coeff       =    7.4   ()       
+   enr_b_coeff       =    0.2   ()       
+   profile_reduction =     on       
+

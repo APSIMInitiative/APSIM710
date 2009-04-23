@@ -1,0 +1,275 @@
+
+[all.clock.parameters]
+start_date=5/8/1994
+end_date=23/1/2000
+
+[all.SurfaceOM.parameters]
+
+! --- assume essentially no residue at start ---
+mass = 10.0
+cnr = 100.0
+type = wheat
+
+name = wheat
+
+[all.SoilWat.parameters]
+
+insoil =  2.0
+u =  9
+
+! For standard Soilwat2
+cn2_bare = 72 !78
+cn_red = 20 ()
+cn_cov =  0.8 ()
+
+!cn2_bare = 70
+!cn_red = 25 ()
+!cn_cov =  0.8 ()
+
+salb =  0.13
+
+cona =  5   !
+beta = 4
+max_evap = 10
+
+! From Calculations by Zahra using moisture characteristic and conductivity
+diffus_const = 40
+diffus_slope = 16
+
+! Black hole stuff
+cnpd_infiltration= 0.25 .75
+max_infiltration = 100   30
+
+
+!New limits using NMM_9.1                Limits based on lab data
+!
+!layer   BD    poros.  SAT   DUL   LL        SAT     DUL     LL
+! 10    1.0    60.6                          54.3    49.1    30.7
+! 30    1.1    57.4    53    47    24        54.5    51.4    34.6
+! 50    1.1    58.1    57    53    26        54.2    50.6    34.6
+! 70    1.1    57.7    55    52    26        54.8    50.3    33.8
+! 90    1.1    57.1    54    49    26        54.6    50.0    34.0
+!110    1.2    56.3    53    47    26        53.9    49.6    34.2
+!130    1.2    55.3    51    46    28        53.1    48.3    33.5
+!150    1.2    54.2    51    46    31        52.9    46.4    32.8
+!170    1.2    53.4    52    46    34        52.0    45.6    32.2
+!190    1.2    53.1    49    45    34        51.7    45.3    32.0
+!210    1.2    52.9    49    45    34        51.5    45.2    31.9
+!230    1.2    52.9    49    45    34        51.5    45.2    31.9
+!250    1.3    50.7    48    45    36        49.4    48.1    35.8
+!270    1.3    50.7    48    45    36        49.4    48.1    35.8
+!290    1.3    50.7    48    45    36        49.4    48.1    35.8
+!310    1.3    50.7    48    45    36        49.4    48.1    35.8
+
+! NOTE!!! BD needs to be corrected using the BD vs Theta relationship
+! and the SAT value.
+!cumdepth  100  300  500  700  900 1100 1300 1500 1700 1900 2100 2300 2500 2700 2900 3100
+dlayer =   100  200  200  200  200  200  200  200  200  200  200  200  200  200  200  200   ! layer depth mm soil
+!bd =       0.9  1.1  1.1 1.16 1.15 1.15  1.15  1.2  1.2  1.3  1.3  1.3  1.3  1.3  1.3  1.3   ! bulk density gm dry soil/cc moist soil
+bd =       1.0  1.1  1.1 1.1 1.1 1.20  1.20  1.2  1.2  1.2  1.2  1.2  1.3  1.3  1.3  1.3   ! needed to match sat
+! From Lucerne treatment
+ll15 =    .240 .240 .280 .290 .290 .290 .290 .330 .330 .350 .350 .350 .350 .350 .350 .350
+! From NMM data perusual
+dul =     0.47 0.50 0.52 0.52 0.51 0.50 0.50 0.48 0.48 0.48 0.47 0.45 0.45 0.45 0.45 0.45
+sat =     0.53 0.55 0.57 0.55 0.54 0.53 0.53 0.51 0.51 0.51 0.50 0.48 0.48 0.48 0.48 0.48
+swcon =    0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4 0.40 0.40 0.40 0.40 0.40
+
+sponge=    1.0  .025 .025 .04 .04  .02  .02  .01  .01  .00 .000 .000 .000 .000 .000 .000   ! spongability (cc/cc/day)
+air_dry =  .100 .100 .100 .100 .100 .100 .100 .100 .100 .100 .100 .100 .100 .100 .100 .100   ! air dry water content
+
+[p3.SoilWat.parameters]
+sw = 0.47 0.47 0.53 0.50 0.47 0.46 0.45 0.45 0.45 0.43 0.42 0.42 0.41 0.43 0.42 0.41
+
+[all.SoilN.parameters]
+
+! All N data is on N measurement layer structure!!!! This is different, but similar to the water structure.
+!cumdepth  100  300  500  700  900 1100 1300 1500 1700 1900 2100 2300 2500 2700 2900 3100
+! Organic matter status from early BAK work
+oc =      1.40 1.40 1.40 1.35 0.95 1.00 0.80 0.45 0.45 0.45 0.45 0.45 0.45 0.45 0.45 0.45   ! organic carbon %
+fbiom =   .030 .030 .020 .015 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01   ! initial microbial biomass fraction
+finert =  0.45 0.45 0.60 0.70 0.85 0.90 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99   ! inert fraction of soil carbon
+
+! From Warra
+!oc =      1.00 0.80 0.65 0.54 0.50 0.43 0.43 0.43 0.43 0.43 0.43 0.43 0.43 0.43 0.43 0.43   ! organic carbon %
+!fbiom =   .045 .020 .010 .010 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01   ! initial microbial biomass fraction
+!finert =  0.30 0.55 0.70 0.85 0.90 0.95 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99   ! inert fraction of soil carbon
+
+! pH from initial soil measurements
+ph =      6.00 6.40 6.80 7.20 7.60 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00   ! ph
+! background NH4 and NO3 assumed to be low
+nh4ppm =  0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30   !
+ureappm =  0   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0   ! ppm urea
+
+
+root_wt =  10.   ! root residues as biomass (kg/ha)
+root_cn =  40.
+
+soil_cn =  14.5
+
+enr_a_coeff =  7.4 ()   !stuff for mapping erosion
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+[p3.SoilN.parameters]
+! Measured initial N
+!no3ppm =  10.7 9.99 7.87 6.2 4.85 3.56 2.72 2.34 2.47 3.24 4.25 4.94 5.2 4.95 4.52 4.24
+! BUT we are starting later so need to include initial fertiliser application and some mineralisation
+no3ppm =  40.0 15.00 7.87 6.2 4.85 3.56 2.72 2.34 2.47 3.24 4.25 4.94 5.2 4.95 4.52 4.24
+
+[all.solute.parameters]
+solute_names =  cl
+cl =  35 50 100 111 94 87 112 180 266 401 476 519 553 556 545 518
+! average of all plots except OP2 and assuming BD as per first Tamworth visit.
+
+
+[all.micromet.parameters]
+soil_albedo = 0.13
+layer_ga = 0.01666
+
+!      Interception = A_interception * (rain ^ B_interception)
+!                   + C_interception * Total_LAI
+!                   + D_interception
+! Standard LAI approach
+!a_interception = 0.0
+!b_interception = 0.0
+!c_interception = 0.3
+!d_interception = 0.0
+
+! Standard Rainfall approach
+a_interception = 0.0
+b_interception = 0.0
+c_interception = 0.3
+d_interception = 0.0
+
+[all.bambatsi.parameters]
+! LL same as for wheat at surface but stays lower with depth to meet with
+! measured LL at depth.
+ll =  0.25 0.30 0.30 0.30 0.30 0.33 0.35 0.38 0.38 0.40 0.40 0.40 0.40 0.40 0.40 0.40
+xf =  1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 0.00 0.00 0.00 0.00 0.00 0.00   ! root depth weighting factor
+kl =  0.04 0.04 0.04 0.03 0.02 0.01 0.01 0.01 .005 .005 .005 .005 .005 .005 .005 .005   ! root depth weighting factor
+!kl =  0.06 0.05 .030 .010 .005 .005 .002 .002 .002 .002 .002 .002 .002 .002 .002 .002   ! root depth weighting factor
+rlv = 0.01 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+
+uptake_source =  calc
+n_uptake_source = calc
+
+
+! =========================== MANAGER LOGIC ========================================
+[all.manager.init]
+biom = 0.0
+cum_production = 0.0
+cum_runoff = 0.0
+
+[all.manager.end_of_day]
+surf_biomn = biom_n(1)
+subsurf_biomn = biom_n(2) + biom_n(3)
+surf_humn = hum_n(1)
+subsurf_humn = hum_n(2) + hum_n(3)
+average_t = (maxt + mint)/2.0
+
+if bambatsi.biomass < biom / 3.0 then
+   cum_production = cum_production + biom - bambatsi.biomass
+endif
+biom = bambatsi.biomass
+
+if today > date('30-aug-1996') then
+   cum_runoff = cum_runoff + SoilWat.runoff
+endif
+
+! Calculate total sw 10cm to 110cm
+sw1 = sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6)
+! Calculate total sw 110cm to 210cm
+sw2 = sw_dep(7) + sw_dep(8) + sw_dep(9) + sw_dep(10) + sw_dep(11)
+! Calculate total sw 210cm to 310cm
+sw3 = sw_dep(12) + sw_dep(13) + sw_dep(14) + sw_dep(15) + sw_dep(16)
+! Calculate total sw 10cm to 310cm
+swtot = sw1 + sw2 + sw3
+
+
+report do_output
+
+! ============================== OPERATIONS SCHEDULES ===============================
+
+
+[p3.Operations.parameters]
+
+! Most early growth was weed so use low population to kick off first growth period
+!1994 342 bambatsi  establish plants = 5000000, init_section = seedling
+!1994 342 bambatsi  establish plants = 1000000, init_section = seedling!
+
+1994 342 Fertiliser apply amount = 20.0, type = urea_n, depth = 5
+
+! Really plants were sown on 342/1994 and resown with extra plants on 45/1995.
+! We can't do this so we'll sow somewhere in the middle.
+1995  1 bambatsi  establish plants = 5000000, init_section = seedling
+
+! extra sowing to fill out patches
+!1995  45 bambatsi  sow crop_type = bambatsi, cultivar=generic, plants = 100, sowing_depth = 40 (mm), row_spacing = 300 (mm)
+!1995 45  bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!1995  45 bambatsi  establish plants = 5000000, init_section = seedling
+
+1995 282 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+1995 325 Fertiliser apply amount = 50, type = no3_n, depth = 5
+1995 335 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99, plants = 300
+1996  30 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+1996  59 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============  following added nih 1-7-2003
+!1996 121 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!1996 191 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============
+1996 331 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+1996 357 Fertiliser apply amount = 50, type = no3_n, depth = 5
+1997  14 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+1997  63 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+
+!===============  following added nih 1-7-2003
+!1997  96 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============
+
+1997 177 Fertiliser apply amount = 22, type = no3_n, depth = 5
+
+!===============  following added nih 1-7-2003
+!1997 233 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!1997 286 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!1997 301 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============
+
+1997 321 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+
+!===============  following added nih 1-7-2003
+!1998  62 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============
+
+1998  97 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+
+!===============  following added nih 1-7-2003
+!1998 215 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============
+
+1998 282 Fertiliser apply amount = 30, type = no3_n, depth = 5
+
+!===============  following added nih 1-7-2003
+!1998 335 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============
+
+1998 351 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+1999  47 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+1999 153 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+1999 314 Fertiliser apply amount = 50, type = no3_n, depth = 5
+1999 272 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+
+2000 33 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+
+
+!===============  following added nih 1-7-2003
+!1999 357 bambatsi cut foliage_remove_fr = 1.0, adm_remove_fr =0.99
+!===============
+
+[all.Screen.parameters]
+screen_output = on
+[all.tracker1.parameters]
+variable = sum of SoilWat.runoff on process from report.reported to now as sum@soilwat2_runoff
+variable = sum of SoilWat.drain on process from report.reported to now as sum@soilwat2_drain
+variable = sum of SoilWat.es on process from report.reported to now as sum@soilwat2_es
+variable = sum of SoilN.dnit() on process from report.reported to now as sum@soiln2_dnit[]
+variable = sum of SoilWat.flow_no3(16) on process from report.reported to now as sum@soilwat2_flow_no3[16]

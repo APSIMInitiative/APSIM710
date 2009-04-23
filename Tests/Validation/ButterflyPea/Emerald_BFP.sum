@@ -1,0 +1,954 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Emerald_BFP
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
+   Component     "Black_Vertosol_ERS Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component  "Black_Vertosol_ERS Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                 "butterflypea" = %apsim%\Model\Plant.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component                      "Manager" = %apsim%\Model\Manager.dll
+   Component     "Black_Vertosol_ERS Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component  "Black_Vertosol_ERS Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                 "butterflypea" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2008
+     Simulation end date   = 31/12/2008
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Emerald0809.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        year
+        day
+        DaysAfterSowing
+        flowering_das
+        flowering_date
+        StageName
+        yield
+        biomass_wt
+        LeafTotalWt
+        StemTotalWt
+        podTotalWt
+        LeafSenescedWt
+        biom as green_biomass
+        LeafGreenWt
+        StemGreenWt
+        leaf_no
+        leaf_no_sen
+        leaf_area()
+        node_no
+        lai
+        stover_wt
+        ep
+        esw_layr()
+        root_depth
+        no3()
+        manager.total_minN
+        height
+        dlt_dm_green_grain
+        leafgrowthwt
+        dlt_dm_green_meal
+        podgrowthwt
+        dlt_dm_green_root
+        stemgrowthwt
+        leaves_per_node
+        swdef_pheno
+        swdef_photo
+        swdef_expan
+        swdef_fixation
+        lai_sum
+        green_leaves
+        tt_
+        acc_TT
+        biomass
+        green_biomass
+        rain
+        n_fixed_tops
+        n_supply_soil
+        n_uptake
+        stagename
+
+     Output file = Emerald_BFP Dryland.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'butterflypea')) then
+              if (date_within('22-feb, 22-feb') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('yes' = 'yes' and today = date('22-feb'))) then
+        choosenextcrop = 'yes'
+        butterflypea sow plants =15, sowing_depth = 20, cultivar = milgarra, row_spacing = 200, crop_class = plant
+     endif
+     if today = date('22-feb') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if butterflypea.stagename = 'harvest_ripe' or butterflypea.plant_status = 'dead' then
+       butterflypea  harvest
+       butterflypea  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- butterflypea.sowing
+             fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     cuts = 0
+      total_minn = 0
+     biom = 0
+     
+     SECTION:- start_of_day
+     biom = leafgreenwt + stemgreenwt
+       if day = 358 then
+           irrigation apply amount = 10
+       endif
+       if day = 362 then
+           irrigation apply amount = 38
+       endif
+     
+     SECTION:- end_of_day
+       total_minn = total_minn + dlt_n_min_tot()
+     END of rules
+     
+     Manager creating a new local real variable : cuts = 0.00000
+     Manager creating a new local real variable : total_minn = 0.00000
+     Manager creating a new local real variable : biom = 0.00000
+
+------- Black_Vertosol_ERS Water Initialisation -------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.120  0.250  0.500  0.550  0.400  1.193  0.613  0.200
+          100.-  200.  0.200  0.250  0.500  0.550  0.500  1.193  0.243  0.200
+          200.-  300.  0.255  0.255  0.500  0.550  0.500  1.193  0.096  0.200
+          300.-  600.  0.280  0.280  0.490  0.540  0.490  1.219  0.048  0.200
+          600.-  900.  0.305  0.305  0.480  0.530  0.480  1.246  0.000  0.200
+          900.- 1100.  0.310  0.310  0.465  0.510  0.465  1.299  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      25.00      15.00      25.00       5.00
+          100.-  200.      25.00      25.00      25.00       5.00
+          200.-  300.      25.50      24.50      24.50       5.00
+          300.-  600.      84.00      63.00      63.00      15.00
+          600.-  900.      91.50      52.50      52.50      15.00
+          900.- 1100.      62.00      31.00      31.00       9.00
+          ---------------------------------------------------------
+               Totals     313.00     211.00     221.00      54.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          residue   wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Black_Vertosol_ERS Nitrogen Initialisation ----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.05  0.76    4.77    0.12    0.00
+             2     7.90  0.66    4.41    0.12    0.00
+             3     8.25  0.61    5.25    0.12    0.00
+             4     8.20  0.59   10.61    0.37    0.00
+             5     8.20  0.57    4.49    0.37    0.00
+             6     8.20  0.52    1.30    0.26    0.00
+          ------------------------------------------------
+           Totals               30.83    1.36    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       8821.5   735.1   245.3    30.7   144.2     3.6
+             2       7796.6   649.7    77.2     9.6   109.7     2.7
+             3       7245.0   603.8    32.3     4.0    83.5     2.1
+             4      21533.6  1794.5    42.7     5.3    36.9     0.9
+             5      21296.1  1774.7    10.5     1.3    16.3     0.4
+             6      13508.3  1125.7     1.3     0.2     9.4     0.2
+          ---------------------------------------------------------
+           Totals   80201.0  6683.4   409.4    51.2   400.0    10.0
+          ---------------------------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        year
+        day
+        DaysAfterSowing
+        flowering_das
+        flowering_date
+        StageName
+        yield
+        biomass_wt
+        LeafTotalWt
+        StemTotalWt
+        podTotalWt
+        LeafSenescedWt
+        biom as green_biomass
+        LeafGreenWt
+        StemGreenWt
+        leaf_no
+        leaf_no_sen
+        leaf_area()
+        node_no
+        lai
+        stover_wt
+        ep
+        esw_layr()
+        root_depth
+        no3()
+        manager.total_minN
+        height
+        dlt_dm_green_grain
+        leafgrowthwt
+        dlt_dm_green_meal
+        podgrowthwt
+        dlt_dm_green_root
+        stemgrowthwt
+        leaves_per_node
+        swdef_pheno
+        swdef_photo
+        swdef_expan
+        swdef_fixation
+        lai_sum
+        green_leaves
+        tt_
+        acc_TT
+        biomass
+        green_biomass
+        rain
+        n_fixed_tops
+        n_supply_soil
+        n_uptake
+        stagename
+
+     Output file = Emerald_BFP Irrigated.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'butterflypea')) then
+              if (date_within('22-feb, 22-feb') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('yes' = 'yes' and today = date('22-feb'))) then
+        choosenextcrop = 'yes'
+        butterflypea sow plants =15, sowing_depth = 30, cultivar = milgarra, row_spacing = 200, crop_class = plant
+     endif
+     if today = date('22-feb') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if butterflypea.stagename = 'harvest_ripe' or butterflypea.plant_status = 'dead' then
+       butterflypea  harvest
+       butterflypea  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- butterflypea.sowing
+             fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     cuts = 0
+      total_minn = 0
+     biom = 0
+     
+     SECTION:- start_of_day
+     biom = leafgreenwt + stemgreenwt
+       if day = 80 then
+           irrigation apply amount = 50
+       endif
+       if day = 133 then
+           irrigation apply amount = 50
+       endif
+       if day = 100 then
+       endif
+     if butterflypea.stagename = 'end_grain_fill' then
+     endif
+     
+     SECTION:- end_of_day
+       total_minn = total_minn + dlt_n_min_tot()
+     END of rules
+     
+     Manager creating a new local real variable : cuts = 0.00000
+     Manager creating a new local real variable : total_minn = 0.00000
+     Manager creating a new local real variable : biom = 0.00000
+
+------- Black_Vertosol_ERS Water Initialisation -------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.120  0.250  0.500  0.550  0.480  1.193  0.613  0.200
+          100.-  200.  0.200  0.250  0.500  0.550  0.500  1.193  0.243  0.200
+          200.-  300.  0.255  0.255  0.500  0.550  0.500  1.193  0.096  0.200
+          300.-  600.  0.280  0.280  0.490  0.540  0.490  1.219  0.048  0.200
+          600.-  900.  0.305  0.305  0.480  0.530  0.480  1.246  0.000  0.200
+          900.- 1100.  0.310  0.310  0.465  0.510  0.465  1.299  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      25.00      23.00      25.00       5.00
+          100.-  200.      25.00      25.00      25.00       5.00
+          200.-  300.      25.50      24.50      24.50       5.00
+          300.-  600.      84.00      63.00      63.00      15.00
+          600.-  900.      91.50      52.50      52.50      15.00
+          900.- 1100.      62.00      31.00      31.00       9.00
+          ---------------------------------------------------------
+               Totals     313.00     219.00     221.00      54.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.40 (mm^0.5)
+            Critical Dates:       Summer        1-nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          residue   wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Black_Vertosol_ERS Nitrogen Initialisation ----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.05  0.76    4.77    0.12    0.00
+             2     7.90  0.66    4.41    0.12    0.00
+             3     8.25  0.61    5.25    0.12    0.00
+             4     8.20  0.59   10.61    0.37    0.00
+             5     8.20  0.57    4.49    0.37    0.00
+             6     8.20  0.52    1.30    0.26    0.00
+          ------------------------------------------------
+           Totals               30.83    1.36    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       8821.5   735.1   245.3    30.7   144.2     3.6
+             2       7796.6   649.7    77.2     9.6   109.7     2.7
+             3       7245.0   603.8    32.3     4.0    83.5     2.1
+             4      21533.6  1794.5    42.7     5.3    36.9     0.9
+             5      21296.1  1774.7    10.5     1.3    16.3     0.4
+             6      13508.3  1125.7     1.3     0.2     9.4     0.2
+          ---------------------------------------------------------
+           Totals   80201.0  6683.4   409.4    51.2   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 January 2008(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "fallowin".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : fallowin = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "nextcrop".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+1 January 2008(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "fallowin".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : fallowin = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "nextcrop".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+22 February 2008(Day of year=53), Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- butterflypea sow  plants = 15, sowing_depth = 20, cultivar = milgarra, row_spacing = 200, crop_class = plant
+22 February 2008(Day of year=53), butterflypea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = milgarra
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      50 (vd)
+              tt_emergence               =     160     240 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     430     200     200 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     170     170 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     560     560 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =    1000 (dd)
+           maturity
+              tt_maturity                =     300 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.1600     0.1600
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.55       0.55
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.040          0.270       1.000
+         100.0     0.040          0.300       1.000
+         100.0     0.030          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.360       1.000
+         200.0     0.010          0.350       1.000
+         -----------------------------------------------
+         Extractable SW:   162mm in  1100mm total depth ( 15%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             53   20.0   15.0  200.0   0.0   0.0 milgarra
+         ------------------------------------------------
+     
+22 February 2008(Day of year=53), Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- butterflypea sow  plants = 15, sowing_depth = 30, cultivar = milgarra, row_spacing = 200, crop_class = plant
+22 February 2008(Day of year=53), butterflypea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = milgarra
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      50 (vd)
+              tt_emergence               =     160     240 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     430     200     200 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     170     170 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     560     560 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =    1000 (dd)
+           maturity
+              tt_maturity                =     300 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.1600     0.1600
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.55       0.55
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.270       1.000
+         100.0     0.060          0.300       1.000
+         100.0     0.040          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.360       1.000
+         200.0     0.010          0.350       1.000
+         -----------------------------------------------
+         Extractable SW:   162mm in  1100mm total depth ( 15%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             53   30.0   15.0  200.0   0.0   0.0 milgarra
+         ------------------------------------------------
+     
+22 February 2008(Day of year=53), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+22 February 2008(Day of year=53), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+23 February 2008(Day of year=54), butterflypea: 
+      stage 2.0 germination
+23 February 2008(Day of year=54), butterflypea: 
+      stage 2.0 germination
+1 March 2008(Day of year=61), butterflypea: 
+      stage 3.0 emergence
+                     biomass =          10.50 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =   36.12 (mm)
+5 March 2008(Day of year=65), butterflypea: 
+      stage 3.0 emergence
+                     biomass =          10.50 (g/m^2)   lai          =   0.007 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =   50.78 (mm)
+17 March 2008(Day of year=77), butterflypea: 
+      stage 4.0 end_of_juvenile
+                     biomass =          31.65 (g/m^2)   lai          =   0.378 (m^2/m^2)
+                     stover N conc =     3.76 (%)    extractable sw =   80.89 (mm)
+20 March 2008(Day of year=80), Manager: 
+     Manager sending message :- irrigation apply  amount = 50
+20 March 2008(Day of year=80), butterflypea: 
+      stage 4.0 end_of_juvenile
+                     biomass =          27.10 (g/m^2)   lai          =   0.324 (m^2/m^2)
+                     stover N conc =     4.56 (%)    extractable sw =  116.85 (mm)
+4 April 2008(Day of year=95), butterflypea: 
+      stage 5.0 floral_initiation
+                     biomass =         114.91 (g/m^2)   lai          =   1.938 (m^2/m^2)
+                     stover N conc =     2.65 (%)    extractable sw =   98.28 (mm)
+8 April 2008(Day of year=99), butterflypea: 
+      stage 5.0 floral_initiation
+                     biomass =         126.50 (g/m^2)   lai          =   2.164 (m^2/m^2)
+                     stover N conc =     2.56 (%)    extractable sw =  112.86 (mm)
+25 April 2008(Day of year=116), butterflypea: 
+      stage 6.0 flowering
+                     biomass =         220.69 (g/m^2)   lai          =   2.636 (m^2/m^2)
+                     stover N conc =     3.17 (%)    extractable sw =   71.95 (mm)
+30 April 2008(Day of year=121), butterflypea: 
+      stage 6.0 flowering
+                     biomass =         276.23 (g/m^2)   lai          =   3.745 (m^2/m^2)
+                     stover N conc =     2.91 (%)    extractable sw =   76.45 (mm)
+11 May 2008(Day of year=132), butterflypea: 
+      stage 7.0 start_grain_fill
+                     biomass =         266.52 (g/m^2)   lai          =   2.090 (m^2/m^2)
+                     stover N conc =     4.41 (%)    extractable sw =   50.07 (mm)
+12 May 2008(Day of year=133), Manager: 
+     Manager sending message :- irrigation apply  amount = 50
+15 May 2008(Day of year=136), butterflypea: 
+      stage 7.0 start_grain_fill
+                     biomass =         358.64 (g/m^2)   lai          =   3.380 (m^2/m^2)
+                     stover N conc =     3.94 (%)    extractable sw =   81.78 (mm)
+8 July 2008(Day of year=190), butterflypea: 
+      stage 8.0 end_grain_fill
+                     biomass =         410.98 (g/m^2)   lai          =   0.771 (m^2/m^2)
+                     stover N conc =     2.65 (%)    extractable sw =   26.27 (mm)
+14 July 2008(Day of year=196), butterflypea: 
+      stage 8.0 end_grain_fill
+                     biomass =         627.01 (g/m^2)   lai          =   0.271 (m^2/m^2)
+                     stover N conc =     3.37 (%)    extractable sw =   25.52 (mm)
+15 August 2008(Day of year=228), butterflypea: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 3586.55 (kg/ha)
+15 August 2008(Day of year=228), butterflypea: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 5690.41 (kg/ha)
+15 August 2008(Day of year=228), Harvesting rule: 
+     Manager sending message :- butterflypea harvest
+     
+      flowering day          =  116                           stover (kg/ha)         =     1908.2
+      maturity day           =    0                           grain yield (kg/ha)    =     1655.8
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1881.5
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.691
+      total above ground biomass (kg/ha)    =     3564.0
+      live above ground biomass (kg/ha)     =     3564.0
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     3564.0
+      number of leaves       =    645.7
+      DM Root:Shoot ratio    =     0.55                       Harvest Index          =       0.46
+      Stover C:N ratio       =    16.35                       Root C:N ratio         =      23.79
+      grain N percent        =     7.50                       total N content (kg/ha)=     170.87
+      grain N uptake (kg/ha) =   124.18                       senesced N content (kg/ha)=   46.68
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.021        0.073
+         end_of_juvenile      to floral_initiation       0.015        0.028        0.182        0.262
+         floral_initiation    to flowering               0.130        0.171        0.272        0.362
+         flowering            to start_grain_fill        0.242        0.295        0.228        0.317
+         start_grain_fill     to end_grain_fill          0.279        0.337        0.132        0.184
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1908.2                     0.0
+                          N  (kg/ha) =                  46.68                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1655.8                     0.0
+                          N  (kg/ha) =                 124.18                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =   64.96 (mm)
+     Manager sending message :- butterflypea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1963.5
+                          N  (kg/ha) =                   0.00                   33.01
+     
+15 August 2008(Day of year=228), Harvesting rule: 
+     Manager sending message :- butterflypea harvest
+     
+      flowering day          =  121                           stover (kg/ha)         =     2939.8
+      maturity day           =    0                           grain yield (kg/ha)    =     2721.5
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     3092.6
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.750
+      total above ground biomass (kg/ha)    =     5661.3
+      live above ground biomass (kg/ha)     =     5661.3
+      green above ground biomass (kg/ha)    =        0.0
+      senesced above ground biomass (kg/ha) =     5661.3
+      number of leaves       =    618.3
+      DM Root:Shoot ratio    =     0.50                       Harvest Index          =       0.48
+      Stover C:N ratio       =    16.63                       Root C:N ratio         =      24.04
+      grain N percent        =     7.50                       total N content (kg/ha)=     274.83
+      grain N uptake (kg/ha) =   204.11                       senesced N content (kg/ha)=   70.72
+      green N content (kg/ha)=     0.00
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.034
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.138        0.212
+         floral_initiation    to flowering               0.041        0.060        0.260        0.341
+         flowering            to start_grain_fill        0.127        0.162        0.230        0.315
+         start_grain_fill     to end_grain_fill          0.157        0.198        0.134        0.183
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2939.8                     0.0
+                          N  (kg/ha) =                  70.72                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2721.5                     0.0
+                          N  (kg/ha) =                 204.11                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.00 (%)    extractable sw =   75.59 (mm)
+     Manager sending message :- butterflypea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2816.8
+                          N  (kg/ha) =                   0.00                   46.86
+     
+23 December 2008(Day of year=358), Manager: 
+     Manager sending message :- irrigation apply  amount = 10
+27 December 2008(Day of year=362), Manager: 
+     Manager sending message :- irrigation apply  amount = 38
+31 December 2008(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.

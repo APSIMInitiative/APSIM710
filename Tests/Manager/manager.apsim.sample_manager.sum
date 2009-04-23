@@ -1,0 +1,95 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Manager Sample Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   =  8/04/1988
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.year
+        clock.day
+        manager.avtemp
+        manager.avtempi
+        manager.feb_or_not
+        manager.fixed_rain
+        manager.rain_amount
+        manager.manager_date
+        met.rain
+
+     Output file = manager.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      10/1/1988  Prepare      manager set fixed_rain = yes
+      10/1/1988  Prepare      manager set rain_amount = 50
+      20/1/1988  Prepare      manager set fixed_rain = no
+      20/1/1988  Prepare      manager set rain_amount = 0
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     fixed_rain = 'no'
+     rain_amount = 0
+     d = '1-jun'
+     
+     SECTION:- end_of_day
+     manager_date =date(d)
+     avtemp = (mint + maxt) / 2
+     avtempi=nearest_int(avtemp)
+     feb_or_not=date_within('1-feb,28-feb')
+     if (fixed_rain = 'yes') then
+        met set rain = rain_amount
+     endif
+     report do_output
+     END of rules
+     
+     Manager creating a new local string variable : fixed_rain = no
+     Manager creating a new local real variable : rain_amount = 0.00000
+     Manager creating a new local string variable : d = 1-jun
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : manager_date = 2447314.00000
+     Manager creating a new local real variable : avtemp = 25.20000
+     Manager creating a new local real variable : avtempi = 25.00000
+     Manager creating a new local real variable : feb_or_not = 0.00000
+10 January 1988(Day of year=10), Operations: 
+      Sending set message to manager
+      Sending set message to manager
+20 January 1988(Day of year=20), Operations: 
+      Sending set message to manager
+      Sending set message to manager
+8 April 1988(Day of year=99), clock: 
+     Simulation is terminating due to end criteria being met.

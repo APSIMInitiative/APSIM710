@@ -1,0 +1,307 @@
+!******************** Input module ******************* 
+[xifeng.clock.parameters] 
+! initialize after wheat crop 
+start_date = 1/09/1961     ! dd/mm/yyyy
+
+!end_date   = 30/12/1965     ! dd/mm/yyyy
+end_date   = 30/12/2003     ! dd/mm/yyyy
+
+[dingxi.clock.parameters] 
+! initialize before sowing wheat crop 
+start_date = 1/03/1970     ! dd/mm/yyyy
+
+!end_date   = 10/10/1973     ! dd/mm/yyyy
+end_date   = 10/10/2003     ! dd/mm/yyyy
+
+
+[all.tracker1.parameters]
+variable = sum of met.rain on end_of_day from report.reported to now as sum@met_rain
+variable = sum of SoilWat.es on end_of_day from report.reported to now as sum@soilwat2_es
+variable = sum of SoilWat.runoff on end_of_day from report.reported to now as sum@soilwat2_runoff
+variable = sum of SoilWat.drain on end_of_day from report.reported to now as sum@soilwat2_drain
+variable = sum of SoilN.dnit() on end_of_day from report.reported to now as sum@soiln2_dnit[]
+variable = average of wheat.nfact_photo on end_of_day from report.reported to now as avg@wheat_nfact_photo
+variable = average of wheat.swdef_photo on end_of_day from report.reported to now as avg@wheat_swdef_photo
+variable = sum of wheat.ep on end_of_day from report.reported to now as sum@wheat_ep
+variable = sum of SoilWat.eo on end_of_day from report.reported to now as sum@soilwat2_eo
+
+
+!XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XIFENG XXXXXXXXXXXXXXXXXXXXXXX
+[xifeng_reset.manager.start_of_day]
+!reset on 1 September prior to each crop
+ if today = date('1-sep') then
+    soiln2 reset
+!    soilwat2 set sw = 0.26 0.26 0.27 0.27 0.27 0.27 0.24 0.20 0.20 ! based on 50 percentiles from long term run
+    soilwat2 set sw = 0.22 0.22 0.20 0.14 0.14 0.15 0.15 0.17 0.18 ! based on 10 percentiles from long term run
+ endif
+
+![frozen soil effect????????????????????]
+! frozen soil reduces evaporation?
+!if day = 320 then
+!   u = 1.0
+!   cona = 1.0
+!endif
+
+!if day = 55 then
+! put back to normal values
+!   u = 3.0
+!   cona = 3.5
+!endif
+
+
+[xifeng_wheat.manager.start_of_day]
+! Continuous winter wheat at Xifeng
+
+!report at end of month
+if day = 243 or day = 244 then
+   flag = 1
+else 
+   flag = 0
+endif
+
+if (end_month = 1) then
+   event = 0
+   report do_end_day_output
+endif
+
+if wheat.stage_name = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   event = 2
+   report do_output 
+   wheat harvest
+   wheat end_crop
+   surfaceom tillage type = user_defined, f_incorp = 0.95, tillage_depth = 0
+endif
+
+!sow wheat on 20 September 
+ if today = date('20-sep') then
+    surfaceom  tillage  type = planter
+    wheat sow cultivar = xifeng24, plants = 400, sowing_depth = 50 (mm), row_spacing = 0.25 (m)
+    fertiliz apply amount = 40 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif          
+
+!************************** split top-dress in spring ***************************
+[xifeng_n40.manager.start_of_day]
+ if today = date('20-mar') then
+    fertiliz apply amount = 20 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+ if today = date('1-may') then
+    fertiliz apply amount = 20 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+
+[xifeng_n80.manager.start_of_day]
+ if today = date('20-mar') then
+    fertiliz apply amount = 40 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+ if today = date('1-may') then
+    fertiliz apply amount = 40 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+
+[xifeng_n120.manager.start_of_day]
+ if today = date('20-mar') then
+    fertiliz apply amount = 60 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+ if today = date('1-may') then
+    fertiliz apply amount = 60 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+
+[xifeng_n160.manager.start_of_day]
+ if today = date('20-mar') then
+    fertiliz apply amount = 80 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+ if today = date('1-may') then
+    fertiliz apply amount = 80 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+
+[xifeng_n200.manager.start_of_day]
+ if today = date('20-mar') then
+    fertiliz apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+ if today = date('1-may') then
+    fertiliz apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+
+
+!XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX DINGXI XXXXXXXXXXXXXXXXXXXXXXX
+
+[dingxi_reset.manager.start_of_day]
+!reset on 1 March prior to each crop
+ if today = date('1-mar') then
+    soiln2 reset
+!    soilwat2 set sw = 0.12 0.16 0.175 0.18 0.17 0.17 0.17 0.20 ! based on 50 percentiles from long term run
+!    soilwat2 set sw = 0.15 0.17 0.18 0.19 0.19 0.19 0.19 0.20 ! based on 80 percentiles from long term run
+    soilwat2 set sw = 0.22 0.23 0.23 0.22 0.22 0.23 0.23 0.25 ! 75% of PAWC
+ endif
+
+
+[dingxi_wheat.manager.start_of_day]
+! Continuous spring wheat at Dingxi
+
+!report at end of month
+if day =  59 or day = 60 then
+   flag = 1
+else 
+   flag = 0
+endif
+
+if (end_month = 1) then
+   event = 0
+   report do_end_day_output
+endif
+
+if wheat.stage_name = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   event = 2
+   report do_output 
+   wheat harvest
+   wheat end_crop
+   surfaceom tillage type = user_defined, f_incorp = 0.95, tillage_depth = 0
+endif
+
+!sow wheat on 15 March 
+ if today = date('15-mar') then
+    surfaceom  tillage  type = planter
+    wheat sow cultivar = dingxi24, plants = 400, sowing_depth = 50 (mm), row_spacing = 0.25 (m)
+    fertiliz apply amount = 30 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif          
+
+
+!************************** top-dress in late April ***************************
+[dingxi_n40.manager.start_of_day]
+ if das = 40 then
+    fertiliz apply amount = 40 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif
+
+[dingxi_n80.manager.start_of_day]
+ if das = 40 then
+    fertiliz apply amount = 80 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif          
+
+[dingxi_n120.manager.start_of_day]
+ if das = 40 then
+    fertiliz apply amount = 120 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif          
+  
+[dingxi_n160.manager.start_of_day]
+ if das = 40 then
+    fertiliz apply amount = 160 (kg/ha), depth = 50 (mm), type = urea_n 
+ endif          
+        
+
+
+
+!#######################################################################
+!*******************LONG TERM RUNS WITHOUT RESETTING *******************
+
+[xifeng_w.manager.start_of_day]
+! Continuous winter wheat at Xifeng
+
+!report at end of month
+if day = 243 or day = 244 then
+   flag = 1
+else 
+   flag = 0
+endif
+
+if (end_month = 1) then
+   event = 0
+   report do_end_day_output
+endif
+
+if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   event = 2
+   flag = 2
+   report do_output 
+   wheat harvest
+   wheat end_crop
+   surfaceom tillage type = user_defined, f_incorp = 0.95, tillage_depth = 0
+endif
+
+!sow wheat on 20 September 
+ if day = 264 then
+    flag = 3
+    report do_output 
+    surfaceom  tillage  type = planter
+    wheat sow cultivar = xifeng24, plants = 400, sowing_depth = 50 (mm), row_spacing = 0.25 (m)
+    Fertiliser apply amount = 30 (kg/ha), depth = 50 (mm), type = nh4_n 
+ endif          
+
+!top-dress in spring
+ if day = 90 then
+    Fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = nh4_n 
+ endif          
+
+[xifeng_w_n0.manager.start_of_day]
+! Continuous winter wheat at Xifeng with low N (20N at sowing,no N top-dress)
+
+!report at end of month
+if day = 243 or day = 244 then
+   flag = 1
+else 
+   flag = 0
+endif
+
+if (end_month = 1) then
+   event = 0
+   report do_end_day_output
+endif
+
+if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   event = 2
+   flag = 2
+   report do_output 
+   wheat harvest
+   wheat end_crop
+   surfaceom tillage type = user_defined, f_incorp = 0.95, tillage_depth = 0
+endif
+
+!sow wheat on 20 September 
+ if day = 264 then
+    flag = 3
+    report do_output 
+    surfaceom  tillage  type = planter
+    wheat sow cultivar = xifeng24, plants = 400, sowing_depth = 50 (mm), row_spacing = 0.25 (m)
+    Fertiliser apply amount = 20 (kg/ha), depth = 50 (mm), type = nh4_n 
+ endif          
+
+!top-dress in spring
+ if day = 90 then
+    Fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = nh4_n 
+ endif          
+
+
+
+[dingxi_w.manager.start_of_day]
+! Continuous spring wheat at Dingxi
+
+!report at end of month
+if day = 59 or day = 60 then
+   flag = 1
+else 
+   flag = 0
+endif
+
+if (end_month = 1) then
+   event = 0
+   report do_end_day_output
+endif
+
+if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   event = 2
+   report do_output 
+   wheat harvest
+   wheat end_crop
+   surfaceom tillage type = user_defined, f_incorp = 0.95, tillage_depth = 0
+endif
+
+!sow wheat on 15 March 
+ if day = 75 then
+    surfaceom  tillage  type = planter
+    wheat sow cultivar = dingxi24, plants = 400, sowing_depth = 50 (mm), row_spacing = 0.25 (m)
+    Fertiliser apply amount = 30 (kg/ha), depth = 50 (mm), type = nh4_n 
+ endif          
+
+!top-dress in late April
+ if day = 120 then
+    Fertiliser apply amount = 120 (kg/ha), depth = 50 (mm), type = nh4_n 
+ endif          
+
+

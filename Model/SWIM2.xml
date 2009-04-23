@@ -1,0 +1,88 @@
+<apswim>
+   <!--    ****************
+       Convergence
+      ****************
+    -->
+   <max_iterations description="number of iterations before timestep is halved">50 </max_iterations>
+   <!--    ****************
+       solute balance
+      ****************
+    Numerical Error can result in negative solute concentration
+    We allert the user according to the level of loss of solute
+    balance due to trucation of negative values.
+    -->
+   <negative_conc_fatal units="kg/ha">0.1</negative_conc_fatal>
+   <negative_conc_warn units="kg/ha">0.001</negative_conc_warn>
+   <!--    ****************
+       soilwat_eeq_fac
+      ****************
+    -->
+   <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+   <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+   <!--    ******************************
+      soilwat_pot_evapotranspiration
+      ******************************
+    -->
+   <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+   <!--  Bare soil albedo must not exceed this value.
+    -->
+   <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+   <!-- max_bitesize = .02
+    -->
+   <max_bitesize>.1</max_bitesize>
+   <extra_supply_fraction>0.5</extra_supply_fraction>
+   <trf_fasw>0 1</trf_fasw>
+   <trf_value>1  1</trf_value>
+   <!-- trf_fasw = 0 .5 1
+   trf_value= 0 1  1
+    -->
+   <min_total_root_length>0.01</min_total_root_length>
+   <!--    ******************************
+      Residue and Crop Cover Effects
+      ******************************
+      The effect of residue and canopy cover is implemented as in the soilwat model.
+      These can be turn off for compatibility with SWIM standalone.
+    -->
+   <cover_effects>on          </cover_effects>
+   <A_to_evap_fact description="converts residue specfic area 'A' to">0.44      </A_to_evap_fact>
+   <!--    a coef. in exp effect on reducing
+      pot. soil evap for wt. of mixed residues.
+    0.44 = 0.00022/0.0005 DMS 1st approx. 6/95
+    -->
+   <canopy_eos_coef description="coef. in exp effect of canopy on">1.7       </canopy_eos_coef>
+   <!--    reducing pot. soil evap.
+      = 1.7 Adams, Arkin & Ritchie 1976
+    Set the default rainfall and evaporation daily time courses
+    these are used if the user does not specify them in the met file
+    -->
+   <default_rain_time>0:00</default_rain_time>
+   <default_rain_duration>1440.</default_rain_duration>
+   <default_evap_time>6:00</default_evap_time>
+   <default_evap_duration>720.</default_evap_duration>
+   <!--    ******
+      Bounds
+      ******
+    -->
+   <lb_exco>0</lb_exco>
+   <ub_exco>15000</ub_exco>
+   <lb_fip>0</lb_fip>
+   <ub_fip>100</ub_fip>
+   <lb_dis>0</lb_dis>
+   <ub_dis>20</ub_dis>
+   <lb_slupf>0</lb_slupf>
+   <ub_slupf>1</ub_slupf>
+   <lb_slos>0</lb_slos>
+   <ub_slos>10</ub_slos>
+   <lb_d0>0</lb_d0>
+   <ub_d0>1</ub_d0>
+   <lb_a>0</lb_a>
+   <ub_a>100</ub_a>
+   <lb_dthc>0</lb_dthc>
+   <ub_dthc>1</ub_dthc>
+   <lb_dthp>0</lb_dthp>
+   <ub_dthp>10</ub_dthp>
+   <lb_disp>0</lb_disp>
+   <ub_disp>5</ub_disp>
+   <lb_solute>0</lb_solute>
+   <ub_solute>1000</ub_solute>
+</apswim>

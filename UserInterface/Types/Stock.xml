@@ -1,0 +1,231 @@
+   <stock>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Component description">../apsim/stock/docs/Stock Component Description.htm</Documentation>
+      <Documentation name="Component drivers">../apsim/stock/docs/Stock Component Drivers.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\stock32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\stock16.bmp</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+     </drops>
+     <variables link="%apsim%\Documentation\ModelInfo\stock.xml"/>
+     <events link="%apsim%\Documentation\ModelInfo\stock.xml"/>
+      <ApsimToSim>
+         <type>xml</type>
+         <dll>c:\program files\ausfarm\stock.dll</dll>
+         <sim>
+  <component name="[stock.name]" executable="c:\program files\ausfarm\stock.dll">
+    <executable>c:\program files\ausfarm\stock.dll</executable>
+    <initdata>
+            <![CDATA[
+            <initsection>
+                <init name="rand_seed" kind="integer4">
+                  <val>1</val>
+                </init>
+               <init name="genotypes" array="T">
+               [foreach stock.StockGenotype as genotype]
+                  <element>
+                  <field name="name" kind="string">
+                     <val>[genotype.genotypename]</val>
+                  </field>
+                  <field name="dam_breed" kind="string">
+                     <val>[genotype.dam_breed]</val>
+                  </field>
+                  <field name="sire_breed" kind="string">
+                     <val>[genotype.sire_breed]</val>
+                  </field>
+                  <field name="generation" kind="integer4">
+                     <val>[genotype.generation]</val>
+                  </field>
+                  <field name="srw" kind="double" unit="kg">
+                     <val>[genotype.srw]</val>
+                  </field>
+                  <field name="conception" kind="double" array="T">
+                     <val>[genotype.conception1]</val>
+                     <val>[genotype.conception2]</val>
+                  </field>
+                  <field name="death_rate" kind="double" unit="/y">
+                     <val>[genotype.death_rate]</val>
+                  </field>
+                  <field name="ref_fleece_wt" kind="double" unit="kg">
+                     <val>[genotype.ref_fleece_wt]</val>
+                  </field>
+                  <field name="max_fibre_diam" kind="double" unit="um">
+                     <val>[genotype.max_fibre_diam]</val>
+                  </field>
+                  <field name="fleece_yield" kind="double" unit="kg/kg">
+                     <val>[genotype.fleece_yield]</val>
+                  </field>
+                  <field name="peak_milk" kind="double" unit="kg">
+                     <val>[genotype.peak_milk]</val>
+                  </field>
+                  </element>
+               [endfor]
+               </init>
+
+               <init name="cattle" array="T">
+               [foreach stock.cattle]
+                  <element>
+                  <field name="name" kind="string">
+                     <val>[cattle.GenotypeName]</val>
+                  </field>
+                  <field name="number" kind="integer4">
+                     <val>[cattle.number]</val>
+                  </field>
+                  <field name="sex" kind="string">
+                     <val>[cattle.sex]</val>
+                  </field>
+                  <field name="age" kind="double">
+                     <val>[cattle.age]</val>
+                  </field>
+                  <field name="weight" kind="double">
+                     <val>[cattle.weight]</val>
+                  </field>
+                  <field name="max_prev_wt" kind="double">
+                     <val>[cattle.max_prev_wt]</val>
+                  </field>
+                  <field name="mated_to" kind="string">
+                     <val>[cattle.mated_to]</val>
+                  </field>
+                  <field name="pregnant" kind="integer4">
+                     <val>[cattle.pregnant]</val>
+                  </field>
+                  <field name="lactating" kind="integer4">
+                     <val>[cattle.lactating]</val>
+                  </field>
+                  <field name="no_foetuses" kind="integer4">
+                     <val>[cattle.no_foetuses]</val>
+                  </field>
+                  <field name="no_suckling" kind="string">
+                     <val>[cattle.no_suckling]</val>
+                  </field>
+                  <field name="birth_cs" kind="double">
+                     <val>[cattle.birth_cs]</val>
+                  </field>
+                  <field name="calf_wt" kind="double">
+                     <val>[cattle.calf_wt]</val>
+                  </field>
+                  <field name="paddock" kind="string">
+                     <val>[cattle.paddock]</val>
+                  </field>
+                  <field name="tag" kind="integer4">
+                     <val>[cattle.tag]</val>
+                  </field>
+                  <field name="priority" kind="integer4">
+                     <val>[cattle.priority]</val>
+                  </field>
+                  </element>
+               [endfor]
+               </init>
+
+               <init name="sheep" array="T">
+               [foreach stock.sheep]
+                  <element>
+                  <field name="name" kind="string">
+                     <val>[sheep.GenotypeName]</val>
+                  </field>
+                  <field name="number" kind="integer4">
+                     <val>[sheep.number]</val>
+                  </field>
+                  <field name="sex" kind="string">
+                     <val>[sheep.sex]</val>
+                  </field>
+                  <field name="age" kind="double">
+                     <val>[sheep.age]</val>
+                  </field>
+                  <field name="weight" kind="double">
+                     <val>[sheep.weight]</val>
+                  </field>
+                  <field name="max_prev_wt" kind="double">
+                     <val>[sheep.max_prev_wt]</val>
+                  </field>
+                  <field name="fleece_wt" kind="double">
+                     <val>[sheep.fleece_wt]</val>
+                  </field>
+                  <field name="fibre_diam" kind="double">
+                     <val>[sheep.fibre_diam]</val>
+                  </field>
+                  <field name="mated_to" kind="string">
+                     <val>[sheep.mated_to]</val>
+                  </field>
+                  <field name="pregnant" kind="integer4">
+                     <val>[sheep.pregnant]</val>
+                  </field>
+                  <field name="lactating" kind="integer4">
+                     <val>[sheep.lactating]</val>
+                  </field>
+                  <field name="no_young" kind="integer4">
+                     <val>[sheep.no_young]</val>
+                  </field>
+                  <field name="birth_cs" kind="double">
+                     <val>[sheep.birth_cs]</val>
+                  </field>
+                  <field name="lamb_wt" kind="double">
+                     <val>[sheep.lamb_wt]</val>
+                  </field>
+                  <field name="lamb_fleece_wt" kind="double">
+                     <val>[sheep.lamb_fleece_wt]</val>
+                  </field>
+                  <field name="paddock" kind="string">
+                     <val>[sheep.paddock]</val>
+                  </field>
+                  <field name="tag" kind="integer4">
+                     <val>[sheep.tag]</val>
+                  </field>
+                  <field name="priority" kind="integer4">
+                     <val>[sheep.priority]</val>
+                  </field>
+                  </element>
+               [endfor]
+               </init>
+
+            </initsection>
+            ]]>
+</initdata>
+  </component>
+  <component name="[stock.name]ScienceConverter" executable="%apsim%\Model\stockscienceconverter.dll">
+    <executable>%apsim%\Model\stockscienceconverter.dll</executable>
+    <initdata>
+      <include>%apsim%\Model\stockscienceconverter.xml</include>
+      <debug type="list" listvalues="on,off" description="debug">off</debug>
+      <stock_module type="modulename" description="stock_module">[stock.name]</stock_module>
+      <conversion_model type="text" description="conversion_model">nonherbage</conversion_model>
+      <fraction_faeces_added type="text" description="fraction_faeces_added">[stock.fraction_faeces_added]</fraction_faeces_added>
+      <fraction_urine_added type="text" description="fraction_urine_added">[stock.fraction_urine_added]</fraction_urine_added>
+    </initdata>
+  </component>
+
+  [if [stock.herbage1]]
+  <component name="[stock.herbage1]StockHerbageConverter" executable="%apsim%\Model\stockscienceconverter.dll">
+    <executable>%apsim%\Model\stockscienceconverter.dll</executable>
+    <initdata>
+      <include>%apsim%\Model\stockscienceconverter.xml</include>
+      <debug type="list" listvalues="on,off">off</debug>
+      <conversion_model>herbage</conversion_model>
+      <herbage_model>plant</herbage_model>
+      <herbage_module_name type="modulename">[stock.herbage1]</herbage_module_name>
+    </initdata>
+  </component>
+
+  [endif]
+  [if [stock.herbage2]]
+  <component name="[stock.herbage2]StockHerbageConverter" executable="%apsim%\Model\stockscienceconverter.dll">
+    <executable>%apsim%\Model\stockscienceconverter.dll</executable>
+    <initdata>
+      <include>%apsim%\Model\stockscienceconverter.xml</include>
+      <debug type="list" listvalues="on,off">off</debug>
+      <conversion_model>herbage</conversion_model>
+      <herbage_model>plant</herbage_model>
+      <herbage_module_name type="modulename">[stock.herbage2]</herbage_module_name>
+    </initdata>
+  </component>
+
+  [endif]
+
+         </sim>
+      </ApsimToSim>
+   </stock>

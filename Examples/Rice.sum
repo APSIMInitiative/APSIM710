@@ -1,0 +1,291 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Rice
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component             "Rice sowing rule" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "rice" = %apsim%\Model\Oryza.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/10/1990
+     Simulation end date   = 28/03/1991
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\bhola.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        ancr
+        anlv
+        anso
+        cover_green
+        cover_tot
+        crop_type
+        cropsta
+        dae
+        dtga
+        dvr
+        dvs
+        eff
+        etae
+        etd
+        etrd
+        fnlv
+        gcr
+        height
+        hu
+        ldstrs
+        lestrs
+        lrstrs
+        nacr
+        nflv
+        pcew
+        plant_status
+        rlai
+        rnstrs
+        ssga
+        tnsoil
+        trc
+        wagt
+        wlvd
+        wlvg
+        wso
+        wst
+        zrt
+
+     Output file = Rice.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Rice sowing rule Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     if (day = 288) then
+       rice sow cultivar = experimental, establishment = direct-seed, nplds = 180 (p/m2)
+     endif
+     
+     SECTION:- end_of_day
+     if (rice.plant_status = 'dead') then
+       rice end_crop
+     endif
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.145  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.232  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.290  0.290  0.520  0.570  0.520  1.060  0.000  0.300
+         1200.- 1500.  0.290  0.290  0.500  0.550  0.500  1.110  0.000  0.300
+         1500.- 1800.  0.290  0.290  0.500  0.550  0.500  1.120  0.000  0.300
+         1800.- 2100.  0.290  0.290  0.480  0.530  0.480  1.150  0.000  0.300
+         2100.- 2400.  0.290  0.290  0.470  0.520  0.470  1.180  0.000  0.300
+         2400.- 2700.  0.290  0.290  0.460  0.510  0.460  1.200  0.000  0.300
+         2700.- 3000.  0.290  0.290  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      87.00      69.00      69.00      15.00
+         1200.- 1500.      87.00      63.00      63.00      15.00
+         1500.- 1800.      87.00      63.00      63.00      15.00
+         1800.- 2100.      87.00      57.00      57.00      15.00
+         2100.- 2400.      87.00      54.00      54.00      15.00
+         2400.- 2700.      87.00      51.00      51.00      15.00
+         2700.- 3000.      87.00      45.00      45.00      15.00
+          ---------------------------------------------------------
+               Totals     870.00     625.50     625.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.95    0.92    0.00
+             2     8.80  0.89    3.25    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.21    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               66.01    4.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15544.8  1295.4   367.2    45.9    96.3     2.4
+             2      13642.7  1136.9   107.8    13.5    82.8     2.1
+             3      27127.2  2260.6   106.8    13.3    61.4     1.5
+             4      27234.0  2269.5     0.0     0.0    45.5     1.1
+             5      24486.0  2040.5     0.0     0.0    33.7     0.8
+             6      14985.0  1248.8     0.0     0.0    25.0     0.6
+             7       9072.0   756.0     0.0     0.0    18.5     0.5
+             8       7590.0   632.5     0.0     0.0    13.7     0.3
+             9       5664.0   472.0     0.0     0.0    10.1     0.3
+            10       4680.0   390.0     0.0     0.0     7.5     0.2
+            11       4500.0   375.0     0.0     0.0     5.6     0.1
+          ---------------------------------------------------------
+           Totals  154525.7 12877.1   581.8    72.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- rice Initialisation ---------------------------------------------------
+        - Initialising
+------- Start of simulation  --------------------------------------------------
+15 October 1990(Day of year=288), Rice sowing rule: 
+     Manager sending message :- rice sow  cultivar = experimental, establishment = direct-seed, nplds = 180 (p/m2)
+15 October 1990(Day of year=288), rice: 
+        - Reading Parameters
+        - Reading experimental Cultivar Parameters
+        - Reading direct-seed Establishment Parameters
+        Number of plants in seedbed: 180.0 (/m2)
+20 January 1991(Day of year=20), rice: 
+     Maturity
+20 January 1991(Day of year=20), Rice sowing rule: 
+     Manager sending message :- rice end_crop
+         Crop ended. Rough Rice Yield (dw) =  2003.5 (kg/ha)
+                             straw residue =  1515.4 (kg/ha)
+                             straw N       =     5.5 (kg/ha)
+                             root residue  =   380.3 (kg/ha)
+                             root N        =     1.5 (kg/ha)
+28 March 1991(Day of year=87), clock: 
+     Simulation is terminating due to end criteria being met.

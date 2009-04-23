@@ -1,0 +1,501 @@
+<report version="5">
+  <Data>
+    <ApsimFileReader name="Predicted" Left="9" Top="12" Width="331" Height="148">
+      <FileName>2004\All.out</FileName>
+      <FileName>2005\All.out</FileName>
+      <FileName>2006\All.out</FileName>
+      <FileName>2007\All.out</FileName>
+      <BySeries>no</BySeries>
+    </ApsimFileReader>
+    <DataGrid Left="169" Top="346" Width="731" Height="234">
+      <source>Predicted</source>
+    </DataGrid>
+    <ApsimFileReader name="Observed" Left="9" Top="178" Width="331" Height="148">
+      <FileName>Observed.csv</FileName>
+    </ApsimFileReader>
+    <PredObs name="PredictedObserved" Left="548" Top="9" Width="188" Height="168">
+      <source>Predicted</source>
+      <source>Filter</source>
+      <FieldName>FileName</FieldName>
+    </PredObs>
+    <Regression name="Regression" Left="781" Top="12" Width="135" Height="120">
+      <XFieldName>Obswetyield</XFieldName>
+      <YFieldName>Predwetyield</YFieldName>
+      <source>PredictedObserved</source>
+    </Regression>
+    <Filter name="Filter" Left="515" Top="256" Width="244" Height="70">
+      <FilterString>Crop='Wheat' and year=2004</FilterString>
+      <source>FilterUnwanted</source>
+    </Filter>
+    <Regression name="RegressionGrainN" Left="781" Top="142" Width="135" Height="141">
+      <source>PredictedObserved</source>
+      <XFieldName>Obsgrain_n</XFieldName>
+      <YFieldName>Predgrain_n</YFieldName>
+    </Regression>
+    <Filter name="FilterUnwanted" Left="362" Top="204" Width="134" Height="122">
+      <source>Observed</source>
+      <FilterString><![CDATA[SoilStatus <> 'Inappropriate' and sampling <> 'Deep N']]></FilterString>
+    </Filter>
+  </Data>
+  <page><![CDATA[
+object Page1: TQuickRep
+  Left = 186
+  Top = 0
+  Width = 635
+  Height = 898
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -17
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = A4
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2970
+    0
+    2100
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 80
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 635
+    Height = 898
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2970
+      2100.13020833333)
+    BandType = rbTitle
+    object Graph2: TGraph
+      Left = 87
+      Top = 56
+      Width = 435
+      Height = 371
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1227.66666666667
+        288.395833333333
+        185.208333333333
+        1439.33333333333)
+      title = 'Predicted / Observed Yields'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted Wet Yield (t/ha)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed Wet Yield (t/ha)'
+      footTitle = ' '
+      seriesTitle1 = '2005'
+      seriesTitle2 = 'Regression'
+      seriesTitle3 = '1:1'
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Predicted / Observed Yields')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 8
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed Wet Yield (t/ha)'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 8
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted Wet Yield (t/ha)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.LegendStyle = lsSeries
+        Legend.Shadow.Color = clWhite
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredictedObserved
+          ShowInLegend = False
+          Title = '2005'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Obswetyield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Predwetyield'
+        end
+        object LineSeries1: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Regression
+          SeriesColor = clBlack
+          Title = 'Regression'
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object LineSeries2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Regression
+          SeriesColor = clBlack
+          Title = '1:1'
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text3: TText
+      Left = 260
+      Top = 426
+      Width = 181
+      Height = 16
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        859.895833333333
+        1408.90625
+        598.619791666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        ' y = 0.68 x + 0.35 (r2 = 0.51)(n = 44)   ')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = '$property(regression.equation)(n = $property(regression.n))   '#13#10
+      FontSize = 10
+    end
+    object Text5: TText
+      Left = 213
+      Top = 24
+      Width = 178
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        66.1458333333333
+        704.453125
+        79.375
+        588.697916666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -21
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'Yield Prophet Validation')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Yield Prophet Validation'#13#10
+      FontSize = 16
+    end
+    object Text1: TText
+      Left = 132
+      Top = 50
+      Width = 352
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        66.1458333333333
+        436.5625
+        164.041666666667
+        1164.16666666667)
+      Alignment = taCenter
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'Apsim version=6.1, Crop='#39'Wheat'#39' and year=2007')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text =
+        'Apsim version=$property(predicted.apsimversion), $property(filte' +
+        'r.filter)'#13#10
+      FontSize = 12
+    end
+    object Graph1: TGraph
+      Left = 78
+      Top = 459
+      Width = 435
+      Height = 371
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1227.00520833333
+        257.96875
+        1518.046875
+        1438.671875)
+      title = 'Predicted / Observed Grain N'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted Wet Yield (t/ha)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed Wet Yield (t/ha)'
+      footTitle = ' '
+      seriesTitle1 = 'Data'
+      seriesTitle2 = 'Regression'
+      seriesTitle3 = '1:1'
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          'Predicted / Observed Grain N')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.Maximum = 20
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed Wet Yield (t/ha)'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 20
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted Wet Yield (t/ha)'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.LegendStyle = lsSeries
+        Legend.Shadow.Color = clWhite
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries2: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredictedObserved
+          SeriesColor = clGreen
+          ShowInLegend = False
+          Title = 'Data'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Obsgrain_n'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Predgrain_n'
+        end
+        object LineSeries3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegressionGrainN
+          SeriesColor = clBlack
+          Title = 'Regression'
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object LineSeries4: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegressionGrainN
+          SeriesColor = clBlack
+          Title = '1:1'
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text2: TText
+      Left = 246
+      Top = 829
+      Width = 178
+      Height = 16
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        813.59375
+        2741.74479166667
+        588.697916666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        ' y = 0.63 x + 1.38 (r2 = 0.26)(n = 36)  ')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text =
+        '$property(regressiongrainn.equation)(n = $property(regressiongra' +
+        'inn.n))  '#13#10
+      FontSize = 10
+    end
+  end
+end
+]]></page>
+</report>

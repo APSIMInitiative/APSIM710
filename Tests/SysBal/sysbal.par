@@ -1,0 +1,163 @@
+[sample.report.parameters]
+outputfile =sysbal.out
+
+
+
+
+variable = clock.day
+variable = clock.year
+variable = wheat.biomass
+variable = SoilN.no3()
+variable = SoilN.nh4()
+variable = SoilN.biom_n()
+variable = SoilN.fom_n()
+variable = SoilWat.runoff
+variable = SoilWat.ep
+variable = SoilWat.drain
+variable = SoilWat.es
+variable = SoilWat.pond
+variable = SoilWat.sw_dep()
+variable = sysbal.n_loss_system
+variable = sysbal.n_gain_system
+variable = sysbal.n_dlt_system
+variable = sysbal.n_dlt_surface
+variable = sysbal.n_dlt_crop
+variable = sysbal.n_dlt_soil
+variable = sysbal.n_error_system
+variable = sysbal.n_cum_error_system
+variable = sysbal.n_state_system
+variable = sysbal.n_state_surface
+variable = sysbal.n_state_crop
+variable = sysbal.n_state_soil
+variable = sysbal.p_loss_system
+variable = sysbal.p_gain_system
+variable = sysbal.p_dlt_system
+variable = sysbal.p_dlt_surface
+variable = sysbal.p_dlt_crop
+variable = sysbal.p_dlt_soil
+variable = sysbal.p_error_system
+variable = sysbal.p_cum_error_system
+variable = sysbal.p_state_system
+variable = sysbal.p_state_surface
+variable = sysbal.p_state_crop
+variable = sysbal.p_state_soil
+variable = sysbal.c_loss_system
+variable = sysbal.c_gain_system
+variable = sysbal.c_dlt_system
+variable = sysbal.c_dlt_surface
+variable = sysbal.c_dlt_crop
+variable = sysbal.c_dlt_soil
+variable = sysbal.c_error_system
+variable = sysbal.c_cum_error_system
+variable = sysbal.c_state_system
+variable = sysbal.c_state_surface
+variable = sysbal.c_state_crop
+variable = sysbal.c_state_soil
+variable = sysbal.dm_loss_system
+variable = sysbal.dm_gain_system
+variable = sysbal.dm_dlt_system
+variable = sysbal.dm_dlt_surface
+variable = sysbal.dm_dlt_crop
+variable = sysbal.dm_dlt_soil
+variable = sysbal.dm_error_system
+variable = sysbal.dm_cum_error_system
+variable = sysbal.dm_state_system
+variable = sysbal.dm_state_surface
+variable = sysbal.dm_state_crop
+variable = sysbal.dm_state_soil
+variable = sysbal.sw_loss_system
+variable = sysbal.sw_gain_system
+variable = sysbal.sw_dlt_system
+variable = sysbal.sw_dlt_surface
+variable = sysbal.sw_dlt_crop
+variable = sysbal.sw_dlt_soil
+variable = sysbal.sw_error_system
+variable = sysbal.sw_cum_error_system
+variable = sysbal.sw_state_system
+variable = sysbal.sw_state_surface
+variable = sysbal.sw_state_crop
+variable = sysbal.sw_state_soil
+
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=14/6/1988     ! dd/mm/yyyy
+end_date=17/11/1988     ! dd/mm/yyyy
+
+[sample.manager.start_of_day]
+
+if day = 169 and year = 1988 then
+   wheat sow cultivar = hartog, plants = 120, sowing_depth = 30 (mm)
+endif
+
+if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+   wheat harvest
+   wheat end_crop
+endif
+
+[sample.manager.end_of_day]
+if day = 20 then
+   SoilN IncorpFOM type=chickpea, Amount=1000 500 250 125 62 31 15, CNR=20 20 20 20 20 20 20
+endif
+
+report do_end_day_output
+
+
+[sample.wheat.parameters]
+ll =  0.230   0.240   0.240   0.250   0.260   0.270   0.280 ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0   ()
+
+
+[black_earth.SoilWat.parameters]
+insoil =    2.0 ()   ! indicator for initial soil water
+                     ! 0 to 1 is fraction of avail soil water
+		     ! (0=ll15, 1 = dul, >1 = input by user)
+
+diffus_const =    88. ()   !   coeffs for unsaturated water flow
+diffus_slope =    35.4  () !     "
+
+
+cn2_bare =    80 ()   ! bare soil runoff curve number
+cn_red =    20        ! potential reduction in curve number due to residue
+cn_cov =    .8        ! cover for maximum reduction in curve number
+salb =    0.13  ()    ! bare soil albedo
+cona =    2.5  ()     ! stage 2 evap coef.
+u =    4 (mm)         ! stage 1 soil evaporation coefficient (mm)
+
+!layer        1    2    3    4    5    6    7
+dlayer =     150  150  300  300  300  300  300   ! layer thickness mm soil
+sat =      .500 .509 .510 .505 .490 .480 .480    ! saturation mm water/mm soil
+dul =      .450 .459  .45 .44  .42  .41  .41     ! drained upper limit mm water/mm soil
+sw =       .280 .364  .43 .43  .40  .41  .41     ! initial soil water mm water/mm soil
+ll15 =     .230 .240 .240 .250 .260 .270 .280    ! lower limit mm water/mm soil
+air_dry =    .10 .20 .20 .20 .20 .20 .20         ! air dry mm water/ mm soil
+swcon =     0.2  0.2  0.2  0.2  0.2  0.2  0.2    ! drainage coefficient
+bd =       1.30 1.30 1.29 1.31 1.35 1.36 1.36    ! bulk density gm dry soil/cc moist soil
+
+
+[black_earth.SoilN.parameters]
+
+amp =  15.0   ! temperature amplitude (oC) - difference between highest and
+               ! lowest mean monthly air temperatures
+tav =  20.0   ! mean annual air temperature (oC)
+root_cn =  20.   ! C:N ratio of initial root residues
+root_wt =  1000.   ! root residues as biomass (kg/ha)
+soil_cn =  14.5   ! C:N ratio of soil
+
+!layer    1    2    3    4    5    6    7
+oc =     1.00 0.84 0.77 0.65 0.54 0.48 0.43 (%)   ! Soil Organic Carbon
+ph =     8.20 8.50 8.60 8.60 7.40 5.30 5.00 ()   ! pH of soil
+fbiom =  .035 .025 .015 0.01 0.01 0.01 0.01 ()   ! Organic C Biomass Fraction
+finert =  0.30 0.50 0.60 0.75 0.90 0.99 0.99 ()   ! Inert Organic C Fraction
+no3ppm =  9.2  7.6  4.9  2.7  1.5  1.8  1.4 (ppm)   ! Nitrate Concentration
+nh4ppm =  0.30 0.30 0.30 0.30 0.30 0.50 0.50 (ppm)   ! Ammonium Concentration
+ureappm =  0  0    0    0    0    0    0    (ppm)   ! Urea Concentration
+
+! Erosion profile reduction parameters
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+
+[sample.SummaryFile.parameters]
+summaryfile = sysbal.sum

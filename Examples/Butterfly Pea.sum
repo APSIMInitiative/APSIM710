@@ -1,0 +1,316 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Butterfly Pea
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component "#063 - Roma Res Stn, Roma,Brown Vertosol Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component "#063 - Roma Res Stn, Roma,Brown Vertosol Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                 "butterflypea" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 21/05/1989
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\dalby.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        butterflypea.DaysAfterSowing
+        butterflypea.lai
+        butterflypea.biomass
+        butterflypea.LeafGreenN
+        butterflypea.n_fixed_tops
+        butterflypea.RootGreenN
+        butterflypea.sw_stress_photo
+        rain
+        radn
+        butterflypea.sw_stress_pheno
+        butterflypea.sw_stress_fixation
+        butterflypea.sw_stress_expan
+        butterflypea.StageName
+
+     Output file = Butterfly Pea.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1) then
+              if (date_within('31-jan, 31-jan') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('yes' = 'yes' and today = date('31-jan'))) then
+        butterflypea sow plants =20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
+     endif
+     if today = date('31-jan') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- #063 - Roma Res Stn, Roma,Brown Vertosol Water Initialisation ---------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.100  0.200  0.400  0.480  0.380  1.290  0.613  0.300
+          100.-  200.  0.198  0.220  0.410  0.470  0.260  1.320  0.243  0.300
+          200.-  400.  0.240  0.240  0.420  0.470  0.250  1.320  0.135  0.300
+          400.-  600.  0.260  0.260  0.420  0.470  0.262  1.330  0.009  0.300
+          600.-  700.  0.280  0.280  0.400  0.450  0.280  1.390  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      20.00      18.00      20.00       8.00
+          100.-  200.      22.00       4.00      19.00       6.00
+          200.-  400.      48.00       2.00      36.00      10.00
+          400.-  600.      52.00       0.40      32.00      10.00
+          600.-  700.      28.00       0.00      12.00       5.00
+          ---------------------------------------------------------
+               Totals     170.00      24.40     119.00      39.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- #063 - Roma Res Stn, Roma,Brown Vertosol Nitrogen Initialisation ------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.19    8.39    0.77    0.00
+             2     8.50  1.01    2.77    0.13    0.00
+             3     8.60  0.45    5.54    0.26    0.00
+             4     8.60  0.30    4.52    0.27    0.00
+             5     7.40  0.20    2.36    0.14    0.00
+          ------------------------------------------------
+           Totals               23.59    1.58    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15039.5  1203.2   311.5    38.9    37.7     0.9
+             2      13227.4  1058.2   104.6    13.1    24.6     0.6
+             3      11844.9   947.6    35.1     4.4    10.4     0.3
+             4       7968.2   637.5    11.8     1.5     4.4     0.1
+             5       2778.6   222.3     1.4     0.2     2.9     0.1
+          ---------------------------------------------------------
+           Totals   50858.7  4068.7   464.3    58.0    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+31 January 1988(Day of year=31), Sowing rule: 
+     Manager sending message :- butterflypea sow  plants = 20, sowing_depth = 30, cultivar = milgarra, row_spacing = 300
+31 January 1988(Day of year=31), butterflypea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = milgarra
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      30 (dd)
+              shoot_rate                 =       4 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      50 (vd)
+              tt_emergence               =     160     240 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      10    13.1    13.2 (h)
+              y_tt_end_of_juvenile       =     430     200     200 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     170     170 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     560     560 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =    1000 (dd)
+           maturity
+              tt_maturity                =     300 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.1600     0.1600
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.55       0.55
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.080          0.200       1.000
+         100.0     0.080          0.220       1.000
+         200.0     0.080          0.240       1.000
+         200.0     0.080          0.260       1.000
+         100.0     0.050          0.280       1.000
+         -----------------------------------------------
+         Extractable SW:   119mm in   700mm total depth ( 17%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             31   30.0   20.0  300.0   0.0   0.0 milgarra
+         ------------------------------------------------
+     
+     Manager creating a new local string variable : choosenextcrop = yes
+1 February 1988(Day of year=32), butterflypea: 
+      stage 2.0 germination
+12 February 1988(Day of year=43), butterflypea: 
+      stage 3.0 emergence
+                     biomass =          14.00 (g/m^2)   lai          =   0.010 (m^2/m^2)
+                     stover N conc =     5.50 (%)    extractable sw =   72.23 (mm)
+27 February 1988(Day of year=58), butterflypea: 
+      stage 4.0 end_of_juvenile
+                     biomass =          29.05 (g/m^2)   lai          =   0.382 (m^2/m^2)
+                     stover N conc =     5.05 (%)    extractable sw =   60.51 (mm)
+12 March 1988(Day of year=72), butterflypea: 
+      stage 5.0 floral_initiation
+                     biomass =         106.66 (g/m^2)   lai          =   1.902 (m^2/m^2)
+                     stover N conc =     2.75 (%)    extractable sw =   93.78 (mm)
+2 April 1988(Day of year=93), butterflypea: 
+      stage 6.0 flowering
+                     biomass =         257.28 (g/m^2)   lai          =   4.045 (m^2/m^2)
+                     stover N conc =     2.61 (%)    extractable sw =  103.36 (mm)
+15 April 1988(Day of year=106), butterflypea: 
+      stage 7.0 start_grain_fill
+                     biomass =         370.04 (g/m^2)   lai          =   3.702 (m^2/m^2)
+                     stover N conc =     3.54 (%)    extractable sw =  131.27 (mm)
+21 June 1988(Day of year=173), butterflypea: 
+      stage 8.0 end_grain_fill
+                     biomass =         666.59 (g/m^2)   lai          =   0.009 (m^2/m^2)
+                     stover N conc =     4.52 (%)    extractable sw =   43.04 (mm)
+26 July 1988(Day of year=208), butterflypea: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 5677.37 (kg/ha)
+21 May 1989(Day of year=141), clock: 
+     Simulation is terminating due to end criteria being met.

@@ -1,0 +1,143 @@
+[test1.SummaryFile.parameters]
+summaryfile=test1.sum
+[test1.report.parameters]
+outputfile  =test1.out
+[test1.manager.start_of_day]
+if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
+   millet harvest
+   millet1 harvest
+   millet2 harvest
+   millet3 harvest
+   millet4 harvest
+   millet5 harvest
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
+endif
+
+[test2.SummaryFile.parameters]
+summaryfile=test2.sum
+[test2.report.parameters]
+outputfile  =test2.out
+[test2.manager.start_of_day]
+if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
+   millet harvest
+   millet1 harvest
+   millet2 harvest
+   millet3 harvest
+   millet4 harvest
+   millet5 harvest
+   millet end_crop
+   millet1 end_crop
+   millet2 end_crop
+   millet3 end_crop
+   millet4 end_crop
+   millet5 end_crop
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
+endif
+
+[test3.SummaryFile.parameters]
+summaryfile=test3.sum
+[test3.report.parameters]
+outputfile  =test3.out
+[test3.manager.start_of_day]
+if harvest = 1 then
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
+   harvest = 2
+endif
+
+if millet.StageName = 'harvest_ripe' or millet.plant_status = 'dead' then
+   millet harvest
+   millet1 harvest
+   millet2 harvest
+   millet3 harvest
+   millet4 harvest
+   millet5 harvest
+   millet end_crop
+   millet1 end_crop
+   millet2 end_crop
+   millet3 end_crop
+   millet4 end_crop
+   millet5 end_crop
+   harvest = 1
+endif
+
+
+[all.report.parameters]
+variable = clock.day
+variable = clock.year
+variable = millet.lai
+variable = millet.biomass
+variable = millet.green_biomass
+
+[all.canopy.parameters]
+intercrop =  millet millet1 millet2 millet3 millet4 millet5
+
+[all.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988
+end_date=26/12/1988
+
+[all.manager.init]
+harvest = 0
+
+[all.manager.start_of_day]
+
+if day = 166 and year  = 1988 then
+   millet sow plants =  7.5, sowing_depth = 30, cultivar = wrajpop
+endif
+
+[all.manager.end_of_day]
+report do_end_day_output
+
+
+[all.millet.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+
+ll =        0.230   0.240   0.240   0.250   0.260   0.270   0.280   ! lower limit mm water/mm soil
+kl =        0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()   ! rate of soil water extraction
+xf =        1.00    1.00    1.00    1.00    1.00    1.00    1.00   ()   ! Root Exploration factor (0-1)
+
+! Millet - tiller 1.
+
+[all.millet1.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+
+ll =        0.230   0.240   0.240   0.250   0.260   0.270   0.280   ! lower limit mm water/mm soil
+kl =        0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()   ! rate of soil water extraction
+xf =        1.00    1.00    1.00    1.00    1.00    1.00    1.00   ()   ! Root Exploration factor (0-1)
+
+! Millet - tiller 2.
+
+[all.millet2.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+
+ll =        0.230   0.240   0.240   0.250   0.260   0.270   0.280   ! lower limit mm water/mm soil
+kl =        0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()   ! rate of soil water extraction
+xf =        1.00    1.00    1.00    1.00    1.00    1.00    1.00   ()   ! Root Exploration factor (0-1)
+
+! Millet - tiller 3.
+
+[all.millet3.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+
+ll =        0.230   0.240   0.240   0.250   0.260   0.270   0.280   ! lower limit mm water/mm soil
+kl =        0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()   ! rate of soil water extraction
+xf =        1.00    1.00    1.00    1.00    1.00    1.00    1.00   ()   ! Root Exploration factor (0-1)
+
+! Millet - tiller 4.
+
+[all.millet4.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+
+ll =        0.230   0.240   0.240   0.250   0.260   0.270   0.280   ! lower limit mm water/mm soil
+kl =        0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()   ! rate of soil water extraction
+xf =        1.00    1.00    1.00    1.00    1.00    1.00    1.00   ()   ! Root Exploration factor (0-1)
+
+! Millet - tiller 5.
+
+[all.millet5.parameters]
+uptake_source =    calc   ! calculate own uptakes.
+
+ll =        0.230   0.240   0.240   0.250   0.260   0.270   0.280   ! lower limit mm water/mm soil
+kl =        0.120   0.120   0.120   0.100   0.060   0.055   0.030  ()   ! rate of soil water extraction
+xf =        1.00    1.00    1.00    1.00    1.00    1.00    1.00   ()   ! Root Exploration factor (0-1)
+

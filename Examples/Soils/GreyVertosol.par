@@ -1,0 +1,71 @@
+[300mm.soilwat2.parameters]
+wet_soil_depth = 300
+
+[600mm.soilwat2.parameters]
+wet_soil_depth = 600
+
+[900mm.soilwat2.parameters]
+wet_soil_depth = 900
+
+[1200mm.soilwat2.parameters]
+wet_soil_depth = 1200
+
+[1500mm.soilwat2.parameters]
+wet_soil_depth = 1500
+
+[GreyVertosol.soilwat2.parameters]
+
+!Title = Jambin Grey Vertosol (Grey Vertosol) #47
+
+   cona            = 3.5    ()     ! stage 2 evap coef.
+   diffus_const    = 40    ()     ! coeffs for dbar
+   diffus_slope    = 16    ()     !     "
+   u               = 6  (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            = 0.13   ()     ! bare soil albedo
+
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        = 73       ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   dlayer  =  150.000 150.000 300.000 300.000 300.000 300.000 300.000     (mm)    ! layer depth
+   air_dry =  0.115   0.198   0.240   0.270   0.280   0.270   0.280     (mm/mm) ! air dry
+   ll15    =  0.230   0.220   0.240   0.270   0.280   0.270   0.280     (mm/mm) ! 15bar lower limit
+   dul     =  0.380   0.370   0.360   0.350   0.320   0.340   0.330     (mm/mm) ! upper limit
+   sat     =  0.430   0.420   0.410   0.400   0.380   0.390   0.380     (mm/mm) ! saturated soil water
+   swcon   =  0.3     0.3     0.3     0.3     0.3     0.3     0.3     ()      ! soil conductivity
+   bd      =  1.43    1.47    1.47    1.52    1.56    1.54    1.57     (g/cc)  ! bulk density gm dry soil/cc moist soil
+
+[GreyVertosol.soiln2.parameters]
+
+   root_cn           = 40   ()         !
+   root_wt           = 200   (kg/ha)    !
+   soil_cn           = 12.5   ()         ! soil humic pool C:N ratio
+
+   enr_a_coeff       = 7.4   ()
+   enr_b_coeff       = 0.2  ()
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+   oc      = 1.24    1.24    1.25    1.10    0.71    0.34    0.26  (%)   ! organic carbon %
+   ph      = 7.00    7.00    7.00    7.00    7.00    7.00    7.00  ()    ! ph
+   fbiom   = 0.025    0.02   0.015    0.01    0.01    0.01    0.01     ()    ! microbe fraction of hunic pool
+   finert  = 0.4     0.6     0.8     0.9    0.95    0.95    0.95     ()    ! inert fraction of humic pool
+   ureappm = 0       0       0       0       0       0       0     (ppm) ! ppm urea
+   no3ppm = 6.5     4.0     3.0     2.0     1.5     1.0     1.0     ()   ! ppm nitrate
+   nh4ppm = 0.6     0.1     0.1     0.1     0.1     0.1     0.1     ()   ! ppm ammonia
+
+[GreyVertosol.Wheat.parameters]
+   ! Predicted values: false
+   ll  = 0.230   0.220   0.240   0.270   0.280   0.270   0.330       ! Crop lower limits for each layer
+   kl  = 0.1     0.1    0.08    0.06    0.04    0.02       0       ! Water Extraction parameter (0-1)
+   xf  = 1       1       1       1       1       1       0       ! Root Exploration factor (0-1)

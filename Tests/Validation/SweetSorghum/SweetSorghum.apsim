@@ -1,0 +1,806 @@
+<simulations name="untitled" version="15">
+  <simulation name="PacSeeds">
+    <clock name="clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">1/09/2004</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">30/06/2005</end_date>
+    </clock>
+    <summaryfile name="summaryfile">
+      <filename name="filename">PacSeeds.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">lawes0405.met</filename>
+    </metfile>
+    <area name="Planting1">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
+          </ui>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+          <ui>
+            <category name="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category name="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
+          </ui>
+        </manager>
+        <manager name="Sow on a fixed date">
+          <script>
+            <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">15-sep</date>
+            <category name="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+          </ui>
+        </manager>
+      </folder>
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
+        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
+        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+      </soil>
+      <SweetSorghum />
+      <outputfile name="outputfile">
+        <filename name="filename">PacSeeds Planting1.out</filename>
+        <variables name="My Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
+          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
+          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+        </variables>
+        <events name="My Variables Events">
+          <event name="Daily" description="End of day" />
+        </events>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">on</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+    <area name="Planting2">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
+          </ui>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+          <ui>
+            <category name="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category name="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
+          </ui>
+        </manager>
+        <manager name="Sow on a fixed date">
+          <script>
+            <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">12-jan</date>
+            <category name="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+          </ui>
+        </manager>
+      </folder>
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
+        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
+        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+      </soil>
+      <SweetSorghum />
+      <outputfile name="outputfile">
+        <filename name="filename">PacSeeds Planting2.out</filename>
+        <variables name="My Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
+          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
+          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+        </variables>
+        <events name="My Variables Events">
+          <event name="Daily" description="End of day" />
+        </events>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">on</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+  </simulation>
+  <folder name="shared">
+    <soil name="LawesSoil">
+      <Site>UQ, Lawes</Site>
+      <Region>Lockyer</Region>
+      <SoilType>Black Vertosol</SoilType>
+      <NearestTown>Gatton, Q 4343</NearestTown>
+      <NaturalVegetation>Blue Gum, Moreton Bay Ash, Tea Tree</NaturalVegetation>
+      <Comment>oc and ph not measured</Comment>
+      <InitWater>
+        <PercentMethod>
+          <Percent>0.83</Percent>
+          <Distributed>Filled from top</Distributed>
+        </PercentMethod>
+      </InitWater>
+      <InitNitrogen>
+        <profile>
+          <layer>
+            <no3>6.494</no3>
+            <nh4>0.608</nh4>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <no3>2.098</no3>
+            <nh4>0.101</nh4>
+            <thickness>150</thickness>
+          </layer>
+          <layer>
+            <no3>2.098</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+          <layer>
+            <no3>1.698</no3>
+            <nh4>0.101</nh4>
+            <thickness>300</thickness>
+          </layer>
+        </profile>
+      </InitNitrogen>
+      <profile>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.320</bd>
+          <ll15>0.260</ll15>
+          <airdry>0.130</airdry>
+          <dul>0.410</dul>
+          <sat>0.470</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.030</fbiom>
+          <finert>0.400</finert>
+          <no3>6.500</no3>
+          <nh4>0.600</nh4>
+          <oc>1.240</oc>
+          <ph>7</ph>
+          <ll name="SweetSorghum">0.260</ll>
+          <kl name="SweetSorghum">0.100</kl>
+          <xf name="SweetSorghum">1</xf>
+        </layer>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.300</bd>
+          <ll15>0.260</ll15>
+          <airdry>0.234</airdry>
+          <dul>0.430</dul>
+          <sat>0.480</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.020</fbiom>
+          <finert>0.600</finert>
+          <no3>2.100</no3>
+          <nh4>0.100</nh4>
+          <oc>1.240</oc>
+          <ph>7</ph>
+          <ll name="SweetSorghum">0.260</ll>
+          <kl name="SweetSorghum">0.100</kl>
+          <xf name="SweetSorghum">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.230</bd>
+          <ll15>0.260</ll15>
+          <airdry>0.260</airdry>
+          <dul>0.460</dul>
+          <sat>0.510</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.800</finert>
+          <no3>2.100</no3>
+          <nh4>0.100</nh4>
+          <oc>1.250</oc>
+          <ph>7</ph>
+          <ll name="SweetSorghum">0.260</ll>
+          <kl name="SweetSorghum">0.080</kl>
+          <xf name="SweetSorghum">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.270</bd>
+          <ll15>0.260</ll15>
+          <airdry>0.260</airdry>
+          <dul>0.440</dul>
+          <sat>0.490</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.900</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>1.100</oc>
+          <ph>7</ph>
+          <ll name="SweetSorghum">0.260</ll>
+          <kl name="SweetSorghum">0.060</kl>
+          <xf name="SweetSorghum">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.370</bd>
+          <ll15>0.250</ll15>
+          <airdry>0.250</airdry>
+          <dul>0.400</dul>
+          <sat>0.450</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>0.710</oc>
+          <ph>7</ph>
+          <ll name="SweetSorghum">0.250</ll>
+          <kl name="SweetSorghum">0.040</kl>
+          <xf name="SweetSorghum">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.350</bd>
+          <ll15>0.280</ll15>
+          <airdry>0.280</airdry>
+          <dul>0.410</dul>
+          <sat>0.460</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>0.340</oc>
+          <ph>7</ph>
+          <ll name="SweetSorghum">0.290</ll>
+          <kl name="SweetSorghum">0.020</kl>
+          <xf name="SweetSorghum">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.350</bd>
+          <ll15>0.310</ll15>
+          <airdry>0.310</airdry>
+          <dul>0.380</dul>
+          <sat>0.460</sat>
+          <sw>9999.990</sw>
+          <swcon>0.300</swcon>
+          <fbiom>0.010</fbiom>
+          <finert>0.950</finert>
+          <no3>1.700</no3>
+          <nh4>0.100</nh4>
+          <oc>0.260</oc>
+          <ph>7</ph>
+          <ll name="SweetSorghum">0.380</ll>
+          <kl name="SweetSorghum">0.010</kl>
+          <xf name="SweetSorghum">1</xf>
+        </layer>
+      </profile>
+      <Cona>3.5</Cona>
+      <DiffusConst>40</DiffusConst>
+      <DiffusSlope>16</DiffusSlope>
+      <U>6</U>
+      <Salb>0.13</Salb>
+      <Cn2Bare>73</Cn2Bare>
+      <CnRed>20</CnRed>
+      <CnCov>0.8</CnCov>
+      <CnCanopyFact>1</CnCanopyFact>
+      <RootCn>40</RootCn>
+      <RootWt>200</RootWt>
+      <SoilCn>12.5</SoilCn>
+      <EnrACoeff>7.4</EnrACoeff>
+      <EnrBCoeff>0.2</EnrBCoeff>
+    </soil>
+  </folder>
+  <simulation name="Lawes0102">
+    <clock name="clock">
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">1/11/2001</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">30/06/2002</end_date>
+    </clock>
+    <summaryfile name="summaryfile">
+      <filename name="filename">Lawes0102.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">UQG0102.met</filename>
+    </metfile>
+    <area name="Planting1">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
+          </ui>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+          <ui>
+            <category name="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category name="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
+          </ui>
+        </manager>
+        <manager name="Sow on a fixed date">
+          <script>
+            <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">23-nov</date>
+            <category name="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+          </ui>
+        </manager>
+      </folder>
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
+        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
+        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+      </soil>
+      <SweetSorghum />
+      <outputfile name="outputfile">
+        <filename name="filename">Lawes0102 Planting1.out</filename>
+        <variables name="My Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
+          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
+          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+        </variables>
+        <events name="My Variables Events">
+          <event name="Daily" description="End of day" />
+        </events>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">on</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+    <area name="Planting2">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
+          </ui>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+          <ui>
+            <category name="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category name="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
+          </ui>
+        </manager>
+        <manager name="Sow on a fixed date">
+          <script>
+            <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">21-dec</date>
+            <category name="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+          </ui>
+        </manager>
+      </folder>
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
+        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
+        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+      </soil>
+      <SweetSorghum />
+      <outputfile name="outputfile">
+        <filename name="filename">Lawes0102 Planting2.out</filename>
+        <variables name="My Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
+          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
+          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+        </variables>
+        <events name="My Variables Events">
+          <event name="Daily" description="End of day" />
+        </events>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">on</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+    <area name="Planting3">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
+          </ui>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+          <ui>
+            <category name="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category name="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
+          </ui>
+        </manager>
+        <manager name="Sow on a fixed date">
+          <script>
+            <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">22-jan</date>
+            <category name="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+          </ui>
+        </manager>
+      </folder>
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
+        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
+        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+      </soil>
+      <SweetSorghum />
+      <outputfile name="outputfile">
+        <filename name="filename">Lawes0102 Planting3.out</filename>
+        <variables name="My Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
+          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
+          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+        </variables>
+        <events name="My Variables Events">
+          <event name="Daily" description="End of day" />
+        </events>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">on</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+    <area name="Planting4">
+      <registrations name="global" />
+      <folder name="Manager folder">
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">SweetSorghum</crop>
+          </ui>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+          <ui>
+            <category name="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category name="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">NO3_N</fert_type_sow>
+          </ui>
+        </manager>
+        <manager name="Sow on a fixed date">
+          <script>
+            <text>
+      if (today = date('[date]') then
+                    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
+        endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+          <ui>
+            <category name="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">21-feb</date>
+            <category name="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">SweetSorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">sugargraze</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
+          </ui>
+        </manager>
+      </folder>
+      <fertiliser name="fertiliser" />
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <soil name="LawesSoil" shortcut="/untitled/shared/LawesSoil">
+        <InitWater shortcut="/untitled/shared/LawesSoil/InitWater" />
+        <InitNitrogen shortcut="/untitled/shared/LawesSoil/InitNitrogen" />
+      </soil>
+      <SweetSorghum />
+      <outputfile name="outputfile">
+        <filename name="filename">Lawes0102 Planting4.out</filename>
+        <variables name="My Variables">
+          <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+          <variable name="SweetSorghum.zadok_stage" description="Zadok's growth developmental stage" array="?" units="0-100" />
+          <variable name="SweetSorghum.lai" description="Leaf area index" array="?" units="m^2/m^2" />
+          <variable name="SweetSorghum.LeafGreenWt" description="Weight of leaf" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.StemGreenWt" description="Weight of stem" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.HeadTotalWt" description="Weight of heads" array="?" units="g/m^2" />
+          <variable name="SweetSorghum.biomass_wt" description="Biomass weight" array="?" units="g/m^2" />
+        </variables>
+        <events name="My Variables Events">
+          <event name="Daily" description="End of day" />
+        </events>
+      </outputfile>
+      <irrigation name="Irrigation">
+        <property name="automatic_irrigation" type="text" description="switch">on</property>
+        <property name="asw_depth" type="text" description="Depth to which ASW is calculated. (mm)">600.0</property>
+        <property name="crit_fr_asw" type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</property>
+        <property name="irrigation_efficiency" description="Efficiency of the irrigation. (0-1.0)">1.0</property>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+    </area>
+  </simulation>
+</simulations>

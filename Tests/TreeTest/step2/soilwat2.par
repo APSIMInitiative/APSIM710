@@ -1,0 +1,47 @@
+[tree.SoilWat.parameters]
+cona = 4.0                  ()
+u = 4.0                     ()
+insoil          = 1.5       ()
+                                   ! Indicator for initial soil water 0 to 1 fraction 
+                                   ! of avail soil water, >1 user input 
+! No runoff - all rainfall infiltrates:
+cn2_bare        = 20        ()                                   ! 
+cn_red          = 20        ()
+                                   ! reduction in CN2 for "cn_cov" increase in cover 
+cn_cov          = 0.8       ()
+                                   ! frac. cover for "cn_red" reduction in cover 
+salb            = 0.2       ()
+                                   ! bare soil albedo: sand 0.30 - 0.40, dark clay 
+                                   ! 0.14 - 0.20 
+diffus_const     = 0         ()
+                                   ! Coeffs for dbar measure of how moisture moves. 
+diffus_slope     = 0         ()
+                                   ! from layer 2 to 1. TURN OFF for Rickert. heavy 
+                                   ! 40c,16s light 88c,35s sand 250c,22s. 
+!layer           = 1        2        3        4          
+                                   ! 
+dlayer           = 100      400      500     500      (mm)
+                                   ! Layer depth mm soil (p020, p021, p022, p296) 
+air_dry          = 0.05     0.1      0.1      0.1       (mm/mm)
+                                   ! Air dry limit (p019/p020), (p030/p021), (p031/022), 
+                                   ! (p031/p022) 
+ll15             = 0.1      0.1      0.1      0.1       (mm/mm)
+                                   ! 15 bar lower limit mm water/mm soil (p029/p020), 
+                                   ! (p030/p021), (p031/022), (p031/p022) 
+dul              = 0.2      0.2      0.2      0.2       (mm/mm)
+                                   ! Drained upper limit mm water/mm soil (p026/p020), 
+                                   ! (p027/p021), (p028/022), (p031/p022+p295/tree 
+                                   ! depth) 
+sat              = 0.20001     0.20001     0.20001     0.20001      (mm/mm)
+                                   ! Saturation mm water/mm soil (dul * 1.05) 
+bd              = 2.0935   2.0935   2.0935   2.0935    ()
+                                   ! Bulk density gm dry soil/cc moist soil tp = dul 
+                                   ! * 1.05; bd = (1 - tp) * 2.65 
+sw               = 0.2     0.2      0.2      0.2       (mm/mm)
+                                   ! Initial water content mm water/mm soil (p023/p020), 
+                                   ! (p024/p021), (p025/p022), (p031/p022 +p299/tree 
+                                   ! depth) 
+swcon           = 0.6      0.6      0.4      0.4       ()
+                                   ! Soil conductivity - sand 0.7 heavy clay 0.1 
+
+

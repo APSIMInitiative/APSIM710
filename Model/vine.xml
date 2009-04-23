@@ -1,0 +1,295 @@
+<vine>
+  <Cultivar name="Shiraz">
+    <Construct>Vine</Construct>
+  </Cultivar>
+  <Plant name="Vine">
+    <CropType>vine</CropType>
+    <Population>
+      <Value>14</Value>
+    </Population>
+    <SimpleArbitrator name="Arbitrator">
+      <DMSink>Reserve</DMSink>
+    </SimpleArbitrator>
+    <Phenology>
+      <TemperatureFunction name="ThermalTime">
+        <XYPairs>
+          <XY>7 0.0</XY>
+          <XY>22 15.0</XY>
+          <XY>30 15.0</XY>
+          <XY>35 0.0</XY>
+        </XYPairs>
+      </TemperatureFunction>
+      <ChillingPhase name="Dormant">
+        <CDTarget>30</CDTarget>
+        <Start>StartDormancy</Start>
+        <End>EndDormancy</End>
+        <TemperatureFunction name="ChillingDays">
+          <XYPairs>
+            <XY>0 0.0</XY>
+            <XY>1 1.0</XY>
+            <XY>2 1.0</XY>
+            <XY>15 0.0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+      </ChillingPhase>
+      <FixedPhase name="Budding">
+        <TTTarget>200</TTTarget>
+        <Start>EndDormancy</Start>
+        <End>BudBurst</End>
+      </FixedPhase>
+      <FixedPhase name="ShootGrowth">
+        <TTTarget>442</TTTarget>
+        <Start>BudBurst</Start>
+        <End>Flowering</End>
+      </FixedPhase>
+      <FixedPhase name="FlowerDevelopment">
+        <TTTarget>150</TTTarget>
+        <Start>Flowering</Start>
+        <End>Set</End>
+      </FixedPhase>
+      <FixedPhase name="BerryDevelopment">
+        <TTTarget>600</TTTarget>
+        <Start>Set</Start>
+        <End>Veraison</End>
+      </FixedPhase>
+      <FixedPhase name="Ripening">
+        <TTTarget>510</TTTarget>
+        <Start>Veraison</Start>
+        <End>Ripe</End>
+      </FixedPhase>
+      <LeafDeathPhase name="Senescent">
+        <Start>Ripe</Start>
+        <End>LeafFall</End>
+      </LeafDeathPhase>
+      <RewindPhase name="Rewind">
+         <Start>LeafFall</Start>
+         <End>Unused</End>
+      </RewindPhase>
+    </Phenology>
+    <Leaf>
+      <InitialiseStage>BudBurst</InitialiseStage>
+      <Frgr>1</Frgr>
+      <PrimaryBudNo>1</PrimaryBudNo>
+      <MaxCover>0.5</MaxCover>
+     <Constant name="ExtinctionCoeff">
+       <Value>0.5</Value>
+     </Constant>
+      <KDead>0.5</KDead>
+      <InitialLeafPrimordia>1</InitialLeafPrimordia>
+      <InitialAreas>1000</InitialAreas>
+      <InitialAges>1</InitialAges>
+      <GenericFunction name="Height">
+        <XProperty>Stem.LiveWt</XProperty>
+        <XYPairs>
+          <XY>0 1800.0</XY>
+          <XY>500 1800.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <FrostFraction>
+        <XY>0 0.0</XY>
+        <XY>2 0.0</XY>
+      </FrostFraction>
+      <RUEModel name="Photosynthesis">
+        <FT>
+          <XY>5 0.0</XY>
+          <XY>20 1.0</XY>
+          <XY>30 1.0</XY>
+          <XY>45 0.0</XY>
+        </FT>
+        <FVPD>
+          <XY>0 1.0</XY>
+          <XY>10 1.0</XY>
+          <XY>50 1.0</XY>
+        </FVPD>
+        <RUE>0.8</RUE>
+      </RUEModel>
+      <TemperatureFunction name="ThermalTime">
+        <XYPairs>
+          <XY>7 0.0</XY>
+          <XY>22 15.0</XY>
+          <XY>30 15.0</XY>
+          <XY>35 0.0</XY>
+        </XYPairs>
+      </TemperatureFunction>
+      <PhaseLookupValue name="NodeInitiationRate">
+        <Start>BudBurst</Start>
+        <End>Veraison</End>
+        <Constant name="Function">
+          <Value>30.0</Value>
+        </Constant>
+      </PhaseLookupValue>
+      <MaxNodeNo>24</MaxNodeNo>
+      <PhaseLookupValue name="NodeAppearanceRate">
+        <Start>BudBurst</Start>
+        <End>Veraison</End>
+        <Constant name="Function">
+          <Value>30.0</Value>
+        </Constant>
+      </PhaseLookupValue>
+      <GenericFunction name="MaxArea">
+        <XProperty>Leaf.NodeNo</XProperty>
+        <XYPairs>
+          <XY>1 5000.0</XY>
+          <XY>4 15000.0</XY>
+          <XY>30 10000.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <GenericFunction name="SpecificLeafArea">
+        <XProperty>Leaf.NodeNo</XProperty>
+        <XYPairs>
+          <XY>1 20000.0</XY>
+          <XY>30 19000.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <GenericFunction name="GrowthDuration">
+        <XProperty>Leaf.NodeNo</XProperty>
+        <XYPairs>
+          <XY>4 150.0</XY>
+          <XY>5 150.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <GenericFunction name="LagDuration">
+        <XProperty>Leaf.NodeNo</XProperty>
+        <XYPairs>
+          <XY>5 1500.0</XY>
+          <XY>20 2500.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <GenericFunction name="SenescenceDuration">
+        <XProperty>Leaf.NodeNo</XProperty>
+        <XYPairs>
+          <XY>5 500.0</XY>
+          <XY>30 500.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <GenericFunction name="BranchingRate">
+        <XProperty>Leaf.NodeNo</XProperty>
+        <XYPairs>
+          <XY>5 0.0</XY>
+          <XY>10 0.0</XY>
+          <XY>11 0.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <PhaseLookup name="PartitionFraction">
+         <PhaseLookupValue name="Early">
+            <Start>BudBurst</Start>
+            <End>Veraison</End>
+            <Constant name="Function">
+               <Value>0.4</Value>
+            </Constant>
+         </PhaseLookupValue>
+      </PhaseLookup>
+      <GenericFunction name="ExpansionStress">
+         <XProperty>WaterSupplyDemandRatio</XProperty>
+         <XYPairs>
+            <XY> 0.0 1</XY>
+            <XY> 1.0 1</XY>
+         </XYPairs>
+      </GenericFunction>
+    </Leaf>
+    <GenericOrgan name="Stem">
+      <PhaseLookup name="PartitionFraction">
+         <PhaseLookupValue name="Early">
+            <Start>BudBurst</Start>
+            <End>Veraison</End>
+            <Constant name="Function">
+               <Value>0.4</Value>
+            </Constant>
+         </PhaseLookupValue>
+      </PhaseLookup>
+      <PhaseLookup name="StructuralFraction">
+        <PhaseLookupValue name="PreFlowering">
+          <Start>BudBurst</Start>
+          <End>Flowering</End>
+          <Constant name="Function">
+            <Value>1.0</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="PostFlowering">
+          <Start>Flowering</Start>
+          <End>Veraison</End>
+          <Constant name="Function">
+            <Value>1.0</Value>
+          </Constant>
+        </PhaseLookupValue>
+      </PhaseLookup>
+    </GenericOrgan>
+    <Root>
+      <ll>0.29 0.29 0.29 0.29 0.3 0.31 0.32 0.33 0.34 0.35
+      0.36</ll>
+      <kl>0.07 0.07 0.07 0.07 0.05 0.05 0.04 0.04 0.04 0.04
+      0.04</kl>
+      <xf>1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00
+      1.00</xf>
+      <Constant name="KLModifier">
+         <Value>1.0</Value>
+      </Constant>
+      <InitialDM>0.01</InitialDM>
+      <SpecificRootLength>105000</SpecificRootLength>
+      <Constant name="RootFrontVelocity">
+         <Value>10.0</Value>
+      </Constant>
+      <Constant name="PartitionFraction">
+        <Value>0.2</Value>
+      </Constant>
+      <TemperatureFunction name="TemperatureEffect">
+        <XYPairs>
+          <XY>0 0.0</XY>
+          <XY>26 1.0</XY>
+          <XY>35 0.0</XY>
+        </XYPairs>
+      </TemperatureFunction>
+    </Root>
+    <ReproductiveOrgan name="Berry">
+      <MaximumSize>0.33</MaximumSize>
+      <RipeStage>Ripe</RipeStage>
+      <GenericFunction name="NumberFunction">
+        <XProperty>Stem.LiveWt</XProperty>
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>1000 150000</XY>
+        </XYPairs>
+      </GenericFunction>
+      <PhaseLookup name="FillingRate">
+        <PhaseLookupValue name="EarlyBerryGrowth">
+          <Start>Flowering</Start>
+          <End>Veraison</End>
+          <TemperatureFunction name="Function">
+            <XYPairs>
+              <XY>7 0.0</XY>
+              <XY>22 0.00133</XY>
+              <XY>30 0.00133</XY>
+              <XY>35 0.0</XY>
+            </XYPairs>
+          </TemperatureFunction>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="LateBerryGrowth">
+          <Start>Veraison</Start>
+          <End>Ripe</End>
+          <TemperatureFunction name="Function">
+            <XYPairs>
+              <XY>7 0.0</XY>
+              <XY>22 0.0072</XY>
+              <XY>30 0.0072</XY>
+              <XY>35 0.0</XY>
+            </XYPairs>
+          </TemperatureFunction>
+        </PhaseLookupValue>
+      </PhaseLookup>
+      <StageBasedInterpolation name="WaterContent">
+        <Stages>StartDormancy EndDormancy BudBurst Flowering Set
+        Veraison Ripe LeafFall</Stages>
+        <Codes>0.93 0.93 0.93 0.93 0.93 0.85 0.7 0.7</Codes>
+      </StageBasedInterpolation>
+    </ReproductiveOrgan>
+    <ReserveOrgan name="Reserve">
+      <InitialDM>100</InitialDM>
+      <DailyRetransFraction>0.1</DailyRetransFraction>
+    </ReserveOrgan>
+    <StageBasedInterpolation name="StageCode">
+      <Stages>StartDormancy EndDormancy BudBurst Flowering Set Veraison Ripe LeafFall</Stages>
+      <Codes>     1            2           7        23     27   35      38     47</Codes>
+    </StageBasedInterpolation>
+    <Summary name="Summary" />
+  </Plant>
+</vine>

@@ -1,0 +1,151 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = oryza Sample Simulation - non limited
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                        "oryza" = %apsim%\Model\oryza.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/10/1990
+     Simulation end date   = 15/02/1992
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.year
+        clock.day
+        oryza.plant_status
+        oryza.crop_type
+        oryza.cropsta
+        oryza.dae
+        oryza.dvs
+        oryza.dvr
+        oryza.hu
+        oryza.lrstrs
+        oryza.ldstrs
+        oryza.lestrs
+        oryza.pcew
+        oryza.tnsoil
+        oryza.nflv
+        oryza.fnlv
+        oryza.nacr
+        oryza.ancr
+        oryza.anso
+        oryza.anlv
+        oryza.rnstrs
+        oryza.wagt
+        oryza.wso
+        oryza.wst
+        oryza.wlvg
+        oryza.wlvd
+        oryza.dtga
+        oryza.gcr
+        oryza.rlai
+        oryza.ssga
+        oryza.zrt
+        oryza.eff
+        oryza.etd
+        oryza.etrd
+        oryza.etae
+        oryza.trc
+        oryza.rlv
+        oryza.root_weight_layer
+        oryza.sw_demand
+        oryza.no3_demand
+        oryza.zrt
+        oryza.wrt
+        oryza.zll
+        oryza.wrr
+        oryza.wlv
+        oryza.wagt
+
+     Output file = oryza-fp.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\MetFiles\DarlingtonPoint.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (day = 288) then
+       oryza sow cultivar = experimental, establishment = direct-seed, sbdur = 50, nplh = 10, nh = 2, nplsb = 250.0, nplds = 180.0
+     endif
+     
+     SECTION:- end_of_day
+     if (oryza.plant_status = 'dead') then
+       oryza end_crop
+     endif
+     report do_output
+     END of rules
+     
+
+------- oryza Initialisation --------------------------------------------------
+        - Initialising
+     Non - limiting Soil Water conditions
+     Non - limiting Soil Nitrogen conditions
+     Eo taken from pan
+------- Start of simulation  --------------------------------------------------
+15 October 1990(Day of year=288), manager: 
+     Manager sending message :- oryza sow  cultivar = experimental, establishment = direct-seed, sbdur = 50, nplh = 10, nh = 2, nplsb = 250.0, nplds = 180.0
+15 October 1990(Day of year=288), oryza: 
+        - Reading Parameters
+        - Reading experimental Cultivar Parameters
+        - Reading direct-seed Establishment Parameters
+        Number of plants in seedbed: 180.0 (/m2)
+2 February 1991(Day of year=33), oryza: 
+     Maturity
+2 February 1991(Day of year=33), manager: 
+     Manager sending message :- oryza end_crop
+         Crop ended. Rough Rice Yield (dw) = 10897.5 (kg/ha)
+                             straw residue =  9206.9 (kg/ha)
+                             straw N       =     0.0 (kg/ha)
+                             root residue  =  1466.0 (kg/ha)
+                             root N        =     0.0 (kg/ha)
+     Non - limiting Soil Water conditions
+     Non - limiting Soil Nitrogen conditions
+     Eo taken from pan
+15 October 1991(Day of year=288), manager: 
+     Manager sending message :- oryza sow  cultivar = experimental, establishment = direct-seed, sbdur = 50, nplh = 10, nh = 2, nplsb = 250.0, nplds = 180.0
+15 October 1991(Day of year=288), oryza: 
+        - Reading Parameters
+        - Reading experimental Cultivar Parameters
+        - Reading direct-seed Establishment Parameters
+        Number of plants in seedbed: 180.0 (/m2)
+10 February 1992(Day of year=41), oryza: 
+     Maturity
+10 February 1992(Day of year=41), manager: 
+     Manager sending message :- oryza end_crop
+         Crop ended. Rough Rice Yield (dw) = 12802.1 (kg/ha)
+                             straw residue = 10501.2 (kg/ha)
+                             straw N       =     0.0 (kg/ha)
+                             root residue  =  1661.5 (kg/ha)
+                             root N        =     0.0 (kg/ha)
+     Non - limiting Soil Water conditions
+     Non - limiting Soil Nitrogen conditions
+     Eo taken from pan
+15 February 1992(Day of year=46), clock: 
+     Simulation is terminating due to end criteria being met.

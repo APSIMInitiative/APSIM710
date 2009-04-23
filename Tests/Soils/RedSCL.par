@@ -1,0 +1,56 @@
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Holmes_N_Trial (McCallum) (seee Neal Dalgliesh)
+
+[300mm.SoilWat.parameters]
+wet_soil_depth = 300
+
+[RedSCL.wheat.parameters]
+    ll     =  0.084  0.084   0.134   0.140   0.200   0.212  0.224
+    kl     =  0.080  0.080  0.080   0.080   0.060   0.040   0.030
+  xf     =  1.0    1.0     1.0     1.0     1.0     1.0    1.0
+
+
+[RedSCL.SoilWat.parameters]
+
+   cona            = 3.5    ()     ! stage 2 evap coef.
+   diffus_const = 40  ! coeffs for dbar ! jpd suggests 550 for sands
+   diffus_slope = 16 ! "   "   " ! jpd suggests 26 for sands
+   u               = 6.0  (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb = 0.13    ! bare soil albedo
+   max_pond = 0   ! ponding capacity
+   cn2_bare        =  82    ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                   ! & max. cover for reduction
+
+!layer      1       2       3       4
+dlayer   =  150     150     300     300     300 300 300
+air_dry  =  0.012   0.074   0.134   0.140  0.20 0.21 0.22
+ll15     =  0.084   0.084   0.134   0.140  0.20 0.21 0.22
+dul      =  0.246   0.299   0.338   0.298  0.28 0.30 0.30
+sat      =  0.370   0.350   0.390   0.350  0.33 0.35 0.35
+bd       =  1.598   1.640   1.542   1.648  1.69 1.65 1.64
+swcon    =  0.300   0.300   0.300   0.300  0.30 0.30 0.30
+
+
+
+[RedSCL.SoilN.parameters]
+
+   root_cn =   40.0
+   root_wt =  100.0
+   soil_cn = 13.0 ! measured top layer 0-10cms in Wongan Hills
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+!layer      1        2       3       4
+oc       =   0.829   0.562   0.351   0.241  0.241 0.241 0.241
+ph       =   6.48    6.98    7.700   8.430  8.430 8.430 8.430
+fbiom    =   0.025   0.02    0.015   0.01   0.010 0.010 0.010
+finert   =   0.4     0.6     0.8     0.9    0.900 0.900 0.900
+ureappm  =   0.0     0.0     0.0     0.0    0.000 0.000 0.000
+   nh4ppm =   1.240   0.180   0.180   0.130 0.100 0.100 0.100
+   no3ppm =   15.00   5.90   4.90   3.200   1.000 1.000 1.000
+

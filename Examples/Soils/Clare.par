@@ -1,0 +1,65 @@
+[200mm.soilwat2.parameters]
+wet_soil_depth = 200
+
+[300mm.soilwat2.parameters]
+wet_soil_depth = 300
+
+[Clare.soilwat2.parameters]
+
+insoil =    2.0 ()  ! indicator for initial soil water
+                    ! 0 to 1 = fraction of max avail soil water (0=ll15,
+                    !          1 = dul) used to initialise each soil layer
+                    !  > 1   = initialise to user specified volumetric
+                    !          soil water content information
+
+diffus_const =    88. ()   !   coeffs for unsaturated water flow
+diffus_slope =    35.4  ()   !     "
+
+
+cn2_bare =    70 ()   ! bare soil runoff curve number
+cn_red =    20   ! potetial reduction in curve number due to residue
+cn_cov =    .8   ! cover for maximum reduction in curve number
+salb =    0.13  ()   ! bare soil albedo
+cona =    2  ()   ! stage 2 evap coef.
+u =    2 (mm)   ! stage 1 soil evaporation coefficient (mm)
+
+   !layer    1    2    3    4    5    6    7
+dlayer =     100  150  250  250  250  250  250   ! layer thickness mm soil
+sat =      .300 .300 .300 .350 .350 .350 .350   ! saturation mm water/mm soil
+dul =      .150 .200  .25 .30  .30  .30  .30   ! drained upper limit mm water/mm soil
+!sw =       .050 .080  .17 .19  .23  .24  .25   ! initial soil water mm water/mm soil
+ll15 =     .050 .080 .170 .190 .230 .240 .250   ! lower limit mm water/mm soil
+air_dry =    .03 .08 .10 .10 .10 .10 .10   ! air dry mm water/ mm soil
+swcon =     0.2  0.2  0.2  0.2  0.2  0.2  0.2   ! drainage coefficient
+bd =       1.60 1.67 1.43 1.52 1.57 1.63 1.68   ! bulk density gm dry soil/cc moist soil
+
+
+[Clare.soiln2.parameters]
+root_cn =  20.   ! C:N ratio of initial root residues
+root_wt =  1000.   ! root residues as biomass (kg/ha)
+soil_cn =  14.5   ! C:N ratio of soil
+
+!layer    1    2    3    4    5    6    7
+oc =     0.58 0.58 0.42 0.23 0.17 0.15 0.14 (%)   ! Soil Organic Carbon
+ph =     7.70 8.00 8.60 9.00 10.1 10.1 10.1 ()   ! pH of soil
+fbiom =  .035 .025 .015 0.01 0.01 0.01 0.01 ()   ! Organic C Biomass Fraction
+finert =  0.30 0.50 0.60 0.75 0.90 0.99 0.99 ()   ! Inert Organic C Fraction
+no3ppm =  20.0  15.0 10.0  5.0  2.5  1.0  1.0 (ppm)   ! Nitrate Concentration
+nh4ppm =  0.30 0.30 0.30 0.30 0.30 0.50 0.50 (ppm)   ! Ammonium Concentration
+ureappm =  0  0    0    0    0    0    0    (ppm)   ! Urea Concentration
+
+! Erosion profile reduction parameters
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+
+
+
+[Clare.wheat.parameters]
+
+ll =  .050 .080 .170 .190 .230 .240 .250 ()!cm3 water/cm3 soil
+kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04  ()
+XF =  1.0     1.0     1.0     1.0     1.0     0.0     0.0   ()
+
+

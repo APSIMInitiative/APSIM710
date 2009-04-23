@@ -1,0 +1,111 @@
+[all.report.parameters]
+outputfile =fieldpea.out
+variable = clock.day
+variable = clock.year
+variable = clock.dd/mmm/yyyy as date
+variable = SoilWat.sw_dep()
+variable = SoilWat.runoff
+variable = SoilWat.drain
+variable = SoilWat.es
+variable = SoilWat.eos
+variable = SoilWat.eo
+variable = met.rain
+variable = surfaceom.surfaceom_wt
+variable = surfaceom.surfaceom_cover
+variable = surfaceom.surfaceom_n
+variable = fieldpea.DaysAfterSowing
+variable = fieldpea.stage
+variable = fieldpea.lai
+variable = fieldpea.biomass
+variable = fieldpea.green_biomass
+variable = fieldpea.yield
+variable = fieldpea.ep
+variable = fieldpea.swdef_photo
+variable = fieldpea.nfact_photo
+variable = fieldpea.root_depth
+variable = fieldpea.node_no
+variable = fieldpea.LeafGreenWt
+variable = fieldpea.StemGreenWt
+variable = fieldpea.flowering_date
+variable = fieldpea.maturity_date
+variable = fieldpea.leaf_no
+variable = SoilWat.esw
+
+[all.clock.parameters]
+start_date=1/5/2002
+end_date=31/12/2003
+
+[all.SummaryFile.parameters]
+summaryfile = fieldpea.sum
+
+[all.SurfaceOM.parameters]
+mass = 0.0   ()  ! surface residues as biomass (kg/ha)
+cnr = 10.0   ()  ! cn ratio of surface residues
+type = wheat
+
+name = wheat
+[all.manager.end_of_day]
+
+report do_output
+
+if fieldpea.StageName = 'harvest_ripe' or fieldpea.plant_status = 'dead' then
+   fieldpea harvest
+   fieldpea kill_crop
+   fieldpea end_crop
+endif
+
+[fieldpea_sample.Operations.parameters]
+ 137 2002 fieldpea sow plants = 50, sowing_depth = 30, cultivar = parafield
+ 176 2003 fieldpea sow plants = 70, sowing_depth = 30, cultivar = mutka
+
+
+
+[west7.SoilWat.parameters]
+!Roseworthy Red-Brown Earth
+
+insoil = 0.5
+
+u =               3.0   !6.2    ! stage 1 soil evaporation coefficient (mm)
+cona =            3.0   !3.8    ! stage 2 drying coefficient
+cn2_bare =        75   ! runoff curve number
+cn_red =          20   ! curve number max reduction
+cn_cov =          0.80   ! cover which generates max cn reduction
+salb =            0.14   ! bare soil albedo
+diffus_const =    44   !88.0   ! coeffs for dbar
+diffus_slope =    16   !35.4   ! "   "   "
+
+! Layer        1      2      3      4      5      6      7      8      9      10
+!              100    200    400    600    800    1000   1200   1400   1600   1800
+dlayer =    100.00   100.00 200.00 200.00 200.00 200.00 200.00 200.000 200.00 200.00 (mm)   ! layer depth
+air_dry =     0.10    0.12   0.14   0.14   0.15   0.16   0.18   0.18   0.18   0.18 (mm/mm)   ! lower limit
+ll15 =       0.15    0.15   0.14   0.14   0.15   0.16   0.18   0.18   0.18   0.18 (mm/mm)   ! lower limit
+dul =        0.26    0.27   0.28   0.27   0.24   0.25   0.28   0.29   0.30   0.31 (mm/mm)   ! drained upper limit
+sat =        0.45    0.45   0.41   0.45   0.44   0.46   0.38   0.38   0.33   0.33 (mm/mm)   ! saturation
+sw =         0.26    0.27   0.28   0.27   0.24   0.25   0.28   0.29   0.30   0.31 (mm/mm)   ! lower limit
+swcon =      0.70    0.70    0.70   0.30   0.30   0.30   0.30   0.20   0.20   0.20 ()   ! soil conductivity
+bd =         1.19    1.19   1.43   1.31   1.35   1.30   1.52   1.52   1.67   1.69 (g/cc)
+
+[west7.SoilN.parameters]
+
+soil_cn =             12.3   ! C:N ratio of soil
+enr_a_coeff =          7.4   ()
+enr_b_coeff =          0.2   ()
+profile_reduction =    off   ! (on|off) whether to remap N+C if soil loss occurs.
+
+! Layer     1      2      3      4      5      6      7      8      9      10
+pH =         8.0    8.0    8.0    8.0    8.0    8.0    8.0    8.0   8.0    8.0   ! pH
+no3ppm =     5      5      5      5      4      4      3      2     1      0.0   ! Cation exchange capacity (meq%)
+nh4ppm =     1      1      1      1      1      0      0      0     0      0
+oc =         1.45   1.45   0.69   0.43   0.28   0.24   0.24   0.24   0.24  0.24   ! Organic carbon (%)
+fbiom =      0.05   0.05   0.02   0.015  0.01   0.01   0.01   0.01   0.01  0.010 ()   ! microbe fraction of humic pool
+finert =     0.39   0.45   0.47   0.52   0.62   0.74   0.83   0.93   0.93  0.930 ()   ! inert fraction of humic pool
+
+
+root_cn = 40
+root_wt = 1000
+
+[west7.fieldpea.parameters]
+!dlayer 100  100   200   200   200   200   200   200   200  200  ! layer depth mm soil
+kl =    0.06 0.06  0.06  0.05  0.30  0.20  0.10  0.00  0.00 0.00
+ll =    0.15 0.15  0.14  0.14  0.15  0.17  0.20  0.20  0.20 0.20
+xf =    1.00 1.00  1.00  1.00  0.80 0.50  0.10  0.00  0.00 0.00

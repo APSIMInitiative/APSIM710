@@ -1,0 +1,112 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+
+   <title>APSIM Training Package</title>
+   <link rel="stylesheet" href="./../ApsimWebStyle.css" type="text/css">
+</head><body>
+
+
+
+
+<h1>Wheat / mungbean opportunity cropping</h1>
+<p>In this exercise you will use sowing rules to opportunistically plant 
+mungbean and wheat crops over a 10 year period without resetting water or 
+nitrogen at sowing. You will observe the effect of this rotation on soil biomass 
+nitrogen and the response of the rotation to different sowing rules.</p>
+<p>The examples assume you have read and walked through the previous document:
+<a href="..\1 Introduction\2 How to Build, Run and Graph a Simulation.htm">How to Build, Run and Graph a Simulation</a></p>
+<ol>
+  <li>Start a fresh simulation using <i>Continuous Wheat Simulation </i>as a template</li>
+  <li>Choose the Goondiwindi weather 1/4/1974 - 30/4/1984</li>
+  <li>Select the "Grey Vertosol-Merwood (Croppa Creek No068)" soil (Soils->Australia->New South Wales->North West Slopes and Plains)
+   <b>and rename it to Vertosol</b></li>
+  <p>This soil doesn't have crop lower limits for mungbean, so add a new crop to 
+  the soil. Make sure you call it <i>mungbean</i>. For this exercise, instead of changing LL, PAWC, KL and XF values just leave the default values. 
+  If you do not know how to add a new crop see the following document: <a href="..\3 How To\Adding crop properties to a soil.htm">How to: Adding crop properties to a soil</a> . </p></li>
+  <li>Set the Starting water to 50% full - filled from top.</li>
+  <li>Set the Starting nitrogen to 140 kg/ha NO<sub>3</sub>&nbsp; and 0 kg/ha NH<sub>4</sub></li>
+  <li>Add mungbean to the simulation tree, leaving wheat alone.</li>
+  <li>Replace the <i>Sowing rule</i> with the <i>Sow using a variable rule</i> 
+  from the toolbox and rename to <i>Wheat sowing - Janz</i>.</li>
+  <li>Set the properties of <i>wheat sowing</i> to:<p>sowing window start date: 
+  1-Jun<br>
+  sowing window end date: 14-Jun<br>
+  must sow: no<br>
+  amount of rainfall: 15<br>
+  number of days of rainfall: 3<br>
+  amount of soil water in profile: 200<br>
+  crop: wheat <br>
+  sowing density: 100<br>
+  sowing depth: 50<br>
+  cultivar: Janz<br>
+  crop growth class: plant<br>
+row spacing: 250<br>
+  </p>
+  </li>
+  <li>We
+want to sow an earlier maturing cultivar if the sowing is later so make
+a copy of this rule but change the window to 15-jun to 1-aug and the
+cultivar to hartog. Rename this new rule to <i>Wheat sowing - Hartog</i></li>
+  <li>Rename the harvesting rule to <i>Wheat harvesting</i> - make sure it 
+  points to wheat.</li>
+  <li>Rename the <i>Sowing fertiliser</i> rule to <i>Wheat sowing fertiliser.
+  </i>Make sure it points to wheat and set the amount to 70kg/ha of urea_n.</li>
+  <li>Duplicate one of the wheat sowing rules and rename it to <i>Mungbean 
+  sowing</i>. Set the parameters to:<p>sowing window start date: 1-Dec<br>
+  sowing window end date: 15-Jan<br>
+  must sow: no<br>
+  amount of rainfall: 20<br>
+  number of days of rainfall: 3<br>
+  amount of soil water in profile: 200 <br>
+  crop: mungbean<br>
+  sowing density: 36<br>
+  sowing depth: 50<br>
+  cultivar: Berken<br>
+ crop growth class: plant<br>
+  row spacing: 500<br>
+  </p></li><li>Duplicate the <i>Wheat harvesting</i> rule and rename to <i>Mungbean 
+  harvesting</i>. Make sure it points to mungbean, not wheat. </li>
+  <li>Choose these variables to report:<table style="border-collapse: collapse;" id="AutoNumber1" width="64%" border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" height="84">
+    <tbody><tr>
+      <td width="34%" bgcolor="#c0c0c0" height="1">
+      <span style="font-size: 9pt;">Component</span></td>
+      <td width="66%" bgcolor="#c0c0c0" height="1">
+      <span style="font-size: 9pt;">Variable name</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"><span style="font-size: 9pt;">Global</span></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">Year</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"><span style="font-size: 9pt;">Soil (we renamed it to Vertosol)</span></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">BIOM_N - layered.</span></td>
+    </tr>
+    <tr>
+      <td width="34%" height="18"><span style="font-size: 9pt;">Mungbean or Wheat</span></td>
+      <td width="66%" height="18"><span style="font-size: 9pt;">yield (this will output the yield for all the crops in the simulation. Mungbean yields and Wheat yields will BOTH be outputed in different columns)</span></td>
+    </tr>
+    </tbody></table>
+  </li>
+    <li>Choose a reporting frequency of <i>harvesting</i>.</li>
+  <li>Rename simulation to <i>Mungbean-Wheat. </i>Save the filename to the same 
+  name.</li>
+<li>Make a copy of the simulation, setting the mungbean sowing window to 1-nov to 1-jan.</li>
+<li>Rename this simulation to
+<i>Mungbean-Wheat Early</i>.</li>
+<li>Run simulations.</li>
+<li>Create <b>separate</b> graphs of Year vs Mungbean Yield and Wheat Yield <b>for each simulation</b>. Drag an XY Chart on each simulation. 
+(nb. You will get a DBNull error when you click on the graph component. Just click OK, and change the Y axis to "mungbean.yield" and "wheat.yield", then change the X axis to "year"). 
+<li>Add Titles to each graph identifying them as <i>Mungbean-Wheat</i> and <i>Mungbean-Wheat Early</i>. To find out how to add a title to a graph see <a href="..\3 How To\Modify a Graph component.htm">How To: Modify a Graph component</a>  </li>
+<img src="6%20Wheat-Mungbean%20opportunity%20cropping_files/image1.gif" border="0">
+<img src="6%20Wheat-Mungbean%20opportunity%20cropping_files/image2.gif" border="0"></li>
+</ol>
+
+
+
+<p>&nbsp;</p>
+
+<p><b>Quest</b><b>ion: </b>Why is there no wheat yield in 1984?</p>
+<p>&nbsp;</p>
+
+</body></html>

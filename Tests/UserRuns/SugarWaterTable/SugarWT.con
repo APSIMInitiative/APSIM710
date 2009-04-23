@@ -1,0 +1,14 @@
+version = 7.0(2)
+
+[apsim.sample_apswim]
+title=APSwim Sample Simulation
+module = clock   SugarWT.par [sample] %apsim%/Model/clock.xml [standard]
+module = report   SugarWT.par [sample]
+module = input(met)      Tully.MET [weather]
+module = manager  SugarWT.par [sample]
+module = Irrigation   SugarWT.par [sample]
+module = Fertiliser   %apsim%/Model/Fertiliser.xml [standard]
+module = SWIM2   SugarWT.par [sample] HYPROPS.PAR [hyprops] swim.par [all] %apsim%/Model/SWIM2.xml [standard]
+module = SoilN   SugarWT.par [sample] %apsim%/Model/SoilN.xml [standard]
+module = SurfaceOM   SugarWT.par [sample] %apsim%/Model/SurfaceOM.xml [standard]
+module = sugar   SugarWT.par [sample] %apsim%/Model/sugar.xml [standard]

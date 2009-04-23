@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<simulation executable="%apsim%/Model/ProtocolManager.dll" version="6.1">
+   <title>fieldpea sample</title>
+   <component name="clock" executable = "%apsim%/Model/clock.dll">
+      <initdata>
+         <include>%apsim%/Model/clock.xml</include>
+         <start_date>1/5/2002</start_date>
+         <end_date>31/12/2003</end_date>
+      </initdata>
+   </component>
+   <component name="report" executable = "%apsim%/Model/report.dll">
+      <initdata>
+         <outputfile>fieldpea.out</outputfile>
+         <variable>clock.day</variable>
+         <variable>clock.year</variable>
+         <variable>clock.dd/mmm/yyyy as date</variable>
+         <variable>SoilWat.sw_dep()</variable>
+         <variable>SoilWat.runoff</variable>
+         <variable>SoilWat.drain</variable>
+         <variable>SoilWat.es</variable>
+         <variable>SoilWat.eos</variable>
+         <variable>SoilWat.eo</variable>
+         <variable>met.rain</variable>
+         <variable>surfaceom.surfaceom_wt</variable>
+         <variable>surfaceom.surfaceom_cover</variable>
+         <variable>surfaceom.surfaceom_n</variable>
+         <variable>fieldpea.DaysAfterSowing</variable>
+         <variable>fieldpea.stage</variable>
+         <variable>fieldpea.lai</variable>
+         <variable>fieldpea.biomass</variable>
+         <variable>fieldpea.green_biomass</variable>
+         <variable>fieldpea.yield</variable>
+         <variable>fieldpea.ep</variable>
+         <variable>fieldpea.swdef_photo</variable>
+         <variable>fieldpea.nfact_photo</variable>
+         <variable>fieldpea.root_depth</variable>
+         <variable>fieldpea.node_no</variable>
+         <variable>fieldpea.LeafGreenWt</variable>
+         <variable>fieldpea.StemGreenWt</variable>
+         <variable>fieldpea.flowering_date</variable>
+         <variable>fieldpea.maturity_date</variable>
+         <variable>fieldpea.leaf_no</variable>
+         <variable>SoilWat.esw</variable>
+      </initdata>
+   </component>
+   <component name="met" executable = "%apsim%/Model/input.dll">
+      <initdata>
+         <filename>%apsim%/Examples/MetFiles/roseworthy.met</filename>
+      </initdata>
+   </component>
+   <component name="Operations" executable = "%apsim%/Model/Operations.dll">
+      <initdata>
+         <rule name="fieldpea_sample.parameters" condition="">
+            <![CDATA[
+             137 2002 fieldpea sow plants = 50, sowing_depth = 30, cultivar = parafield
+             176 2003 fieldpea sow plants = 70, sowing_depth = 30, cultivar = mutka
+            ]]>
+            </rule>
+      </initdata>
+   </component>
+   <component name="Fertiliser" executable = "%apsim%/Model/Fertiliser.dll">
+      <initdata>
+         <include>%apsim%/Model/Fertiliser.xml</include>
+      </initdata>
+   </component>
+   <component name="manager" executable = "%apsim%/Model/manager.dll">
+      <initdata>
+         <rule name="all.end_of_day" condition="end_of_day">
+            <![CDATA[
+            report do_output
+            if fieldpea.StageName = 'harvest_ripe' or fieldpea.plant_status = 'dead' then
+               fieldpea harvest
+               fieldpea kill_crop
+               fieldpea end_crop
+            endif
+            ]]>
+            </rule>
+      </initdata>
+   </component>
+   <component name="SoilWat" executable = "%apsim%/Model/SoilWat.dll">
+      <initdata>
+         <include>%apsim%/Model/SoilWat.xml</include>
+         <insoil>0.5</insoil>
+         <u>3.0</u>
+         <cona>3.0</cona>
+         <cn2_bare>75</cn2_bare>
+         <cn_red>20</cn_red>
+         <cn_cov>0.80</cn_cov>
+         <salb>0.14</salb>
+         <diffus_const>44</diffus_const>
+         <diffus_slope>16</diffus_slope>
+         <dlayer>100.00   100.00 200.00 200.00 200.00 200.00 200.00 200.000 200.00 200.00 (mm)</dlayer>
+         <air_dry>0.10    0.12   0.14   0.14   0.15   0.16   0.18   0.18   0.18   0.18 (mm/mm)</air_dry>
+         <ll15>0.15    0.15   0.14   0.14   0.15   0.16   0.18   0.18   0.18   0.18 (mm/mm)</ll15>
+         <dul>0.26    0.27   0.28   0.27   0.24   0.25   0.28   0.29   0.30   0.31 (mm/mm)</dul>
+         <sat>0.45    0.45   0.41   0.45   0.44   0.46   0.38   0.38   0.33   0.33 (mm/mm)</sat>
+         <sw>0.26    0.27   0.28   0.27   0.24   0.25   0.28   0.29   0.30   0.31 (mm/mm)</sw>
+         <swcon>0.70    0.70    0.70   0.30   0.30   0.30   0.30   0.20   0.20   0.20 ()</swcon>
+         <bd>1.19    1.19   1.43   1.31   1.35   1.30   1.52   1.52   1.67   1.69 (g/cc)</bd>
+      </initdata>
+   </component>
+   <component name="SurfaceOM" executable = "%apsim%/Model/SurfaceOM.dll">
+      <initdata>
+         <include>%apsim%/Model/SurfaceOM.xml</include>
+         <mass>0.0   ()</mass>
+         <cnr>10.0   ()</cnr>
+         <type>wheat</type>
+         <name>wheat</name>
+      </initdata>
+   </component>
+   <component name="SoilN" executable = "%apsim%/Model/SoilN.dll">
+      <initdata>
+         <include>%apsim%/Model/SoilN.xml</include>
+         <soil_cn>12.3</soil_cn>
+         <enr_a_coeff>7.4   ()</enr_a_coeff>
+         <enr_b_coeff>0.2   ()</enr_b_coeff>
+         <profile_reduction>off</profile_reduction>
+         <ph>8.0    8.0    8.0    8.0    8.0    8.0    8.0    8.0   8.0    8.0</ph>
+         <no3ppm>5      5      5      5      4      4      3      2     1      0.0</no3ppm>
+         <nh4ppm>1      1      1      1      1      0      0      0     0      0</nh4ppm>
+         <oc>1.45   1.45   0.69   0.43   0.28   0.24   0.24   0.24   0.24  0.24</oc>
+         <fbiom>0.05   0.05   0.02   0.015  0.01   0.01   0.01   0.01   0.01  0.010 ()</fbiom>
+         <finert>0.39   0.45   0.47   0.52   0.62   0.74   0.83   0.93   0.93  0.930 ()</finert>
+         <root_cn>40</root_cn>
+         <root_wt>1000</root_wt>
+      </initdata>
+   </component>
+   <component name="fieldpea" executable = "%apsim%/Model/plant.dll">
+      <initdata>
+         <include>%apsim%/Model/fieldpea.xml</include>
+         <kl>0.06 0.06  0.06  0.05  0.30  0.20  0.10  0.00  0.00 0.00</kl>
+         <ll>0.15 0.15  0.14  0.14  0.15  0.17  0.20  0.20  0.20 0.20</ll>
+         <xf>1.00 1.00  1.00  1.00  0.80 0.50  0.10  0.00  0.00 0.00</xf>
+      </initdata>
+   </component>
+</simulation>

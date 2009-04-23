@@ -1,0 +1,1172 @@
+<sunflower>
+   <!-- ***********************************************************************************************************
+     CONSTANTS  - SPECIES-SPECIFIC PARAMETERS
+   ***********************************************************************************************************
+    -->
+   <crop_type>sunflower</crop_type>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 1 - CROP PHENOLOGY: DEVELOPMENT PARAMETERS
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    -->
+   <stage_names>sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</stage_names>
+   <!-- stage_name        sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop  !For sunflower FI indicates bud visible
+    -->
+   <stage_code>1   2   3    4      5     6     7    8    9    10   11   12</stage_code>
+   <!-- __________________________________________________________________________________________________________-
+   SEED GERMINATION
+    -->
+   <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.0</pesw_germ>
+   <!-- __________________________________________________________________________________________________________-
+   EMERGENCE
+    This controls the time between germination and emergence...
+    SCC recomputed this to give thermal time of ca. 90 using tbase = 4 (ca. 8 in QSUN)
+    -->
+   <shoot_lag units="oC" description="time lag before linear coleoptile growth starts (deg days)">25.0</shoot_lag>
+   <shoot_rate units="oC/mm" description="growing deg day increase with depth for coleoptile (deg day/mm depth)">1.3</shoot_rate>
+   <!-- QSUN model for 90 deg days S-E = (90-25)/50mm
+   __________________________________________________________________________________________________________-
+   PHOTOPERIOD AND TWILIGHT
+    -->
+   <twilight units="o" description="Twilight is defined as the interval between sunrise or sunset and the time when the true centre of the sun">-2.2</twilight>
+   <!--  is 2.2 degrees below the horizon.  Sunrise or sunset is defined as when the true centre of the sun is 50'
+    below the horizon.
+   __________________________________________________________________________________________________________-
+   THERMAL TIME CALCULATION
+    problem is that the leaf model used 8, but had different numbers for phenology stages.....
+    -->
+   <x_temp description="8  32  42 (oC) !cardinal temps.">4  28   40     </x_temp>
+   <y_tt units="oC" description="diff">0  24   0</y_tt>
+   <!-- TT parameters between flowering and maturity - old model had base of 0, with no opt. but will have little effect....
+    -->
+   <tt_base units="oC" description="base temp">0</tt_base>
+   <tt_opt description="32.0          !changed 9/22/97--rlv">28            </tt_opt>
+   <!-- __________________________________________________________________________________________________________-
+   LEAF NUMBER DEVELOPMENT
+    -->
+   <leaf_no_seed description="number of leaf primordia present in seed">2     </leaf_no_seed>
+   <leaf_no_at_emerg description="(expanded) leaf number at emergence, cotyledons not counted">0.1   </leaf_no_at_emerg>
+   <leaf_no_min>10.0</leaf_no_min>
+   <leaf_no_max>60.0</leaf_no_max>
+   <leaf_init_rate units="oC" description="From Scott's Gatton data - 8 experiments and 10 cultivars -">18.6</leaf_init_rate>
+   <!--  also similar to Chapman, Hammer, Palta, 1993. Field crops research 34:101-112
+    18 for Suncross cvars, 24 for Sunfola/Hysun30
+    primordium until floral init (deg day)
+    Value for SC51 and changes with genotype!!!!
+   SCC 20/10/99 Short cut version is that LAR = 0.6 * LAR (from BI723a QSUN BV/FL ratios)
+    Need to vary the LIR and LAR with genotype.
+    if 18 and 30 are the numbers for SC genos, then Sunfola is ca. .84/.65 these. i.e. *1.3
+   These are not used in the phenology model for sunflower. Time between emerg and flag is thermal time/pp dependent
+   not dependent on producing leaves...
+    -->
+   <leaf_app_rate units="oCd" description="DELETE - NOT USED">27</leaf_app_rate>
+   <leaf_app_rate1 units="oCd" description="growing deg day required to develop the most leaf ligules. (deg day).">30</leaf_app_rate1>
+   <!-- 30 for Suncross cvars (Rawson et al. AJPP 1980 and Bange data)
+   40 for Sunfola/Hysun30
+   However in exp 3 and Gatton Sep planting, Bange got an LAR of ca. 24 and LIR of 12!
+   This suggests that low radiation/cool temps (low carbon supply) "speeds up" leaf appearance
+   probably due to decreased leaf size.... To do this would need to reduce TPLA parameters too....
+    -->
+   <leaf_app_rate2 units="oCd" description="growing deg day required to develop last leaf ligules. (deg day).">30</leaf_app_rate2>
+   <leaf_no_rate_change description="leaf no below flag above which leaf appearance rate changes from rate1 to rate2. !!!!RELATIVE to FLAG">1    </leaf_no_rate_change>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 2 - PHOTOSYNTHESIS, BIOMASS GROWTH AND PARTITION
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   __________________________________________________________________________________________________________-
+   PHOTOSYNTHESIS AND RADIATION USE EFFICIENCY (RUE)
+   STAGE DEPENDENT RUE
+                    sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+   stage_code      = 1   2   3    4     5     6    7    8     9     10    11   12
+    -->
+   <rue description="g bio/MJ SWSRadn radiation use efficiency">0   0  1.05  1.05  1.05 1.05  1.05 1.05 1.05 1.05    0    0 </rue>
+   <!-- __________________________________________________________________________________________________________-
+   EXTINCTION COEFFICIENT BEFORE ANTHESIS
+   The following values are not used, currently,Sunflower extinction coefficient is still internalised within routine sunf_light_supply
+    -->
+   <row_spacing_default units="m" description="Default rowing spacing used to  calculate k">0.75</row_spacing_default>
+   <x_row_spacing units="m" description="Row spacing">0.20   0.50   1.00</x_row_spacing>
+   <y_extinct_coef description="extinction coefficient for green leaf">0.70   0.40   0.40</y_extinct_coef>
+   <y_extinct_coef_dead description="extinction coefficient for dead material">0.30   0.30   0.30</y_extinct_coef_dead>
+   <!-- __________________________________________________________________________________________________________-
+   TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
+   values from QSUN
+    -->
+   <x_ave_temp units="oC">0  23  37  50</x_ave_temp>
+   <y_stress_photo>0  1   1   0</y_stress_photo>
+   <x_temp_photo units="oC" description="for cool nights - not working yet">5 15 40 55</x_temp_photo>
+   <!-- __________________________________________________________________________________________________________-
+   BIOMASS INITIATION, PARTITION AND TRANSLOCATION
+   scc What happens if you change these?! Shouldn't they be approx. coleoptile weights?
+    -->
+   <dm_leaf_init units="g/plant" description="leaf weight at emergence (g/plant)">0.1</dm_leaf_init>
+   <dm_root_init units="g/plant" description="root weight at emergence (g/plant)">0.1</dm_root_init>
+   <dm_stem_init units="g/plant" description="stem weight at emergence (g/plant)">0.1</dm_stem_init>
+   <!-- __________________________________________________________________________________________________________-
+   TRANSLOCATION PARTS
+   Larger numbers here allow more of a part to be translocated to grain
+   scc This would be a neat thing to genetically modify....
+   Bange thesis, Hall et al, 1989 FCR 20 95-112
+   Should be changed to a table format, like dm_init in the legume module
+    -->
+   <stem_trans_frac description="fraction of anthesis stem wt available for translocation to grain">0.3</stem_trans_frac>
+   <leaf_trans_frac description="fraction of anthesis leaf wt available for translocation to grain">0.8</leaf_trans_frac>
+   <flower_trans_frac description="fraction of anthesis flower wt available for translocation to grain">0.3</flower_trans_frac>
+   <!-- __________________________________________________________________________________________________________-
+   BIOMASS PARTITIONING
+   stage_name       = sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+   stage_code       = 1   2   3    4      5     6     7    8    9    10   11   12
+    -->
+   <ratio_root_shoot description="scc prob. can get some better idea of root/shoot ratios from UQ solution culture exps.">0   1   1    0.7    0.33 0.33  0.1   0    0    0    0    0 </ratio_root_shoot>
+   <!-- MCW Sadras, 1990(in Connor and Sadras)
+   NEW partitioning routines:
+   Partitioning to leaf based on fraction of thermal time to flowering that has elapsed
+    part.ratio = -0.7*(TT/TTEFA) + 1
+   i.e. at emergence, ratio is 1.0
+   need to read in the slope and intercept
+   use similar approach to determine how much stem DM goes to flower
+   Beginning at halfway between BV and FA,part ratio of stem to head = 0.56*(TT/TTEFA) - 0.42
+   HATE THIS - the following two are not used as we have a new partioning routine (above)
+    -->
+   <partition_rate_leaf description="new rate was 0.0182 for maize  rate coefficient of sigmoidal">0.012</partition_rate_leaf>
+   <!--  function between leaf partition fraction and internode no**2 (0-1)
+   Bange thesis, exp 1. Averaged for 40 to 70 days.
+    -->
+   <frac_stem2flower description="fraction of dm allocated to stem that goes to developing head">0.1</frac_stem2flower>
+   <!-- Partitioning of grain energy
+    -->
+   <grain_energy description="MCW                ! 1 = no energy">1.3  </grain_energy>
+   <frac_pod2grain description="MCW">0.3  </frac_pod2grain>
+   <!-- __________________________________________________________________________________________________________-
+   GRAIN WATER CONTENT
+    -->
+   <grn_water_cont units="g/g" description="water content of grain g/g">0.090</grn_water_cont>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 3 - LEAF/STEM/POD AREA GROWTH
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SPECIFIC LEAF AREA - SLA
+   Bange observed 15000 early in the crop, exp 1, sow 2
+    -->
+   <sla_min units="mm^2/g" description="8000          ! minimum specific leaf area for new leaf area">8000</sla_min>
+   <sla_max units="mm^2/g" description="Bange thesis">35000</sla_max>
+   <!--  Shrinking this number produces dramatic results! Try making it 35000 and running SG4T4.
+   ______________________________________________________________________________
+   TPLA  - USED TO INTIALISE THE INITIAL LAI, NOT USED IN THE CURRENT MODEL
+    -->
+   <initial_tpla units="mm^2/plant" description="initial total plant leaf area">400.0</initial_tpla>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   __________________________________________________________________________________________________________-
+   ROOTING DEPTH
+   stage_name       sow  ger  eme  juv    fi   flag    fl  st_gf end_gf   mat  hv_rpe  end_crop
+   stage_code      = 1    2    3    4      5     6     7    8      9      10   11   12
+    -->
+   <root_depth_rate description="mm/day. Robertson data">0.0 38.0 38.0  38.0   38.0  38.0 38.0   0     0       0    0    0 </root_depth_rate>
+   <!-- ? have faster rate of growth while germinating, as initial depth = sowing_depth
+   Effect of daily average temperature on root depth increase
+    -->
+   <x_temp_root description="C - air temperature">0  26  35            </x_temp_root>
+   <y_temp_root_fac description="multiplier on root depth rate">1   1   1            </y_temp_root_fac>
+   <x_sw_ratio description="water availability for effects on root growth...">0  0.25</x_sw_ratio>
+   <y_sw_fac_root description="stress indices">0  1</y_sw_fac_root>
+   <!-- __________________________________________________________________________________________________________-
+   ROOT LENGTH CALCULATION
+    -->
+   <specific_root_length units="mm/g" description="specific length of roots - who knows?">100000</specific_root_length>
+   <x_plant_rld units="mm/mm3/plant" description="root branching Sadras 1989">0.0 0.25</x_plant_rld>
+   <y_rel_root_rate units="0-1">1.0 1.0</y_rel_root_rate>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 5 - WATER RELATIONS AND WATER STRESS FACTORS
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   STAGE DEPENDENT ??? TRANSPIRATION COEFFICIENTS
+   Transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)
+   The following transp_eff_cf values are from i_wheat model  - ew
+   in the form kpa/g carbo per m^2 / g water per m^2 (kpa/g carbo per m^2 / mm water) because 1g water = 1 cm^3 water
+                    sow    ger     eme    juv      fi      flag   fl  st_gf end_gf mat hv_rpe end_crop
+   stage_code   =     1    2       3       4       5       6      7      8      9      10     11     12
+    -->
+   <transp_eff_cf units="kpa" description="Morison and Gifford, 1984">0.0045 0.0045 0.0045 0.0045 0.0045 0.0045 0.0045 0.0045 0.0045 0.0045 0.0045 0.0045</transp_eff_cf>
+   <!-- __________________________________________________________________________________________________________-
+   VPD FRACTION
+   Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
+    -->
+   <svp_fract description="(0-1)">0.75  </svp_fract>
+   <eo_crop_factor_default description="default crop factor for limiting soil">100.0  </eo_crop_factor_default>
+   <!--  water demand to some fraction/multiple
+    of atmospheric potential.
+   __________________________________________________________________________________________________________-
+   WATER STRESS FACTORS FOR PHOTOSYNTHESIS, EXPANSION AND DEVELOPMENT
+    -->
+   <x_sw_demand_ratio description="water availability This is the original value">1.0 2.0</x_sw_demand_ratio>
+   <y_swdef_leaf description="stress indices">0.1 1</y_swdef_leaf>
+   <x_sw_avail_ratio description="water availability Needs to be sever to worry phen">0.0 1.0</x_sw_avail_ratio>
+   <y_swdef_pheno description="stress indices">1.0 1.0</y_swdef_pheno>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 6 -NITROGEN RELATIONS, UPTAKE AND STRESS FACTORS
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   ______________________________________________________________________________
+   UPTAKE PREFERENCE AND CONSTANTS
+   preference for n supply - it is assumed that mass flow is always predominant, but further crop preference can
+   be specified as follows:
+    'active'   = diffusive flow before fixation
+    'fixation' = fixed N before active uptake.
+    -->
+   <n_supply_preference>active</n_supply_preference>
+   <no3_diffn_const units="days">2.0</no3_diffn_const>
+   <!--  time constant for N uptake by diffusion. H van Keulen & NG Seligman. Purdoe 1987. This is the
+    time it would take to remove, by diffusion, the current amount of N if it wasn't depleted between time steps
+   ______________________________________________________________________________
+   LEGUME N FIXATION RATE
+                 sow ger      eme  juv     fi   flag    fl   st_gf  end_gf   mat  hv_rpe  end_crop
+   stage_code  = 1    2       3      4     5      6      7      8      9      10     11     12
+    -->
+   <n_fix_rate>0.0  0.0    0.0    0.0    0.0   0.0    0.0    0.0    0.0    0.0    0.0    0.0</n_fix_rate>
+   <!-- ______________________________________________________________________________
+   NITROGEN STRESS FACTORS FOR PHOTOSYNTHESIS,LEAF GROWTH AND DEVELOPMENT
+   scc Some of these probably need to be smaller - not seeing an effect or else too much N being made available?
+    -->
+   <N_fact_photo description="multipler for N deficit effect on photosynthesis">1.25 </N_fact_photo>
+   <N_fact_pheno description="multipler for N deficit effect on">1.25 </N_fact_pheno>
+   <N_fact_expansion description="multipler for N deficit effect on leaf expansion">1.0  </N_fact_expansion>
+   <N_fact_pheno_lb description="Not working at present, but is set to 0.5 in code (i.e. n_fact_pheno cannot go lower than 0.5)">0.5  </N_fact_pheno_lb>
+   <!-- ______________________________________________________________________________
+   NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
+    original values before changing to sunnies HM
+                         emerg   juv    fi     flower  maturity
+    -->
+   <x_stage_code>3       4      5      7      10</x_stage_code>
+   <y_n_conc_min_leaf>0.035   0.030  0.030  0.010  0.005</y_n_conc_min_leaf>
+   <y_n_conc_crit_leaf>0.055   0.050  0.050  0.040  0.015</y_n_conc_crit_leaf>
+   <y_n_conc_max_leaf>0.055   0.050  0.050  0.040  0.015</y_n_conc_max_leaf>
+   <!--  based on Bange's thesis
+    -->
+   <y_n_conc_min_stem>0.010   0.010  0.010  0.003  0.002</y_n_conc_min_stem>
+   <y_n_conc_crit_stem>0.045   0.030  0.025  0.015  0.010</y_n_conc_crit_stem>
+   <y_n_conc_max_stem>0.045   0.040  0.030  0.020  0.010</y_n_conc_max_stem>
+   <!-- based loosely on {Steer 1984 #94}
+    -->
+   <y_n_conc_min_flower>0.000   0.000  0.010  0.003  0.002</y_n_conc_min_flower>
+   <y_n_conc_crit_flower>0.000   0.000  0.025  0.015  0.003</y_n_conc_crit_flower>
+   <y_n_conc_max_flower>0.000   0.000  0.030  0.020  0.010</y_n_conc_max_flower>
+   <y_n_conc_min_root>0.008   0.008   0.008   0.008   0.008</y_n_conc_min_root>
+   <y_n_conc_crit_root>0.012   0.012   0.012   0.012   0.012</y_n_conc_crit_root>
+   <y_n_conc_max_root>0.020   0.020   0.020   0.020   0.020</y_n_conc_max_root>
+   <n_conc_min_grain description="bange, thesis">0.018</n_conc_min_grain>
+   <n_conc_crit_grain description="guess, bange mid range treatment">0.024</n_conc_crit_grain>
+   <n_conc_max_grain description="bange, thesis">0.037</n_conc_max_grain>
+   <!-- ______________________________________________________________________________
+   INITIAL NITROGEN CONCENTRATION OF ORGANS
+                root   leaf   stem   flower  grain
+    -->
+   <n_init_conc description="guess, HM">0.020  0.055  0.045  0.045   0.000 </n_init_conc>
+   <!-- ______________________________________________________________________________
+   NITROGEN CONCENTRATION IN SENESCENCED ORGANS
+    scc This means that as soon as leaves fall off, all N except for the amount below is
+    instantly transferred from leaves to stem (need to stop this occuring if you 'kill' crop)
+               root  leaf  stem  flower grain
+    -->
+   <n_sen_conc description="SCC's guess">0.003 0.007 0.002 0.002  0.011 </n_sen_conc>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 7 -SENESCENCE AND DETACHMENT
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   ______________________________________________________________________________
+   SENESCENCE
+    -->
+   <dm_root_sen_frac description="fraction of root dry matter senesced each day">0.002</dm_root_sen_frac>
+   <dm_leaf_sen_frac description="fraction of senescing leaf dry matter">1.0</dm_leaf_sen_frac>
+   <!-- ______________________________________________________________________________
+   DETACHMENT
+   scc Should these be per day or other time step?
+    root leaf stem flower grain
+    -->
+   <dead_detach_frac description="fraction detached from each part">0    0    0     0     0</dead_detach_frac>
+   <!--  of a dead plant per day.
+    -->
+   <dm_leaf_detach_frac description="fraction of senesced leaf detached each day from live plants">0</dm_leaf_detach_frac>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 8 - WE MIGHT PUT RETRANSLOCATION OF DM AND N IN THIS SECTION
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION 9 - CROP FAILURE AND DEATH
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   ______________________________________________________________________________
+    crop failure
+    -->
+   <leaf_no_crit description="critical number of leaves, below which portion of the crop may die due to water stress">0.0</leaf_no_crit>
+   <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">150.0</tt_emerg_limit>
+   <days_germ_limit units="days" description="maximum days allowed after dry sowing for germination to take place">40.0</days_germ_limit>
+   <swdf_pheno_limit description="critical cumulative phenology water stress, above which the crop completely fails">99.0</swdf_pheno_limit>
+   <swdf_photo_limit description="critical cumulative photosynthesis water stress, above which the crop partly fails (unitless)">99.0</swdf_photo_limit>
+   <swdf_photo_rate description="rate of plant reduction with">0.0</swdf_photo_rate>
+   <!--  photosynthesis water stress
+   ______________________________________________________________________________
+   PLANT DEATH
+    -->
+   <x_weighted_temp units="oC">55.0 60.0</x_weighted_temp>
+   <y_plant_death>0.0  1.0</y_plant_death>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   SECTION x - VALUE LIMITS - MAX AND MINS AND OTHER UNKOWN PARAMETERS NEED TO BE SORTED OUT
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    new sla methods
+    -->
+   <x_leaf_no>1    20</x_leaf_no>
+   <leaf_no_sla_max>80000 20000</leaf_no_sla_max>
+   <leaf_no_sla_min>8000  8000</leaf_no_sla_min>
+   <x_sla_node_no>1    20</x_sla_node_no>
+   <x_lai>0.1    4</x_lai>
+   <y_lai_sla_max>50000 25000</y_lai_sla_max>
+   <y_sla_min>8000  8000</y_sla_min>
+   <!-- lai_sla_max = 13500 13500
+    -->
+   <lai_sla_max>50000 25000</lai_sla_max>
+   <lai_sla_min>8000  8000</lai_sla_min>
+   <!-- ______________________________________________________________________________
+        sunf_leaf_area_devel_plant       ! TEMPLATE OPTION
+   if tiller_no_fertile = 0 in sowing statement the following is not used
+    -->
+   <tiller_coef description="exponent for determining leaf">0.66</tiller_coef>
+   <!--  area on each additional tiller
+    -->
+   <tpla_inflection_ratio description="scc introduced by SCC as a replacement for p_tpla_inflection">0.65            </tpla_inflection_ratio>
+   <!--  in the sunf.PAR file.
+   this is point of inflection between E and flag_leaf
+   ______________________________________________________________________________
+        sunf_get_cultivar_params bounds
+    -->
+   <head_grain_no_max_ub description="upper limit  !NOT USED">45000.0</head_grain_no_max_ub>
+   <grain_gth_rate_ub description="upper limit  !NOT USED">20.0</grain_gth_rate_ub>
+   <tt_emerg_to_endjuv_ub description="upper limit">500.0</tt_emerg_to_endjuv_ub>
+   <pp_endjuv_to_init_ub description="upper limit oC h-1">200.0</pp_endjuv_to_init_ub>
+   <tt_flower_to_maturity_ub description="upper limit">1000.0</tt_flower_to_maturity_ub>
+   <tt_maturity_to_ripe_ub description="upper limit">1000.0</tt_maturity_to_ripe_ub>
+   <tt_flower_to_start_grain_ub description="upper limit">1000.0</tt_flower_to_start_grain_ub>
+   <tt_flag_to_flower_ub description="upper limit">1000.0</tt_flag_to_flower_ub>
+   <!-- ______________________________________________________________________________
+        sunf_head_no          ! TEMPLATE OPTION - NOT USED
+    -->
+   <head_grain_no_crit description="110 for maize  ! grains per head minimum, below">0.0</head_grain_no_crit>
+   <!--  which all heads are barren
+    -->
+   <barren_crit description="0.5 for maize      ! fraction of maximum grains per plant">0</barren_crit>
+   <!--  below which barrenness occurs (0-1)
+   ______________________________________________________________________________
+        sunf_grain_no         ! TEMPLATE OPTION - NOT USED
+    -->
+   <grain_n_conc_min description="Bange exp 2        ! minimum nitrogen concentration of grain">0.018</grain_n_conc_min>
+   <seed_wt_min units="g/seed" description="Bange exp 1, sow 2 ! minimum grain weight (g/seed)">0.02</seed_wt_min>
+   <growth_rate_min units="g/plant" description="??  ! minimum rate of photosynthesis">0.195</growth_rate_min>
+   <!--    below which there is no grain
+      produced (g/plant)
+    -->
+   <growth_rate_crit units="g/plant" description="??    ! threshold  rate of photosynthesis,">1.2132</growth_rate_crit>
+   <!--     below which heat stress has no
+       effect (g/plant).  This is also
+       the rate at which the grains/plant
+       is half of the maximum grains.
+   ______________________________________________________________________________
+        sunf_get_root_params
+    -->
+   <kl_ub description="upper limit of water uptake factor">0.1</kl_ub>
+   <!-- ______________________________________________________________________________
+        sunf_watck !cpsc check SOILWAT module for name
+   piss this off?
+    -->
+   <minsw description="lowest acceptable value for ll">0.00001</minsw>
+   <!-- ______________________________________________________________________________
+        sunf_dm_grain             TEMPLATE OPTION - NOT USED
+    -->
+   <swdf_grain_min description="minimum of water stress factor">0.45</swdf_grain_min>
+   <!-- ______________________________________________________________________________
+        sunf_dm_grain_hi         ! TEMPLATE OPTION
+    -->
+   <hi_min units="g dm grain/g dm plant top" description="minimum harvest index (g grain/">0.16</hi_min>
+   <!--  g biomass)
+    QSUN - chapman et al 93
+   ______________________________________________________________________________
+        sunf_N_dlt_grain_conc            !calculate the grain nitrogen concentration demand (0-1)
+    -->
+   <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
+   <temp_fac_min description="temperature stress factor minimum">0.69</temp_fac_min>
+   <sfac_slope description="soil water stress factor slope">-0.125</sfac_slope>
+   <tfac_slope description="temperature stress factor slope">0.0125</tfac_slope>
+   <!-- ______________________________________________________________________________
+        sunf_leaf_death           !TEMPLATE OPTION - NOT USED
+   scc made estimates for main stem of sunfhum from LE8 trial
+   replace with legume, if using leaf number/size approach
+    -->
+   <leaf_no_dead_const description="dead leaf no intercept">0.0</leaf_no_dead_const>
+   <leaf_no_dead_slope description="dead leaf no slope">0.0009</leaf_no_dead_slope>
+   <!-- ______________________________________________________________________________
+        sunf_get_other_variables
+    limits set to check inputs
+    -->
+   <sw_ub>1.0</sw_ub>
+   <sw_lb>0.0</sw_lb>
+   <year_ub description="year upper limit">2000</year_ub>
+   <year_lb description="year lower limit">1800</year_lb>
+   <latitude_ub units="oL" description="latitude upper limit">90</latitude_ub>
+   <latitude_lb units="oL" description="latitude lower limit">-90</latitude_lb>
+   <maxt_ub units="oC" description="max. temperature upper limit">55</maxt_ub>
+   <maxt_lb units="oC" description="max. temperature lower limit">-10</maxt_lb>
+   <mint_ub units="oC" description="min. temperature upper limit">40</mint_ub>
+   <mint_lb units="oC" description="min. temperature lower limit">-40</mint_lb>
+   <radn_ub units="MJ/m^2" description="radiation upper limit">40</radn_ub>
+   <radn_lb units="MJ/m^2" description="radiation lower limit">1</radn_lb>
+   <dlayer_ub units="mm" description="layer depth upper limit">1000</dlayer_ub>
+   <dlayer_lb units="mm" description="layer depth lower limit">0</dlayer_lb>
+   <dul_dep_ub units="mm" description="drained upper limit upper limit">1000</dul_dep_ub>
+   <dul_dep_lb units="mm" description="drained upper limit lower limit">0</dul_dep_lb>
+   <sw_dep_ub units="mm" description="soil water upper limit">1000</sw_dep_ub>
+   <sw_dep_lb units="mm" description="soil water lower limit">0</sw_dep_lb>
+   <no3_ub units="kg/ha" description="soil nitrate upper limit">10000</no3_ub>
+   <no3_lb units="kg/ha" description="soil nitrate lower limit">0</no3_lb>
+   <no3_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</no3_min_ub>
+   <no3_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</no3_min_lb>
+   <!-- ______________________________________________________________________________
+   HIEGHT PARAMETERS
+    -->
+   <canopy_height_max>3000.0</canopy_height_max>
+   <!-- ______________________________________________________________________________
+   ROOT PARAMETERS
+    -->
+   <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
+   <!-- kl_ub  = 0.1    ()                     ! upper limit of water uptake factor
+   ______________________________________________________________________________
+   SOIL WATER
+   minsw  = 0.00001 ()                    ! lowest acceptable value for ll
+   ______________________________________________________________________________
+   OTHER VARIABLES
+    limits set to check inputs
+    -->
+   <nh4_ub units="kg/ha" description="soil nitrate upper limit">10000</nh4_ub>
+   <nh4_lb units="kg/ha" description="soil nitrate lower limit">0</nh4_lb>
+   <nh4_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</nh4_min_ub>
+   <nh4_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</nh4_min_lb>
+   <!-- ______________________________________________________________________________
+        sunf_grain_no         ! TEMPLATE OPTION - NOT USED
+    -->
+   <htstress_coeff description="0.019          ! coeff for conversion of heat stress">0.0</htstress_coeff>
+   <!--  during flowering to
+    heat stress factor on grain number
+    development.
+    remaining in leaf (0-1)
+   ______________________________________________________________________________
+        sunf_leaf_area_devel         ! TEMPLATE OPTION - NOT USED
+    -->
+   <leaf_no_correction description="corrects for other growing leaves">1.52</leaf_no_correction>
+   <!-- ______________________________________________________________________________
+    TEMPLATE OPTION
+        sunf_leaf_area_sen_light
+    -->
+   <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
+   <sen_light_slope description="sensitivity of leaf area senescence to">0.008</sen_light_slope>
+   <!--  shading
+    TEMPLATE OPTION
+        sunf_leaf_area_sen_frost
+    -->
+   <x_temp_senescence description="temperature senescence table (oC)">0.0 6.0            </x_temp_senescence>
+   <y_senescence_fac description="temperature senescence factor (0-1)">1   0              </y_senescence_fac>
+   <!--  TEMPLATE OPTION
+        sunf_leaf_area_sen_water
+    -->
+   <sen_rate_water description="slope in linear eqn">0.05</sen_rate_water>
+   <!--  relating soil water
+    stress during photosynthesis
+    to leaf senesense rate
+    TEMPLATE OPTION
+        sunf_leaf_area_sen_light1
+    -->
+   <sen_light_time_const units="days" description="delay factor for light senescence">10.0</sen_light_time_const>
+   <sen_radn_crit units="Mj/m^2" description="radiation level for onset of light">2</sen_radn_crit>
+   <!--  senescence
+    TEMPLATE OPTION
+        sunf_leaf_area_sen_frost1
+    -->
+   <frost_kill description="1.0 (oC)                  ! temperature threshold for leaf death">0 </frost_kill>
+   <!--  TEMPLATE OPTION
+        sunf_leaf_area_sen_water1
+    -->
+   <sen_water_time_const units="days" description="delay factor for water senescence">10.0</sen_water_time_const>
+   <sen_threshold description="supply:demand ratio for onset of">0.25</sen_threshold>
+   <!--  water senescence
+    TEMPLATE OPTION
+        sunf_leaf_area_sen_age1
+   correct for sunf
+    -->
+   <spla_slope units="oC/leaf" description="regression slope for calculating">81.5</spla_slope>
+   <!--  inflection point for leaf senescence
+   ______________________________________________________________________________
+        sunf_heat_stress         ! TEMPLATE OPTION - NOT USED
+    -->
+   <temp_grain_crit_stress units="oC" description="38 ! Tmax above which grain no. is reduced">50.0</temp_grain_crit_stress>
+   <!-- ______________________________________________________________________________
+        sunf_dm_grain         ! TEMPLATE OPTION - NOT USED
+    -->
+   <x_temp_grain units="oC">3.68254  30  56.31746</x_temp_grain>
+   <y_grain_rate>0         1   0</y_grain_rate>
+   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   Switch of stage for the second thermal time calcultaion
+    -->
+   <tt_switch_stage description="= flowering, 8=start grain filling, 9 = end_grain filling">7 </tt_switch_stage>
+   <!-- Effect of minimum temperature on harvest index increase, based on Mike Bange's thesis  - Enli 250219992
+    -->
+   <x_hi_incr_min_temp>0.0  15.0</x_hi_incr_min_temp>
+   <y_hi_incr_reduct_fac>0.0  1.0</y_hi_incr_reduct_fac>
+   <!-- These are not used in the phenology model for sunflower.....
+   time between emerg and flag is thermal time/pp dependent
+   not dependent on producing leaves...
+    -->
+   <x_node_num_lar description="Node number determining leaf appearance rate">1.0   1.0    1.0        </x_node_num_lar>
+   <y_node_lar description="Leaf appearance rate determined by node number (Phyllochron dd)">30.0  30.0   30.0       </y_node_lar>
+   <determinate_crop description="Indicate the crop being determinate (1) or indeterminate (0)">1                       </determinate_crop>
+   <!-- **************************************************************************************************
+   Genotypes
+   **************************************************************************************************
+   Last revised by SCC April 30 1998
+   JOB for ENLI - work out why you can't have tt_flag_to_flower = 0
+   seems to be a problem in leaf area or biomass routines, not phenology
+   SCC 20/10/99 Used separate tpla parameters for each cultivar - recomputed for ttbase = 4
+   Not that to connect the leaf area and phenology routines, we really have to use tt_emerg_budvis
+   as the tpla_inflection point (or something ca. halfway to flowering).
+   General principles for modelling phenology and leaf area of sunflower
+    1. Leaf appearance rate differs with cultivar. It is not practical to try to adjust this
+    for all new cultivars. Hence, while we try to model bud visible date and use leaf initiation
+    rate to estimate final leaf number, we don't try to use leaf appearance rate to drive
+    the time from emergence to flowering. It's a bit of a nightmare.....
+    2. Leaf area continues to increase beyond 1st anthesis (in fact seems to continue for
+    a week to 10d. i.e. until 50% anthesis or even 90% anthesis. End of leaf growth should really
+    be at anthesis (or even at start grain-fill....)
+    The effect is that the inflection point for leaf area is between 0.63 and 0.66 of the thermal time
+    between emergence and the end of leaf area expansion (flowering). This is what we use now.
+    -->
+   <parameters>
+   </parameters>
+   <!-- DEFAULTS for root water extraction and exploration factors (CROP and SOIL dependent)
+    NOTE: To use the values here, leave your soil values blank (must have same number of layers!)
+    Need to calc. some proportional thing that estimates ll from dul-ll15 for any crop.
+    However, you should force this using kl. ONLY use KF for non-water related factors
+   ll =  0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25    0.25   0.25 ()!cm3 water/cm3 soil
+   kl =  0.07    0.07    0.07    0.07    0.05    0.05    0.04    0.03    0.02    0.02 ()
+   XF =  1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0     1.0  ()
+    -->
+   <Quick>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">80  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">310  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">340   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Quick>
+   <Medium>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">25  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">400  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">400   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Medium>
+   <Slow>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">10  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">460  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">440   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Slow>
+   <Sunfola68-2>
+      <!--  Sunfola is not sensitive to photoperiod... (Hammer et al. 1982 AJAR)
+        PHENOLOGY - DEFAULT TEMPLATE OPTION
+        DONT SET ANY OF THE tt s TO ZERO!!!!!!!!!!!!
+       -->
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">12.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.5 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">-1   </photoperiod_slope>
+      <tt_endjuv_to_init description="300  !(oC)">370  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="450  !(oC)">380  </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">714  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+      tpla numbers recomputed by SCC in "fit tpla.ssc"
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.00967</tpla_prod_coef>
+      <rel_leaf_init_rate description="This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0 </rel_leaf_init_rate>
+      <!--  The following is the number read from refitting the tpla functions with tbase of 4. However,
+       it is not used, as we are using the tpla_inflection_ratio from the sunf.ini file
+       -->
+      <tpla_inflection units="oC" description="parameter b in QSUN (fig. 4) inflection point of leaf area production">495.0</tpla_inflection>
+      <!-- scc should be f(final_leaf_no) or tt_emerg_flower
+      NOT USED at present - tpla_inflection_ratio in sunf.ini being used
+       SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       SCC These had to be changed to account for the different thermal time basis (4, rather than 8)
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days" description="Lower for Sunfola that for other cultivars">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.4</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2800</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Sunfola68-2>
+   <Hysun32>
+      <!--   PHENOLOGY - DEFAULT TEMPLATE OPTION
+       -->
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200   </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">12.5  </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.5  </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">-35.0 </photoperiod_slope>
+      <tt_endjuv_to_init description="400   !(oC)">360  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="400     !(oC)">440  </tt_fi_to_flag>
+      <tt_flag_to_flower description="ew change from 0 to 100">1 </tt_flag_to_flower>
+      <tt_flower_to_start_grain description="scc/glh This following tt needs to be stretched when temperatures are cool...">100 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
+      <tt_flower_to_maturity units="oC" description="using base temp of 0.0">714</tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+      scc Ignoring the data above 20 leaves in Miller's data, 2.95 is a better estimate than 2.88
+       but perhaps (see SCCNOTE.TXT), main_stem_coef is a genetic coefficient and TPLA coefficients are not!
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.01009</tpla_prod_coef>
+      <rel_leaf_init_rate description="This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0 </rel_leaf_init_rate>
+      <tpla_inflection units="oC" description="parameter b in QSUN (fig. 4) inflection point of leaf area production">560.0</tpla_inflection>
+      <!-- scc should be f(final_leaf_no) or tt_emerg_flower
+      NOT USED at present - tpla_inflection_ratio in sunf.ini being used
+       SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       SCC These had to be changed to account for the different thermal time basis (4, rather than 8)
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.011</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.4</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2800</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Hysun32>
+   <SunGold>
+      <!--   PHENOLOGY - DEFAULT TEMPLATE OPTION
+       -->
+      <tt_emerg_to_endjuv description="100 (oC)           ! fixed for all genotypes">200   </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="12.3 (hours)">12.5  </photoperiod_crit1>
+      <photoperiod_crit2 description="14.6 (hours)">14.5  </photoperiod_crit2>
+      <photoperiod_slope description="25.0   !38.4 (oC/hour)">1.0   </photoperiod_slope>
+      <tt_endjuv_to_init description="300.0 !200.   !82.4 (oC)">400  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="500">400  </tt_fi_to_flag>
+      <tt_flag_to_flower description="ew change from 0 to 100">1 </tt_flag_to_flower>
+      <tt_flower_to_start_grain description="scc/glh This following tt needs to be stretched when temperatures are cool...">100 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
+      <tt_flower_to_maturity units="oC" description="using base temp of 0.0">714</tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+      scc Ignoring the data above 20 leaves in Miller's data, 2.95 is a better estimate than 2.88
+       but perhaps (see SCCNOTE.TXT), main_stem_coef is a genetic coefficient and TPLA coefficients are not!
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.0088</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.80 !This is the multiplier for leaf_init_rate (deg days per leaf).">1.0 </rel_leaf_init_rate>
+      <!-- Expressed relative to Sunfola 68-2 which has value of 24 oC/leaf
+       -->
+      <tpla_inflection units="oC" description="parameter b in QSUN (fig. 4) inflection point of leaf area production">533.0</tpla_inflection>
+      <!-- scc should be f(final_leaf_no) or tt_emerg_flower
+      NOT USED at present - tpla_inflection_ratio in sunf.ini being used
+       SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       SCC These had to be changed to account for the different thermal time basis (4, rather than 8)
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.011</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.4</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2800</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </SunGold>
+   <SC52>
+      <!--   PHENOLOGY - DEFAULT TEMPLATE OPTION
+        DONT SET ANY OF THE tt s TO ZERO!!!!!!!!!!!!
+       -->
+      <tt_emerg_to_endjuv description="150  !(oC)           ! fixed for all genotypes">250 </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">12.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.5 </photoperiod_crit2>
+      <photoperiod_slope description="120!(oC/hour)">-100 </photoperiod_slope>
+      <tt_endjuv_to_init description="450  !(oC)">510  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="500  !(oC)">440  </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">714  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+      scc Ignoring the data above 20 leaves in Miller's data, 2.95 is a better estimate than 2.88
+       but perhaps (see SCCNOTE.TXT), main_stem_coef is a genetic coefficient and TPLA coefficients are not!
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.0092</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.70 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0 </rel_leaf_init_rate>
+      <tpla_inflection units="oC" description="parameter b in QSUN (fig. 4) inflection point of leaf area production">536.0</tpla_inflection>
+      <!-- scc should be f(final_leaf_no) or tt_emerg_flower
+      NOT USED at present - tpla_inflection_ratio in sunf.ini being used
+       SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       SCC These had to be changed to account for the different thermal time basis (4, rather than 8)
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <!--    spla_intercept = 0.0036 () !0.0110 ()     ! parameter c in QSUN function (fig. 4)
+       -->
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.011</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.4</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2800</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </SC52>
+   <SC150>
+      <!--   PHENOLOGY - DEFAULT TEMPLATE OPTION
+        DONT SET ANY OF THE tt s TO ZERO!!!!!!!!!!!!
+       -->
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">12.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.5 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">-120 </photoperiod_slope>
+      <tt_endjuv_to_init description="200  !(oC)">550  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="350  !(oC)">300  </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">714  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+      scc Ignoring the data above 20 leaves in Miller's data, 2.95 is a better estimate than 2.88
+       but perhaps (see SCCNOTE.TXT), main_stem_coef is a genetic coefficient and TPLA coefficients are not!
+       Use 'average' parameters
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0 </rel_leaf_init_rate>
+      <!--    tpla_inflection = 532.0 (oC)     ! parameter b in QSUN (fig. 4) inflection point of leaf area production
+      scc should be f(final_leaf_no) or tt_emerg_flower
+      NOT USED at present - tpla_inflection_ratio in sunf.ini being used
+       SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       SCC These had to be changed to account for the different thermal time basis (4, rather than 8)
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.011</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.4</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2800</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </SC150>
+   <Advantage>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">25   </photoperiod_slope>
+      <tt_endjuv_to_init description="200  !(oC)">460  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="350  !(oC)">440  </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Advantage>
+   <SunOleic2>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">60   </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">360  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">380  </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1    </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100  </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </SunOleic2>
+   <SC53>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">-40  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">560  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">440   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </SC53>
+   <Assett>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">50   </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">420  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">410   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Assett>
+   <Hyoleic31>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">40  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">390  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">390   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Hyoleic31>
+   <Monosun140>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">45  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">400  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">400   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Monosun140>
+   <Pacific25>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">80  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">310  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">340   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Pacific25>
+   <Pacific36>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">25  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">400  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">400   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Pacific36>
+   <Pacific45>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">10  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">460  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">440   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Pacific45>
+   <Suncross41>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">30  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">410  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">410   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Suncross41>
+   <Suncross42>
+      <tt_emerg_to_endjuv description="(oC)           ! fixed for all genotypes">200  </tt_emerg_to_endjuv>
+      <photoperiod_crit1 description="(hours)">10.5 </photoperiod_crit1>
+      <photoperiod_crit2 description="(hours)">14.0 </photoperiod_crit2>
+      <photoperiod_slope description="(oC/hour)">-30  </photoperiod_slope>
+      <tt_endjuv_to_init description="(oC)">590  </tt_endjuv_to_init>
+      <tt_fi_to_flag description="(oC)">410   </tt_fi_to_flag>
+      <tt_flag_to_flower description="!In sunflower, delay between 'flag' and flowering should be v. small.">1     </tt_flag_to_flower>
+      <tt_flower_to_start_grain>100   </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe>150</tt_maturity_to_ripe>
+      <tt_flower_to_maturity description="(oC)       ! using base temp of 0.0">800  </tt_flower_to_maturity>
+      <!--  LEAF AREA - DEFAULT TEMPLATE OPTION for TPLA approach
+       -->
+      <tpla_prod_coef units="1/oC" description="parameter a in QSUN (fig. 4) curvature coefficient for leaf area">0.010</tpla_prod_coef>
+      <rel_leaf_init_rate description="0.66 !This is the multiplier for leaf_init_rate. Expressed relative to Sunfola 68-2 which has">1.0            </rel_leaf_init_rate>
+      <!--  SENESCING LEAF AREA - DEFAULT TEMPLATE OPTION for SPLA approach
+       -->
+      <spla_prod_coef description="0.0056 ()     ! parameter d in QSUN function (fig. 4)">0.0041</spla_prod_coef>
+      <spla_intercept description="0.0110 ()     ! parameter c in QSUN function (fig. 4)">0.018</spla_intercept>
+      <!--  GRAIN GROWTH - DEFAULT TEMPLATE OPTION for HI approach
+       -->
+      <hi_incr units="1/days">0.009</hi_incr>
+      <x_hi_max_pot_stress>0.0  1.0</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.1  0.38</y_hi_max_pot>
+      <!--  CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+       -->
+      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  2500</y_height>
+      <oil_prcnt_max description="maximum oil content      - OILMAX">45     </oil_prcnt_max>
+   </Suncross42>
+</sunflower>

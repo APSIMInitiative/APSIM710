@@ -1,0 +1,158 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = test tree run. No transpiration.
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\Input.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                         "tree" = %apsim%\Model\tree.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1986
+     Simulation end date   =  1/01/1996
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.year
+        clock.day
+        manager.dateser as date
+        SoilWat.sw_dep()
+        SoilWat.sw_dep
+        SoilWat.eos
+        SoilWat.es
+        SoilWat.total_cover as cover
+        tree.basal_area
+        tree.sw_demand
+
+     Output file = model.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: ..\narayen.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     dateser = day + (year - 1901) * 365 + (year - 1901) / 4
+     
+     SECTION:- end_of_day
+     report do_output
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.050  0.100  0.200  0.200  0.200  2.093  0.613  0.600
+          100.-  500.  0.100  0.100  0.200  0.200  0.200  2.093  0.387  0.600
+          500.- 1000.  0.100  0.100  0.200  0.200  0.200  2.093  0.000  0.400
+         1000.- 1500.  0.100  0.100  0.200  0.200  0.200  2.093  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      10.00      10.00      10.00       0.00
+          100.-  500.      40.00      40.00      40.00       0.00
+          500.- 1000.      50.00      50.00      50.00       0.00
+         1000.- 1500.      50.00      50.00      50.00       0.00
+          ---------------------------------------------------------
+               Totals     150.00     150.00     150.00       0.01
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   1.50        0.20        0.00        0.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              20.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     4.00 ()
+            Eo from priestly-taylor
+
+------- tree Initialisation ---------------------------------------------------
+      Initialising:
+     
+         - Reading constants
+     
+        - Reading parameters
+     Establishing Trees:
+       Root Profile:
+           Layer    Lower limit      Kl
+            ()        (mm/mm)        ()
+         ------------------------
+               1       0.050       0.099
+               2       0.100       0.340
+               3       0.100       0.323
+               4       0.100       0.238
+         ------------------------
+     Initial conditions:
+       Basal area :    0.00 %
+       Root depth :  1500.0 mm
+       Using Pan evap from .MasterPM.Met module.
+     
+     
+     
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : dateser = 31047.25000
+1 January 1996(Day of year=1), clock: 
+     Simulation is terminating due to end criteria being met.

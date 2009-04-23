@@ -1,0 +1,58 @@
+!Title = Chromic Cambisol, Machanga Site (PAWC=115mm,1m) (Paper #7, p48)
+
+[*attributes]
+
+   module_usage  = soil_water
+   must_have     = soil_water
+
+[*contents]
+
+[run%.soilwat2.parameters]
+
+   max_evap        = 6        (mm)   ! maximum evaporation.
+   runoff_filename = blank           ! input measured runoff?                   
+   cona            =  $cona   ()     ! stage 2 evap coef.                       
+   diffus_const    = 250.0    ()     ! coeffs for dbar                          
+   diffus_slope    =  22.0    ()     !     "                                    
+   u               = $uritch  (mm)   ! stage 1 soil evaporation coefficient (mm)    
+   salb            =   0.13   ()     ! bare soil albedo
+
+   ! CN2b CN_red CN_cov
+   !  73   20     0.8   - cultivated cracking clays & black earths (eg. greenmount & capella)
+   !                      & well structured grey clays (ackland)
+   !  82   20     0.8   - mod. hard setting clays/brigalow (eg. Brigalow Res. Stn) ?brown clay?
+   !  85   ??     0.8   - Maranoa (rainsim) ??? ?brown clay (eg. Wallumbilla)
+   !  90   ??     0.8   - Billa Billa (rainsim)
+   !  94   28     0.8   - hard setting red brown earths (eg ICRASAT & Tippera)
+   !  94   42     0.8   - hard set pasture solodics
+
+   cn2_bare        =  $cn2    ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   cn_canopy_fact = 1.0 () !  1.0 = canopy cover is fully effective in reducing runoff
+                           !  0.0 = canopy cover has no effect in reducing runoff eg tall crops & trees
+
+     ! layer       1       2       3       4       5        
+     ! depth      200     400     600     800    1000   
+air_dry =         0.11   0.12    0.17    0.170   0.170   (mm/mm)   !
+dlayer =          200     200     200     200     200    (mm)   ! layer depth
+dul =             0.280   0.280   0.285   0.270   0.270  (mm/mm)   ! 23/7/97
+ll15 =            0.15    0.15    0.170   0.170   0.170  (mm/mm)   ! 15/7/97 
+sw =              0.15    0.15    0.17    0.17    0.17   (mm/mm)   !  soil water
+sat =             0.320   0.320   0.340   0.330   0.330  (mm/mm)   ! saturated soil water
+swcon =           0.700   0.700   0.700   0.700   0.700  ()   ! soil conductivity
+bd =              1.44    1.44    1.44    1.44    1.44   (g/cc)   ! bulk density gm dry soil/cc moist soil
+
+! Rooting depth - paper 7,p48
+! DUL,LL15&SAT = Katumani Chromic Luvisol
+! BD - as calc in \embu\t4_feb99\embusoil.xls
+! Cona below is jpd est., cn2_bare = 86 (from GO)
+
+[*variables]
+
+   $cona = "Cona : " 6 real
+   $uritch = "Uritch : " 5.0 real
+   $cn2 = "Runoff curve number for BARE soil : " 86.0 real
+

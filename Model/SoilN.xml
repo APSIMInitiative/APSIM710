@@ -1,0 +1,277 @@
+<soiln2>
+   <standard>
+      <cnrf_coeff description="coeff. to determine the magnitude">0.693  </cnrf_coeff>
+      <!--  of C:N effects on decomposition of FOM ()
+       -->
+      <cnrf_optcn description="C:N above which decomposition rate">25.0   </cnrf_optcn>
+      <!--  of FOM declines ()
+       -->
+      <ef_biom description="fraction of biomass C mineralized">0.4       </ef_biom>
+      <!--  retained in system (0-1)
+       -->
+      <ef_fom description="fraction of FOM C mineralized">0.4        </ef_fom>
+      <!--  retained in system (0-1)
+       -->
+      <ef_hum description="fraction of humic C mineralized">0.4        </ef_hum>
+      <!--  retained in system (0-1)
+       -->
+      <ef_res description="fraction of residue C mineralized">0.4        </ef_res>
+      <!--  retained in system (0-1)
+       -->
+      <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+      <fr_biom_biom description="fraction of retained biomass C">0.6  </fr_biom_biom>
+      <!--  returned to biomass (0-1)
+       -->
+      <fr_fom_biom description="fraction of retained FOM C">0.9   </fr_fom_biom>
+      <!--  transferred to biomass (0-1)
+       -->
+      <fr_res_biom description="fraction of retained residue C">0.9   </fr_res_biom>
+      <!--  transferred to biomass (0-1)
+       -->
+      <fom_type>default manure  mucuna lablab shemp  stable </fom_type>
+      <fr_carb description="carbohydrate fraction of FOM (0-1)">0.2      0.3     0.54        0.57    0.45   0.0 </fr_carb>
+      <fr_cell description="cellulose fraction of FOM (0-1)">   0.7      0.3     0.37        0.37    0.47   0.1  </fr_cell>
+      <fr_lign description="lignin fraction of FOM (0-1)">      0.1      0.4     0.09        0.06    0.08   0.9 </fr_lign>
+      <oc2om_factor description="factor to convert organic carbon to">1.7  </oc2om_factor>
+      <!--  organic matter ()
+       -->
+      <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+      <opt_temp description="Soil temperature above which there">32.0     </opt_temp>
+      <!--  is no further effect on mineralisation
+       and nitrification (oC)
+       -->
+      <rd_biom description="potential rate of soil biomass">0.0081    </rd_biom>
+      <!--  mineralization (per day)
+       -->
+      <rd_carb description="maximum rate constant for">0.2       </rd_carb>
+      <!--  decomposition of FPool1 (0-1)
+       -->
+      <rd_cell description="maximum rate constant for">0.05      </rd_cell>
+      <!--  decomposition of FPool2 (0-1)
+       -->
+      <rd_lign description="maximum rate constant for">0.0095    </rd_lign>
+      <!--  decomposition of FPool3 (0-1)
+       -->
+      <rd_hum description="potential rate of humus">0.00015    </rd_hum>
+      <!--  mineralization (per day)
+       -->
+      <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+      <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+      <min_depth description="depth of soil from which N can be">100.    </min_depth>
+      <!--  immobilised by decomposing surface
+       residues (mm)
+      ______________________________________________________________________-
+      Specifying the water factor for Nitrogen Transformations is
+      by referring to water content via an indexing system and linear interpolation
+      between specified coordinates.
+       (see example)
+      
+                  1 |    ______
+                    |   /.     \                In this example
+                 .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+                    | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+                    |/   .
+                  0 ______________________-
+                    LL       DUL   SAT
+                    =0       =1    =2
+       -->
+      <wfmin_index description="index specifying water content">0.0 0.5 1.0 2.0  </wfmin_index>
+      <!--  for water factor for mineralization
+       -->
+      <wfmin_values description="value of water factor function">0.0 1.0 1.0 0.5  </wfmin_values>
+      <!--  at given index values(mineralization)
+       -->
+      <wfnit_index description="index specifying water content">0.0 .25 1.0 2.0  </wfnit_index>
+      <!--  for water factor for nitrification
+       -->
+      <wfnit_values description="value of water factor function">0.0 1.0 1.0 0.0  </wfnit_values>
+      <!--  at given index values(nitrification)
+      ______________________________________________________________________-
+       -->
+      <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+      <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential">90</nh4_at_half_pot>
+      <!--  nitrification (Michaelis-Menton kinetics)
+       -->
+      <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+      <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+      <!-- ______________________________________________________________________-
+       -->
+      <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+      <dnit_wf_power description="power term for calculation of water factor for denitrification">1        </dnit_wf_power>
+   </standard>
+   <!--  where wf = ((SW-DUL)/(SAT-DUL))^P
+    -->
+   <sand>
+      <derived_from>standard</derived_from>
+      <rd_biom description="potential rate of soil biomass">0.0324     </rd_biom>
+      <wfmin_index description="index specifying water content">0.0 0.5 1.0 2.0  </wfmin_index>
+      <!--  for water factor for mineralization
+       -->
+      <wfmin_values description="value of water factor function">0.05 1.0 1.0 0.5  </wfmin_values>
+   </sand>
+   <rothc>
+      <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
+      <cnrf_optcn description="C:N above which decomposition rate of FOM declines">500.0   </cnrf_optcn>
+      <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.24       </ef_biom>
+      <ef_fom description="fraction of FOM C mineralized retained in system (0-1)">0.24        </ef_fom>
+      <ef_hum description="fraction of humic C mineralized retained in system (0-1)">0.407        </ef_hum>
+      <ef_res description="fraction of residue C mineralized retained in system (0-1)">0.24        </ef_res>
+      <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+      <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)">0.46  </fr_biom_biom>
+      <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)">0.46   </fr_fom_biom>
+      <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)">0.46   </fr_res_biom>
+      <fom_type>                                                default  stable </fom_type>
+      <fr_carb description="carbohydrate fraction of FOM (0-1)">0.59     0.2  </fr_carb>
+      <fr_cell description="cellulose fraction of FOM (0-1)">   0.41     0.8  </fr_cell>
+      <fr_lign description="lignin fraction of FOM (0-1)">      0.0      0.0  </fr_lign>
+      <oc2om_factor description="factor to convert organic carbon to organic matter">1.7  </oc2om_factor>
+      <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+      <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (oC)">32.0     </opt_temp>
+      <rd_biom description="potential rate of soil biomass mineralization (per day)">0.0010848    </rd_biom>
+      <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">0.0274       </rd_carb>
+      <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">0.0001    </rd_cell>
+      <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0    </rd_lign>
+      <rd_hum description="potential rate of humus mineralization (per day)">0.0000323    </rd_hum>  <!-- .0000548 decreased to account for hum feeback into hum and plant retainment factor-->
+      <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+       <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+      <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
+      <!--   ______________________________________________________________________-
+      Specifying the water factor for Nitrogen Transformations is
+      by referring to water content via an indexing system and linear interpolation
+      between specified coordinates.
+       (see example)
+      
+                  1 |    ______
+                    |   /.     \                In this example
+                 .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+                    | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+                    |/   .
+                  0 ______________________-
+                    LL       DUL   SAT
+                    =0       =1    =2
+       -->
+
+      <wfmin_index description="index specifying water content for water factor for mineralization">0.0 0.5 1.0 2.0  </wfmin_index>
+      <wfmin_values description="value of water factor function at given index values(mineralization)">0.0 1.0 1.0 0.5  </wfmin_values>
+      <wfnit_index description="index specifying water content for water factor for nitrification">0.0 .25 1.0 2.0  </wfnit_index>
+       <wfnit_values description="value of water factor function at given index values(nitrification)">0.0 1.0 1.0 0.0  </wfnit_values>
+      <!--  ______________________________________________________________________-->
+      <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+      <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menton kinetics)">90</nh4_at_half_pot>
+      <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+      <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+      <!-- ______________________________________________________________________ -->
+      <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+      <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
+   </rothc>
+   <rothc6>
+      <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
+      <cnrf_optcn description="C:N above which decomposition rate of FOM declines">500.0   </cnrf_optcn>
+      <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.24       </ef_biom>
+      <ef_fom description="fraction of FOM C mineralized retained in system (0-1)">0.24        </ef_fom>
+      <ef_hum description="fraction of humic C mineralized retained in system (0-1)">0.407        </ef_hum>
+      <ef_res description="fraction of residue C mineralized retained in system (0-1)">0.24        </ef_res>
+      <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+      <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)">0.46  </fr_biom_biom>
+      <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)">0.46   </fr_fom_biom>
+      <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)">0.46   </fr_res_biom>
+      <fom_type>                                                default  stable </fom_type>
+      <fr_carb description="carbohydrate fraction of FOM (0-1)">0.59     0.2  </fr_carb>
+      <fr_cell description="cellulose fraction of FOM (0-1)">   0.41     0.8  </fr_cell>
+      <fr_lign description="lignin fraction of FOM (0-1)">      0.0      0.0  </fr_lign>
+      <oc2om_factor description="factor to convert organic carbon to organic matter">1.7  </oc2om_factor>
+      <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+      <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (oC)">32.0     </opt_temp>
+      <rd_biom description="potential rate of soil biomass mineralization (per day)">0.0010848    </rd_biom>
+      <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">0.0274       </rd_carb>
+      <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">0.00049    </rd_cell>
+      <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0    </rd_lign>
+      <rd_hum description="potential rate of humus mineralization (per day)">0.0000323    </rd_hum>  <!-- .0000548 decreased to account for hum feeback into hum and plant retainment factor-->
+      <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+       <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+      <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
+      <!--   ______________________________________________________________________-
+      Specifying the water factor for Nitrogen Transformations is
+      by referring to water content via an indexing system and linear interpolation
+      between specified coordinates.
+       (see example)
+      
+                  1 |    ______
+                    |   /.     \                In this example
+                 .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+                    | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+                    |/   .
+                  0 ______________________-
+                    LL       DUL   SAT
+                    =0       =1    =2
+       -->
+
+      <wfmin_index description="index specifying water content for water factor for mineralization">0.0 0.5 1.0 2.0  </wfmin_index>
+      <wfmin_values description="value of water factor function at given index values(mineralization)">0.0 1.0 1.0 0.5  </wfmin_values>
+      <wfnit_index description="index specifying water content for water factor for nitrification">0.0 .25 1.0 2.0  </wfnit_index>
+       <wfnit_values description="value of water factor function at given index values(nitrification)">0.0 1.0 1.0 0.0  </wfnit_values>
+      <!--  ______________________________________________________________________-->
+      <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+      <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menton kinetics)">90</nh4_at_half_pot>
+      <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+      <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+      <!-- ______________________________________________________________________ -->
+      <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+      <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
+   </rothc6>
+   <soiln3>
+      <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
+      <cnrf_optcn description="C:N above which decomposition rate of FOM declines">25.0   </cnrf_optcn>
+      <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.4       </ef_biom>
+      <ef_fom description="fraction of FOM C mineralized retained in system (0-1)">0.4        </ef_fom>
+      <ef_hum description="fraction of humic C mineralized retained in system (0-1)">0.4        </ef_hum>
+      <ef_res description="fraction of residue C mineralized retained in system (0-1)">0.4        </ef_res>
+      <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+      <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)">0.6  </fr_biom_biom>
+      <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)">0.9   </fr_fom_biom>
+      <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)">0.9   </fr_res_biom>
+      <fom_type>default manure  mucuna lablab shemp  stable </fom_type>
+      <fr_carb description="carbohydrate fraction of FOM (0-1)">0.2      0.3     0.54        0.57    0.45   0.05 </fr_carb>
+      <fr_cell description="cellulose fraction of FOM (0-1)">   0.7      0.3     0.37        0.37    0.47   0.05  </fr_cell>
+      <fr_lign description="lignin fraction of FOM (0-1)">      0.1      0.4     0.09        0.06    0.08   0.9 </fr_lign>
+      <oc2om_factor description="factor to convert organic carbon to organic matter">1.7  </oc2om_factor>
+      <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+      <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (oC)">32.0     </opt_temp>
+      <rd_biom description="potential rate of soil biomass mineralization (per day)">0.0081    </rd_biom>
+      <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">0.2       </rd_carb>
+      <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">0.05      </rd_cell>
+      <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0005    </rd_lign>
+      <rd_hum description="potential rate of humus mineralization (per day)">0.00015    </rd_hum>
+      <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+       <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+      <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
+      <!--   ______________________________________________________________________-
+      Specifying the water factor for Nitrogen Transformations is
+      by referring to water content via an indexing system and linear interpolation
+      between specified coordinates.
+       (see example)
+      
+                  1 |    ______
+                    |   /.     \                In this example
+                 .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+                    | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+                    |/   .
+                  0 ______________________-
+                    LL       DUL   SAT
+                    =0       =1    =2
+       -->
+
+      <wfmin_index description="index specifying water content for water factor for mineralization">0.0 0.5 1.0 2.0  </wfmin_index>
+      <wfmin_values description="value of water factor function at given index values(mineralization)">0.0 1.0 1.0 0.5  </wfmin_values>
+      <wfnit_index description="index specifying water content for water factor for nitrification">0.0 .25 1.0 2.0  </wfnit_index>
+       <wfnit_values description="value of water factor function at given index values(nitrification)">0.0 1.0 1.0 0.0  </wfnit_values>
+      <!--  ______________________________________________________________________-->
+      <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+      <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menton kinetics)">90</nh4_at_half_pot>
+      <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+      <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+      <!-- ______________________________________________________________________ -->
+      <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+      <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
+   </soiln3>
+</soiln2>

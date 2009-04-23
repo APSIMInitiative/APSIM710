@@ -1,0 +1,40 @@
+!Title = Sadore generic soil profile. Labucheri sand (psammentic Paleustalf) (PAWC = 89 mm, 2.0 m)
+[*attributes]
+
+   module_usage  = soil_nitrogen
+   must_have     = soil_nitrogen
+
+[*contents]
+
+[run%.soiln2.parameters]
+
+   amp               =   9.3   (oC)        ! temperature amplitude (oC) - difference between highest and
+                                           ! lowest mean monthly air temperatures for Niamey.( from Agroclimatologie du Niger)  
+                                           ! Mean monthly temp = (mean monthly max. temp + mean monthly min. temp)/2                       
+   tav               =   29.1   (oC)       ! mean annual air temperature (oC)                           
+     root_cn = $root_cn ()      ! initial root C:N ratio
+     root_wt = $root_wt (kg/ha) ! initial root DW 
+   soil_cn           =   14.5   ()         ! (?)soil humic pool C:N ratio                                  
+
+   enr_a_coeff       =    7.4   ()
+   enr_b_coeff       =    0.2   ()
+   profile_reduction =     on              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+        
+   ! layer         1       2       3       4       5       6       7       8       9       10   
+   ! lower bound   15      30      45      60      75      90     120     150     180     200    (cm)
+   !  dlayer  =    150     150     150     150     150     150     300     300     300     200    (mm)    ! layer depth         
+     oc      =   0.300   0.180   0.130   0.110   0.110   0.100   0.090   0.070   0.070   0.070   (%)     ! % organic carbon, from Labucheri profile, pg 32 soil survey of ISC.  
+     ph      =   4.900   4.900   4.900   5.000   5.000   5.100   5.600   5.500   5.500   5.800   ()      ! pH water                                             
+     fbiom   =   0.040   0.020   0.015   0.015   0.010   0.010   0.010   0.010   0.010   0.010   ()      ! microbial fraction in humic pool (default from kenya_sand)
+     finert  =   0.440   0.520   0.620   0.620   0.740   0.740   0.830   0.930   0.940   0.940   ()      ! inert fraction of humic pool (default from Kenya_sand)
+     ureappm =   0.000   0.000   0.000   0.000   0.000   0.000   0.000   0.000   0.000   0.000   (ppm)   ! ppm urea
+
+
+#stop     
+   no3ppm  =     5.100   4.600   3.000   1.300   1.100   1.700   0.950   0.950   0.950   0.950   ()
+   nh4ppm  =     0.600   0.100   0.100   0.100   0.100   0.100   0.100   0.100   0.100   0.100   ()
+
+[*variables]
+   $root_cn = "Root C:N ratio : " 45.0 real
+   $root_wt = "Root weight (kg/ha) : " 400.0 real

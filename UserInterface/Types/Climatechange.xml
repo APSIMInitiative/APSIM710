@@ -1,0 +1,34 @@
+   <climatechange>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Description>This component allows the user to apply modifiers to daily climate variables in order to investigate the effects of climate change.</Description>
+      <Documentation name="Met module documentation">../apsim/met/docs/met_science.htm#cchange</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\thermometer32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\thermometer16.png</SmallIcon>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="folder"/>
+         <drop name="simulation"/>
+     </drops>
+
+     <variables>
+     </variables>
+      <ApsimToSim>
+         <type>component</type>
+         <dll>%apsim%\Model\Manager.dll</dll>
+         <sim>
+            <rule name="ccInit" condition="init">
+               co2 = [climatechange.co2]
+            </rule>
+            <rule name="ccPreNewMet" condition="prenewmet">
+               !change met data to reflect climate change
+               met.maxt = met.maxt + [climatechange.maxtmodifier]
+               met.mint = met.mint + [climatechange.mintmodifier]
+               met.rain = met.rain * [climatechange.rainmodifier]
+               met.radn = met.radn * [climatechange.radiationmodifier]
+            </rule>
+         </sim>
+      </ApsimToSim>
+   </climatechange>

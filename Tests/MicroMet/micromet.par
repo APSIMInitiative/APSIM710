@@ -1,0 +1,64 @@
+[sample.report.parameters]
+outputfile =micromet.out
+
+!module_names   = slurp     slurp     slurp       slurp slurp  slurp     slurp       slurp slurp      slurp          slurp      slurp
+!variable_names = crop_type sw_demand eo_fraction ep    cum_ep cover_tot cover_green rlv   no3_demand cum_uptake_no3 nh4_demand cum_uptake_nh4
+!variable_alias = -         -          -           -     -      -         -           -     -          -              -          -
+!units          = -         -          -           -     -      -         -           -     -          -              -          -
+
+!module_names   = SoilN SoilN SoilWat
+!variable_names = no3    nh4    sw_dep
+!variable_alias = -         -   -
+!units          = -         -   -
+
+variable = clock.day
+variable = clock.year
+variable = grass.LeafWaterDemand as grass_swd
+variable = grass.RootWaterUptake as grass_ep
+variable = tree.LeafWaterDemand as tree_swd
+variable = tree.RootWaterUptake as tree_ep
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988
+end_date=30/1/1988
+
+[sample.manager.start_of_day]
+!if day = 1 or day = 15 then
+!   Fertiliser apply amount = 100 (), type = nh4no3 ()
+!elseif day = 10 then
+!   slurp set eo_fraction = 0.75 ()
+!
+!endif
+
+[sample.manager.start_of_day]
+if day = 1 and year = 1988 then
+   grass Sow cultivar=GrassCultivar
+   tree sow cultivar=TreeCultivar
+endif
+
+
+[sample.manager.end_of_day]
+if day = 1 then
+   micromet lai_table
+   micromet rs_table
+   micromet pet_table
+endif
+report do_output
+
+[sample.micromet.parameters]
+soil_albedo = 0.13
+layer_ga = 0.01666
+
+!      Interception = A_interception * (rain ^ B_interception)
+!                   + C_interception * Total_LAI
+!                   + D_interception
+! Standard LAI approach
+a_interception = 0.0
+b_interception = 0.0
+c_interception = 0.0
+d_interception = 0.0
+[sample.SummaryFile.parameters]
+summaryfile=micromet.sum
+[sample.Log.parameters]
+debug_output=on
+logfile=micromet.log

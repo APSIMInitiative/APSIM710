@@ -1,0 +1,528 @@
+<report version="5">
+<Data>
+<ApsimFileReader name="Obs" Left="0" Top="0">
+  <FileName type="filenames">Observed\Wongan83.txt</FileName>
+</ApsimFileReader>
+<ApsimFileReader name="PreRipped" Left="200" Top="0">
+  <FileName type="filenames">Wheat_Wongan83Ripped_RippedN000.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Ripped_RippedN010.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Ripped_RippedN025.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Ripped_RippedN050.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Ripped_RippedN100.out</FileName>
+</ApsimFileReader>
+<ApsimFileReader name="PreUnRipped" Left="400" Top="0">
+  <FileName type="filenames">Wheat_Wongan83Unripped_UnrippedN000.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Unripped_UnrippedN010.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Unripped_UnrippedN025.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Unripped_UnrippedN050.out</FileName>
+  <FileName type="filenames">Wheat_Wongan83Unripped_UnrippedN100.out</FileName>
+</ApsimFileReader>
+<Filter name="Ripped" Left="600" Top="0">
+  <FilterString>Ripped = 1</FilterString>
+  <source>Obs</source>
+</Filter>
+<Filter name="UnRipped" Left="0" Top="200">
+  <FilterString>Ripped = 0</FilterString>
+  <source>Obs</source>
+</Filter>
+<Filter name="PreRippedHarvest" Left="200" Top="200">
+  <FilterString>zadok_stage=90</FilterString>
+  <source>PreRipped</source>
+</Filter>
+<Filter name="PreUnRippedHarvest" Left="400" Top="200">
+  <FilterString>zadok_stage=90</FilterString>
+  <source>PreUnRipped</source>
+</Filter>
+</Data>
+   <page> <![CDATA[
+object Page1: TQuickRep
+  Tag = 1
+  Left = 83
+  Top = 0
+  Width = 635
+  Height = 898
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = A4
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2970
+    0
+    2100
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 80
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 635
+    Height = 898
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2970
+      2100.13020833333)
+    BandType = rbTitle
+    object Text1: TText
+      Left = 49
+      Top = 39
+      Width = 216
+      Height = 31
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        102.526041666667
+        162.057291666667
+        128.984375
+        714.375)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -32
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'Wongan Hills 1983')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Wongan Hills 1983'#13#10
+      FontSize = 24
+    end
+    object Graph2: TGraph
+      Left = 37
+      Top = 550
+      Width = 280
+      Height = 264
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        873.125
+        121.708333333333
+        1820.33333333333
+        926.041666666667)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = ' '
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = ' '
+      footTitle = ' '
+      seriesTitle1 = 'Ripped'
+      seriesTitle2 = 'Unripped'
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        Legend.CustomPosition = True
+        Legend.Left = 50
+        Legend.LegendStyle = lsSeries
+        Legend.ResizeChart = False
+        Legend.Top = 220
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series5: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Ripped
+          Title = 'Ripped'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Grain_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Protein'
+        end
+        object Series6: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = UnRipped
+          SeriesColor = clBlue
+          Title = 'Unripped'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'Grain_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Protein'
+        end
+        object Series2: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PreRippedHarvest
+          SeriesColor = clRed
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'grain_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_protein'
+        end
+        object Series4: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PreUnRippedHarvest
+          SeriesColor = clBlue
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'grain_wt'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_protein'
+        end
+      end
+    end
+    object Graph3: TGraph
+      Left = 344
+      Top = 533
+      Width = 280
+      Height = 264
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        873.125
+        1137.70833333333
+        1762.125
+        926.041666666667)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = ' '
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = ' '
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart3: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        Legend.CustomPosition = True
+        Legend.Left = 273
+        Legend.LegendStyle = lsSeries
+        Legend.ResizeChart = False
+        Legend.Top = 235
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series7: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Ripped
+          XLabelsSource = 'nRate'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'GrainNo'
+        end
+        object Series8: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = UnRipped
+          SeriesColor = clBlue
+          XLabelsSource = 'nRate'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'GrainNo'
+        end
+        object Series9: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PreRippedHarvest
+          SeriesColor = clRed
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_no'
+        end
+        object Series10: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PreUnRippedHarvest
+          ShowInLegend = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_no'
+        end
+      end
+    end
+    object Graph4: TGraph
+      Left = 50
+      Top = 82
+      Width = 531
+      Height = 384
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1270
+        165.364583333333
+        271.197916666667
+        1756.171875)
+      title = ' '
+      subTitle = ' '
+      leftAxisTitle = ' '
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = ' '
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart4: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.Grid.Visible = False
+        BottomAxis.LabelsFont.Height = -19
+        BottomAxis.LabelsSeparation = 100
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -19
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 350
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        Legend.CustomPosition = True
+        Legend.Font.Height = -19
+        Legend.Left = 525
+        Legend.LegendStyle = lsSeries
+        Legend.ResizeChart = False
+        Legend.Top = 325
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Ripped
+          XLabelsSource = 'NRate'
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Grain_wt'
+        end
+        object PointSeries2: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = UnRipped
+          SeriesColor = clBlue
+          XLabelsSource = 'NRate'
+          ClickableLine = False
+          Pointer.Brush.Color = clBlue
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Grain_wt'
+        end
+        object Series1: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PreRippedHarvest
+          SeriesColor = clRed
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+        object Series3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PreUnRippedHarvest
+          SeriesColor = clBlue
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'grain_wt'
+        end
+      end
+    end
+  end
+end
+]]>
+   </page>
+</report>

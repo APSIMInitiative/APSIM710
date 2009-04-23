@@ -1,0 +1,498 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Sugar Test for defect d-514, Sugar Lodging N problem from Heidi Horan
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                        "sugar" = %apsim%\Model\sugar.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  9/04/1980
+     Simulation end date   = 10/04/1982
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.day
+        clock.year
+        SoilWat.esw
+        SoilN.no3()
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_n
+        irrigation.irrigation
+        sugar.lai
+        sugar.biomass
+        sugar.green_biomass
+        sugar.swdef_photo
+        sugar.nfact_photo
+        sugar.SenescedWt
+        sugar.SenescedN
+        sugar.dm_dead
+        sugar.DetachingWt()
+        manager.error
+
+     Output file = test2.out
+     Format = csv
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\MetFiles\Ingham.met
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     noratoons = 4
+     dryoff = 30
+     planting_day = 30.5 * 4
+     plantlen = 30.5 * 15
+     ratoonlen = 30.5 * 13
+     plant_stalks = 10
+     ratoon_stalks = 10
+     sowing_reset = 0
+     irrigate_flag= 1
+     burn_flag = 1
+     max_irr = 10
+     fasw_irr = 0.5
+     plant_lag = 1
+     plant_fert = 160
+     ratoon_lag = 1
+     ratoon_fert = 160
+     nleach = 0
+     planting_day = nearest_int(planting_day)
+     plantlen = nearest_int(plantlen)
+     ratoonlen = nearest_int(ratoonlen)
+     dah = 0
+     sample = 0
+     num_irr = 0
+     losses = 0.0
+     bal_n_old = 0
+     
+     SECTION:- end_of_day
+      soil_n = (soiln.nit_tot())/10
+      resid_n = (surfaceom.surfaceom_n)/10
+      plant_n = sugar.plant_n_tot
+       leach_n = (soilwat.no3_leach(7))/10
+       dnit_n  = (soiln.dnit())/10
+      total_n = soil_n + resid_n + plant_n
+      losses = losses + leach_n + dnit_n
+      bal_n = total_n + losses
+      error = bal_n - bal_n_old
+      bal_n_old = bal_n
+     report do_output
+     
+     SECTION:- start_of_day
+     if sugar.crop_status = 'alive' then
+        dah = 0
+        if (daysaftersowing > (plantlen - dryoff) and ratoon_no = 0) or
+           (daysaftersowing > (ratoonlen - dryoff) and ratoon_no > 0) then
+           if automatic_irrigation = 'on' then
+              irrigation.automatic_irrigation = 'off'
+           endif
+        else
+           if (irrigate_flag = 2) and
+              (sugar.fasw < fasw_irr) and
+              (num_irr <= max_irr) then
+                 irrigation apply amount = 50 (mm)
+                 num_irr = num_irr + 1
+           endif
+        endif
+        if (daysaftersowing = plantlen and ratoon_no = 0) or
+           (daysaftersowing = ratoonlen and ratoon_no > 0) then
+           sugar harvest
+           if burn_flag = 1 then
+              surfaceom tillage type = burn
+           endif
+           if ratoon_no = noratoons + 1 then
+              sugar kill_crop
+              sugar end_crop
+           else
+              sugar.plants = ratoon_stalks
+              if sowing_reset = 1 then
+                 soilwat reset
+                 soiln   reset
+                 surfaceom reset
+              else
+              endif
+              if irrigate_flag = 1 and automatic_irrigation = 'off' then
+                 irrigation.automatic_irrigation = 'on'
+              endif
+              num_irr = 0
+           endif
+        else
+        endif
+        if (daysaftersowing = plant_lag) and (ratoon_no = 0) then
+           fertiliser apply amount = plant_fert, depth = 0, type = no3_n
+        elseif (daysaftersowing = ratoon_lag) and (ratoon_no > 0) then
+           fertiliser apply amount = ratoon_fert, depth = 0, type = no3_n
+        else
+        endif
+     elseif (sugar.crop_status = 'dead') then
+        report do_output
+        sugar harvest
+        sugar end_crop
+        if burn_flag = 1 then
+           surfaceom tillage type = burn
+        endif
+     elseif (sugar.crop_status = 'out') and (day = planting_day) then
+        sugar sow plants = 10 (), cultivar = q117, sowing_depth = 150
+        sugar.plants = plant_stalks
+        if (irrigate_flag = 1) then
+           irrigation.automatic_irrigation = 'on'
+        endif
+        dah = 0
+        num_irr = 0
+     else
+        dah = dah + 1
+     endif
+     if day = 100 and year= 1981 then
+     sugar lodge
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : noratoons = 4.00000
+     Manager creating a new local real variable : dryoff = 30.00000
+     Manager creating a new local real variable : planting_day = 122.00000
+     Manager creating a new local real variable : plantlen = 457.50000
+     Manager creating a new local real variable : ratoonlen = 396.50000
+     Manager creating a new local real variable : plant_stalks = 10.00000
+     Manager creating a new local real variable : ratoon_stalks = 10.00000
+     Manager creating a new local real variable : sowing_reset = 0.00000
+     Manager creating a new local real variable : irrigate_flag = 1.00000
+     Manager creating a new local real variable : burn_flag = 1.00000
+     Manager creating a new local real variable : max_irr = 10.00000
+     Manager creating a new local real variable : fasw_irr = 0.50000
+     Manager creating a new local real variable : plant_lag = 1.00000
+     Manager creating a new local real variable : plant_fert = 160.00000
+     Manager creating a new local real variable : ratoon_lag = 1.00000
+     Manager creating a new local real variable : ratoon_fert = 160.00000
+     Manager creating a new local real variable : nleach = 0.00000
+     Manager creating a new local real variable : dah = 0.00000
+     Manager creating a new local real variable : sample = 0.00000
+     Manager creating a new local real variable : num_irr = 0.00000
+     Manager creating a new local real variable : losses = 0.00000
+     Manager creating a new local real variable : bal_n_old = 0.00000
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.230  0.450  0.500  0.280  1.300  0.762  0.200
+          150.-  300.  0.200  0.240  0.459  0.509  0.364  1.300  0.190  0.200
+          300.-  600.  0.200  0.240  0.450  0.510  0.430  1.290  0.048  0.200
+          600.-  900.  0.200  0.250  0.440  0.505  0.430  1.310  0.000  0.200
+          900.- 1200.  0.200  0.260  0.420  0.490  0.400  1.350  0.000  0.200
+         1200.- 1500.  0.200  0.270  0.410  0.480  0.410  1.360  0.000  0.200
+         1500.- 1800.  0.200  0.280  0.410  0.480  0.410  1.360  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50       7.50      33.00       7.50
+          150.-  300.      36.00      18.60      32.85       7.50
+          300.-  600.      72.00      57.00      63.00      18.00
+          600.-  900.      75.00      54.00      57.00      19.50
+          900.- 1200.      78.00      42.00      48.00      21.00
+         1200.- 1500.      81.00      42.00      42.00      21.00
+         1500.- 1800.      84.00      39.00      39.00      21.00
+          ---------------------------------------------------------
+               Totals     460.50     260.10     314.85     115.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   2.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     2.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sugar     sugar        10000.0  4000.0    50.0     0.0   0.999     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   1.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.00   17.94    0.58    0.00
+             2     8.50  0.84   14.82    0.58    0.00
+             3     8.60  0.77   18.96    1.16    0.00
+             4     8.60  0.65   10.61    1.18    0.00
+             5     7.40  0.54    6.07    1.22    0.00
+             6     5.30  0.48    7.34    2.04    0.00
+             7     5.00  0.43    5.71    2.04    0.00
+          ------------------------------------------------
+           Totals               81.46    8.81    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      19038.4  1313.0   461.6    57.7   138.9     6.9
+             2      16180.2  1115.9   199.8    25.0   108.1     5.4
+             3      29622.8  2043.0   176.2    22.0    65.6     3.3
+             4      25481.8  1757.4    63.2     7.9    39.8     2.0
+             5      21848.3  1506.8    21.7     2.7    24.1     1.2
+             6      19582.1  1350.5     1.9     0.2    14.6     0.7
+             7      17542.3  1209.8     1.7     0.2     8.9     0.4
+          ---------------------------------------------------------
+           Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
+          ---------------------------------------------------------
+
+------- sugar Initialisation --------------------------------------------------
+      Initialising
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : soil_n = 1052.28430
+     Manager creating a new local real variable : resid_n = 4.94563
+     Manager creating a new local real variable : plant_n = 0.00000
+     Manager creating a new local real variable : leach_n = 0.00000
+     Manager creating a new local real variable : dnit_n = 0.00000
+     Manager creating a new local real variable : total_n = 1057.22998
+     Manager creating a new local real variable : bal_n = 1057.22998
+     Manager creating a new local real variable : error = 1057.22998
+1 May 1980(Day of year=122), manager: 
+     Manager sending message :- sugar sow  plants = 10, cultivar = q117, sowing_depth = 150
+1 May 1980(Day of year=122), sugar: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Cultivar
+         Day no   mm     m^2    Name
+         ------------------------------------------------
+            122  150.0   10.0 q117
+         ------------------------------------------------
+     
+         - Reading constants from plant_crop
+     
+         - Reading constants from q117
+     
+        - Reading root profile parameters
+     
+     
+     
+     Sugar module is calculating its own soil uptakes
+     
+     
+     
+                         Root Profile
+       --------------------------------------------------
+         Layer depth  Kl factor   Lower limit Root Factor
+              (mm)         ()        (mm/mm)     (0-1)
+       --------------------------------------------------
+           150.000       0.160       0.230       1.000
+           150.000       0.160       0.240       1.000
+           300.000       0.160       0.240       1.000
+           300.000       0.160       0.250       1.000
+           300.000       0.120       0.260       1.000
+           300.000       0.080       0.270       1.000
+           300.000       0.040       0.280       1.000
+        -------------------------------------------------
+     
+     
+       Crop factor for bounding water use is set to 100.0 times Eo
+     
+     
+     
+2 May 1980(Day of year=123), manager: 
+     Manager sending message :- fertiliser apply  amount = 160.00000, depth = 0, type = no3_n
+2 May 1980(Day of year=123), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       160.00 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+2 May 1980(Day of year=123), sugar: 
+      stage    2.0 sprouting
+27 May 1980(Day of year=148), sugar: 
+      stage    3.0 emergence
+                          biomass =           3.529999       lai =    0.1000000E-01
+                          stover N conc =    2.529744       extractable sw =    77.55130
+25 October 1980(Day of year=299), sugar: 
+      stage    4.0 begin_cane
+                          biomass =           2204.646       lai =     6.293204
+                          stover N conc =   0.6785888       extractable sw =    171.7891
+10 April 1981(Day of year=100), manager: 
+     Manager sending message :- sugar lodge
+10 April 1981(Day of year=100), sugar: 
+     crop lodging
+2 August 1981(Day of year=214), manager: 
+     Manager sending message :- sugar harvest
+2 August 1981(Day of year=214), sugar: 
+     
+     
+     
+      flowering day  =    0
+      maximum lai = 6.753
+      total above ground biomass (kg/ha) =   82376.6
+      live above ground biomass (kg/ha) =   78330.3
+      green above ground biomass (kg/ha) =   73787.6
+      senesced above ground biomass (kg/ha) =    4542.7
+      dead above ground biomass (kg/ha) =    4046.2
+      number of leaves =  53.6
+      total N content (kg/ha) =    156.19    senesced N content (kg/ha) =     16.64
+      green N content (kg/ha) =    136.93    dead N content (kg/ha) =      2.62
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.4392436E-02
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.1616505E-01
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+                                               straw residue =15588.7 kg/ha
+                                               straw N =   48.1 kg/ha
+                                               root residue = 1850.6 kg/ha
+                                               root N =    5.2 kg/ha
+     
+         - Reading constants from ratoon_crop
+     
+         - Reading constants from q117_ratoon
+     Manager sending message :- surfaceom tillage  type = burn
+2 August 1981(Day of year=214), SurfaceOM: 
+     
+         - Reading residue tillage info
+     Residue removed using burn
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+3 August 1981(Day of year=215), manager: 
+     Manager sending message :- fertiliser apply  amount = 160.00000, depth = 0, type = no3_n
+3 August 1981(Day of year=215), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       160.00 of N as nitrate (no3_n)
+                                         added at depth    0.00 (layer   1)
+10 August 1981(Day of year=222), sugar: 
+      stage    3.0 emergence
+                          biomass =           3.529968       lai =    0.1000000E-01
+                          stover N conc =    2.529765       extractable sw =    224.2993
+12 December 1981(Day of year=346), sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1807.089       lai =     6.485062
+                          stover N conc =   0.7201346       extractable sw =    256.4506
+10 April 1982(Day of year=100), clock: 
+     Simulation is terminating due to end criteria being met.

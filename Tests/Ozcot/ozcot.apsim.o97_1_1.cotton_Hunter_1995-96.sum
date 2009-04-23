@@ -1,0 +1,350 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.0
+Title                  = Alan Hunter
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                       "report" = %apsim%\Model\report.dll
+   Component                          "met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                        "ozcot" = %apsim%\Model\ozcot.dll
+   Component                       "sysbal" = %apsim%\Model\sysbal.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 22/09/1995
+     Simulation end date   = 19/05/1996
+     Time step =           = 1440 (mins)
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        clock.year
+        clock.day
+        manager.yield_acre as yld/acre
+        ozcot.evap_plant as c_ep
+        ozcot.lai as c_lai
+        ozcot.yield as c_yield
+        manager.yield_acre as c_yld/acre
+        ozcot.dm as biomass
+        ozcot.sites
+        ozcot.squarz
+        ozcot.bollz
+        ozcot.openz
+        ozcot.totnup as c_nuptake
+        SoilWat.es
+        SoilWat.esw as pesw
+        SoilN.no3()
+
+     Output file = o_971_1.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: hunter.aps
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+       yield_acre = yield/2.5
+       if (day = 191) then
+         soilwat set sw  =  0.408   0.443   0.443   0.400   0.405   0.425   0.428
+         soiln set no3 = 13.000  20.000  37.000  33.000  14.000  19.000  29.000
+       endif
+       if (day = 280) then
+           ozcot sow cultivar = siok, sowing_depth = 50 (mm), row_spacing = 2000 (mm), plants_pm = 12.0 (), skiprow = 1
+       endif
+     
+     SECTION:- end_of_day
+        report do_output
+        if (day = 1 and year = 1995) then
+           cotton_status = 0
+        endif
+        if (ozcot_status > 0) then
+          ozcot harvest
+          cotton_status = 0
+        endif
+     END of rules
+     
+
+------- SoilWat Initialisation ------------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     
+     Soil water in parameter file is being overridden by
+     the insoil parameter which is between 0 and 1
+     Initial soilwater distributed evenly using "insoil" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.250  0.417  0.430  0.417  1.490  0.762  0.100
+          150.-  300.  0.289  0.289  0.435  0.437  0.435  1.490  0.190  0.100
+          300.-  600.  0.276  0.276  0.441  0.450  0.441  1.450  0.048  0.100
+          600.-  900.  0.296  0.296  0.437  0.445  0.437  1.380  0.000  0.100
+          900.- 1200.  0.324  0.324  0.472  0.475  0.472  1.390  0.000  0.100
+         1200.- 1500.  0.353  0.353  0.466  0.467  0.466  1.410  0.000  0.100
+         1500.- 1800.  0.428  0.428  0.466  0.467  0.466  1.410  0.000  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      37.50      25.05      25.05       1.95
+          150.-  300.      43.35      21.90      21.90       0.30
+          300.-  600.      82.80      49.50      49.50       2.70
+          600.-  900.      88.80      42.30      42.30       2.40
+          900.- 1200.      97.20      44.40      44.40       0.90
+         1200.- 1500.     105.90      33.90      33.90       0.30
+         1500.- 1800.     128.40      11.40      11.40       0.30
+          ---------------------------------------------------------
+               Totals     583.95     228.45     228.45       8.85
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   1.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              82.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.90  0.80   56.10    1.34    0.00
+             2     8.90  0.60   41.57    0.22    0.00
+             3     9.00  0.50  100.05    0.44    0.00
+             4     9.00  0.30  113.02    0.41    0.00
+             5     9.00  0.20   29.61    0.42    0.00
+             6     9.00  0.20   11.42    0.42    0.00
+             7     9.00  0.10    4.02    0.42    0.00
+          ------------------------------------------------
+           Totals              355.79    3.68    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      17360.6  1197.3   519.4    64.9   138.9     2.8
+             2      13270.6   915.2   139.4    17.4   108.1     2.2
+             3      21595.7  1489.4   154.3    19.3    65.6     1.3
+             4      12373.3   853.3    46.7     5.8    39.8     0.8
+             5       8318.5   573.7    21.5     2.7    24.1     0.5
+             6       8445.8   582.5    14.2     1.8    14.6     0.3
+             7       4227.1   291.5     2.9     0.4     8.9     0.2
+          ---------------------------------------------------------
+           Totals   85591.6  5902.9   898.4   112.3   400.0     8.0
+          ---------------------------------------------------------
+
+------- ozcot Initialisation --------------------------------------------------
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.250
+           15.0          0.289
+           30.0          0.276
+           30.0          0.296
+           30.0          0.324
+           30.0          0.353
+           30.0          0.428
+     ------------------------
+     
+     
+     
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : yield_acre = 0.00000
+7 October 1995(Day of year=280), manager: 
+     Manager sending message :- ozcot sow  cultivar = siok, sowing_depth = 50 (mm), row_spacing = 2000 (mm), plants_pm = 12.0, skiprow = 1
+7 October 1995(Day of year=280), ozcot: 
+     Sow
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar   = siok
+         percent_L  =   42.00
+         scboll     =     4.5
+         respcon    =   0.016
+         sqcon      =   0.023
+         fcutout    =  0.5411
+         flai       =     0.5
+         ddisq      =   420.0
+         popcon     = 0.03633
+         acotyl     =    525.
+         rlai       = 0.01000
+         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
+         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
+         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
+         fburr      =    1.23
+         dLdS_max  =    0.12
+         rate_emergence  =    1.00
+         Background_Retention (default) =    0.80
+         ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Cultivar
+         Day no   mm     m       mm     Name
+         ------------------------------------------------
+            280   50.0  12.0   2000.0 siok
+         ------------------------------------------------
+18 October 1995(Day of year=291), ozcot: 
+      *** Crop emerged with  4.0 plants per m sq,100.% of target population of   4.0
+18 October 1995(Day of year=291), sysbal: 
+     **** C balance - unaccounted gain (kg/ha) =     11.996823
+     ****        equivalent DM as FOM  (kg/ha) =     29.992058
+30 April 1996(Day of year=121), ozcot: 
+         Defoliant spray    1
+10 May 1996(Day of year=131), ozcot: 
+         First Pick  216 days from sowing. There are enough bolls for a 2nd pick.
+         Crop terminated: first pick.
+10 May 1996(Day of year=131), manager: 
+     Manager sending message :- ozcot harvest
+     harvest
+     
+     
+     
+      Days after sowing      =    216
+      bolls/m2               =  52.41        Lint (kg/ha)           =     1180.3
+      N uptake (kg/ha)       = 138.20        bolls sc (g/boll)      =        5.4
+      max squares das (days) =    104        max lai das (days)     =    155
+      maximum squares/m2     =  57.83        maximum lai (m2/m2)    =  0.985
+      total above ground biomass (kg/ha) =     6065.1
+     Manager creating a new local real variable : cotton_status = 0.00000
+11 May 1996(Day of year=132), ozcot: 
+     Initialising
+     
+         - Reading constants
+     
+        - Reading root profile parameters
+     
+     
+     
+             Root Profile
+     ------------------------
+          Layer       Lower
+          Depth       Limit
+          (cm)      (mm/mm)
+     ------------------------
+           15.0          0.250
+           15.0          0.289
+           30.0          0.276
+           30.0          0.296
+           30.0          0.324
+           30.0          0.353
+           30.0          0.428
+     ------------------------
+     
+     
+     
+19 May 1996(Day of year=140), clock: 
+     Simulation is terminating due to end criteria being met.

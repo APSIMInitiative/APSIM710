@@ -1,0 +1,50 @@
+[sample.report.parameters]
+outputfile =SoilN.out
+
+
+
+
+variable = clock.day
+variable = clock.year
+variable = SoilN.no3()
+variable = SoilN.nh4()
+variable = SoilN.biom_n()
+variable = SoilN.fom_n()
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date=1/1/1988
+end_date=30/1/1988
+
+[sample.manager.end_of_day]
+report do_output
+
+if day = 20 then
+   SoilN IncorpFOM type=chickpea, Amount=1000 500 250 125 62 31 15, CNR=20 20 20 20 20 20 20
+endif
+
+[black_earth.SoilN.parameters]
+
+amp =  15.0   ! temperature amplitude (oC) - difference between highest and
+               ! lowest mean monthly air temperatures
+tav =  20.0   ! mean annual air temperature (oC)
+root_cn =  20.   ! C:N ratio of initial root residues
+root_wt =  1000.   ! root residues as biomass (kg/ha)
+soil_cn =  14.5   ! C:N ratio of soil
+
+!layer    1    2    3    4    5    6    7
+oc =     1.00 0.84 0.77 0.65 0.54 0.48 0.43 (%)   ! Soil Organic Carbon
+ph =     8.20 8.50 8.60 8.60 7.40 5.30 5.00 ()   ! pH of soil
+fbiom =  .035 .025 .015 0.01 0.01 0.01 0.01 ()   ! Organic C Biomass Fraction
+finert =  0.30 0.50 0.60 0.75 0.90 0.99 0.99 ()   ! Inert Organic C Fraction
+no3ppm =  9.2  7.6  4.9  2.7  1.5  1.8  1.4 (ppm)   ! Nitrate Concentration
+nh4ppm =  0.30 0.30 0.30 0.30 0.30 0.50 0.50 (ppm)   ! Ammonium Concentration
+ureappm =  0  0    0    0    0    0    0    (ppm)   ! Urea Concentration
+
+! Erosion profile reduction parameters
+enr_a_coeff =  7.4 ()
+enr_b_coeff =  0.2
+profile_reduction =  off
+
+
+[sample.SummaryFile.parameters]
+summaryfile = soiln2.sum

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The APSIM Growth Module </title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../ApsimWebStyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+ <span class="Title1">Input Module </span>
+<p class="Normal">&nbsp;</p>
+<p class="Title2">Introduction </p>
+<p class="Normal">Most simulation require data, other than module parameters to be available to all modules. This service is provided by the APSIM input module. </p>
+<p class="Normal">The input module is an <em>instantiable </em> module. This means that APSIM can run zero or more <em>instances </em> of the input module. The instance name <em>met </em> is special. If the input module is running as <em>met </em>, it will read its data from a single section called <em>weather </em>, otherwise it will read its data from a single section called <em>data </em>. </p>
+<p class="Normal">There are two types of data that the input module can be used to read, temporal data (eg. weather data), and data that is constant for a given simulation . This is why there are potentially two parts to the input section, an optional constants section followed by an optional temporal data section. </p>
+<p class="Normal">Here is an example control section:- </p>
+<p class="Normal">&nbsp;</p>
+<p class="Code">[apsim.sample_input] </p>
+<p class="Code">Module=clock input.par [sample] </p>
+<p class="Code">Module=report input.par [sample] </p>
+<p class="Code">Module=input(met) DALBY.MET [test] </p>
+<p class="Code">Module=manager input.par [sample] </p>
+<p class="Code">Module=input (input1) input.par [test] </p>
+<p class="Code">Module=input (sparse) sparse.par [test]</p>
+<p class="Normal">&nbsp;</p>
+<p class="Normal">Here is a corresponding input parameter section. The variables <em>alpha, beta </em>and <em> lumpia </em> are defined in the constants part of the section, while <em>year, day, rug </em>and <em> paxt </em> are defined in the temporal data section:- </p>
+<p class="Normal">[test.input1.data] </p>
+<p class="Normal">alpha = one two three </p>
+<p class="Normal">beta = one two three four five six seven </p>
+<p class="Normal">Lumpia = -7.11 </p>
+<p>&nbsp; </p>
+<p class="Normal">year day rug(1) rug(2) paxt </p>
+<p class="Normal">() () (MJ/m2) (MJ/m2) (oC) </p>
+<p class="Normal">1988 1 20 21 33.0 </p>
+<p class="Normal">1988 2 23 24 33.8 </p>
+<p class="Normal">1988 3 23 24 32.5 </p>
+<p class="Normal">1988 4 19 20 30.8 </p>
+<p class="Normal">1988 5 17 18 28.2 </p>
+<p class="Normal">1988 6 22 23 29.0 </p>
+<p class="Normal">1988 7 22 23 28.4 </p>
+<p class="Normal">1988 8 25 26 31.2 </p>
+<p class="Normal">1988 9 26 27 33.6 </p>
+<p class="Normal">1988 10 25 26 34.4 </p>
+<p class="Normal">1988 11 22 23 31.6 </p>
+<p>&nbsp; </p>
+<p>&nbsp; </p>
+<p class="Normal"><strong><em>Constants part </em></strong></p>
+<p class="Normal">Data in the constants section must be in the format “apsim_name = values ...”. Where <em>apsim_name </em> is the name of the APSIM variables and <em>values </em> is one value in the case of scalar data and one to 100 values separated by spaces in the case of array data. There is no limit to the number of variables that may be defined here. </p>
+<p class="Normal">Each value can be at most 50 characters long, with the added restriction that a given line may be at most 2000 characters long. </p>
+<p class="Normal">Temporal data part </p>
+<p class="Normal">Data in the temporal section is in tabular format, very similar to the output of the <em>report </em> module. This is deliberate, so that the input module can potentially use output from the report module. </p>
+<p class="Normal">Headings line </p>
+<p class="Normal">First there must be a line of space separated headings. In the case of scalar data, a heading is the APSIM name of the variable. </p>
+<p class="Normal">In the case of array data is the heading is the APSIM name of the variable immediately followed by the array index in parenthesis (no spaces allowed). For a given APSIM array variable, the array elements must appear in order beginning with element 1. </p>
+<p class="Normal">There may be up to 100 headings, each of which may be up to 35 characters long, with the added restriction that a given line may be at most 2000 characters long. </p>
+<p class="Normal">The APSIM variable <em>year </em> must be present in the temporal data table. Either the APSIM variable <em>day </em> (meaning day of year) must be present or the APSIM variables <em>month </em> and <em>day_of_moth </em> must be present. </p>
+<p class="Normal">Units line </p>
+<p class="Normal">Then the units line must follow - a space separated units string for each heading. In the case of array data, the units string belonging to elements of the same APSIM variable must be identical. </p>
+<p class="Normal">Each units string may be up to 35 characters long, with the added restriction that a given line may be at most 2000 characters long. </p>
+<p class="Normal">Data lines </p>
+<p class="Normal">Then a line for each day must follow with the space separated data elements corresponding to each of the headings in order. </p>
+<p class="Normal">Each units string may be up to 50 characters long, with the added restriction that a given line may be at most 2000 characters long. </p>
+<p class="Normal">Normally, each day for the APSIM simulation must be present in order. </p>
+<p class="Normal">Sparse Data </p>
+<p class="Normal">If the constants part of the section has a scalar APSIM variable <em>allow_sparse_data </em> is present, and its value it “true”, then sparse data is permitted, and each day of the simulation need not be present. An attempt by other modules to get data on a day with no data will normally get the zero elements in its <em>numvals </em> field. </p>
+<p class="Normal">Defaults for sparse data can be set in the constants section. In this case, if data is present in the temporal section on that day, the values specified in the temporal section will be returned. Otherwise the data specified in the constants section will be returned. </p>
+<p class="Normal">Met calculated data </p>
+<p class="Normal">If the input module is instantiated as <em>met </em>, then some calculated variables are available:- </p>
+<p class="Normal">The real scalar day_length is calculated from <em>lattitude </em>and made avalable <em>. </em></p>
+<p class="Normal">Examples </p>
+<p class="Normal">Example input data can be found in the samples directory of the input module directory. </p>
+<p class="Normal">Bugs </p>
+<p class="Normal">No more than one input module can read sections containing a temporal data part from a given parameter file during a given simulation. </p>
+<p class="Normal">A temporal data section cannot be read from a control file. </p>
+</body>
+</html>
