@@ -11,8 +11,8 @@
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimRegistry.h>
-#include <general/path.h>
-#include <general/date_class.h>
+#include <General/path.h>
+#include <General/date_class.h>
 #include "ScienceAPI.h"
 
 #include "ProtocolVector.h"

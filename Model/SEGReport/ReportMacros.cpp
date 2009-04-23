@@ -1,13 +1,13 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "ReportMacros.h"
-#include <general\stringtokenizer.h>
-#include <general\string_functions.h>
-#include <generalvcl\vcl_functions.h>
-#include <general\date_functions.h>
+#include <General\stringtokenizer.h>
+#include <General\string_functions.h>
+#include <Generalvcl\vcl_functions.h>
+#include <General\date_functions.h>
 #pragma package(smart_init)
 
 using namespace std;

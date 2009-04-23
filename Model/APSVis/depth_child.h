@@ -3,7 +3,7 @@
 #define depth childH
 #include "chart_child.h"
 #include "TDepth_prop_form.h"
-#include <general\date_class.h>
+#include <General\date_class.h>
 #include "apsim_depth_chart.h"
 // ------------------------------------------------------------------
 //  Short description:

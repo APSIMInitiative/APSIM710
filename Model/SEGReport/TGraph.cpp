@@ -1,13 +1,13 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "TGraph.h"
-#include <general\string_functions.h>
-#include <generalvcl\vcl_functions.h>
-#include <general\stl_functions.h>
-#include <generalvcl\db_functions.h>
+#include <General\string_functions.h>
+#include <Generalvcl\vcl_functions.h>
+#include <General\stl_functions.h>
+#include <Generalvcl\db_functions.h>
 #include <TeEngine.hpp>
 #include <TeeEdit.hpp>
 #include <DBEditCh.hpp>

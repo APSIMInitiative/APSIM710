@@ -3,12 +3,12 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <general/TreeNodeIterator.h>
-#include <general/stl_functions.h>
+#include <General/TreeNodeIterator.h>
+#include <General/stl_functions.h>
 
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
-#include <general/io_functions.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
+#include <General/io_functions.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #ifdef __WIN32__

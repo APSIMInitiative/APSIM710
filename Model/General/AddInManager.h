@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include <general\path.h>
+#include <General\path.h>
 
 //---------------------------------------------------------------------------
 // This exception is thrown by the AddInManager in response to an invalid

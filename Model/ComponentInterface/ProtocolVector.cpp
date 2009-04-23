@@ -1,8 +1,8 @@
 #pragma hdrstop
 
 #include "ProtocolVector.h"
-#include <general/string_functions.h>
-#include <general/platform.h>
+#include <General/string_functions.h>
+#include <General/platform.h>
 #include <stdexcept>
 namespace protocol {
 // ------------------------------------------------------------------

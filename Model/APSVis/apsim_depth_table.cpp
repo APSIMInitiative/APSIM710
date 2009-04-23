@@ -1,12 +1,12 @@
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "apsim_depth_table.h"
-#include <general\string_functions.h>
-#include <general\stream_functions.h>
-#include <general\stl_functions.h>
-#include <general\math_functions.h>
+#include <General\string_functions.h>
+#include <General\stream_functions.h>
+#include <General\stl_functions.h>
+#include <General\math_functions.h>
 #include <strstrea.h>
 #include <stdio.h>
 

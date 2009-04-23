@@ -2,7 +2,7 @@
 #define FILTER_H
 
 #include "data.h"
-#include <general/date_class.h>
+#include <General/date_class.h>
 
 class DATA_EXPORT Table_base;  // forward
 const int MAX_NUM_FILTERS = 10;

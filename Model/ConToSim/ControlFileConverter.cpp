@@ -5,12 +5,12 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <general/StringTokenizer.h>
-#include <general/string_functions.h>
-#include <general/path.h>
-#include <general/date_class.h>
-#include <general/IniFile.h>
-#include <general/stristr.h>
+#include <General/StringTokenizer.h>
+#include <General/string_functions.h>
+#include <General/path.h>
+#include <General/date_class.h>
+#include <General/IniFile.h>
+#include <General/stristr.h>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>

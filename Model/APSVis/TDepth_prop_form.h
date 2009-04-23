@@ -7,7 +7,7 @@
 #include <vcl\StdCtrls.hpp>
 #include <vcl\Forms.hpp>
 #include <vcl\Buttons.hpp>
-#include <general\date_class.h>
+#include <General\date_class.h>
 #include "table_base.h"
 //---------------------------------------------------------------------------
 class TDepth_prop_form : public TForm

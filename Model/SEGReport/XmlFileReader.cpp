@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
@@ -7,12 +7,12 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <general\inifile.h>
-#include <generalvcl\db_functions.h>
-#include <general\string_functions.h>
-#include <general\path.h>
-#include <general\xml.h>
-#include <general\io_functions.h>
+#include <General\inifile.h>
+#include <Generalvcl\db_functions.h>
+#include <General\string_functions.h>
+#include <General\path.h>
+#include <General\xml.h>
+#include <General\io_functions.h>
 #include "DataContainer.h"
 
 using namespace std;

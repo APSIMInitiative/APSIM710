@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <boost\lexical_cast.hpp>
-#include <general\math_functions.h>
+#include <General\math_functions.h>
 // ------------------------------------------------------------------
 //  Short description:
 //     Copy contents from a VCL TStrings object to a STL container.

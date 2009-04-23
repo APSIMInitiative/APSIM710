@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef DataContainerH
 #define DataContainerH
-#include <general\xml.h>
+#include <General\xml.h>
 
 class DataProcessor;
 //---------------------------------------------------------------------------

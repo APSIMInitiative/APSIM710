@@ -2,9 +2,9 @@
 
 #include <string>
 #include <stdexcept>
-#include <general/platform.h>
-#include <general/string_functions.h>
-#include <general/path.h>
+#include <General/platform.h>
+#include <General/string_functions.h>
+#include <General/path.h>
 #include "ApsimDirectories.h"
 
 using namespace std;

@@ -4,7 +4,7 @@
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <stdexcept>
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 #include <General/platform.h>
 
   //! Convert ymd to a standard string formatting policies

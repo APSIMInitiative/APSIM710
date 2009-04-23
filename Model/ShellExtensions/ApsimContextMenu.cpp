@@ -5,9 +5,9 @@
 #include <olectl.h>
 #include <string>
 #include <exception>
-#include <general\path.h>
-#include <general\inifile.h>
-#include <general\stream_functions.h>
+#include <General\path.h>
+#include <General\inifile.h>
+#include <General\stream_functions.h>
 #include <ApsimShared\ApsimVersion.h>
 #include <forms.hpp>
 

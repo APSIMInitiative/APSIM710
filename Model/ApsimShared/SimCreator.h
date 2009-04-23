@@ -7,7 +7,7 @@
 #include "SimCreatorSection.h"
 #include <vector>
 #include <string>
-#include <general/platform.h>
+#include <General/platform.h>
 //---------------------------------------------------------------------------
 // This class creates SIM files given a control file.
 //---------------------------------------------------------------------------

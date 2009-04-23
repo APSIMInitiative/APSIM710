@@ -5,7 +5,7 @@
 
 #include <string>
 #include <vector>
-#include <general/platform.h>
+#include <General/platform.h>
 #include <boost/function.hpp>
 #include "DataTypes.h"
 #include <ComponentInterface/ApsimVariant.h>

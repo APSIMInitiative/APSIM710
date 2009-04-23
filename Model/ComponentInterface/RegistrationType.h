@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef RegistrationTypeH
 #define RegistrationTypeH
-#include <general/platform.h>
+#include <General/platform.h>
 
 #include <string>
 //---------------------------------------------------------------------------

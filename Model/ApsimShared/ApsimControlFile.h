@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include <boost/function.hpp>
-#include <general/platform.h>
+#include <General/platform.h>
 class IniFile;
 // ------------------------------------------------------------------
 // This class encapsulates an apsim control file.  It provides several

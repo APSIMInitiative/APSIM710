@@ -9,8 +9,8 @@
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include "DataTypes.h"
 #include "FortranTemplates.h"
-#include "FortranArray.h"
-#include "FortranString.h"
+#include <ComponentInterface2/FortranArray.h>
+#include <ComponentInterface2/FortranString.h>
 
 using namespace std;
 
@@ -41,7 +41,12 @@ void FortranComponentWrapper::onInit1()
    // Init1 event handler.
    // -----------------------------------------------------------------------
    // get FORTRAN to create new memory blocks.
-   allocDealloc = (BoolMethod*) GetProcAddress(dllHandle, "alloc_dealloc_instance");
+   #ifdef __WIN32__
+       allocDealloc = (BoolMethod*) GetProcAddress(dllHandle, "alloc_dealloc_instance");
+   #else
+       allocDealloc = (void (*)(const int* doAllocate))dlsym(dllHandle, "alloc_dealloc_instance");
+   #endif
+
    if (allocDealloc == NULL)
       throw runtime_error("Cannot find alloc_dealloc_instance routine in FORTRAN model");
    const int doAllocate = true;
@@ -50,14 +55,23 @@ void FortranComponentWrapper::onInit1()
    // Get the address of the common block and zero it's contents.
    typedef CommonBlock* CommonBlockPtr;
    typedef STDCALL CommonBlockPtr (GetInstanceMethod)();
-   GetInstanceMethod* getInstance = (GetInstanceMethod*) GetProcAddress(dllHandle, "getInstance");
+
+   #ifdef __WIN32__
+      GetInstanceMethod* getInstance = (GetInstanceMethod*) GetProcAddress(dllHandle, "getInstance");
+   #else
+      GetInstanceMethod* getInstance = (CommonBlockPtr (*)()) dlsym(dllHandle, "getInstance");
+   #endif
    if (getInstance == NULL)
       throw runtime_error("Cannot find getInstance routine in FORTRAN model");
    realCommonBlock = *getInstance();
    ourCommonBlock = realCommonBlock; //copies byte for byte
 
    // Call the FORTRAN OnInit1 routine.
-   NullMethod* OnInit1 = (NullMethod*) GetProcAddress(dllHandle, "OnInit1");
+   #ifdef __WIN32__
+      NullMethod* OnInit1 = (NullMethod*) GetProcAddress(dllHandle, "OnInit1");
+   #else
+      NullMethod* OnInit1 = (void (*)())dlsym(dllHandle, "OnInit1");
+   #endif
    if (OnInit1 == NULL)
       throw runtime_error("Cannot find onInit1 routine in FORTRAN model");
    swapInstanceIn();

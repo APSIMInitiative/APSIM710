@@ -5,11 +5,11 @@
 #include <ApsimShared/ApsimVersion.h>
 #include <ComponentInterface2/ScienceAPI.h>
 #include <ComponentInterface2/DataTypes.h>
-#include <general/math_functions.h>
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
-#include <general/date_class.h>
-#include <general/StringTokenizer.h>
+#include <General/math_functions.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
+#include <General/date_class.h>
+#include <General/StringTokenizer.h>
 
 #include "graz.h"
 using namespace std;

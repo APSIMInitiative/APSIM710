@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
@@ -10,7 +10,7 @@
 #include "scatter_format.h"
 #include "apsim_table.h"
 #include "apsim_binary_table.h"
-#include <general\path.h>
+#include <General\path.h>
 // ------------------------------------------------------------------
 #pragma resource "*.dfm"
 // ------------------------------------------------------------------

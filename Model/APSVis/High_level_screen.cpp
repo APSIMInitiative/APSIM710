@@ -1,9 +1,9 @@
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "high_level_screen.h"
-#include <general\stl_functions.h>
+#include <General\stl_functions.h>
 
 // ------------------------------------------------------------------
 //  Short description:

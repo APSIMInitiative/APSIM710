@@ -2,13 +2,13 @@
 #pragma hdrstop
 #include "RealSet.h"
 #include "Kruskal_wallis.h"
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 
 #include "DataProcessor.h"
-#include <general\xml.h>
-#include <general\stl_functions.h>
-#include <generalvcl\db_functions.h>
+#include <General\xml.h>
+#include <General\stl_functions.h>
+#include <Generalvcl\db_functions.h>
 #include "ApsimFileReader.h"
 #include "Probability.h"
 #include "PredObs.h"

@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #include <stdlib.h>
-#include <general/stream_processor.h>
-#include <general/stream_functions.h>
+#include <General/stream_processor.h>
+#include <General/stream_functions.h>
 #include <sstream>
 
 using namespace std;

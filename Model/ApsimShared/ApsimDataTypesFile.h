@@ -2,7 +2,7 @@
 
 #ifndef ApsimDataTypesFileH
 #define ApsimDataTypesFileH
-#include <general/platform.h>
+#include <General/platform.h>
 
 class EXPORT ApsimDataTypeData;
 //---------------------------------------------------------------------------

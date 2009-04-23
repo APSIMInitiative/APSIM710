@@ -1,4 +1,4 @@
-#include <general/platform.h>
+#include <General/platform.h>
 #include <ComponentInterface/Component.h>
 #include "TrackerVariable.h"
 #include "TrackerComponent.h"

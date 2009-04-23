@@ -1,8 +1,8 @@
 #include <string.h>
 
 #include <map>
-#include <general/string_functions.h>
-#include <general/stristr.h>
+#include <General/string_functions.h>
+#include <General/stristr.h>
 
 #include <ApsimShared/ApsimDirectories.h>
 #include <ApsimShared/FStringExt.h>

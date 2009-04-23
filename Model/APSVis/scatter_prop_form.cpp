@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl\vcl.h>
 #pragma hdrstop
 
 #include "scatter_prop_form.h"
-#include <general\stristr.h>
+#include <General\stristr.h>
 
 //---------------------------------------------------------------------------
 //#pragma link "tbitmap_combo"

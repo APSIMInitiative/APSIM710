@@ -1,7 +1,7 @@
 #ifndef MessageTypesH
 #define MessageTypesH
 #include <ComponentInterface/MessageDataExt.h>
-#include <general/platform.h>
+#include <General/platform.h>
 #include <ApsimShared/FString.h>
 
 #define max_array_size 100

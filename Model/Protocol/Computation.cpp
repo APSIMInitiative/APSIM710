@@ -8,9 +8,9 @@
 
 #include <list>
 #include <functional>
-#include <general/platform.h>
-#include <general/dll.h>
-#include <general/path.h>
+#include <General/platform.h>
+#include <General/dll.h>
+#include <General/path.h>
 #include <ApsimShared/ApsimDirectories.h>
 #include "Computation.h"
 #include "Transport.h"

@@ -1,6 +1,6 @@
 #ifdef __WIN32__
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #pragma hdrstop
 #include <windows.h>
 HINSTANCE hInstance;

@@ -4,12 +4,12 @@
 #include <sstream>
 #include <iomanip>
 
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 #include "stristr.h"
 
 #include <cctype>
 #include <stdexcept>
-
+#include <stdlib.h>
 using namespace std;
 // ------------------------------------------------------------------
 // removes leading and trailing characters.
@@ -233,7 +233,6 @@ string ftoa(double Float, int Num_decplaces)
    buf << std::setprecision(Num_decplaces) << Float;
    return buf.str();
    }
-
 // ------------------------------------------------------------------
 //  Short description:
 //     convert a Integer to a string.
@@ -241,7 +240,7 @@ string ftoa(double Float, int Num_decplaces)
 string itoa(int intValue)
    {
    char buffer[100];
-   itoa(intValue, buffer, 10);
+   sprintf(buffer, "%d", intValue);
    return buffer;
    }
 

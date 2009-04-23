@@ -1,9 +1,9 @@
 #include <iostream>
-#include <general/xml.h>
-#include <general/date_class.h>
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
-#include <general/path.h>
+#include <General/xml.h>
+#include <General/date_class.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
+#include <General/path.h>
 #include "DataTypes.h"
 #include "CMPData.h"
 #include "ScienceAPI.h"

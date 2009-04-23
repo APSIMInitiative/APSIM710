@@ -1,4 +1,4 @@
-#include <general/pch.h>
+#include <General/pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
@@ -6,7 +6,7 @@
 #include "ApsimDirectories.h"
 #include <fstream>
 #include <sstream>
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 
 static const char* indent = "<IND x=\"90\">";
 static const char* lf = "<BR>";

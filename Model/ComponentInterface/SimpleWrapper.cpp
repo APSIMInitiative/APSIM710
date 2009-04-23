@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <general/platform.h>
+#include <General/platform.h>
 
 struct Instance
    {

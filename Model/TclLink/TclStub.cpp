@@ -1,5 +1,5 @@
 #include <windows.h>
-#include <general/platform.h>
+#include <General/platform.h>
 
 extern "C" void EXPORT STDCALL wrapperDLL(char* wrapperDll)
    {

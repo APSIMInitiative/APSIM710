@@ -2,7 +2,7 @@
 #include <string>
 #include <stdexcept>
 #include "FString.h"
-#include <general/platform.h>
+#include <General/platform.h>
 #include "FStringExt.h"
 std::string EXPORT STDCALL asString(const FString& st)
    {

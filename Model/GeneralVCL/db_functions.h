@@ -5,7 +5,7 @@
 #include <string>
 #include <db.hpp>
 #include <stdexcept>
-#include <general/platform.h>
+#include <General/platform.h>
 
 namespace Adodb {
    class TADOConnection; }

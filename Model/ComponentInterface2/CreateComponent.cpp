@@ -1,5 +1,5 @@
 
-#include <general/dll.h>
+#include <General/dll.h>
 #include "ScienceAPI.h"
 
 class CMPComponentInterface;

@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------
 #ifndef ApsimDataFileH
 #define ApsimDataFileH
-#include <general/platform.h>
-#include <general/string_functions.h>
+#include <General/platform.h>
+#include <General/string_functions.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <fstream>
 //---------------------------------------------------------------------------

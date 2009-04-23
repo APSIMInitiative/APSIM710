@@ -1,10 +1,10 @@
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "apsim_table.h"
-#include <general\string_functions.h>
-#include <general\inifile.h>
+#include <General\string_functions.h>
+#include <General\inifile.h>
 // ------------------------------------------------------------------
 //  Short description:
 //    constructor

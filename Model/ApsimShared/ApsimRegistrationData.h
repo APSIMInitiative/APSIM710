@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------
 #ifndef ApsimRegistrationDataH
 #define ApsimRegistrationDataH
-#include <general/xml.h>
-#include <general/platform.h>
+#include <General/xml.h>
+#include <General/platform.h>
 
 // ------------------------------------------------------------------
 // This class encapsulates a single component registration from an

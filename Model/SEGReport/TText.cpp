@@ -1,11 +1,11 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "TText.h"
-#include <general\stringtokenizer.h>
-#include <generalvcl\vcl_functions.h>
+#include <General\stringtokenizer.h>
+#include <Generalvcl\vcl_functions.h>
 #include "ReportMacros.h"
 
 #pragma package(smart_init)

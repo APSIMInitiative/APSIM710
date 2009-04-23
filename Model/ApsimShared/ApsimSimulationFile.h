@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef ApsimSimulationFileH
 #define ApsimSimulationFileH
-#include <general/platform.h>
+#include <General/platform.h>
 
 class XMLDocument;
 // ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
@@ -7,10 +7,10 @@
 #include "scatter_child.h"
 #include "about.h"
 #include <sstream.h>
-#include <general\stream_functions.h>
-#include <general\string_functions.h>
-#include <generalvcl\vcl_functions.h>
-#include <general\path.h>
+#include <General\stream_functions.h>
+#include <General\string_functions.h>
+#include <Generalvcl\vcl_functions.h>
+#include <General\path.h>
 #include <ApsimShared\ApsimDirectories.h>
 #include "depth_child.h"
 #include "prob_child.h"

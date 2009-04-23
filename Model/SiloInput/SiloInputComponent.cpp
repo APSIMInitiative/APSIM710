@@ -13,8 +13,8 @@
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 
-#include <general/string_functions.h>
-#include <general/http.h>
+#include <General/string_functions.h>
+#include <General/http.h>
 
 #include <ApsimShared/ApsimDataFile.h>
 #include <ComponentInterface/Component.h>

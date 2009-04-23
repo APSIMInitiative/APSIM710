@@ -2,7 +2,7 @@
 #ifndef ApsimRegistryH
 #define ApsimRegistryH
 
-#include <general/platform.h>
+#include <General/platform.h>
 #include <vector>
 #include <map>
 #include <set>

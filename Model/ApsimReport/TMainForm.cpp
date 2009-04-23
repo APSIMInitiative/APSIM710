@@ -1,14 +1,14 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "TMainForm.h"
 #include "TPageSetupForm.h"
-#include <generalvcl\vcl_functions.h>
-#include <general\io_functions.h>
-#include <general\inifile.h>
-#include <general\path.h>
+#include <Generalvcl\vcl_functions.h>
+#include <General\io_functions.h>
+#include <General\inifile.h>
+#include <General\path.h>
 #include <ApsimShared\ApsimSettings.h>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)

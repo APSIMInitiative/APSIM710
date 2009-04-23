@@ -3,8 +3,8 @@
 #define ApsimRegistrationH
 
 #include <string>
-#include <general/platform.h>
-#include <general/string_functions.h>
+#include <General/platform.h>
+#include <General/string_functions.h>
 #include <ApsimShared/ApsimRegistrationType.h>
 #include <iostream.h>
 

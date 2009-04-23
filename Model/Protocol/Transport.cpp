@@ -5,7 +5,7 @@
 #include <ComponentInterface/message.h>
 
 #include <ComponentInterface/MessageDataExt.h>
-#include <general/platform.h>
+#include <General/platform.h>
 using namespace protocol;
 
 namespace protocol {

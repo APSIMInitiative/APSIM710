@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-#include <general/pch.h>
+#include <General/pch.h>
 #pragma hdrstop
 
 #include "SimCreatorSection.h"
-#include <general/string_functions.h>
-#include <general/stristr.h>
+#include <General/string_functions.h>
+#include <General/stristr.h>
 
 #pragma package(smart_init)
 

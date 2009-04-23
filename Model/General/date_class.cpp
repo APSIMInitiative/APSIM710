@@ -2,9 +2,9 @@
 #include <time.h>
 #include <sstream>
 
-#include <general/date_class.h>
-#include <general/stream_functions.h>
-#include <general/string_functions.h>
+#include <General/date_class.h>
+#include <General/stream_functions.h>
+#include <General/string_functions.h>
 
 #define NO_YEAR  4200
 #define NO_YEAR_STRING "4200"

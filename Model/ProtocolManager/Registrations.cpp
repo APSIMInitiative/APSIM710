@@ -1,11 +1,11 @@
 //---------------------------------------------------------------------------
-#include <general/pch.h>
+#include <General/pch.h>
 #pragma hdrstop
 
 #include <stdexcept>
 #include "Registrations.h"
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 

@@ -1,11 +1,11 @@
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "drawable.h"
 
 #include "Series_base.h"
-#include <general\date_class.h>
+#include <General\date_class.h>
 /**# implementation Series_base:: id(C_0853986465)
 */
 

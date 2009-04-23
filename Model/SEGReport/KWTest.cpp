@@ -2,16 +2,16 @@
 #pragma hdrstop
 #include "RealSet.h"
 #include "Kruskal_wallis.h"
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 
 #include "KWTest.h"
 #include "DataContainer.h"
 #include "DataProcessor.h"
-#include <generalvcl\db_functions.h>
-#include <general\math_functions.h>
-#include <general\string_functions.h>
-#include <generalvcl\vcl_functions.h>
+#include <Generalvcl\db_functions.h>
+#include <General\math_functions.h>
+#include <General\string_functions.h>
+#include <Generalvcl\vcl_functions.h>
 
 using namespace std;
 

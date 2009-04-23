@@ -4,9 +4,9 @@
 #include <math.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
 
-#include <general/string_functions.h>
-#include <general/date_class.h>
-#include <general/platform.h>
+#include <General/string_functions.h>
+#include <General/date_class.h>
+#include <General/platform.h>
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimDataFile.h>

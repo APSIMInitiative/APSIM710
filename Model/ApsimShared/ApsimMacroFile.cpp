@@ -5,10 +5,10 @@
 
 #include <vector>
 #include <string>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
-#include <general/macro.h>
-#include <general/platform.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
+#include <General/macro.h>
+#include <General/platform.h>
 using namespace std;
 
 // ------------------------------------------------------------------

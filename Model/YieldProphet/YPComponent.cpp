@@ -1,5 +1,5 @@
-#include <general\math_functions.h>
-#include <general\stl_functions.h>
+#include <General\math_functions.h>
+#include <General\stl_functions.h>
 
 #include "YPComponent.h"
 #include <ComponentInterface/variant.h>

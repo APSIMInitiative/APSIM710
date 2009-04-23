@@ -3,7 +3,7 @@
 
 class FString;
 
-#include <general/platform.h>
+#include <General/platform.h>
 
 extern "C" ApsimComponentData* EXPORT STDCALL newApsimComponentData(const char* xml,
                                                     unsigned xmlLength);

@@ -2,7 +2,7 @@
 #include <math.h>
 
 #include <vector>
-#include <general/date_class.h>
+#include <General/date_class.h>
 #include <ComponentInterface2/ScienceAPI.h>
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/Variant.h>

@@ -6,7 +6,7 @@
 #include <string>
 
 #include <ComponentInterface/Component.h>
-#include <general/platform.h>
+#include <General/platform.h>
 
 namespace protocol {
 // ------------------------------------------------------------------

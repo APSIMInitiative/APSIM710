@@ -1,8 +1,8 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
-#include <general/IniFile.h>
-#include <general/platform.h>
+#include <General/IniFile.h>
+#include <General/platform.h>
 #include "ApsimDirectories.h"
 #include "ApsimVersion.h"
 #include "ApsimSettings.h"

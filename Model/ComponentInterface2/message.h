@@ -2,7 +2,7 @@
 #ifndef MessageH
 #define MessageH
 
-#include <general/platform.h>
+#include <General/platform.h>
 // ------------------------------------------------------------------
 //  Short description:
 //    This class encapsulates a protocol message.

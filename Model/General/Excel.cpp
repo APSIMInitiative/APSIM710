@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-#include <general/pch.h>
+#include <General/pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "Excel.h"
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 // Return a list of EXCEL sheet names for the specified xlsfile.

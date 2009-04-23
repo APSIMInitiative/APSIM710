@@ -2,8 +2,14 @@
 #ifndef BuiltInsH
 #define BuiltInsH
 #include <ComponentInterface2/MessageData.h>
-#include <stdio>
-#include <stdlib>
+#include <stdexcept>
+#include <ComponentInterface2/FortranString.h>
+
+#ifdef __WIN32__
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
 // ------ boolean ------
 inline unsigned int memorySize(const bool& value)
    {return 1;}
@@ -20,11 +26,11 @@ inline void pack(MessageData& messageData, bool value)
 inline std::string DDML(bool value)
    {return "<type kind=\"boolean\"/>";}
 
-void Convert(bool source, bool& dest)   {dest = source;}
-void Convert(int source, bool& dest)    {dest = source;}
-void Convert(float source, bool& dest)  {dest = source;}
-void Convert(double source, bool& dest) {dest = source;}
-void Convert(const std::string& source, bool& dest)
+inline void Convert(bool source, bool& dest)   {dest = source;}
+inline void Convert(int source, bool& dest)    {dest = source;}
+inline void Convert(float source, bool& dest)  {dest = source;}
+inline void Convert(double source, bool& dest) {dest = source;}
+inline void Convert(const std::string& source, bool& dest)
    {
    char *chk;
    dest = (bool) strtol(source.c_str(), &chk, 10);
@@ -46,11 +52,11 @@ inline void pack(MessageData& messageData, int value)
    }
 inline std::string DDML(int value)
    {return "<type kind=\"integer4\"/>";}
-void Convert(bool source, int& dest)   {dest = source;}
-void Convert(int source, int& dest)    {dest = source;}
-void Convert(float source, int& dest)  {dest = (int)source;}
-void Convert(double source, int& dest) {dest = (int)source;}
-void Convert(const std::string& source, int& dest)
+inline void Convert(bool source, int& dest)   {dest = source;}
+inline void Convert(int source, int& dest)    {dest = source;}
+inline void Convert(float source, int& dest)  {dest = (int)source;}
+inline void Convert(double source, int& dest) {dest = (int)source;}
+inline void Convert(const std::string& source, int& dest)
    {
    char *chk;
    dest = (int) strtol(source.c_str(), &chk, 10);
@@ -72,11 +78,11 @@ inline void pack(MessageData& messageData, float value)
    }
 inline std::string DDML(float value)
    {return "<type kind=\"single\"/>";}
-void Convert(bool source, float& dest)  {dest = source;}
-void Convert(int source, float& dest)   {dest = source;}
-void Convert(float source, float& dest) {dest = source;}
-void Convert(double source, float& dest){dest = source;}
-void Convert(const std::string& source, float& dest)
+inline void Convert(bool source, float& dest)  {dest = source;}
+inline void Convert(int source, float& dest)   {dest = source;}
+inline void Convert(float source, float& dest) {dest = source;}
+inline void Convert(double source, float& dest){dest = source;}
+inline void Convert(const std::string& source, float& dest)
    {
    char *chk;
    dest = (float) strtod(source.c_str(), &chk);
@@ -98,11 +104,11 @@ inline void pack(MessageData& messageData, double value)
    }
 inline std::string DDML(double value)
    {return "<type kind=\"double\"/>";}
-void Convert(bool source, double& dest)  {dest = source;}
-void Convert(int source, double& dest)   {dest = source;}
-void Convert(float source, double& dest) {dest = source;}
-void Convert(double source, double& dest) {dest = source;}
-void Convert(const std::string& source, double& dest)
+inline void Convert(bool source, double& dest)  {dest = source;}
+inline void Convert(int source, double& dest)   {dest = source;}
+inline void Convert(float source, double& dest) {dest = source;}
+inline void Convert(double source, double& dest) {dest = source;}
+inline void Convert(const std::string& source, double& dest)
    {
    char *chk;
    dest = (double) strtod(source.c_str(), &chk);
@@ -159,16 +165,16 @@ inline void pack(MessageData& messageData, const std::string& value)
    }
 inline std::string DDML(const std::string& value)
    {return "<type kind=\"string\"/>";}
-void Convert(bool source, std::string& dest)  {if (source) dest = "1"; else dest = "0"; }
-void Convert(int source, std::string& dest)   {dest = itoa(source);}
-void Convert(const std::string& source, std::string& dest) {dest = source;}
-void Convert(float source, std::string& dest)
+inline void Convert(bool source, std::string& dest)  {if (source) dest = "1"; else dest = "0"; }
+inline void Convert(int source, std::string& dest)   {dest = itoa(source);}
+inline void Convert(const std::string& source, std::string& dest) {dest = source;}
+inline void Convert(float source, std::string& dest)
    {
    char st[100];
    sprintf(st, "%f", source);
    dest = st;
    }
-void Convert(double source, std::string& dest)
+inline void Convert(double source, std::string& dest)
    {
    char st[100];
    sprintf(st, "%f", source);
@@ -177,7 +183,7 @@ void Convert(double source, std::string& dest)
 
 // ------ std::vector ------
 template <class T>
-unsigned int memorySize(const std::vector<T>& values)
+inline unsigned int memorySize(const std::vector<T>& values)
    {
    unsigned size = 4;
    for (unsigned i = 0; i != values.size(); i++)
@@ -207,7 +213,7 @@ inline void pack(MessageData& messageData, const std::vector<T>& values)
       pack(messageData, values[i]);
    }
 template <class T>
-std::string DDML(std::vector<T>& value)
+inline std::string DDML(std::vector<T>& value)
    {
    T dummy;
    std::string ddml = DDML(dummy);
@@ -215,14 +221,14 @@ std::string DDML(std::vector<T>& value)
    return ddml;
    }
 template <class FROM, class TO>
-void Convert(const std::vector<FROM>& from, TO& to)
+inline void Convert(const std::vector<FROM>& from, TO& to)
    {
    if (from.size() != 1)
       throw std::runtime_error("Too many values to convert from vector to scalar");
    ::Convert(from[0], to);
    }
 template <>
-void Convert(const std::vector<std::string>& from, std::string& to)
+inline void Convert(const std::vector<std::string>& from, std::string& to)
    {
    to = "";
    for (unsigned i = 0; i != from.size(); i++)
@@ -233,7 +239,7 @@ void Convert(const std::vector<std::string>& from, std::string& to)
       }
    }
 template <class FROM, class TO>
-void Convert(const std::vector<FROM>& from, std::vector<TO>& toVector)
+inline void Convert(const std::vector<FROM>& from, std::vector<TO>& toVector)
    {
    TO to;
    toVector.clear();
@@ -244,7 +250,7 @@ void Convert(const std::vector<FROM>& from, std::vector<TO>& toVector)
       }
    }
 template <class FROM, class TO>
-void Convert(const FROM& from, std::vector<TO>& toVector)
+inline void Convert(const FROM& from, std::vector<TO>& toVector)
    {
    TO to;
    ::Convert(from, to);

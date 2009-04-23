@@ -1,4 +1,4 @@
-#include <general/pch.h>
+#include <General/pch.h>
 #pragma hdrstop
 
 #include <list>
@@ -9,8 +9,8 @@
 #include <math.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
 
-#include <general/string_functions.h>
-#include <general/date_class.h>
+#include <General/string_functions.h>
+#include <General/date_class.h>
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimComponentData.h>

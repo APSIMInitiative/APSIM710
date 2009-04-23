@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <fstream>
 #include "macro.h"
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
-#include <general/string_functions.h>
-#include <general/io_functions.h>
-#include <general/stl_functions.h>
-#include <general/StringTokenizer.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
+#include <General/string_functions.h>
+#include <General/io_functions.h>
+#include <General/stl_functions.h>
+#include <General/StringTokenizer.h>
 
 #include <stdexcept>
 

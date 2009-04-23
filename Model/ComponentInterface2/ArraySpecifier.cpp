@@ -3,7 +3,7 @@
 #ifdef __WIN32__
    #include <stdlib>
 #endif
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 #include "ArraySpecifier.h"
 #include "BuiltIns.h"
 using namespace std;

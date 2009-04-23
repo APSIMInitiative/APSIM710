@@ -42,12 +42,12 @@ SYSOBJS := Memmgr.Lib
 ifeq ($(PROJECTTYPE),exe)
    DEFFILE := nul
    IMPFILE := nul
-   PROJECT := $(PROJECT).exe 
+   PROJECT := $(PROJECT).exe
    LFLAGS := $(LFLAGS) -Tpe
 
 else
-   DEFFILE := $(PROJECT).def 
-   IMPFILE := $(PROJECT).imp 
+   DEFFILE := $(PROJECT).def
+   IMPFILE := $(PROJECT).imp
    PROJECT := $(PROJECT).dll
    LFLAGS := $(LFLAGS) -Tpd
 endif
@@ -80,14 +80,14 @@ ifdef VCL
       LFLAGS := $(LFLAGS) -aa
       SYSOBJS := $(SYSOBJS) c0d32.obj
    endif
-   
+
    SYSOBJS := $(SYSOBJS) sysinit.obj rtl.bpi vcl.bpi dbrtl.bpi bdertl.bpi vcldb.bpi vclx.bpi nmfast.bpi vcldbx.bpi \
       bcbie.bpi inet.bpi vcljpg.bpi adortl.bpi \
       dbxcds.bpi ibxpress.bpi vclie.bpi inetdbbde.bpi inetdbxpress.bpi \
       dclocx.bpi soaprtl.bpi Tee7C6.bpi TeeUI7C6.bpi TeeDB7C6.bpi TeeGL7C6.bpi \
       qrpt60.bpi TeeQR7C6.bpi TeeLanguage7C6.bpi TeePro7C6.bpi
-   LIBS := $(LIBS) cp32mti.lib 
-        
+   LIBS := $(LIBS) cp32mti.lib
+
    PRECOMPILEDHEADERS := yes
 else
    ifeq ($(PROJECTTYPE),exe)
@@ -95,24 +95,27 @@ else
       CFLAGS := $(CFLAGS) -tWC
       LFLAGS := $(LFLAGS) -ap
    else
-      CFLAGS := $(CFLAGS) -tWD   
+      CFLAGS := $(CFLAGS) -tWD
       LFLAGS := $(LFLAGS) -aa
       SYSOBJS := $(SYSOBJS) c0d32.obj
    endif
-   LIBS := $(LIBS) cw32mti.lib 
+   LIBS := $(LIBS) cw32mti.lib
    DEFINES := $(DEFINES);_NO_VCL
 endif
 
 # Precompiled headers
 ifdef PRECOMPILEDHEADERS
-	CFLAGS := $(CFLAGS) -H=$(TEMP)\vcl60.csm -Hc 
+	CFLAGS := $(CFLAGS) -H=$(TEMP)\vcl60.csm -Hc
 endif
 
-# The rules    
+# The rules
 %.obj:	%.cpp
-	$(CC) $(CFLAGS) $(WARNINGS) -I$(INCLUDEPATH) -D$(DEFINES) $< 
+	$(CC) $(CFLAGS) $(WARNINGS) -I$(INCLUDEPATH) -D$(DEFINES) $<
 
-SOURCEOBJS:=	$(SRC:.cpp=.obj) 
+# Change forward slashes to back slashes.
+SRC :=	$(subst /,\,$(SRC))
+
+SOURCEOBJS:=	$(SRC:.cpp=.obj)
 
 # remove all paths on OBJ files.
 #OBJSNODIR := $(foreach obj,$(SOURCEOBJS),$(notdir $(obj)))

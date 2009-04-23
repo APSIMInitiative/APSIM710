@@ -5,11 +5,11 @@
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
-#include <general/IniFile.h>
-#include <general/path.h>
-#include <general/platform.h>
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
+#include <General/IniFile.h>
+#include <General/path.h>
+#include <General/platform.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
 
 #include "ApsimSettings.h"
 #include "ApsimVersion.h"

@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include "TypeConverter.h"
 
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 
 
 using namespace std;

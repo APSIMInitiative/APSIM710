@@ -4,7 +4,7 @@
 #include <ComponentInterface/Interfaces.h>
 #include <stdexcept>
 
-#include <general/platform.h>
+#include <General/platform.h>
 
 namespace protocol {
 typedef EXPORT STDCALL void (CallbackType)(const unsigned int *compInst, Message *message);

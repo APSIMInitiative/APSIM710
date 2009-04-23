@@ -3,10 +3,14 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include <stdio.h>
+
 #include <stdlib.h>
 
-#include <general/string_functions.h>
+#ifdef __WIN32__
+#include <stdio.h>
+#endif
+
+#include <General/string_functions.h>
 
 class EXPORT TypeConverter
    {

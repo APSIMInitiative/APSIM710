@@ -1,17 +1,17 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "ApsimFileReader.h"
 #include <fstream>
-#include <generalvcl\db_functions.h>
-#include <general\stl_functions.h>
-#include <general\string_functions.h>
-#include <general\io_functions.h>
-#include <general\path.h>
+#include <Generalvcl\db_functions.h>
+#include <General\stl_functions.h>
+#include <General\string_functions.h>
+#include <General\io_functions.h>
+#include <General\path.h>
 #include <dir.h>
-#include <general\xml.h>
+#include <General\xml.h>
 #include <ApsimShared\ApsimDirectories.h>
 #include "DataContainer.h"
 using namespace std;

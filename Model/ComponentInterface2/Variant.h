@@ -1,7 +1,7 @@
 #ifndef VariantH
 #define VariantH
 
-#include <general/platform.h>
+#include <General/platform.h>
 #include <string>
 #include <vector>
 

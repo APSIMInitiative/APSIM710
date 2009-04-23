@@ -2,7 +2,7 @@
 #define ApsimRegistrationTypeH
 
 #include <string>
-#include <general/platform.h>
+#include <General/platform.h>
 
 enum EventTypeCode {get=1,         respondToGet=2,
                     set=9,         respondToSet=3,

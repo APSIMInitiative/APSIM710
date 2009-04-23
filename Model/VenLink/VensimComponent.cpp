@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #pragma hdrstop
 
-#include <general\string_functions.h>
-#include <general\stristr.h>
+#include <General\string_functions.h>
+#include <General\stristr.h>
 
 #include <ApsimShared\FStringExt.h>
 #include <ApsimShared\ApsimDirectories.h>

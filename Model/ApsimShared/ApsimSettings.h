@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------
 #ifndef ApsimSettingsH
 #define ApsimSettingsH
-#include <general/platform.h>
-#include <general/xml.h>
+#include <General/platform.h>
+#include <General/xml.h>
 
 class IniFile;
 // ------------------------------------------------------------------

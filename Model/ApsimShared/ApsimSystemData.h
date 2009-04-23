@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef ApsimSystemDataH
 #define ApsimSystemDataH
-#include <general/platform.h>
+#include <General/platform.h>
 
 // ------------------------------------------------------------------
 // This class encapsulates the data in a component section of

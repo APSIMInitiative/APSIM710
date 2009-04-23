@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "filter.h"
-#include <general\string_functions.h>
+#include <General\string_functions.h>
 #include "table_base.h"
 // ------------------------------------------------------------------
 //  Short description:

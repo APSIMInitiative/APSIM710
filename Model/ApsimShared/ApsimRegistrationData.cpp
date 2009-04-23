@@ -3,9 +3,9 @@
 #include <stdexcept>
 #include <vector>
 
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
-#include <general/string_functions.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
+#include <General/string_functions.h>
 #include "ApsimRegistrationData.h"
 
 // ------------------------------------------------------------------

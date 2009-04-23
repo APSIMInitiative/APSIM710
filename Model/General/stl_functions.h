@@ -4,8 +4,8 @@
 
 
 #include <functional>
-#include <general/string_functions.h>
-#include <general/stristr.h>
+#include <General/string_functions.h>
+#include <General/stristr.h>
 #include <boost/lexical_cast.hpp>
 
 using namespace std;

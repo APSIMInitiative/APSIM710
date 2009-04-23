@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef ApsimServiceDataH
 #define ApsimServiceDataH
-#include <general/platform.h>
+#include <General/platform.h>
 
 // ------------------------------------------------------------------
 // This class encapsulates the data in a service section of

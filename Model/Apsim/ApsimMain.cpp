@@ -4,10 +4,10 @@
 #include <iostream>
 #include <stdexcept>
 
-#include <general/path.h>
-#include <general/stl_functions.h>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
+#include <General/path.h>
+#include <General/stl_functions.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
 
 #include <ApsimShared/ApsimComponentData.h>
 #include <ApsimShared/ApsimSystemData.h>

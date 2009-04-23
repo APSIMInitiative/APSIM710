@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
@@ -7,13 +7,13 @@
 #include "ComponentRegistration.h"
 
 #include <QuickRpt.hpp>
-#include <generalvcl\vcl_functions.h>
-#include <general\stl_functions.h>
-#include <general\path.h>
-#include <general\inifile.h>
-#include <general\stringtokenizer.h>
-#include <general\xml.h>
-#include <general\exec.h>
+#include <Generalvcl\vcl_functions.h>
+#include <General\stl_functions.h>
+#include <General\path.h>
+#include <General\inifile.h>
+#include <General\stringtokenizer.h>
+#include <General\xml.h>
+#include <General\exec.h>
 #include <ApsimShared\ApsimDirectories.h>
 #include <dcfdes.hpp>
 #include <qrctrls.hpp>

@@ -5,10 +5,10 @@
 #include <fstream>
 #include <iostream>
 
-#include <general/stl_functions.h>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
-#include <general/path.h>
+#include <General/stl_functions.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
+#include <General/path.h>
 
 #include <ApsimShared/ApsimComponentData.h>
 #include <ApsimShared/ApsimSystemData.h>

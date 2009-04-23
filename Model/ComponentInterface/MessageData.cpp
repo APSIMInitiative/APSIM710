@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #include <ApsimShared/FString.h>
-#include <general/platform.h>
+#include <General/platform.h>
 #include "MessageData.h"
 #include "message.h"
 #include "ProtocolVector.h"

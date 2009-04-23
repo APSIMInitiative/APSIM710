@@ -8,7 +8,7 @@
 #include <iomanip>
 
 #include <ComponentInterface/DataTypes.h>
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 #include <ComponentInterface/ScienceAPI.h>
 #include "Utility/InterpolationFunction.h"
 

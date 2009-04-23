@@ -1,6 +1,6 @@
 #include "MessageTypes.h"
 
-#include <general/xml.h>
+#include <General/xml.h>
 
 using namespace std;
 namespace protocol {

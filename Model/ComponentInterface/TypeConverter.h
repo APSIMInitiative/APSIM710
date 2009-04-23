@@ -4,7 +4,7 @@
 #include "MessageData.h"
 #include "MessageDataExt.h"
 #include "Type.h"
-#include <general/platform.h>
+#include <General/platform.h>
 namespace protocol {
 class Component;
 

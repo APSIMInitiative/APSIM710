@@ -16,7 +16,7 @@
 #include "CWSowingPhase.h"
 
 #include "Utility/OutputVariable.h"
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 
 Phenology::Phenology(ScienceAPI& api, plantInterface& p)
    : plantThing(api, "Phenology"), plant(p)

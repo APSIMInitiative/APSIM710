@@ -2,7 +2,7 @@
 
 #ifndef ApsimDataTypeDataH
 #define ApsimDataTypeDataH
-#include <general/platform.h>
+#include <General/platform.h>
 
 // ------------------------------------------------------------------
 //  Short description:

@@ -3,8 +3,8 @@
 
 #include "ContextHandler.h"
 #include <fstream>
-#include <general\path.h>
-#include <general\stream_functions.h>
+#include <General\path.h>
+#include <General\stream_functions.h>
 #include <ApsimShared\ApsimDirectories.h>
 #include <ApsimShared\ApsimVersion.h>
 #include "ApsimCommands.h"

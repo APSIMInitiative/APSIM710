@@ -4,16 +4,16 @@
 #include <fstream>
 #include <sstream>
 
-#include <general/string_functions.h>
-#include <general/stl_functions.h>
-#include <general/io_functions.h>
-#include <general/stristr.h>
-#include <general/IniFile.h>
-#include <general/path.h>
-#include <general/date_class.h>
-#include <general/StringTokenizer.h>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
+#include <General/string_functions.h>
+#include <General/stl_functions.h>
+#include <General/io_functions.h>
+#include <General/stristr.h>
+#include <General/IniFile.h>
+#include <General/path.h>
+#include <General/date_class.h>
+#include <General/StringTokenizer.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
 
 #include <boost/bind.hpp>
 #include <boost/regex.hpp>
@@ -22,7 +22,7 @@
 
 #include "ApsimControlFile.h"
 
-#include "phi_functions.h"
+#include "Phi_functions.h"
 using namespace std;
 using namespace boost;
 

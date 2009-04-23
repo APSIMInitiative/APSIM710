@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 #include "Variants.h"
-#include <general/platform.h>
+#include <General/platform.h>
 using namespace protocol;
 
 // ------------------------------------------------------------------

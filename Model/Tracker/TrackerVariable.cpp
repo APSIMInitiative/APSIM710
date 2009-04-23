@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------
 #include <numeric>
-#include <general/StringTokenizer.h>
-#include <general/string_functions.h>
-#include <general/date_functions.h>
+#include <General/StringTokenizer.h>
+#include <General/string_functions.h>
+#include <General/date_functions.h>
 #include <ComponentInterface/Component.h>
 #include <ComponentInterface/TypeConverter.h>
 #include <ApsimShared/ApsimRegistry.h>

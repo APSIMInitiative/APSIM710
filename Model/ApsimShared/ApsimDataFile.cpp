@@ -2,11 +2,11 @@
 #include <vector>
 #include <fstream>
 #include <string>
-#include <general/string_functions.h>
-#include <general/stl_functions.h>
-#include <general/path.h>
-#include <general/IniFile.h>
-#include <general/platform.h>
+#include <General/string_functions.h>
+#include <General/stl_functions.h>
+#include <General/path.h>
+#include <General/IniFile.h>
+#include <General/platform.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/date_time/period.hpp>
 #include <boost/date_time/date_parsing.hpp>

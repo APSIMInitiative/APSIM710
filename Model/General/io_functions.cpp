@@ -10,8 +10,8 @@
 
 #include <stdlib.h>
 #include <sys/stat.h>
-#include <general/path.h>
-#include <general/stristr.h>
+#include <General/path.h>
+#include <General/stristr.h>
 #include <iostream>
 
 #include "boost/filesystem/path.hpp"

@@ -9,11 +9,15 @@
 #include <ComponentInterface2/Interfaces.h>
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/BuiltIns.h>
+#include <ComponentInterface2/Messages.h>
+#include <ComponentInterface2/Bounded.h>
+#include <ComponentInterface2/FortranString.h>
+#include <ComponentInterface2/FortranArray.h>
 
 void EXPORT getKindAndArray(const std::string& ddml, std::string& kind, bool& isArray);
 
 
-template <class T>
+template <typename T>
 class PackableWrapper : public Packable
    {
    // -------------------------------------------------------------------
@@ -31,7 +35,7 @@ class PackableWrapper : public Packable
       virtual std::string ddml()                  {return DDML(variable);}
    };
 
-template <class T>
+template <typename T>
 class PackableWrapper2 : public Packable
    {
    // -------------------------------------------------------------------
@@ -52,7 +56,7 @@ class PackableWrapper2 : public Packable
 // -------------------------------------------------------------------
 // A wrapper class for passing builtin types via the CMP
 // -------------------------------------------------------------------
-template <class T>
+template <typename T>
 class CMPBuiltIn : public PackableWrapper<T>, public Convertable
    {
    public:
@@ -60,16 +64,16 @@ class CMPBuiltIn : public PackableWrapper<T>, public Convertable
 
       virtual void from(const std::vector<std::string>& values)
          {
-         Convert(values, variable);
+         Convert(values, PackableWrapper<T>::variable);
          }
 
       virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
          {
          bool sourceIsArray;
-         string sourceKind;
+         std::string sourceKind;
          getKindAndArray(sourceDDML, sourceKind, sourceIsArray);
          if (sourceKind == "")
-            throw runtime_error("Cannot convert from a structure to a scalar");
+            throw std::runtime_error("Cannot convert from a structure to a scalar");
          else
             {
             if (sourceIsArray)
@@ -77,138 +81,125 @@ class CMPBuiltIn : public PackableWrapper<T>, public Convertable
                if (sourceKind == "integer4")
                   {
                   std::vector<int> value;
-                  if (typeid(variable) == typeid(std::vector<int>))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(std::vector<int>))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "single")
                   {
                   std::vector<float> value;
-                  if (typeid(variable) == typeid(std::vector<float>))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(std::vector<float>))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "double")
                   {
                   std::vector<double> value;
-                  if (typeid(variable) == typeid(std::vector<double>))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(std::vector<double>))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "string")
                   {
                   std::vector<std::string> value;
-                  if (typeid(variable) == typeid(std::vector<std::string>))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(std::vector<std::string>))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "boolean")
                   {
                   std::vector<bool> value;
-                  if (typeid(variable) == typeid(std::vector<bool>))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(std::vector<bool>))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else
-                  throw runtime_error("Bad kind found in ddml: " + sourceDDML);
+                  throw std::runtime_error("Bad kind found in ddml: " + sourceDDML);
                }
             else
                {
                if (sourceKind == "integer4")
                   {
-                  if (typeid(variable) == typeid(int))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(int))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      int value;
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "single")
                   {
-                  if (typeid(variable) == typeid(float))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(float))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      float value;
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "double")
                   {
-                  if (typeid(variable) == typeid(double))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(double))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      double value;
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "string")
                   {
-                  if (typeid(variable) == typeid(std::string))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(std::string))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      std::string value;
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else if (sourceKind == "boolean")
                   {
-                  if (typeid(variable) == typeid(bool))
-                     ::unpack(messageData, variable);
+                  if (typeid(PackableWrapper<T>::variable) == typeid(bool))
+                     ::unpack(messageData, PackableWrapper<T>::variable);
                   else
                      {
                      bool value;
                      ::unpack(messageData, value);
-                     Convert(value, variable);
+                     Convert(value, PackableWrapper<T>::variable);
                      }
                   }
                else
-                  throw runtime_error("Bad kind found in ddml: " + sourceDDML);
+                  throw std::runtime_error("Bad kind found in ddml: " + sourceDDML);
                }
             }
          }
 
    };
-
-// -------------------------------------------------------------------
-// bounding function templates + a bounded version of CMPBuiltIn
-// -------------------------------------------------------------------
-void performBoundCheck(const std::string& name, int value, int lower, int upper);
-void performBoundCheck(const std::string& name, float value, float lower, float upper);
-void performBoundCheck(const std::string& name, double value, double lower, double upper);
-template <class T>
-void performBoundCheck(const std::string& name, const std::vector<T> &values, T lower, T upper)
-   {
-   for (unsigned i = 0; i != values.size(); i++)
-      performBoundCheck(name, values[i], lower, upper);
-   }
 
 template <class T, class B>
 class CMPBuiltInBounded : public CMPBuiltIn<T>
@@ -227,12 +218,12 @@ class CMPBuiltInBounded : public CMPBuiltIn<T>
       virtual void from(const std::vector<std::string>& values)
          {
          CMPBuiltIn<T>::from(values);
-         performBoundCheck(name, variable, lowerBound, upperBound);
+         performBoundCheck(name, CMPBuiltIn<T>::variable, lowerBound, upperBound);
          }
       virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
          {
          CMPBuiltIn<T>::unpack(messageData, sourceDDML);
-         performBoundCheck(name, variable, lowerBound, upperBound);
+         performBoundCheck(name, CMPBuiltIn<T>::variable, lowerBound, upperBound);
          }
    };
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdexcept>
-#include <general/platform.h>
+#include <General/platform.h>
 
 #include "message.h"
 

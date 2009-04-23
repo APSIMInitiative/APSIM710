@@ -1,12 +1,12 @@
 #ifndef CMPComponentInterfaceH
 #define CMPComponentInterfaceH
-#include <general/platform.h>
+#include <General/platform.h>
 #include <string>
 #include <map>
 #include <ComponentInterface2/Interfaces.h>
 #include <ComponentInterface2/CMPData.h>
 #include <ComponentInterface2/ScienceAPI.h>
-#include <general/xml.h>
+#include <General/xml.h>
 
 class Message;
 

@@ -1,4 +1,4 @@
-#include <general/pch.h>
+#include <General/pch.h>
 
 #include <assert.h>
 
@@ -9,10 +9,10 @@
 #include <memory>
 #include <stack>
 
-#include <general/string_functions.h>
-#include <general/stl_functions.h>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
+#include <General/string_functions.h>
+#include <General/stl_functions.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimComponentData.h>
@@ -776,7 +776,7 @@ void Coordinator::pollComponentsForGetVariable(int fromID,
    if (destID <= 0)
      {
      char buffer[100];
-     itoa(fromID, buffer, 10);
+     sprintf(buffer, "%d", fromID);
      strcat(buffer, "*.");
      strcat(buffer, variableName.c_str());
      fqn = buffer;
@@ -785,7 +785,7 @@ void Coordinator::pollComponentsForGetVariable(int fromID,
    else
      {
      char buffer[100];
-     itoa(destID, buffer, 10);
+     sprintf(buffer, "%d", destID);
      strcat(buffer, ".");
      strcat(buffer, variableName.c_str());
      fqn = buffer;

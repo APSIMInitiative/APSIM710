@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef GENERAL_HTTP_H
 #define GENERAL_HTTP_H
-#include <general/platform.h>
+#include <General/platform.h>
 //---------------------------------------------------------------------------
 // This tiny http class encapsulates libXMLs nanoHTTP interface.
 //---------------------------------------------------------------------------

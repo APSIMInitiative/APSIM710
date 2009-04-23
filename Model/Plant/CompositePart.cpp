@@ -5,8 +5,8 @@
 #include "CompositeDelta.h"
 #include "ThingFactory.h"
 #include "Environment.h"
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
 #include "Parts.h"
 using namespace std;
 

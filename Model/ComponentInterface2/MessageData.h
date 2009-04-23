@@ -5,7 +5,7 @@
 #include "message.h"
 #include <string>
 #include <vector>
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 #ifdef __WIN32__
    #include <mem.h>
 #endif

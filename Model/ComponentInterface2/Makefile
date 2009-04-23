@@ -11,10 +11,13 @@ SRC = 	  ComponentInterface.cpp           \
           CMPComponentEntryPoints.cpp       \
           CMPComponentInterface.cpp         \
           CreateComponent.cpp               \
+          Bounded.cpp                       \
           Variant.cpp                       \
 	       DataTypes.cpp	                    \
           ScienceAPIImpl.cpp                \
           Messages.cpp                      \
+          FortranString.cpp                 \
+          FortranArray.cpp                  \
           StructureConverter.cpp
 
 LIBS = General ApsimShared Protocol

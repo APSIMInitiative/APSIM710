@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
@@ -10,13 +10,13 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <general\string_functions.h>
-#include <general\stl_functions.h>
-#include <general\date_functions.h>
-#include <generalvcl\db_functions.h>
-#include <generalvcl\vcl_functions.h>
-#include <general\path.h>
-#include <general\xml.h>
+#include <General\string_functions.h>
+#include <General\stl_functions.h>
+#include <General\date_functions.h>
+#include <Generalvcl\db_functions.h>
+#include <Generalvcl\vcl_functions.h>
+#include <General\path.h>
+#include <General\xml.h>
 #include <ApsimShared\ApsimSettings.h>
 #include <ApsimShared\ApsimDirectories.h>
 

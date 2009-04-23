@@ -11,7 +11,7 @@
     #define RTLD_LOCAL 0
    #endif 
 #endif
-#include <general/path.h>
+#include <General/path.h>
 
 using namespace std;
 void *loadDLL(const string& filename) throw (std::runtime_error)

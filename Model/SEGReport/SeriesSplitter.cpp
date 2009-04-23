@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "SeriesSplitter.h"
 #include "DataContainer.h"
-#include <general/stl_functions.h>
-#include <generalvcl/db_functions.h>
+#include <General/stl_functions.h>
+#include <Generalvcl/db_functions.h>
 using namespace std;
 
 

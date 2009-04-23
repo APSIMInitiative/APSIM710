@@ -1,11 +1,11 @@
 #include <string>
 #include <vector>
 
-#include <general/exec.h>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
+#include <General/exec.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
 
 #include "ApsimDirectories.h"
 #include "ApsimComponentData.h"

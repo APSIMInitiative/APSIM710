@@ -1,6 +1,6 @@
 #ifndef MessagesH
 #define MessagesH
-#include <general/platform.h>
+#include <General/platform.h>
 #include <string>
 
 class MessageData;

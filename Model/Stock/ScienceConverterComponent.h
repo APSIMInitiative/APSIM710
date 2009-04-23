@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef ScienceConverterComponent_H
 #define ScienceConverterComponent_H
-#include <general/pch.h>
+#include <General/pch.h>
 
 #include <math.h>
 #include <string>
@@ -10,8 +10,8 @@
 #include <iomanip.h>
 
 #include <boost/function.hpp>
-#include <general/string_functions.h>
-#include <general/stl_functions.h>
+#include <General/string_functions.h>
+#include <General/stl_functions.h>
 #include <ApsimShared/FStringExt.h>
 #include <ComponentInterface/MessageDataExt.h>
 #include <ComponentInterface/ApsimVariant.h>

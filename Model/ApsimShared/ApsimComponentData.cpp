@@ -2,11 +2,11 @@
 
 #include <string>
 #include <vector>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
-#include <general/stl_functions.h>
-#include <general/string_functions.h>
-#include <general/path.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
+#include <General/stl_functions.h>
+#include <General/string_functions.h>
+#include <General/path.h>
 #include "FStringExt.h"
 #include "ApsimRegistrationData.h"
 #include "ApsimDataTypeData.h"
@@ -14,7 +14,7 @@
 #include "ApsimComponentData.h"
 #include "ApsimSystemData.h"
 
-#include <general/platform.h>
+#include <General/platform.h>
 // ------------------------------------------------------------------
 // constructor
 // ------------------------------------------------------------------

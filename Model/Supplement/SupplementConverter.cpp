@@ -1,4 +1,4 @@
-#include <general\pch.h>
+#include <General\pch.h>
 #include <boost/function.hpp>
 #pragma hdrstop
 
@@ -7,8 +7,8 @@
 #include <strstream>
 #include <iomanip.h>
 
-#include <general/string_functions.h>
-#include <general/stl_functions.h>
+#include <General/string_functions.h>
+#include <General/stl_functions.h>
 #include <ApsimShared/FStringExt.h>
 #include <ComponentInterface/MessageDataExt.h>
 #include <ComponentInterface/ApsimVariant.h>

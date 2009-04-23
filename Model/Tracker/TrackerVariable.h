@@ -2,7 +2,7 @@
 #ifndef TrackerVariableH
 #define TrackerVariableH
 #include <string>
-#include <general/StringTokenizer.h>
+#include <General/StringTokenizer.h>
 namespace protocol
    {
    class Component;

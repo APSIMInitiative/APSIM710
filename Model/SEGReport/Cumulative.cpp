@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
@@ -8,8 +8,8 @@
 #include "DataProcessor.h"
 #include <vector>
 #include <string>
-#include <general\string_functions.h>
-#include <generalvcl\db_functions.h>
+#include <General\string_functions.h>
+#include <Generalvcl\db_functions.h>
 
 using namespace std;
 

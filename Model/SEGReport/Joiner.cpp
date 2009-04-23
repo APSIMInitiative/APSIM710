@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "Joiner.h"
 
 
-#include <generalvcl\db_functions.h>
+#include <Generalvcl\db_functions.h>
 #include "DataContainer.h"
 
 //---------------------------------------------------------------------------

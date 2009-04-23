@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <general/exec.h>
-#include <general/string_functions.h>
+#include <General/exec.h>
+#include <General/string_functions.h>
 #include <vector>
 #include <process.h>
 #include <fstream>

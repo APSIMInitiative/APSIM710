@@ -5,8 +5,8 @@
 #include <stdexcept>
 
 #include <boost/filesystem/operations.hpp>
-#include <general/TreeNodeIterator.h>
-#include <general/xml.h>
+#include <General/TreeNodeIterator.h>
+#include <General/xml.h>
 
 #include "ApsimDataTypeData.h"
 #include "ApsimDataTypesFile.h"

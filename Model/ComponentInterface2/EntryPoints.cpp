@@ -1,8 +1,8 @@
 #include <stdexcept>
 #include <string>
 
-#include <general/platform.h>
-#include <general/dll.h>
+#include <General/platform.h>
+#include <General/dll.h>
 #include <ComponentInterface2/ScienceAPIImpl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/StructureConverter.h>

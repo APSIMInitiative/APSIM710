@@ -6,10 +6,10 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <general/stristr.h>
-#include <general/string_functions.h>
-#include <general/date_class.h>
-#include <general/date_functions.h>
+#include <General/stristr.h>
+#include <General/string_functions.h>
+#include <General/date_class.h>
+#include <General/date_functions.h>
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimDataFile.h>

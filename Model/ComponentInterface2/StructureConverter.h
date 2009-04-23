@@ -1,7 +1,7 @@
 #ifndef StructureConverterH
 #define StructureConverterH
 #include <string>
-#include <general/platform.h>
+#include <General/platform.h>
 class MessageData;
 
 bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, bool& Data, const std::string& Name);

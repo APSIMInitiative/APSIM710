@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <general/platform.h>
+#include <General/platform.h>
 
 #include <stdexcept>
 #include <iostream>

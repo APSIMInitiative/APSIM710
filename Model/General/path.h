@@ -1,7 +1,7 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 #include <General/platform.h>
 
 // ------------------------------------------------------------------

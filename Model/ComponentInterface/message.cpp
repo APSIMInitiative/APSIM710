@@ -3,7 +3,7 @@
 #include "message.h"
 #include <stdio.h>
 #include <stdexcept>
-#include <general/platform.h>
+#include <General/platform.h>
 
 using namespace std;
 namespace protocol {

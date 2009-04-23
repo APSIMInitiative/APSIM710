@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 
 using namespace std;
 

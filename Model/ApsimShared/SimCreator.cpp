@@ -1,14 +1,14 @@
 //---------------------------------------------------------------------------
-#include <general/pch.h>
+#include <General/pch.h>
 #pragma hdrstop
 
 #include "SimCreator.h"
 #include <fstream>
 #include <sstream>
-#include <general/path.h>
-#include <general/StringTokenizer.h>
-#include <general/stl_functions.h>
-#include <general/platform.h>
+#include <General/path.h>
+#include <General/StringTokenizer.h>
+#include <General/stl_functions.h>
+#include <General/platform.h>
 #include "ApsimDirectories.h"
 #include "ApsimSettings.h"
 #include "ApsimVersion.h"

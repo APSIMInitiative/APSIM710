@@ -1,6 +1,6 @@
 #ifndef FortranComponentWrapperH
 #define FortranComponentWrapperH
-#include <general/platform.h>
+#include <General/platform.h>
 #include <stack>
 
 class ScienceAPI;

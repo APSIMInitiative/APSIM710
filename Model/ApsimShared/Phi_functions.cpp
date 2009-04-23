@@ -1,4 +1,4 @@
-#include "phi_functions.h"
+#include "Phi_functions.h"
 
 #ifdef __WIN32__
    #include <dir.h>

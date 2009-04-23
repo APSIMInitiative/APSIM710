@@ -2,8 +2,8 @@
 #ifndef ApsimComponentDataH
 #define ApsimComponentDataH
 
-#include <general/platform.h>
-#include <general/xml.h>
+#include <General/platform.h>
+#include <General/xml.h>
 #include <map>
 class ApsimSystemData;
 class ApsimRegistrationData;

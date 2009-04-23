@@ -3,9 +3,9 @@
    #include <dir.h>
    #include <windows.h> // needed for CopyFile
 #endif
-#include <general/string_functions.h>
-#include <general/stl_functions.h>
-#include <general/path.h>
+#include <General/string_functions.h>
+#include <General/stl_functions.h>
+#include <General/path.h>
 #include <fstream>
 #include <sstream>
 #include <vector>

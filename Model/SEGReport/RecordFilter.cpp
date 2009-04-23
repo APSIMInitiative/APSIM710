@@ -1,13 +1,13 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "RecordFilter.h"
 #include "DataContainer.h"
 #include "DataProcessor.h"
-#include <generalvcl\db_functions.h>
-#include <general\string_functions.h>
+#include <Generalvcl\db_functions.h>
+#include <General\string_functions.h>
 
 using namespace std;
 

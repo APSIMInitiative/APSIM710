@@ -1,11 +1,11 @@
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "drawable.h"
 
 #include "Chart_base.h"
-#include <general\stl_functions.h>
+#include <General\stl_functions.h>
 #include <teeprevi.hpp>
 
 /**# implementation Chart:: id(C_0853910634)

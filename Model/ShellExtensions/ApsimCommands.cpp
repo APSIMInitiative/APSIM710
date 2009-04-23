@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "ApsimCommands.h"
-#include <general\string_functions.h>
-#include <general\path.h>
-#include <general\stream_functions.h>
+#include <General\string_functions.h>
+#include <General\path.h>
+#include <General\stream_functions.h>
 #include <apsimshared\apsimdirectories.h>
 #pragma package(smart_init)
 

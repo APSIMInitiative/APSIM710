@@ -1,11 +1,11 @@
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "drawable.h"
 #include "Screen.h"
 #include <math.h>  // sqrt
-#include <general\stl_functions.h>
+#include <General\stl_functions.h>
 
 /**# implementation Chart_screen:: id(C_0853909854)
 */

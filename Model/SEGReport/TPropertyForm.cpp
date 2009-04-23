@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
+#include <General\pch.h>
 #include <vcl.h>
 #pragma hdrstop
 
 #include "TPropertyForm.h"
-#include <generalVCL\vcl_functions.h>
+#include <GeneralVCL\vcl_functions.h>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "AdvGrid"

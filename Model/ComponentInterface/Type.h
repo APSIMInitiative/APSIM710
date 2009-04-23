@@ -2,7 +2,7 @@
 #define TypeH
 #include "MessageData.h"
 #include <ApsimShared/FString.h>
-#include <general/platform.h>
+#include <General/platform.h>
 #include <vector>
 namespace protocol {
 

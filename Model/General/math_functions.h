@@ -5,7 +5,7 @@
 #include <string>
 #include <algorithm>
 #include <functional>
-#include <general/string_functions.h>
+#include <General/string_functions.h>
 
 #include <stdexcept>
 // ------------------------------------------------------------------
@@ -53,7 +53,6 @@ struct Regr_stats
 void EXPORT calcRegressionStats (const std::vector<double>& x, const std::vector<double>& y,
                           Regr_stats& stats);
 #include <boost/lexical_cast.hpp>
-#include <general/string_functions.h>  // ftoa()
 
 // ------------------------------------------------------------------
 //  Short description:
