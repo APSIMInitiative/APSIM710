@@ -10,19 +10,24 @@ Imports ApsimFile
 Imports Controllers
 Imports CSGeneral
 Imports UIUtility
-Imports UIBits     'NewDocumentForm
+
 
 
 
 Public Class ApsimUIActions
     Public Shared Sub FileNew(ByVal Controller As BaseController)
         If Controller.FileSaveAfterPrompt() Then
-            Dim NewDocForm As New UIBits.NewDocumentForm
-            If NewDocForm.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-                Controller.Explorer.CloseUI()
-                Controller.ApsimData.[New](NewDocForm.Selection)
+            Dim openFileDialog As New System.Windows.Forms.OpenFileDialog
+            Dim Folder As String = Configuration.Instance.Setting("NewSimulationFolder")
+            openFileDialog.InitialDirectory = Folder
+            openFileDialog.Title = "New Simulation"
+            openFileDialog.Filter = "Simulation Files|*.apsim"      'only show .apsim files
+            openFileDialog.Multiselect = False                      'don't let them select multiple files
+            If openFileDialog.ShowDialog = System.Windows.Forms.DialogResult.OK Then
+                Controller.Explorer.CloseUI()                           'close whatever simulation is currently in the ExplorerUI
+                Dim FileStreamReader As System.IO.StreamReader = New StreamReader(openFileDialog.FileName) 'open a stream reader so you can convert the entire file contents into one big string (note this is the contents of .apsim file which is xml)
+                Controller.ApsimData.[New](FileStreamReader.ReadToEnd())  '[New] is just so compiler knows that it is the ApsimFile.New method and not the keyword "New" in VB.NET
             End If
-            NewDocForm.Close()
         End If
     End Sub
 

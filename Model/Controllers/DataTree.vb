@@ -19,8 +19,6 @@ Public Class DataTree
     Private PopupMenu As New System.Windows.Forms.ContextMenuStrip                              'create a new Context Menu for the page [right click anywhere on the page]
     Private WithEvents PopupMenuRightDrag As New System.Windows.Forms.ContextMenuStrip          'create a new Context Menu for a drag using the right mouse button. See TreeView Drag Events below
 
-    Public Event DoubleClickEvent As EventHandler(Of EventArgs)
-
     Private Controller As BaseController
     Private FirstTimeRename As Boolean = False
     Private EnableNodeSelection As Boolean = True
@@ -721,13 +719,7 @@ Public Class DataTree
         EnableNodeSelection = True
 
     End Sub
-    Private Sub TreeView_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DoubleClick
-        ' -----------------------------------------------------
-        ' User has double clicked an item. Simply fire an
-        ' event. The NewDocumentForm requires this event.
-        ' -----------------------------------------------------
-        RaiseEvent DoubleClickEvent(Nothing, Nothing)
-    End Sub
+
 #End Region
 
     Private Sub InitializeComponent()
