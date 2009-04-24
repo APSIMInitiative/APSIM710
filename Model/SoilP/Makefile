@@ -4,7 +4,7 @@ PROJECT = SoilP
 
 SRC = Registrations.f90 SoilP.f90
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

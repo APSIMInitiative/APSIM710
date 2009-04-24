@@ -14,7 +14,7 @@
 #include "Root/RootPart.h"
 #include "Storage/StoragePart.h"
 #include "Utility/Observers.h"
-#include "Arbitrators/arbitrator.h"
+#include "Arbitrators/Arbitrator.h"
 #include "Utility/PlantUtility.h"
 #include "Fixation.h"
 #include "Parts.h"

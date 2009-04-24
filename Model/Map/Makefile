@@ -4,7 +4,7 @@ PROJECT = Map
 
 SRC = Registrations.f90 Map.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

@@ -1,7 +1,7 @@
 #ifndef WholePlantGenericArbitratorXYH
 #define WholePlantGenericArbitratorXYH
 
-#include "arbitrator.h"
+#include "Arbitrator.h"
 class WholePlantGenericArbitratorXY : public Arbitrator
    {
    private:

@@ -1,10 +1,10 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "GrainPartGN.h"
-#include "Phenology/Phenology.h"
-#include "Population.h"
-#include "Stem.h"
-#include "Root/RootBase.h"
+#include "../Phenology/Phenology.h"
+#include "../Population.h"
+#include "../Stem.h"
+#include "../Root/RootBase.h"
 using namespace std;
 
 inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}

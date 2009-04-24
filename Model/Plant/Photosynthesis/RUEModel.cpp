@@ -1,9 +1,9 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "RUEModel.h"
-#include "Co2Modifier.h"
-#include "Environment.h"
-#include "Phenology/Phenology.h"
+#include "../Co2Modifier.h"
+#include "../Environment.h"
+#include "../Phenology/Phenology.h"
 using namespace std;
 
 RUEModel::RUEModel(ScienceAPI& scienceAPI, plantInterface& p)
@@ -55,4 +55,3 @@ float RUEModel::Q0(float lat, int day)
    return  86400. * 1360. * (HS * sin(LATr) * sin(DECr) + cos(LATr) * cos(DECr) * sin(HS)) / 3.14159265 / 1000000.;
 
    }
-      

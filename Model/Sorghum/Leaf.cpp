@@ -1,7 +1,10 @@
 //------------------------------------------------------------------------------------------------
 #include "Plant.h"
 #include "Leaf.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
+
 //------------------------------------------------------------------------------------------------
 //------ Leaf Constructor
 //------------------------------------------------------------------------------------------------
@@ -230,7 +233,7 @@ void Leaf::phenologyEvent(int iStage)
       case flag :                   // limit target sln to sln at flag
          targetSLN = SLN;
          break;
-      case flowering :  
+      case flowering :
          //set the minimum weight of leaf; used for translocation to grain and stem
          float dmPlantLeaf = divide (dmGreen, density);
          dmPlantMin = dmPlantLeaf * (1.0 - translocFrac);

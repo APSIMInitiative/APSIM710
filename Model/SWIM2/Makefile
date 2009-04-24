@@ -4,7 +4,7 @@ PROJECT = SWIM2
 
 SRC = Registrations.f90 ApsimSwim.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

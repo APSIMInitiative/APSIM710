@@ -7,15 +7,7 @@
 #else
    #include <windows.h>  // for LoadLibrary
 #endif
-#include <stdlib.h>
-#include <stdio.h>
-
-#include "Messages.h"
-#include "Variants.h"
-#include "DataTypes.h"
-#include "Component.h"
-#include "MessageData.h"
-#include "ScienceAPI.h"
+#include <ComponentInterface/ScienceAPI.h>
 #include "FORTRANComponentWrapper.h"
 
 static const char* nullType = "<type/>";
@@ -80,7 +72,6 @@ void FortranWrapper::setup(void)
    // get FORTRAN to create new memory blocks.
    const unsigned int doAllocate = true;
    alloc_dealloc_instance(&doAllocate);
-
    // save pointers and contents of these memory blocks.
    setupInstancePointers();
    }
@@ -144,7 +135,7 @@ void FortranWrapper::setupInstancePointers(void)
          }
       else
          {
-         throw "Missing getInstance()";
+         throw std::runtime_error("Missing getInstance()");
          }
       }
    }
@@ -343,21 +334,6 @@ void FortranWrapper::swapInstanceIn(void)
    {
    *instance = myInstance;
    currentInstance = this;
-   }
-
-// ------------------------------------------------------------------
-//  Short description:
-//     Create an instance of our FORTRAN component.
-
-//  Notes:
-
-//  Changes:
-//    DPH 7/6/2001
-
-// ------------------------------------------------------------------
-protocol::Component* createComponent(void)
-   {
-   return new FortranWrapper;
    }
 
 void FortranWrapper::event_send(int destID, const FString& eventName)

@@ -5,7 +5,7 @@ PROJECT = CropMod
 SRC = CropModData.for CropMod.for CropModMain.for
 
 STATICLIBS = FortranInfrastructure CropTemplate
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

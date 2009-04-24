@@ -1,7 +1,10 @@
 //------------------------------------------------------------------------------------------------
 #include "Grain.h"
 #include "Plant.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
+
 //---------------------------------------------------------------------------
 //------ Grain Constructor
 //------------------------------------------------------------------------------------------------
@@ -114,7 +117,7 @@ void Grain::phenologyEvent(int iStage)
    {
    switch (iStage)
       {
-      case emergence : 
+      case emergence :
          break;
       case fi :
          totDMGreenFI = plant->biomass->getTotalBiomass();                  // for grain number
@@ -335,7 +338,7 @@ void  Grain::Harvest(void)
       pack(chopped, "fraction_to_residue", fraction_to_residue);
 
 
-      scienceAPI.publish ("crop_chopped", chopped); 
+      scienceAPI.publish ("crop_chopped", chopped);
       }
    initialize();
    }

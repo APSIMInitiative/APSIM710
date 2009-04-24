@@ -1,4 +1,4 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 //==========================================================================
 int offset_day_of_year (int iyr,     //(INPUT) day of year number
@@ -100,7 +100,7 @@ double date_to_jday (int day, int month, int year)
    //Implementation
    if (year > 1582 && check_date(day, month, year))
       {
-      // Fliegel calculations	
+      // Fliegel calculations
       double quotnt = int ((month - 14.0)/12.0);
       jday = day - 32075.0
          + int(1461.0* (year + 4800.0 + quotnt) /4.0)
@@ -280,7 +280,7 @@ float day_length (int dyoyr,      // (INPUT) day of year number
    // the twilight altitude between these.
 
    if (reals_are_equal(fabs(lat), 90.0)) {
-     coshra = sign (1.0, -dec) * sign (1.0, lat); 
+     coshra = sign (1.0, -dec) * sign (1.0, lat);
    } else {
      latrn = lat*dg2rdn;
      slsd = sin(latrn)*sin(dec);

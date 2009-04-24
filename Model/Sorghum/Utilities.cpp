@@ -5,7 +5,10 @@ using namespace std;
 
 #include "PlantComponents.h"
 #include "Utilities.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
+
 
 // Conversion from a Julian date to a Gregorian calendar date.
 // Reference: Fliegel, H. F. and van Flandern, T. C. (1968).

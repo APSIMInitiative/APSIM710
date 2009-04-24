@@ -1,7 +1,7 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "Phenology.h"
-#include "Environment.h"
+#include "../Environment.h"
 #include "FixedPhase.h"
 #include "VernalPhase.h"
 #include "InductivePhase.h"
@@ -15,7 +15,7 @@
 #include "CWFixedPhase.h"
 #include "CWSowingPhase.h"
 
-#include "Utility/OutputVariable.h"
+#include "../Utility/OutputVariable.h"
 #include <General/string_functions.h>
 
 Phenology::Phenology(ScienceAPI& api, plantInterface& p)

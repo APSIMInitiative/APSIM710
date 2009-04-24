@@ -1,12 +1,12 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "RootPart.h"
 #include "RootGrowthOption1.h"
 #include "RootGrowthOption2.h"
-#include "Environment.h"
+#include "../Environment.h"
 #include "Soil.h"
-#include "Phenology/Phenology.h"
-#include "Population.h"
+#include "../Phenology/Phenology.h"
+#include "../Population.h"
 #include <numeric>
 using namespace std;
 

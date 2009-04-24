@@ -1,9 +1,9 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "Phase.h"
 #include "PhotoPhase.h"
-#include "Environment.h"
-#include "Root/RootBase.h"
+#include "../Environment.h"
+#include "../Root/RootBase.h"
 
 void PhotoPhase::read()
 //=======================================================================================
@@ -51,7 +51,7 @@ string PhotoPhase::description()
 //=======================================================================================
    {
    return photo_tt.description();
-   } 
+   }
 
 
 float PhotoPhase::stress()

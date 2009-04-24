@@ -10,10 +10,10 @@
 #include <ComponentInterface/DataTypes.h>
 #include <General/string_functions.h>
 #include <ComponentInterface/ScienceAPI.h>
-#include "Utility/InterpolationFunction.h"
+#include "../Utility/InterpolationFunction.h"
 
-#include "PlantInterface.h"
-#include "Utility/PlantUtility.h"
+#include "../PlantInterface.h"
+#include "../Utility/PlantUtility.h"
 #include "PhotosynthesisModel.h"
 
 class SUCROSModel : public PhotosynthesisModel {

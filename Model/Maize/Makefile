@@ -4,7 +4,7 @@ PROJECT = Maize
 
 SRC = maize.for
 STATICLIBS = FortranInfrastructure CropTemplate
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 
 APSIMMODEL = Yes

@@ -317,7 +317,7 @@ bool ScienceAPI::readOptional(const std::string& name, std::vector<std::string>&
    }
 
 
-string addUnitsToDDML(const string& ddml, const string& units)
+string EXPORT addUnitsToDDML(const string& ddml, const string& units)
    {
    string returnString = ddml;
    unsigned pos = returnString.find("/>");

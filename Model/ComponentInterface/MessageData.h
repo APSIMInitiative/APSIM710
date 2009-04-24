@@ -3,6 +3,7 @@
 #define MessageDataH
 
 #include "message.h"
+#include <General/platform.h>
 #include <string>
 #ifdef __WIN32__
    #include <mem.h>
@@ -239,8 +240,8 @@ class MessageData
    MessageData& operator<< (MessageData& messageData, const FStrings& strings);
    unsigned int memorySize(const FStrings& strings);
 
-   std::string DDML(const FString& );
-   std::string DDML(const FStrings& );
+   std::string EXPORT DDML(const FString& );
+   std::string EXPORT DDML(const FStrings& );
 
    } // end namespace protocol
 

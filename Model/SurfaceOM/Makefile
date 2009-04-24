@@ -4,7 +4,7 @@ PROJECT = SurfaceOM
 
 SRC = Registrations.f90 SurfaceOM.f90
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

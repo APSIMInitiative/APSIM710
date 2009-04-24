@@ -1,10 +1,10 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "PlantFruitCohorting.h"
-#include "Environment.h"
-#include "Arbitrators/arbitrator.h"
-#include "Leaf/Leaf.h"
-#include "Population.h"
+#include "../Environment.h"
+#include "../Arbitrators/Arbitrator.h"
+#include "../Leaf/Leaf.h"
+#include "../Population.h"
 using namespace std;
 
 void push_routine (const char *) {};

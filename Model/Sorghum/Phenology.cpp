@@ -2,7 +2,10 @@
 
 #include "Plant.h"
 #include "Phenology.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
+
 //------------------------------------------------------------------------------------------------
 //------ Phenology constructor
 //------------------------------------------------------------------------------------------------
@@ -29,7 +32,7 @@ void Phenology::initialize(void)
    dltTT = 0.0;
    dltTTFM = 0.0;
    dltStage = 0.0;
-   
+
    ttTotal.assign  (nStages,0.0);
    ttTarget.assign (nStages,0.0);
    ttTotalFM.assign(nStages,0.0);

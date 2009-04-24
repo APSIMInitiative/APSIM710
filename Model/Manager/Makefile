@@ -4,7 +4,7 @@ PROJECT = Manager
 
 SRC = Registrations.f90 Manager.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface ApsimShared
+LIBS = FortranComponentInterface ApsimShared
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

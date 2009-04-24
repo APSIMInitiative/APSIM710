@@ -1,9 +1,9 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 #include "SUCROSModel.h"
-#include "Co2Modifier.h"
-#include "Phenology/Phenology.h"
-#include "Environment.h"
-#include "Leaf/Leaf.h"
+#include "../Co2Modifier.h"
+#include "../Phenology/Phenology.h"
+#include "../Environment.h"
+#include "../Leaf/Leaf.h"
 
 using namespace std;
 
@@ -457,4 +457,3 @@ float SUCROSModel::RelativeTemperatureResponse(float fTemp, float fMinTemp, floa
 
    return (float)vRelEff;
    }
-   

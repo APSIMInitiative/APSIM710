@@ -4,7 +4,7 @@ PROJECT = SWIM3
 
 SRC = SWIM3.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

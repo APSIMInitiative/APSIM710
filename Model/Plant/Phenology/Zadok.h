@@ -1,7 +1,7 @@
 #ifndef ZadokH
 #define ZadokH
 
-#include "PlantInterface.h"
+#include "../PlantInterface.h"
 class Zadok : public plantThing
    {
    private:

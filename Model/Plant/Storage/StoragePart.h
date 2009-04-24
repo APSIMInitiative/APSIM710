@@ -1,6 +1,6 @@
 #ifndef StoragePartH
 #define StoragePartH
-#include "SimplePart.h"
+#include "../SimplePart.h"
 
 class StoragePart : public SimplePart
    {

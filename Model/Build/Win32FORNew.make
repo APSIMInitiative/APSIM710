@@ -19,7 +19,7 @@ F90MODS=-mod .;$(APSIM)\Model\FortranInfrastructure;$(APSIM)\Model\CropTemplate;
 ifdef APSIMMODEL
    EXPORTS := -export Main,OnInit1,wrapperDLL,alloc_dealloc_instance,getInstance,$(EXPORTS)
 else
-   EXPROTS :=
+   EXPORTS :=
 endif
 
 # Generic rules

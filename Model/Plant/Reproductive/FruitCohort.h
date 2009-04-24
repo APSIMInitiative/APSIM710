@@ -1,7 +1,7 @@
 #ifndef FruitCohortH
 #define FruitCohortH
 
-#include "CompositePart.h"
+#include "../CompositePart.h"
 class fruitGrainPart;
 class fruitGrainPartGN;
 class fruitGrainPartHI;

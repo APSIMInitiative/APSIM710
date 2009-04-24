@@ -4,8 +4,8 @@
 #define max_node 1000                         // maximum number of plant nodes
 #define max_table 30
 
-#include "Leaf/Leaf.h"
-#include "Population.h"
+#include "Leaf.h"
+#include "../Population.h"
 class GenericLeaf : public Leaf {
   private:
    void leaf_no_pot (int option, float, float);

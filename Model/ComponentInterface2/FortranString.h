@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
-#include <General/Platform.h>
+#include <General/platform.h>
 class MessageData;
 
 // ------------------------------------------------------------------

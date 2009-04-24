@@ -4,6 +4,7 @@
 #include <ComponentInterface/ApsimVariant.h>
 #include <ComponentInterface/TypeConverter.h>
 #include <ComponentInterface/ArraySpecifier.h>
+#include <ComponentInterface/Component.h>
 
 // turn of the warnings about "Functions containing for are not expanded inline.
 #pragma warn -inl
@@ -199,8 +200,8 @@ class FortranWrapper : public protocol::Component
          setVariable(variableID, value);
          }
       template <class T>
-      bool set_var_optional(int destID, const FString& variableName, 
-                            const FString& dataTypeString, 
+      bool set_var_optional(int destID, const FString& variableName,
+                            const FString& dataTypeString,
                             const T& value)
          {
          string regName;

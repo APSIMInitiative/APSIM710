@@ -1,7 +1,7 @@
       subroutine wrapperDLL(FileName)
       implicit none
       ml_external wrapperDLL
-      integer*1 FileName(30)
+      integer*1 FileName(31)
       FileName(1) = ichar('F')
       FileName(2) = ichar('o')
       FileName(3) = ichar('r')
@@ -27,11 +27,12 @@
       FileName(23) = ichar('a')
       FileName(24) = ichar('c')
       FileName(25) = ichar('e')
-      FileName(26) = ichar('.')
-      FileName(27) = ichar('d')
-      FileName(28) = ichar('l')
+      FileName(26) = ichar('2')
+      FileName(27) = ichar('.')
+      FileName(28) = ichar('d')
       FileName(29) = ichar('l')
-      FileName(30) = 0
+      FileName(30) = ichar('l')
+      FileName(31) = 0
       end subroutine
 
       function getInstance()

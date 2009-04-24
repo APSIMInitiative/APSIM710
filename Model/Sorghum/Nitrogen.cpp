@@ -2,7 +2,10 @@
 
 #include "Plant.h"
 #include "Nitrogen.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
+
 
 //------------------------------------------------------------------------------------------------
 
@@ -434,7 +437,7 @@ void Nitrogen::partition(void)
             }
          }
       }
-      
+
    // 4. Allocate to leaf and stem_rachis in proportion to demand
    float leafDemand = plant->leaf->calcNDemand();
    float stemDemand = plant->stem->calcNDemand();

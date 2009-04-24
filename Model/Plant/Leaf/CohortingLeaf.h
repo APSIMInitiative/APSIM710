@@ -1,7 +1,7 @@
 #ifndef CohortingLeafH
 #define CohortingLeafH
 
-#include "Population.h"
+#include "../Population.h"
 class CohortingLeaf : public Leaf {
   public:
    CohortingLeaf(ScienceAPI& scienceAPI, plantInterface *p, const string &name)

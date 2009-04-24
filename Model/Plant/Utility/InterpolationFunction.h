@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string>
 #include <algorithm>
-#include "Utility/ExternalFunction.h"
+#include "ExternalFunction.h"
 
 using namespace std;
 class plantInterface;

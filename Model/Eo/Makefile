@@ -2,9 +2,9 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Eo
 
-SRC = Registrations.f90 eo.for 
+SRC = Registrations.f90 eo.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

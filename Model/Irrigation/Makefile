@@ -4,7 +4,7 @@ PROJECT = Irrigation
 
 SRC = Registrations.f90 Irrigation.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

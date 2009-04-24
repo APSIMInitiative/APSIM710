@@ -43,6 +43,7 @@ call MakeProject ComponentInterface2
 call MakeProject DotNetComponentInterface
 call MakeProject FortranInfrastructure
 call MakeProject FortranComponentInterface
+call MakeProject FortranComponentInterface2
 call MakeProject CropTemplate
 
 rem -------------------------------------------------------------

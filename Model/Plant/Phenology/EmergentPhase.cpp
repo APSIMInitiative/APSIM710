@@ -1,4 +1,4 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "EmergentPhase.h"
 
@@ -33,7 +33,7 @@ string EmergentPhase::description()
    s += "         shoot_rate                 = "+ftoa(shoot_rate, "7.0")+ " (dd/mm)\n";
 
    return s;
-   } 
+   }
 
 float EmergentPhase::stress()
    {

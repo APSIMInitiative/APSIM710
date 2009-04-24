@@ -1,7 +1,7 @@
 #ifndef FruitCohortFNH
 #define FruitCohortFNH
 
-#include "Phenology/Phenology.h"
+#include "../Phenology/Phenology.h"
 #include "FruitCohort.h"
 #include "GrainPartFN.h"
 #include "PodPartFN.h"

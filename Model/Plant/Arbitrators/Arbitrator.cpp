@@ -1,10 +1,10 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
-#include "Leaf/Leaf.h"
-#include "arbitrator.h"
-#include "CompositePart.h"
-#include "Root/RootBase.h"
-#include "Phenology/Phenology.h"
+#include "../Leaf/Leaf.h"
+#include "Arbitrator.h"
+#include "../CompositePart.h"
+#include "../Root/RootBase.h"
+#include "../Phenology/Phenology.h"
 #include "WholePlantGenericArbitratorXY.h"
 
 Arbitrator::Arbitrator(ScienceAPI& scienceAPI, plantInterface& p)

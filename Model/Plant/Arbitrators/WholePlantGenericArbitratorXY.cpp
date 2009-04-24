@@ -1,8 +1,8 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "WholePlantGenericArbitratorXY.h"
-#include "Phenology/Phenology.h"
-#include "CompositePart.h"
+#include "../Phenology/Phenology.h"
+#include "../CompositePart.h"
 
 WholePlantGenericArbitratorXY::WholePlantGenericArbitratorXY(ScienceAPI& scienceAPI, plantInterface& p)
    : Arbitrator(scienceAPI, p)

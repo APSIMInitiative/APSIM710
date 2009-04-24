@@ -2,7 +2,7 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Apsim
 
-SRC = ApsimMain.cpp Simulation.cpp ../ComponentInterface/Message.cpp
+SRC = ApsimMain.cpp Simulation.cpp ../ComponentInterface/message.cpp
 
 LIBS = ApsimShared General Protocol
 

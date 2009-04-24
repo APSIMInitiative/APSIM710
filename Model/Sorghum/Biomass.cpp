@@ -3,7 +3,10 @@
 
 #include "Plant.h"
 #include "Biomass.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
+
 
 //---------------------------------------------------------------------------
 //------ Biomass Constructor
@@ -43,7 +46,7 @@ void Biomass::doRegistrations(void)
    scienceAPI.exposeFunction("biomass_wt", "g/m2", "Total above-ground biomass",
                     FloatFunction(&Biomass::getBiomass));
 
-   }                  
+   }
 //------------------------------------------------------------------------------------------------
 //------- Initialize variables
 //------------------------------------------------------------------------------------------------
@@ -73,7 +76,7 @@ void Biomass::readParams (void)
    {
    scienceAPI.read("ratio_root_shoot","", 0, ratioRootShoot);
    ratioRootShoot.insert(ratioRootShoot.begin(),0);  // for compatibility with fortran
-   
+
    scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
    }
 
@@ -331,7 +334,7 @@ void Biomass::incorporateResidue(void)
       pack(chopped, "fraction_to_residue", fraction_to_residue);
 
 
-      scienceAPI.publish ("crop_chopped", chopped); 
+      scienceAPI.publish ("crop_chopped", chopped);
       }
    }
 //------------------------------------------------------------------------------------------------

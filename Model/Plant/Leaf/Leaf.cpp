@@ -1,12 +1,12 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
-#include "CompositePart.h"
+#include "../CompositePart.h"
 #include "Leaf.h"
 #include "GenericLeaf.h"
 #include "CohortingLeaf.h"
-#include "Photosynthesis/PhotosynthesisModel.h"
-#include "Phenology/Phenology.h"
-#include "Environment.h"
+#include "../Photosynthesis/PhotosynthesisModel.h"
+#include "../Phenology/Phenology.h"
+#include "../Environment.h"
 
 using namespace std;
 

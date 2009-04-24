@@ -1,7 +1,7 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "GenericArbitratorXY.h"
-#include "Phenology/Phenology.h"
+#include "../Phenology/Phenology.h"
 
 GenericArbitratorXY::GenericArbitratorXY(ScienceAPI& scienceAPI, plantInterface& p)
    : Arbitrator(scienceAPI, p)

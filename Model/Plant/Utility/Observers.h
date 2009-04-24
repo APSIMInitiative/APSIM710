@@ -1,9 +1,9 @@
 #ifndef PLANTOBSERVERS_H
 #define PLANTOBSERVERS_H
 
-#include "PlantInterface.h"
+#include "../PlantInterface.h"
 
-// An "event observer". Waits for events to happen and records 
+// An "event observer". Waits for events to happen and records
 // date & das for later reporting.
 class eventObserver : public plantThing {
      string myEvent;

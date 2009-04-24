@@ -4,7 +4,7 @@ PROJECT = Erosion
 
 SRC = Registrations.f90 erosion.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

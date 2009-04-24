@@ -4,7 +4,7 @@ PROJECT = SysBal
 
 SRC = Registrations.f90 SysBal.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

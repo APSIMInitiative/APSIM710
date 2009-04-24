@@ -1,9 +1,9 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "GrainPartHI.h"
-#include "Environment.h"
-#include "Phenology/Phenology.h"
-#include "Arbitrators/arbitrator.h"
+#include "../Environment.h"
+#include "../Phenology/Phenology.h"
+#include "../Arbitrators/Arbitrator.h"
 
 using namespace std;
 

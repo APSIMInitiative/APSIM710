@@ -1,3 +1,4 @@
+#ifdef __WIN32__
 #include <General/pch.h>
 #include <windows.h>
 //---------------------------------------------------------------------------
@@ -27,4 +28,4 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void* lpReserved
    return 1;
 }
 //---------------------------------------------------------------------------
- 
+#endif

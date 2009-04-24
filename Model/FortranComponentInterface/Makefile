@@ -3,12 +3,11 @@ include $(APSIM)/Model/Build/Platform.make
 PROJECT= FortranComponentInterface
 
 SRC = 	 FortranComponentInterface.cpp     \
+          FortranDataTypes.cpp              \
           EntryPoints.cpp                   \
-	       DataTypes.cpp	                    \
-          FortranComponentWrapper.cpp       \
-          ScienceAPI.cpp
+          FORTRANComponentWrapper.cpp
 
 
-LIBS = General ApsimShared Protocol ComponentInterface2
+LIBS = General ApsimShared Protocol ComponentInterface
 PROJECTTYPE = dll
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

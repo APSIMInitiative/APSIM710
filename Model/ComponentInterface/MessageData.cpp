@@ -64,9 +64,9 @@ unsigned int EXPORT memorySize(const FStrings& strings)
 static const char* stringType = "<type kind=\"string\"/>";
 static const char* stringArrayType = "<type kind=\"string\" array=\"T\"/>";
 
-  std::string DDML(const FString& )
+  std::string EXPORT DDML(const FString& )
      { return(stringType); }
-  std::string DDML(const FStrings& )
+  std::string EXPORT DDML(const FStrings& )
      { return(stringArrayType); }
 
 } // end namespace protocol

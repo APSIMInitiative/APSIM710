@@ -1,5 +1,5 @@
-#ifndef FortranComponentWrapperH
-#define FortranComponentWrapperH
+#ifndef FortranComponentWrapper2H
+#define FortranComponentWrapper2H
 #include <General/platform.h>
 #include <stack>
 

@@ -1,7 +1,7 @@
 #ifndef ArbitratorH
 #define ArbitratorH
 
-#include "PlantInterface.h"
+#include "../PlantInterface.h"
 
 class rootPart;
 class Arbitrator : public plantThing

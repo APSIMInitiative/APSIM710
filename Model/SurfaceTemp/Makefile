@@ -4,7 +4,7 @@ PROJECT = SurfaceTemp
 
 SRC = Registrations.f90 SurfaceTemp.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

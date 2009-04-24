@@ -1,8 +1,8 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "Observers.h"
-#include "Phenology/Phenology.h"
-#include "Environment.h"
+#include "../Phenology/Phenology.h"
+#include "../Environment.h"
 // An "event observer". Waits for events to happen and records date/das for later reporting.
 eventObserver::eventObserver(ScienceAPI& scienceAPI, const string& eventOfInterest, plantInterface *p)
    : plantThing(scienceAPI, "EventObserver")

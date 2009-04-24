@@ -4,7 +4,7 @@ PROJECT = Canopy
 
 SRC = Registrations.f90 canopy.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

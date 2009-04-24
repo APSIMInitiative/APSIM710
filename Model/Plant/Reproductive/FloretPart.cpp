@@ -1,10 +1,10 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
-#include "CompositePart.h"
+#include "../CompositePart.h"
 #include "FloretPart.h"
-#include "Phenology/Phenology.h"
-#include "Population.h"
-#include "Environment.h"
+#include "../Phenology/Phenology.h"
+#include "../Population.h"
+#include "../Environment.h"
 using namespace std;
 
 FloretPart::FloretPart(ScienceAPI& scienceAPI, plantInterface *p, const string &name)

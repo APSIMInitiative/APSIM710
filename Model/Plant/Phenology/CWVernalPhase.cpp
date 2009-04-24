@@ -1,7 +1,7 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "CWVernalPhase.h"
-#include "Environment.h"
+#include "../Environment.h"
 #include "Phenology.h"
 
 CWVernalPhase::CWVernalPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)

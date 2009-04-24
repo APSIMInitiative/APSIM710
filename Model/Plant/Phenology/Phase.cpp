@@ -1,7 +1,7 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "Phase.h"
-#include "Environment.h"
+#include "../Environment.h"
 
 
 Phase::Phase(ScienceAPI& api, plantInterface& p, const std::string& name)

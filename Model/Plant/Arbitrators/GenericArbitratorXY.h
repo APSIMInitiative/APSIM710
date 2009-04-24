@@ -1,7 +1,7 @@
 #ifndef GenericArbitratorXYH
 #define GenericArbitratorXYH
 
-#include "arbitrator.h"
+#include "Arbitrator.h"
 class GenericArbitratorXY : public Arbitrator
    {
    private:

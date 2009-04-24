@@ -4,7 +4,7 @@ PROJECT = Grasp
 
 SRC = Registrations.f90 Grasp.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

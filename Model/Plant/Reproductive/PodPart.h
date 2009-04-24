@@ -1,6 +1,6 @@
 #ifndef PodPartH
 #define PodPartH
-#include "SimplePart.h"
+#include "../SimplePart.h"
 class Co2Modifier;
 class FruitCohort;
 

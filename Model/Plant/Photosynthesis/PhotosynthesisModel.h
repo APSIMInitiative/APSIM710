@@ -12,8 +12,8 @@
 #include <General/string_functions.h>
 #include <ComponentInterface/ScienceAPI.h>
 
-#include "PlantInterface.h"
-#include "Utility/PlantUtility.h"
+#include "../PlantInterface.h"
+#include "../Utility/PlantUtility.h"
 
 // Abstract class for PhotosynthesisModel objects
 class PhotosynthesisModel

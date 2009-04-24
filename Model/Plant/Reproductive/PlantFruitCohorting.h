@@ -5,7 +5,7 @@
 #ifndef PLANTFRUITCOHORTING_H
 #define PLANTFRUITCOHORTING_H
 
-#include "CompositePart.h"
+#include "../CompositePart.h"
 #include "FruitCohortFN.h"
 
 

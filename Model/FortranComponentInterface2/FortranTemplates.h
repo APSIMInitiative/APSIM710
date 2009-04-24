@@ -2,7 +2,7 @@
 #define FortranTemplatesH
 
 #include <ComponentInterface2/Interfaces.h>
-#include <FortranComponentInterface/FortranComponentWrapper.h>
+#include <FortranComponentInterface2/FortranComponentWrapper.h>
 
 // -------------------------------------------------------------------
 // A wrapper class for CMP events, gets and sets that take a single
@@ -80,4 +80,3 @@ class FortranNullMethod : public Packable
    };
 #endif
 
- 

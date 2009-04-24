@@ -1,8 +1,8 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "GrainPart.h"
-#include "Environment.h"
-#include "Phenology/Phenology.h"
+#include "../Environment.h"
+#include "../Phenology/Phenology.h"
 using namespace std;
 
 inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}

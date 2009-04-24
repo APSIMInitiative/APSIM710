@@ -18,7 +18,7 @@ SRC = PlantInterface.cpp \
       Biomass.cpp \
       Utilities.cpp \
       Dll.cpp \
-      ..\ComponentInterface2\CMPComponentEntryPoints.cpp
+      ../ComponentInterface2/CMPComponentEntryPoints.cpp
 
 LIBS = General ApsimShared ComponentInterface2
 

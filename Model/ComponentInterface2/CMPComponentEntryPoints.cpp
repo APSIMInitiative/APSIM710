@@ -3,13 +3,13 @@
 #include <string.h>
 #include <General/platform.h>
 
-
+using namespace std;
 extern "C" void EXPORT STDCALL wrapperDLL(char* wrapperDll)
    {
    #ifdef __WIN32__
    strcpy(wrapperDll, "ComponentInterface2.dll");
    #else
-   strcpy(wrapperDll, "");
+   strcpy(wrapperDll, "libComponentInterface2.so");
    #endif
    }
 

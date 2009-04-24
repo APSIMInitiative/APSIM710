@@ -1,12 +1,12 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "GrainPart.h"
 #include "PodPart.h"
-#include "Co2Modifier.h"
+#include "../Co2Modifier.h"
 #include "FruitCohort.h"
-#include "Phenology/Phenology.h"
-#include "Population.h"
-#include "Environment.h"
+#include "../Phenology/Phenology.h"
+#include "../Population.h"
+#include "../Environment.h"
 using namespace std;
 // ================================ AREA =================================================
 // This class only has functionality for pods. It needs extra methods and data members to be used for leaf and other organs.

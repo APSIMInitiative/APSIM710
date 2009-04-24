@@ -13,14 +13,11 @@ SRC = ComponentInterface.cpp  \
       ApsimVariant.cpp \
       ArraySpecifier.cpp \
       ProtocolVector.cpp   \
-      EntryPoints.cpp \
       Variable.cpp \
       VariableRef.cpp \
       ScienceAPI.cpp \
       DataTypes.cpp \
-      MessageTypes.cpp \
-      FortranDataTypes.cpp \
-      FORTRANComponentWrapper.cpp
+      MessageTypes.cpp
 
 LIBS = General ApsimShared
 PROJECTTYPE = dll

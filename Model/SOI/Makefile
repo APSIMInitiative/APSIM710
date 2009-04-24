@@ -4,7 +4,7 @@ PROJECT = SOI
 
 SRC = Registrations.f90 SOI.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

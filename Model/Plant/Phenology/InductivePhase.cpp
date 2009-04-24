@@ -1,7 +1,7 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "InductivePhase.h"
-#include "Environment.h"
+#include "../Environment.h"
 
 float InductivePhase::stress()
    {

@@ -3,7 +3,9 @@
 #include "Plant.h"
 #include "PlantComponents.h"
 #include "PlantActions.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
 //------------------------------------------------------------------------------------------------
 // Register Methods, Events,
 //------------------------------------------------------------------------------------------------
@@ -14,7 +16,7 @@ void Plant::doRegistrations(void)
    scienceAPI.subscribe("tick",        TimeFunction(&Plant::onTick));
    scienceAPI.subscribe("newmet",      NewMetFunction(&Plant::onNewMet));
    scienceAPI.subscribe("new_profile", NewProfileFunction(&Plant::onNewProfile));
-   scienceAPI.subscribe("sow",         VariantFunction(&Plant::onSowCrop)); 
+   scienceAPI.subscribe("sow",         VariantFunction(&Plant::onSowCrop));
    scienceAPI.subscribe("harvest",     nullFunction(&Plant::onHarvest));
    scienceAPI.subscribe("end_crop",    nullFunction(&Plant::onEndCrop));
    scienceAPI.subscribe("kill_crop",   nullFunction(&Plant::onKillCrop));
@@ -175,7 +177,7 @@ void Plant::onHarvest(void)     // Field a Harvest event
                  grain->getDmGreen() * 10.0); scienceAPI.write(msg);
    sprintf(msg,"                    N  (kg/ha) =              %8.2f\t\t    0.00\n",
                  grain->getNGreen() * 10.0); scienceAPI.write(msg);
-   
+
    scienceAPI.publish("harvesting");
 
    grain->Harvest();

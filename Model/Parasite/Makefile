@@ -4,7 +4,7 @@ PROJECT = Parasite
 
 SRC = Registrations.f90 Parasite.for
 STATICLIBS = FortranInfrastructure CropTemplate
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

@@ -1,8 +1,8 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "FruitCohortFN.h"
-#include "Environment.h"
-#include "ThingFactory.h"
+#include "../Environment.h"
+#include "../ThingFactory.h"
 using namespace std;
 
 // ##############################################################

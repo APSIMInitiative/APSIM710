@@ -1,6 +1,6 @@
 #include "StdPlant.h"
 #include "Phenology/Phenology.h"
-#include "Arbitrators/arbitrator.h"
+#include "Arbitrators/Arbitrator.h"
 #include "CompositePart.h"
 #include "Population.h"
 #include "Environment.h"
@@ -427,7 +427,7 @@ void SimplePart::update(void)
    Green = Green - dying;
    Senesced = Senesced + dying;
    Senescing = Senescing + dying;
-   
+
 
    Height += dlt.height;
    Width += dlt.width;
@@ -1169,7 +1169,7 @@ float SimplePart::giveDmGreenRemoved (float delta)
    {
    float fraction = divide(delta,Green.DM(), 0.0);
    GreenRemoved = Green * fraction;
-   
+
    float error_margin = 1.0e-6 ;
    if (delta > Green.DM() + error_margin)
    {

@@ -2,7 +2,9 @@
 
 #include "Plant.h"
 #include "Phosphorus.h"
-#include <stdio>
+#ifdef __WIN32__
+   #include <stdio>
+#endif
 //------------------------------------------------------------------------------------------------
 //------ Phosphorus Constructor
 //------------------------------------------------------------------------------------------------
@@ -40,7 +42,7 @@ void Phosphorus::doRegistrations(void)
 
    scienceAPI.expose("BiomassP",        "g/m2", "BiomassP",                                    false, pBiomass);
 
-   scienceAPI.exposeFunction("GreenP", "g/m2", "P content of live plant parts", 
+   scienceAPI.exposeFunction("GreenP", "g/m2", "P content of live plant parts",
                      FloatFunction(&Phosphorus::getPGreen));
    scienceAPI.exposeFunction("SenescedP","g/m2", "P content of senesced plant parts",
                      FloatFunction(&Phosphorus::getPSenesced));
@@ -67,7 +69,7 @@ void Phosphorus::initialize(void)
    grainStress     = 1.0;
 
    totalDemand = 0.0;
-   
+
    pPlant =   0.0;
    pStover =  0.0;
    pBiomass = 0.0;

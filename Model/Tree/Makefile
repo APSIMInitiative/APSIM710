@@ -4,7 +4,7 @@ PROJECT = Tree
 
 SRC = Registrations.f90 Tree.for
 STATICLIBS = FortranInfrastructure
-LIBS = ComponentInterface
+LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

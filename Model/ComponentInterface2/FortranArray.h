@@ -3,6 +3,7 @@
 
 #include <string>
 #include <General/string_functions.h>
+#include <stdexcept>
 class MessageData;
 
 template <class T>

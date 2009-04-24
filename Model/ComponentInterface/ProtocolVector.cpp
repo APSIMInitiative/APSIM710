@@ -46,11 +46,11 @@ static const char* integerArrayType = "<type kind=\"integer4\" array=\"T\"/>";
 static const char* realArrayType = "<type kind=\"single\" array=\"T\"/>";
 static const char* doubleArrayType = "<type kind=\"double\" array=\"T\"/>";
 
-  std::string DDML(const protocol::vector<int>& )
+  std::string EXPORT DDML(const protocol::vector<int>& )
      { return(integerArrayType); }
-  std::string DDML(const protocol::vector<float>& )
+  std::string EXPORT DDML(const protocol::vector<float>& )
      { return(realArrayType); }
-  std::string DDML(const protocol::vector<double>& )
+  std::string EXPORT DDML(const protocol::vector<double>& )
      { return(doubleArrayType); }
 
 } // namespace protocol

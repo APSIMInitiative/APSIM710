@@ -1,6 +1,7 @@
 #ifndef ProtocolVectorH
 #define ProtocolVectorH
 #include "MessageData.h"
+#include <General/platform.h>
 namespace protocol {
 class Component;
 
@@ -147,9 +148,9 @@ inline unsigned int memorySize(const vector<T>& values)
    }
 #pragma warn .inl
 
-  std::string DDML(const protocol::vector<int>& );
-  std::string DDML(const protocol::vector<float>& );
-  std::string DDML(const protocol::vector<double>& );
+  std::string EXPORT DDML(const protocol::vector<int>& );
+  std::string EXPORT DDML(const protocol::vector<float>& );
+  std::string EXPORT DDML(const protocol::vector<double>& );
 
 } // namespace protocol
 

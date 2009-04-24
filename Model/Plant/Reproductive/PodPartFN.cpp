@@ -1,11 +1,11 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "GrainPart.h"
-#include "Co2Modifier.h"
+#include "../Co2Modifier.h"
 #include "FruitCohortFN.h"
 #include "PodPartFN.h"
-#include "Population.h"
-#include "Environment.h"
+#include "../Population.h"
+#include "../Environment.h"
 using namespace std;
 
 fruitPodPartFN::fruitPodPartFN(ScienceAPI& scienceAPI, plantInterface *p, const string &name)

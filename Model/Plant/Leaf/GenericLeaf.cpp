@@ -1,10 +1,10 @@
-#include "StdPlant.h"
+#include "../StdPlant.h"
 
 #include "Leaf.h"
 #include "GenericLeaf.h"
-#include "Environment.h"
-#include "Phenology/Phenology.h"
-#include "Population.h"
+#include "../Environment.h"
+#include "../Phenology/Phenology.h"
+#include "../Population.h"
 using namespace std;
 
 const float  tolerance_lai = 1.0e-4 ;

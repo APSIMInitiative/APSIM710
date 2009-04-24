@@ -1,7 +1,7 @@
 #ifndef GrainPartH
 #define GrainPartH
 
-#include "CompositePart.h"
+#include "../CompositePart.h"
 #include "OilPart.h"
 #include "MealPart.h"
 
