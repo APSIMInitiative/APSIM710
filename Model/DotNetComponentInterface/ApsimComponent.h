@@ -36,6 +36,8 @@ public ref class ApsimComponent
       void OnSow(char* messageData);
       void OnEndCrop(char* messageData);
       void OnPost(char* messageData);
+      Assembly^ CompileScript(XmlNode^ Node);
+
       
       void CallEventHandlers(String^ EventName, SowType^ Data);
 

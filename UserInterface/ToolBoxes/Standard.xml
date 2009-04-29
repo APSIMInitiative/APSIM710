@@ -1308,6 +1308,41 @@ endif
         </script>
       </manager>
     </folder>
+    <manager2 name="Script(VB)">
+      <ui/>
+      <text><![CDATA[Imports System
+Imports ModelFramework
+
+Public Class Script
+   Inherits Instance
+
+   <Input()> Private A as Double = 0
+   <Param()> Private B as Double = 0
+   <Output()><Units("oC")> Public C as Double = 0
+
+   <EventHandler()> Public Sub OnPost()
+
+   End Sub
+End Class
+    ]]></text>
+    </manager2>
+    <manager2 name="Script(C#)">
+      <ui/>
+      <text><![CDATA[using System;
+using ModelFramework;
+
+public class Script : Instance
+   {
+   [Input] private double A = 0;
+   [Param] private double B = 0;
+   [Output][Units("oC")] public double C = 0;
+
+   [EventHandler] public void OnPost()
+      {
+      }
+   }
+    ]]></text>
+    </manager2>
     <folder name="Africa-India">
       <folder name="Phosphorus and Manure">
         <manager name="Fertilise with Phosphorus at sowing">

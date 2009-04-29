@@ -3,6 +3,7 @@
 #include "MessageData.h"
 #include "Factory.h"
 #using <System.dll>
+using namespace System::CodeDom::Compiler;
 using namespace System::Runtime::InteropServices;
 using namespace System::IO;
 using namespace ModelFramework;
@@ -109,7 +110,37 @@ void ApsimComponent::messageToLogic (char* message)
 		   Doc->LoadXml(Contents->ToString());
 		   InitData = XmlHelper::Find(Doc->DocumentElement, "initdata");
    		bool IsPlant = (XmlHelper::FindByType(InitData,"Plant") != nullptr);
-   		if (!IsPlant)
+   		bool IsScript = (XmlHelper::FindByType(InitData,"text") != nullptr);   		
+   		if (IsScript)
+   		   {
+   		   String^ ScriptClassName = "";
+   		   Assembly^ CompiledAssembly = CompileScript(XmlHelper::FindByType(InitData,"text"));
+   		   modelAssembly = CompiledAssembly;
+   		   for each (Type^ t in CompiledAssembly->GetTypes())
+   		      {
+   		      if (t->BaseType != nullptr && t->BaseType->Name == "Instance")
+   		         ScriptClassName = t->Name;
+   		      }
+   		   if (ScriptClassName == "")
+   		      throw gcnew Exception("Cannot find a script class inherited from 'Instance'");
+   		      
+   		   // Create an XML model that we can pass to BuildObjects.
+   		   XmlDocument^ NewDoc = gcnew XmlDocument();
+   		   XmlNode^ ScriptNode = NewDoc->AppendChild(NewDoc->CreateElement(ScriptClassName));
+   		   for each (XmlNode^ Child in XmlHelper::Find(InitData, "ui"))
+               XmlHelper::SetValue(ScriptNode, Child->Name, Child->InnerText);   		      
+
+            // Build all necessary objects
+            BuildObjects(ScriptNode);
+   		   }
+   		else if (IsPlant)
+		      {
+		      ManagerEventType^ dummy = gcnew ManagerEventType();
+            CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, DDML(dummy));
+            CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
+            CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
+		      }
+		   else
    		   {
             // Insert any other parameters found under the <InitData> section into the model description.
             for each (XmlNode^ Parameter in InitData->ChildNodes)
@@ -122,13 +153,6 @@ void ApsimComponent::messageToLogic (char* message)
                }
    		   BuildObjects(InitData->ChildNodes[0]);
    		   }
-		   else
-		      {
-		      ManagerEventType^ dummy = gcnew ManagerEventType();
-            CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, DDML(dummy));
-            CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
-            CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
-		      }
 		   }
 	   CIMessageToLogic(ComponentI, message);
 	   }
@@ -393,6 +417,49 @@ void ApsimComponent::OnPost(char* messageData)
       CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
       }
    }
+
+Assembly^ ApsimComponent::CompileScript(XmlNode^ Node)
+   {
+   // Get the language associated with the file extension.
+   if (CodeDomProvider::IsDefinedExtension(".cs"))
+      {
+      bool VB = Node->InnerText->IndexOf("Inherits ") != -1;
+      String^ language;
+      if (VB)
+         language = CodeDomProvider::GetLanguageFromExtension(".vb");
+      else
+         language = CodeDomProvider::GetLanguageFromExtension(".cs");
+      
+      if (language && CodeDomProvider::IsDefinedLanguage(language))
+         {
+         CodeDomProvider^ provider = CodeDomProvider::CreateProvider(language);
+         if (provider)
+            {
+            CompilerParameters^ params = gcnew CompilerParameters();
+            params->GenerateInMemory = true;      //Assembly is created in memory
+            params->TreatWarningsAsErrors = false;
+            params->WarningLevel = 2;
+            params->ReferencedAssemblies->Add("System.dll");
+            params->ReferencedAssemblies->Add("c:\\hol353\\apsim\\model\\DotNetComponentInterface.dll");
+            ICodeCompiler^ compiler = provider->CreateCompiler();
+            CompilerResults^ results = compiler->CompileAssemblyFromSource(params, Node->InnerText);
+            String^ Errors = "";
+            for each (CompilerError^ err in results->Errors)
+               {
+               if (Errors != "")
+                  Errors += "\r\n";
+                  
+               Errors += err->ErrorText + ". Line number: " + err->Line.ToString();
+               }
+            if (Errors != "")
+               throw gcnew Exception(Errors);
+            return results->CompiledAssembly;
+            }
+         }
+      }
+   return nullptr;
+   }
+
 
 
 String^ ApsimComponent::GetDescription(XmlNode^ InitD)
