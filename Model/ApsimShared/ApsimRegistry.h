@@ -78,6 +78,9 @@ class EXPORT ApsimRegistry
       // split open a qualified pathname (modulename.variablename) 
       void unCrackPath(int sourceID, const std::string &fqName, int &id, std::string &name);
 
+      // split open a qualified pathname (modulename.variablename) 
+      void unCrackPath(int sourceID, const std::string &fqName, std::vector<int> &ids, std::string &name);
+
       // Reset the whole registry
       void reset(void);
       

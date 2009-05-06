@@ -1,8 +1,11 @@
 #include <stdlib.h>
+#include <string.h>
 #include <General/platform.h>
 
 #include <stdexcept>
 #include <iostream>
+
+#include <boost/regex.hpp>
 
 #include "ApsimRegistrationType.h"
 #include "ApsimRegistration.h"
@@ -464,13 +467,14 @@ bool ApsimRegistry::isForeign(int id)
 }
 
 
-// ".paddock1.wheat.sow"
-// "wheat.sow"
-// "*.sow"
+// ".paddock1.wheat.esw"
+// "wheat.esw"
+// "*.esw"
+// "esw"
 // etc
 void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module asking
                                 const std::string &fqName,  // IN: [module.]name string
-                                int &id,                    // out
+                                std::vector<int> &ids,       // out
                                 std::string &name)          // out
 {
    size_t pos = fqName.rfind(".");
@@ -478,34 +482,67 @@ void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module 
       {
       name = fqName.substr(pos+1);
       string componentName = fqName.substr(0,pos);
-      if (componentName[0] == '.')
-        {
-        id = componentByName(componentName);
-        if (id <= 0) {throw std::runtime_error("Unknown module name " + componentName);}
-        }
-      else if (componentName[0] == '*')
-        {
-        id = 0;
-        }
+      if (strchr(componentName.c_str(), '*') == NULL && 
+          strchr(componentName.c_str(), '?') == NULL) 
+         {
+         // It's not a RE. It's either an absolute
+         // or relative path.
+         if (componentName[0] == '.') 
+           {
+           int id = componentByName(componentName);
+           if (id <= 0) {throw std::runtime_error("Unknown module name " + componentName);}
+           ids.push_back(id);
+           }
+         else 
+           {
+           // prepend container name of sending component
+           string container = componentByID(fromID) ;
+           size_t cpos = container.rfind(".");
+           if (cpos != string::npos) 
+              container = container.substr(0,cpos);
+         
+           componentName = container + "." + componentName;
+         
+           int id = componentByName(componentName);
+           if (id <= 0) {throw std::runtime_error("Unknown module name " + componentName);}
+           ids.push_back(id);
+           }
+         }
       else
-        {
-        // prepend container name of sending component
-        string container = componentByID(fromID) ;
-        size_t cpos = container.rfind(".");
-        if (cpos != string::npos)
-           container = container.substr(0,cpos);
-
-        componentName = container + "." + componentName;
-
-        id = componentByName(componentName);
-        if (id <= 0) {throw std::runtime_error("Unknown module name " + componentName);}
-        }
-      }
+         {
+//cout << "Testing RE: variable=\""<<name<<"\", re=\"" << componentName << "\"\n";
+         // It's an RE. Test against all the component names we know about.
+         //boost::regex e(componentName);
+         //
+         //for (unsigned int i = 0; i < components.size(); i++)
+         //  if (regex_match(components[i].Name,e)) 
+         //    ids.push_back(components[i].ID);
+         ids.push_back(0);
+         }
+      }  
    else
       {
-      id = 0;
+      // No component name.
+      ids.push_back(0);
       name = fqName;
       }
+}
+
+void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module asking
+                                const std::string &fqName,  // IN: [module.]name string
+                                int &id,                    // out
+                                std::string &name)          // out
+{
+   vector<int> ids;
+   unCrackPath(fromID, fqName, ids, name);
+   if (ids.size() > 1) {
+      string msg = "The component name \"";
+      msg += fqName;
+      msg += "\" is not unique.\n";
+
+      throw std::runtime_error(msg);
+   }
+   id = ids[0];
 }
 
 // Write a description of whatever a component has registered
