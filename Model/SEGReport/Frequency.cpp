@@ -43,8 +43,13 @@ void processFrequency(DataContainer& parent,
             {
             std::string originalFilter = source->Filter.c_str();
             int NumRecords = source->RecordCount;
-            int SeriesNumber = source->FieldValues["SeriesNumber"];
-            AnsiString SeriesName = source->FieldValues["SeriesName"];
+            int SeriesNumber;
+            AnsiString SeriesName;
+            if (source->FieldList->Find("SeriesNumber") != NULL)
+               {
+               SeriesNumber = source->FieldValues["SeriesNumber"];
+               SeriesName = source->FieldValues["SeriesName"];
+               }
             for (unsigned i = 0; i != labels.size(); i++)
                {
                string filter = filters[i];
@@ -55,8 +60,11 @@ void processFrequency(DataContainer& parent,
                source->Filtered = true;
 
                result.Append();
-               result.FieldValues["SeriesNumber"] = SeriesNumber;
-               result.FieldValues["SeriesName"] = SeriesName;
+               if (source->FieldList->Find("SeriesNumber") != NULL)
+                  {
+                  result.FieldValues["SeriesNumber"] = SeriesNumber;
+                  result.FieldValues["SeriesName"] = SeriesName;
+                  }
                result.FieldValues["Label"] = labels[i].c_str();
                if (percent)
                   result.FieldValues["Percent"] = source->RecordCount * 1.0 / NumRecords * 100;

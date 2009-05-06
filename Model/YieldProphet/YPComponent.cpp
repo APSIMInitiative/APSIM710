@@ -102,10 +102,9 @@ double YPComponent::interpFromArray(std::vector<double>& values, const std::stri
    {
    protocol::Variant* variant;
    bool ok = getVariable(rootDepthID, &variant, true);
-   double rootDepth;
+   float rootDepth;
    if (ok)
       ok = variant->unpack(rootDepth);
-
    if (!ok)
       throw runtime_error("Cannot find a root_depth variable belonging to any module");
 
@@ -179,10 +178,10 @@ std::vector<double> YPComponent::Accum(std::vector<double>& values)
 void YPComponent::getDoubles(unsigned id, std::vector<double>& values, bool optional)
    {
    values.clear();
-   
+
    protocol::Variant* variant;
    if (getVariable(id, &variant, optional))
-      { 
+      {
       std::vector<float> singleValues;
       variant->unpack(singleValues);
 
