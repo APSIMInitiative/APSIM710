@@ -162,7 +162,7 @@ void CMPComponentInterface::set(const std::string& name,
    // Set the value of a variable in another component.
    // -----------------------------------------------------------------------
 	clearMessages();
-   int id = nameToRegistrationID(name, getReg);
+   int id = nameToRegistrationID(name, setReg);
    if (id == 0)
       id = RegisterWithPM(name, units, "", setReg, data);
 

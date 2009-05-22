@@ -32,6 +32,10 @@ extern "C" {
 	void CIGet(int ComponentInterface, String^ Name, String^ Units, bool Optional, void* Handler,
 			     int InstanceNumber, int RegistrationIndex, String^ ddml);
 
+	[DllImport("ComponentInterface2.dll", EntryPoint = "CISet", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
+	void CISet(int ComponentInterface, String^ Name, String^ Units, void* Handler,
+			     int InstanceNumber, int RegistrationIndex, String^ ddml);
+
 	[DllImport("ComponentInterface2.dll", EntryPoint = "CIExpose", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
 	void CIExpose(int ComponentInterface, String^ Name, String^ Units, String^ Description, bool Writable, void* Handler,
 			        int InstanceNumber, int RegistrationIndex, String^ ddml);
@@ -45,6 +49,10 @@ extern "C" {
 
 	[DllImport("ComponentInterface2.dll", EntryPoint = "CIWarning", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
 	void CIWarning(int ComponentInterface, String^ Line);
+
+   [DllImport("ApsimShared.dll", EntryPoint = "componentByID", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
+   void ComponentByID(int componentID, System::Text::StringBuilder^ ComponentName);
+
 
 }
 
@@ -77,7 +85,7 @@ void ApsimComponent::createInstance(const char* dllFileName,
 	// Called by APSIM to create ourselves
 	// -----------------------------------
 	Contents = gcnew StringBuilder(100000);
-
+   ComponentID = compID;
 	ComponentI = CICreate(callbackArg, callback, compID, parentID);
 	}
 
@@ -99,6 +107,9 @@ void ApsimComponent::messageToLogic (char* message)
 	   if (Init1)
 		   {
 		   Init1 = false;
+
+         ComponentByID(ComponentID, Contents);
+         Name = Contents->ToString();
 
 		   char* messageData = CreateMessageData(message);
 		   ::unpack(messageData, Contents, "");
@@ -257,7 +268,23 @@ void ApsimComponent::GetAllInputs()
          }
       }
    }
-
+void ApsimComponent::Get(String^ PropertyName, ApsimType^ Data)
+   {
+   int RegistrationIndex = Registrations->Count;
+   Registrations->Add(Data);
+   CIGet(ComponentI, PropertyName, "", false, &::CallBack,
+         instanceNumber, RegistrationIndex, Data->DDML());
+   Registrations->RemoveAt(RegistrationIndex);
+   }
+void ApsimComponent::Set(String^ PropertyName, ApsimType^ Data)
+   {
+   int RegistrationIndex = Registrations->Count;
+   Registrations->Add(Data);
+   CISet(ComponentI, PropertyName, "", &::CallBack,
+         instanceNumber, RegistrationIndex, Data->DDML());
+   Registrations->RemoveAt(RegistrationIndex);
+   }   
+   
 void ApsimComponent::TrapAllEvents(Factory^ F)
 	{
 	// ----------------------------------------------
@@ -288,6 +315,7 @@ void ApsimComponent::BuildObjects(XmlNode^ XML)
    Fact = gcnew Factory();
    Fact->Create(XML->OuterXml, modelAssembly);
    Model = dynamic_cast<Instance^> (Fact->Root);
+   Model->Setup(Name, this);
    RegisterAllProperties(Fact);
    RegisterAllEventHandlers(Fact);
    TrapAllEvents(Fact);
@@ -441,8 +469,10 @@ Assembly^ ApsimComponent::CompileScript(XmlNode^ Node)
             params->WarningLevel = 2;
             params->ReferencedAssemblies->Add("System.dll");
             params->ReferencedAssemblies->Add("c:\\hol353\\apsim\\model\\DotNetComponentInterface.dll");
-            ICodeCompiler^ compiler = provider->CreateCompiler();
-            CompilerResults^ results = compiler->CompileAssemblyFromSource(params, Node->InnerText);
+            
+            array<String^>^ source = gcnew array<String^>(1);
+            source[0] = Node->InnerText;
+            CompilerResults^ results = provider->CompileAssemblyFromSource(params, source);
             String^ Errors = "";
             for each (CompilerError^ err in results->Errors)
                {
@@ -489,6 +519,7 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
       Fact = gcnew Factory();
       Fact->Create(ModelDescription->OuterXml, modelAssembly);
       Model = dynamic_cast<Instance^> (Fact->Root);
+      Model->Setup(Name, this);
 
       // get description for all properties.
       for (int i = 0; i != Fact->Properties->Count; i++)

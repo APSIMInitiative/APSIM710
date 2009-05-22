@@ -21,6 +21,8 @@ public ref class ApsimComponent
 		bool Init2Received;
 		Factory^ Fact;
 		int instanceNumber;
+		int ComponentID;
+		String^ Name;
 		List<ApsimType^>^ Registrations;
 		XmlNode^ InitData;
 		bool EndCropToday;
@@ -43,6 +45,10 @@ public ref class ApsimComponent
 
 	internal:
 		void Warning(String^ msg);
+      void Get(String^ PropertyName, ApsimType^ Data);		
+      void Set(String^ PropertyName, ApsimType^ Data);
+      
+      String^ GetName() {return Name;}
 
 	public:
 		ApsimComponent(Assembly^ ModelAssembly, int instanceNumber);

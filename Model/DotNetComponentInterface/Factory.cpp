@@ -50,7 +50,6 @@ Instance^ Factory::CreateInstance(XmlNode^ Node, XmlNode^ Parent)
    GetAllEventHandlers(CreatedInstance);
    GetAllEvents(CreatedInstance);
    PopulateParams(CreatedInstance, Node);
-   CreatedInstance->Setup();
    return CreatedInstance;
    }
 void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)

@@ -1,49 +1,11 @@
 #pragma once
-
+#include "ComponentType.h"
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Text;
 
-public ref class NamedItem
-   {
-   private:
-      String^ _Name;
-   public: 
-      property String^ Name 
-         { 
-         virtual String^ get()
-            { 
-            return _Name; 
-            } 
-         void set (String^ value)
-            { 
-            _Name = value; 
-            } 
-         }
-   };
 
-generic <typename T> where T : NamedItem
-public ref class NamedList : List<T>
-   {
-   /// --------------------------------------------------------------------------
-   /// This class allows the developer to index into the phase collection
-   /// using a string key.
-   /// --------------------------------------------------------------------------
-   public:
-      String^ ParentName;
-      property T default[String^]
-         {
-         T get(String^ Name)
-            {
-            for each (T Obj in this)
-               {
-               if (Obj->Name->ToLower() == Name->ToLower())
-                  return Obj;
-               }
-            throw gcnew Exception("Cannot find object: " + ParentName + Name);
-            }
-         }
-   };
+
    
 generic <typename T>
 public ref class LayeredList : List<T> 
@@ -65,6 +27,7 @@ public ref class LayeredList : List<T>
 public ref class Instance : NamedItem
    {
    private:
+      static ComponentType^ _Paddock;
       String^ MyFQN()
          {
          String^ FQN = "";
@@ -73,36 +36,20 @@ public ref class Instance : NamedItem
          FQN += Name;
          return FQN;
          }
+      String^ ComponentName;
+      ModelFramework::ApsimComponent^ Component;
+   
+   protected:
+
+         
    public:
       NamedList<NamedItem^>^ Children;
       Instance^ Parent;
       Instance();
+
       virtual void Add(Instance^ Child)
          {
          Children->Add(Child);
-         }
-      virtual void Setup() { }
-      property Instance^ Root 
-         { 
-         virtual Instance^ get() 
-            { 
-            if (Parent == nullptr)
-               return this;
-            else
-               return Parent->Root;
-            }
-         }
-      Instance^ Find(String^ Name)
-         {
-         int PosPeriod = Name->IndexOf('.');
-         if (PosPeriod == -1)
-            return (Instance^) Children[Name];
-         else
-            {
-            String^ ChildName = Name->Substring(0, PosPeriod);
-            String^ Remainder = Name->Substring(PosPeriod+1);
-            return ((Instance^) Children[ChildName])->Find(Remainder);
-            }
          }
       int IndexOf(String^ Name)
          {
@@ -122,6 +69,52 @@ public ref class Instance : NamedItem
             String^ Remainder = Name->Substring(PosPeriod+1);
             return ((Instance^) Children[ChildName])->IndexOf(Remainder);
             }
+         }      
+      Instance^ Find(String^ Name)
+         {
+         int PosPeriod = Name->IndexOf('.');
+         if (PosPeriod == -1)
+            return (Instance^) Children[Name];
+         else
+            {
+            String^ ChildName = Name->Substring(0, PosPeriod);
+            String^ Remainder = Name->Substring(PosPeriod+1);
+            return ((Instance^) Children[ChildName])->Find(Remainder);
+            }
          }         
+      void Setup(String^ ComponentNam, ModelFramework::ApsimComponent^ component) 
+         {
+         ComponentName = ComponentNam;
+         Component = component;
+         }
+      property Instance^ Root 
+         { 
+         virtual Instance^ get() 
+            { 
+            if (Parent == nullptr)
+               return this;
+            else
+               return Parent->Root;
+            }
+         }
+         
+      property ComponentType^ Paddock 
+         { 
+         // --------------------------------------------------------------------
+         // Returns the singleton instance of a reflection class that is
+         // capable of returning metadata about the structure of the current
+         // paddock that this model is running in.
+         // --------------------------------------------------------------------
+
+         ComponentType^ get()
+            { 
+            if (_Paddock == nullptr)
+               {
+               String^ ParentName = Root->ComponentName->Substring(0, Root->ComponentName->LastIndexOf('.'));
+               _Paddock = gcnew ComponentType(ParentName, Component);
+               }
+            return _Paddock;
+            } 
+         }  
       };
 

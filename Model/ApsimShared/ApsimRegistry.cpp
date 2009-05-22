@@ -362,7 +362,24 @@ void ApsimRegistry::getSiblings(int componentID, vector<int> &siblings)
 
    for (unsigned i = 0; i != container->children.size(); i++)
       {
-      siblings.push_back(container->children[i]->item.ID);
+      // Need to detect the case where .MasterPM is a child of iteself.
+      // We don't want that in a list of siblings.
+      if (container->children[i]->item.ID != container->item.ID)
+         siblings.push_back(container->children[i]->item.ID);
+      }
+   }
+void ApsimRegistry::getChildren(int componentID, vector<int> &children)
+   {
+   PTree<Component>* node = findComponent(componentID);
+   if (node == NULL) {throw std::runtime_error("NULL node in getChildren!");}
+   PTree<Component>* parent = node->parent;
+
+   for (unsigned i = 0; i != node->children.size(); i++)
+      {
+      // Need to detect the case where .MasterPM is a child of iteself.
+      // We don't want that in a list of siblings.
+      if (node->children[i]->item.ID != parent->item.ID)
+         children.push_back(node->children[i]->item.ID);
       }
    }
 
@@ -427,6 +444,7 @@ void ApsimRegistry::getDescendants(ApsimRegistry::PTree<ApsimRegistry::Component
       getDescendants(node->children[i], siblings);
       }
    }
+
 int ApsimRegistry::componentByName(const std::string &name)
    {
    for (unsigned int i = 0; i < components.size(); i++ )
@@ -714,4 +732,59 @@ void ApsimRegistry::getComponents(PTree<Component>* node, vector<int> &simulatio
       {
       getComponents(node->children[i], simulationComponents);
       }
+   }
+
+bool ApsimRegistry::hasChildren(int componentID)
+   {
+   PTree<Component>* comp = findComponent(componentID);
+   if (comp == NULL)
+      return false;
+   else
+      return comp->children.size() > 0;
+   }
+
+
+// --------------------------------------------------------------------------
+// Entry points for getting metadata about a simulation. Used by .NET
+// --------------------------------------------------------------------------
+
+extern "C" void EXPORT STDCALL componentByID(int ID, char* componentName)
+   {
+   string name = ApsimRegistry::getApsimRegistry().componentByID(ID);
+   strcpy(componentName, name.c_str());
+   }
+
+extern "C" void EXPORT STDCALL getChildren(char* ComponentName, char* Data)
+   {
+   int componentID = ApsimRegistry::getApsimRegistry().componentByName(ComponentName);
+   if (componentID > 0)
+      {
+      // Return a list of child components for the specified componentID
+      vector<int> childIDs;
+      ApsimRegistry::getApsimRegistry().getChildren(componentID, childIDs);
+
+      strcpy(Data, "");
+      for (unsigned i = 0; i != childIDs.size(); i++)
+         {
+         string ChildName = ApsimRegistry::getApsimRegistry().componentByID(childIDs[i]);
+         if (i > 0)
+            strcat(Data, ",");
+         strcat(Data, "\"");
+         strcat(Data, ChildName.c_str());
+         strcat(Data, "\"");
+         }
+      }
+   }
+
+extern "C" bool EXPORT STDCALL findVariable(char* OwnerComponentName, char* VariableName)
+   {
+   int OwnerID = ApsimRegistry::getApsimRegistry().componentByName(OwnerComponentName);
+   return (ApsimRegistry::getApsimRegistry().find(::respondToGet, OwnerID, 0, VariableName) != NULL ||
+          ApsimRegistry::getApsimRegistry().find(::respondToGetSet, OwnerID, 0, VariableName) != NULL);
+   }
+
+extern "C" bool EXPORT STDCALL isPaddock(char* ComponentName)
+   {
+   int ComponentID = ApsimRegistry::getApsimRegistry().componentByName(ComponentName);
+   return ApsimRegistry::getApsimRegistry().hasChildren(ComponentID);
    }

@@ -253,6 +253,24 @@ extern "C" void EXPORT STDCALL  CIGet(CMPComponentInterface* componentInterface,
       componentInterface->error(err.what(), true);
       }
    }
+extern "C" void EXPORT STDCALL  CISet(CMPComponentInterface* componentInterface,
+                                      const char* Name,
+                                      const char* Units,
+                                      DOTNETWrapper::ForeignHandlerType* ForeignHandler,
+                                      int foreignInstanceNumber,
+                                      int ForeignDataHandle,
+                                      const char* ddml)
+   {
+   try
+      {
+      Packable* Handler = new DOTNETWrapper(ForeignHandler, false, foreignInstanceNumber, ForeignDataHandle, ddml);
+      componentInterface->set(Name, Units, Handler);
+      }
+   catch (const exception& err)
+      {
+      componentInterface->error(err.what(), true);
+      }
+   }
 extern "C" void EXPORT STDCALL  CIExpose(CMPComponentInterface* componentInterface,
                                          const char* Name,
                                          const char* Units,

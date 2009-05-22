@@ -204,6 +204,7 @@ unsigned memorySize(array<T>^ values)
    return 4 + values->Length * ::memorySize(values[0]);
    }
 template <class T>
+#pragma warning(disable:4700)
 String^ DDML(array<T>^ values)
 	{
 	T Dummy;

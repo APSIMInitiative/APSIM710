@@ -1,5 +1,7 @@
 Imports System.Xml
 Imports CSGeneral
+Imports System.IO
+Imports System.Reflection
 Public Class ScriptUI
 
     ' -----------------------------------
@@ -13,6 +15,17 @@ Public Class ScriptUI
             GenericUI.OnRefresh()
         End If
         TextBox.Text = XmlHelper.Value(Data, "text")
+        If TextBox.Text.Contains("Imports ") Then
+            TextBox.Lexer = VbParser
+        Else
+            TextBox.Lexer = CsParser
+        End If
+        Assembly.LoadFile(Path.GetDirectoryName(Application.ExecutablePath) + "\" + "DotNetComponentInterface.dll")
+        CsParser.RegisterAllAssemblies()
+        VbParser.RegisterAllAssemblies()
+        Dim TabStops() As Integer = {3}
+        TextBox.Lines.TabStops = TabStops
+        TextBox.Lines.UseSpaces = True
     End Sub
 
     Public Overrides Sub OnSave()

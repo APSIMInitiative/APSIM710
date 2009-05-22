@@ -95,7 +95,7 @@ void __stdcall getDescription(const char* initScript, char* description)
          {
          ApsimComponent^ Comp = gcnew ApsimComponent(Assemb, 0);
          char* str = (char*)(void*)Marshal::StringToHGlobalAnsi(Comp->GetDescription(InitData));
-         strcpy(description, str);
+         strcpy_s(description, 100000, str);
          Marshal::FreeHGlobal((IntPtr)str);
          }
       }
@@ -141,7 +141,7 @@ void __stdcall messageToLogic (unsigned* instanceNumber, char* message, bool* pr
 
 
 extern "C" __declspec( dllexport )
-unsigned __stdcall CallBack(int instanceNumber, int DataHandle, char* messageData, int OpCode)
+unsigned __stdcall CallBack(unsigned instanceNumber, int DataHandle, char* messageData, int OpCode)
    {
    if (instanceNumber < Instances::count())
 	  {

@@ -19,11 +19,15 @@ Partial Class ScriptUI
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ScriptUI))
         Me.TabControl = New System.Windows.Forms.TabControl
         Me.Properties = New System.Windows.Forms.TabPage
         Me.GenericUI = New VBUserInterface.GenericUI
         Me.Script = New System.Windows.Forms.TabPage
-        Me.TextBox = New System.Windows.Forms.TextBox
+        Me.TextBox = New QWhale.Editor.SyntaxEdit(Me.components)
+        Me.CsParser = New QWhale.Syntax.Parsers.CsParser
+        Me.VbParser = New QWhale.Syntax.Parsers.VbParser
         Me.TabControl.SuspendLayout()
         Me.Properties.SuspendLayout()
         Me.Script.SuspendLayout()
@@ -75,14 +79,39 @@ Partial Class ScriptUI
         '
         'TextBox
         '
+        Me.TextBox.BackColor = System.Drawing.SystemColors.Window
+        Me.TextBox.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TextBox.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TextBox.Font = New System.Drawing.Font("Courier New", 10.0!)
         Me.TextBox.Location = New System.Drawing.Point(3, 3)
-        Me.TextBox.Multiline = True
         Me.TextBox.Name = "TextBox"
         Me.TextBox.Size = New System.Drawing.Size(641, 493)
         Me.TextBox.TabIndex = 0
-        Me.TextBox.WordWrap = False
+        Me.TextBox.Text = ""
+        '
+        'CsParser
+        '
+        Me.CsParser.DefaultState = 0
+        Me.CsParser.Options = CType(((((((QWhale.Syntax.SyntaxOptions.Outline Or QWhale.Syntax.SyntaxOptions.SmartIndent) _
+                    Or QWhale.Syntax.SyntaxOptions.CodeCompletion) _
+                    Or QWhale.Syntax.SyntaxOptions.SyntaxErrors) _
+                    Or QWhale.Syntax.SyntaxOptions.AutoComplete) _
+                    Or QWhale.Syntax.SyntaxOptions.FormatCase) _
+                    Or QWhale.Syntax.SyntaxOptions.FormatSpaces), QWhale.Syntax.SyntaxOptions)
+        Me.CsParser.XmlScheme = resources.GetString("CsParser.XmlScheme")
+        '
+        'VbParser
+        '
+        Me.VbParser.DefaultState = 0
+        Me.VbParser.Options = CType(((((((((QWhale.Syntax.SyntaxOptions.Outline Or QWhale.Syntax.SyntaxOptions.SmartIndent) _
+                    Or QWhale.Syntax.SyntaxOptions.CodeCompletion) _
+                    Or QWhale.Syntax.SyntaxOptions.SyntaxErrors) _
+                    Or QWhale.Syntax.SyntaxOptions.ReparseOnLineChange) _
+                    Or QWhale.Syntax.SyntaxOptions.AutoComplete) _
+                    Or QWhale.Syntax.SyntaxOptions.FormatCase) _
+                    Or QWhale.Syntax.SyntaxOptions.FormatSpaces) _
+                    Or QWhale.Syntax.SyntaxOptions.CodeCompletionTabs), QWhale.Syntax.SyntaxOptions)
+        Me.VbParser.XmlScheme = resources.GetString("VbParser.XmlScheme")
         '
         'ScriptUI
         '
@@ -93,7 +122,6 @@ Partial Class ScriptUI
         Me.TabControl.ResumeLayout(False)
         Me.Properties.ResumeLayout(False)
         Me.Script.ResumeLayout(False)
-        Me.Script.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -101,6 +129,8 @@ Partial Class ScriptUI
     Friend WithEvents Properties As System.Windows.Forms.TabPage
     Friend WithEvents Script As System.Windows.Forms.TabPage
     Friend WithEvents GenericUI As VBUserInterface.GenericUI
-    Friend WithEvents TextBox As System.Windows.Forms.TextBox
+    Friend WithEvents TextBox As QWhale.Editor.SyntaxEdit
+    Friend WithEvents CsParser As QWhale.Syntax.Parsers.CsParser
+    Friend WithEvents VbParser As QWhale.Syntax.Parsers.VbParser
 
 End Class

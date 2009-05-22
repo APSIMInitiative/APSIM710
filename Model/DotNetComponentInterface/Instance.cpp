@@ -10,5 +10,6 @@ Instance::Instance()
    Children->ParentName = MyFQN();
    
    Parent = nullptr;
+   ComponentName = "";
    }
 
