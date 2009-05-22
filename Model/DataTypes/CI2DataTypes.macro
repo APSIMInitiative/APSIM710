@@ -829,6 +829,12 @@ module ScienceAPI
    end interface
 
    interface
+      subroutine SubscribeNullType(name, proc)
+      ml_external SubscribeNullType
+      character (len=*), intent(in) :: name
+      integer, external :: proc
+      end subroutine SubscribeNullType
+
       [foreach types.type]
       ! ------ [type.name] ------
       subroutine Subscribe[type.name]Type(Name, F)
