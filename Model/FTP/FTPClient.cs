@@ -24,6 +24,7 @@ namespace FTP
             FTP.Method = WebRequestMethods.Ftp.UploadFile;
             FTP.UseBinary = true;
             FTP.ContentLength = File.Length;
+            FTP.UsePassive = false;
 
             // The buffer size is set to 2kb
             int BuffLength = 2048;
