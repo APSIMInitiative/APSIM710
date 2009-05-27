@@ -215,6 +215,7 @@ module Soiln2Module
 
       ! CHARACTER
       character   soiltype*32               ! soil type spec used to determine mineralisation parameters.
+      character   pond_active*10            ! parameter to indicate whether the soil is under flooded & ponded conditions
       character   residue_module*(Max_module_name_size)
                                           ! list of modules  replying
       character   residue_name(max_residues)*(Max_module_name_size)
@@ -246,7 +247,7 @@ module Soiln2Module
                                           ! carbohydrate, cellulose & lignin
                                           ! fractions of FOM (0-1)
       real         OC2OM_factor           ! conversion from OC to OM
-      real         opt_temp               ! Soil temperature above which there
+      real         opt_temp(2)            ! Soil temperature above which there
                                           ! is no further effect on mineralisation
                                           ! and nitrification (oC)
       real         NH4ppm_min             ! minimum allowable NH4 (ppm)
@@ -295,11 +296,11 @@ module Soiln2Module
       real         min_depth              ! depth from which mineral N can be
                                           ! immobilized by decomposing residues
                                           ! (mm)
-      real         rd_biom                ! potential rate of soil biomass
+      real         rd_biom(2)             ! potential rate of soil biomass
                                           ! mineralization (per day)
-      real         rd_fom(nfract)         ! maximum rate constants for
+      real         rd_fom(nfract,2)       ! maximum rate constants for
                                           ! decomposition of FOM pools (0-1)
-      real         rd_hum                 ! potential rate of humus
+      real         rd_hum(2)              ! potential rate of humus
                                           ! mineralization (per day)
    end type Soiln2Constants
 ! ====================================================================
@@ -772,6 +773,7 @@ subroutine soiln2_zero_all_globals ()
    g%residue_name(:)    = blank
    g%residue_type(:)     = blank
    g%fom_types(:)         = blank
+   g%pond_active = 'no'
 
    ! I think that this needs to be true by default
    ! for comms to work - NIH
@@ -790,7 +792,7 @@ subroutine soiln2_zero_all_globals ()
    c%fom_min               = 0.0
    c%fr_fom(:,:)           = 0.0
    c%OC2OM_factor          = 0.0
-   c%opt_temp              = 0.0
+   c%opt_temp(2)           = 0.0
    c%NH4ppm_min            = 0.0
    c%no3ppm_min            = 0.0
    c%wf_min_index(:)       = 0.0
@@ -814,9 +816,9 @@ subroutine soiln2_zero_all_globals ()
    c%fr_res_biom           = 0.0
    c%mCN                   = 0.0
    c%min_depth             = 0.0
-   c%rd_biom               = 0.0
-   c%rd_fom(:)             = 0.0
-   c%rd_hum                = 0.0
+   c%rd_biom(:)            = 0.0
+   c%rd_fom(:,:)           = 0.0
+   c%rd_hum(:)             = 0.0
 
    call pop_routine (my_name)
    return
@@ -928,7 +930,7 @@ subroutine soiln2_zero_variables ()
    c%fr_fom            = 0.0
    c%NH4ppm_min        = 0.0
    c%no3ppm_min        = 0.0
-   c%opt_temp          = 0.0
+   c%opt_temp(:)       = 0.0
    c%wf_min_index      = 0.0
    c%wf_min_values     = 0.0
    c%wf_nit_index      = 0.0
@@ -952,9 +954,9 @@ subroutine soiln2_zero_variables ()
    c%fr_res_biom       = 0.0
    c%mCN               = 0.0
    c%min_depth         = 0.0
-   c%rd_biom           = 0.0
-   c%rd_fom            = 0.0
-   c%rd_hum            = 0.0
+   c%rd_biom(:)        = 0.0
+   c%rd_fom(:,:)       = 0.0
+   c%rd_hum(:)         = 0.0
 
    g%residue_name = ' '
    g%residue_type  = ' '
@@ -1012,11 +1014,48 @@ subroutine soiln2_get_other_variables ()
 
    endif
 
+   call soiln2_check_pond()
+
 
    call pop_routine (my_name)
    return
 end subroutine
 
+
+!     ===========================================================
+subroutine soiln2_check_pond ()
+!     ===========================================================
+   Use Infrastructure
+   implicit none
+
+!+  Purpose
+!      Get the values of variables from other modules
+
+!+  Mission Statement
+!     Get Other Variables
+
+!+  Constant Values
+   character  my_name*(*)
+   parameter (my_name='soiln2_check_pond')
+
+!+  Local Variables
+   integer      numvals             ! number of values returned
+
+!- Implementation Section ----------------------------------
+
+   call push_routine (my_name)
+
+! dsg 180508 check for the presence of a pond
+      call get_char_var_optional (Unknown_module,'pond_active','',g%pond_active,numvals)
+     
+      if (numvals.eq.0) then
+          g%pond_active = 'no'
+      endif
+
+
+   call pop_routine (my_name)
+   return
+end subroutine
 
 
 !     ===========================================================
@@ -1139,6 +1178,7 @@ subroutine soiln2_send_my_variable (variable_name)
 
 !+  Local Variables
    integer    layer                 ! layer number
+   integer    indx                 ! index - 1 for aerobic and 2 for anaerobic conditions
    real       fom_c (max_layer)     ! fresh organic C (kg/ha)
    real       fom_c_pool1(max_layer) ! fresh organic C in pool 1 (kg/ha)
    real       fom_c_pool2(max_layer) ! fresh organic C in pool 2 (kg/ha)
@@ -1623,11 +1663,18 @@ subroutine soiln2_send_my_variable (variable_name)
    elseif (variable_name .eq. 'tf') then
    !                           --------------
       num_layers = count_of_real_vals (g%dlayer, max_layer)
+             ! dsg 200508  use different values for some constants when anaerobic conditions dominate
+             if (g%pond_active.eq.'no') then
+                 indx = 1
+             else if (g%pond_active.eq.'yes') then
+                 indx = 2
+             else
+             endif
       do layer = 1, num_layers
          if (g%soiltype.eq.'rothc') then
-            temp(layer) = rothc_tf (layer)
+            temp(layer) = rothc_tf (layer,indx)
          else
-            temp(layer) = soiln2_tf (layer)
+            temp(layer) = soiln2_tf (layer,indx)
          endif
       end do
       call respond2get_real_array (variable_name,'()', temp, num_layers)
@@ -1978,21 +2025,21 @@ subroutine soiln2_read_constants ()
 
    call read_real_var (section_name, 'ef_hum', '()', c%ef_hum, numvals, 0.0, 1.0)
 
-   call read_real_var (section_name, 'rd_biom', '()', c%rd_biom, numvals, 0.0, 1.0)
+   call read_real_array (section_name, 'rd_biom', 2, '()', c%rd_biom(:), numvals, 0.0, 1.0)
 
-   call read_real_var (section_name, 'rd_hum', '()', c%rd_hum, numvals, 0.0, 1.0)
+   call read_real_array (section_name, 'rd_hum', 2, '()', c%rd_hum(:), numvals, 0.0, 1.0)
 
    call read_real_var (section_name, 'ef_res', '()', c%ef_res, numvals, 0.0, 1.0)
 
    call read_real_var (section_name, 'fr_res_biom', '()', c%fr_res_biom, numvals, 0.0, 1.0)
 
-   call read_real_var (section_name, 'rd_carb', '()', c%rd_fom(1), numvals, 0.0, 1.0)
+   call read_real_array (section_name, 'rd_carb', 2, '()', c%rd_fom(1,:), numvals, 0.0, 1.0)
 
-   call read_real_var (section_name, 'rd_cell', '()', c%rd_fom(2), numvals, 0.0, 1.0)
+   call read_real_array (section_name, 'rd_cell', 2, '()', c%rd_fom(2,:), numvals, 0.0, 1.0)
 
-   call read_real_var (section_name, 'rd_lign', '()', c%rd_fom(3), numvals, 0.0, 1.0)
+   call read_real_array (section_name, 'rd_lign', 2, '()', c%rd_fom(3,:), numvals, 0.0, 1.0)
 
-      call read_char_array (section_name, 'fom_type', max_fom_type, '()', g%fom_types, g%num_fom_types)
+   call read_char_array (section_name, 'fom_type', max_fom_type, '()', g%fom_types, g%num_fom_types)
 
    call read_real_array (section_name, 'fr_carb', max_fom_type, '()', c%fr_fom(1,:), numvals, 0.0, 1.0)
 
@@ -2038,7 +2085,7 @@ subroutine soiln2_read_constants ()
 
    call read_real_var (section_name, 'cnrf_optcn', '(mm)', c%cnrf_optcn, numvals, 5.0, 100.0)
 
-   call read_real_var (section_name, 'opt_temp', '(mm)', c%opt_temp, numvals, 5.0, 100.0)
+   call read_real_array (section_name, 'opt_temp', 2, '(mm)', c%opt_temp(:), numvals, 5.0, 100.0)
 
    call read_real_array (section_name, 'wfmin_index', max_wf_values, '()', c%wf_min_index, numvals, 0.0, 2.0)
 
@@ -2890,6 +2937,7 @@ subroutine soiln2_urea_hydrolysis (layer, dlt_urea_hydrol)
    parameter (my_name = 'soiln2_Urea_hydrolysis')
 
 !+  Local Variables
+   integer    index                 ! index - 1 for aerobic and 2 for anaerobic conditions
    real       ak                    ! potential fraction of g_urea to be
                                     !    hydrolysed
    real       swf                   ! sw factor limitimg hydrolysis (0-1)
@@ -2899,6 +2947,15 @@ subroutine soiln2_urea_hydrolysis (layer, dlt_urea_hydrol)
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
+
+   ! dsg 200508  use different values for some constants when anaerobic conditions dominate
+   if (g%pond_active.eq.'no') then
+       index = 1
+   else if (g%pond_active.eq.'yes') then
+       index = 2
+   else
+   endif
+
 
    if (g%urea(layer).gt.0.0) then
 
@@ -2911,7 +2968,7 @@ subroutine soiln2_urea_hydrolysis (layer, dlt_urea_hydrol)
 
              ! get soil water factor
 
-         swf = soiln2_wf (layer) + 0.20
+         swf = soiln2_wf (layer,index) + 0.20
          swf = bound (swf, 0.0, 1.0)
 
              ! get soil temperature factor
@@ -3146,6 +3203,7 @@ subroutine soiln2_process ()
       character  error_string *80      ! error message if inadequate N
                                     ! for immobilization
    integer    layer                 ! soil layer count
+   integer    numvals
    integer    num_layers            ! number of soil layers used
    integer    fract                 ! number of fpools for fom
    real       dlt_rntrf             ! nitrogen moved by nitrification
@@ -3154,6 +3212,8 @@ subroutine soiln2_process ()
    real       excess_nh4            ! excess N required above NH4 supply
    real       fom_c                 ! total fom carbon
    real       fom_cn                ! CN ratio of fom
+   real       dlt_pond_c_hum        ! humic material from breakdown of residues in pond (if present)
+   real       dlt_pond_c_biom       ! biom material from breakdown of residues in pond (if present)
    character  err_string*120
 
 !- Implementation Section ----------------------------------
@@ -3169,25 +3229,48 @@ subroutine soiln2_process ()
 
    num_layers = count_of_real_vals (g%dlayer, max_layer)
 
+
+   if (g%pond_active.eq.'no') then
         ! decompose surface residues
 
-   call soiln2_min_residues (g%dlt_res_C_decomp,g%dlt_res_N_decomp,g%dlt_res_c_biom,g%dlt_res_c_hum,g%dlt_res_c_atm,g%dlt_res_nh4_min,g%dlt_res_no3_min)
+       ! dsg 010508 If there is no pond, then mineralise residues into top soil layer 
+       !     as done previously.  If there is a pond, then we need to mineralise directly into the pond water, calculating the 
+       !     immobilisation demand using mineral N in the pond also.  If 'pond_active' = 'yes' then this will be done in the 'pond' module.
+       !     SoilN2 would get some of the N back from the Pond module via a combination of mass flow and adsorption.
+       call soiln2_min_residues (g%dlt_res_C_decomp,g%dlt_res_N_decomp,g%dlt_res_c_biom,g%dlt_res_c_hum,g%dlt_res_c_atm,g%dlt_res_nh4_min,g%dlt_res_no3_min)
 
-   g%hum_c = g%hum_c+ sum (g%dlt_res_c_hum(:,:), dim = residue_dim)
 
-   g%biom_c = g%biom_c+ sum (g%dlt_res_c_biom(:,:), dim = residue_dim)
+       g%hum_c = g%hum_c+ sum (g%dlt_res_c_hum(:,:), dim = residue_dim)
 
-   do layer = 1, num_layers
+       g%biom_c = g%biom_c+ sum (g%dlt_res_c_biom(:,:), dim = residue_dim)
 
-      g%hum_n(layer) = divide (g%hum_c(layer), g%soil_cn, 0.0)
-      g%biom_n(layer) = divide (g%biom_c(layer), c%mcn, 0.0)
+       do layer = 1, num_layers
 
-      ! update soil mineral N
+          g%hum_n(layer) = divide (g%hum_c(layer), g%soil_cn, 0.0)
+          g%biom_n(layer) = divide (g%biom_c(layer), c%mcn, 0.0)
 
-      g%nh4(layer) = g%nh4(layer) + g%dlt_res_nh4_min(layer)
-      g%no3(layer) = g%no3(layer) + g%dlt_res_no3_min(layer)
+          ! update soil mineral N
 
-   end do
+          g%nh4(layer) = g%nh4(layer) + g%dlt_res_nh4_min(layer)
+          g%no3(layer) = g%no3(layer) + g%dlt_res_no3_min(layer)
+
+       end do
+
+   else
+     !  dsg 190508,  there is a pond, so POND module will decompose residues - not SoilN2
+     !  dsg 110708   Get the biom & hum C decomposed in the pond and add to soil - on advice of MEP
+ 
+       call get_real_var (unknown_module, 'pond_biom_C', 'kg/ha', dlt_pond_c_biom, numvals, -1000.0, 1000.0)
+       call get_real_var (unknown_module, 'pond_hum_C', 'kg/ha', dlt_pond_c_hum, numvals, -1000.0, 1000.0)
+
+       ! increment the soiln2 hum and biom C pools in top soil layer        
+       g%hum_c(1) = g%hum_c(1) + dlt_pond_c_hum
+       g%biom_c(1) = g%biom_c(1) + dlt_pond_c_biom
+      
+       g%hum_n(1) = divide (g%hum_c(1), g%soil_cn, 0.0)
+       g%biom_n(1) = divide (g%biom_c(1), c%mcn, 0.0)
+
+   endif
 
       ! now take each layer in turn
 
@@ -3308,6 +3391,7 @@ subroutine soiln2_min_humic (layer, dlt_c_biom, dlt_c_atm, dlt_n_min)
    implicit none
 
 !+  Sub-Program Arguments
+   integer    index                 ! index - 1 for aerobic and 2 for anaerobic conditions
    integer    layer                 ! (INPUT) layer count
    real       dlt_n_min             ! (OUTPUT) net humic N mineralized
                                     ! (kg/ha)
@@ -3347,17 +3431,26 @@ subroutine soiln2_min_humic (layer, dlt_c_biom, dlt_c_atm, dlt_n_min)
 
    call push_routine (my_name)
 
-   if (g%soiltype.eq.'rothc') then
-      tf = rothc_tf (layer)
+   ! dsg 200508  use different values for some constants when there's a pond and anaerobic conditions dominate
+   if (g%pond_active.eq.'no') then
+       index = 1
+   else if (g%pond_active.eq.'yes') then
+       index = 2
    else
-      tf = soiln2_tf (layer)
    endif
 
-   mf = soiln2_wf(layer)
+
+   if (g%soiltype.eq.'rothc') then
+      tf = rothc_tf (layer,index)
+   else
+      tf = soiln2_tf (layer,index)
+   endif
+
+   mf = soiln2_wf(layer,index)
 
    ! get the rate of mineralization of N from the humic pool
 
-   dlt_c_min_tot = (g%hum_c(layer) - g%inert_c(layer))* c%rd_hum * tf * mf
+   dlt_c_min_tot = (g%hum_c(layer) - g%inert_c(layer))* c%rd_hum(index) * tf * mf
    dlt_n_min_tot = divide (dlt_c_min_tot, g%soil_cn, 0.0)
 
    dlt_c_biom = dlt_c_min_tot * c%ef_hum
@@ -3397,6 +3490,7 @@ subroutine soiln2_min_biomass (layer,dlt_c_hum,dlt_c_atm,dlt_n_min)
    parameter (my_name = 'soiln2_min_biomass')
 
 !+  Local Variables
+   integer    index                 ! index - 1 for aerobic and 2 for anaerobic conditions
    real       mf                    ! moisture factor
    real       tf                    ! temperature factor
    real       dlt_c_min_tot         ! biomass C mineralized kg/ha
@@ -3406,16 +3500,24 @@ subroutine soiln2_min_biomass (layer,dlt_c_hum,dlt_c_atm,dlt_n_min)
 
    call push_routine (my_name)
 
-   if (g%soiltype.eq.'rothc') then
-      tf = rothc_tf (layer)
+   ! dsg 200508  use different values for some constants when anaerobic conditions dominate
+   if (g%pond_active.eq.'no') then
+       index = 1
+   else if (g%pond_active.eq.'yes') then
+       index = 2
    else
-      tf = soiln2_tf (layer)
    endif
-   mf = soiln2_wf(layer)
+
+   if (g%soiltype.eq.'rothc') then
+      tf = rothc_tf (layer,index)
+   else
+      tf = soiln2_tf (layer,index)
+   endif
+   mf = soiln2_wf(layer,index)
 
    ! get the rate of mineralization of C & N from the biomass pool
 
-   dlt_n_min_tot = g%biom_n(layer) * c%rd_biom * tf * mf
+   dlt_n_min_tot = g%biom_n(layer) * c%rd_biom(index) * tf * mf
    dlt_c_min_tot = dlt_n_min_tot * c%mcn
 
    dlt_c_hum = dlt_c_min_tot * c%ef_biom * (1.0 - c%fr_biom_biom)
@@ -3471,6 +3573,7 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
    real       fom_c                 ! fresh organic carbon (kg/ha)
    real       fom_n                 ! fresh organic nitrogen (kg/ha)
    integer    fractn                ! fraction number
+   integer    index                 ! index = 1 for aerobic conditions, 2 for anaerobic conditions
    real       grcm                  ! gross amount of fresh organic carbon
                                     !    mineralized (kg/ha)
    real       grnm                  ! gross amount of N released from fresh
@@ -3500,6 +3603,14 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
 
    call push_routine (my_name)
 
+   ! dsg 200508  use different values for some constants when anaerobic conditions dominate
+   if (g%pond_active.eq.'no') then
+       index = 1
+   else if (g%pond_active.eq.'yes') then
+       index = 2
+   else
+   endif
+
    ! get total available mineral N
    nit_tot = (g%no3(layer) - g%no3_min(layer))+ (g%nh4(layer) - g%nh4_min(layer))
    nit_tot = l_bound (nit_tot, 0.0)
@@ -3518,11 +3629,11 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
 
    ! get temperature & moisture factors for the layer
    if (g%soiltype.eq.'rothc') then
-      tf = rothc_tf (layer)
+      tf = rothc_tf (layer,index)
    else
-      tf = soiln2_tf (layer)
+      tf = soiln2_tf (layer,index)
    endif
-   mf = soiln2_wf (layer)
+   mf = soiln2_wf (layer,index)
 
    ! calulate gross amount of C & N released due to mineralization
    ! of the fresh organic matter.
@@ -3542,7 +3653,7 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
 
 
       do fractn = 1,nfract
-         drate = c%rd_fom(fractn) * cnrf * tf * mf
+         drate = c%rd_fom(fractn,index) * cnrf * tf * mf
 
          ! calculate the amounts of carbon and nitrogen mineralized
          grcm = drate * g%fom_c_pool(fractn,layer)
@@ -3639,6 +3750,7 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
    parameter (my_name = 'soiln2_Nitrification')
 
 !+  Local Variables
+   integer    index                 ! index - 1 for aerobic and 2 for anaerobic conditions
    real       opt_rate_ppm          ! rate of nitrification
                                     ! under optimum conditions (ppm)
    real       opt_rate              ! rate of nitrification
@@ -3654,13 +3766,22 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
 
    call push_routine (my_name)
 
+   ! dsg 200508  use different values for some constants when anaerobic conditions dominate
+   if (g%pond_active.eq.'no') then
+       index = 1
+   else if (g%pond_active.eq.'yes') then
+       index = 2
+   else
+   endif
+
+
    phf = soiln2_phf_nitrf (layer)
 
    ! get a 0-1 water factor for nitrification
-   wfd = soiln2_wf_nitrf (layer)
+   wfd = soiln2_wf_nitrf (layer,index)
 
    ! get a 0-1 temperature factor from soil temperature
-   tf = soiln2_tf (layer)
+   tf = soiln2_tf (layer,index)
 
    ! use a combined index to adjust rate of nitrification
    ! NOTE phn removed to match CERES v1
@@ -3786,13 +3907,14 @@ end subroutine
 
 
 !     ===========================================================
-real function soiln2_wf_nitrf (layer)
+real function soiln2_wf_nitrf (layer,index)
 !     ===========================================================
    Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
    integer    layer                 ! (INPUT) layer number
+   integer    index                 ! index = 1 for aerobic conditions, 2 for anaerobic
 
 !+  Purpose
 !       Calculates a 0-1 water factor for nitrification.
@@ -3831,7 +3953,13 @@ real function soiln2_wf_nitrf (layer)
 
    endif
 
-   soiln2_wf_nitrf =linear_interp_real (wfd, c%wf_nit_index, c%wf_nit_values, max_wf_values)
+   if (index.eq.1) then
+        soiln2_wf_nitrf =linear_interp_real (wfd, c%wf_nit_index, c%wf_nit_values, max_wf_values)
+   else if (index.eq.2) then
+        ! if pond is active, and aerobic conditions dominate, assume wf_nitrf = 0
+        soiln2_wf_nitrf = 0.0
+   else
+   endif     
 
    call pop_routine (my_name)
    return
@@ -3887,13 +4015,14 @@ end function
 
 
 !     ===========================================================
-real function soiln2_wf (layer)
+real function soiln2_wf (layer,index)
 !     ===========================================================
    Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
    integer    layer                 ! (INPUT) layer number
+   integer    index                 ! index = 1 for aerobic conditions, 2 for anaerobic
 
 !+  Purpose
 !       Calculates a 0-1 water factor for mineralisation.
@@ -3933,7 +4062,14 @@ real function soiln2_wf (layer)
 
    endif
 
-   soiln2_wf =linear_interp_real (wfd, c%wf_min_index, c%wf_min_values, max_wf_values)
+   if (index.eq.1) then
+        soiln2_wf =linear_interp_real (wfd, c%wf_min_index, c%wf_min_values, max_wf_values)
+   else if (index.eq.2) then
+        ! if pond is active, and liquid conditions dominate, assume wf = 1
+        soiln2_wf = 1.0
+   else
+   endif     
+   
 
    call pop_routine (my_name)
    return
@@ -3942,13 +4078,14 @@ end function
 
 
 !     ===========================================================
-real function soiln2_tf (layer)
+real function soiln2_tf (layer, index)
 !     ===========================================================
    Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
    integer    layer                 ! (INPUT) layer number
+   integer    index                 ! index = 1 for aerobic conditions, 2 for anaerobic
 
 !+  Purpose
 !       Calculate a temperature factor, based on the soil temperature
@@ -3980,7 +4117,7 @@ real function soiln2_tf (layer)
    ! alternative quadratic temperature function is preferred
    !  with optimum temperature (CM - used 32 deg)
    if (g%soil_temp(layer).gt.0.0) then
-      tf = divide (g%soil_temp(layer)*g%soil_temp(layer), c%opt_temp**2.0, 0.0)
+      tf = divide (g%soil_temp(layer)*g%soil_temp(layer), c%opt_temp(index)**2.0, 0.0)
       tf = bound (tf, 0.0, 1.0)
    else
       ! Soil is too cold for mineralisation
@@ -3994,13 +4131,14 @@ real function soiln2_tf (layer)
 end function
 
 !     ===========================================================
-real function rothc_tf (layer)
+real function rothc_tf (layer,index)
 !     ===========================================================
    Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
    integer    layer                 ! (INPUT) layer number
+   integer    index                 ! index = 1 for aerobic conditions, 2 for anaerobic
 
 !+  Purpose
 !       Calculate a temperature factor, based on the soil temperature
@@ -4022,7 +4160,7 @@ real function rothc_tf (layer)
    real t
 !- Implementation Section ----------------------------------
 
-   t = min(g%soil_temp(layer),c%opt_temp)
+   t = min(g%soil_temp(layer),c%opt_temp(index))
    tf = 47.9/(1+exp(106/(t+18.3)))
    rothc_tf = tf
 
@@ -4865,7 +5003,9 @@ subroutine Main (action, data_string)
       call soiln2_process ()
       call soiln2_send_Nbalance_Event ()
       call soiln2_send_Cbalance_Event ()
-      call Soiln2_sendActualResidueDecompositionCalculated()
+      if (g%pond_active.eq.'no') then 
+        call Soiln2_sendActualResidueDecompositionCalculated()
+      endif
 
    else if ((action.eq.ACTION_reset).or.(action.eq.ACTION_user_init)) then
       call soiln2_reset ()
@@ -4881,7 +5021,7 @@ subroutine Main (action, data_string)
    else
       ! Don't use message
       call message_unused ()
-
+ 
    endif
 
    call pop_routine (my_name)
@@ -5029,7 +5169,10 @@ subroutine respondToEvent(fromID, eventID, variant)
       call Soiln2_ONnewmet(variant)
 
    elseif (eventID .eq.id%PotentialResidueDecompositionCalculated) then
-      call soiln2_ONPotentialResidueDecompositionCalculated(variant)
+      if (g%pond_active.eq.'no') then
+           ! only do this if there is no pond.  If there is a pond, POND module will do this decomposition
+           call soiln2_ONPotentialResidueDecompositionCalculated(variant)
+      endif
 
    elseif (eventID .eq.id%IncorpFOMPool) then
       call soiln2_OnIncorpFOMPool(variant)

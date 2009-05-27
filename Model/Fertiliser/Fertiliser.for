@@ -1,15 +1,16 @@
       module FertilizModule
       use ComponentInterfaceModule
       use Registrations
-
+ 
       integer    max_layer
       parameter (max_layer = 100)
 
       integer    max_fert
       parameter (max_fert = 50)
-
+ 
       type FertilizGlobals
         sequence
+        character  pond_active*10        ! variable = yes or no depending on whether a pond is present in simulation
         integer    year                  ! year
         integer    day                   ! day of year
 
@@ -53,12 +54,68 @@ c     include    'fertiliz.inc'        ! fertiliz common block
       g%day = 0
       g%year = 0
       g%fert_applied = 0.0
+      g%pond_active = 'no'
 
       call fill_real_array    (g%dlayer, 0.0, max_layer)
 
 
       return
       end subroutine
+
+*     ===========================================================
+      subroutine fertiliz_get_other_variables ()
+*     ===========================================================
+      Use infrastructure2
+      implicit none
+c     include   'fertiliz.inc'         ! fertiliz common block
+
+*+  Purpose
+*      Get the values of variables from other modules
+
+*+  Mission Statement
+*     Get required state variables from other modules
+
+*+  Changes
+*     <insert here>
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'fertiliz_get_other_variables')
+
+*+  Local Variables
+      integer    numvals               ! number of values returned
+      real       dummy                 ! value returned for 'pond_digital'
+      logical found
+      character  string*200            ! output string
+
+*- Implementation Section ----------------------------------
+
+
+        call WriteLine('Now in Fertiliser get_other_variables ')
+
+! dsg 180508 check for the presence of a pond
+
+        
+            found = Get(
+     :        'pond_active'              ! Variable Name
+     :       , '()'                 ! Units                (Not Used)
+     :       ,IsOptional
+     :       , g%pond_active)       ! Variable
+
+         write (string, *) ' found = ',g%pond_active
+
+        call WriteLine(string)
+
+            if (found) then
+!               g%pond_active = 'yes'     ! good-o
+            else
+                g%pond_active = 'no'
+            endif
+
+      return
+      end subroutine
+
+
 
 *     ===========================================================
       subroutine fertiliz_apply (amount, depth, type)
@@ -96,6 +153,7 @@ c     include   'fertiliz.inc'
                                        ! fertilizer being added. (kg/ha)
       integer    array_size            ! no. of elements in array
       character  Components(mxcomp)*32 ! names of components of fertilizer
+      character  dummy*32              ! component name with the 'pond' prefix for sending 'dlt_' to pond.
       integer    Counter               ! simple counter variable
       real       delta_array(max_layer) ! delta values for 'array' (kg/ha)
       character  dlt_name*36           ! name of a compontent's delta
@@ -114,6 +172,8 @@ c     include   'fertiliz.inc'
 *- Implementation Section ----------------------------------
 
       if (amount.gt.0.0) then
+
+        call WriteLine('Now in Fertiliser APPLY ')
 
          call WriteLine(new_line//
      :   '   - Reading Fertiliser Type Parameters')
@@ -146,6 +206,44 @@ c     include   'fertiliz.inc'
             ! this assumes that the ini file has same no. of fractions and
             ! components!!!
          do 100 counter = 1, numvals
+
+!    dsg 180508  Check whether the POND is active.  If it is then increment the component pools 
+!                in the POND, not in SoilN2
+          if(g%pond_active.eq.'yes') then
+
+        call WriteLine('Now in Fertiliser APPLY and in pond section')
+
+            dummy = 'pond_'//components(counter)
+            
+            found = Get(
+     :        dummy                ! Variable Name
+     :       , '(kg/ha)'            ! Units                (Not Used)
+     :       ,IsOptional
+     :       , array                ! Variable
+     :       , array_size           ! Number of values returned
+     :       , max_layer            ! Array size_of
+     :       , 0.0                  ! Lower Limit for bound checking
+     :       , 1.0e30)              ! Upper Limit for bound checking
+
+!            if (array_size .gt. 0) then
+ !                 ! this variable is being tracked - send the delta to it
+
+
+               call fill_real_array (delta_array, 0.0, max_layer)
+               delta_array(layer) = amount * fraction(counter)
+
+               dlt_name = 'dlt_pond_'//components(counter)
+               call Set ( dlt_name
+     :                    , '(kg/ha)'
+     :                    , delta_array
+     :                    , array_size)          
+          
+
+!            endif
+            
+          else
+
+        call WriteLine('Now in Fertiliser APPLY and in soilN section')
 
             found = Get(
      :         components(counter)  ! Variable Name
@@ -203,6 +301,8 @@ c     include   'fertiliz.inc'
             else
                ! nobody knows about this component - forget it!
             endif
+
+          endif
 
   100    continue
 
@@ -288,13 +388,14 @@ c     include   'fertiliz.inc'
       use ScienceAPI
       use FertilizModule
       implicit none
-      ml_external OnInit1, OnTick, OnNewProfile, OnApply
+      ml_external OnInit1, OnTick, OnNewProfile, OnApply, OnProcess
 
 
       call fertiliz_zero_variables ()
       call SubscribeFertiliserApplicationType('apply', OnApply)
       call SubscribeTimeType('tick', OnTick)
       call SubscribeNewProfileType('new_profile', OnNewProfile)
+      call SubscribeNullType('process', OnProcess)
       call Expose('fertiliser', 'kg/ha', 'Amount of fertiliser',
      .           .false., g%fert_applied)
       end subroutine
@@ -310,6 +411,22 @@ c     include   'fertiliz.inc'
       type(NewProfileType) :: newProfile
       integer numvals
       g%dlayer = newProfile%dlayer
+      return
+      end subroutine
+
+*     ===========================================================
+      subroutine OnProcess()
+*     ===========================================================
+      Use infrastructure2
+      Use FertilizModule
+      implicit none
+      ml_external OnProcess
+
+      character  string*200            ! output string
+
+        call WriteLine('Now in Fertiliser PROCESS')
+
+      call fertiliz_get_other_variables ()
       return
       end subroutine
 
@@ -362,7 +479,7 @@ c     include   'fertiliz.inc'
 
 *+  Constant Values
       character  my_name*(*)
-      parameter (my_name = 'fertiliz')
+      parameter (my_name = 'Fertiliser')
 
 *- Implementation Section ----------------------------------
 
@@ -370,6 +487,6 @@ c     include   'fertiliz.inc'
 
       return
       end subroutine
-
+             
 
 

@@ -1,7 +1,7 @@
 module SurfaceOMModule
    use ComponentInterfaceModule
    use Registrations
-
+ 
 ! ====================================================================
 !     SurfaceOM constants
 ! ====================================================================
@@ -64,6 +64,7 @@ module SurfaceOMModule
       real       dlayer (max_layer)
       real       leaching_fr
       logical    phosphorus_aware
+      character  pond_active*10            ! parameter to indicate whether the soil is under flooded & ponded conditions
       type(OMFractionType) :: oldSOMState
    end type SurfaceOMGlobals
 !     ================================================================
@@ -158,6 +159,7 @@ subroutine surfom_zero_all_globals ()
    g%phosphorus_aware    = .false.
    c%fom_types(:)        = blank
    c%num_fom_types       = 0
+   g%pond_active         = 'no'
 
    g%oldSOMstate%amount = 0.0
    g%oldSOMstate%C  = 0.0
@@ -401,6 +403,38 @@ subroutine surfom_get_other_variables ()
 
    call Get_real_var(unknown_module, 'eos', '(mm)', g%eos, numvals, 0.0, 100.0)
    call Get_real_array(unknown_module, 'dlayer', max_layer, '(mm)',g%dlayer, numvals, 1.0, 10000.0)
+
+   call surfom_check_pond()
+
+   call pop_routine (my_name)
+   return
+end subroutine
+
+!================================================================
+subroutine surfom_check_pond ()
+!================================================================
+   Use Infrastructure
+   implicit none
+
+!+  Purpose
+! 
+!+  Constant Values
+   character*(*) my_name
+   parameter (my_name = 'surfom_check_pond')
+
+!+  Local Variables
+   integer   numvals
+
+!- Implementation Section ----------------------------------
+
+   call push_routine (my_name)
+
+   ! dsg 180508 check for the presence of a pond
+   call get_char_var_optional (Unknown_module,'pond_active','',g%pond_active,numvals)
+     
+      if (numvals.eq.0) then
+          g%pond_active = 'no'
+      endif
 
    call pop_routine (my_name)
    return
@@ -878,13 +912,24 @@ end function
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
-   ! moisture factor decreases from 1. at start of g%cumeos and decreases
-   ! linearly to zero at cum_eos_max
+   if (g%pond_active.eq.'yes') then
+   
+     ! mf will always be 0.5, to recognise that potential decomp is less under flooded conditions
+     
+     surfom_wf = 0.5
+     
+   else
+     ! not flooded conditions  
 
-   mf = 1.0 - divide (g%cumeos, c%cum_eos_max, 0.0)
+     ! moisture factor decreases from 1. at start of g%cumeos and decreases
+     ! linearly to zero at cum_eos_max
 
-   mf = bound(mf, 0.0, 1.0)
-   surfom_wf = mf
+     mf = 1.0 - divide (g%cumeos, c%cum_eos_max, 0.0)
+
+     mf = bound(mf, 0.0, 1.0)
+     surfom_wf = mf
+     
+   endif     
 
 
    call pop_routine (my_name)

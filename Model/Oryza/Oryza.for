@@ -505,161 +505,6 @@
       return
       end subroutine
 
-*     ===========================================================
-      subroutine oryza_read_estab_params ()
-*     ===========================================================
-      Use Infrastructure
-      implicit none
-
-*+  Purpose
-*       Get default establishment parameters. These are
-*       overriden by whatever shows up in sowing line.
-
-*+  Changes
-*       090994 jngh specified and programmed
-
-*+  Arguments
-
-*+  Constant Values
-      character  my_name*(*)           ! name of procedure
-      parameter (my_name = 'oryza_read_estab_params')
-
-*+  Local Variables
-      integer    numvals               ! number of values read
-      integer Iscratch
-      real    Rscratch
-      character  string*400            ! output string
-
-*- Implementation Section ----------------------------------
-
-      call push_routine (my_name)
-
-      IF (p%ESTAB.NE.'transplant' .and.
-     :    p%ESTAB.NE.'direct-seed') then
-         call fatal_error(err_user,
-     :              'unknown establishment method "'
-     :              // trim(p%ESTAB) //'"')
-      endif
-
-      call write_string ('   - Reading ' // trim(p%estab) //
-     :                   ' Establishment Parameters')
-
-      call read_integer_var (
-     :           p%estab         ! Section header
-     :          ,'sbdur'             ! Keyword
-     :          ,'()'               ! Units
-     :          ,p%sbdur             ! Array
-     :          ,numvals              ! Number of values returned
-     :          ,0                  ! Lower Limit for bound check
-     :          ,100)              ! Upper Limit for bound check
-
-      call read_real_var (
-     :           p%estab         ! Section header
-     :          ,'nplh'               ! Keyword
-     :          ,'()'              ! Units
-     :          ,p%nplh               ! Array
-     :          ,numvals              ! Number of values returned
-     :          ,0.0                  ! Lower Limit for bound check
-     :          ,1000.0)                 ! Upper Limit for bound check
-
-      call read_real_var (
-     :           p%estab         ! Section header
-     :          ,'nh'               ! Keyword
-     :          ,'()'              ! Units
-     :          ,p%nh               ! Array
-     :          ,numvals              ! Number of values returned
-     :          ,0.0                  ! Lower Limit for bound check
-     :          ,1000.0)                 ! Upper Limit for bound check
-
-      call read_real_var (
-     :           p%estab         ! Section header
-     :          ,'nplsb'             ! Keyword
-     :          ,'(mm)'               ! Units
-     :          ,p%nplsb             ! Array
-     :          ,numvals              ! Number of values returned
-     :          ,0.0                  ! Lower Limit for bound check
-     :          ,10000.)              ! Upper Limit for bound check
-
-      call read_real_var (
-     :           p%estab         ! Section header
-     :          ,'nplds'             ! Keyword
-     :          ,'(mm)'               ! Units
-     :          ,p%nplds             ! Array
-     :          ,numvals              ! Number of values returned
-     :          ,0.0                  ! Lower Limit for bound check
-     :          ,1000.)              ! Upper Limit for bound check
-
-!     dsg 280408  Read in the appropriate establishment parameters, depending on the method specified
-      IF (p%ESTAB.EQ.'transplant' ) then
-
-!        sbdur - duration of the seed on nursery bed (days)
-         call collect_integer_var_optional ('sbdur'
-     :                               , '(days)'
-     :                               , Iscratch, numvals
-     :                               , 0, 100)
-         if (numvals.gt.0) then
-           p%sbdur = Iscratch
-         endif
-         write (string, '(3x,a,i2,a)')
-     :       'Duration of seed on nursery bed: ', p%sbdur, ' (days)'
-         call write_string (string)
-
-!        nplh - number of plants per hill ()
-         call collect_real_var_optional ('nplh', ' ()'
-     :                                  , Rscratch, numvals
-     :                                  , 0.0, 1000.0)
-         if (numvals.gt.0) then
-             p%nplh = Rscratch
-         endif
-         write (string, '(3x,a,f5.1,a)')
-     :       'Number of plants per hill: ', p%nplh, ' ()'
-         call write_string (string)
-
-!        nh - number of hills ()
-         call collect_real_var_optional ('nh', '()'
-     :                                  , Rscratch, numvals
-     :                                  , 0.0, 1000.0)
-         if (numvals.gt.0) then
-             p%nh = Rscratch
-         endif
-         write (string, '(3x,a,f5.1,a)')
-     :       'Number of hills: ', p%nh, ' ()'
-         call write_string (string)
-
-!        nplsb - number of plants in seed-bed ()
-         call collect_real_var_optional ('nplsb', '()'
-     :                                  , Rscratch, numvals
-     :                                  , 0.0, 1000.0)
-         if (numvals.gt.0) then
-             p%nplsb = Rscratch
-         endif
-         write (string, '(3x,a,f5.1,a)')
-     :       'Number of plants in seedbed: ', p%nplsb, ' (/m2)'
-         call write_string (string)
-
-         g%Rlai= p%lape * p%nplsb
-
-
-      ELSEIF (p%ESTAB.EQ.'direct-seed') then
-
-!        nplsb - number of plants in seed-bed ()
-         call collect_real_var_optional ('nplds', '()'
-     :                                  , Rscratch, numvals
-     :                                  , 0.0, 1000.0)
-         if (numvals.gt.0) then
-             p%nplds = Rscratch
-         endif
-         write (string, '(3x,a,f5.1,a)')
-     :       'Number of plants in seedbed: ', p%nplds, ' (/m2)'
-         call write_string (string)
-
-         g%Rlai= p%lape * p%nplds
-      else
-      endif
-
-      call pop_routine (my_name)
-      return
-      end subroutine
 
 
 *     ===========================================================
@@ -677,7 +522,9 @@
 *     220696 jngh changed extract to collect
 
 *+  Local Variables
+      integer I
       integer numvals
+      REAL    num_layers
       character esection*80
 
 *+  Constant Values
@@ -689,31 +536,97 @@
       call push_routine (my_name)
 
       if (g%plant_status.ne.status_out) then
-         call fatal_error(err_user,
+         call fatal_error(err_user, 
      :      'Already in the ground - did you forget to "end_crop"?')
       else
          call publish_null(id%sowing)
 
          call oryza_read_param ()
-
+         
          call collect_char_var ('cultivar', '()'
      :                         , g%cultivar, numvals)
-
+         
          call oryza_read_cultivar_params ()
-
+         
          call collect_char_var ('establishment', '()'
      :                         , p%ESTAB, numvals)
-
-
+         
          g%plant_status = status_alive
-
+         
          !Set CROPSTA: 0=before sowing; 1=sowing; 2=in seedbed;
-         !             3=day of transplanting; 4=main growth period
+         !             3=day of transplanting; 4=main growth period      
          g%CROPSTA = 1
+         
          g%Rlai = 0.0
 
-         call oryza_read_estab_params()  ! get default values from ini file
+!     dsg 280408  Read in the appropriate establishment parameters, depending on the method specified
+         IF (p%ESTAB.EQ.'transplant' ) then
 
+!              sbdur - duration of the seed on nursery bed (days)
+               call collect_integer_var ('sbdur', '(days)'
+     :                                     , p%sbdur, numvals
+     :                                     , 0, 100)
+
+               if (numvals.eq.0) then 
+                call fatal_error(err_user, 
+     :          'In the sowing line, please specify a value for SBDUR')
+               endif
+
+
+!              nplh - number of plants per hill ()
+               call collect_real_var ('nplh', '()'
+     :                                     , p%nplh, numvals
+     :                                     , 0.0, 1000.0)
+
+               if (numvals.eq.0) then 
+                call fatal_error(err_user, 
+     :          'In the sowing line, please specify a value for NPLH')
+               endif
+
+!              nh - number of hills ()
+               call collect_real_var ('nh', '()'
+     :                                     , p%nh, numvals
+     :                                     , 0.0, 1000.0)
+      
+               if (numvals.eq.0) then 
+                call fatal_error(err_user, 
+     :          'In the sowing line, please specify a value for NH')
+               endif
+
+!              nplsb - number of plants in seed-bed ()
+               call collect_real_var ('nplsb', '()'
+     :                                     , p%nplsb, numvals
+     :                                     , 0.0, 1000.0)
+      
+               if (numvals.eq.0) then 
+                call fatal_error(err_user, 
+     :          'In the sowing line, please specify a value for NPLSB')
+               endif
+
+               g%Rlai= p%lape * p%nplsb
+            
+            
+         ELSEIF (p%ESTAB.EQ.'direct-seed') then
+
+!              nplds - number of plants in seed-bed ()
+               call collect_real_var ('nplds', '()'
+     :                                     , p%nplds, numvals
+     :                                     , 0.0, 1000.0)
+
+
+               if (numvals.eq.0) then 
+                call fatal_error(err_user, 
+     :          'In the sowing line, please specify a value for NPLDS')
+               endif
+
+               g%Rlai= p%lape * p%nplds
+         else 
+               call fatal_error(err_user, 
+     :                 'unknown establishment ' // p%ESTAB)
+         endif
+  
+ 
+         
          g%WLVG = 0.01  !initial Dry weight of green leaves  !kg ha-1
          g%WSTS = 0.01  !initial Dry weight of structural stems  !kg ha-1
          g%FNLV   = p%FNLVI
@@ -721,7 +634,7 @@
          g%NFLV   = p%NFLVI
          g%ZRT    = 0.0001
       endif
-
+      
       call pop_routine (my_name)
       return
       end subroutine

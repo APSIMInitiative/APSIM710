@@ -79,6 +79,7 @@ call MakeProject Pasture
 call MakeProject PatchInput
 call MakeProject Plant
 call MakeProject Plant2
+call MakeProject Pond
 call MakeProject ProtocolManager
 call MakeProject Report
 call MakeProject SiloInput
