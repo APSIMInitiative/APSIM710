@@ -86,12 +86,8 @@ c     include   'fertiliz.inc'         ! fertiliz common block
       integer    numvals               ! number of values returned
       real       dummy                 ! value returned for 'pond_digital'
       logical found
-      character  string*200            ! output string
-
 *- Implementation Section ----------------------------------
 
-
-        call WriteLine('Now in Fertiliser get_other_variables ')
 
 ! dsg 180508 check for the presence of a pond
 
@@ -101,10 +97,6 @@ c     include   'fertiliz.inc'         ! fertiliz common block
      :       , '()'                 ! Units                (Not Used)
      :       ,IsOptional
      :       , g%pond_active)       ! Variable
-
-         write (string, *) ' found = ',g%pond_active
-
-        call WriteLine(string)
 
             if (found) then
 !               g%pond_active = 'yes'     ! good-o
@@ -173,8 +165,6 @@ c     include   'fertiliz.inc'
 
       if (amount.gt.0.0) then
 
-        call WriteLine('Now in Fertiliser APPLY ')
-
          call WriteLine(new_line//
      :   '   - Reading Fertiliser Type Parameters')
 
@@ -211,8 +201,6 @@ c     include   'fertiliz.inc'
 !                in the POND, not in SoilN2
           if(g%pond_active.eq.'yes') then
 
-        call WriteLine('Now in Fertiliser APPLY and in pond section')
-
             dummy = 'pond_'//components(counter)
             
             found = Get(
@@ -242,8 +230,6 @@ c     include   'fertiliz.inc'
 !            endif
             
           else
-
-        call WriteLine('Now in Fertiliser APPLY and in soilN section')
 
             found = Get(
      :         components(counter)  ! Variable Name
@@ -422,11 +408,8 @@ c     include   'fertiliz.inc'
       implicit none
       ml_external OnProcess
 
-      character  string*200            ! output string
-
-        call WriteLine('Now in Fertiliser PROCESS')
-
       call fertiliz_get_other_variables ()
+
       return
       end subroutine
 
