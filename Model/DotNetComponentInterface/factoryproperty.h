@@ -26,6 +26,8 @@ public ref class ReflectedType abstract : NamedItem
          {
          if (Typ->Name == "Double")
             SetObject(Convert::ToDouble(Value));
+         else if (Typ->Name == "Int32")
+            SetObject(Convert::ToInt32(Value));
          else if (Typ->Name == "Single")
             SetObject(Convert::ToSingle(Value));
          else if (Typ->Name == "String")
