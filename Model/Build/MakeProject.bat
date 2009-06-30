@@ -11,7 +11,7 @@ if EXIST makefile (
    %APSIM%\Model\Build\make >> %APSIM%\Model\Build\Build.out
 )
 
-for %%f in (*.sln) do "C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\devenv" %%f /build release >> %APSIM%\Model\Build\Build.out
+for %%f in (*.sln) do "C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\devenv" %%f /build release >> %APSIM%\Model\Build\Build.out
 
 popd
 if ERRORLEVEL 1 echo ERRORS FOUND >> Build.out
