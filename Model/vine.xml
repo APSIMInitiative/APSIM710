@@ -67,6 +67,9 @@
       </RewindPhase>
     </Phenology>
     <Leaf>
+    	<Biomass name="Live"/>
+    	<Biomass name="Dead"/>
+    	
       <InitialiseStage>BudBurst</InitialiseStage>
       <Frgr>1</Frgr>
       <PrimaryBudNo>1</PrimaryBudNo>
@@ -79,7 +82,7 @@
       <InitialAreas>1000</InitialAreas>
       <InitialAges>1</InitialAges>
       <GenericFunction name="Height">
-        <XProperty>Stem.LiveWt</XProperty>
+        <XProperty>Stem.Live.Wt</XProperty>
         <XYPairs>
           <XY>0 1800.0</XY>
           <XY>500 1800.0</XY>
@@ -188,6 +191,9 @@
       </GenericFunction>
     </Leaf>
     <GenericOrgan name="Stem">
+    	<Biomass name="Live"/>
+    	<Biomass name="Dead"/>
+   	
       <PhaseLookup name="PartitionFraction">
          <PhaseLookupValue name="Early">
             <Start>BudBurst</Start>
@@ -241,10 +247,12 @@
       </TemperatureFunction>
     </Root>
     <ReproductiveOrgan name="Berry">
+    	<Biomass name="Live"/>
+    	<Biomass name="Dead"/>
       <MaximumSize>0.33</MaximumSize>
       <RipeStage>Ripe</RipeStage>
       <GenericFunction name="NumberFunction">
-        <XProperty>Stem.LiveWt</XProperty>
+        <XProperty>Stem.Live.Wt</XProperty>
         <XYPairs>
           <XY>0 0</XY>
           <XY>1000 150000</XY>
@@ -283,6 +291,8 @@
       </StageBasedInterpolation>
     </ReproductiveOrgan>
     <ReserveOrgan name="Reserve">
+    	<Biomass name="Live"/>
+    	<Biomass name="Dead"/>
       <InitialDM>100</InitialDM>
       <DailyRetransFraction>0.1</DailyRetransFraction>
     </ReserveOrgan>

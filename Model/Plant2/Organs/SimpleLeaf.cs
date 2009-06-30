@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class SimpleLeaf : Organ
+class SimpleLeaf : BaseOrgan
    {
    private double _WaterAllocation;
    private double EP = 0;
    private double PEP = 0;
-   private Biomass _Live = new Biomass();
-   private Biomass _Dead = new Biomass();
 
    [Event] public event ApsimTypeDelegate NewPotentialGrowth;
    [Event] public event ApsimTypeDelegate New_Canopy;
@@ -16,23 +14,14 @@ public class SimpleLeaf : Organ
    [Input] private float maxt = 0;
    [Input] private float mint = 0;
    [Input] private float vp = 0;
-   [Param("Height")] private double _Height;          // Height of the canopy (mm) 
-   [Param("LAI")] private double _LAI;                // Leaf Area Index (Green)
+   [Param("Height")]  private double _Height;         // Height of the canopy (mm) 
+   [Param("LAI")]     private double _LAI;            // Leaf Area Index (Green)
    [Param("LAIDead")] private double _LAIDead;        // Leaf Area Index (Dead)
-   [Param("Frgr")] private double _Frgr;              // Relative Growth Rate Factor
-   [Param] private LinearInterpolation FT = null;   // Temperature effect on Growth Interpolation Set
-   [Param] private LinearInterpolation FVPD = null; // VPD effect on Growth Interpolation Set
+   [Param("Frgr")]    private double _Frgr;           // Relative Growth Rate Factor
+   [Param] private LinearInterpolation FT = null;     // Temperature effect on Growth Interpolation Set
+   [Param] private LinearInterpolation FVPD = null;   // VPD effect on Growth Interpolation Set
    [Param] private double K = 0;                      // Extinction Coefficient (Green)
    [Param] private double KDead = 0;                  // Extinction Coefficient (Dead)
-
-   public override Biomass Live
-      {
-      get { return Live; }
-      }
-   public override Biomass Dead
-      {
-      get { return Live; }
-      }
 
    public override double DMDemand
       {
@@ -49,12 +38,7 @@ public class SimpleLeaf : Organ
          Live.StructuralWt += value;
          }
       }
-   public override double DMRetranslocationSupply {get {return 0.0;} }
-   public override double DMRetranslocation { set {  } }
-
-   [Output][Units("mm")]public override double WaterDemand { get { return PEP; } }
-   public override double WaterSupply { get { return 0; } }
-
+   [Output][Units("mm")] public override double WaterDemand { get { return PEP; } }
    public override double WaterAllocation
       {
       get { return _WaterAllocation; }
@@ -64,8 +48,7 @@ public class SimpleLeaf : Organ
          EP = EP + _WaterAllocation;
          }
       }
-   [Output]
-   public double Frgr
+   [Output] public double Frgr
       {
       get { return _Frgr; }
       set
@@ -74,8 +57,7 @@ public class SimpleLeaf : Organ
          PublishNewCanopyEvent();
          }
       }
-   [Output]
-   public double Ft
+   [Output] public double Ft
       {
       get
          {
@@ -83,8 +65,7 @@ public class SimpleLeaf : Organ
          return FT.Value(Tav);
          }
       }
-   [Output]
-   public double Fvpd
+   [Output] public double Fvpd
       {
       get
          {
@@ -101,8 +82,7 @@ public class SimpleLeaf : Organ
          return FVPD.Value(VPD);
          }
       }
-   [Output]
-   public double LAI
+   [Output] public double LAI
       {
       get { return _LAI; }
       set
@@ -111,8 +91,7 @@ public class SimpleLeaf : Organ
          PublishNewCanopyEvent();
          }
       }
-   [Output]
-   public double LAIDead
+   [Output] public double LAIDead
       {
       get { return _LAIDead; }
       set
@@ -121,8 +100,7 @@ public class SimpleLeaf : Organ
          PublishNewCanopyEvent();
          }
       }
-   [Output("Height")][Units("mm")]
-   public double Height
+   [Output("Height")][Units("mm")] public double Height
       {
       get { return _Height; }
       set
@@ -131,38 +109,29 @@ public class SimpleLeaf : Organ
          PublishNewCanopyEvent();
          }
       }
-   [Output("Cover_green")]
-   public double CoverGreen
+   [Output("Cover_green")] public double CoverGreen
       {
       get { return 1.0 - Math.Exp(-K * LAI); }
       }
-   [Output("Cover_tot")]
-   public double CoverTot
+   [Output("Cover_tot")]   public double CoverTot
       {
       get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
       }
-   [Output("Cover_dead")]
-   public double CoverDead
+   [Output("Cover_dead")]  public double CoverDead
       {
       get { return 1.0 - Math.Exp(-KDead * LAIDead); }
       }
 
-
-   [EventHandler]
-   public void OnSow(SowType Data)
+   [EventHandler]public void OnSow(SowType Data)
       {
       PublishNewPotentialGrowth();
       PublishNewCanopyEvent();
       }
-
-   [EventHandler]
-   public void OnPrepare()
+   [EventHandler]public void OnPrepare()
       {
       PublishNewPotentialGrowth();
       }
-
-   [EventHandler]
-   public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
+   [EventHandler]public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
       {
       for (int i = 0; i != CWB.Canopy.Length; i++)
          {

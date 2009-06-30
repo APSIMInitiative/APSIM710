@@ -110,14 +110,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
          }
 
       }
-   public override double DMRetranslocation
-      {
-      set
-         {
-         if (value > 0)
-            throw new Exception(Name + " cannot supply retranslocation");
-         }
-      }
    public override double DMAllocation { set { Live.StructuralWt += value; } }
    }
 

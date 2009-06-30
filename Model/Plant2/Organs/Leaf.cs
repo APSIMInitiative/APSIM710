@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class Leaf : Organ, AboveGround
+class Leaf : BaseOrgan, AboveGround
    {
    #region Class Data Members
    private double _WaterAllocation;
@@ -146,13 +146,12 @@ public class Leaf : Organ, AboveGround
       {
       get
          {
-         if (LiveWt > 0)
-            return LAI / LiveWt*10000;
+         if (Live.Wt > 0)
+            return LAI / Live.Wt*10000;
          else
             return 0;
          }
       }
-  
    public override Biomass Live
       {
       get
@@ -179,29 +178,12 @@ public class Leaf : Organ, AboveGround
          return total;
          }
       }
-   [Output] [Units("g/m^2")]  double LiveWt
-      {
-      get
-         {
-         return Live.Wt;
-         }
-      }
-   [Output] [Units("g/m^2")] private double DeadWt
-      {
-      get
-         {
-         double total = 0;
-         foreach (LeafCohort L in Leaves)
-            total += L.Dead.Wt;
-         return total;
-         }
-      }
    [Output] [Units("mm^2/g")] private double SpecificArea
       {
       get 
          {
-         if (LiveWt > 0)
-            return LAI / LiveWt * 1000000;
+         if (Live.Wt > 0)
+            return LAI / Live.Wt * 1000000;
          else
             return 0;
          }
@@ -337,7 +319,7 @@ public class Leaf : Organ, AboveGround
       Leaves.Clear();
       Console.WriteLine("Removing Leaves from plant");
       }
-   [EventHandler]   private void OnPrune(ManagerEventType Prune)
+   [EventHandler] private void OnPrune(ManagerEventType Prune)
       {
       foreach (ManagerEventKeyType key in Prune.Key)
          {
@@ -416,15 +398,6 @@ public class Leaf : Organ, AboveGround
          return Photosynthesis.Growth(Radn * CoverGreen, Fw);
          }
       }
-   public override double DMRetranslocationSupply { get { return 0; } }
-   public override double DMRetranslocation
-      {
-      set 
-         {
-         if (value > 0) 
-            throw new Exception(Name + " cannot provide retranslocation.");
-         }
-      }
    [Output] [Units("g/m^2")] public override double DMAllocation
       {
       set
@@ -455,7 +428,6 @@ public class Leaf : Organ, AboveGround
       }
    [Output][Units("mm")]public override double WaterDemand { get { return PEP; } }
    [Output][Units("mm")] public double Transpiration { get { return EP; } }
-   public override double WaterSupply { get { return 0; } }
    public override double WaterAllocation
       {
       get { return _WaterAllocation; }
@@ -465,8 +437,7 @@ public class Leaf : Organ, AboveGround
          EP = value;
          }
       }
-   [Output]
-   public double Frgr
+   [Output] public double Frgr
       {
       get { return _Frgr; }
       set
@@ -475,9 +446,7 @@ public class Leaf : Organ, AboveGround
          PublishNewCanopyEvent();
          }
       }
-
-   [Output]
-   public double Fw
+   [Output] public double Fw
       {
       get
          {
@@ -490,8 +459,7 @@ public class Leaf : Organ, AboveGround
          }
       }
 
-   [Output] [Units("m^2/m^2")]
-   public double LAI
+   [Output] [Units("m^2/m^2")] public double LAI
       {
       get 
          {
@@ -501,8 +469,7 @@ public class Leaf : Organ, AboveGround
          return value; 
          }
       }
-   [Output] [Units("m^2/m^2")]
-   public double LAIDead
+   [Output] [Units("m^2/m^2")] public double LAIDead
       {
       get
          {
@@ -513,8 +480,7 @@ public class Leaf : Organ, AboveGround
          }
       }
   
-   [Output("Cover_green")]
-   public double CoverGreen
+   [Output("Cover_green")]     public double CoverGreen
       {
       get 
          {
@@ -523,39 +489,30 @@ public class Leaf : Organ, AboveGround
          return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover)); 
          }
       }
-   [Output("Cover_tot")]
-   public double CoverTot
+   [Output("Cover_tot")]       public double CoverTot
       {
       get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
       }
-   [Output("Cover_dead")]
-   public double CoverDead
+   [Output("Cover_dead")]      public double CoverDead
       {
       get { return 1.0 - Math.Exp(-KDead * LAIDead); }
       }
 
-   [EventHandler]
-   public void OnInit2()
+   [EventHandler] public void OnInit2()
       {
       PublishNewCanopyEvent();
       PublishNewPotentialGrowth();
       }
-
-   [EventHandler]
-   public void OnPrepare()
+   [EventHandler] public void OnPrepare()
       {
       PublishNewPotentialGrowth();
       }
-
-   [EventHandler]
-   public void OnSow(SowType Sow)
+   [EventHandler] public void OnSow(SowType Sow)
       {
       MaxCover = Sow.MaxCover;
       PrimaryBudNo = Sow.BudNumber;
       }
-
-   [EventHandler]
-   public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
+   [EventHandler] public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
       {
       for (int i = 0; i != CWB.Canopy.Length; i++)
          {
@@ -563,6 +520,7 @@ public class Leaf : Organ, AboveGround
             PEP = CWB.Canopy[i].PotentialEp;
          }
       }
+
    private void PublishNewPotentialGrowth()
       {
       // Send out a NewPotentialGrowthEvent.

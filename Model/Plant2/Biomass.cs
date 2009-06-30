@@ -4,9 +4,9 @@ using System.Text;
 
 public class Biomass : Instance
    {
-   [Output] public double StructuralWt = 0;
-   [Output] public double NonStructuralWt = 0;
-   [Output] public double Wt
+   [Output][Units("g/m^2")] public double StructuralWt = 0;
+   [Output][Units("g/m^2")] public double NonStructuralWt = 0;
+   [Output][Units("g/m^2")] public double Wt
       {
       get
          {
