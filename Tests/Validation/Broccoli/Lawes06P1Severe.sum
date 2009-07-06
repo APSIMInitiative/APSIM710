@@ -17,7 +17,6 @@ Paddock:
    Component                        "Daily" = %apsim%\Model\Report.dll
    Component                        "Final" = %apsim%\Model\Report.dll
    Component                   "LeafOutput" = %apsim%\Model\Report.dll
-   Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                 "LeafHarvests" = %apsim%\Model\Operations.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
@@ -25,6 +24,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component                 "Calculations" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component              "DPIGatton Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component           "DPIGatton Nitrogen" = %apsim%\Model\SoilN.dll
@@ -46,13 +46,15 @@ Paddock:
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Tests\Validation\Broccoli\DPI2006b.met
+     INPUT File name: DPI2006b.met
 
 ------- Daily Initialisation --------------------------------------------------
      Output frequency:
         post
      Output variables:
         dd/mm/yyyy as Date
+        day
+        DAS
         PhenologyCurrentPhaseName
         PhenologyThermalTimeValue
         broccoli.AboveGroundDM
@@ -74,12 +76,14 @@ Paddock:
         broccoli.swdef_photo
         broccoli.nfact_photo
         broccoli.LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
         Irrigation.irrigation
         LeafFinalNodeNo
         broccoli.emergence_das
         broccoli.LeafDeadNodeNo
         broccoli.LeafFullyExpandedNodeNo
         sw_dep()
+        SW60
         broccoli.LeafLiveWt
         broccoli.StemLiveWt
         sw
@@ -97,6 +101,8 @@ Paddock:
         LeafFw
         LeafSpecificArea
         Interception
+        peta
+        petr
 
      Output file = Lawes06P1Severe Daily.out
      Format = normal
@@ -137,13 +143,6 @@ Paddock:
 
      Output file = Lawes06P1Severe LeafOutput.out
      Format = normal
-
-------- Micromet Initialisation -----------------------------------------------
-     Initialising
-     
-        - Reading Constants
-     
-        - Reading Parameters
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
@@ -270,14 +269,29 @@ Paddock:
      
      SECTION:- init
      totalet = 0.0
+     das = 0
+     sw60 = 0
      
      SECTION:- start_of_day
      
      SECTION:- end_of_day
      totalet = broccoli.leaftranspiration + es
+     if broccoli.leaflai > 0 then
+       das = das + 1
+     endif
+     sw60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
      END of rules
      
      Manager creating a new local real variable : totalet = 0.00000
+     Manager creating a new local real variable : das = 0.00000
+     Manager creating a new local real variable : sw60 = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
 
 ------- DPIGatton Water Initialisation ----------------------------------------
      
@@ -295,9 +309,9 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  150.  0.140  0.200  0.350  0.380  0.260  1.260  0.762  0.600
-          150.-  300.  0.200  0.210  0.380  0.410  0.340  1.450  0.190  0.600
-          300.-  600.  0.200  0.210  0.380  0.410  0.360  1.270  0.048  0.600
+            0.-  150.  0.140  0.200  0.350  0.380  0.264  1.260  0.762  0.600
+          150.-  300.  0.200  0.210  0.380  0.410  0.344  1.450  0.190  0.600
+          300.-  600.  0.200  0.210  0.380  0.410  0.362  1.270  0.048  0.600
           600.-  900.  0.200  0.210  0.440  0.470  0.420  1.330  0.000  0.600
           900.- 1200.  0.200  0.210  0.400  0.430  0.370  1.410  0.000  0.600
         ---------------------------------------------------------------------
@@ -310,13 +324,13 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  150.      30.00       9.00      22.50       4.50
-          150.-  300.      31.50      19.50      25.50       4.50
-          300.-  600.      63.00      45.00      51.00       9.00
+            0.-  150.      30.00       9.60      22.50       4.50
+          150.-  300.      31.50      20.10      25.50       4.50
+          300.-  600.      63.00      45.60      51.00       9.00
           600.-  900.      63.00      63.00      69.00       9.00
           900.- 1200.      63.00      48.00      57.00       9.00
           ---------------------------------------------------------
-               Totals     250.50     184.50     225.00      36.00
+               Totals     250.50     186.30     225.00      36.00
           ---------------------------------------------------------
      
      
@@ -337,18 +351,18 @@ Paddock:
                 Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
                                            mm
           ---------------------------------------------------------
-              90.00   20.00    0.80  450.00
+              95.00   20.00    0.80  450.00
           ---------------------------------------------------------
      
      
      
            Using Ritchie evaporation model
-            Stage 1 Duration (U): Summer        6.00 (mm)
-                                  Winter        2.00 (mm)
-            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+            Stage 1 Duration (U): Summer        5.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        5.00 (mm^0.5)
                                   Winter        2.00 (mm^0.5)
             Critical Dates:       Summer        1-sep
-                                  Winter        1-jun
+                                  Winter        1-may
             Eo from priestly-taylor
 
 ------- surface organic matter Initialisation ---------------------------------
@@ -483,9 +497,6 @@ Paddock:
       Sending apply message to irrigation
 4 May 2006(Day of year=124), operations: 
       Sending apply message to irrigation
-4/05/2006 - FloralInitiation
-                            LAI = 0.81 (m^2/m^2)
-           Above Ground Biomass = 67.68 (g/m^2)
 5 May 2006(Day of year=125), operations: 
       Sending apply message to irrigation
 6 May 2006(Day of year=126), operations: 
@@ -536,9 +547,6 @@ Paddock:
       Sending apply message to irrigation
 27 May 2006(Day of year=147), operations: 
       Sending apply message to irrigation
-27/05/2006 - StartBudding
-                            LAI = 2.20 (m^2/m^2)
-           Above Ground Biomass = 275.63 (g/m^2)
 28 May 2006(Day of year=148), operations: 
       Sending apply message to irrigation
 29 May 2006(Day of year=149), operations: 
@@ -567,9 +575,6 @@ Paddock:
       Sending apply message to irrigation
 10 June 2006(Day of year=161), operations: 
       Sending apply message to irrigation
-10/06/2006 - Buttoning
-                            LAI = 3.57 (m^2/m^2)
-           Above Ground Biomass = 478.00 (g/m^2)
 11 June 2006(Day of year=162), operations: 
       Sending apply message to irrigation
 12 June 2006(Day of year=163), operations: 
@@ -586,8 +591,14 @@ Paddock:
       Sending apply message to irrigation
 18 June 2006(Day of year=169), operations: 
       Sending apply message to irrigation
+18/06/2006 - FloralInitiation
+                            LAI = 7.33 (m^2/m^2)
+           Above Ground Biomass = 739.47 (g/m^2)
 19 June 2006(Day of year=170), operations: 
       Sending apply message to irrigation
+19/06/2006 - StartBudding
+                            LAI = 7.47 (m^2/m^2)
+           Above Ground Biomass = 751.39 (g/m^2)
 20 June 2006(Day of year=171), operations: 
       Sending apply message to irrigation
 21 June 2006(Day of year=172), operations: 
@@ -605,7 +616,7 @@ Paddock:
 
      27/06/2006  - Harvesting Floret from Transplant
      ----------------------------------------------------
-     Floret Yield DWt: 179.30 (g/m^2)
+     Floret Yield DWt: 0.00 (g/m^2)
 
       Sending endcrop message to broccoli
 3 July 2006(Day of year=184), clock: 

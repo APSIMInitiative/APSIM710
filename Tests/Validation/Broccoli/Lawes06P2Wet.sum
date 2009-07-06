@@ -17,7 +17,6 @@ Paddock:
    Component                        "Daily" = %apsim%\Model\Report.dll
    Component                        "Final" = %apsim%\Model\Report.dll
    Component                   "LeafOutput" = %apsim%\Model\Report.dll
-   Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                 "LeafHarvests" = %apsim%\Model\Operations.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
@@ -25,6 +24,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component                 "Calculations" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component              "DPIGatton Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component           "DPIGatton Nitrogen" = %apsim%\Model\SoilN.dll
@@ -46,13 +46,15 @@ Paddock:
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Tests\Validation\Broccoli\DPI2006b.met
+     INPUT File name: DPI2006b.met
 
 ------- Daily Initialisation --------------------------------------------------
      Output frequency:
         post
      Output variables:
         dd/mm/yyyy as Date
+        day
+        DAS
         PhenologyCurrentPhaseName
         PhenologyThermalTimeValue
         broccoli.AboveGroundDM
@@ -74,12 +76,14 @@ Paddock:
         broccoli.swdef_photo
         broccoli.nfact_photo
         broccoli.LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
         Irrigation.irrigation
         LeafFinalNodeNo
         broccoli.emergence_das
         broccoli.LeafDeadNodeNo
         broccoli.LeafFullyExpandedNodeNo
         sw_dep()
+        SW60
         broccoli.LeafLiveWt
         broccoli.StemLiveWt
         sw
@@ -97,6 +101,8 @@ Paddock:
         LeafFw
         LeafSpecificArea
         Interception
+        peta
+        petr
 
      Output file = Lawes06P2Wet Daily.out
      Format = normal
@@ -137,13 +143,6 @@ Paddock:
 
      Output file = Lawes06P2Wet LeafOutput.out
      Format = normal
-
-------- Micromet Initialisation -----------------------------------------------
-     Initialising
-     
-        - Reading Constants
-     
-        - Reading Parameters
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
@@ -267,14 +266,29 @@ Paddock:
      
      SECTION:- init
      totalet = 0.0
+     das = 0
+     sw60 = 0
      
      SECTION:- start_of_day
      
      SECTION:- end_of_day
      totalet = broccoli.leaftranspiration + es
+     if broccoli.leaflai > 0 then
+       das = das + 1
+     endif
+     sw60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
      END of rules
      
      Manager creating a new local real variable : totalet = 0.00000
+     Manager creating a new local real variable : das = 0.00000
+     Manager creating a new local real variable : sw60 = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
 
 ------- DPIGatton Water Initialisation ----------------------------------------
      
@@ -334,18 +348,18 @@ Paddock:
                 Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
                                            mm
           ---------------------------------------------------------
-              90.00   20.00    0.80  450.00
+              95.00   20.00    0.80  450.00
           ---------------------------------------------------------
      
      
      
            Using Ritchie evaporation model
-            Stage 1 Duration (U): Summer        6.00 (mm)
-                                  Winter        2.00 (mm)
-            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+            Stage 1 Duration (U): Summer        5.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        5.00 (mm^0.5)
                                   Winter        2.00 (mm^0.5)
             Critical Dates:       Summer        1-sep
-                                  Winter        1-jun
+                                  Winter        1-may
             Eo from priestly-taylor
 
 ------- surface organic matter Initialisation ---------------------------------
@@ -500,9 +514,6 @@ Paddock:
       Sending apply message to irrigation
 7 August 2006(Day of year=219), operations: 
       Sending apply message to irrigation
-7/08/2006 - FloralInitiation
-                            LAI = 0.76 (m^2/m^2)
-           Above Ground Biomass = 86.52 (g/m^2)
 8 August 2006(Day of year=220), operations: 
       Sending apply message to irrigation
 9 August 2006(Day of year=221), operations: 
@@ -547,9 +558,6 @@ Paddock:
       Sending apply message to irrigation
 28 August 2006(Day of year=240), operations: 
       Sending apply message to irrigation
-28/08/2006 - StartBudding
-                            LAI = 2.45 (m^2/m^2)
-           Above Ground Biomass = 324.27 (g/m^2)
 29 August 2006(Day of year=241), operations: 
       Sending apply message to irrigation
 30 August 2006(Day of year=242), operations: 
@@ -568,9 +576,6 @@ Paddock:
       Sending apply message to irrigation
 6 September 2006(Day of year=249), operations: 
       Sending apply message to irrigation
-6/09/2006 - Buttoning
-                            LAI = 3.31 (m^2/m^2)
-           Above Ground Biomass = 458.26 (g/m^2)
 7 September 2006(Day of year=250), operations: 
       Sending apply message to irrigation
 8 September 2006(Day of year=251), operations: 
@@ -594,7 +599,7 @@ Paddock:
 
      15/09/2006  - Harvesting Floret from Transplant
      ----------------------------------------------------
-     Floret Yield DWt: 140.46 (g/m^2)
+     Floret Yield DWt: 0.00 (g/m^2)
 
       Sending endcrop message to broccoli
 16 September 2006(Day of year=259), operations: 
