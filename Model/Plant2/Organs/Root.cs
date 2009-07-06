@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-class Root : BaseOrgan, BelowGround
+public class Root : BaseOrgan, BelowGround
    {
    #region Class Data Members
    private double[] SWSupply = null;

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-class BaseOrgan : Organ
+public class BaseOrgan : Organ
    {
    public override Biomass Live { get { return (Biomass) Children["live"]; } }
    public override Biomass Dead { get { return (Biomass) Children["dead"]; } }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-class Leaf : BaseOrgan, AboveGround
+public class Leaf : BaseOrgan, AboveGround
    {
    #region Class Data Members
    private double _WaterAllocation;
