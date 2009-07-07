@@ -17,7 +17,7 @@ for /D %%d in (*) do (
    echo %%d >> ..\UnitTests.out
    echo ----------------------------------------------------- >> ..\UnitTests.out
    if EXIST Test.sln (
-      "C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\devenv" Test.sln /ReBuild debug
+      "C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\devenv" Test.sln /ReBuild debug
       if ERRORLEVEL 1 echo ERRORS FOUND >> ..\UnitTests.out
       if ERRORLEVEL 0 (
          "c:\Program Files\NUnit-Net-2.0 2.2.9\bin\nunit-console" bin\debug\Test.dll /nologo >> ..\UnitTests.out
