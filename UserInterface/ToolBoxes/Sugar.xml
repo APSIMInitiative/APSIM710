@@ -1,4 +1,4 @@
-<folder name="Sugar Tools" version="15" image="%apsim%\UserInterface\Images\Leaf24.bmp">
+    <folder name="Sugar Tools" version="15" image="%apsim%\UserInterface\Images\Leaf24.bmp">
   <folder name="Manager folder">
     <manager name="Crop lodging">
       <script>
@@ -393,5 +393,183 @@ endif
       <action>'Surface Organic Matter' tillage type = user_defined, f_incorp = 0.9, tillage_depth = 200. (mm)                                        </action>
     </operation>
   </operations>
-  </folder>
+
+  
+    <manager name="Sow (non sugar crop) using a variable rule (for rotations involving sugar with other crops)">
+    <ui>
+      <category description="Sowing criteria" />
+      <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-nov</date1>
+      <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-feb</date2>
+      <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
+      <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+      <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+      <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+      <category description="Sowing parameters" />
+      <crop type="crop" description="Enter name of crop to sow : ">soybean</crop>
+      <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+      <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+      <cultivar type="cultivars" description="Enter cultivar : ">valiant</cultivar>
+      <class type="classes" description="Enter crop growth class : ">plant</class>
+      <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+    </ui>
+    <script name="start_of_day">
+      <text><![CDATA[
+      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+         if (date_within('[date1], [date2]') = 1) then
+!difference between this sowing rule and generic is that the esw is changed to [crop].esw so that this does not get confused with sugar.esw 
+            if (rain[[rainnumdays]] >= [raincrit] AND [crop].esw >= [esw_amount]) OR
+                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
+               ChooseNextCrop = 'yes'   ! for rotations
+               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+            endif
+            if today = date('[date2]') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            ]]></text>
+      <event>start_of_day</event>
+    </script>
+  </manager>
+  <manager name="SUGAR management (rotations)">
+    <ui>
+      <category description="Sugar plant crop management parameters" />
+      <crop type="crop" description="Enter name of crop to sow :">sugar</crop>
+      <planting_day type="ddmmmdate" description="Enter planting date (dd-mmm) :">12-may</planting_day>
+      <plantlen type="text" description="Duration of a plant crop (days) (30 days/month * 15 months) :">461</plantlen>
+      <plant_stalks type="text" description="Stalk density of plant crop (/m2) :">6</plant_stalks>
+      <variety type="list" listvalues="q117,q96,q138,ts65-28,h73,q141,nco376,n12,n14,cp51,r570,m1356,m55560,q124" description="Planting variety :">q117</variety>
+      <sowing_depth type="text" description="Planting depth mm) :">150</sowing_depth>
+      <category description="Ratoon management parameters" />
+      <NoRatoons type="text" description="Number of ratoons (max = 5):">4</NoRatoons>
+      <ratoonlen1 type="text" description="Duration of a 1st ratoon (days) :">366</ratoonlen1>
+      <ratoonlen2 type="text" description="Duration of a 2nd ratoon (days) :">366</ratoonlen2>
+      <ratoonlen3 type="text" description="Duration of a 3rd ratoon (days) :">366</ratoonlen3>
+      <ratoonlen4 type="text" description="Duration of a 4th ratoon (days) :">300</ratoonlen4>
+      <ratoon1_stalks type="text" description="Stalk density of 1st ratoon (/m2) :">8</ratoon1_stalks>
+      <ratoon2_stalks type="text" description="Stalk density of 2nd ratoon (/m2) :">8</ratoon2_stalks>
+      <ratoon3_stalks type="text" description="Stalk density of 3rd ratoon (/m2) :">7</ratoon3_stalks>
+      <ratoon4_stalks type="text" description="Stalk density of 4th ratoon (/m2) :">6</ratoon4_stalks>
+      <category description="Residue management at harvest" />
+      <burn_flag type="text" description="Was the cane burnt? 1 = Yes">0</burn_flag>
+      <surfaceommodule type="modulename" description="Module used to apply the tillage :">Surface Organic Matter</surfaceommodule>
+      <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type :">user_defined</tillage_type>
+      <tillage_depth type="text" description="User_defined depth of incorporation. 0 = removed. (mm) :">20</tillage_depth>
+      <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1):">0.2</tillage_f_incorp>
+    </ui>
+    <script name="init">
+      <text>cropcycle = 0
+totalrain =0
+totaldnit = 0.00000
+totalleach = 0.00000
+totalfertiliser = 0
+ratoonlen = 0
+replace_pcn = 0
+</text>
+      <event>init</event>
+    </script>
+    <script name="start_of_day">
+      <text><![CDATA[            ! -----------------------------------------------------------------
+            ! Book keeping to round days to integer values
+            plantlen = [plantlen]
+
+            totalrain = totalrain + rain
+            totaldnit = totaldnit + dnit
+            totalleach = totalleach + flow_no3
+
+            ! Initialise and set a time counter for entire run
+            dah = 0
+
+! test to see if sugar is the next crop in the rotation.
+if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+
+
+!STATUS ALIVE
+
+            if (sugar.crop_status = 'alive') then    
+                            dah = 0
+
+                             ! Set harvest dates for each crop phase
+                             if (sugar.DaysAfterSowing = [plantlen] and ratoon_no = 0) or
+                                (sugar.DaysAfterSowing = ratoonlen and ratoon_no > 0) then
+
+                                                  replace_kgNha = cane_wt * 10 * replace_pcN
+
+                                                  sugar harvest
+                                                  totalfertiliser = 0
+                                                  totalirrigation = 0
+                                                  totalrain = 0
+                                                  totaldnit = 0
+                                                  totalleach = 0
+
+                                                  if '[burn_flag]' = 1 then
+                                                                 if ('[tillage_type]' = 'user_defined') then
+                                                                                  '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
+                                                                 else
+                                                                                  '[surfaceommodule]' tillage type = [tillage_type]
+                                                                 endif
+                                                  endif
+
+                                                  if (ratoon_no = [NoRatoons] + 1) then
+
+                                                                   ! plough the crop out
+                                                                   sugar kill_crop
+                                                                   sugar end_crop
+
+                                                                  ! when the crop is dead then tell it to use the next crop for rotations
+                                                                  ChooseNextCrop = 'yes'
+                                                  else
+                                                                   ! Set stalk density
+                                                                   if ratoon_no = 1 then
+                                                                               ratoonlen = [ratoonlen1]
+                                                                               sugar.plants = [ratoon1_stalks]
+                                                                   elseif ratoon_no = 2 then
+                                                                               ratoonlen = [ratoonlen2]
+                                                                               sugar.plants = [ratoon2_stalks]
+                                                                    elseif ratoon_no = 3 then
+                                                                                ratoonlen = [ratoonlen3]
+                                                                               sugar.plants = [ratoon3_stalks]
+                                                                    elseif ratoon_no = 4 then
+                                                                               ratoonlen = [ratoonlen4]
+                                                                              sugar.plants = [ratoon4_stalks]
+                                                                    endif
+!                                                                  !sugar.plants = [ratoon_stalks]
+                                                   endif
+                               else
+                                                 ! We have not reached the harvest date for this ratoon.
+                               endif
+
+
+ ! STATUS DEAD
+
+            elseif (sugar.crop_status = 'dead') then
+
+                            ! when the crop is dead then tell it to use the next crop for rotations
+                             ChooseNextCrop = 'yes'
+
+                             sugar harvest
+                             sugar end_crop
+
+! STATUS OUT
+
+            elseif (sugar.crop_status = 'out') and (today = date('[planting_day]') then
+                              cropcycle = cropcycle + 1
+                              sugar sow plants = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
+                              sugar.plants = [plant_stalks]
+                              dah = 0
+
+! STATUS anything else
+
+            else
+                               dah = dah + 1
+            endif
+
+
+endif]]></text>
+      <event>start_of_day</event>
+    </script>
+  </manager>
+  
+    </folder>
+  
 </folder>
