@@ -354,5 +354,16 @@ namespace ApsimFile
          return GoodFileNames;
          }
 
+      public bool IsCrop(string CropNameToFind)
+         {
+         XmlNode CropsNode = XmlHelper.Find(SettingsNode, "Crops");
+         if (CropsNode != null)
+            {
+            string[] CropNames = XmlHelper.ChildNames(CropsNode, "");
+            return CSGeneral.StringManip.IndexOfCaseInsensitive(CropNames, CropNameToFind) != -1;
+            }
+         return false;
+         }
+
       }
    }

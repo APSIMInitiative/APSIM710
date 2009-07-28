@@ -1,12 +1,14 @@
 #pragma once
-#include "ComponentType.h"
+#include "NamedItem.h"
+
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Text;
-
-
-
    
+namespace ModelFramework {
+   ref class ApsimComponent;  // forward
+   }
+      
 generic <typename T>
 public ref class LayeredList : List<T> 
    {
@@ -27,7 +29,7 @@ public ref class LayeredList : List<T>
 public ref class Instance : NamedItem
    {
    private:
-      static ComponentType^ _Paddock;
+      //static PaddockType^ _Paddock;
       String^ MyFQN()
          {
          String^ FQN = "";
@@ -50,6 +52,10 @@ public ref class Instance : NamedItem
       virtual void Add(Instance^ Child)
          {
          Children->Add(Child);
+         }
+      ModelFramework::ApsimComponent^ ParentComponent()
+         {
+         return Component;
          }
       int IndexOf(String^ Name)
          {
@@ -98,23 +104,23 @@ public ref class Instance : NamedItem
             }
          }
          
-      property ComponentType^ Paddock 
-         { 
-         // --------------------------------------------------------------------
-         // Returns the singleton instance of a reflection class that is
-         // capable of returning metadata about the structure of the current
-         // paddock that this model is running in.
-         // --------------------------------------------------------------------
+      //property PaddockType^ Paddock 
+      //   { 
+      //   // --------------------------------------------------------------------
+      //   // Returns the singleton instance of a reflection class that is
+      //   // capable of returning metadata about the structure of the current
+      //   // paddock that this model is running in.
+      //   // --------------------------------------------------------------------
 
-         ComponentType^ get()
-            { 
-            if (_Paddock == nullptr)
-               {
-               String^ ParentName = Root->ComponentName->Substring(0, Root->ComponentName->LastIndexOf('.'));
-               _Paddock = gcnew ComponentType(ParentName, Component);
-               }
-            return _Paddock;
-            } 
-         }  
+      //   PaddockType^ get()
+      //      { 
+      //      if (_Paddock == nullptr)
+      //         {
+      //         String^ ParentName = Root->ComponentName->Substring(0, Root->ComponentName->LastIndexOf('.'));
+      //         _Paddock = gcnew PaddockType(ParentName, Component);
+      //         }
+      //      return _Paddock;
+      //      } 
+      //   }  
       };
 

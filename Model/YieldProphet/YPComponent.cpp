@@ -52,10 +52,12 @@ void YPComponent::doInit1(const protocol::Init1Data& initData)
    swID = addRegistration(::respondToGet, -1, "SWToday", doubleType);
    critSwID = addRegistration(::respondToGet, -1, "CritSWToday", doubleType);
    nID = addRegistration(::respondToGet, -1, "NToday", doubleType);
+   satID = addRegistration(::respondToGet, -1, "SATToday", doubleType);
 
    rootDepthID = addRegistration(::get, -1, "root_depth", doubleType);
    lldepID = addRegistration(::get, -1, "ll_dep", realArrayType);
    duldepID = addRegistration(::get, -1, "dul_dep", realArrayType);
+   satdepID = addRegistration(::get, -1, "sat_dep", realArrayType);
    swdepID = addRegistration(::get, -1, "sw_dep", realArrayType);
    dlayerID = addRegistration(::get, -1, "dlayer", realArrayType);
    no3ID = addRegistration(::get, -1, "no3", realArrayType);
@@ -71,6 +73,8 @@ void YPComponent::respondToGet(unsigned int& fromID, QueryValueData& queryData)
       sendVariable(queryData, interpFromArray(cll, "cll"));
    else if (queryData.ID == dulID)
       sendVariable(queryData, interpFromArray(dul, "dul"));
+   else if (queryData.ID == satID)
+      sendVariable(queryData, interpFromArray(sat, "sat"));
    else if (queryData.ID == nID)
       {
       getDoubles(no3ID, no3, false);
@@ -152,6 +156,16 @@ void YPComponent::getStaticVariables()
             throw runtime_error("Number of layers dont match between cll and dul.");
          }
       }
+   if (sat.size() == 0)
+      {
+      getDoubles(satdepID, sat, false);
+
+      if (sat.size() != Depth.size())
+         throw runtime_error("Number of layers dont match between sat & dlayer");
+
+      sat = Accum(sat);
+      }
+      
    }
 
 // -----------------------------------

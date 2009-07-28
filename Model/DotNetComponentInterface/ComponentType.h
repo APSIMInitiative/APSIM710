@@ -16,6 +16,9 @@ bool findVariable(String^ OwnerComponentName, String^ VariableName);
 [DllImport("ApsimShared.dll", EntryPoint = "isPaddock", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
 bool isPaddock(String^ ComponentName);  
 
+[DllImport("ApsimShared.dll", EntryPoint = "getComponentType", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
+void getComponentType(String^ ComponentName, System::Text::StringBuilder^ ComponentType); 
+
 namespace ModelFramework {
    ref class ApsimComponent;  // forward
    }
@@ -26,7 +29,7 @@ public ref class ComponentType : public TypedItem
    // capable of returning metadata about the structure of the simulation.
    // --------------------------------------------------------------------
    
-   private:
+   protected:
       static System::Text::StringBuilder^ Data = gcnew System::Text::StringBuilder(10000);
       String^ Name;
       String^ TypeName;
@@ -47,37 +50,10 @@ public ref class ComponentType : public TypedItem
          
          Name = Nam;
          ParentComponent = component;
-         if (findVariable(Name, "sw") != 0)
-            TypeName = "SoilWater";
-         else if (findVariable(Name, "no3") != 0)
-            TypeName = "SoilNitrogen";
-         else if (findVariable(Name, "lai") != 0)
-            TypeName = "Crop";
-         else if (isPaddock(Name))
-            TypeName = "Paddock";
-         else
-            TypeName = "";   
+         getComponentType(Name, Data);
+         TypeName = Data->ToString();
          }
-      property TypedMultiList<ComponentType^>^ Components
-         {
-         // --------------------------------------------------------------------
-         // Return a list of all child components to caller.
-         // --------------------------------------------------------------------
-         TypedMultiList<ComponentType^>^ get()
-            {
-            getChildren(Name, Data);
-            StringCollection^ ChildNames = CSGeneral::StringManip::SplitStringHonouringQuotes(Data->ToString(), ",");
 
-            TypedMultiList<ComponentType^>^ Children = gcnew TypedMultiList<ComponentType^>();
-            for each (String^ ChildName in ChildNames)
-               {
-               ComponentType^ C = gcnew ComponentType(ChildName->Replace("\"",""), ParentComponent);
-               Children->Add(C);
-               }
-
-            return Children;
-            }
-         }
          
       property TypedList<ComponentType^>^ Component
         {

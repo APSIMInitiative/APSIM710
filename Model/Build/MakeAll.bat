@@ -114,5 +114,8 @@ call MakeProject ShellExtensions
 call MakeProject SetXMLValue
 call MakeProject ProbeDll
 call MakeProject Plant2Documentation
+call MakeProject RunMacro
+call MakeProject ManagerHelpers
+
 
 popd

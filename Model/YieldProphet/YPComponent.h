@@ -27,8 +27,10 @@ class YPComponent : public protocol::Component
       unsigned dlayerID;
       unsigned no3ID;
       unsigned nh4ID;
+      unsigned satID;
+      unsigned satdepID;
 
-      std::vector<double> cll, dul, Depth, no3, nh4;
+      std::vector<double> cll, dul, sat, Depth, no3, nh4;
 
       double interpFromArray(std::vector<double>& values, const std::string& variableName);
       void getStaticVariables();

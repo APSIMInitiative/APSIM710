@@ -297,11 +297,13 @@ ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
 
 void ApsimRegistry::addComponent(int parentID,
                                  int componentID,
-                                 const std::string &name)
+                                 const std::string &name,
+                                 const std::string &type)
    {
    Component c;
    c.ID = componentID;
    c.Name = name;
+   c.Type = type;
    components.push_back(c);
 
    PTree<Component> *p = new PTree<Component>();
@@ -452,6 +454,13 @@ int ApsimRegistry::componentByName(const std::string &name)
          return components[i].ID;
    return(0);
    }
+   
+std::string ApsimRegistry::getComponentType(int componentID)
+	 {
+   PTree<Component>* node = findComponent(componentID);
+   if (node == NULL) {throw std::runtime_error("NULL node in getComponentType!");}
+   return node->item.Type; 	
+	 }
 
 std::string ApsimRegistry::componentByID(int id)
    {
@@ -788,3 +797,10 @@ extern "C" bool EXPORT STDCALL isPaddock(char* ComponentName)
    int ComponentID = ApsimRegistry::getApsimRegistry().componentByName(ComponentName);
    return ApsimRegistry::getApsimRegistry().hasChildren(ComponentID);
    }
+
+extern "C" void EXPORT STDCALL getComponentType(char* ComponentName, char* Type)
+   {
+   int ComponentID = ApsimRegistry::getApsimRegistry().componentByName(ComponentName);
+   strcpy(Type, ApsimRegistry::getApsimRegistry().getComponentType(ComponentID).c_str());
+   }
+   

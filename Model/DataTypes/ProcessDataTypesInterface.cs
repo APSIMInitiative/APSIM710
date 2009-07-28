@@ -23,7 +23,7 @@ namespace ProcessDataTypesInterface
          try
             {
             if (args.Length != 2)
-               throw new Exception("Usage: ProcessDataTypesInterface InterfaceFile MacroFile");
+               throw new Exception("Usage: ProcessDataTypesInterface XMLFile MacroFile");
 
             // read from stdin all contents, loop through all child nodes and create
             // a new <type> under 'NewInterfaceFile'
@@ -57,6 +57,8 @@ namespace ProcessDataTypesInterface
          foreach (XmlNode DataType in InterfaceFile.DocumentElement.ChildNodes)
             ProcessType(DataType, NewInterfaceFile);
 
+         XmlHelper.SetName(NewInterfaceFile.DocumentElement, XmlHelper.Name(InterfaceFile.DocumentElement));
+
          return NewInterfaceFile;
          }
 
@@ -75,6 +77,7 @@ namespace ProcessDataTypesInterface
 
             // Go through all child types first and process them.
             foreach (XmlNode SubType in Type.ChildNodes)
+               {
                if (SubType.HasChildNodes)
                   {
                   // prefix our name to the name of our subtype
@@ -84,12 +87,15 @@ namespace ProcessDataTypesInterface
                   XmlHelper.SetName(SubType, ChildName);
                   XmlHelper.SetAttribute(SubType, "type", TypeName + ChildName);
                   }
+               else if (SubType.Name == "variable")
+                  ProcessType(SubType, NewDataTypes);
+               }
 
             // If this is a builtin then treat it as a field.
-            if (Type.Name == "builtin")
+            if (Type.Name == "builtin" || Type.Name == "variable")
                {
                XmlNode BuiltIn = NewDataTypes.DocumentElement.AppendChild
-                                         (NewDataTypes.CreateElement("builtin"));
+                                         (NewDataTypes.CreateElement(Type.Name));
 
                // write some DDML
                string DDML = MakeDDML(Type).Replace("builtin", "type");
@@ -99,6 +105,10 @@ namespace ProcessDataTypesInterface
                ProcessField(Type, BuiltIn);
                if (XmlHelper.Attribute(Type, "boundable") == "T")
                   XmlHelper.SetValue(BuiltIn, "boundable", "T");
+               if (XmlHelper.Attribute(Type, "read") == "T")
+                  XmlHelper.SetValue(BuiltIn, "read", "T");
+               if (XmlHelper.Attribute(Type, "write") == "T")
+                  XmlHelper.SetValue(BuiltIn, "write", "T");
                }
             else
                {
@@ -137,6 +147,7 @@ namespace ProcessDataTypesInterface
             XmlHelper.SetValue(NewDataType, "structure", "T");
 
          XmlHelper.SetValue(NewDataType, "dotnettype", CalcDotNetType(Field));
+         XmlHelper.SetValue(NewDataType, "dotnettypename", CalcDotNetTypeName(Field));
          XmlHelper.SetValue(NewDataType, "rawcpptype", CalcRawCPPType(Field));
          XmlHelper.SetValue(NewDataType, "cpptype", CalcCPPType(Field));
          XmlHelper.SetValue(NewDataType, "fortype", CalcForType(Field));
@@ -150,6 +161,7 @@ namespace ProcessDataTypesInterface
          if (CalcCPPType(Field) == "std::vector<std::string>")
             XmlHelper.SetValue(NewDataType, "arrayandstring", "T");
          }
+
 
 
       private static string CalcRawCPPType(XmlNode DataType)
@@ -274,6 +286,39 @@ namespace ProcessDataTypesInterface
             {
             CTypeName = "array<" + CTypeName;
             CTypeName += ">^";
+            }
+         return CTypeName;
+         }
+
+      private static string CalcDotNetTypeName(XmlNode DataType)
+         {
+         // ------------------------------------------------------------------
+         // convert a DDML 'kind' string to a CPP built in type.
+         // ------------------------------------------------------------------
+         string TypeName = XmlHelper.Attribute(DataType, "kind");
+         if (TypeName == "")
+            TypeName = XmlHelper.Attribute(DataType, "type");
+         if (TypeName == "")
+            TypeName = XmlHelper.Attribute(DataType, "name");
+         string LowerTypeName = TypeName.ToLower();
+         string CTypeName;
+         if (LowerTypeName == "integer4")
+            CTypeName = "Int32";
+         else if (LowerTypeName == "single")
+            CTypeName = "Single";
+         else if (LowerTypeName == "double")
+            CTypeName = "Double";
+         else if (LowerTypeName == "boolean")
+            CTypeName = "Boolean";
+         else if (LowerTypeName == "char")
+            CTypeName = "Char";
+         else if (LowerTypeName == "string")
+            CTypeName = "String";
+         else
+            CTypeName = TypeName + "Type";
+         if (XmlHelper.Attribute(DataType, "array") == "T")
+            {
+            CTypeName += "Array";
             }
          return CTypeName;
          }

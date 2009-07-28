@@ -58,7 +58,8 @@ class EXPORT ApsimRegistry
       // Component routines
       // Add a component to the system
       void addComponent(int parentID, int componentID,
-                        const std::string &name);
+                        const std::string &name,
+                        const std::string &type);
 
       int componentByName(const std::string &);
       std::string componentByID(int);
@@ -68,6 +69,7 @@ class EXPORT ApsimRegistry
       void getSiblingsAndDescendants(int componentID, vector<int> &siblings);
       void getSiblingsAndParents(int componentID, vector<int> &siblings);
       void getChildren(int componentID, vector<int> &children);
+      std::string getComponentType(int componentID);
 
       // Discriminate between "native" and "foreign" components
       void setForeignTaint(int);
@@ -100,6 +102,7 @@ class EXPORT ApsimRegistry
       typedef struct {
          int ID;
          std::string Name;
+         std::string Type;
       } Component;
       vector<Component> components;
 

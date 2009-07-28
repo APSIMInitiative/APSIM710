@@ -23,11 +23,11 @@ Partial Class ScriptUI
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ScriptUI))
         Me.TabControl = New System.Windows.Forms.TabControl
         Me.Properties = New System.Windows.Forms.TabPage
-        Me.GenericUI = New VBUserInterface.GenericUI
         Me.Script = New System.Windows.Forms.TabPage
         Me.TextBox = New QWhale.Editor.SyntaxEdit(Me.components)
         Me.CsParser = New QWhale.Syntax.Parsers.CsParser
         Me.VbParser = New QWhale.Syntax.Parsers.VbParser
+        Me.GenericUI = New VBUserInterface.GenericUI
         Me.TabControl.SuspendLayout()
         Me.Properties.SuspendLayout()
         Me.Script.SuspendLayout()
@@ -55,17 +55,6 @@ Partial Class ScriptUI
         Me.Properties.Text = "Properties"
         Me.Properties.UseVisualStyleBackColor = True
         '
-        'GenericUI
-        '
-        Me.GenericUI.AutoScroll = True
-        Me.GenericUI.BackColor = System.Drawing.SystemColors.Window
-        Me.GenericUI.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GenericUI.HelpText = ""
-        Me.GenericUI.Location = New System.Drawing.Point(3, 3)
-        Me.GenericUI.Name = "GenericUI"
-        Me.GenericUI.Size = New System.Drawing.Size(641, 493)
-        Me.GenericUI.TabIndex = 0
-        '
         'Script
         '
         Me.Script.Controls.Add(Me.TextBox)
@@ -83,6 +72,9 @@ Partial Class ScriptUI
         Me.TextBox.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TextBox.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TextBox.Font = New System.Drawing.Font("Courier New", 10.0!)
+        Me.TextBox.Gutter.Options = CType((((QWhale.Editor.GutterOptions.PaintLineNumbers Or QWhale.Editor.GutterOptions.PaintLinesOnGutter) _
+                    Or QWhale.Editor.GutterOptions.PaintBookMarks) _
+                    Or QWhale.Editor.GutterOptions.PaintLineModificators), QWhale.Editor.GutterOptions)
         Me.TextBox.Location = New System.Drawing.Point(3, 3)
         Me.TextBox.Name = "TextBox"
         Me.TextBox.Size = New System.Drawing.Size(641, 493)
@@ -112,6 +104,17 @@ Partial Class ScriptUI
                     Or QWhale.Syntax.SyntaxOptions.FormatSpaces) _
                     Or QWhale.Syntax.SyntaxOptions.CodeCompletionTabs), QWhale.Syntax.SyntaxOptions)
         Me.VbParser.XmlScheme = resources.GetString("VbParser.XmlScheme")
+        '
+        'GenericUI
+        '
+        Me.GenericUI.AutoScroll = True
+        Me.GenericUI.BackColor = System.Drawing.SystemColors.Window
+        Me.GenericUI.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.GenericUI.HelpText = ""
+        Me.GenericUI.Location = New System.Drawing.Point(3, 3)
+        Me.GenericUI.Name = "GenericUI"
+        Me.GenericUI.Size = New System.Drawing.Size(641, 493)
+        Me.GenericUI.TabIndex = 0
         '
         'ScriptUI
         '

@@ -18,7 +18,36 @@ namespace Tools
                {
                XmlDocument Doc = new XmlDocument();
                Doc.Load(args[0]);
-               XmlHelper.SetValue(Doc.DocumentElement, args[1], args[2]);
+
+               string ParentNodeName = args[1];
+               string ChildNodeName = "";
+               int PosDelimiter = ParentNodeName.LastIndexOf('/');
+               if (PosDelimiter != -1)
+                  {
+                  ChildNodeName = ParentNodeName.Substring(PosDelimiter + 1);
+                  ParentNodeName = ParentNodeName.Substring(0, PosDelimiter);
+                  }
+               if (ParentNodeName[0] == '@')
+                  {
+                  ChildNodeName = ParentNodeName;
+                  ParentNodeName = "";
+                  }
+
+               XmlNode Node;
+               if (ParentNodeName == "")
+                  Node = Doc.DocumentElement;
+               else
+                  Node = XmlHelper.Find(Doc.DocumentElement, ParentNodeName);
+               if (Node != null)
+                  {
+                  if (ChildNodeName[0] == '@')
+                     {
+                     ChildNodeName = ChildNodeName.Substring(1);
+                     XmlHelper.SetAttribute(Node, ChildNodeName, args[2]);
+                     }
+                  else
+                     XmlHelper.SetValue(Node, ChildNodeName, args[2]);
+                  }
                Doc.Save(args[0]);
                }
             }

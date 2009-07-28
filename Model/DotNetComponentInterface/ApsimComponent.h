@@ -23,6 +23,7 @@ public ref class ApsimComponent
 		int instanceNumber;
 		int ComponentID;
 		String^ Name;
+		String^ DllFileName;
 		List<ApsimType^>^ Registrations;
 		XmlNode^ InitData;
 		bool EndCropToday;
@@ -43,10 +44,11 @@ public ref class ApsimComponent
       
       void CallEventHandlers(String^ EventName, SowType^ Data);
 
-	internal:
+	public:
 		void Warning(String^ msg);
       void Get(String^ PropertyName, ApsimType^ Data);		
       void Set(String^ PropertyName, ApsimType^ Data);
+      void Publish(String^ EventName, ApsimType^ Data);
       
       String^ GetName() {return Name;}
 

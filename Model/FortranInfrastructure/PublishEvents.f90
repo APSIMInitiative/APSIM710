@@ -28,6 +28,8 @@ module PublishEventsModule
       call PublishKillCrop(QualifiedEventName, DataString)
    elseif (EventName == 'incorpfom') then
       call PublishIncorpFOM(QualifiedEventName, DataString)
+   elseif (EventName == 'apply2') then
+      call PublishApply2(QualifiedEventName, DataString)
    elseif (EventName == 'sow2' .or. EventName == 'prune') then
       ! Eventually all manager events are to use this.
       call PublishEvent(QualifiedEventName, DataString)
@@ -233,6 +235,40 @@ module PublishEventsModule
 
    end subroutine
 
+   subroutine PublishApply2(QualifiedEventName, DataString)
+   ! ---------------------------------------------------------------
+   ! Publishes an apply2 event to irrigate using the data on the specified
+   ! DataString
+   ! ---------------------------------------------------------------
+
+   use ConstantsModule
+   use ErrorModule
+   use StringModule
+   use DataStrModule
+   use DataTypes
+   use ComponentInterfaceModule
+   use DataTypesInterface
+
+   implicit none
+
+   character DataString*(*)          ! (INPUT) Should be blank or have a plants_kill_fraction
+   character QualifiedEventName*(*)  ! (INPUT) Fully qualified event name (e.g. wheat.kill_crop)
+   character KeyName*(500)
+   character KeyValues(500)*(500)
+   character KeyUnits*(500)
+   integer NumValues
+   type(IrrigationApplicationType) :: Irrigation
+   integer IrrigationID
+
+   call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
+
+   if (NumValues == 1 .and. strings_equal(KeyName, 'amount')) then
+      Irrigation%Amount = StringToReal(KeyValues(1))
+      IrrigationID = add_registration(eventReg, QualifiedEventName, IrrigationApplicationTypeDDML, blank)
+      call publish_IrrigationApplication(IrrigationID, Irrigation)
+   endif
+   end subroutine
+   
    subroutine PublishEvent(QualifiedEventName, DataString)
    ! ---------------------------------------------------------------
    ! Publishes a general event as a string

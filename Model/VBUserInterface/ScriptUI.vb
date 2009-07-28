@@ -21,6 +21,10 @@ Public Class ScriptUI
             TextBox.Lexer = CsParser
         End If
         Assembly.LoadFile(Path.GetDirectoryName(Application.ExecutablePath) + "\" + "DotNetComponentInterface.dll")
+        Dim ManagerHelpers As List(Of String) = LoadManagerHelpers.GetManagerHelpers()
+        For Each ManagerHelper As String In ManagerHelpers
+            Assembly.LoadFile(ManagerHelper)
+        Next
         CsParser.RegisterAllAssemblies()
         VbParser.RegisterAllAssemblies()
         Dim TabStops() As Integer = {3}

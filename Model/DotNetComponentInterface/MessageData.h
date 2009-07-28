@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Interfaces.h"
-#include "..\DataTypes\DOTNETDataTypes.h"
-#include "FactoryProperty.h"
-#include "FactoryEventHandler.h"
 #include <string>
 #include <vcclr.h>
 using namespace System::Runtime::InteropServices;
@@ -212,7 +209,6 @@ String^ DDML(array<T>^ values)
 	return TypeString->Substring(0, TypeString->Length-2) + " array=\"T\"/>";
 	}
 
-	   
 
 
 	

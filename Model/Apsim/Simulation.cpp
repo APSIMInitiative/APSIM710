@@ -114,7 +114,7 @@ void Simulation::init(const string& fileName)
 
    // initialise the simulation
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-   registry.addComponent(masterPMID, masterPMID, pmName);
+   registry.addComponent(masterPMID, masterPMID, pmName, "protocolmanager");
 
    Message* message = constructMessage(Init1, parentID, masterPMID , false,
                                        memorySize(sdmlContents) + memorySize(pmName) + memorySize(true));

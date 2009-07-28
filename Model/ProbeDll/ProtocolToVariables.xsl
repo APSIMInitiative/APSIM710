@@ -15,7 +15,10 @@
 </xsl:template>
 
 <xsl:template match="property">
-      <variable name="{@name}" description="{type/@description}" array="{type/@array}" units="{type/@unit}"/>
+	<xsl:if test="@access='read'"><variable name="{@name}" description="{type/@description}" read="T" write="F" kind="{type/@kind}" array="{type/@array}" units="{type/@unit}"/></xsl:if>
+	<xsl:if test="@access='write'"><variable name="{@name}" description="{type/@description}" read="F" write="T" kind="{type/@kind}" array="{type/@array}" units="{type/@unit}"/></xsl:if>
+	<xsl:if test="@access='both'"><variable name="{@name}" description="{type/@description}" read="T" write="T" kind="{type/@kind}" array="{type/@array}" units="{type/@unit}"/></xsl:if>
+  
 </xsl:template>
 <xsl:template match="event">
       <xsl:if test="@kind='published'"><event name="{@name}" description="{type/@description}"/></xsl:if>

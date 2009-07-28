@@ -13,6 +13,7 @@
 #include <General/stl_functions.h>
 #include <General/TreeNodeIterator.h>
 #include <General/xml.h>
+#include <General/path.h>
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimComponentData.h>
@@ -264,7 +265,7 @@ void Coordinator::addComponent(const string& compName,
       fqn += compName;
 
       // assume it's foreign until we know more about it..
-      registry.addComponent(componentID, childComponentID, fqn);
+      registry.addComponent(componentID, childComponentID, fqn, Path(compExecutable.c_str()).Get_name_without_ext());
       registry.setForeignTaint(childComponentID);
 
       // send component an init1 message.

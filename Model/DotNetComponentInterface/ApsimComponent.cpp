@@ -87,6 +87,9 @@ void ApsimComponent::createInstance(const char* dllFileName,
 	Contents = gcnew StringBuilder(100000);
    ComponentID = compID;
 	ComponentI = CICreate(callbackArg, callback, compID, parentID);
+
+   // Load in the reflectiion dll in case our host component want's to use it.
+   DllFileName = gcnew String(dllFileName);
 	}
 
 void ApsimComponent::deleteInstance()
@@ -284,7 +287,14 @@ void ApsimComponent::Set(String^ PropertyName, ApsimType^ Data)
          instanceNumber, RegistrationIndex, Data->DDML());
    Registrations->RemoveAt(RegistrationIndex);
    }   
-   
+void ApsimComponent::Publish(String^ EventName, ApsimType^ Data)
+   {
+   int RegistrationIndex = Registrations->Count;
+   Registrations->Add(Data);
+   CIPublish(ComponentI, EventName, &::CallBack,
+         instanceNumber, RegistrationIndex, Data->DDML());
+   Registrations->RemoveAt(RegistrationIndex);
+   }
 void ApsimComponent::TrapAllEvents(Factory^ F)
 	{
 	// ----------------------------------------------
@@ -468,8 +478,10 @@ Assembly^ ApsimComponent::CompileScript(XmlNode^ Node)
             params->TreatWarningsAsErrors = false;
             params->WarningLevel = 2;
             params->ReferencedAssemblies->Add("System.dll");
-            params->ReferencedAssemblies->Add("c:\\hol353\\apsim\\model\\DotNetComponentInterface.dll");
-            
+            params->ReferencedAssemblies->Add(Path::GetDirectoryName(DllFileName) + "\\DotNetComponentInterface.dll");
+            List<String^> ManagerHelpers = LoadManagerHelpers::GetManagerHelpers();
+            for each (String^ ManagerHelper in ManagerHelpers)
+               params->ReferencedAssemblies->Add(ManagerHelper);
             array<String^>^ source = gcnew array<String^>(1);
             source[0] = Node->InnerText;
             CompilerResults^ results = provider->CompileAssemblyFromSource(params, source);

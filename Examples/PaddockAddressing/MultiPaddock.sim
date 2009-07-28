@@ -1,0 +1,346 @@
+<simulation name="MultiPaddock" executable="C:\hol353\Apsim\Model\ProtocolManager.dll">
+  <executable>C:\hol353\Apsim\Model\ProtocolManager.dll</executable>
+  <title>MultiPaddock</title>
+  <component name="clock" executable="C:\hol353\Apsim\Model\Clock.dll">
+    <executable>C:\hol353\Apsim\Model\Clock.dll</executable>
+    <initdata>
+      <include>%apsim%\Model\Clock.xml</include>
+      <start_date type="date" description="Enter the start date of the simulation">1/01/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/01/1940</end_date>
+    </initdata>
+  </component>
+  <component name="met" executable="C:\hol353\Apsim\Model\Input.dll">
+    <executable>C:\hol353\Apsim\Model\Input.dll</executable>
+    <initdata>
+      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+    </initdata>
+  </component>
+  <system name="paddock2" executable="C:\hol353\Apsim\Model\ProtocolManager.dll">
+    <executable>C:\hol353\Apsim\Model\ProtocolManager.dll</executable>
+    <component name="outputfile" executable="C:\hol353\Apsim\Model\Report.dll">
+      <executable>C:\hol353\Apsim\Model\Report.dll</executable>
+      <initdata>
+        <variable>dd/mm/yyyy as Date</variable>
+        <variable>biomass</variable>
+        <variable>yield</variable>
+        <variable>grain_protein</variable>
+        <variable>grain_size</variable>
+        <variable>esw</variable>
+        <outputfrequency>harvesting</outputfrequency>
+      </initdata>
+    </component>
+    <component name="accum" executable="%apsim%\Model\Accum.dll">
+      <initdata>
+        <accum_variables>rain[15]</accum_variables>
+      </initdata>
+    </component>
+    <component name="fertiliser" executable="C:\hol353\Apsim\Model\Fertiliser.dll">
+      <executable>C:\hol353\Apsim\Model\Fertiliser.dll</executable>
+      <initdata>
+        <include>%apsim%\Model\Fertiliser.xml</include>
+      </initdata>
+    </component>
+    <component name="Irrigation" executable="C:\hol353\Apsim\Model\Irrigation.dll">
+      <executable>C:\hol353\Apsim\Model\Irrigation.dll</executable>
+      <initdata>
+        <automatic_irrigation>off</automatic_irrigation>
+        <crit_fr_asw>0.5</crit_fr_asw>
+        <asw_depth>600</asw_depth>
+        <irrigation_efficiency>1</irrigation_efficiency>
+        <irrigation_allocation>off</irrigation_allocation>
+        <allocation>0</allocation>
+        <solutes>nh4 no3 cl</solutes>
+        <default_no3_conc>0</default_no3_conc>
+        <default_nh4_conc>0</default_nh4_conc>
+        <default_cl_conc>0</default_cl_conc>
+      </initdata>
+    </component>
+    <component name="Sowing rule" executable="C:\hol353\Apsim\Model\Manager.dll">
+      <executable>C:\hol353\Apsim\Model\Manager.dll</executable>
+      <initdata>
+        <rule name="start_of_day - start_of_day" condition="start_of_day"><![CDATA[
+      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = 'wheat')) then
+         if (date_within('15-may, 10-jul') = 1) then
+            if (rain[3] >= 30 AND esw >= 200) OR
+                ('no' = 'yes' AND today = date('10-jul'))) THEN
+               ChooseNextCrop = 'yes'   ! for rotations
+               wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+            endif
+            if today = date('10-jul') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            ]]></rule>
+        <rule name="init - init" condition="init">
+            nextcrop = 0
+            fallowin = 0
+            </rule>
+      </initdata>
+    </component>
+    <component name="Sowing fertiliser" executable="C:\hol353\Apsim\Model\Manager.dll">
+      <executable>C:\hol353\Apsim\Model\Manager.dll</executable>
+      <initdata>
+        <rule name="[modulename].[eventname] - wheat.sowing" condition="wheat.sowing">
+        fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_N
+            </rule>
+      </initdata>
+    </component>
+    <component name="Harvesting rule" executable="C:\hol353\Apsim\Model\Manager.dll">
+      <executable>C:\hol353\Apsim\Model\Manager.dll</executable>
+      <initdata>
+        <rule name="end_of_day - end_of_day" condition="end_of_day">
+
+           if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+              wheat  harvest
+              wheat  end_crop
+           endif
+
+            </rule>
+      </initdata>
+    </component>
+    <component name="Soil Water" executable="%apsim%\Model\SoilWat.dll">
+      <initdata>
+        <include>%apsim%\Model\SoilWat.xml</include>
+        <diffus_const>40</diffus_const>
+        <diffus_slope>16</diffus_slope>
+        <cn2_bare>73</cn2_bare>
+        <cn_red>20</cn_red>
+        <cn_cov>0.8</cn_cov>
+        <salb>0.13</salb>
+        <cona>3.5</cona>
+        <u>6</u>
+        <dlayer>   150.000   150.000   300.000   300.000   300.000   300.000   300.000   300.000   300.000   300.000   300.000</dlayer>
+        <sat>     0.590     0.580     0.590     0.580     0.570     0.550     0.550     0.530     0.520     0.510     0.490</sat>
+        <dul>     0.540     0.530     0.540     0.540     0.520     0.500     0.500     0.480     0.470     0.460     0.440</dul>
+        <ll15>     0.290     0.290     0.290     0.290     0.300     0.310     0.320     0.330     0.340     0.350     0.360</ll15>
+        <air_dry>     0.150     0.260     0.290     0.290     0.300     0.310     0.320     0.330     0.340     0.350     0.360</air_dry>
+        <swcon>     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300</swcon>
+        <bd>     1.020     1.030     1.020     1.020     1.060     1.110     1.120     1.150     1.180     1.200     1.250</bd>
+        <sw>     0.540     0.530     0.540     0.540     0.458     0.310     0.320     0.330     0.340     0.350     0.360</sw>
+      </initdata>
+    </component>
+    <component name="surface organic matter" executable="C:\hol353\Apsim\Model\SurfaceOM.dll">
+      <executable>C:\hol353\Apsim\Model\SurfaceOM.dll</executable>
+      <initdata>
+        <include>%apsim%\Model\SurfaceOM.xml</include>
+        <name>wheat</name>
+        <type>wheat</type>
+        <mass>1000</mass>
+        <cnr>80</cnr>
+        <standing_fraction>0</standing_fraction>
+      </initdata>
+    </component>
+    <component name="Soil Nitrogen" executable="%apsim%\Model\SoilN.dll">
+      <initdata>
+        <include>%apsim%\Model\SoilN.xml</include>
+        <soiltype>Black Vertosol</soiltype>
+        <root_cn>40</root_cn>
+        <root_wt>200</root_wt>
+        <soil_cn>12.5</soil_cn>
+        <enr_a_coeff>7.4</enr_a_coeff>
+        <enr_b_coeff>0.2</enr_b_coeff>
+        <profile_reduction>off</profile_reduction>
+        <oc>     1.040     0.890     0.890     0.890     0.770     0.450     0.270     0.220     0.160     0.130     0.120</oc>
+        <ph>     8.400     8.800     9.000     9.200     9.200     9.100     9.000     9.000     8.900     8.900     8.900</ph>
+        <fbiom>     0.025     0.020     0.015     0.010     0.010     0.010     0.010     0.010     0.010     0.010     0.010</fbiom>
+        <finert>     0.400     0.600     0.800     0.900     0.950     0.950     0.950     0.950     0.950     0.950     0.950</finert>
+        <nh4ppm>     0.599     0.100     0.100     0.100     0.100     0.100     0.100     0.100     0.100     0.100     0.100</nh4ppm>
+        <no3ppm>     6.503     2.101     2.101     1.701     1.701     1.701     1.701     1.701     1.701     1.701     1.701</no3ppm>
+      </initdata>
+    </component>
+    <component name="wheat" executable="C:\hol353\Apsim\Model\Plant.dll">
+      <executable>C:\hol353\Apsim\Model\Plant.dll</executable>
+      <initdata>
+        <include>%apsim%\Model\Wheat.xml</include>
+        <ll>     0.290     0.290     0.320     0.320     0.350     0.380     0.410     0.480     0.470     0.460     0.440</ll>
+        <kl>     0.100     0.100     0.080     0.060     0.040     0.020     0.010     0.000     0.000     0.000     0.000</kl>
+        <xf>     1.000     1.000     1.000     1.000     1.000     1.000     1.000     0.000     0.000     0.000     0.000</xf>
+      </initdata>
+    </component>
+  </system>
+  <system name="paddock1" executable="C:\hol353\Apsim\Model\ProtocolManager.dll">
+    <executable>C:\hol353\Apsim\Model\ProtocolManager.dll</executable>
+    <component name="outputfile" executable="C:\hol353\Apsim\Model\Report.dll">
+      <executable>C:\hol353\Apsim\Model\Report.dll</executable>
+      <initdata>
+        <variable>dd/mm/yyyy as Date</variable>
+        <variable>biomass</variable>
+        <variable>yield</variable>
+        <variable>grain_protein</variable>
+        <variable>grain_size</variable>
+        <variable>esw</variable>
+        <outputfrequency>harvesting</outputfrequency>
+      </initdata>
+    </component>
+    <component name="accum" executable="%apsim%\Model\Accum.dll">
+      <initdata>
+        <accum_variables>rain[15]</accum_variables>
+      </initdata>
+    </component>
+    <component name="fertiliser" executable="C:\hol353\Apsim\Model\Fertiliser.dll">
+      <executable>C:\hol353\Apsim\Model\Fertiliser.dll</executable>
+      <initdata>
+        <include>%apsim%\Model\Fertiliser.xml</include>
+      </initdata>
+    </component>
+    <component name="Irrigation" executable="C:\hol353\Apsim\Model\Irrigation.dll">
+      <executable>C:\hol353\Apsim\Model\Irrigation.dll</executable>
+      <initdata>
+        <automatic_irrigation>off</automatic_irrigation>
+        <crit_fr_asw>0.5</crit_fr_asw>
+        <asw_depth>600</asw_depth>
+        <irrigation_efficiency>1</irrigation_efficiency>
+        <irrigation_allocation>off</irrigation_allocation>
+        <allocation>0</allocation>
+        <solutes>nh4 no3 cl</solutes>
+        <default_no3_conc>0</default_no3_conc>
+        <default_nh4_conc>0</default_nh4_conc>
+        <default_cl_conc>0</default_cl_conc>
+      </initdata>
+    </component>
+    <component name="Sowing rule" executable="C:\hol353\Apsim\Model\Manager.dll">
+      <executable>C:\hol353\Apsim\Model\Manager.dll</executable>
+      <initdata>
+        <rule name="start_of_day - start_of_day" condition="start_of_day"><![CDATA[
+      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = 'wheat')) then
+         if (date_within('15-may, 10-jul') = 1) then
+            if (rain[3] >= 30 AND esw >= 200) OR
+                ('no' = 'yes' AND today = date('10-jul'))) THEN
+               ChooseNextCrop = 'yes'   ! for rotations
+               wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+            endif
+            if today = date('10-jul') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            ]]></rule>
+        <rule name="init - init" condition="init">
+            nextcrop = 0
+            fallowin = 0
+            </rule>
+      </initdata>
+    </component>
+    <component name="Sowing fertiliser" executable="C:\hol353\Apsim\Model\Manager.dll">
+      <executable>C:\hol353\Apsim\Model\Manager.dll</executable>
+      <initdata>
+        <rule name="[modulename].[eventname] - wheat.sowing" condition="wheat.sowing">
+        fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_N
+            </rule>
+      </initdata>
+    </component>
+    <component name="Harvesting rule" executable="C:\hol353\Apsim\Model\Manager.dll">
+      <executable>C:\hol353\Apsim\Model\Manager.dll</executable>
+      <initdata>
+        <rule name="end_of_day - end_of_day" condition="end_of_day">
+
+           if wheat.StageName = 'harvest_ripe' or wheat.plant_status = 'dead' then
+              wheat  harvest
+              wheat  end_crop
+           endif
+
+            </rule>
+      </initdata>
+    </component>
+    <component name="Soil Water" executable="%apsim%\Model\SoilWat.dll">
+      <initdata>
+        <include>%apsim%\Model\SoilWat.xml</include>
+        <diffus_const>40</diffus_const>
+        <diffus_slope>16</diffus_slope>
+        <cn2_bare>73</cn2_bare>
+        <cn_red>20</cn_red>
+        <cn_cov>0.8</cn_cov>
+        <salb>0.13</salb>
+        <cona>3.5</cona>
+        <u>6</u>
+        <dlayer>   150.000   150.000   300.000   300.000   300.000   300.000   300.000   300.000   300.000   300.000   300.000</dlayer>
+        <sat>     0.590     0.580     0.590     0.580     0.570     0.550     0.550     0.530     0.520     0.510     0.490</sat>
+        <dul>     0.540     0.530     0.540     0.540     0.520     0.500     0.500     0.480     0.470     0.460     0.440</dul>
+        <ll15>     0.290     0.290     0.290     0.290     0.300     0.310     0.320     0.330     0.340     0.350     0.360</ll15>
+        <air_dry>     0.150     0.260     0.290     0.290     0.300     0.310     0.320     0.330     0.340     0.350     0.360</air_dry>
+        <swcon>     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300     0.300</swcon>
+        <bd>     1.020     1.030     1.020     1.020     1.060     1.110     1.120     1.150     1.180     1.200     1.250</bd>
+        <sw>     0.540     0.530     0.540     0.540     0.520     0.500     0.500     0.480     0.470     0.460     0.440</sw>
+      </initdata>
+    </component>
+    <component name="surface organic matter" executable="C:\hol353\Apsim\Model\SurfaceOM.dll">
+      <executable>C:\hol353\Apsim\Model\SurfaceOM.dll</executable>
+      <initdata>
+        <include>%apsim%\Model\SurfaceOM.xml</include>
+        <name>wheat</name>
+        <type>wheat</type>
+        <mass>1000</mass>
+        <cnr>80</cnr>
+        <standing_fraction>0</standing_fraction>
+      </initdata>
+    </component>
+    <component name="Soil Nitrogen" executable="%apsim%\Model\SoilN.dll">
+      <initdata>
+        <include>%apsim%\Model\SoilN.xml</include>
+        <soiltype>Black Vertosol</soiltype>
+        <root_cn>40</root_cn>
+        <root_wt>200</root_wt>
+        <soil_cn>12.5</soil_cn>
+        <enr_a_coeff>7.4</enr_a_coeff>
+        <enr_b_coeff>0.2</enr_b_coeff>
+        <profile_reduction>off</profile_reduction>
+        <oc>     1.040     0.890     0.890     0.890     0.770     0.450     0.270     0.220     0.160     0.130     0.120</oc>
+        <ph>     8.400     8.800     9.000     9.200     9.200     9.100     9.000     9.000     8.900     8.900     8.900</ph>
+        <fbiom>     0.025     0.020     0.015     0.010     0.010     0.010     0.010     0.010     0.010     0.010     0.010</fbiom>
+        <finert>     0.400     0.600     0.800     0.900     0.950     0.950     0.950     0.950     0.950     0.950     0.950</finert>
+        <nh4ppm>     0.599     0.100     0.100     0.100     0.100     0.100     0.100     0.100     0.100     0.100     0.100</nh4ppm>
+        <no3ppm>     6.503     2.101     2.101     1.701     1.701     1.701     1.701     1.701     1.701     1.701     1.701</no3ppm>
+      </initdata>
+    </component>
+    <component name="wheat" executable="C:\hol353\Apsim\Model\Plant.dll">
+      <executable>C:\hol353\Apsim\Model\Plant.dll</executable>
+      <initdata>
+        <include>%apsim%\Model\Wheat.xml</include>
+        <ll>     0.290     0.290     0.320     0.320     0.350     0.380     0.410     0.480     0.470     0.460     0.440</ll>
+        <kl>     0.100     0.100     0.080     0.060     0.040     0.020     0.010     0.000     0.000     0.000     0.000</kl>
+        <xf>     1.000     1.000     1.000     1.000     1.000     1.000     1.000     0.000     0.000     0.000     0.000</xf>
+      </initdata>
+    </component>
+  </system>
+  <component name="Manager" executable="C:\hol353\Apsim\Model\DotNetComponentInterface.dll">
+    <executable>C:\hol353\Apsim\Model\DotNetComponentInterface.dll</executable>
+    <initdata>
+      <ui />
+      <text><![CDATA[Imports System
+Imports ModelFramework
+
+Public Class Script 
+   Inherits Instance
+
+   <EventHandler()> Public Sub OnPost()
+      Dim MyPaddock As New PaddockType(Me)
+      
+      ' Loop through all child paddocks and change the soil water in each.
+      For Each SubPaddock As PaddockType In MyPaddock.SubPaddocks
+         Dim sw As Single() = SubPaddock.Soil.sw
+         Console.WriteLine(SubPaddock.Name + "-" + sw(0).ToString())
+         SubPaddock.Soil.sw = sw
+      Next
+
+      ' Loop through all child paddocks and write the names and LAIs of all crops.
+      For Each SubPaddock As PaddockType In MyPaddock.SubPaddocks
+         For Each Crop As CropType In SubPaddock.Crops
+            Console.WriteLine(Crop.Name + " - " + Crop.lai.ToString())
+         Next
+      Next
+
+      ' Loop through all child paddocks and apply fertilier 
+      ' And irrigation to each paddock.
+      For Each SubPaddock As PaddockType In MyPaddock.SubPaddocks
+         SubPaddock.Fertiliser.Apply(50, 10, "NO3_N")
+         SubPaddock.Irrigation.Apply(50)
+      Next
+   End Sub
+
+   
+End Class
+    ]]></text>
+    </initdata>
+  </component>
+</simulation>

@@ -106,6 +106,7 @@
       contains
 
 
+
 *     ===========================================================
       subroutine irrigate_irrigate ()
 *     ===========================================================
@@ -1445,6 +1446,51 @@
       end subroutine
 
 
+*     ===========================================================
+      subroutine irrigate_onapply (variant)
+*     ===========================================================
+      Use infrastructure
+      implicit none
+
+*+  Purpose
+*      This routine responds to an irrigate message from another
+*      module.  Gets any parameters and irrigates.
+
+*+  Mission Statement
+*     Respond to Irrigate message
+
+*+  Changes
+*     110395 jngh moved messaging to to apply routine
+*     110496 nih  upgraded routine to use the postbox calls
+*     060696 jngh changed extract to collect routines
+*                 removed data string from argument
+*                 implemented postbox method for data transfer
+*     110996 nih  added increment for g_irr_applied
+*      160399 nih  added irrigation allocation
+*      070600 dsg  added default solute concentration capacity
+
+      
+      integer, intent(in) :: variant
+      type(IrrigationApplicationType) :: irrigation
+
+*- Implementation Section ----------------------------------
+
+      ! Look for all irrigation information
+      ! -----------------------------------
+
+      call unpack_IrrigationApplication(variant, irrigation)      
+      g%amount = irrigation%amount
+
+      call irrigate_check_allocation(g%amount)
+
+      !set default
+      g%duration = p%default_duration
+      g%time = p%default_time
+
+      call irrigate_sendirrigated()
+
+      return
+      end subroutine
 
 * ====================================================================
        subroutine irrigate_check_variables ()
@@ -1957,7 +2003,7 @@ cnh note that results may be strange if swdep < ll15
          call irrigate_get_other_variables ()
          call irrigate_process ()
 
-      else if ((Action.eq.'irrigate').or.(Action.eq.'apply')) then
+      else if (Action.eq.'apply' .or. Action.eq.'irrigate') then
          call irrigate_zero_apply_variables()
          call irrigate_get_other_variables ()
          call irrigate_irrigate ()
@@ -2008,6 +2054,9 @@ cnh note that results may be strange if swdep < ll15
 
       if (eventID .eq. id%tick) then
          call irrigate_ONtick(variant)
+      else if (eventID .eq. id%apply) then
+         call irrigate_ONapply(variant)
+         
       endif
       return
       end subroutine respondToEvent
