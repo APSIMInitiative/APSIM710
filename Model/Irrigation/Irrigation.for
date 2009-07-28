@@ -2054,7 +2054,7 @@ cnh note that results may be strange if swdep < ll15
 
       if (eventID .eq. id%tick) then
          call irrigate_ONtick(variant)
-      else if (eventID .eq. id%apply) then
+      else if (eventID .eq. id%apply2) then
          call irrigate_ONapply(variant)
          
       endif

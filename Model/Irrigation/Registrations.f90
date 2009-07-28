@@ -6,6 +6,7 @@ module Registrations
       integer :: sysinit
       integer :: irrigate
       integer :: apply
+      integer :: apply2
       integer :: water_supplied
       integer :: tick
       integer :: new_solute
@@ -22,7 +23,8 @@ module Registrations
          id%irrigated = add_registration(eventReg, 'irrigated', ApsimVariantTypeDDML, '')
          id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')
          id%irrigate = add_registration(respondToEventReg, 'irrigate', nullTypeDDML, '')
-         id%apply = add_registration(respondToEventReg, 'apply2', IrrigationApplicationTypeDDML, '')
+         id%apply = add_registration(respondToEventReg, 'apply', IrrigationApplicationTypeDDML, '')
+         id%apply2 = add_registration(respondToEventReg, 'apply2', IrrigationApplicationTypeDDML, '')
          id%water_supplied = add_registration(respondToEventReg, 'water_supplied', nullTypeDDML, '')
          id%tick = add_registration(respondToEventReg, 'tick', nullTypeDDML, '')
          id%new_solute = add_registration(respondToEventReg, 'new_solute', ApsimVariantTypeDDML, '')
