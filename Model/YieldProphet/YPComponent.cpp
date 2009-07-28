@@ -159,11 +159,9 @@ void YPComponent::getStaticVariables()
    if (sat.size() == 0)
       {
       getDoubles(satdepID, sat, false);
-
+      sat = Accum(sat);
       if (sat.size() != Depth.size())
          throw runtime_error("Number of layers dont match between sat & dlayer");
-
-      sat = Accum(sat);
       }
       
    }
