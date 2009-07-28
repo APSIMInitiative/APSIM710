@@ -454,10 +454,9 @@ void unpack(MessageData& messageData, const std::string& ddml, F[type.name]Type&
    for (int i = 0; i != data.num_[field.name]; i++)
       unpack(messageData, ddml, data.[field.name][i]);
    [elseif [field.rawcpptype] = std::string]
-   std::string st;
-   unpackField(messageData, ddml, st, "[field.name]");
-   FortranString(data.Type, max_array_size) = st;
-   [field.name]String = [field.name]Alias;
+   std::string [field.name]String;
+   unpackField(messageData, ddml, [field.name]String, "[field.name]");
+   FortranString(data.[field.name], max_array_size) = [field.name]String;
    [elseif [field.array] = T]
    unpack(messageData, data.num_[field.name]);
    for (int i = 0; i != data.num_[field.name]; i++)
