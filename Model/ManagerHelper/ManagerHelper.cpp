@@ -2,13 +2,13 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
-//------ Wheat ------
-public ref class WheatType
+//------ Canola ------
+public ref class CanolaType
    {
    private:
       ComponentType^ Comp;
    public:
-      WheatType(ComponentType^ c) : Comp(c) { }
+      CanolaType(ComponentType^ c) : Comp(c) { }
    
       property Int32 active
          {
@@ -549,6 +549,13 @@ public ref class WheatType
             return Comp->Variable[ "crop_type" ]->ToString();
             }       
          } 
+      property Single cumvd
+         {
+         Single get()
+            {
+            return Comp->Variable[ "cumvd" ]->ToSingle();
+            }       
+         } 
       property Int32 daysafteremergence
          {
          Int32 get()
@@ -766,18 +773,18 @@ public ref class WheatType
             return Comp->Variable[ "dlt_n_senesced_retrans_cohort1" ]->ToSingle();
             }       
          } 
+      property Single dlt_n_senesced_retrans_fruit
+         {
+         Single get()
+            {
+            return Comp->Variable[ "dlt_n_senesced_retrans_fruit" ]->ToSingle();
+            }       
+         } 
       property Single dlt_n_senesced_retrans_grain
          {
          Single get()
             {
             return Comp->Variable[ "dlt_n_senesced_retrans_grain" ]->ToSingle();
-            }       
-         } 
-      property Single dlt_n_senesced_retrans_head
-         {
-         Single get()
-            {
-            return Comp->Variable[ "dlt_n_senesced_retrans_head" ]->ToSingle();
             }       
          } 
       property Single dlt_n_senesced_retrans_leaf
@@ -836,18 +843,18 @@ public ref class WheatType
             return Comp->Variable[ "dlt_n_senesced_trans_cohort1" ]->ToSingle();
             }       
          } 
+      property Single dlt_n_senesced_trans_fruit
+         {
+         Single get()
+            {
+            return Comp->Variable[ "dlt_n_senesced_trans_fruit" ]->ToSingle();
+            }       
+         } 
       property Single dlt_n_senesced_trans_grain
          {
          Single get()
             {
             return Comp->Variable[ "dlt_n_senesced_trans_grain" ]->ToSingle();
-            }       
-         } 
-      property Single dlt_n_senesced_trans_head
-         {
-         Single get()
-            {
-            return Comp->Variable[ "dlt_n_senesced_trans_head" ]->ToSingle();
             }       
          } 
       property Single dlt_n_senesced_trans_leaf
@@ -948,18 +955,18 @@ public ref class WheatType
             return Comp->Variable[ "dm_demand_cohort1" ]->ToSingle();
             }       
          } 
+      property Single dm_demand_fruit
+         {
+         Single get()
+            {
+            return Comp->Variable[ "dm_demand_fruit" ]->ToSingle();
+            }       
+         } 
       property Single dm_demand_grain
          {
          Single get()
             {
             return Comp->Variable[ "dm_demand_grain" ]->ToSingle();
-            }       
-         } 
-      property Single dm_demand_head
-         {
-         Single get()
-            {
-            return Comp->Variable[ "dm_demand_head" ]->ToSingle();
             }       
          } 
       property Single dm_demand_leaf
@@ -1114,6 +1121,475 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "floweringtttarget" ]->ToSingle();
+            }       
+         } 
+      property Single fruitdetachingn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitdetachingn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitdetachingp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitdetachingp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitdetachingwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitdetachingwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrainn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrainn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrainnconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrainnconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrainnonstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrainnonstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrainp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrainp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrainpconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrainpconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrainstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrainstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgraintotaln
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgraintotaln" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgraintotalnconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgraintotalnconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgraintotalnonstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgraintotalnonstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgraintotalp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgraintotalp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgraintotalpconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgraintotalpconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgraintotalstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgraintotalstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgraintotalwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgraintotalwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrainwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrainwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreennconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreennconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreennonstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreennonstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenpconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenpconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenremovedn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenremovedn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenremovedp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenremovedp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenremovedwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenremovedwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgreenwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgreenwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrowthn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrowthn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrowthp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrowthp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitgrowthwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitgrowthwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitretranslocationn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitretranslocationn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitretranslocationp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitretranslocationp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitretranslocationwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitretranslocationwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescednconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescednconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescednonstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescednonstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedpconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedpconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedremovedn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedremovedn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedremovedp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedremovedp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedremovedwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedremovedwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescedwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescedwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescingn
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescingn" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescingp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescingp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitsenescingwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitsenescingwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruittotaln
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruittotaln" ]->ToSingle();
+            }       
+         } 
+      property Single fruittotalnconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruittotalnconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruittotalnonstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruittotalnonstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruittotalp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruittotalp" ]->ToSingle();
+            }       
+         } 
+      property Single fruittotalpconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruittotalpconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruittotalstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruittotalstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruittotalwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruittotalwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativen
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativen" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativenconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativenconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativenonstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativenonstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativep
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativep" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativepconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativepconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativestructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativestructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativetotaln
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativetotaln" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativetotalnconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativetotalnconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativetotalnonstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativetotalnonstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativetotalp
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativetotalp" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativetotalpconc
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativetotalpconc" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativetotalstructuralwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativetotalstructuralwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativetotalwt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativetotalwt" ]->ToSingle();
+            }       
+         } 
+      property Single fruitvegetativewt
+         {
+         Single get()
+            {
+            return Comp->Variable[ "fruitvegetativewt" ]->ToSingle();
             }       
          } 
       property Single germinationtttarget
@@ -1606,13 +2082,6 @@ public ref class WheatType
             return Comp->Variable[ "grain_n_demand" ]->ToSingle();
             }       
          } 
-      property Single grain_no
-         {
-         Single get()
-            {
-            return Comp->Variable[ "grain_no" ]->ToSingle();
-            }       
-         } 
       property Single grain_oil_conc
          {
          Single get()
@@ -1639,13 +2108,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "grain_protein" ]->ToSingle();
-            }       
-         } 
-      property Single grain_size
-         {
-         Single get()
-            {
-            return Comp->Variable[ "grain_size" ]->ToSingle();
             }       
          } 
       property Single grain_wt
@@ -2299,475 +2761,6 @@ public ref class WheatType
             return Comp->Variable[ "harvest_ripetttarget" ]->ToSingle();
             }       
          } 
-      property Single headdetachingn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headdetachingn" ]->ToSingle();
-            }       
-         } 
-      property Single headdetachingp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headdetachingp" ]->ToSingle();
-            }       
-         } 
-      property Single headdetachingwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headdetachingwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgrainn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrainn" ]->ToSingle();
-            }       
-         } 
-      property Single headgrainnconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrainnconc" ]->ToSingle();
-            }       
-         } 
-      property Single headgrainnonstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrainnonstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgrainp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrainp" ]->ToSingle();
-            }       
-         } 
-      property Single headgrainpconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrainpconc" ]->ToSingle();
-            }       
-         } 
-      property Single headgrainstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrainstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgraintotaln
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgraintotaln" ]->ToSingle();
-            }       
-         } 
-      property Single headgraintotalnconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgraintotalnconc" ]->ToSingle();
-            }       
-         } 
-      property Single headgraintotalnonstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgraintotalnonstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgraintotalp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgraintotalp" ]->ToSingle();
-            }       
-         } 
-      property Single headgraintotalpconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgraintotalpconc" ]->ToSingle();
-            }       
-         } 
-      property Single headgraintotalstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgraintotalstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgraintotalwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgraintotalwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgrainwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrainwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenn" ]->ToSingle();
-            }       
-         } 
-      property Single headgreennconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreennconc" ]->ToSingle();
-            }       
-         } 
-      property Single headgreennonstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreennonstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenp" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenpconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenpconc" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenremovedn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenremovedn" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenremovedp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenremovedp" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenremovedwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenremovedwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgreenwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgreenwt" ]->ToSingle();
-            }       
-         } 
-      property Single headgrowthn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrowthn" ]->ToSingle();
-            }       
-         } 
-      property Single headgrowthp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrowthp" ]->ToSingle();
-            }       
-         } 
-      property Single headgrowthwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headgrowthwt" ]->ToSingle();
-            }       
-         } 
-      property Single headretranslocationn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headretranslocationn" ]->ToSingle();
-            }       
-         } 
-      property Single headretranslocationp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headretranslocationp" ]->ToSingle();
-            }       
-         } 
-      property Single headretranslocationwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headretranslocationwt" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedn" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescednconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescednconc" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescednonstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescednonstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedp" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedpconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedpconc" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedremovedn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedremovedn" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedremovedp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedremovedp" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedremovedwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedremovedwt" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescedwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescedwt" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescingn
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescingn" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescingp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescingp" ]->ToSingle();
-            }       
-         } 
-      property Single headsenescingwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headsenescingwt" ]->ToSingle();
-            }       
-         } 
-      property Single headtotaln
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headtotaln" ]->ToSingle();
-            }       
-         } 
-      property Single headtotalnconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headtotalnconc" ]->ToSingle();
-            }       
-         } 
-      property Single headtotalnonstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headtotalnonstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headtotalp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headtotalp" ]->ToSingle();
-            }       
-         } 
-      property Single headtotalpconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headtotalpconc" ]->ToSingle();
-            }       
-         } 
-      property Single headtotalstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headtotalstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headtotalwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headtotalwt" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativen
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativen" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativenconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativenconc" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativenonstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativenonstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativep
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativep" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativepconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativepconc" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativestructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativestructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativetotaln
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativetotaln" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativetotalnconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativetotalnconc" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativetotalnonstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativetotalnonstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativetotalp
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativetotalp" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativetotalpconc
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativetotalpconc" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativetotalstructuralwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativetotalstructuralwt" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativetotalwt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativetotalwt" ]->ToSingle();
-            }       
-         } 
-      property Single headvegetativewt
-         {
-         Single get()
-            {
-            return Comp->Variable[ "headvegetativewt" ]->ToSingle();
-            }       
-         } 
       property Single height
          {
          Single get()
@@ -2843,27 +2836,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "leafdetachingwt" ]->ToSingle();
-            }       
-         } 
-      property Single leafgreendigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "leafgreendigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single leafgreendigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "leafgreendigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single leafgreendigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "leafgreendigestibilitymin" ]->ToSingle();
             }       
          } 
       property Single leafgreenn
@@ -2976,27 +2948,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "leafretranslocationwt" ]->ToSingle();
-            }       
-         } 
-      property Single leafsenesceddigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "leafsenesceddigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single leafsenesceddigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "leafsenesceddigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single leafsenesceddigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "leafsenesceddigestibilitymin" ]->ToSingle();
             }       
          } 
       property Single leafsenescedn
@@ -3398,27 +3349,6 @@ public ref class WheatType
             return Comp->Variable[ "mealgrainwt" ]->ToSingle();
             }       
          } 
-      property Single mealgreendigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "mealgreendigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single mealgreendigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "mealgreendigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single mealgreendigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "mealgreendigestibilitymin" ]->ToSingle();
-            }       
-         } 
       property Single mealgreenn
          {
          Single get()
@@ -3529,27 +3459,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "mealretranslocationwt" ]->ToSingle();
-            }       
-         } 
-      property Single mealsenesceddigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "mealsenesceddigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single mealsenesceddigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "mealsenesceddigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single mealsenesceddigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "mealsenesceddigestibilitymin" ]->ToSingle();
             }       
          } 
       property Single mealsenescedn
@@ -3804,18 +3713,18 @@ public ref class WheatType
             return Comp->Variable[ "n_conc_crit_cohort1" ]->ToSingle();
             }       
          } 
+      property Single n_conc_crit_fruit
+         {
+         Single get()
+            {
+            return Comp->Variable[ "n_conc_crit_fruit" ]->ToSingle();
+            }       
+         } 
       property Single n_conc_crit_grain
          {
          Single get()
             {
             return Comp->Variable[ "n_conc_crit_grain" ]->ToSingle();
-            }       
-         } 
-      property Single n_conc_crit_head
-         {
-         Single get()
-            {
-            return Comp->Variable[ "n_conc_crit_head" ]->ToSingle();
             }       
          } 
       property Single n_conc_crit_leaf
@@ -3888,18 +3797,18 @@ public ref class WheatType
             return Comp->Variable[ "n_conc_min_cohort1" ]->ToSingle();
             }       
          } 
+      property Single n_conc_min_fruit
+         {
+         Single get()
+            {
+            return Comp->Variable[ "n_conc_min_fruit" ]->ToSingle();
+            }       
+         } 
       property Single n_conc_min_grain
          {
          Single get()
             {
             return Comp->Variable[ "n_conc_min_grain" ]->ToSingle();
-            }       
-         } 
-      property Single n_conc_min_head
-         {
-         Single get()
-            {
-            return Comp->Variable[ "n_conc_min_head" ]->ToSingle();
             }       
          } 
       property Single n_conc_min_leaf
@@ -3965,18 +3874,18 @@ public ref class WheatType
             return Comp->Variable[ "n_demand_cohort1" ]->ToSingle();
             }       
          } 
+      property Single n_demand_fruit
+         {
+         Single get()
+            {
+            return Comp->Variable[ "n_demand_fruit" ]->ToSingle();
+            }       
+         } 
       property Single n_demand_grain
          {
          Single get()
             {
             return Comp->Variable[ "n_demand_grain" ]->ToSingle();
-            }       
-         } 
-      property Single n_demand_head
-         {
-         Single get()
-            {
-            return Comp->Variable[ "n_demand_head" ]->ToSingle();
             }       
          } 
       property Single n_demand_leaf
@@ -4301,27 +4210,6 @@ public ref class WheatType
             return Comp->Variable[ "oilgrainwt" ]->ToSingle();
             }       
          } 
-      property Single oilgreendigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "oilgreendigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single oilgreendigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "oilgreendigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single oilgreendigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "oilgreendigestibilitymin" ]->ToSingle();
-            }       
-         } 
       property Single oilgreenn
          {
          Single get()
@@ -4432,27 +4320,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "oilretranslocationwt" ]->ToSingle();
-            }       
-         } 
-      property Single oilsenesceddigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "oilsenesceddigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single oilsenesceddigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "oilsenesceddigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single oilsenesceddigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "oilsenesceddigestibilitymin" ]->ToSingle();
             }       
          } 
       property Single oilsenescedn
@@ -4802,27 +4669,6 @@ public ref class WheatType
             return Comp->Variable[ "poddetachingwt" ]->ToSingle();
             }       
          } 
-      property Single podgreendigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "podgreendigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single podgreendigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "podgreendigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single podgreendigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "podgreendigestibilitymin" ]->ToSingle();
-            }       
-         } 
       property Single podgreenn
          {
          Single get()
@@ -4933,27 +4779,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "podretranslocationwt" ]->ToSingle();
-            }       
-         } 
-      property Single podsenesceddigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "podsenesceddigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single podsenesceddigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "podsenesceddigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single podsenesceddigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "podsenesceddigestibilitymin" ]->ToSingle();
             }       
          } 
       property Single podsenescedn
@@ -5803,27 +5628,6 @@ public ref class WheatType
             return Comp->Variable[ "stemdetachingwt" ]->ToSingle();
             }       
          } 
-      property Single stemgreendigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "stemgreendigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single stemgreendigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "stemgreendigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single stemgreendigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "stemgreendigestibilitymin" ]->ToSingle();
-            }       
-         } 
       property Single stemgreenn
          {
          Single get()
@@ -5934,27 +5738,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "stemretranslocationwt" ]->ToSingle();
-            }       
-         } 
-      property Single stemsenesceddigestibilityavg
-         {
-         Single get()
-            {
-            return Comp->Variable[ "stemsenesceddigestibilityavg" ]->ToSingle();
-            }       
-         } 
-      property Single stemsenesceddigestibilitymax
-         {
-         Single get()
-            {
-            return Comp->Variable[ "stemsenesceddigestibilitymax" ]->ToSingle();
-            }       
-         } 
-      property Single stemsenesceddigestibilitymin
-         {
-         Single get()
-            {
-            return Comp->Variable[ "stemsenesceddigestibilitymin" ]->ToSingle();
             }       
          } 
       property Single stemsenescedn
@@ -7061,13 +6844,6 @@ public ref class WheatType
          Single get()
             {
             return Comp->Variable[ "yield" ]->ToSingle();
-            }       
-         } 
-      property Single zadok_stage
-         {
-         Single get()
-            {
-            return Comp->Variable[ "zadok_stage" ]->ToSingle();
             }       
          } 
    };
