@@ -689,7 +689,7 @@ namespace ApsimFile
                if (StringManip.StringsAreEqual(Components[i], ModuleName2))
                   return 1;
                }
-            return 0; // neither are in list!!
+            return -1; // neither are in list so keep original order intact i.e. Node1 comes before Node2!!
             }
          }
 
