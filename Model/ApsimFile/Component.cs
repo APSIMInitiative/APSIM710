@@ -689,7 +689,21 @@ namespace ApsimFile
                if (StringManip.StringsAreEqual(Components[i], ModuleName2))
                   return 1;
                }
-            return -1; // neither are in list so keep original order intact i.e. Node1 comes before Node2!!
+            // Neither are in list so keep original order intact i.e. Node1 comes before Node2!!
+            // Find the relative positions of data1 and data2 in the parent list.
+            int Data1Pos = 0;
+            int Data2Pos = 0;
+            for (int i = 0; i != Data1.ParentNode.ChildNodes.Count; i++)
+               {
+               if (Data1.ParentNode.ChildNodes[i] == Data1)
+                  Data1Pos = i;
+               if (Data1.ParentNode.ChildNodes[i] == Data2)
+                  Data2Pos = i;
+               }
+            if (Data1Pos < Data2Pos)
+               return -1;
+            else
+               return 1;
             }
          }
 
