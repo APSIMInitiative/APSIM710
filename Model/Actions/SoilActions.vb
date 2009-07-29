@@ -322,7 +322,7 @@ Public Class SoilActions
         Dim Doc As New XmlDocument()
         Doc.LoadXml(SoilComponent.Contents)
         Dim Soil As New ApsimFile.Soil(Doc.DocumentElement)
-        Return Soil.ExportCropToSim(ParentNode, Component.Type)
+        Return Soil.ExportCropToSim(ParentNode, Component.Name)
     End Function
     Public Shared Function WriteInitWaterSim(ByVal Component As ApsimFile.Component, ByVal ParentNode As XmlNode) As XmlNode
         ' Go find our related soil - should be parent 

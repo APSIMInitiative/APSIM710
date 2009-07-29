@@ -318,7 +318,9 @@ Public Class GenericUI
                         Grid.Cells(CultRow, 4).Text = ""
                         'go and get all cultivars for the new crop.
                         Dim Combo As FarPoint.Win.Spread.CellType.ComboBoxCellType = Grid.Cells(CultRow, 4).CellType
-                        Combo.Items = Configuration.Instance.GetCultivarsForCrop(Grid.Cells(e.Row, 4).Text)
+                        Dim Us As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
+                        Dim CropComponent As Component = Controller.ApsimData.RootComponent.FindComponentInPaddock(Us, Grid.Cells(e.Row, 4).Text)
+                        Combo.Items = Configuration.Instance.GetCultivarsForCrop(CropComponent.Type)
                         Exit For                    'stop looking for cultivar properties once you found the next one after the crop. 
                     End If
                 Next

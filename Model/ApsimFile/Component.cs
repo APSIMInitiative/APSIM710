@@ -733,10 +733,6 @@ namespace ApsimFile
                Delete(MyChildNodes[i]);
             }
          }
-
-
-
-
       public string FullXML()
          {
          XmlDocument Doc = new XmlDocument();
@@ -744,10 +740,6 @@ namespace ApsimFile
          Write(Doc.DocumentElement);
          return Doc.OuterXml;
          }
-
-
-
-
       public string FullXMLNoShortCuts()
          {
          // ------------------------------------------------------
@@ -773,6 +765,21 @@ namespace ApsimFile
             XmlNode NewNode = Node.AppendChild(Node.OwnerDocument.CreateElement(Child.Type));
             Child.FullXMLNoShortCutsInternal(NewNode);
             }
+         }
+      public Component FindComponentInPaddock(Component To, string Name)
+         {
+         // Find a component in the paddockthe nearest component to "To" that has the specified "Name".
+         // It won't look down the simulation hierarchy and won't look
+         // outside the paddock.
+         Component Paddock = FindContainingPaddock();
+         List<Component> ComponentsInPaddock = new List<Component>();
+         ChildNodesRecursively(ComponentsInPaddock);
+         foreach (Component ChildComponent in ComponentsInPaddock)
+            {
+            if (ChildComponent.Name.ToLower() == Name.ToLower())
+               return ChildComponent;
+            }
+         return null;
          }
       }
    }
