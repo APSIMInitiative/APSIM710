@@ -12,5 +12,9 @@
 // ------------------------------------------------------------------
 std::string getApsimDirectory(void);
 
-
+// ------------------------------------------------------------------
+// This routine returns the directory where the
+// current executable is located.
+// ------------------------------------------------------------------
+std::string EXPORT getExecutableDirectory();
 #endif

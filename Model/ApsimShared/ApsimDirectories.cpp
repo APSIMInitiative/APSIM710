@@ -37,6 +37,15 @@ string EXPORT getExecutableFileName()
    #endif
    }
 
+string EXPORT getExecutableDirectory()
+   {
+   // ------------------------------------------------------------------
+   // This routine returns the directory where the
+   // current executable is located.
+   // ------------------------------------------------------------------
+   return fileDirName(getExecutableFileName());
+   }
+
 string EXPORT getApsimDirectory(void)
    {
 // ------------------------------------------------------------------

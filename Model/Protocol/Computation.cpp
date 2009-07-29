@@ -180,7 +180,7 @@ bool Computation::loadComponent(const std::string& filename,
              }
           else
              {
-             componentInterface = getApsimDirectory() + "\\model\\" + componentInterface;
+             componentInterface = getExecutableDirectory() + "\\" + componentInterface;
              handle = loadDLL(componentInterface.c_str());
              }
           if (handle == NULL)
