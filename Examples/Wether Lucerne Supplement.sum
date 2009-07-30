@@ -26,11 +26,11 @@ Paddock:
    Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "lucerne" = %apsim%\Model\Plant.dll
-   Component        "stockScienceConverter" = %apsim%\Model\stockscienceconverter.dll
-   Component "lucerneStockHerbageConverter" = %apsim%\Model\stockscienceconverter.dll
-   Component                        "stock" = c:\program files\ausfarm\stock.dll
    Component                   "supplement" = c:\program files\ausfarm\supplement.dll
    Component   "supplementScienceConverter" = %apsim%\Model\supplementscienceconverter.dll
+   Component                        "stock" = c:\program files\ausfarm\stock.dll
+   Component        "stockScienceConverter" = %apsim%\Model\stockscienceconverter.dll
+   Component "lucerneStockHerbageConverter" = %apsim%\Model\stockscienceconverter.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -342,6 +342,12 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 
+------- supplementScienceConverter Initialisation -----------------------------
+      - reading parameters
+     Debug = off
+     supplement_module = supplement
+     
+
 ------- stockScienceConverter Initialisation ----------------------------------
      Conversion model:- nonherbage
      
@@ -362,12 +368,6 @@ Paddock:
      Herbage module name = lucerne(id=16)
      Debug = off
       - reading  herbage parameters for module 'lucerne'
-     
-
-------- supplementScienceConverter Initialisation -----------------------------
-      - reading parameters
-     Debug = off
-     supplement_module = supplement
      
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- supplementscienceconverter buysupplement  supplement = 'lupins' (-), amount = 1000 (kg)
