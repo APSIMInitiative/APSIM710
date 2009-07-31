@@ -39,6 +39,7 @@ class SimpleLeaf : BaseOrgan
          }
       }
    [Output][Units("mm")] public override double WaterDemand { get { return PEP; } }
+   [Output] [Units("mm")] public double Transpiration { get { return EP; } }
    public override double WaterAllocation
       {
       get { return _WaterAllocation; }
@@ -80,6 +81,18 @@ class SimpleLeaf : BaseOrgan
          double VPD = SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;
 
          return FVPD.Value(VPD);
+         }
+      }
+   [Output] public double Fw
+      {
+      get
+         {
+         double F = 0;
+         if (PEP > 0)
+            F = EP / PEP;
+         else
+            F = 1;
+         return F;
          }
       }
    [Output] public double LAI
@@ -129,6 +142,7 @@ class SimpleLeaf : BaseOrgan
       }
    [EventHandler]public void OnPrepare()
       {
+      EP = 0;
       PublishNewPotentialGrowth();
       }
    [EventHandler]public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)

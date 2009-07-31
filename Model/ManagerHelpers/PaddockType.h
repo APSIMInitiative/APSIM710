@@ -84,13 +84,29 @@ public ref class PaddockType : public ComponentType
          {
          SoilType^ get()
             {
-            ComponentType^ SoilToReturn = Component["soilwat"];
+		    ComponentType^ SoilToReturn;
+			try
+			   {
+               SoilToReturn = Component["soilwat"];
+			   }
+			catch (Exception^ err)
+			   {
+			   SoilToReturn = nullptr;
+			   }
             if (SoilToReturn == nullptr)
-               SoilToReturn = Component["swim2"];
+			   {
+               try
+			      {
+                  SoilToReturn = Component["swim2"];
+			      }
+               catch (Exception^ err)
+			      {
+			      SoilToReturn = nullptr;
+			      }
+			   }
             if (SoilToReturn != nullptr)
                return gcnew SoilType(SoilToReturn);
-            else
-               return nullptr;            
+            return nullptr;            
             }
          }
       property List<CropType^>^ Crops

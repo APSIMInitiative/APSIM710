@@ -2,18 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
+using ManagerHelpers;
 
 public class SimpleRoot : Organ
    {
-   private double[] SWSupply = null;
    private double[] Uptake = null;
 
+   
    [Event] public event ApsimTypeDelegate WaterChanged;
-
-   [Input] public double[] dlayer = null;
-   [Input] public double[] sw_dep = null;
-   [Param] public double[] ll = null;
-   [Param] public double[] kl = null;
 
    public override double DMDemand { get { return 0; } }
    public override double DMSupply { get { return 0; } }
@@ -21,25 +17,9 @@ public class SimpleRoot : Organ
    public override Biomass Dead { get { return new Biomass(); } }
    public override double DMRetranslocationSupply { get { return 0; } }
    public override double DMRetranslocation { set { } }
-
-   public override double DMAllocation {
-      set
-         {
-         }
-      }
+   public override double DMAllocation {set{}}
    public override double WaterDemand { get { return 0; } }
-   [Output]public override double WaterSupply
-      {
-      get
-         {
-         if (SWSupply == null || SWSupply.Length != dlayer.Length)
-            SWSupply = new double[dlayer.Length];
-         for (int layer = 0; layer < dlayer.Length; layer++)
-            SWSupply[layer] = Math.Max(0.0, kl[layer] * (sw_dep[layer] - ll[layer] * dlayer[layer]));
-
-         return MathUtility.Sum(SWSupply);
-         }
-      }
+   [Output] [Units("mm")] public double WaterUptake {get { return -MathUtility.Sum(Uptake); }}
    public override double WaterAllocation
       {
       get { return 0; }
@@ -49,24 +29,65 @@ public class SimpleRoot : Organ
          }
       }
 
-   [Output][Units("mm")] public double WaterUptake
+
+   [Output]public override double WaterSupply
       {
-      get { return -MathUtility.Sum(Uptake); }
+      get
+         {
+         PaddockType MyPaddock = new PaddockType(Root);
+
+         if (MyPaddock.Soil != null)
+            {
+            double[] SWSupply = MyPaddock.Component["root"].Variable["SWSupply"].ToDoubleArray();
+            return MathUtility.Sum(SWSupply);
+            }
+         else
+            {
+            double Total = 0;
+            foreach (PaddockType SP in MyPaddock.SubPaddocks)
+               {
+               double[] SWSupply = SP.Component["root"].Variable["SWSupply"].ToDoubleArray();
+               Total += MathUtility.Sum(SWSupply);
+               }
+            return Total;
+            }
+         }
       }
 
-   public override void DoWaterUptake(double FractionUsed)
+
+
+
+   public override void DoWaterUptake(double Amount)
       {
-      // Send the delta water back to SoilWat that we're going to uptake.
-      WaterChangedType WaterUptake = new WaterChangedType();
-      WaterUptake.DeltaWater = new double[SWSupply.Length];
-      double Supply = MathUtility.Sum(SWSupply);
+      PaddockType MyPaddock = new PaddockType(Root);
+      if (MyPaddock.Soil != null)
+         {
+         MyPaddock.Component["root"].Variable["SWUptake"].Set(Amount);
+         }
+      else
+         {
+         double[] Supply = new double[MyPaddock.SubPaddocks.Count];
+         int i=0;
+         double Total = 0;
+         foreach (PaddockType SP in MyPaddock.SubPaddocks)
+            {
+            double[] SWSupply = SP.Component["root"].Variable["SWSupply"].ToDoubleArray();
+            Supply[i] = (MathUtility.Sum(SWSupply));
+            Total += Supply[i];
+            i++;
+            }
+         double fraction = Amount / Total;
+         if (fraction > 1)
+            throw new Exception("Requested SW uptake > Available supplies.");
+         i = 0;
+         foreach (PaddockType SP in MyPaddock.SubPaddocks)
+            {
+            SP.Component["root"].Variable["SWUptake"].Set(Supply[i] * fraction);
+            i++;
+            }
 
-      for (int layer = 0; layer <= SWSupply.Length - 1; layer++)
-         WaterUptake.DeltaWater[layer] = -SWSupply[layer] * FractionUsed;
+         }
 
-      Uptake = WaterUptake.DeltaWater;
-      if (WaterChanged != null)
-         WaterChanged.Invoke(WaterUptake);
       }
 
 

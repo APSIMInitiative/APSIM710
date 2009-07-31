@@ -110,7 +110,7 @@ public class Plant : Instance
          FractionUsed = Math.Min(1.0, Demand / Supply);
 
       foreach (Organ o in Organs)
-         o.DoWaterUptake(FractionUsed);
+         o.DoWaterUptake(FractionUsed*Supply);
       }
    private void DoN() { }
    [Output][Units("mm")]

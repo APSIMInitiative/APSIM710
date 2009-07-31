@@ -167,13 +167,13 @@ public class Root : BaseOrgan, BelowGround
       {
       get { return -MathUtility.Sum(Uptake); }
       }
-   public override void DoWaterUptake(double FractionUsed)
+   public override void DoWaterUptake(double Amount)
       {
       // Send the delta water back to SoilWat that we're going to uptake.
       WaterChangedType WaterUptake = new WaterChangedType();
       WaterUptake.DeltaWater = new double[SWSupply.Length];
       double Supply = MathUtility.Sum(SWSupply);
-
+      double FractionUsed = Amount / Supply;
       for (int layer = 0; layer <= SWSupply.Length - 1; layer++)
          WaterUptake.DeltaWater[layer] = -SWSupply[layer] * FractionUsed;
 
