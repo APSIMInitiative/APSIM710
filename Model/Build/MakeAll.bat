@@ -45,6 +45,7 @@ call MakeProject FortranInfrastructure
 call MakeProject FortranComponentInterface
 call MakeProject FortranComponentInterface2
 call MakeProject CropTemplate
+call MakeProject ManagerHelpers
 
 rem -------------------------------------------------------------
 rem Now we can compile all the rest of the APSIM projects.
@@ -115,7 +116,7 @@ call MakeProject SetXMLValue
 call MakeProject ProbeDll
 call MakeProject Plant2Documentation
 call MakeProject RunMacro
-call MakeProject ManagerHelpers
+
 
 
 popd
