@@ -83,6 +83,7 @@ call MakeProject Plant2
 call MakeProject Pond
 call MakeProject ProtocolManager
 call MakeProject Report
+call MakeProject Root
 call MakeProject SiloInput
 call MakeProject SOI
 call MakeProject SoilN
