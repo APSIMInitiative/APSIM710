@@ -85,12 +85,9 @@ public ref class ComponentType : public TypedItem
          
          }
          
-      property VariableType^ Variable
+      VariableType^ Variable(String^ VariableName)
          {
-         VariableType^ get()
-            {
-            return gcnew VariableType(ParentComponent, Name);
-            }
+         return gcnew VariableType(ParentComponent, Name, VariableName);
          }
          
       void Publish(String^ EventName, ApsimType^ Data)

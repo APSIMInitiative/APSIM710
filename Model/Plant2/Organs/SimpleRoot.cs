@@ -6,7 +6,7 @@ using ManagerHelpers;
 
 public class SimpleRoot : Organ
    {
-   private double[] Uptake = null;
+   private double Uptake = 0;
 
    
    [Event] public event ApsimTypeDelegate WaterChanged;
@@ -19,7 +19,13 @@ public class SimpleRoot : Organ
    public override double DMRetranslocation { set { } }
    public override double DMAllocation {set{}}
    public override double WaterDemand { get { return 0; } }
-   [Output] [Units("mm")] public double WaterUptake {get { return -MathUtility.Sum(Uptake); }}
+   [Output]  [Units("mm")] public double WaterUptake
+      {
+      get
+         {
+            return Uptake;
+         }
+      }
    public override double WaterAllocation
       {
       get { return 0; }
@@ -38,7 +44,7 @@ public class SimpleRoot : Organ
 
          if (MyPaddock.Soil != null)
             {
-            double[] SWSupply = MyPaddock.Component["root"].Variable["SWSupply"].ToDoubleArray();
+            double[] SWSupply = MyPaddock.ComponentByName(Root.Name+"root").Variable("SWSupply").ToDoubleArray();
             return MathUtility.Sum(SWSupply);
             }
          else
@@ -46,7 +52,7 @@ public class SimpleRoot : Organ
             double Total = 0;
             foreach (PaddockType SP in MyPaddock.SubPaddocks)
                {
-               double[] SWSupply = SP.Component["root"].Variable["SWSupply"].ToDoubleArray();
+               double[] SWSupply = SP.ComponentByName(Root.Name+"root").Variable("SWSupply").ToDoubleArray();
                Total += MathUtility.Sum(SWSupply);
                }
             return Total;
@@ -60,9 +66,11 @@ public class SimpleRoot : Organ
    public override void DoWaterUptake(double Amount)
       {
       PaddockType MyPaddock = new PaddockType(Root);
+      Uptake = Amount;
       if (MyPaddock.Soil != null)
          {
-         MyPaddock.Component["root"].Variable["SWUptake"].Set(Amount);
+         MyPaddock.ComponentByName(Root.Name+"root").Variable("SWUptake").Set(Amount);
+
          }
       else
          {
@@ -71,7 +79,7 @@ public class SimpleRoot : Organ
          double Total = 0;
          foreach (PaddockType SP in MyPaddock.SubPaddocks)
             {
-            double[] SWSupply = SP.Component["root"].Variable["SWSupply"].ToDoubleArray();
+            double[] SWSupply = SP.ComponentByName(Root.Name + "root").Variable("SWSupply").ToDoubleArray();
             Supply[i] = (MathUtility.Sum(SWSupply));
             Total += Supply[i];
             i++;
@@ -82,7 +90,7 @@ public class SimpleRoot : Organ
          i = 0;
          foreach (PaddockType SP in MyPaddock.SubPaddocks)
             {
-            SP.Component["root"].Variable["SWUptake"].Set(Supply[i] * fraction);
+            SP.ComponentByName(Root.Name + "root").Variable("SWUptake").Set(Supply[i] * fraction);
             i++;
             }
 

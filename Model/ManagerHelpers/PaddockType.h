@@ -60,50 +60,53 @@ public ref class PaddockType : public ComponentType
             }
          }
          
-      property TypedList<ComponentType^>^ Component
+      ComponentType^ Component(String^ TypeToFind)
         {
          // --------------------------------------------------------------------
          // Return a list of all sibling components to caller.
          // --------------------------------------------------------------------
-         TypedList<ComponentType^>^ get()
-            {
-            getChildren(Name, Data);
-            StringCollection^ ChildNames = CSGeneral::StringManip::SplitStringHonouringQuotes(Data->ToString(), ",");
+         getChildren(Name, Data);
+         StringCollection^ ChildNames = CSGeneral::StringManip::SplitStringHonouringQuotes(Data->ToString(), ",");
 
-            TypedList<ComponentType^>^ Children = gcnew TypedList<ComponentType^>();
-            for each (String^ ChildName in ChildNames)
+         for each (String^ ChildName in ChildNames)
+            {
+            ComponentType^ C = gcnew ComponentType(ChildName->Replace("\"",""), ParentComponent);
+            if (C->IsOfType(TypeToFind))
+               return C;
+            }
+         return nullptr;
+         }
+
+      ComponentType^ ComponentByName(String^ NameToFind) 
+         {
+         // --------------------------------------------------------------------
+         // Return a list of all sibling components to caller.
+         // --------------------------------------------------------------------
+         getChildren(Name, Data);
+         StringCollection^ ChildNames = CSGeneral::StringManip::SplitStringHonouringQuotes(Data->ToString(), ",");
+
+         for each (String^ ChildName in ChildNames)
+            {
+            int PosDelimiter = ChildName->LastIndexOf('.');
+            if (PosDelimiter != -1)
                {
-               ComponentType^ C = gcnew ComponentType(ChildName->Replace("\"",""), ParentComponent);
-               Children->Add(C);
+               String^ Child = ChildName->Substring(PosDelimiter+1)->Replace("\"","");
+               if (Child->ToLower() == NameToFind->ToLower())
+                  return gcnew ComponentType(ChildName->Replace("\"",""), ParentComponent);
                }
-            return Children;
-            }        
+            }
+         return nullptr;
          }
             
       property SoilType^ Soil
          {
          SoilType^ get()
             {
-		    ComponentType^ SoilToReturn;
-			try
-			   {
-               SoilToReturn = Component["soilwat"];
-			   }
-			catch (Exception^ err)
-			   {
-			   SoilToReturn = nullptr;
-			   }
+            ComponentType^ SoilToReturn;
+            SoilToReturn = Component("soilwat");
             if (SoilToReturn == nullptr)
-			   {
-               try
-			      {
-                  SoilToReturn = Component["swim2"];
-			      }
-               catch (Exception^ err)
-			      {
-			      SoilToReturn = nullptr;
-			      }
-			   }
+               SoilToReturn = Component("swim2");
+
             if (SoilToReturn != nullptr)
                return gcnew SoilType(SoilToReturn);
             return nullptr;            
@@ -134,7 +137,7 @@ public ref class PaddockType : public ComponentType
          {
          FertiliserType^ get()
             {
-            ComponentType^ C = Component["fertiliser"];
+            ComponentType^ C = Component("fertiliser");
             if (C != nullptr)
                return gcnew FertiliserType(C);
             else
@@ -145,7 +148,7 @@ public ref class PaddockType : public ComponentType
          {
          IrrigationType^ get()
             {
-            ComponentType^ C = Component["irrigation"];
+            ComponentType^ C = Component("irrigation");
             if (C != nullptr)
                return gcnew IrrigationType(C);
             else

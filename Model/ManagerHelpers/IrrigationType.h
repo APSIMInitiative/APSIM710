@@ -14,7 +14,7 @@ public ref class IrrigationType
          {
          Single get()
             {
-            return Comp->Variable[ "irrigation" ]->ToSingle();
+            return Comp->Variable( "irrigation" )->ToSingle();
             }       
          } 
          
@@ -22,7 +22,7 @@ public ref class IrrigationType
          {
          Single get()
             {
-            return Comp->Variable[ "irrig_tot" ]->ToSingle();
+            return Comp->Variable( "irrig_tot" )->ToSingle();
             }       
          }    
          
@@ -30,7 +30,7 @@ public ref class IrrigationType
          {
          Single get()
             {
-            return Comp->Variable[ "allocation" ]->ToSingle();
+            return Comp->Variable( "allocation" )->ToSingle();
             }       
          }                
          
@@ -38,11 +38,11 @@ public ref class IrrigationType
          {
          Single get()
             {
-            return Comp->Variable[ "irrigation_efficiency" ]->ToSingle();
+            return Comp->Variable( "irrigation_efficiency" )->ToSingle();
             }       
          void set(Single value)
             {
-            Comp->Variable[ "irrigation_efficiency" ]->Set(value);
+            Comp->Variable( "irrigation_efficiency" )->Set(value);
             }       
          }
                   
@@ -50,7 +50,7 @@ public ref class IrrigationType
          {
          String^ get()
             {
-            return Comp->Variable[ "name" ]->ToString();
+            return Comp->Variable( "name" )->ToString();
             }       
          }
       void Apply(double Amount) 

@@ -18,18 +18,11 @@ public ref class VariableType : NamedItem
       ModelFramework::ApsimComponent^ Component;
       String^ ComponentName;
    public:
-      VariableType(ModelFramework::ApsimComponent^ component, String^ Componentname)
+      VariableType(ModelFramework::ApsimComponent^ component, String^ Componentname, String^ VariableName)
          {
          Component = component;
          ComponentName = Componentname;
-         }
-      property VariableType^ default[String^]
-         {
-         VariableType^ get(String^ Nam)
-            {
-            Name = Nam;
-            return this;
-            }
+         Name = VariableName;
          }
       // getters.
       int ToInt32();

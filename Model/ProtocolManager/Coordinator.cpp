@@ -265,7 +265,10 @@ void Coordinator::addComponent(const string& compName,
       fqn += compName;
 
       // assume it's foreign until we know more about it..
-      registry.addComponent(componentID, childComponentID, fqn, Path(compExecutable.c_str()).Get_name_without_ext());
+      string componentType = compExecutable;
+      replaceAll(componentType, "/", "\\");
+      componentType = Path(componentType.c_str()).Get_name_without_ext();
+      registry.addComponent(componentID, childComponentID, fqn, componentType);
       registry.setForeignTaint(childComponentID);
 
       // send component an init1 message.

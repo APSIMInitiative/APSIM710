@@ -14,14 +14,14 @@ public ref class FertiliserType
          {
          Single get()
             {
-            return Comp->Variable[ "fertiliser" ]->ToSingle();
+            return Comp->Variable( "fertiliser" )->ToSingle();
             }       
          } 
       property String^ name
          {
          String^ get()
             {
-            return Comp->Variable[ "name" ]->ToString();
+            return Comp->Variable( "name" )->ToString();
             }       
          }
       void Apply(double Amount, double Depth, String^ Type) 
