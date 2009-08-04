@@ -1877,6 +1877,19 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 
       if (Option .eq. 1) then
 
+         call cproc_transp_eff_co2 (
+     :              c%svp_fract
+     :            , c%transp_eff_cf
+     :            , g%current_stage
+     :            , g%maxt
+     :            , g%mint
+     :            , g%co2level
+     :            , c%co2_level_te
+     :            , c%te_co2_modifier
+     :            , c%num_co2_level_te
+     :            , g%transp_eff
+     :             )
+
          call cproc_bio_water1(
      :           max_layer
      :         , g%dlayer
@@ -6190,7 +6203,6 @@ cpsc need to develop leaf senescence functions for crop
 
          !Request and receive variables from owner-modules
          call Get_Other_Variables ()
-
 
       elseif (action.eq.ACTION_set_variable) then
 
