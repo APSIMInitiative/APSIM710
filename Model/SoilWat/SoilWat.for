@@ -475,11 +475,11 @@ c dsg 070302 added runon
             ! flux -  flow > dul
       call soilwat2_move_solute_down ()
 
-                          ! potential: sevap + transpiration:
-      call soilwat2_pot_evapotranspiration_effective (g%eo)
-
                           ! actual soil evaporation:
       call soilwat2_evaporation (g%es_layers, g%eos)
+
+                          ! potential: sevap + transpiration:
+      call soilwat2_pot_evapotranspiration_effective (g%eos)
 
             ! ** take away evaporation
       do 1500 layer = 1, num_layers
@@ -854,13 +854,13 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
       end subroutine
 
 *     ===========================================================
-      subroutine soilwat2_pot_evapotranspiration_effective (eo)
+      subroutine soilwat2_pot_evapotranspiration_effective (eos)
 *     ===========================================================
       Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
-      real       eo                    ! (input/output) potential evapotranspiration
+      real       eos                    ! (input/output) potential evapotranspiration
 
 *+  Purpose
 *       calculate potential evapotranspiration
@@ -881,27 +881,30 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
       character  my_name*(*)           ! name of subroutine
       parameter (my_name = 'soilwat2_pot_evapotranspiration_effective')
 
+
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
-! dsg 270502  check to see if there is any ponding.  If there is, evaporate straight out of it and transfer
+! dsg 270502  check to see if there is any ponding.  If there is, evaporate any potential (g%eos) straight out of it and transfer
 !             any remaining potential to the soil layer 1, as per usual.  Introduce new term g%pond_evap
 !             which is the daily evaporation from the pond.
 
 
       if (g%pond .gt. 0.0) then
-          if(g%pond.ge.eo) then
-             g%pond = g%pond - eo
-             g%pond_evap = eo
-             eo =0.0
+          if(g%pond.ge.eos) then
+             g%pond = g%pond - eos
+             g%pond_evap = eos
+             eos =0.0
           else
-             eo = eo - g%pond
+             eos = eos - g%pond
              g%pond_evap = g%pond
              g%pond = 0.0
           endif
 
       endif
+
+
 
       call pop_routine (my_name)
       end subroutine
@@ -1180,6 +1183,11 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
          !     c%A_to_evap_fact = 0.00022 / 0.0005 = 0.44
 
          eos_residue_fract = (1.0 - g%residue_cover)** c%A_to_evap_fact
+      endif
+
+        ! if there is a pond, residues will not be impacting the potential evaporation
+      if (g%pond.gt.0.0) then
+           eos_residue_fract = 1.0
       endif
 
          ! Reduce potential soil evap under canopy to that under residue (mulch)
@@ -4778,7 +4786,7 @@ c  dsg   070302  added runon
       call push_routine (my_name)
 
       if (variable_name .eq. 'es') then
-         es = sum_real_array(g%es_layers, max_layer) + g%pond_evap
+         es = sum_real_array(g%es_layers, max_layer) ! + g%pond_evap
          call respond2get_real_var (variable_name, 'mm', es)
 
 ! dsg 310502  Evaporation from the surface of any ponding.
