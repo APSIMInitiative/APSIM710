@@ -1,0 +1,166 @@
+[wnl.report.parameters]
+outputfile =pond.out
+
+[sample.report.parameters]
+variable = clock.year
+variable = clock.day
+
+variable = oryza.plant_status    ! out, alive, or dead
+variable = oryza.crop_type       ! usually rice
+variable = oryza.cropsta         ! Crop stage   (0-4)
+variable = oryza.dae             ! Days after emergence  (days)
+variable = oryza.dvs             ! Development stage of crop   (0-2)
+variable = oryza.wagt            ! Total aboveground dry matter  !kg DM ha-1 
+variable = oryza.wrr
+variable = pond.pond_active
+variable = pond.ftmax
+variable = pond.ftmin
+variable = pond.ftmean
+variable = pond.pond_depth
+variable = pond.algact
+variable = pond.algal_turnover
+variable = pond.pond_evap
+variable = pond.pond_no3
+variable = pond.pond_nh4
+variable = pond.pond_nh3
+variable = pond.pond_urea
+variable = pond.totaml
+variable = soiln.urea(1)
+variable = soiln.nh4(1)
+
+
+[sample.clock.parameters]
+! Start and end date of run (day number of year and year)
+start_date= 1/1/1985
+end_date= 31/12/1985
+
+[sample.manager.init]
+total_n_application = 60
+first_fert = total_n_application *2 / 3
+second_fert = total_n_application/3
+
+[sample.manager.start_of_day]
+
+if day = 1 then 
+  soilwat set max_pond = 50
+endif
+
+if day = 14 and year = 1985 then
+    oryza sow cultivar = IR72, establishment = transplant, sbdur = 21, nplh = 1,  nh = 25   , nplsb = 1000      !direct-seed, nplds = 180 (p/m2)  
+endif
+
+! Transplant day = 4th Feb = doy 35 1985
+
+if rice.plant_status = 'dead' then
+    rice end_crop
+    tot_irrig = 0
+    top_dress = 0
+endif
+
+meant = (maxt + mint)/2
+
+!First fertiliser application 18 DAT = 18+35 = 53
+if day = 53 and year = 1985 then
+ Fertiliser apply amount = first_fert, depth = 0, type = urea_n
+endif
+
+! Second fertiliser application 14/3/85 or 38 DAT = 38+35 =73
+if day = 73 and year = 1985 then
+Fertiliser apply amount = second_fert, depth = 0, type = urea_n
+endif
+
+[sample.manager.end_of_day]
+ponded_depth = pond
+
+!if  rice.plant_status = 'alive' then
+if day > 10 then
+    irrig_amount = 50-ponded_depth
+    Irrigation apply amount = irrig_amount
+    tot_irrig = tot_irrig + irrig_amount
+endif
+
+report do_output
+
+[sample.irrigation.parameters]  
+manual_irrigation =  off
+automatic_irrigation =  off   
+crit_fr_asw =  0.7 (0-1)   ! Critical fraction of available soil water
+                       ! to trigger irrigation
+asw_depth =   500 (mm)   ! Depth to use for available soil water
+                       ! calculations
+
+
+[sample.oryza.parameters]
+! The darlington point met file has pan evap - use it instead of 
+! a calculated value (eg soilwat.eo)
+eo_source = eo
+
+
+[Sample.soilwat.parameters]
+
+!Title = Jimbour Waco (Black Vertosol) #16
+insoil = 2.0   ! indicator for initial soil water
+               ! 0 to 1 is fraction of avail soil water
+               !                                         >1 = input by user)
+
+   cona            = 3.5    ()     ! stage 2 evap coef.
+   diffus_const    = 40    ()     ! coeffs for dbar
+   diffus_slope    = 16    ()     !     "
+   u               = 6    (mm)   ! stage 1 soil evaporation coefficient (mm)
+   salb            = 0.13   ()     ! bare soil albedo
+
+   cn2_bare        = 73       ()     ! runoff curve number for BARE soil at AMC2
+   cn_red          = 20       ()     ! reduction in CN2_bare for "cn_cov" increase in cover
+   cn_cov          = 0.8      ()     ! frac. cover for "cn_red" reduction in cover
+                                     ! & max. cover for reduction
+
+   dlayer  =  150.000 150.000 300.000 300.000 300.000 300.000 300.000 300.000 300.000 300.000 300.000     (mm)    ! layer depth
+   air_dry =  0.145   0.260   0.290   0.290   0.300   0.310   0.320   0.330   0.340   0.350   0.360     (mm/mm) ! air dry
+   ll15    =  0.290   0.290   0.290   0.290   0.300   0.310   0.320   0.330   0.340   0.350   0.360     (mm/mm) ! 15bar lower limit
+   dul     =  0.540   0.530   0.540   0.540   0.520   0.500   0.500   0.480   0.470   0.460   0.440     (mm/mm) ! upper limit
+   sat     =  0.590   0.580   0.590   0.580   0.570   0.550   0.550   0.530   0.520   0.510   0.490     (mm/mm) ! saturated soil water
+   swcon   =  0.3     0.3     0.3     0.3     0.3     0.3     0.3     0.3     0.3     0.3     0.3     ()      ! soil conductivity
+   mwcon   =  1        1       0       1        1       1      1       1       1       1       1      ()
+   bd      =  1.02    1.03    1.02    1.02    1.06    1.11    1.12    1.15    1.18     1.2    1.25     (g/cc)  ! bulk density gm dry soil/cc moist soil
+   sw     =  0.540   0.530   0.540   0.540   0.520   0.500   0.500   0.480   0.470   0.460   0.440     (mm/mm) ! upper limit
+   
+[sample.soiln.parameters]
+
+   root_cn           = 40   ()         !
+   root_wt           = 200   (kg/ha)    !
+   soil_cn           = 12.5   ()         ! soil humic pool C:N ratio
+
+   enr_a_coeff       = 7.4   ()
+   enr_b_coeff       = 0.2  ()
+   profile_reduction =    off              ! (on|off) whether to remap N+C if
+                                           ! soil loss occurs.
+
+   oc      = 1.04    0.89    0.89    0.89    0.77    0.45    0.27    0.22    0.16    0.13    0.12
+   ph      = 8.4     8.8       9     9.2     9.2     9.1       9       9     8.9     8.9     8.9
+   fbiom   = 0.025    0.02   0.015    0.01    0.01    0.01    0.01    0.01    0.01    0.01    0.01     ()    ! microbe fraction of hunic pool
+   finert  = 0.4     0.6     0.8     0.9    0.95    0.95    0.95    0.95    0.95    0.95    0.95     ()    ! inert fraction of humic pool
+   ureappm = 0       0       0       0       0       0       0       0       0       0       0     (ppm) ! ppm urea
+   no3ppm = 6.5     2.1     2.1     1.7     1.7     1.7     1.7     1.7     1.7     1.7     1.7     ()   ! ppm nitrate
+   nh4ppm = 0.6     0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1     0.1     ()   ! ppm ammonia
+
+
+[sample.pond.parameters]
+
+[sample.log.parameters]
+debug_output = on
+logfile = log.txt
+
+[sample.soiltemp.parameters]
+bound_layer_cond = 20.0  (J/s/m2/K)
+clay =  0.1  0.1  0.1  0.1  0.1  0.2  0.3 0.3  0.3  0.3  0.3  () ! proportion of clay (0-1)    
+
+
+[sample.surfaceom.parameters]
+
+name =            wheat
+type =            wheat
+mass =             2000
+cnr  =             80
+!cpr =              35
+standing_fraction = 0.0
+
