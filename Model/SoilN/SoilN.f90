@@ -1265,6 +1265,17 @@ subroutine soiln2_send_my_variable (variable_name)
       call respond2get_real_array (variable_name,'(kg/ha)', g%urea, num_layers)
 
 
+   elseif (variable_name .eq. 'ureappm') then
+   !                           ------
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call fill_real_array (ureappm,0.0,max_layer)
+
+      do layer=1,num_layers
+         ureappm(layer) = g%urea(layer)*soiln2_fac (layer)
+      end do
+
+      call respond2get_real_array (variable_name,'(ppm)', ureappm, num_layers)
+
    elseif (variable_name .eq. 'dlt_rntrf') then
    !                           ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
