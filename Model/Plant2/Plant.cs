@@ -98,7 +98,10 @@ public class Plant : Instance
       else
          WaterSupplyDemandRatio = 0;
 
-      double fraction = Math.Min(1.0,Supply / Demand);
+      double fraction = 1;
+      if (Demand>0)
+         fraction =      Math.Min(1.0,Supply / Demand);
+
       foreach (Organ o in Organs)
          {
          if (o.WaterDemand > 0)

@@ -173,7 +173,10 @@ public class Root : BaseOrgan, BelowGround
       WaterChangedType WaterUptake = new WaterChangedType();
       WaterUptake.DeltaWater = new double[SWSupply.Length];
       double Supply = MathUtility.Sum(SWSupply);
-      double FractionUsed = Amount / Supply;
+      double FractionUsed = 1;
+      if (Supply > 0)
+         FractionUsed = Amount / Supply;
+
       for (int layer = 0; layer <= SWSupply.Length - 1; layer++)
          WaterUptake.DeltaWater[layer] = -SWSupply[layer] * FractionUsed;
 
