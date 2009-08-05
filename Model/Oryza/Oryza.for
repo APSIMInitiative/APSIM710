@@ -245,6 +245,11 @@
          REAL LAIEXS               ! Value of LAI at end of exponential growth phase in seedbed  !ha leaf ha-1 soil
          REAL TEST                 ! Difference between simulated and user-supplied SLA  !ha leaf kg-1 leaf
          REAL CO2                   ! Ambient CO2 concentration  !ppm
+         ! dsg 030809  Rat grazing work with peter brown
+         real rat_graze_perc        ! daily rat-grazing proportion of crop (if vegetative applied to g%WLVG (dry weight of leaves) 
+                                    !                                     if reproductive applied to g%WSO (weight of storage organs))
+         real gr_rat_grazed         !  grain weight grazed by rats on daily basis (kg/ha/d)
+         REAL llv_rat               !  Loss rate of leaf weightdue to rat grazing !kg ha-1 d-1 
 
          character plant_status*5  ! status of crop
 
@@ -1110,6 +1115,11 @@
       g%amax1 = 0.0   !! XXnot used anywhere??
       g%eff1=0.0      !! XXnot used anywhere??
 
+      ! dsg 030809 rat grazing work with Peter Brown
+      g%rat_graze_perc=0.0
+      g%gr_rat_grazed = 0.0      
+      g%LLV_RAT = 0.0
+
       p%lape = 0.0
       p%nplsb = 0.0
       p%nplds = 0.0
@@ -1370,7 +1380,7 @@
 !             Dry weight of storage organs (kg/ha)
          call respond2get_real_var (
      :               variable_name    ! variable name
-     :              ,'()'          ! variable units
+     :              ,'(kg/ha)'          ! variable units
      :              ,g%wso)         ! variable
 
       elseif (variable_name .eq. 'wst') then
@@ -1529,6 +1539,13 @@
      :               variable_name    ! variable name
      :              ,'()'          ! variable units
      :              ,g%trc)         ! variable
+
+      elseif (variable_name .eq. 'trw') then
+!            actual transpiration rate of crop with today's LAI
+         call respond2get_real_var (
+     :               variable_name    ! variable name
+     :              ,'()'          ! variable units
+     :              ,g%trw)         ! variable
 
       elseif (variable_name .eq. 'gcr') then
 
@@ -1723,6 +1740,27 @@
      :                               , '()'
      :                               , g%root_length_layer
      :                               , num_layers)
+
+      elseif (variable_name .eq. 'rat_grazing_perc') then
+
+         call respond2get_real_var (
+     :               variable_name      ! variable name
+     :              ,'(%)'               ! variable units
+     :              ,g%rat_graze_perc)  ! variable
+
+      elseif (variable_name .eq. 'leaves_rat_grazed') then
+
+         call respond2get_real_var (
+     :               variable_name      ! variable name
+     :              ,'()'               ! variable units
+     :              ,g%LLV_RAT)  ! variable
+
+      elseif (variable_name .eq. 'grains_rat_grazed') then
+
+         call respond2get_real_var (
+     :               variable_name      ! variable name
+     :              ,'()'               ! variable units
+     :              ,g%gr_rat_grazed)  ! variable
       else
          call Message_Unused ()
       endif
@@ -4274,6 +4312,12 @@
 !           g%NSLLV=linear_interp_real(g%DVS,p%nsllvt,p%nsllv,p%numnsllv)
 
            g%LLV  = g%NSLLV*g%WLVG*g%DRLV
+!     dsg 160609 Rat grazing functionlaity for Peter Brown
+           if (g%DVS.lt.1.0) then
+             g%LLV_RAT = g%WLVG * divide(g%rat_graze_perc, 100.0, 0.0)
+           else
+             g%LLV_RAT = 0.0
+           endif     
 !! Stem loss starts only from flowering, by Xike, 23/10/03
            If(g%DVS.GE.1.0)then
             LSTR = divide(g%WSTR,p%TCLSTR,0.0)
@@ -4314,14 +4358,18 @@
 !!----------Growth rates of crop organs
            g%GRT    = g%GCR*g%FRT-GRT1
            g%GLV    = g%GCR*g%FSH*g%FLV-RWLVG1
-           g%RWLVG  = g%GLV-g%LLV
+!          dsg 160609 Rat grazing functionality.... old equation was g%RWLVG  = g%GLV-g%LLV
+           g%RWLVG  = g%GLV-g%LLV-g%LLV_RAT
            g%GST    = g%GCR*g%FSH*g%FST*(1.-P%FSTR)-GST1
            g%GSTR   = g%GCR*g%FSH*g%FST*p%FSTR-RWSTR1
            g%RWSTR  = g%GSTR-LSTR
            g%GSO    = g%GCR*g%FSH*g%FSO
            IF (g%DVS.GT.0.95) THEN
-              g%GGR = g%GSO
-            ELSE
+!            incorporate rat-grazing functionality (g%rat_graze_perc will be zero if no grazing, so non-effecting)
+           g%gr_rat_grazed = g%WSO*divide(g%rat_graze_perc, 100.0, 0.0)
+             g%GSO = g%GSO - g%gr_rat_grazed
+             g%GGR = g%GSO
+            ELSE 
               g%GGR = 0.
            END IF
 !
@@ -4412,7 +4460,7 @@
             g%TSLV   = g%TSLV + g%HULV
             g%DVS    = g%DVS + g%DVR
             g%WLVG   = g%WLVG + (g%RWLVG-g%DLDR)
-            g%WLVD   = g%WLVD + (g%LLV+g%DLDR)
+            g%WLVD   = g%WLVD + (g%LLV+g%DLDR)  ! dry weight of dead leaves
             g%WSTS   = g%WSTS + g%GST
             g%WSTR   = g%WSTR + g%RWSTR
             g%WSO    = g%WSO + g%GSO
@@ -4843,6 +4891,7 @@
       INTEGER IMX
       PARAMETER (IMX=40)
       REAL NFLVP,NUPP
+      REAL N_RAT_LOSS  ! dsg 160609 Rat grazing functionality
       REAL ATNLV, ATNST, ATNRT
       REAL ANST, ANCRPT
       REAL NLDLV, NSHKLV, NSHKST
@@ -4943,8 +4992,10 @@
           NSHKST =g%ANST*(1.-g%PLTR)
           !! Loss of N from leaves by leaf death
           NLDLV = (g%LLV+g%DLDR)*p%RFNLV
+          !! Loss of N from leaves by rat feasting
+          N_RAT_LOSS = (g%LLV_RAT)*p%RFNLV
           !!- Net flow to stems and leaves
-          NLV = NALV-NTLV-NLDLV-NSHKLV
+          NLV = NALV-NTLV-NLDLV-NSHKLV-N_RAT_LOSS
           NST = NAST-NTST-NSHKST
 
           !!-Net N flow to storage organ
@@ -5233,6 +5284,16 @@
      :               ,p%estab               ! variable
      :               ,numvals)              ! number of elements returned
 
+!   dsg 160609  incorporated for rat-grazing by Peter Brown
+       elseif (Variable_name .eq. 'rat_graze_perc') then
+
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%rat_graze_perc     ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,0.3)                 ! upper limit for bound check
 
       else
          ! Don't know this variable name
