@@ -45,7 +45,6 @@ module PondModule
 
    type PondGlobals
       sequence
-      real    pond_digital                         ! 1-0 equivalent of g%pond_active
       real    rain                                 ! precipitation (mm/d)
       real    radn                                 ! solar radiation (mj/m^2/day)
       real    mint                                 ! minimum air temperature (oC)
@@ -56,11 +55,10 @@ module PondModule
       real    ampef                                ! hourly floodwater evaporation, initialised as 0.38 * total daily evap
       real    pond_no3                             ! mineral N as nitrate in pond (kg/ha)
       real    pond_nh4                             ! mineral N as ammonium in pond (kg/ha)
-      real    pond_nh3                             ! mineral N as ammonia in pond (kg/ha)
+      real    pond_urea                            ! urea in pond (kg/ha)
       real    pond_no3_conc                        ! concentration of mineral N as nitrate in pond ()
       real    pond_nh4_conc                        ! concentration of mineral N as ammonium in pond ()
-      real    pond_nh3_conc                        ! concentration of mineral N as ammonia in pond, able to be volatilised ()
-      real    pond_urea                            ! urea in pond (kg/ha)
+      real    pond_urea_conc                        ! concentration of mineral N as ammonium in pond ()
       real    pond_hum_C                           ! humic C in pond (kg/ha)
       real    pond_biom_C                          ! biom C in pond (kg/ha)
       real    pab_mass                             ! mass of algae in pond (kg/ha) (capped at 500kg/ha)
@@ -74,6 +72,8 @@ module PondModule
       real    ftmax_yest                           ! minimum pond temperature yesterday (oC)
       real    ftmean_yest                          ! mean pond temperature yesterday (oC)
       real    oc1                                  ! organic carbon in soil layer 1 (%)
+      real    no3ppm_topsoil                       ! nitrate concentration in topsoil (ppm)
+      real    ureappm_topsoil                      ! urea concentration in topsoil (ppm)
       real    dlayer1                              ! depth of soil layer 1 (mm)
       real    bd1                                  ! bulk density of soil layer 1 (g/cm3)
       real    algact                               ! pond algal activity (0-1 factor)
@@ -125,7 +125,9 @@ module PondModule
    !  ====================================================================
    type PondParameters
       sequence
-         real    mwcon (max_solutes)                    ! impermeable soil layer indicator
+      integer      algae_present          ! an indicator of whether algae is present in environment, 
+                                          ! hence whether plays a role in pond processes
+      real         soil_cec                                          
 
    end type PondParameters
    !  ====================================================================
@@ -142,8 +144,6 @@ module PondModule
       real         pab_p_index            ! a modifying factor for algal production based on availability of P
                                           ! Godwin & Singh (1998) suggested two values 1.0 for no limits, 0.5 for limited
       real         water_albedo           ! Albedo of pond water                                          
-      integer      algae_present          ! an indicator of whether algae is present in environment, 
-                                          ! hence whether plays a role in pond processes
       real         amlos_fudge_factor     ! a factor applied to the calculated amlos (amonia loss) 
       real         solute_infiltration_rate  !  the fraction of solutes (urea nh4) which moves from pond to soil daily
 
@@ -197,6 +197,11 @@ subroutine Pond_read_parameters ()
 
    call write_string (new_line//'   - Reading Pond Parameters')
 
+   call read_integer_var (section_name, 'algae_present', '()', p%algae_present, numvals, 0, 1)
+
+   call read_real_var (section_name, 'cec', '()', p%soil_cec, numvals, 0.0, 1000.0)
+
+
 
    call pop_routine (my_name)
    return
@@ -248,8 +253,6 @@ subroutine Pond_read_constants ()
 
 !   call read_real_var (section_name, 'water_albedo', '()', c%water_albedo, numvals, 0.0, 100.0)
 
-!   call read_integer_var (section_name, 'algae_present', '()', c%algae_present, numvals, 0, 1)
-
 !   call read_real_var (section_name, 'amlos_fudge_factor', '()', c%amlos_fudge_factor, numvals, 0.0, 100.0)
 
 !   call read_real_var (section_name, 'solute_infiltration_rate', '()', c%solute_infiltration_rate, numvals, 0.0, 100.0)
@@ -272,11 +275,9 @@ subroutine Pond_read_constants ()
                     
    c%water_albedo = 0.05  ! albedo of pond water  
 
-   c%algae_present = 1    ! an indicator of whether algae is present in environment, 
+   c%amlos_fudge_factor = 0.4 !1.0    !  a factor applied to the daily calculated amlos (ammonia (NH3-) loss) 
 
-   c%amlos_fudge_factor = 0.5 !1.0    !  a factor applied to the daily calculated amlos (ammonia (NH3-) loss) 
-
-   c%solute_infiltration_rate = 0.3
+   c%solute_infiltration_rate = 0.4
 
 
    call pop_routine (my_name)
@@ -391,7 +392,9 @@ subroutine Pond_ONprocess ()
             
       end do           
 
-      call Pond_move_solutes_down()     ! move solutes into soil by the processes of mass-flow and adsorption
+      call Pond_move_solutes_down_mass_flow()     ! move solutes into soil by the processes of mass-flow and adsorption
+      
+      call Pond_diffusion()                       ! move solutes into soil by diffusion and adsorption
             
             
        
@@ -445,9 +448,6 @@ subroutine Pond_send_my_variable (variable_name)
    if (variable_name .eq. 'pond_active') then
        call respond2get_char_var (variable_name,'()', g%pond_active)
 
-   elseif (variable_name .eq. 'pond_digital') then
-      call respond2get_real_var (variable_name,'()', g%pond_digital)
-
    elseif (variable_name .eq. 'consecutive_ponded_days') then
       call respond2get_integer_var (variable_name,'()', g%ponded_days)
 
@@ -460,17 +460,11 @@ subroutine Pond_send_my_variable (variable_name)
    elseif (variable_name .eq. 'pond_urea') then
       call respond2get_real_var (variable_name,'()', g%pond_urea)
 
-   elseif (variable_name .eq. 'pond_nh3') then
-      call respond2get_real_var (variable_name,'()', g%pond_nh3)
-
    elseif (variable_name .eq. 'pond_no3_conc') then
       call respond2get_real_var (variable_name,'()', g%pond_no3_conc)
 
    elseif (variable_name .eq. 'pond_nh4_conc') then
       call respond2get_real_var (variable_name,'()', g%pond_nh4_conc)
-
-   elseif (variable_name .eq. 'pond_nh3_conc') then
-      call respond2get_real_var (variable_name,'()', g%pond_nh3_conc)
 
    elseif (variable_name .eq. 'pab_mass') then
       call respond2get_real_var (variable_name,'()', g%pab_mass)
@@ -637,7 +631,6 @@ subroutine Pond_zero_variables ()
 !  ====================================================================
 ! Globals
       g%pond_active = 'no'
-      g%pond_digital = 0.0
       g%pond_no3 = 0.0
       g%pond_nh4 = 0.0
       g%pond_urea = 0.0
@@ -649,6 +642,8 @@ subroutine Pond_zero_variables ()
       g%ftmax_yest = 0.0
       g%ftmin_yest = 0.0
       g%ftmean_yest = 0.0
+      g%no3ppm_topsoil = 0.0
+      g%ureappm_topsoil = 0.0
 ! ====================================================================
 ! Parameters
 
@@ -732,6 +727,9 @@ subroutine Pond_zero_daily_variables ()
      g%dlt_res_c_atm(:)     = 0.0
      g%dlt_res_c_biom(:)    = 0.0
      g%dlt_res_c_hum(:)     = 0.0
+     g%no3_infiltrated(:)   = 0.0
+     g%nh4_infiltrated(:)   = 0.0 
+     g%urea_infiltrated(:)  = 0.0
      g%pond_hum_c           = 0.0
      g%pond_biom_c          = 0.0
      g%fni = 0.0
@@ -1000,7 +998,7 @@ subroutine pond_ActiveCheck ()
 !+  Local Variables
    character  err_string*80         ! Error message string
    integer      numvals             ! number of values returned
-   real         temp, temp2
+   real         temp
    real         pond_yesterday 
    real         old_pab  
    real         count_dry           ! number of consecutive days with no ponding    
@@ -1010,7 +1008,6 @@ subroutine pond_ActiveCheck ()
    call push_routine (my_name)
 
    call get_real_var (unknown_module, 'pond', '(mm)', temp, numvals, 0.0, 1000.0)
-   call get_real_var (unknown_module, 'pond_evap', '(mm)', temp2, numvals, 0.0, 1000.0)
 
    if(numvals.eq.0) then
       err_string = 'Cannot find any module who owns "pond"'
@@ -1019,12 +1016,10 @@ subroutine pond_ActiveCheck ()
 
    if (temp.gt.0.0) then
         g%pond_active = 'yes'
-        g%pond_digital = 1.0
         g%ponded_days = g%ponded_days + 1
         count_dry = 0
    else 
         g%pond_active = 'no'
-        g%pond_digital = 0.0
 !        g%ftmax = 0.0
 !        g%ftmin = 0.0
 !        g%ftmean = 0.0
@@ -1049,7 +1044,6 @@ subroutine pond_ActiveCheck ()
    endif      
 
    g%pond_depth = temp
-   g%pond_evap = temp2
 
    call pop_routine (my_name)
    return
@@ -1332,27 +1326,10 @@ subroutine Pond_temperature_balance ()
 
 !+  Local Variables
       integer i                      ! counter 
-      integer numvals                ! counter                                                        
       real tmfac1(8)                 ! temperature factor                                              
-      real fdepth                    ! pond depth in cms                                               
-      real totevap_cm                ! pond evaporation + rice transpiration in cms                    
       real tot_tmp                   ! summation variable                                              
       real tot_fwt                   ! summation variable                                              
-      real ttmp                      ! temporary variable                                              
-      real tmean                     ! temporary variable                                              
-      real albedo                    ! albedo of ponded rice field                                     
-      real ftmax_diff                ! difference between max and mean pond temperatures               
-      real atmax_diff                ! difference between max and mean atmospheric temperatures        
-      real ftmin_diff                ! difference between min and mean pond temperatures               
-      real atmin_diff                ! difference between min and mean atmospheric temperatures        
-      real fdepth_tmax               ! pond depth factor on maximum pond temp                          
-      real fdepth_tmin               ! pond depth factor on minimum pond temp                          
-      real fevap_effect              ! evaporative cooling effect factor                               
-      real netradindex               ! crop albedo effect on net radiation reaching floodwater surface 
-      real rad_effect                ! crop albedo effect on net radiation reaching floodwater surface 
-      real soiltemp_layer1           ! soil temperature in layer 1                                     
-      real fwtmp                     ! temporary floodwater summation variable                         
-      real soiltemp_layer(max_layer) ! average soil temperature in layer 1   
+      real fwtmp                     ! summation variable                                              
       character*200  err_string
          
 !+  Initial Data Values
@@ -1361,80 +1338,23 @@ subroutine Pond_temperature_balance ()
 
    call push_routine (my_name)
 
-!  dsg 231008    do season init stuff if appropriate
+! dsg 030809  Adopting a very simple model based on the data of Kuwagata 2008 "Modeling water temperature in a rice paddy for agro-environmental research"
+!             Agricultural and Forest Meteorology, 148(11), pp 1754-1766
+!             And field data of Roland Buresh, Philippines experiments 1985-86
 
-	  if (g%ponded_days.eq.1) then     ! FIRST DAY AFTER FLOODING
 	      do i = 1, 8
                  tmfac1(i) = 0.931+0.114*i-0.0703*i**2+0.0053*i**3   ! from CERES Rice
               end do
-              g%ftmin_yest = g%mint
-	      g%ftmax_yest = g%maxt
-	      g%ftmean_yest= (g%maxt+g%mint)/2.0
-	  endif
-
-      fdepth = g%pond_depth/10.     
-      totevap_cm  = g%pond_evap/10. + g%rep/10. 	! from CERES Rice :-  'ef' is floodwater evaporation, 'et' must be rice transpiration
-
-      tot_tmp=0.0
-      tot_fwt=0.0
-      do i = 1, 8
-         tmfac1(i) = 0.931+0.114*i-0.0703*i**2+0.0053*i**3   ! from CERES Rice
-         ttmp = g%mint + tmfac1(i)*(g%maxt-g%mint)
-	 tot_tmp = tot_tmp + ttmp
-      end do
-      tmean = tot_tmp/8.
-
-      albedo       = 0.23-(0.23-c%water_albedo)*exp(-0.75*g%rlai)
-
-      
-      ftmax_diff = g%ftmax_yest - g%ftmean_yest  
-      atmax_diff = g%maxt - g%mint
-      ftmin_diff = g%ftmean_yest - g%ftmin_yest  
-      atmin_diff = tmean - g%mint	
-
-!c    what is intended here is:
-!c   if ambient is above ftempmax then raise ftemp by fdepth effect
-!c    if ftempmax is above ambient lower ftemp by fdeptheffect
-!
-      fdepth_tmax = (ftmax_diff/atmax_diff)*0.45 + ((40.-fdepth)*0.025)*0.65
 
 
-      fdepth_tmin = (ftmin_diff/atmin_diff)*0.45 + min(((40.-fdepth)*0.025)*0.9, 1.0)
-
-
-!c  ***** now allow for evaporative cooling effect on floodwater max 
-!c    this is greatest in shallow water since a higher proportion of the
-!c     water is lost - so latent heat is lost        
-! 
-      fevap_effect= min(1.0, (totevap_cm/fdepth)*6.0)   
-!       
-!
-!c*** crop albedo effect on net radiation reaching floodwater surface
-!c
-!c      when crop is present then rad_effect will reduce 
-!c      floodwater temperature. without crop rad_effect = 0 (no effect)
-!
-      netradindex = (1.0-albedo)/(1.0-c%water_albedo)
-      rad_effect  = 1.0 - netradindex   
-
-! dsg 231008  We need to get the soil temperature :- soiltemp_layer1
-
-   call get_real_array (unknown_module, 'ave_soil_temp', max_layer, '(oC)', soiltemp_layer, numvals, -100.0, 100.0)
-
-
-! dsg 241008   ***** incorporating all the effects on pond temperature *****
-
-      g%ftmax = soiltemp_layer(1) + atmax_diff * (fdepth_tmax - fevap_effect - rad_effect)
-      g%ftmin = soiltemp_layer(1) - atmin_diff * (fdepth_tmin + rad_effect)
-
-
-
+      g%ftmax = g%maxt + 5.0*((5.0 - g%rlai)/5.0)
+      g%ftmin = g%mint + 2.0
       
 !      the floodwater temperature calculations are based on salus soil
 !      temperature routine.
 	
       do i = 1, 8
-          fwtmp = g%ftmin + tmfac1(i)*(g%ftmax-g%ftmin)
+          fwtmp = g%ftmin + tmfac1(i)*(g%ftmax+2.0-g%ftmin)
 	  tot_fwt = tot_fwt + fwtmp
       end do
 
@@ -1495,6 +1415,9 @@ subroutine Pond_hydrolise_urea (ftemp)
 !     cumulative urea hydrolised
       g%totuh  = g%totuh + g%fuhydr
 
+!     Compute concentrations of N in floodwater.
+      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
+      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
 
    call pop_routine (my_name)
    return
@@ -1502,7 +1425,7 @@ end subroutine
 
 
 !     ===========================================================
-subroutine Pond_move_solutes_down ()
+subroutine Pond_move_solutes_down_mass_flow ()
 !     ===========================================================
    Use Infrastructure
    implicit none
@@ -1517,20 +1440,17 @@ subroutine Pond_move_solutes_down ()
 
 !+  Constant Values
    character  my_name*(*)           ! name of subroutine
-   parameter (my_name = 'Pond_move_solutes_down')
+   parameter (my_name = 'Pond_move_solutes_down_mass_flow')
 
 !+  Local Variables
-    integer   numvals,i                    !   simple counter
-    real      pond_depth_yest             !   yesterday's pond depth for the purpose of calculations in this routine (because it is collected afterward
-    real      pond_evap                   !   today's pond evaporation
-    real      irrigation                  !   today's irrigation
-    real      infiltration                !   today's infiltration
+    integer   numvals,i                      !   simple counter
+    real      infiltration(max_layer)        !   today's infiltration out the bottom of each layer
     integer   deepest_layer
-    real      temp(max_layer)             ! temporary variable
-    real      infiltration_frac           ! fraction of the pond which infiltrates today
-    real      no3_infiltrated(max_layer)
-    real      nh4_infiltrated(max_layer)
-    real      urea_infiltrated(max_layer)
+    real      temp(max_layer)                ! temporary variable
+    real      infiltration_frac              ! fraction of the pond which infiltrates today
+    real      dlt_no3_infiltrated(max_layer) ! the no3 infiltrated today from this mass flow process
+    real      dlt_nh4_infiltrated(max_layer) ! the nh4 infiltrated today from this mass flow process
+    real      dlt_urea_infiltrated(max_layer)! the urea infiltrated today from this mass flow process
     character*200  err_string
     
     
@@ -1540,25 +1460,20 @@ subroutine Pond_move_solutes_down ()
 
    call push_routine (my_name)
 
-! dsg 311008   Move solutes from the pond into the soil by the processes of mass-flow and adsorption
+! dsg 311008   Move solutes from the pond into the soil by the processes of mass flow
+!              Assume that the effective infiltration of water from pond into the soil is equal to the 
+!              SOILWAT variable 'flow_water' from the 2nd soil layer down
+      call get_real_array (unknown_module, 'flow_water', max_layer, '(mm)', infiltration, numvals, 0.0, 1000.0)
 
-
-
-!  infiltration = yesterday_pond - today_pond - evaporation + irrigation_applied + rain
-      call get_real_var (unknown_module, 'pond_evap', '(mm)', pond_evap, numvals, 0.0, 1000.0)
-
-      call get_real_var (unknown_module, 'irrigation', '(mm)', irrigation, numvals, 0.0, 1000.0)
-   
-      call get_real_var (unknown_module, 'infiltration', '(mm)', infiltration, numvals, 0.0, 1000.0)
-
-!      g%infiltration = g%pond_depth_yest + g%pond_depth - pond_evap - irrigation + g%rain
-       g%infiltration = infiltration      
+!      assume that the flow of water out of soil layer 2 is equal to the infiltration from pond into soil
+       g%infiltration = infiltration(2)      
 
 
 !  Calculate fraction of pond water infiltrating
       infiltration_frac = divide(g%infiltration,g%pond_depth,0.0)
       infiltration_frac = max(0.0, min(1.0, infiltration_frac))
-!  dsg 050309 this line was put in to test for a user-specified solute infiltration rate     infiltration_frac = c%solute_infiltration_rate
+!  dsg 050309 this line was put in to test for a user-specified solute infiltration rate        
+!      infiltration_frac = c%solute_infiltration_rate
 
 !   dsg 011108  put the infiltrated solutes into the soil
        call get_real_array (unknown_module, 'dlayer', max_layer, '(mm)', temp, numvals, 0.0, 10000.0)
@@ -1569,30 +1484,365 @@ subroutine Pond_move_solutes_down ()
        deepest_layer = count_of_real_vals (temp, max_layer)
        
        do i = 1,deepest_layer
-          g%no3_infiltrated(i) = 0.0
-          g%nh4_infiltrated(i) = 0.0
-          g%urea_infiltrated(i) = 0.0
+          dlt_no3_infiltrated(i) = 0.0
+          dlt_nh4_infiltrated(i) = 0.0
+          dlt_urea_infiltrated(i) = 0.0
        end do
 
 
        
-       g%no3_infiltrated(1) = g%pond_no3 * infiltration_frac
-       g%nh4_infiltrated(1) = g%pond_nh4 * infiltration_frac
-       g%urea_infiltrated(1) = g%pond_urea * infiltration_frac
+       dlt_no3_infiltrated(1) = g%pond_no3 * infiltration_frac
+       dlt_nh4_infiltrated(1) = g%pond_nh4 * infiltration_frac
+       dlt_urea_infiltrated(1) = g%pond_urea * infiltration_frac
+
+
       
 !     dsg & as 040209    Now increment pond mineral N pools
       g%pond_no3 = g%pond_no3 * (1 - infiltration_frac)
       g%pond_nh4 = g%pond_nh4 * (1 - infiltration_frac)
       g%pond_urea = g%pond_urea * (1 - infiltration_frac)
+
+!     Update concentrations of N in floodwater.
+      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
+      g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
+      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
    
 
           
-       call set_real_array (unknown_module, 'dlt_no3','(kg/ha)', g%no3_infiltrated, deepest_layer)
-       call set_real_array (unknown_module, 'dlt_nh4','(kg/ha)', g%nh4_infiltrated, deepest_layer)
-       call set_real_array (unknown_module, 'dlt_urea','(kg/ha)', g%urea_infiltrated, deepest_layer)
+       call set_real_array (unknown_module, 'dlt_no3','(kg/ha)', dlt_no3_infiltrated, deepest_layer)
+       call set_real_array (unknown_module, 'dlt_nh4','(kg/ha)', dlt_nh4_infiltrated, deepest_layer)
+       call set_real_array (unknown_module, 'dlt_urea','(kg/ha)', dlt_urea_infiltrated, deepest_layer)
 
 
-   g%pond_depth_yest = g%pond_depth
+!      dsg 300609  Finally, update the global daily infiltration which is composed of solute infiltration 
+!                  from both mass-flow and diffusion
+       g%no3_infiltrated(1) = g%no3_infiltrated(1) + dlt_no3_infiltrated(1)
+       g%nh4_infiltrated(1) = g%nh4_infiltrated(1) + dlt_nh4_infiltrated(1)
+       g%urea_infiltrated(1) = g%urea_infiltrated(1) + dlt_urea_infiltrated(1)
+
+
+   call pop_routine (my_name)
+   return
+end subroutine
+
+
+!     ===========================================================
+subroutine Pond_diffusion()
+!     ===========================================================
+   Use Infrastructure
+   implicit none
+
+!+  Sub-Program Arguments
+
+!+  Purpose
+!   dsg 010709   This subroutine calculates the diffusion of urea, no3 and nh4
+!                from the pond into the soil (or vice-versa)    
+
+!+  Mission Statement
+!     
+
+!+  Constant Values
+   character  my_name*(*)           ! name of subroutine
+   parameter (my_name = 'Pond_diffusion')
+
+!+  Local Variables
+    integer   numvals,i                          !   simple counter
+    integer   deepest_layer
+    integer   solute                             ! counter for solutes (urea, nitrate, ammonium)
+    character*200  err_string
+    real      soil_nh4ppm(max_layer)             ! soil ammonium concentration
+    real      soil_no3ppm(max_layer)             ! soil nitrate concentration
+    real      soil_ureappm(max_layer)            ! soil urea concentration
+    real      temp(max_layer)                    ! temporary variable
+    real      dlt_no3_infiltrated(max_layer)     ! the no3 infiltrated today from this mass flow process
+    real      dlt_nh4_infiltrated(max_layer)     ! the nh4 infiltrated today from this mass flow process
+    real      dlt_urea_infiltrated(max_layer)    ! the urea infiltrated today from this mass flow process
+    real      DELC(3)                            ! solute concentration difference between soil and pond
+    real      DELX                               ! diffusion distance (cms)
+    real      AQDC(3)                            ! Aqueous diffusion coefficient (1.E-5 cm2/s)
+    real      BPS(3)                             ! Soil buffering power as impacts diffusion (only NH4 effected)
+    real      timesteps_per_day                  ! number of daily timesteps (daily = 1, hourly = 24)
+    real      DE(3)                              ! the effective diffusion coefficient for each solute
+    real      DIFFN(3)                           ! the flux of solute between soil and pond (can be +ve or -ve)
+    real      SAT(max_layer)                     ! saturated moisture content of each soil layer (mm/mm)
+    real      diffusable_soil_nh4ppm             ! soil NH4 in soil solution for top layer (ie not adsorbed onto soil particles)
+    real      BP_ammonium                        ! surface soil buffering power effecting ammonium diffusion
+
+    
+    
+!+  Initial Data Values
+
+!- Implementation Section ----------------------------------
+
+   call push_routine (my_name)
+
+!     dsg 010709  UREA and NITRATE :  diffusion of Urea and NO3 is governed by an aqueous diffusion 
+!                 coefficient, a tortuosity factor (function of the pore space, or sat moisture content)
+!                 and the difference in concentration of the solute between between soil and pond.
+!                 AMMONIUM: Because a certain proportion of the soil NH4 is adsorped onto the soil particles,
+!                 not all of the soil NH4 concentration is diffusable.  A equillibrium isotherm based on the 
+!                 Langmuir equation is used to determine how much of the soil NH4 is diffusable, and this 
+!                 amount is then compared with pond NH4 concentration and diffused as per urea and NO3.  The 
+!                 proportion of soil diffusable NH4 is a function of the top soil layer Cation Exchange Capacity (CEC),
+!                 and bulk density.
+
+
+!    Firstly, get the solute concentrations in the soil from SOILN module
+
+       call get_real_array (unknown_module, 'ureappm', max_layer, '(ppm)', soil_ureappm, numvals, 0.0, 10000.0)
+          if (numvals.eq.0) then
+              err_string = 'Cannot find variable "ureappm"'
+              call FATAL_ERROR (ERR_user, err_string)
+          endif
+
+       call get_real_array (unknown_module, 'no3ppm', max_layer, '(ppm)', soil_no3ppm, numvals, 0.0, 10000.0)
+          if (numvals.eq.0) then
+              err_string = 'Cannot find variable "no3ppm"'
+              call FATAL_ERROR (ERR_user, err_string)
+          endif
+                   
+       call get_real_array (unknown_module, 'nh4ppm', max_layer, '(ppm)', soil_nh4ppm, numvals, 0.0, 10000.0)
+          if (numvals.eq.0) then
+              err_string = 'Cannot find variable "nh4ppm"'
+              call FATAL_ERROR (ERR_user, err_string)
+          endif
+
+!     Saturated moisture content of the top soil layer (as a proxy of 'pore space') is required to determine diffusion
+       call get_real_array (unknown_module, 'sat', max_layer, '()', SAT, numvals, 0.0, 1.0)
+          if (numvals.eq.0) then
+              err_string = 'Cannot find variable "sat"'
+              call FATAL_ERROR (ERR_user, err_string)
+          endif
+       deepest_layer = count_of_real_vals (SAT, max_layer)
+
+
+!    Then calculate the concentration of soil ammonium which is actually in solution (some is bound to particles)
+!    and able to be 'diffused'
+!       ANTHERM.....  calculate 'diffusable_soil_nh4ppm(max_layer)' returns BP_ammonium
+       
+       call Pond_ammonium_isotherm (soil_nh4ppm(1),diffusable_soil_nh4ppm, BP_ammonium)
+       
+           diffusable_soil_nh4ppm  = min(diffusable_soil_nh4ppm,soil_nh4ppm(1))
+
+
+!    Then, calculate concentration gradients between soil and pond, DELC (may be positive or negative)
+!         +ve indicates flow will occur from pond into soil
+!         -ve indicates flow will occur from soil back up into the pond 
+!    
+!        1 - Urea
+!        2 - Nitrate
+!        3 - Ammonium
+!
+         
+!        Solute concentration difference between pond and soil
+         DELC(1) =  g%pond_urea_conc - soil_ureappm(1)
+         DELC(2) = g%pond_no3_conc - soil_no3ppm(1) 
+         DELC(3) = g%pond_nh4_conc - diffusable_soil_nh4ppm 
+         
+!        Diffusion distance in cms 
+         DELX = 5.0
+
+!        Aqueous diffusion coefficient (1.E-5 cm2/s)  
+         AQDC(1) = 1.8
+         AQDC(2) = 1.8
+         AQDC(3) = 0.8
+         
+!        Soil buffering power
+         BPS(1) = 1.0
+         BPS(2) = 1.0
+         BPS(3) = BP_ammonium
+         
+!        Diffusion is calculated on a time basis, and we are doing this step once daily....
+         timesteps_per_day = 1.0
+
+      do solute = 1,3 
+         
+!            Then, calculate effective diffusion coefficient from soil to floodwat, DE
+!            diffsn coeff AQDC is 1.E-5 cm2/s
+ 
+             DE(solute) = AQDC(solute) * 1.E-5 * SQRT(SAT(1)) * SAT(1) / BPS(solute)
+!      
+!            DE = AQDC(ISI)*1.E-5*SQRT(0.90*po(1))*Sat(1)/BPS
+!           (=360)=( s to hr)*1.E-6(mg to kg)/[1.E3(lit to cm3)* 1.E-8 (cm2 to ha)]
+!     
+            DIFFN(solute) = DELC(solute) / DELX * DE(solute) *360.0 * 24.0 / timesteps_per_day
+      end do
+
+              Write (Err_string,*) ' ______________________________________________ '
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' DE - diffusion coefficient urea = ',DE(1)
+   	      call Write_string (Err_string)
+              Write (Err_string,*) '        pond urea conc = ',g%pond_urea_conc
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) '        soil1 urea conc = ',soil_ureappm(1)
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' DIFFN urea = ',DIFFN(1)
+   	      call Write_string (Err_string)
+              Write (Err_string,*) ' Diffused proportion urea = ',(DIFFN(1)/g%pond_urea)
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' ______________________________________________ '
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' DE - diffusion coefficient no3 = ',DE(2)
+   	      call Write_string (Err_string)
+              Write (Err_string,*) '        pond no3 conc = ',g%pond_no3_conc
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) '        soil1 no3 conc = ',soil_no3ppm(1)
+   	      call Write_string (Err_string)              
+   	      Write (Err_string,*) ' DIFFN no3 = ',DIFFN(2)
+   	      call Write_string (Err_string)
+              Write (Err_string,*) ' Diffused proportion no3 = ',(DIFFN(2)/g%pond_no3)
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' ______________________________________________ '
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' DE - diffusion coefficient nh4 = ',DE(3)
+   	      call Write_string (Err_string)
+              Write (Err_string,*) '        pond nh4 conc = ',g%pond_nh4_conc
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) '        soil1 nh4 conc = ',soil_nh4ppm(1)
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) '        soil1 "diffusable" nh4 conc = ',diffusable_soil_nh4ppm
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' DIFFN nh4 = ',DIFFN(3)
+   	      call Write_string (Err_string)
+              Write (Err_string,*) ' Diffused proportion nh4 = ',(DIFFN(3)/g%pond_nh4)
+   	      call Write_string (Err_string)              
+              Write (Err_string,*) ' ______________________________________________ '
+   	      call Write_string (Err_string)              
+
+!     So now, DIFFN(solute) will be the diffusion in kg/ha either from pond to soil (+ve) 
+!             or from soil up into pond (-ve)
+!     Update both soil and pond pools...
+
+       
+       do i = 1,deepest_layer
+          dlt_no3_infiltrated(i) = 0.0
+          dlt_nh4_infiltrated(i) = 0.0
+          dlt_urea_infiltrated(i) = 0.0
+       end do
+
+       
+       dlt_no3_infiltrated(1) = DIFFN(2)
+       dlt_nh4_infiltrated(1) = DIFFN(3)
+       dlt_urea_infiltrated(1) = DIFFN(1)
+
+
+      
+!     dsg & as 040209    Now increment pond mineral N pools
+      g%pond_no3 = g%pond_no3 - DIFFN(2)
+      g%pond_nh4 = g%pond_nh4 - DIFFN(3)
+      g%pond_urea = g%pond_urea - DIFFN(1)
+
+!     Update concentrations of N in floodwater.
+      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
+      g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
+      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
+   
+
+          
+       call set_real_array (unknown_module, 'dlt_no3','(kg/ha)', dlt_no3_infiltrated, deepest_layer)
+       call set_real_array (unknown_module, 'dlt_nh4','(kg/ha)', dlt_nh4_infiltrated, deepest_layer)
+       call set_real_array (unknown_module, 'dlt_urea','(kg/ha)', dlt_urea_infiltrated, deepest_layer)
+
+
+!      dsg 300609  Finally, update the global daily infiltration which is composed of solute infiltration 
+!                  from both mass-flow and diffusion
+       g%no3_infiltrated(1) = g%no3_infiltrated(1) + dlt_no3_infiltrated(1)
+       g%nh4_infiltrated(1) = g%nh4_infiltrated(1) + dlt_nh4_infiltrated(1)
+       g%urea_infiltrated(1) = g%urea_infiltrated(1) + dlt_urea_infiltrated(1)
+
+
+
+
+   call pop_routine (my_name)
+   return
+end subroutine
+
+!     ===========================================================
+subroutine Pond_ammonium_isotherm(soil_nh4ppm,SOILC,BP )
+!     ===========================================================
+   Use Infrastructure
+   implicit none
+
+!+  Sub-Program Arguments
+    real soil_nh4ppm        ! ammonium concentration in the top layer of the soil (ppm)
+    real SOILC              ! 'diffusable' ammonium concentration (ppm)
+    real BP                 ! soil buffering power (Nye and Tinker 1977)
+    
+!+  Purpose
+!   dsg 010709   This subroutine calculates how much ammonium is in free solution in the top
+!                soil layer, and is therefore 'diffusable'.  The majority of the ammonium 'in' 
+!                the soil layer will be immobile and adsorped onto soil particles   
+
+!+  Mission Statement
+!     
+
+!+  Constant Values
+   character  my_name*(*)           ! name of subroutine
+   parameter (my_name = 'Pond_ammonium_isotherm')
+
+!+  Local Variables
+    integer numvals             ! 
+    real A                      ! constant
+    real B                      ! coefficient (a function of the surface soil Cation exchange capacity)
+    real C                      ! soil ammonium concentration
+    real bd(max_layer)          ! array of soil layer bulk densities (Mg/m^3)
+    real BP1                    ! max limit for buffering power
+    real SOLN                   ! aqueous NH4 available for solution (mol*10^6/ml)
+    character*200 err_string    ! message
+  
+    
+    
+!+  Initial Data Values
+
+!- Implementation Section ----------------------------------
+
+   call push_routine (my_name)
+
+!      The ammonium_n in solution is calculated using a Langmuir isotherm. The equation is:
+!                      SOLN = exp(B * alog(C) - A)
+!            where SOLN = the solution concentration of ammonium
+!                     A = a constant (0.83)
+!                     B = a coefficient derived from the surface layer cation exchange capacity (CEC)
+!                                 by B = 4.1 - 0.07 * CEC
+!                     C = soil ammonium concentration
+
+       A = 1.83     ! 0.83  (in the latest version, CERES-Rice used 1.83 instead of the published 0.83
+                    !         - no reason provided in their code....)
+                                              
+!          B = 4.1 - min(3.6,(0.0775*CEC))  ! in the latest CERES-Rice code, this originally published equation was updated....
+       B = 4.1 - min(4.0,(0.225 *p%soil_cec**0.65))
+
+!     Bulk Density of top soil layer is required to determine C
+       call get_real_array (unknown_module, 'bd', max_layer, '()', bd, numvals, 0.0, 10.0)
+          if (numvals.eq.0) then
+              err_string = 'Cannot find variable "bd"'
+              call FATAL_ERROR (ERR_user, err_string)
+          endif
+
+       C   = soil_nh4ppm/14.0*bd(1)
+       
+!      if C=0 then the alog(C) will create a NaN and simulation will fall over.  Set C to very small concentration
+!      to avoid this happening.  For example, if C=0.1, the diffusable ammonium is 1.28*10^-7 
+!       (ie a suitably insignificant number)
+       if (C.le.0.1) then
+          C = 0.1
+       endif
+       
+       SOLN = exp(B * alog(C) - A)
+!
+!        SOLN (mol*10^6/ml)*14000(mg/mol)/10^6*1000(ml/l)
+!
+       SOILC  = SOLN*14.0 
+         
+!   dsg 020709  Now limit diffusable NH4 to total NH4... (the algorythm has it greatly exceeding available at higher concentrations,
+!               see spreadsheet "Ammonium Isotherm Testing .xls")         
+       SOILC = min(SOILC,soil_nh4ppm) 
+
+!      Now, also calculate the surface soil ammonium buffering power
+         BP1 = 30.0*(1.0-exp(-0.065*p%soil_cec))  !  dsg   this becomes very large, cf bp1=20 for a cec of 20
+         BP     = C/SOLN
+         BP     = min(BP,BP1)   ! Limited to a maximum of BP1
+         BP     = max(BP,1.0)   ! but not allowed to go below 1.0 (as per urea and NO3)
 
 
    call pop_routine (my_name)
@@ -1652,6 +1902,7 @@ subroutine Pond_calculate_daily_variables ()
 !     Compute concentrations of N in floodwater.
       g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
       g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
+      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
 
 
 !     Calculate n factor affecting algal growth
@@ -1693,7 +1944,7 @@ subroutine Pond_calculate_daily_variables ()
       temp_algact = max(temp_algact,0.10)
 
 !  dsg fudge 031108 - take out N-factor
-      g%algact   = min (g%fpi,g%ali,g%fti)
+      g%algact   = min (g%fpi,g%ali,g%fti,g%fni)
       if(g%algact.lt.0.0) then
         g%algact = 0.0
       endif
@@ -1701,7 +1952,7 @@ subroutine Pond_calculate_daily_variables ()
 
       
 !  dsg 130209  - if no algae present (as specified by user) then make g%algact always equal to zero 
-      if (c%algae_present.eq.0) then
+      if (p%algae_present.eq.0) then
          g%algact = 0.0
       endif     
 
@@ -1795,6 +2046,11 @@ subroutine Pond_get_daily_variables ()
 
    call push_routine (my_name)
 
+!  determine the pond_depth from Soilwat module
+      call get_real_var (unknown_module, 'pond', '(mm)', g%pond_depth, numvals, 0.0, 1000.0)
+      call get_real_var (unknown_module, 'pond_evap', '(mm)', g%pond_evap, numvals, 0.0, 1000.0)
+
+
 ! determine the runoff over the bund, needed by subroutine Pond_check_N_runoff
        call get_real_var (unknown_module, 'runoff', '()', g%runoff, numvals, 0.0, 1000.0)
       
@@ -1833,7 +2089,22 @@ subroutine Pond_get_daily_variables ()
               call FATAL_ERROR (ERR_user, err_string)
           endif
           g%bd1 = temp(1)          
-      
+
+! get the nitrate and urea concentrations in top soil layer for pond process diffusion calculations
+       call get_real_array (unknown_module, 'no3ppm', max_layer, '(ppm)', temp, numvals, 0.0, 100000.0)
+          if (numvals.eq.0) then
+              err_string = 'Cannot find variable "no3ppm"'
+              call FATAL_ERROR (ERR_user, err_string)
+          endif
+          g%no3ppm_topsoil = temp(1)          
+
+       call get_real_array (unknown_module, 'urea', max_layer, '(kg/ha)', temp, numvals, 0.0, 100000.0)
+          if (numvals.eq.0) then
+              err_string = 'Cannot find variable "urea"'
+              call FATAL_ERROR (ERR_user, err_string)
+          endif
+          g%ureappm_topsoil = temp(1)  * divide (100.0, g%bd1*g%dlayer1, 0.0)
+     
 
 
    call pop_routine (my_name)
@@ -1927,6 +2198,8 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
      real wind        ! windspeed
      real aloghk      !
      real hk          !
+     real pond_nh3      ! pond nh3 kg/ha
+     real pond_nh3_conc ! pond nh3 concentration (ppm)
      real fnh3m       ! 
      real fnh3p       ! floodwater partial pressure of ammonia
      real amlos1      ! ammonia loss from the pond (kg N/ha/hr) 
@@ -1941,10 +2214,15 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
 
          ! Calculate Hourly Floodwater Evaporation (HEF)
          !
-!         if (timestep .le. 6 .or. timestep .gt. 9) then
-            hef = g%ampef*sin(3.141593*float(timestep)/12.0) + 0.08  ! 10->9
-!         endif
+         ! hef = g%ampef*sin(3.141593*float(timestep)/12.0) + 0.08  ! original CERES-Rice code couldn't get to make sense
+         ! dsg 300609 equation below fitted  using sigma plot
+         hef = 0.1303*g%pond_evap*sin(0.2612*float(timestep)) + 0.0067675
          hef = abs(hef)
+
+!              Write (Err_string,*) ' hourly floodwater evaporation = ', hef,'  timestep = ',timestep
+!   	      call Write_string (Err_string)
+
+
 
 
          ! ammonia loss routine ... calculate floodwater nh3
@@ -1952,10 +2230,10 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
          tk     = ftemp + 273.
          g%pond_nh4_conc = g%pond_nh4 * 100.0 / g%pond_depth
          g%pond_no3_conc = g%pond_no3 * 100.0 / g%pond_depth
-         if (timestep .le. 6 .or. timestep .gt. 9 .or. g%pond_nh3_conc .ge. g%pond_nh4_conc) then
-            g%pond_nh3_conc = g%pond_nh4_conc/(1.0+10.0**(0.09018+2729.92/tk-g%fph))
+         if (timestep .le. 6 .or. timestep .gt. 9 .or. pond_nh3_conc .ge. g%pond_nh4_conc) then
+            pond_nh3_conc = g%pond_nh4_conc/(1.0+10.0**(0.09018+2729.92/tk-g%fph))
          endif
-         g%pond_nh3  = g%pond_nh3_conc * g%pond_depth * 0.01
+         pond_nh3  = pond_nh3_conc * g%pond_depth * 0.01
      
          wind   = 7.15 * hef                           ! 7.15->5.75
          if (g%rlai .gt. 1.0) then
@@ -1965,32 +2243,48 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
   ! dsg 180209   detemine partial pressure of ammonia (reference Freney et al 1981, AJAR 32:37-45)
          aloghk = 155.559 - 8621.06/tk - 25.6767*alog(tk) + 0.035388*tk
          hk     = exp(aloghk)
-         fnh3m  = g%pond_nh3_conc*0.001/14.0
+         fnh3m  = pond_nh3_conc*0.001/14.0
          fnh3p  = max (0.0,(10.0*fnh3m/hk))       ! 1.552
+
      
   !   dsg 180209  Now calculate ammonia N loss - reference: Godwin Singh Buresh and DeDatta (1990) pages 320-325 in Transactions of the 
   !                                              14th International Congress of Soil Science, "Modelling of N dynamics in relation to rice
   !                                              growth and yield", vol iv, Commission iv, Kyoto, japan 
          if (fnh3p .gt. 0.0) then
-         amlos1 = 0.036 * fnh3p + 0.0082 * wind + 0.000036 * fnh3p**2 * wind * g%pond_depth
+           amlos1 = 0.036 * fnh3p + 0.0082 * wind + 0.000036 * fnh3p**2 * wind * g%pond_depth
          endif
 
          if (fnh3p .le. 0.0) then
             amlos1 = 0.0
          endif
-         if (g%pond_nh3_conc .le. 0.0 .or. amlos1 .le. 0.0) then
+         if (pond_nh3_conc .le. 0.0 .or. amlos1 .le. 0.0) then
             amlos1 = 0.0
          endif
-!  dsg 031108 comment this out for time being - don't understand         g%pond_nh3  = min (g%pond_no3,g%pond_nh4)
-         amlos1 = min (amlos1,g%pond_nh3)
+!  dsg 031108 comment this out for time being - don't understand    g%pond_nh3  = min (g%pond_no3,g%pond_nh4)
+         pond_nh3  = min (pond_nh3,g%pond_nh4)
+         amlos1 = min (amlos1,pond_nh3)
          
+!              Write (Err_string,*) ' amloss = ', amlos1
+!   	      call Write_string (Err_string)
+
 !  dsg fudge factor for testing with Ahmad Suriadi
-         amlos1 = amlos1 * c%amlos_fudge_factor
+!         amlos1 = amlos1 * c%amlos_fudge_factor
 
          g%pond_nh4  = g%pond_nh4  - amlos1
-         g%amloss = amlos1
+         g%amloss = g%amloss + amlos1
          g%totaml = g%totaml + amlos1
          g%pond_nh4_conc = g%pond_nh4*100.0/g%pond_depth
+
+!              Write (Err_string,*) ' new pond_nh4 = ', g%pond_nh4
+!   	      call Write_string (Err_string)
+
+!   dsg 300609 reset pond_nh3_conc & pond_nh3 ready for the next day
+         if (timestep.eq.12) then
+            pond_nh3_conc = 0.0
+            pond_nh3_conc = 0.0
+!              Write (Err_string,*) ' end of TIMESTEP, the total amloss = ', g%amloss
+!   	      call Write_string (Err_string)
+         endif            
 
 
 
@@ -2159,9 +2453,13 @@ subroutine Pond_check_runoff_N ()
 
     g%pond_no3 = g%pond_no3 * (1 - loss_fraction)
     g%pond_nh4 = g%pond_nh4 * (1 - loss_fraction)
-    g%pond_nh3 = g%pond_nh3 * (1 - loss_fraction)
     g%pond_urea = g%pond_urea * (1 - loss_fraction)
    
+!     Compute concentrations of N in floodwater.
+      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
+      g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
+      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
+
    call pop_routine (my_name)
    return
 end subroutine
@@ -2307,25 +2605,8 @@ subroutine doInit1()
 
    call doRegistrations(id)
 
-   dummy = add_registration_with_units(getVariableReg, 'runoff', floatTypeDDML, 'mm')
-   dummy = add_registration_with_units(getVariableReg, 'crop_area', floatTypeDDML, 'ha')
-   dummy = add_registration_with_units(getVariableReg, 'day', intTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'rain_capture', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'available_water', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'evaporation', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'seepage', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'overflow', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'runoff_input', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'irrig_water_supplied', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'available_depth', floatTypeDDML, 'm')
-   dummy = add_registration_with_units(respondToGetReg, 'max_available_water', floatTypeDDML, 'Ml')
-   dummy = add_registration_with_units(respondToGetReg, 'min_volume', floatTypeDDML, 'Ml')
-   dummy = add_registration_with_units(respondToGetReg, 'max_pump', floatTypeDDML, 'Ml/day')
-   dummy = add_registration_with_units(respondToGetReg, 'annual_allocation', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'allocation_renewal_day', intTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'full', intTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'filling_event', intTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'storage_*', floatTypeDDML, 'ppm')
+   dummy = add_registration_with_units(respondToGetReg, 'algae_present', intTypeDDML, '')
+   dummy = add_registration_with_units(respondToGetReg, 'CEC', floatTypeDDML, '')
 
 end subroutine
 
@@ -2398,9 +2679,9 @@ subroutine Main (action, data_string)
       call Pond_set_my_variable (data_string)
 
    else if (action.eq.ACTION_prepare) then
-      call Pond_ActiveCheck ()
 
    else if (action.eq.ACTION_process) then
+      call Pond_ActiveCheck ()
       call Pond_ONprocess ()
       if (g%pond_active.eq.'yes') then 
         call Pond_sendActualResidueDecompositionCalculated()
