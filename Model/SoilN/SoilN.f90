@@ -1190,6 +1190,7 @@ subroutine soiln2_send_my_variable (variable_name)
    real       dlt_net_n_min(max_layer) ! net mineralisation (kg/ha)
    real       nh4ppm(max_layer)     ! soil ammonium conc (ppm)
    real       no3ppm(max_layer)     ! soil nitrate conc (ppm)
+   real       ureappm(max_layer)     ! soil urea conc (ppm)
    integer    num_layers            ! number of soil layers
    real       carbon_tot (max_layer) ! total carbon in soil(kg/ha)
    real       nit_tot (max_layer)   ! total N in soil (kg/ha)
