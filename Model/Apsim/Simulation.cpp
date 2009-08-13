@@ -191,6 +191,7 @@ void Simulation::resolveIncludes(string& sdml)
       if (posEndFileName == string::npos)
          throw runtime_error("Cannot find </include> tag");
       string includeFileName = sdml.substr(posFileName, posEndFileName-posFileName);
+      string modelType = splitOffBracketedValue(includeFileName, '(', ')');
 
       if (! fileExists(includeFileName))
          throw runtime_error("Cannot find include file: " + includeFileName);
@@ -203,7 +204,7 @@ void Simulation::resolveIncludes(string& sdml)
       else
          {
          XMLDocument doc(includeFileName);
-         contents = doc.documentElement().innerXML();
+         contents = findModelNode(doc.documentElement(), modelType);
          }
 
       unsigned posEndInclude = posEndFileName + strlen("</include>");
@@ -212,4 +213,22 @@ void Simulation::resolveIncludes(string& sdml)
       posInclude = sdml.find("<include>");
       }
    }
+
+// ------------------------------------------------------------------
+// Go find the <Model> node under the specified node.
+// ------------------------------------------------------------------
+string Simulation::findModelNode(XMLNode Node, const string& modelType)
+   {
+   XMLNode ModelNode;
+   if (modelType == "")
+      ModelNode = findNode(Node, "Model");
+   else
+      ModelNode = findNodeWithName(Node, modelType);
+
+   if (ModelNode.isValid())
+      return ModelNode.innerXML();
+   else
+      return "";
+   }
+
 

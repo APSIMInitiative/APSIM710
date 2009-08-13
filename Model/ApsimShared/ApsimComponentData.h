@@ -101,7 +101,7 @@ class EXPORT ApsimComponentData
       typedef std::vector<Section> Sections;
       mutable Sections sections;
       Sections::iterator findSection(const std::string& sectionName) const;
-
+      void replaceManagerMacros(std::string& contents, XMLNode ui) const;
 
       friend class ApsimSystemData;  // so that ApsimSystemData::appendChild can get to node.
    };

@@ -196,7 +196,7 @@ Public Class GenericUI
         Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
 
         ' set the banner image correctly.
-        Dim imagefile As String = Configuration.Instance.Info(Comp.Type, "image")
+        Dim imagefile As String = Types.Instance.MetaData(Comp.Type, "image")
         If imagefile <> "" And File.Exists(imagefile) Then
             PictureBox.BackgroundImage = Drawing.Image.FromFile(imagefile)
         End If
@@ -320,7 +320,7 @@ Public Class GenericUI
                         Dim Combo As FarPoint.Win.Spread.CellType.ComboBoxCellType = Grid.Cells(CultRow, 4).CellType
                         Dim Us As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
                         Dim CropComponent As Component = Controller.ApsimData.RootComponent.FindComponentInPaddock(Us, Grid.Cells(e.Row, 4).Text)
-                        Combo.Items = Configuration.Instance.GetCultivarsForCrop(CropComponent.Type)
+                        Combo.Items = Types.Instance.Cultivars(CropComponent.Type)
                         Exit For                    'stop looking for cultivar properties once you found the next one after the crop. 
                     End If
                 Next
@@ -496,7 +496,7 @@ Public Class GenericUI
                 If Not IsNothing(Paddock) Then
                     Dim Crops As New List(Of String)
                     For Each Child As Component In Paddock.ChildNodes
-                        If Configuration.Instance.Info(Child.Type, "IsCrop").ToLower = "yes" Then
+                        If Types.Instance.MetaData(Child.Type, "IsCrop").ToLower = "yes" Then
                             Crops.Add(Child.Name)
                         End If
                     Next
@@ -518,7 +518,7 @@ Public Class GenericUI
                 Next
                 ' If we found a crop row then go and get all cultivars for that crop.
                 If CropRow < UIUtility.GridUtility.FindFirstBlankCell(Grid, 1) - 1 Then
-                    Combo.Items = Configuration.Instance.GetCultivarsForCrop(Grid.Cells(CropRow, 4).Text)
+                    Combo.Items = Types.Instance.Cultivars(Grid.Cells(CropRow, 4).Text)
                 End If
 
 

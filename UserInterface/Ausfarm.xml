@@ -1,0 +1,713 @@
+<PlugIn>
+   <toolbox>%apsim%\UserInterface\ToolBoxes\Ausfarm.xml</toolbox>
+   <Type name="AusfarmPasture">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <IsCrop>Yes</IsCrop>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+         <dll>c:\program files\ausfarm\Pasture.dll</dll>
+         <drops>
+            <drop name="toolbox"/>
+            <drop name="area"/>
+            <drop name="simulation"/>
+            <drop name="folder"/>
+         </drops>
+         <variables link="%apsim%\Documentation\ModelInfo\pasture.xml"/>
+         <events link="%apsim%\Documentation\ModelInfo\pasture.xml"/>
+         <ApsimToSim>
+            <component name="[AusfarmPasture.name]" executable="%apsim%\Model\PastureScienceConverter.dll">
+               <executable>%apsim%\Model\PastureScienceConverter.dll</executable>
+               <initdata>
+                  <debug type="list" listvalues="on,off" description="debug">off</debug>
+                  <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
+                  <svp_fract type="text" description="svp_fract">0.75</svp_fract>
+                  <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
+               </initdata>
+            </component>
+            <component name="[AusfarmPasture.name]Model" executable="c:\program files\ausfarm\Pasture.dll">
+               <executable>c:\program files\ausfarm\Pasture.dll</executable>
+               <initdata>
+                  <![CDATA[
+                  <initsection>
+                     <init name="published_events" array="T">
+                     </init>
+                     <init name="driver_connections" array="T">
+                     </init>
+                     <init name="param_file" kind="string">
+                        <val></val>
+                     </init>
+                     <init name="species" kind="string">
+                        <val>[AusfarmPasture.species]</val>
+                     </init>
+                     [if [AusfarmPasture.Nutrients]]
+                     <init name="nutrients" kind="string">
+                        <val>[AusfarmPasture.nutrients]</val>
+                     </init>
+                     <init name="fertility" kind="double">
+                        <val>[AusfarmPasture.fertility]</val>
+                     </init>
+                     <init name="layers" kind="double" array="T" unit="mm">
+                     </init>
+                     <init name="max_rtdep" kind="double" unit="mm">
+                        <val>[AusfarmPasture.max_rtdep]</val>
+                     </init>
+                     <init name="lagged_day_t" kind="double" unit="oC">
+                        <val>[AusfarmPasture.lagged_day_t]</val>
+                     </init>
+                     <init name="phenology" kind="double">
+                        <val>[AusfarmPasture.phenology]</val>
+                     </init>
+                     <init name="flower_len" kind="double" unit="d">
+                        <val>[AusfarmPasture.flower_len]</val>
+                     </init>
+                     <init name="flower_time" kind="double" unit="d">
+                        <val>[AusfarmPasture.flower_time]</val>
+                     </init>
+                     <init name="senc_index" kind="double" unit="d">
+                        <val>[AusfarmPasture.senc_index]</val>
+                     </init>
+                     <init name="dorm_index" kind="double" unit="d">
+                        <val>[AusfarmPasture.dorm_index]</val>
+                     </init>
+                     <init name="dorm_t" kind="double" unit="oC">
+                        <val>[AusfarmPasture.dorm_t]</val>
+                     </init>
+                     <init name="extinct_coeff" kind="double" array="T">
+                        <val>0.0</val>
+                        <val>0.5</val>
+                        <val>0.0</val>
+                     </init>
+                     <init name="green" array="T">
+                        [foreach AusfarmPasture.AusfarmPastureGreen as Green]
+                        <element>
+                           <field name="status" kind="string">
+                              <val>[Green.status]</val>
+                           </field>
+                           <field name="herbage" array="T">
+                              [foreach Green.AusfarmPastureGreenHerbage as Herbage]
+                              <element>
+                                 <field name="dmd" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.dmd]</val>
+                                 </field>
+                                 <field name="weight" kind="double" array="T" unit="kg/ha">
+                                    <val>[Herbage.weight]</val>
+                                 </field>
+                                 <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.n_conc]</val>
+                                 </field>
+                                 <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.p_conc]</val>
+                                 </field>
+                                 <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.s_conc]</val>
+                                 </field>
+                                 <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                                    <val>[Herbage.spec_area]</val>
+                                 </field>
+                              </element>
+                              [endfor]
+                           </field>
+                           <field name="root_wt" array="T">
+                              [foreach Green.AusfarmPastureGreenHerbage as Herbage]
+                              <element kind="double" array="T" unit="kg/ha">
+                                 <val>[Herbage.root_wt]</val>
+                              </element>
+                              [endfor]
+                           </field>
+                           <field name="rt_dep" kind="double" unit="mm">
+                              <val>[Green.rt_dep]</val>
+                           </field>
+                           <field name="estab_index" kind="double">
+                              <val>[Green.estab_index]</val>
+                           </field>
+                           <field name="stress_index" kind="double">
+                              <val>[Green.stress_index]</val>
+                           </field>
+                           <field name="stem_reloc" kind="double" unit="kg/ha">
+                              <val>[Green.stem_reloc]</val>
+                           </field>
+                           <field name="frosts" kind="integer4">
+                              <val>[Green.frosts]</val>
+                           </field>
+                        </element>
+                        [endfor]
+                     </init>
+                     <init name="dry" array="T">
+                        [foreach AusfarmPasture.AusfarmPastureDry as Dry]
+                        <element>
+                           <field name="status" kind="string">
+                              <val>[Dry.status]</val>
+                           </field>
+                           <field name="herbage" array="T">
+                              [foreach Dry.AusfarmPastureDryHerbage as Herbage]
+                              <element>
+                                 <field name="dmd" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.dmd]</val>
+                                 </field>
+                                 <field name="weight" kind="double" array="T" unit="kg/ha">
+                                    <val>[Herbage.weight]</val>
+                                 </field>
+                                 <field name="n_conc" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.n_conc]</val>
+                                 </field>
+                                 <field name="p_conc" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.p_conc]</val>
+                                 </field>
+                                 <field name="s_conc" kind="double" array="T" unit="kg/kg">
+                                    <val>[Herbage.s_conc]</val>
+                                 </field>
+                                 <field name="spec_area" kind="double" array="T" unit="cm^2/g">
+                                    <val>[Herbage.spec_area]</val>
+                                 </field>
+                              </element>
+                              [endfor]
+                           </field>
+                        </element>
+                        [endfor]
+                     </init>
+                     [foreach AusfarmPasture.AusfarmPastureSeeds as Seeds]
+                     <init name="seeds">
+                        <field name="soft_unripe" kind="double" array="T" unit="kg/ha">
+                           <val>[Seeds.soft_unripe]</val>
+                        </field>
+                        <field name="soft_ripe" kind="double" array="T" unit="kg/ha">
+                           <val>[Seeds.soft_ripe]</val>
+                        </field>
+                        <field name="hard_unripe" kind="double" array="T" unit="kg/ha">
+                           <val>[Seeds.hard_unripe]</val>
+                        </field>
+                        <field name="hard_ripe" kind="double" array="T" unit="kg/ha">
+                           <val>[Seeds.hard_ripe]</val>
+                        </field>
+                     </init>
+                     [endfor]
+                     <init name="seed_dorm_time" kind="double" unit="d">
+                        <val>[AusfarmPasture.seed_dorm_time]</val>
+                     </init>
+                     <init name="germ_index" kind="double" unit="d">
+                        <val>[AusfarmPasture.germ_index]</val>
+                     </init>
+                     <init name="kl" kind="double" unit="d^-1">
+                        <val>[AusfarmPasture.kl]</val>
+                     </init>
+                     <init name="ll" kind="double" unit="mm/mm">
+                        <val>[AusfarmPasture.ll]</val>
+                     </init>
+                     [endif]
+                  </initsection>
+                  ]]>
+               </initdata>
+            </component>
+         </ApsimToSim>
+      </MetaData>
+   </Type>
+   <Type name="AusfarmPastureDry">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <SmallIcon>%apsim%\UserInterface\Images\cube_yellow16.png</SmallIcon>
+         <drops>
+            <drop name="AusfarmPasture"/>
+         </drops>
+      </MetaData>
+   </Type>
+   <Type name="AusfarmPastureDryHerbage">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <SmallIcon>%apsim%\UserInterface\Images\cube_yellow16.png</SmallIcon>
+         <drops>
+            <drop name="AusfarmPastureDry"/>
+         </drops>
+      </MetaData>
+   </Type>
+   <Type name="AusfarmPastureGreen">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <SmallIcon>%apsim%\UserInterface\Images\cube_green16.png</SmallIcon>
+         <drops>
+            <drop name="AusfarmPasture"/>
+         </drops>
+      </MetaData>
+   </Type>
+   <Type name="AusfarmPastureGreenHerbage">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <SmallIcon>%apsim%\UserInterface\Images\cube_green16.png</SmallIcon>
+         <drops>
+            <drop name="AusfarmPastureGreen"/>
+         </drops>
+      </MetaData>
+   </Type>
+   <Type name="AusfarmPastureSeeds">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <SmallIcon>%apsim%\UserInterface\Images\seeds16.gif</SmallIcon>
+         <drops>
+            <drop name="AusfarmPasture"/>
+         </drops>
+      </MetaData>
+   </Type>
+   <Type name="stock">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <Documentation name="Component description">../apsim/stock/docs/Stock Component Description.htm</Documentation>
+         <Documentation name="Component drivers">../apsim/stock/docs/Stock Component Drivers.htm</Documentation>
+         <LargeIcon>%apsim%\UserInterface\Images\stock32.bmp</LargeIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\stock16.bmp</SmallIcon>
+         <dll>c:\program files\ausfarm\stock.dll</dll>
+         <drops>
+            <drop name="toolbox"/>
+            <drop name="area"/>
+            <drop name="simulation"/>
+            <drop name="folder"/>
+         </drops>
+         <variables link="%apsim%\Documentation\ModelInfo\stock.xml"/>
+         <events link="%apsim%\Documentation\ModelInfo\stock.xml"/>
+         <ApsimToSim>
+            <component name="[stock.name]" executable="[dll]">
+               <executable>[dll]</executable>
+               <initdata>
+                  <![CDATA[
+                  <initsection>
+                     <init name="rand_seed" kind="integer4">
+                        <val>1</val>
+                     </init>
+                     <init name="genotypes" array="T">
+                        [foreach stock.StockGenotype as genotype]
+                        <element>
+                           <field name="name" kind="string">
+                              <val>[genotype.genotypename]</val>
+                           </field>
+                           <field name="dam_breed" kind="string">
+                              <val>[genotype.dam_breed]</val>
+                           </field>
+                           <field name="sire_breed" kind="string">
+                              <val>[genotype.sire_breed]</val>
+                           </field>
+                           <field name="generation" kind="integer4">
+                              <val>[genotype.generation]</val>
+                           </field>
+                           <field name="srw" kind="double" unit="kg">
+                              <val>[genotype.srw]</val>
+                           </field>
+                           <field name="conception" kind="double" array="T">
+                              <val>[genotype.conception1]</val>
+                              <val>[genotype.conception2]</val>
+                           </field>
+                           <field name="death_rate" kind="double" unit="/y">
+                              <val>[genotype.death_rate]</val>
+                           </field>
+                           <field name="ref_fleece_wt" kind="double" unit="kg">
+                              <val>[genotype.ref_fleece_wt]</val>
+                           </field>
+                           <field name="max_fibre_diam" kind="double" unit="um">
+                              <val>[genotype.max_fibre_diam]</val>
+                           </field>
+                           <field name="fleece_yield" kind="double" unit="kg/kg">
+                              <val>[genotype.fleece_yield]</val>
+                           </field>
+                           <field name="peak_milk" kind="double" unit="kg">
+                              <val>[genotype.peak_milk]</val>
+                           </field>
+                        </element>
+                        [endfor]
+                     </init>
+
+                     <init name="cattle" array="T">
+                        [foreach stock.cattle]
+                        <element>
+                           <field name="name" kind="string">
+                              <val>[cattle.GenotypeName]</val>
+                           </field>
+                           <field name="number" kind="integer4">
+                              <val>[cattle.number]</val>
+                           </field>
+                           <field name="sex" kind="string">
+                              <val>[cattle.sex]</val>
+                           </field>
+                           <field name="age" kind="double">
+                              <val>[cattle.age]</val>
+                           </field>
+                           <field name="weight" kind="double">
+                              <val>[cattle.weight]</val>
+                           </field>
+                           <field name="max_prev_wt" kind="double">
+                              <val>[cattle.max_prev_wt]</val>
+                           </field>
+                           <field name="mated_to" kind="string">
+                              <val>[cattle.mated_to]</val>
+                           </field>
+                           <field name="pregnant" kind="integer4">
+                              <val>[cattle.pregnant]</val>
+                           </field>
+                           <field name="lactating" kind="integer4">
+                              <val>[cattle.lactating]</val>
+                           </field>
+                           <field name="no_foetuses" kind="integer4">
+                              <val>[cattle.no_foetuses]</val>
+                           </field>
+                           <field name="no_suckling" kind="string">
+                              <val>[cattle.no_suckling]</val>
+                           </field>
+                           <field name="birth_cs" kind="double">
+                              <val>[cattle.birth_cs]</val>
+                           </field>
+                           <field name="calf_wt" kind="double">
+                              <val>[cattle.calf_wt]</val>
+                           </field>
+                           <field name="paddock" kind="string">
+                              <val>[cattle.paddock]</val>
+                           </field>
+                           <field name="tag" kind="integer4">
+                              <val>[cattle.tag]</val>
+                           </field>
+                           <field name="priority" kind="integer4">
+                              <val>[cattle.priority]</val>
+                           </field>
+                        </element>
+                        [endfor]
+                     </init>
+
+                     <init name="sheep" array="T">
+                        [foreach stock.sheep]
+                        <element>
+                           <field name="name" kind="string">
+                              <val>[sheep.GenotypeName]</val>
+                           </field>
+                           <field name="number" kind="integer4">
+                              <val>[sheep.number]</val>
+                           </field>
+                           <field name="sex" kind="string">
+                              <val>[sheep.sex]</val>
+                           </field>
+                           <field name="age" kind="double">
+                              <val>[sheep.age]</val>
+                           </field>
+                           <field name="weight" kind="double">
+                              <val>[sheep.weight]</val>
+                           </field>
+                           <field name="max_prev_wt" kind="double">
+                              <val>[sheep.max_prev_wt]</val>
+                           </field>
+                           <field name="fleece_wt" kind="double">
+                              <val>[sheep.fleece_wt]</val>
+                           </field>
+                           <field name="fibre_diam" kind="double">
+                              <val>[sheep.fibre_diam]</val>
+                           </field>
+                           <field name="mated_to" kind="string">
+                              <val>[sheep.mated_to]</val>
+                           </field>
+                           <field name="pregnant" kind="integer4">
+                              <val>[sheep.pregnant]</val>
+                           </field>
+                           <field name="lactating" kind="integer4">
+                              <val>[sheep.lactating]</val>
+                           </field>
+                           <field name="no_young" kind="integer4">
+                              <val>[sheep.no_young]</val>
+                           </field>
+                           <field name="birth_cs" kind="double">
+                              <val>[sheep.birth_cs]</val>
+                           </field>
+                           <field name="lamb_wt" kind="double">
+                              <val>[sheep.lamb_wt]</val>
+                           </field>
+                           <field name="lamb_fleece_wt" kind="double">
+                              <val>[sheep.lamb_fleece_wt]</val>
+                           </field>
+                           <field name="paddock" kind="string">
+                              <val>[sheep.paddock]</val>
+                           </field>
+                           <field name="tag" kind="integer4">
+                              <val>[sheep.tag]</val>
+                           </field>
+                           <field name="priority" kind="integer4">
+                              <val>[sheep.priority]</val>
+                           </field>
+                        </element>
+                        [endfor]
+                     </init>
+
+                  </initsection>
+                  ]]>
+               </initdata>
+            </component>
+            <component name="[stock.name]ScienceConverter" executable="%apsim%\Model\stockscienceconverter.dll">
+               <executable>%apsim%\Model\stockscienceconverter.dll</executable>
+               <initdata>
+                  [Model]
+                  <debug type="list" listvalues="on,off" description="debug">off</debug>
+                  <stock_module type="modulename" description="stock_module">[stock.name]</stock_module>
+                  <conversion_model type="text" description="conversion_model">nonherbage</conversion_model>
+                  <fraction_faeces_added type="text" description="fraction_faeces_added">[stock.fraction_faeces_added]</fraction_faeces_added>
+                  <fraction_urine_added type="text" description="fraction_urine_added">[stock.fraction_urine_added]</fraction_urine_added>
+               </initdata>
+            </component>
+
+            [if [stock.herbage1]]
+            <component name="[stock.herbage1]StockHerbageConverter" executable="%apsim%\Model\stockscienceconverter.dll">
+               <executable>%apsim%\Model\stockscienceconverter.dll</executable>
+               <initdata>
+                  [Model]
+                  <debug type="list" listvalues="on,off">off</debug>
+                  <conversion_model>herbage</conversion_model>
+                  <herbage_model>plant</herbage_model>
+                  <herbage_module_name type="modulename">[stock.herbage1]</herbage_module_name>
+               </initdata>
+            </component>
+
+            [endif]
+            [if [stock.herbage2]]
+            <component name="[stock.herbage2]StockHerbageConverter" executable="%apsim%\Model\stockscienceconverter.dll">
+               <executable>%apsim%\Model\stockscienceconverter.dll</executable>
+               <initdata>
+                  [Model]
+                  <debug type="list" listvalues="on,off">off</debug>
+                  <conversion_model>herbage</conversion_model>
+                  <herbage_model>plant</herbage_model>
+                  <herbage_module_name type="modulename">[stock.herbage2]</herbage_module_name>
+               </initdata>
+            </component>
+
+            [endif]
+         </ApsimToSim>
+      </MetaData>
+      <Model>
+         <!--    herbage_module_name = lablab
+         conversion_model = herbage
+         herbage_model = plant
+         -->
+         <dmdValue>0.8 0.7 0.6 0.5 0.4 0.3</dmdValue>
+         <!--    debug  = on
+         -->
+         <base_legume_module>
+            <!--  Basic herbage information from which other herbage modules can inherit information.  Do not use this herbage in
+            Simulations but choose from the following list of herbage modules.
+            -->
+            <specific_detach_rate units="ha/kg animal/day">0.000002</specific_detach_rate>
+            <proportion_legume>1.0</proportion_legume>
+            <dmd_seed description="digestibility - unripe ripe">0.80 0.80                 </dmd_seed>
+            <seed_class description="'Equivalent digestibility class' - 1 = 80%, 2 = 70%, etc">1 1                     </seed_class>
+            <cp_n_ratio description="crude protein : N ratio">6.25                    </cp_n_ratio>
+            <p_conc_green_leaf_default description="default P concentration">0.004   </p_conc_green_leaf_default>
+            <p_conc_green_stem_default>0.003</p_conc_green_stem_default>
+            <p_conc_green_pod_default>0.003</p_conc_green_pod_default>
+            <p_conc_green_meal_default>0.003</p_conc_green_meal_default>
+            <p_conc_green_oil_default>0.003</p_conc_green_oil_default>
+            <p_conc_senesced_leaf_default>0.004</p_conc_senesced_leaf_default>
+            <p_conc_senesced_stem_default>0.003</p_conc_senesced_stem_default>
+            <p_conc_senesced_pod_default>0.003</p_conc_senesced_pod_default>
+            <p_conc_senesced_meal_default>0.003</p_conc_senesced_meal_default>
+            <p_conc_senesced_oil_default>0.003</p_conc_senesced_oil_default>
+            <p_conc_dead_leaf_default>0.004</p_conc_dead_leaf_default>
+            <p_conc_dead_stem_default>0.003</p_conc_dead_stem_default>
+            <p_conc_dead_pod_default>0.003</p_conc_dead_pod_default>
+            <p_conc_dead_meal_default>0.003</p_conc_dead_meal_default>
+            <p_conc_dead_oil_default>0.003</p_conc_dead_oil_default>
+            <ash_alk_green_leaf_default description="default Ash alkalinity">254.0  </ash_alk_green_leaf_default>
+            <ash_alk_green_stem_default>96.0</ash_alk_green_stem_default>
+            <ash_alk_green_pod_default>96.0</ash_alk_green_pod_default>
+            <ash_alk_green_meal_default>96.0</ash_alk_green_meal_default>
+            <ash_alk_green_oil_default>96.0</ash_alk_green_oil_default>
+            <ash_alk_senesced_leaf_default>254.0</ash_alk_senesced_leaf_default>
+            <ash_alk_senesced_stem_default>96.0</ash_alk_senesced_stem_default>
+            <ash_alk_senesced_pod_default>96.0</ash_alk_senesced_pod_default>
+            <ash_alk_senesced_meal_default>96.0</ash_alk_senesced_meal_default>
+            <ash_alk_senesced_oil_default>96.0</ash_alk_senesced_oil_default>
+            <ash_alk_dead_leaf_default>254.0</ash_alk_dead_leaf_default>
+            <ash_alk_dead_stem_default>96.0</ash_alk_dead_stem_default>
+            <ash_alk_dead_pod_default>96.0</ash_alk_dead_pod_default>
+            <ash_alk_dead_meal_default>96.0</ash_alk_dead_meal_default>
+            <ash_alk_dead_oil_default>96.0</ash_alk_dead_oil_default>
+            <ns_ratio_green_leaf_default description="default N:S concentration ratio">19.0   </ns_ratio_green_leaf_default>
+            <ns_ratio_green_stem_default>11.0</ns_ratio_green_stem_default>
+            <ns_ratio_green_pod_default>11.0</ns_ratio_green_pod_default>
+            <ns_ratio_green_meal_default>11.0</ns_ratio_green_meal_default>
+            <ns_ratio_green_oil_default>11.0</ns_ratio_green_oil_default>
+            <ns_ratio_senesced_leaf_default>19.0</ns_ratio_senesced_leaf_default>
+            <ns_ratio_senesced_stem_default>11.0</ns_ratio_senesced_stem_default>
+            <ns_ratio_senesced_pod_default>11.0</ns_ratio_senesced_pod_default>
+            <ns_ratio_senesced_meal_default>11.0</ns_ratio_senesced_meal_default>
+            <ns_ratio_senesced_oil_default>11.0</ns_ratio_senesced_oil_default>
+            <ns_ratio_dead_leaf_default>19.0</ns_ratio_dead_leaf_default>
+            <ns_ratio_dead_stem_default>11.0</ns_ratio_dead_stem_default>
+            <ns_ratio_dead_pod_default>11.0</ns_ratio_dead_pod_default>
+            <ns_ratio_dead_meal_default>11.0</ns_ratio_dead_meal_default>
+            <ns_ratio_dead_oil_default>11.0</ns_ratio_dead_oil_default>
+            <np_ratio_green_leaf_default description="default N:P concentration ratio">8.0       </np_ratio_green_leaf_default>
+            <np_ratio_green_stem_default>8.0</np_ratio_green_stem_default>
+            <np_ratio_green_pod_default>8.0</np_ratio_green_pod_default>
+            <np_ratio_green_meal_default>8.0</np_ratio_green_meal_default>
+            <np_ratio_green_oil_default>8.0</np_ratio_green_oil_default>
+            <np_ratio_senesced_leaf_default>8.0</np_ratio_senesced_leaf_default>
+            <np_ratio_senesced_stem_default>8.0</np_ratio_senesced_stem_default>
+            <np_ratio_senesced_pod_default>8.0</np_ratio_senesced_pod_default>
+            <np_ratio_senesced_meal_default>8.0</np_ratio_senesced_meal_default>
+            <np_ratio_senesced_oil_default>8.0</np_ratio_senesced_oil_default>
+            <np_ratio_dead_leaf_default>8.0</np_ratio_dead_leaf_default>
+            <np_ratio_dead_stem_default>8.0</np_ratio_dead_stem_default>
+            <np_ratio_dead_pod_default>8.0</np_ratio_dead_pod_default>
+            <np_ratio_dead_meal_default>8.0</np_ratio_dead_meal_default>
+            <np_ratio_dead_oil_default>8.0</np_ratio_dead_oil_default>
+         </base_legume_module>
+         <base_gramineae_module>
+            <!--  Basic herbage information from which other herbage modules can inherit information.  Do not use this herbage in
+            Simulations but choose from the following list of herbage modules.
+            -->
+            <specific_detach_rate units="ha/kg animal/day">0.000002</specific_detach_rate>
+            <proportion_legume>0.0</proportion_legume>
+            <dmd_seed>0.90 0.80</dmd_seed>
+            <seed_class>1 1</seed_class>
+            <cp_n_ratio>6.25</cp_n_ratio>
+            <p_conc_green_leaf_default>0.004</p_conc_green_leaf_default>
+            <p_conc_green_stem_default>0.003</p_conc_green_stem_default>
+            <p_conc_green_pod_default>0.003</p_conc_green_pod_default>
+            <p_conc_green_meal_default>0.003</p_conc_green_meal_default>
+            <p_conc_green_oil_default>0.003</p_conc_green_oil_default>
+            <p_conc_senesced_leaf_default>0.004</p_conc_senesced_leaf_default>
+            <p_conc_senesced_stem_default>0.003</p_conc_senesced_stem_default>
+            <p_conc_senesced_pod_default>0.003</p_conc_senesced_pod_default>
+            <p_conc_senesced_meal_default>0.003</p_conc_senesced_meal_default>
+            <p_conc_senesced_oil_default>0.003</p_conc_senesced_oil_default>
+            <p_conc_dead_leaf_default>0.004</p_conc_dead_leaf_default>
+            <p_conc_dead_stem_default>0.003</p_conc_dead_stem_default>
+            <p_conc_dead_pod_default>0.003</p_conc_dead_pod_default>
+            <p_conc_dead_meal_default>0.003</p_conc_dead_meal_default>
+            <p_conc_dead_oil_default>0.003</p_conc_dead_oil_default>
+            <ash_alk_green_leaf_default>254.0</ash_alk_green_leaf_default>
+            <ash_alk_green_stem_default>96.0</ash_alk_green_stem_default>
+            <ash_alk_green_pod_default>96.0</ash_alk_green_pod_default>
+            <ash_alk_green_meal_default>96.0</ash_alk_green_meal_default>
+            <ash_alk_green_oil_default>96.0</ash_alk_green_oil_default>
+            <ash_alk_senesced_leaf_default>254.0</ash_alk_senesced_leaf_default>
+            <ash_alk_senesced_stem_default>96.0</ash_alk_senesced_stem_default>
+            <ash_alk_senesced_pod_default>96.0</ash_alk_senesced_pod_default>
+            <ash_alk_senesced_meal_default>96.0</ash_alk_senesced_meal_default>
+            <ash_alk_senesced_oil_default>96.0</ash_alk_senesced_oil_default>
+            <ash_alk_dead_leaf_default>254.0</ash_alk_dead_leaf_default>
+            <ash_alk_dead_stem_default>96.0</ash_alk_dead_stem_default>
+            <ash_alk_dead_pod_default>96.0</ash_alk_dead_pod_default>
+            <ash_alk_dead_meal_default>96.0</ash_alk_dead_meal_default>
+            <ash_alk_dead_oil_default>96.0</ash_alk_dead_oil_default>
+            <ns_ratio_green_leaf_default>19.0</ns_ratio_green_leaf_default>
+            <ns_ratio_green_stem_default>11.0</ns_ratio_green_stem_default>
+            <ns_ratio_green_pod_default>11.0</ns_ratio_green_pod_default>
+            <ns_ratio_green_meal_default>11.0</ns_ratio_green_meal_default>
+            <ns_ratio_green_oil_default>11.0</ns_ratio_green_oil_default>
+            <ns_ratio_senesced_leaf_default>19.0</ns_ratio_senesced_leaf_default>
+            <ns_ratio_senesced_stem_default>11.0</ns_ratio_senesced_stem_default>
+            <ns_ratio_senesced_pod_default>11.0</ns_ratio_senesced_pod_default>
+            <ns_ratio_senesced_meal_default>11.0</ns_ratio_senesced_meal_default>
+            <ns_ratio_senesced_oil_default>11.0</ns_ratio_senesced_oil_default>
+            <ns_ratio_dead_leaf_default>19.0</ns_ratio_dead_leaf_default>
+            <ns_ratio_dead_stem_default>11.0</ns_ratio_dead_stem_default>
+            <ns_ratio_dead_pod_default>11.0</ns_ratio_dead_pod_default>
+            <ns_ratio_dead_meal_default>11.0</ns_ratio_dead_meal_default>
+            <ns_ratio_dead_oil_default>11.0</ns_ratio_dead_oil_default>
+            <np_ratio_green_leaf_default>8.0</np_ratio_green_leaf_default>
+            <np_ratio_green_stem_default>8.0</np_ratio_green_stem_default>
+            <np_ratio_green_pod_default>8.0</np_ratio_green_pod_default>
+            <np_ratio_green_meal_default>8.0</np_ratio_green_meal_default>
+            <np_ratio_green_oil_default>8.0</np_ratio_green_oil_default>
+            <np_ratio_senesced_leaf_default>8.0</np_ratio_senesced_leaf_default>
+            <np_ratio_senesced_stem_default>8.0</np_ratio_senesced_stem_default>
+            <np_ratio_senesced_pod_default>8.0</np_ratio_senesced_pod_default>
+            <np_ratio_senesced_meal_default>8.0</np_ratio_senesced_meal_default>
+            <np_ratio_senesced_oil_default>8.0</np_ratio_senesced_oil_default>
+            <np_ratio_dead_leaf_default>8.0</np_ratio_dead_leaf_default>
+            <np_ratio_dead_stem_default>8.0</np_ratio_dead_stem_default>
+            <np_ratio_dead_pod_default>8.0</np_ratio_dead_pod_default>
+            <np_ratio_dead_meal_default>8.0</np_ratio_dead_meal_default>
+            <np_ratio_dead_oil_default>8.0</np_ratio_dead_oil_default>
+         </base_gramineae_module>
+         <lablab>
+            <derived_from>base_legume_module</derived_from>
+         </lablab>
+         <lucerne>
+            <derived_from>base_legume_module</derived_from>
+         </lucerne>
+         <sweetsorghum>
+            <derived_from>base_gramineae_module</derived_from>
+         </sweetsorghum>
+         <wheat>
+            <derived_from>base_gramineae_module</derived_from>
+         </wheat>
+         <surfaceom>
+            <p_conc_cellulose_default>0.003</p_conc_cellulose_default>
+            <p_conc_carbohydrate_default>0.003</p_conc_carbohydrate_default>
+            <p_conc_lignin_default>0.003</p_conc_lignin_default>
+            <ash_alk_cellulose_default>96.0</ash_alk_cellulose_default>
+            <ash_alk_carbohydrate_default>96.0</ash_alk_carbohydrate_default>
+            <ash_alk_lignin_default>96.0</ash_alk_lignin_default>
+            <ns_ratio_cellulose_default>11.0</ns_ratio_cellulose_default>
+            <ns_ratio_carbohydrate_default>11.0</ns_ratio_carbohydrate_default>
+            <ns_ratio_lignin_default>11.0</ns_ratio_lignin_default>
+            <np_ratio_cellulose_default>8.0</np_ratio_cellulose_default>
+            <np_ratio_carbohydrate_default>8.0</np_ratio_carbohydrate_default>
+            <np_ratio_lignin_default>8.0</np_ratio_lignin_default>
+            <dmd_standing>0.50 0.35 0.30</dmd_standing>
+            <dmd_lying>0.30 0.30 0.30</dmd_lying>
+            <dmd_weighting_carbohydrate>1</dmd_weighting_carbohydrate>
+            <dmd_weighting_cellulose>1</dmd_weighting_cellulose>
+            <dmd_weighting_lignin>1</dmd_weighting_lignin>
+            <cp_n_ratio>6.25</cp_n_ratio>
+            <proportion_legume>0.5</proportion_legume>
+         </surfaceom>
+      </Model>
+
+   </Type>
+   <Type name="supplement">
+      <MetaData>
+         <UItype>VBUserInterface.GenericUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <Documentation name="Component description">../apsim/supplement/docs/supplement Component Description.htm</Documentation>
+         <Documentation name="Component drivers">../apsim/supplement/docs/supplement Component Drivers.htm</Documentation>
+         <LargeIcon>%apsim%\UserInterface\Images\herbage_green32.gif</LargeIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\herbage_green16.gif</SmallIcon>
+         <dll>c:\program files\ausfarm\supplement.dll</dll>
+         <drops>
+            <drop name="toolbox"/>
+            <drop name="area"/>
+            <drop name="simulation"/>
+            <drop name="folder"/>
+         </drops>
+         <variables link="%apsim%\Documentation\ModelInfo\supplement.xml"/>
+         <events link="%apsim%\Documentation\ModelInfo\supplement.xml"/>
+         <ApsimToSim>
+            <component name="[supplement.name]" executable="[dll]">
+               <executable>[dll]</executable>
+               <initdata><![CDATA[
+                  <init name="spoilage_time" kind="double" unit="d">
+                     <val>0</val>
+                  </init>
+                  <init name="stores" array="T">
+                  </init>
+               ]]></initdata>
+            </component>
+            <component name="[supplement.name]ScienceConverter" executable="%apsim%\Model\supplementscienceconverter.dll">
+               <executable>%apsim%\Model\supplementscienceconverter.dll</executable>
+               <initdata>
+                  <debug type="list" listvalues="on,off" description="debug">off</debug>
+                  <supplement_module type="modulename" description="supplement_module">[supplement.name]</supplement_module>
+               </initdata>
+            </component>
+         </ApsimToSim>
+      </MetaData>
+   </Type>
+</PlugIn>

@@ -11,7 +11,6 @@
     <cultivarfile>%apsim%\UserInterface\cultivars.xml</cultivarfile>
     <actionfile>%apsim%\UserInterface\actions.xml</actionfile>
     <ProtocolToVariablesFile>%apsim%\UserInterface\ProtocolToVariables.xsl</ProtocolToVariablesFile>
-    <UIConfigurationFolder>%apsim%\userinterface\types</UIConfigurationFolder>
     <ComponentDescriptionFileName>%apsim%\userinterface\ComponentDescription.xml</ComponentDescriptionFileName>
     <ToolboxesVisible>Yes</ToolboxesVisible>
     <SplashScreen>APSIMUI.ApsimUISplash</SplashScreen>
@@ -27,18 +26,17 @@
     <helpheight> 231</helpheight>
     <toolboxheight> 196</toolboxheight>
     <windowstate> 0</windowstate>
-    <top>84</top>
-    <left>175</left>
-    <width> 926</width>
-    <height> 661</height>
-    <ToolBoxFolder>%apsim%\UserInterface\Toolboxes</ToolBoxFolder>
-    <ToolBoxFolder>%apsim%\UserInterface\Toolboxes\Graph</ToolBoxFolder>
+    <top>176</top>
+    <left>245</left>
+    <width> 924</width>
+    <height> 740</height>
     <NewSimulationFolder>%apsim%\Examples</NewSimulationFolder>
     <Minimised>no</Minimised>
-    <RecentFile>C:\Apsim\Tests\Root\Root.apsim</RecentFile>
+    <RecentFile>%apsim%\Examples\Butterfly Pea.apsim</RecentFile>
     <ApsimFinishedWAVFileName>%apsim%\UserInterface\Apsim Finished Ding.wav</ApsimFinishedWAVFileName>
-    <Recent>/simulations/Root Test</Recent>
-    <Recent>/simulations/Root Test2</Recent>
+    <HideMainMenu>No</HideMainMenu>
+    <PlugIn>%apsim%\UserInterface\ApsimUIPlugIn.xml</PlugIn>
+    <PlugIn>%apsim%\UserInterface\Ausfarm.xml</PlugIn>
   </ApsimUI>
   <APSoil>
     <TypesFile>%apsim%\UserInterface\types.xml</TypesFile>
@@ -3037,6 +3035,27 @@
       <command>SearchReplace(report, "dlt_p_retrans_grain", "GrainRetranslocationP")</command>
       <command>SearchReplace(tracker, "dlt_p_retrans_grain", "GrainRetranslocationP")</command>
       <command>SearchReplace(manager, "dlt_p_retrans_grain", "GrainRetranslocationP")</command>
+    </conversion>
+  </Conversions>
+  <Conversions>
+    <to>7.1</to>
+    <conversion>
+      <description>Replaced %apsim/Model/SoilWat.xml [Standard] to %apsim/Model/Soil.xml [SoilWat]</description>
+      <command>SearchReplaceConRaw("%[Aa][Pp][Ss][Ii][Mm]%[/\\][Mm][Oo][Dd][Ee][Ll][/\\][Ss][Oo][Ii][Ll][Ww][Aa][Tt]\.[Xx][Mm][Ll][[:blank:]]+\[[Ss][Tt][Aa][Nn][Dd][Aa][Rr][Dd]\]",
+                                   "%apsim%/Model/Soil.xml [SoilWat]")
+      </command>
+    </conversion>
+    <conversion>
+      <description>Replaced %apsim/Model/SoilN.xml [Standard] to %apsim/Model/Soil.xml [SoilN]</description>
+      <command>SearchReplaceConRaw("%[Aa][Pp][Ss][Ii][Mm]%[/\\][Mm][Oo][Dd][Ee][Ll][/\\][Ss][Oo][Ii][Ll][Nn]\.[Xx][Mm][Ll][[:blank:]]+\[[Ss][Tt][Aa][Nn][Dd][Aa][Rr][Dd]\]",
+                                   "%apsim%/Model/Soil.xml [SoilN]")
+      </command>
+    </conversion>
+    <conversion>
+      <description>Replaced %apsim/Model/SoilP.xml [Standard] to %apsim/Model/Soil.xml [SoilP]</description>
+      <command>SearchReplaceConRaw("%[Aa][Pp][Ss][Ii][Mm]%[/\\][Mm][Oo][Dd][Ee][Ll][/\\][Ss][Oo][Ii][Ll][Pp]\.[Xx][Mm][Ll][[:blank:]]+\[[Ss][Tt][Aa][Nn][Dd][Aa][Rr][Dd]\]",
+                                   "%apsim%/Model/Soil.xml [SoilP]")
+      </command>
     </conversion>
   </Conversions>
 </APSIM>

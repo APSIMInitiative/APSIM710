@@ -1,0 +1,571 @@
+<Type name="soil">
+   <MetaData>
+      <UItype>CSUserInterface.SoilUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Water science documentation">../apsim/soilwat2/docs/soilwat2_science.htm</Documentation>
+      <Documentation name="Nitrogen science documentation">../apsim/soiln2/docs/soiln2_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\shovel32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\shovel16.bmp</SmallIcon>
+      <dll>%apsim%\Model\SoilWat.dll</dll>
+      <dll>%apsim%\Model\SoilN.dll</dll>
+      <dll>%apsim%\Model\SoilP.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <variables name="Soil water variables" link="%apsim%\Documentation\ModelInfo\soilwat.xml"/>
+      <variables name="Soil nitrogen variables" link="%apsim%\Documentation\ModelInfo\soiln.xml"/>
+      <variables name="Soil phosphorus variables">
+         <variable name="labile_p" array="T" description="Labile Phosphorus - layered (kg/ha)"/>
+         <variable name="banded_p" array="T" description="Banded Phosphorus - layered (kg/ha)"/>
+         <variable name="rock_p" array="T" description="Rock Phosphorus - layered (kg/ha)"/>
+         <variable name="biom_p" array="T" description="Biomass Phosphorus - layered (kg/ha)"/>
+         <variable name="hum_p" array="T" description="Humic Phosphorus - layered (kg/ha)"/>
+         <variable name="fom_p" array="T" description="FOM Phosphorus - layered (kg/ha)"/>
+         <variable name="soil_test_p" array="T" description="Soil Test Phosphorus - layered (kg/ha)"/>
+      </variables>
+      <events name="Soil water events" link="%apsim%\Documentation\ModelInfo\soilwat.xml"/>
+      <events name="Soil nitrogen events" link="%apsim%\Documentation\ModelInfo\soiln.xml"/>
+      <ApsimToSim>
+         <component name="[soil.name] Water" executable="%apsim%\Model\SoilWat.dll">
+            <executable>%apsim%\Model\SoilWat.dll</executable>
+            <initdata>
+               [Model SoilWat]
+               <diffus_const>[soil.DiffusConst]</diffus_const>
+               <diffus_slope>[soil.DiffusSlope]</diffus_slope>
+               <cn2_bare>[soil.CN2Bare]</cn2_bare>
+               <cn_red>[soil.CNRed]</cn_red>
+               <cn_cov>[soil.CNCov]</cn_cov>
+               <salb>[soil.Salb]</salb>
+               [if [soil.SummerCona]]
+               <SummerCona>[soil.SummerCona]</SummerCona>
+               <WinterCona>[soil.WinterCona]</WinterCona>
+               <SummerU>[soil.SummerU]</SummerU>
+               <WinterU>[soil.WinterU]</WinterU>
+               <SummerDate>[soil.SummerDate]</SummerDate>
+               <WinterDate>[soil.WinterDate]</WinterDate>
+               [else]
+               <cona>[soil.Cona]</cona>
+               <u>[soil.U]</u>
+               [endif]
+               <dlayer>[soil.Thickness]</dlayer>
+               <sat>[soil.Sat]</sat>
+               <dul>[soil.Dul]</dul>
+               <ll15>[soil.LL15]</ll15>
+               <air_dry>[soil.AirDry]</air_dry>
+               <swcon>[soil.SWCon]</swcon>
+               <bd>[soil.BD]</bd>
+               <sw>[soil.SW]</sw>
+               [if [soil.MWCon]]
+               <mwcon>[soil.MWCon]</mwcon>
+               [endif]
+               [if [soil.KS]]
+               <ks>[soil.KS]</ks>
+               [endif]
+            </initdata>
+         </component>
+         <component name="[soil.name] Nitrogen" executable="%apsim%\Model\SoilN.dll">
+            <executable>%apsim%\Model\SoilN.dll</executable>
+            <initdata>
+               [Model SoilN]
+               [if "[soil.SoilType]"]
+               <soiltype>[soil.SoilType]</soiltype>
+               [endif]
+               <root_cn>[soil.RootCN]</root_cn>
+               <root_wt>[soil.RootWT]</root_wt>
+               <soil_cn>[soil.SoilCN]</soil_cn>
+               <enr_a_coeff>[soil.EnrACoeff]</enr_a_coeff>
+               <enr_b_coeff>[soil.EnrBCoeff]</enr_b_coeff>
+               <profile_reduction>off</profile_reduction>
+               <oc>[soil.OC]</oc>
+               <ph>[soil.PH]</ph>
+               <fbiom>[soil.FBIOM]</fbiom>
+               <finert>[soil.FINERT]</finert>
+               <no3ppm>[soil.NO3]</no3ppm>
+               <nh4ppm>[soil.NH4]</nh4ppm>
+               [if [soil.Rocks]]
+               <rocks>[soil.Rocks]</rocks>
+               [endif]
+            </initdata>
+         </component>
+         [if [soil.RootCP]]
+         <component name="[soil.name] Phosphorus" executable="%apsim%\Model\SoilP.dll">
+            <executable>%apsim%\Model\SoilP.dll</executable>
+            <initdata>
+               [Model SoilP]
+               <root_cp>[soil.RootCP]</root_cp>
+               <rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P>
+               <rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P>
+               <labile_p>[soil.LabileP]</labile_p>
+               <banded_p>[soil.BandedP]</banded_p>
+               <rock_p>[soil.RockP]</rock_p>
+               <sorption>[soil.Sorption]</sorption>
+            </initdata>
+         </component>
+         [endif]
+      </ApsimToSim>
+   </MetaData>
+   <Model name="SoilWat">
+      <!--    ****************
+      soilwat2_eeq_fac
+      ****************
+      -->
+      <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+      <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+      <!--    ******************************
+      soilwat2_pot_evapotranspiration
+      ******************************
+      -->
+      <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+      <!--  Bare soil albedo must not exceed this value.
+      ***********************
+      soilwat_evaporation
+      *********************** <dms 7-95>
+      -->
+      <A_to_evap_fact description="converts residue specfic area 'A' to">0.44      </A_to_evap_fact>
+      <!--    a coef. in exp effect on reducing
+      pot. soil evap for wt. of mixed residues.
+      0.44 = 0.00022/0.0005 DMS 1st approx. 6/95
+      -->
+      <canopy_eos_coef description="coef. in exp effect of canopy on">1.7       </canopy_eos_coef>
+      <!--    reducing pot. soil evap.
+      = 1.7 Adams, Arkin & Ritchie 1976
+      ******************
+      soilwat2_evap_init
+      ******************
+      -->
+      <sw_top_crit description="critical sw ratio in top layer">0.9</sw_top_crit>
+      <!--  below which stage 2 evaporation occurs
+      -->
+      <sumes1_max units="mm" description="upper limit of sumes1">100.0</sumes1_max>
+      <sumes2_max units="mm" description="upper limit of sumes2">25.0</sumes2_max>
+      <!--    ******************
+      soilwat2_nflow
+      ******************
+      -->
+      <solute_flow_eff description="efficiency of moving solute with flow (0-1)">1.0</solute_flow_eff>
+      <!--    ******************
+      soilwat2_nflux
+      ******************
+      -->
+      <solute_flux_eff description="efficiency of moving solute with flux (0-1)">1.0</solute_flux_eff>
+      <!--    ******************
+      soilwat2_unsaturated_flow
+      ******************
+      -->
+      <gravity_gradient description="soil water gradient due to gravitational">0.00002</gravity_gradient>
+      <!--  pressure head
+      ****************
+      soilwat2_check_profile
+      ****************
+      -->
+      <specific_bd units="g/cc" description="specific bulk density">2.65</specific_bd>
+      <hydrol_effective_depth units="mm">450</hydrol_effective_depth>
+      <mobile_solutes>no3 urea cl br org_n org_c_pool1 org_c_pool2 org_c_pool3</mobile_solutes>
+      <immobile_solutes>nh4</immobile_solutes>
+      <!--    ****************
+      soilwat2_runoff_cover
+      ****************
+      -->
+      <canopy_fact>1.0  1.0  0.0  0.0</canopy_fact>
+      <canopy_fact_height units="mm">0  600  1800 30000</canopy_fact_height>
+      <canopy_fact_default description="canopy factor to use if height is missing">0.5</canopy_fact_default>
+      <!--  added for SOILWAT2 ver 1.4 Aug-97 DMS & PdV
+      ****************
+      soilwat2_evaporation
+      ****************
+      <8-97 dms&pdv>
+      Ritchie (use with crops),
+      Ken Rickert (use with GRASP),
+      B&S
+      actual soil evaporation methods
+      -->
+      <act_evap_method>ritchie</act_evap_method>
+      <!-- act_evap_method = rickert
+      act_evap_method = bs_a
+      act_evap_method = bs_b
+      ****************
+      soilwat2_tillage
+      **************** <8-97 dms&pdv>
+      Mark Littleboy's tillage effect on runoff (used in PERFECT v2.0)
+      Littleboy, Cogle, Smith, Yule & Rao (1996)  Soil management and production
+      of alfisols in the SAT's I. Modelling the effects of soil management on runoff
+      and erosion.  Aust. J. Soil Res. 34: 91-102.
+
+      Tillage types that appear here must also be in residue2.ini under
+      [standard.residue2.tillage] !
+
+      Tillage reduces runoff potential (CN2) by g_tillage_cn_red (1st column below).
+      After tillage, CN2 increases linearly with cumulative rain since tillage until
+      g_tillage_cn_rain (column 2 below) has occured, ie roughness is smoothed out by rain.
+      Example parameter values (Littleboy et al) are given below for shallow & deep tillage.
+      Also, Nelsen et al (in press) had to reduce CN2 by 30 for ~ 30 days after tillage
+      during the wet season in wet tropical Philipines to mimic measured runoff.
+      -->
+      <tillage>
+         <!--  ________________________________________
+         tillage         CN2        Cumulative
+         type        reduction      rain to
+         cease reduction
+         (0-100)        (mm)
+         ________________________________________
+         -->
+         <chisel description="will have no effect - SOILWAT the same as old ver.">0.0           0.   </chisel>
+         <disc>0.0           0.</disc>
+         <planter>0.0           0.</planter>
+         <burn>0.0           0.</burn>
+      </tillage>
+   </Model>
+   <Model name="SoilN">
+      <standard>
+         <cnrf_coeff description="coeff. to determine the magnitude">0.693  </cnrf_coeff>
+         <!--  of C:N effects on decomposition of FOM ()
+         -->
+         <cnrf_optcn description="C:N above which decomposition rate">25.0   </cnrf_optcn>
+         <!--  of FOM declines ()
+         -->
+         <ef_biom description="fraction of biomass C mineralized">0.4       </ef_biom>
+         <!--  retained in system (0-1)
+         -->
+         <ef_fom description="fraction of FOM C mineralized">0.4        </ef_fom>
+         <!--  retained in system (0-1)
+         -->
+         <ef_hum description="fraction of humic C mineralized">0.4        </ef_hum>
+         <!--  retained in system (0-1)
+         -->
+         <ef_res description="fraction of residue C mineralized">0.4        </ef_res>
+         <!--  retained in system (0-1)
+         -->
+         <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+         <fr_biom_biom description="fraction of retained biomass C">0.6  </fr_biom_biom>
+         <!--  returned to biomass (0-1)
+         -->
+         <fr_fom_biom description="fraction of retained FOM C">0.9   </fr_fom_biom>
+         <!--  transferred to biomass (0-1)
+         -->
+         <fr_res_biom description="fraction of retained residue C">0.9   </fr_res_biom>
+         <!--  transferred to biomass (0-1)
+         -->
+         <fom_type>default manure  mucuna lablab shemp  stable </fom_type>
+         <fr_carb description="carbohydrate fraction of FOM (0-1)">0.2      0.3     0.54        0.57    0.45   0.0 </fr_carb>
+         <fr_cell description="cellulose fraction of FOM (0-1)">   0.7      0.3     0.37        0.37    0.47   0.1  </fr_cell>
+         <fr_lign description="lignin fraction of FOM (0-1)">      0.1      0.4     0.09        0.06    0.08   0.9 </fr_lign>
+         <oc2om_factor description="factor to convert organic carbon to">1.7  </oc2om_factor>
+         <!--  organic matter ()
+         -->
+         <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+
+         <!-- dsg 200509 ****** the following constants are for (a) aerobic AND (b)anaerobic conditions ***** -->
+
+         <opt_temp description="Soil temperature above which there">32.0  32.0   </opt_temp>
+         <!--  is no further effect on mineralisation
+         and nitrification (oC)
+         -->
+         <rd_biom description="potential rate of soil biomass">0.0081  0.004  </rd_biom>
+         <!--  mineralization (per day)
+         -->
+         <rd_carb description="maximum rate constant for">0.2   0.1    </rd_carb>
+         <!--  decomposition of FPool1 (0-1)
+         -->
+         <rd_cell description="maximum rate constant for">0.05  0.25    </rd_cell>
+         <!--  decomposition of FPool2 (0-1)
+         -->
+         <rd_lign description="maximum rate constant for">0.0095   0.003  </rd_lign>
+         <!--  decomposition of FPool3 (0-1)
+         -->
+         <rd_hum description="potential rate of humus">0.00015  0.00007  </rd_hum>
+         <!--  mineralization (per day)
+         -->
+         <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+         <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+         <min_depth description="depth of soil from which N can be">100.    </min_depth>
+         <!--  immobilised by decomposing surface
+         residues (mm)
+         ______________________________________________________________________-
+         Specifying the water factor for Nitrogen Transformations is
+         by referring to water content via an indexing system and linear interpolation
+         between specified coordinates.
+         (see example)
+
+         1 |    ______
+         |   /.     \                In this example
+         .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+         | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+         |/   .
+         0 ______________________-
+         LL       DUL   SAT
+         =0       =1    =2
+         -->
+         <wfmin_index description="index specifying water content">0.0 0.5 1.0 2.0  </wfmin_index>
+         <!--  for water factor for mineralization
+         -->
+         <wfmin_values description="value of water factor function">0.0 1.0 1.0 0.5  </wfmin_values>
+         <!--  at given index values(mineralization)
+         -->
+         <wfnit_index description="index specifying water content">0.0 0.25 1.0 2.0  </wfnit_index>
+         <!--  for water factor for nitrification
+         -->
+         <wfnit_values description="value of water factor function">0.0 1.0 1.0 0.0  </wfnit_values>
+         <!--  at given index values(nitrification)
+         ______________________________________________________________________-
+         -->
+         <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+         <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential">90</nh4_at_half_pot>
+         <!--  nitrification (Michaelis-Menton kinetics)
+         -->
+         <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+         <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+         <!-- ______________________________________________________________________-
+         -->
+         <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+         <dnit_wf_power description="power term for calculation of water factor for denitrification">1        </dnit_wf_power>
+      </standard>
+      <!--  where wf = ((SW-DUL)/(SAT-DUL))^P
+      -->
+      <sand>
+         <derived_from>standard</derived_from>
+         <rd_biom description="potential rate of soil biomass">0.0324  0.015   </rd_biom>
+         <wfmin_index description="index specifying water content">0.0 0.5 1.0 2.0  </wfmin_index>
+         <!--  for water factor for mineralization
+         -->
+         <wfmin_values description="value of water factor function">0.05 1.0 1.0 0.5  </wfmin_values>
+      </sand>
+      <rothc>
+         <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
+         <cnrf_optcn description="C:N above which decomposition rate of FOM declines">500.0   </cnrf_optcn>
+         <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.24       </ef_biom>
+         <ef_fom description="fraction of FOM C mineralized retained in system (0-1)">0.24        </ef_fom>
+         <ef_hum description="fraction of humic C mineralized retained in system (0-1)">0.407        </ef_hum>
+         <ef_res description="fraction of residue C mineralized retained in system (0-1)">0.24        </ef_res>
+         <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+         <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)">0.46  </fr_biom_biom>
+         <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)">0.46   </fr_fom_biom>
+         <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)">0.46   </fr_res_biom>
+         <fom_type>                                                default  stable </fom_type>
+         <fr_carb description="carbohydrate fraction of FOM (0-1)">0.59     0.2  </fr_carb>
+         <fr_cell description="cellulose fraction of FOM (0-1)">   0.41     0.8  </fr_cell>
+         <fr_lign description="lignin fraction of FOM (0-1)">      0.0      0.0  </fr_lign>
+         <oc2om_factor description="factor to convert organic carbon to organic matter">1.7  </oc2om_factor>
+         <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+         <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (oC)">32.0   32.0  </opt_temp>
+         <rd_biom description="potential rate of soil biomass mineralization (per day)">0.0010848  0.0005424  </rd_biom>
+         <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">0.0274    0.0137   </rd_carb>
+         <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">0.0001    0.00005  </rd_cell>
+         <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0    0.0   </rd_lign>
+         <rd_hum description="potential rate of humus mineralization (per day)">0.0000323    0.00001615 </rd_hum>  <!-- .0000548 decreased to account for hum feeback into hum and plant retainment factor-->
+         <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+         <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+         <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
+         <!--   ______________________________________________________________________-
+         Specifying the water factor for Nitrogen Transformations is
+         by referring to water content via an indexing system and linear interpolation
+         between specified coordinates.
+         (see example)
+
+         1 |    ______
+         |   /.     \                In this example
+         .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+         | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+         |/   .
+         0 ______________________-
+         LL       DUL   SAT
+         =0       =1    =2
+         -->
+
+         <wfmin_index description="index specifying water content for water factor for mineralization">0.0 0.5 1.0 2.0  </wfmin_index>
+         <wfmin_values description="value of water factor function at given index values(mineralization)">0.0 1.0 1.0 0.5  </wfmin_values>
+         <wfnit_index description="index specifying water content for water factor for nitrification">0.0 .25 1.0 2.0  </wfnit_index>
+         <wfnit_values description="value of water factor function at given index values(nitrification)">0.0 1.0 1.0 0.0  </wfnit_values>
+         <!--  ______________________________________________________________________-->
+         <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+         <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menton kinetics)">90</nh4_at_half_pot>
+         <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+         <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+         <!-- ______________________________________________________________________ -->
+         <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+         <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
+      </rothc>
+      <rothc6>
+         <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
+         <cnrf_optcn description="C:N above which decomposition rate of FOM declines">500.0   </cnrf_optcn>
+         <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.24       </ef_biom>
+         <ef_fom description="fraction of FOM C mineralized retained in system (0-1)">0.24        </ef_fom>
+         <ef_hum description="fraction of humic C mineralized retained in system (0-1)">0.407        </ef_hum>
+         <ef_res description="fraction of residue C mineralized retained in system (0-1)">0.24        </ef_res>
+         <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+         <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)">0.46  </fr_biom_biom>
+         <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)">0.46   </fr_fom_biom>
+         <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)">0.46   </fr_res_biom>
+         <fom_type>                                                default  stable </fom_type>
+         <fr_carb description="carbohydrate fraction of FOM (0-1)">0.59     0.2  </fr_carb>
+         <fr_cell description="cellulose fraction of FOM (0-1)">   0.41     0.8  </fr_cell>
+         <fr_lign description="lignin fraction of FOM (0-1)">      0.0      0.0  </fr_lign>
+         <oc2om_factor description="factor to convert organic carbon to organic matter">1.7  </oc2om_factor>
+         <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+         <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (oC)">32.0   32.0  </opt_temp>
+         <rd_biom description="potential rate of soil biomass mineralization (per day)">0.0010848  0.0005424  </rd_biom>
+         <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">0.0274    0.0137   </rd_carb>
+         <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">0.0001    0.00005  </rd_cell>
+         <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0    0.0   </rd_lign>
+         <rd_hum description="potential rate of humus mineralization (per day)">0.0000323    0.00001615 </rd_hum>  <!-- .0000548 decreased to account for hum feeback into hum and plant retainment factor-->
+         <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+         <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+         <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
+         <!--   ______________________________________________________________________-
+         Specifying the water factor for Nitrogen Transformations is
+         by referring to water content via an indexing system and linear interpolation
+         between specified coordinates.
+         (see example)
+
+         1 |    ______
+         |   /.     \                In this example
+         .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+         | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+         |/   .
+         0 ______________________-
+         LL       DUL   SAT
+         =0       =1    =2
+         -->
+
+         <wfmin_index description="index specifying water content for water factor for mineralization">0.0 0.5 1.0 2.0  </wfmin_index>
+         <wfmin_values description="value of water factor function at given index values(mineralization)">0.0 1.0 1.0 0.5  </wfmin_values>
+         <wfnit_index description="index specifying water content for water factor for nitrification">0.0 .25 1.0 2.0  </wfnit_index>
+         <wfnit_values description="value of water factor function at given index values(nitrification)">0.0 1.0 1.0 0.0  </wfnit_values>
+         <!--  ______________________________________________________________________-->
+         <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+         <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menton kinetics)">90</nh4_at_half_pot>
+         <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+         <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+         <!-- ______________________________________________________________________ -->
+         <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+         <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
+      </rothc6>
+      <soiln3>
+         <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
+         <cnrf_optcn description="C:N above which decomposition rate of FOM declines">25.0   </cnrf_optcn>
+         <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.4       </ef_biom>
+         <ef_fom description="fraction of FOM C mineralized retained in system (0-1)">0.4        </ef_fom>
+         <ef_hum description="fraction of humic C mineralized retained in system (0-1)">0.4        </ef_hum>
+         <ef_res description="fraction of residue C mineralized retained in system (0-1)">0.4        </ef_res>
+         <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+         <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)">0.6  </fr_biom_biom>
+         <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)">0.9   </fr_fom_biom>
+         <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)">0.9   </fr_res_biom>
+         <fom_type>default manure  mucuna lablab shemp  stable </fom_type>
+         <fr_carb description="carbohydrate fraction of FOM (0-1)">0.2      0.3     0.54        0.57    0.45   0.05 </fr_carb>
+         <fr_cell description="cellulose fraction of FOM (0-1)">   0.7      0.3     0.37        0.37    0.47   0.05  </fr_cell>
+         <fr_lign description="lignin fraction of FOM (0-1)">      0.1      0.4     0.09        0.06    0.08   0.9 </fr_lign>
+         <oc2om_factor description="factor to convert organic carbon to organic matter">1.7  </oc2om_factor>
+         <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+         <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (oC)">32.0   32.0  </opt_temp>
+         <rd_biom description="potential rate of soil biomass mineralization (per day)">0.0081    0.004 </rd_biom>
+         <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">0.2       0.1 </rd_carb>
+         <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">0.05      0.025 </rd_cell>
+         <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0005    0.00025 </rd_lign>
+         <rd_hum description="potential rate of humus mineralization (per day)">0.00015    0.00007 </rd_hum>
+         <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+         <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+         <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
+         <!--   ______________________________________________________________________-
+         Specifying the water factor for Nitrogen Transformations is
+         by referring to water content via an indexing system and linear interpolation
+         between specified coordinates.
+         (see example)
+
+         1 |    ______
+         |   /.     \                In this example
+         .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+         | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+         |/   .
+         0 ______________________-
+         LL       DUL   SAT
+         =0       =1    =2
+         -->
+
+         <wfmin_index description="index specifying water content for water factor for mineralization">0.0 0.5 1.0 2.0  </wfmin_index>
+         <wfmin_values description="value of water factor function at given index values(mineralization)">0.0 1.0 1.0 0.5  </wfmin_values>
+         <wfnit_index description="index specifying water content for water factor for nitrification">0.0 .25 1.0 2.0  </wfnit_index>
+         <wfnit_values description="value of water factor function at given index values(nitrification)">0.0 1.0 1.0 0.0  </wfnit_values>
+         <!--  ______________________________________________________________________-->
+         <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+         <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menton kinetics)">90</nh4_at_half_pot>
+         <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+         <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+         <!-- ______________________________________________________________________ -->
+         <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+         <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
+      </soiln3>
+   </Model>
+   <Model name="SoilP">
+      <!--  CHANGES by MEP
+      -->
+      <!-- rate_loss_avail_P =   0.7 !0.5 !0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC
+      moved to parameter as changes with soil types
+      -->
+      <rate_decr_placement description="0.5 ()   ! (, 1) Fractional loss of placement effect per yr">0.8   </rate_decr_placement>
+      <act_energy_loss_avail_P units="kJ/mole" description="Effect of soil temperature on P availability">90</act_energy_loss_avail_P>
+      <availP_ratio description="Ratio of available P : unavailable P at steady state">0.1</availP_ratio>
+      <eff_band description="3.0 ()   ! Relative effectiveness of banded_p compared with broadcast_p">2.0 </eff_band>
+      <biom_cp description="80 !40.0 ()   ! c:p ratio of biom pool">60.0 </biom_cp>
+      <hum_cp description="c:p ratio of hum pool">100.0</hum_cp>
+      <!-- ______________________________________________________________________-
+      Specifying the water factor for the loss of available Phosphorus is
+      by referring to water content via an indexing system and linear interpolation
+      between specified coordinates.
+      (see example)
+      __________
+      1 |    /    .    .
+      |  / .    .    .          In this example
+      .5 |/   .    .    .          wf_loss_index = 0.0 0.5 1.0 2.0
+      |    .    .    .          wf_loss_values= 0.5 1.0 1.0 1.0
+      |    .    .    .
+      0 ______________________-
+      LL       DUL   SAT
+      =0       =1    =2
+
+      -->
+      <wf_loss_index description="index specifying water content">0.0 0.5  1.0  2.0   </wf_loss_index>
+      <!--  for water factor for loss of
+      availability
+      -->
+      <wf_loss_values description="value of water factor function">0.6 1.0  1.0  1.0   </wf_loss_values>
+      <!--  at given index values
+      PHOSPHORUS UPTAKE
+      Potential P uptake from a layer is assumed to be related to the notional P concentration in solution
+      which is non-linearly related to effective P
+      -->
+      <sorption_coeff description="0.5 !0.4  ! exponent of Freundlich isotherm">0.7  </sorption_coeff>
+      <!--  Note that sorption_coeff and p_supply_factor will need to be varied together
+      provision for other crops, but only maize has been tested against measured data
+      -->
+      <crop_name description="name of crop">maize   wheat  navybean  cowpea  pigeonpea  soybean  peanut  mungbean weed sorghum butterflypea centro lablab</crop_name>
+      <!--  **************************************************
+      -->
+      <p_supply_factor units="??" description="used with sorpt_coeff = 0.7">0.45   0.4    0.4       0.4     0.6        0.4      0.4          0.4      0.4   0.4</p_supply_factor>
+      <!-- ! FIXME - navybean reduced because of correction to P demand in Plant - switched off in code
+      !p_supply_factor =   0.45   0.4    0.24       0.4     0.6        0.4      0.4          0.4      0.4   0.4   (??)        ! used with sorpt_coeff = 0.7
+      p_supply_factor =   0.1    0.1                                      (??)   ! used with sorpt_coeff = 1
+      p_supply_factor =   4      4.0                                         (??)   ! used with sorpt_coeff = 0.5
+      **************************************************
+      -->
+      <crit_p_rlv units="mm/mm^3" description="critical P rlv">0.00001  0.00001  0.00001  0.00001  0.00001  0.00001  0.00001</crit_p_rlv>
+      <!-- upper and lower bounds for soil P pools
+      -->
+      <lb_labile_p_ppm>0</lb_labile_p_ppm>
+      <ub_labile_p_ppm>1000</ub_labile_p_ppm>
+      <lb_unavail_p>0</lb_unavail_p>
+      <ub_unavail_p>10000</ub_unavail_p>
+      <lb_banded_p>0</lb_banded_p>
+      <ub_banded_p>1000</ub_banded_p>
+      <lb_rock_p>0</lb_rock_p>
+      <ub_rock_p>1000</ub_rock_p>
+      <lb_fom_p>0.0</lb_fom_p>
+      <ub_fom_p>1000</ub_fom_p>
+      <lb_fom_cp>0.0</lb_fom_cp>
+      <ub_fom_cp>3000.0</ub_fom_cp>
+   </Model>
+
+</Type>

@@ -1,0 +1,39 @@
+<Type name="graz">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <IsCrop>No</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Description>Rickert &amp; McKeon (1981) grazing module</Description>
+      <Documentation name="Grazing science documentation"></Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\stock32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\stock16.bmp</SmallIcon>
+      <dll>%apsim%\Model\Graz.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <variables>
+         <variable name="stocking_rate"  units="beasts/ha" description="Stocking rate"/>
+         <variable name="alw"            units="kg"        description="Weight of beast"/>
+         <variable name="pasture_source" units=""          description="Crop or pasture module to eat"/>
+         <variable name="lwg"            units="kg"        description="Live weight gain"/>
+         <variable name="acc_eaten"      units="kg/ha"     description="Cumulative grass eaten by animals"/>
+         <variable name="acc_growth"     units="kg/ha"     description="Cumulative grass growth"/>
+         <variable name="intake_restr"   units=""          description="Intake of feed"/>
+      </variables>
+      <events>
+      </events>
+      <ApsimToSim>
+         <component name="[graz.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               [graz.innerxml]
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+</Type>

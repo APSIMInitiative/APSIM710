@@ -1,0 +1,174 @@
+<PlugIn>
+   <toolbox>%apsim%\UserInterface\ToolBoxes\Standard.xml</toolbox>
+   <toolbox>%apsim%\UserInterface\ToolBoxes\Graph.xml</toolbox>
+   <toolbox>%apsim%\UserInterface\ToolBoxes\Sugar.xml</toolbox>
+   <toolbox>%apsim%\UserInterface\ToolBoxes\Developers.xml</toolbox>
+   <Type name="simulation">
+      <MetaData>
+         <UItype>VBUserInterface.AreaUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <LargeIcon>%apsim%\UserInterface\Images\document32.png</LargeIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\document16.png</SmallIcon>
+         <drops>
+            <drop name="folder"/>
+            <drop name="simulations"/>
+         </drops>
+         <ApsimToSim>
+            <simulation name="[simulation.name]" executable="%apsim%\Model\ProtocolManager.dll">
+               <executable>%apsim%\Model\ProtocolManager.dll</executable>
+               <title>[simulation.name]</title>
+               [Children]
+            </simulation>
+         </ApsimToSim>
+      </MetaData>
+   </Type>
+   <Type name="area">
+      <MetaData>
+         <UItype>VBUserInterface.AreaUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <LargeIcon>%apsim%\UserInterface\Images\layout_center32.png</LargeIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\layout_center16.png</SmallIcon>
+         <drops>
+            <drop name="toolbox"/>
+            <drop name="simulation"/>
+            <drop name="folder"/>
+         </drops>
+         <ApsimToSim>
+            <system name="[area.name]" executable="%apsim%\Model\ProtocolManager.dll">
+               <executable>%apsim%\Model\ProtocolManager.dll</executable>
+               <component name="accum" executable="%apsim%\Model\Accum.dll">
+                  <initdata>
+                     <accum_variables>rain[15]</accum_variables>
+                  </initdata>
+               </component>
+               [Children]
+            </system>
+         </ApsimToSim>
+      </MetaData>
+   </Type>
+   <Type name="folder">
+      <MetaData>
+         <UItype>VBUserInterface.AreaUI</UItype>
+         <ShowInMainTree>Yes</ShowInMainTree>
+         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+         <LargeIcon>%apsim%\UserInterface\Images\folder_closed32.png</LargeIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_closed16.png</SmallIcon>
+         <drops>
+            <drop name="area"/>
+            <drop name="folder"/>
+            <drop name="simulations"/>
+            <drop name="toolbox"/>
+         </drops>
+         <ApsimToSim>
+            [Children]
+         </ApsimToSim>
+      </MetaData>
+   </Type>
+   <include>%apsim%\Model\Accum.xml</include>
+   <include>%apsim%\Model\Bambatsi.xml</include>
+   <include>%apsim%\Model\Barley.xml</include>
+   <include>%apsim%\Model\Bore.xml</include>
+   <include>%apsim%\Model\Broccoli.xml</include>
+   <include>%apsim%\Model\ButterflyPea.xml</include>
+   <include>%apsim%\Model\Canola.xml</include>
+   <include>%apsim%\Model\Canopy.xml</include>
+   <include>%apsim%\Model\Centro.xml</include>
+   <include>%apsim%\Model\Channel.xml</include>
+   <include>%apsim%\Model\Chickpea.xml</include>
+   <include>%apsim%\Model\Cl.xml</include>
+   <include>%apsim%\Model\Climatechange.xml</include>
+   <include>%apsim%\Model\Clock.xml</include>
+   <include>%apsim%\Model\Cowpea.xml</include>
+   <include>%apsim%\Model\Dam.xml</include>
+   <include>%apsim%\Model\Egrandis.xml</include>
+   <include>%apsim%\Model\Emelliodora.xml</include>
+   <include>%apsim%\Model\Eo.xml</include>
+   <include>%apsim%\Model\Epopulnea.xml</include>
+   <include>%apsim%\Model\Erosion.xml</include>
+   <include>%apsim%\Model\Events.xml</include>
+   <include>%apsim%\Model\Fababean.xml</include>
+   <include>%apsim%\Model\Fertiliser.xml</include>
+   <include>%apsim%\Model\Fieldpea.xml</include>
+   <include>%apsim%\Model\Gcm_data.xml</include>
+   <include>%apsim%\Model\Grasp.xml</include>
+   <include>%apsim%\Model\Graz.xml</include>
+   <include>%apsim%\Model\Growth.xml</include>
+   <include>%apsim%\Model\Horsegram.xml</include>
+   <include>%apsim%\Model\Ini.xml</include>
+   <include>%apsim%\Model\InitNitrogen.xml</include>
+   <include>%apsim%\Model\InitWater.xml</include>
+   <include>%apsim%\Model\Input.xml</include>
+   <include>%apsim%\Model\Irrigation.xml</include>
+   <include>%apsim%\Model\KWTest.xml</include>
+   <include>%apsim%\Model\Lablab.xml</include>
+   <include>%apsim%\Model\Lettuce.xml</include>
+   <include>%apsim%\Model\Log.xml</include>
+   <include>%apsim%\Model\Lucerne.xml</include>
+   <include>%apsim%\Model\Lupin.xml</include>
+   <include>%apsim%\Model\Maize.xml</include>
+   <include>%apsim%\Model\Manager.xml</include>
+   <include>%apsim%\Model\Map.xml</include>
+   <include>%apsim%\Model\Memo.xml</include>
+   <include>%apsim%\Model\MetFile.xml</include>
+   <include>%apsim%\Model\MicroMet.xml</include>
+   <include>%apsim%\Model\Millet.xml</include>
+   <include>%apsim%\Model\Millet1.xml</include>
+   <include>%apsim%\Model\Millet2.xml</include>
+   <include>%apsim%\Model\Millet3.xml</include>
+   <include>%apsim%\Model\Millet4.xml</include>
+   <include>%apsim%\Model\Millet5.xml</include>
+   <include>%apsim%\Model\Mucuna.xml</include>
+   <include>%apsim%\Model\Mungbean.xml</include>
+   <include>%apsim%\Model\Navybean.xml</include>
+   <include>%apsim%\Model\Oats.xml</include>
+   <include>%apsim%\Model\Ocean_data.xml</include>
+   <include>%apsim%\Model\Operations.xml</include>
+   <include>%apsim%\Model\Orobanche.xml</include>
+   <include>%apsim%\Model\Oryza.xml</include>
+   <include>%apsim%\Model\OutputFile.xml</include>
+   <include>%apsim%\Model\Ozcot.xml</include>
+   <include>%apsim%\Model\Paddockmanager.xml</include>
+   <include>%apsim%\Model\Patchinput.xml</include>
+   <include>%apsim%\Model\Peanut.xml</include>
+   <include>%apsim%\Model\Phos.xml</include>
+   <include>%apsim%\Model\Pigeonpea.xml</include>
+   <include>%apsim%\Model\Pond.xml</include>
+   <include>%apsim%\Model\Potato.xml</include>
+   <include>%apsim%\Model\Rule.xml</include>
+   <include>%apsim%\Model\Script.xml</include>
+   <include>%apsim%\Model\Seedling.xml</include>
+   <include>%apsim%\Model\SiloInput.xml</include>
+   <include>%apsim%\Model\Slurp.xml</include>
+   <include>%apsim%\Model\Soi.xml</include>
+   <include>%apsim%\Model\Soil.xml</include>
+   <include>%apsim%\Model\SoilSample.xml</include>
+   <include>%apsim%\Model\SoilTemp.xml</include>
+   <include>%apsim%\Model\Solute.xml</include>
+   <include>%apsim%\Model\Sorghum.xml</include>
+   <include>%apsim%\Model\SorghumConstants.xml</include>
+   <include>%apsim%\Model\SorghumGenotype.xml</include>
+   <include>%apsim%\Model\Soybean.xml</include>
+   <include>%apsim%\Model\Stylo.xml</include>
+   <include>%apsim%\Model\Sugar.xml</include>
+   <include>%apsim%\Model\Summaryfile.xml</include>
+   <include>%apsim%\Model\Sunflower.xml</include>
+   <include>%apsim%\Model\SurfaceOM.xml</include>
+   <include>%apsim%\Model\SweetCorn.xml</include>
+   <include>%apsim%\Model\SweetSorghum.xml</include>
+   <include>%apsim%\Model\SWIM2.xml</include>
+   <include>%apsim%\Model\Sysbal.xml</include>
+   <include>%apsim%\Model\Tcllink.xml</include>
+   <include>%apsim%\Model\Tclmanager.xml</include>
+   <include>%apsim%\Model\Tclui.xml</include>
+   <include>%apsim%\Model\Tracker.xml</include>
+   <include>%apsim%\Model\Tree.xml</include>
+   <include>%apsim%\Model\Variables.xml</include>
+   <include>%apsim%\Model\Venlink.xml</include>
+   <include>%apsim%\Model\vine.xml</include>
+   <include>%apsim%\Model\WaterSupply.xml</include>
+   <include>%apsim%\Model\Weed.xml</include>
+   <include>%apsim%\Model\Wheat.xml</include>
+   <include>%apsim%\Model\YPCalc.xml</include>
+</PlugIn>

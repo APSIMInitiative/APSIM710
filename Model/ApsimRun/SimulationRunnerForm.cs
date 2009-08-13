@@ -38,6 +38,9 @@ namespace ApsimRun
          NumCPUs.ValueChanged += OnNumCPUsChanged;
          this.Args = Args;
 
+         // Load all plugins.
+         PlugIns.LoadAll();
+
          // Position window correctly.
          if (Configuration.Instance.Setting("Top") != "")
             {

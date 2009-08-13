@@ -578,7 +578,7 @@ namespace ApsimFile
          XmlHelper.SetName(ShortCutNode, XmlHelper.Name(RealNode));
          foreach (XmlNode Child in XmlHelper.ChildNodes(RealNode, ""))
             {
-            if (Configuration.Instance.IsComponentVisible(Child.Name) || Child.Name == "rule")
+            if (Types.Instance.IsVisible(Child.Name) || Child.Name == "rule")
                {
                XmlNode NewNode = ShortCutNode.AppendChild(ShortCutNode.OwnerDocument.CreateElement(Child.Name));
                string ShortCutPath = XmlHelper.FullPath(RealNode) + "/" + XmlHelper.Name(Child);

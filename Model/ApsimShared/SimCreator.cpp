@@ -190,7 +190,10 @@ void SimCreator::ConvertConModule(ApsimControlFile::ModuleInstance& moduleInstan
          if (stristr(file.c_str(), ".xml") != NULL)
             {
             ApsimSettings::addMacro(file);
-            out << "         <include>" + file + "</include>\n";
+            out << "         <include>" + file;
+            if (!Str_i_Eq(moduleInstance.ParFiles[p].second, "standard"))
+               out << '(' << moduleInstance.ParFiles[p].second << ')';
+            out << "</include>\n";
             }
          else
             GetMatchingParFileSections(moduleInstance.instanceName,
@@ -290,7 +293,7 @@ SimCreator::ParFile* SimCreator::ConvertParFile(const std::string& fileName)
          {
          getline(in, line);
          // Don't scrub comments from manager sections.
-         if (currentSection != NULL && ! currentSection->isManagerSection) 
+         if (currentSection != NULL && ! currentSection->isManagerSection)
            {
            unsigned posComment = line.find('!');
            if (posComment != string::npos)

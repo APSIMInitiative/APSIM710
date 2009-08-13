@@ -149,6 +149,7 @@ bool ControlFileConverter::convert(const string& fileName,
    savedDirectory.Change_directory();
    return somethingWasConverted;
    }
+
 //---------------------------------------------------------------------------
 // convert the control file using the commands in the specified node.
 // Throws an exception if a problem was encountered.

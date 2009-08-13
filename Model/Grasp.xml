@@ -1,56 +1,184 @@
-<grasp>
-   <!--  limits, etc
-    -->
-   <ll_lb>0</ll_lb>
-   <ll_ub description="Upper limit of lower limit">2000</ll_ub>
-   <year_ub>2250</year_ub>
-   <year_lb>1800</year_lb>
-   <latitude_ub units="oL">90</latitude_ub>
-   <latitude_lb units="oL">-90</latitude_lb>
-   <maxt_ub units="oC">55</maxt_ub>
-   <maxt_lb units="oC">0</maxt_lb>
-   <mint_ub units="oC">40</mint_ub>
-   <mint_lb units="oC">-10</mint_lb>
-   <radn_ub units="MJ/m2">50</radn_ub>
-   <radn_lb units="MJ/m2">0</radn_lb>
-   <dlayer_ub units="mm">2000</dlayer_ub>
-   <dlayer_lb units="mm">0</dlayer_lb>
-   <dul_dep_ub units="mm">2000</dul_dep_ub>
-   <dul_dep_lb units="mm">0</dul_dep_lb>
-   <sw_dep_ub units="mm">2000</sw_dep_ub>
-   <sw_dep_lb units="mm">0</sw_dep_lb>
-   <no3_ub units="kg/ha">10000</no3_ub>
-   <no3_lb units="kg/ha">0</no3_lb>
-   <no3_min_ub units="kg/ha">10000</no3_min_ub>
-   <no3_min_lb units="kg/ha">0</no3_min_lb>
-   <ba_ll description="Basal area lower limit">0.5</ba_ll>
-   <ba_ul description="Basal area upper limit (p161)">9</ba_ul>
-   <pan_lb units="mm">0</pan_lb>
-   <pan_ub units="mm" description="Limits to pan evap">100</pan_ub>
-   <vpd_lb units="hPa">0</vpd_lb>
-   <vpd_ub units="hPa" description="Limits to vpd">100</vpd_ub>
-   <es_lb units="mm">0</es_lb>
-   <es_ub units="mm" description="Limits to es from soilwat">100</es_ub>
-   <tree_sw_lb units="mm" description="lower bound of tree sw usage">0</tree_sw_lb>
-   <tree_sw_ub units="mm" description="upper bound of tree sw usage">500</tree_sw_ub>
-   <stage_names>sowing germination emergence establishment    </stage_names>
-   <stage_number>1        2        3        4</stage_number>
-   <rue description="Radiation use efficiency (p008)">0        0        0        12</rue>
-   <!-- svp_fract = 0.75 ()                                         ! Fraction of distance between svp at min temp
-    and svp at max temp where avg svp during transp
-    lies (0-1) (new to apsim)
-    -->
-   <svp_fract>1.0</svp_fract>
-   <x_ave_temp units="oC">14       24       45       50</x_ave_temp>
-   <y_stress_photo>0        1        1        0</y_stress_photo>
-   <y_swdef_leaf description="Stress indicies">0       1</y_swdef_leaf>
-   <x_sw_demand_ratio description="Water availability">0.1     1.1</x_sw_demand_ratio>
-   <x_sw_avail_ratio description="Water availability">0        0.16</x_sw_avail_ratio>
-   <y_swdef_pheno description="Stress indicies">0        1</y_swdef_pheno>
-   <x_sw_ratio description="Water availability">0        0.25</x_sw_ratio>
-   <y_sw_fac_root description="stress indicies">0        1</y_sw_fac_root>
-   <vpd_grnd_mult description="(p094*10) !CHECKME">1.5</vpd_grnd_mult>
-   <std_vpd description="Standard vapour pressure deficit of 20mb">20</std_vpd>
-   <minsw description="Lowest acceptable value for ll">1e-05</minsw>
-   <dead_cover_slope>0.0001</dead_cover_slope>
-</grasp>
+<Type name="grasp">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <dll>%apsim%\Model\Grasp.dll</dll>
+      <drops>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+      </drops>
+      <variables>
+         <variable name="height" description="height: Sward height"/>
+         <variable name="cover_tot" description="cover_tot: Total cover"/>
+         <variable name="green_cover" description="green_cover: Green cover"/>
+         <variable name="cover_green" description="cover_green: Green cover"/>
+         <variable name="crop_type" description="crop_type: Name of crop"/>
+         <variable name="runoff_cover" description ="runoff_cover: Cover"/>
+         <variable name="radn_cover" description ="radn_cover: Cover"/>
+         <variable name="transp_cover" description ="transp_cover: Cover"/>
+         <variable name="clothesline" description ="clothesline: Clothesline effect"/>
+         <variable name="tfact" description ="tfact: Temperature index"/>
+         <variable name="nfact" description ="nfact: Nitrogen index"/>
+         <variable name="vpd_estimation" description ="vpd_estimation: What Grasp used for daily VPD"/>
+         <variable name="tsdm" description ="tsdm: Total standing dry matter"/>
+         <variable name="root_depth" description ="root_depth: depths of roots"/>
+         <variable name="green_leaf" description ="green_leaf: Green leaf pool "/>
+         <variable name="green_stem" description ="green_stem: Green stem pool"/>
+         <variable name="green_pool" description ="green_pool: Green pool"/>
+         <variable name="dead_leaf" description ="dead_leaf: Dead leaf pool"/>
+         <variable name="dead_stem" description ="dead_stem: Dead stem pool"/>
+         <variable name="dead_pool" description ="dead_pool: Dead pool"/>
+         <variable name="basal_area" description ="basal_area: Basal area of tussocks"/>
+         <variable name="acc_growth" description ="acc_growth: Accumulated growth"/>
+         <variable name="ep" description ="ep: Water uptake"/>
+         <variable name="sw_pot" description ="sw_pot: Potential uptake"/>
+         <variable name="sw_index" description ="sw_index: "/>
+         <variable name="growth" description ="growth: daily growth (or death)"/>
+         <variable name="growth_transp" description ="growth_transp: Potential growth by mass flow"/>
+         <variable name="growth_photo" description ="growth_photo: Potential growth by radiation"/>
+         <variable name="growth_regrowth" description ="growth_regrowth: Pot growth basal area"/>
+         <variable name="death" description ="death: Total death"/>
+         <variable name="death_frost" description ="death_frost: Death by frost"/>
+         <variable name="death_frost_leaf" description ="death_frost_leaf: Leaf death by frost"/>
+         <variable name="death_frost_stem" description ="death_frost_stem: Stem death by frost"/>
+         <variable name="death_water" description ="death_water; Leaf death by water stress"/>
+         <variable name="death_water_leaf" description ="death_w_leaf: Leaf death water stress"/>
+         <variable name="death_water_stem" description ="death_w_stem: Stem death by water stress"/>
+         <variable name="death_pheno" description ="death_pheno: Background death"/>
+         <variable name="death_pheno_leaf" description ="death_pheno_leaf: Background leaf death"/>
+         <variable name="death_pheno_stem" description ="death_pheno_stem: Background stem death"/>
+         <variable name="sw_demand" description ="sw_demand: SW demand"/>
+         <variable name="n_uptake" description ="n_uptake: N uptake"/>
+      </variables>
+      <events>
+      </events>
+      <ApsimToSim>
+         <component name="[Grasp.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               <establishment>
+                  <root_depth_init>[grasp.root_depth_init]</root_depth_init>
+                  <dm_dead_leaf_init>[grasp.dm_dead_leaf_init]</dm_dead_leaf_init>
+                  <dm_dead_stem_init>[grasp.dm_dead_stem_init]</dm_dead_stem_init>
+                  <dm_dead_root_init>[grasp.dm_dead_root_init]</dm_dead_root_init>
+                  <dm_green_leaf_init>[grasp.dm_green_leaf_init]</dm_green_leaf_init>
+                  <dm_green_stem_init>[grasp.dm_green_stem_init]</dm_green_stem_init>
+                  <dm_green_root_init>[grasp.dm_green_root_init]</dm_green_root_init>
+                  <basal_area_init>[grasp.basal_area_init]</basal_area_init>
+                  <acc_trans_for_n_init>[grasp.acc_trans_for_n_init]</acc_trans_for_n_init>
+                  <acc_growth_for_n_init>[grasp.acc_growth_for_n_init]</acc_growth_for_n_init>
+               </establishment>
+               <crop_type>[grasp.crop_type]</crop_type>
+               <uptake_source>[grasp.uptake_source]</uptake_source>
+               <max_n_avail>[grasp.max_n_avail]</max_n_avail>
+               <max_n_avail_dist>[grasp.max_n_avail_dist]</max_n_avail_dist>
+               <ll>[grasp.ll]</ll>
+               <kl>[grasp.kl]</kl>
+               <kl2rlv>[grasp.kl2rlv]</kl2rlv>
+               <height_max>[grasp.height_max]</height_max>
+               <hgt_vpd_screen>[grasp.hgt_vpd_screen]</hgt_vpd_screen>
+               <height_1000kg>[grasp.height_1000kg]</height_1000kg>
+               <et_use_efficiency>[grasp.et_use_efficiency]</et_use_efficiency>
+               <frac_leaf2total>[grasp.frac_leaf2total]</frac_leaf2total>
+               <yld_cover_slope>[grasp.yld_cover_slope]</yld_cover_slope>
+               <yld_fpc50>[grasp.yld_fpc50]</yld_fpc50>
+               <yld_cov50>[grasp.yld_cov50]</yld_cov50>
+               <yld_tcov50>[grasp.yld_tcov50]</yld_tcov50>
+               <swi_fullgreen>[grasp.swi_fullgreen]</swi_fullgreen>
+               <swi_nogrow>[grasp.swi_nogrow]</swi_nogrow>
+               <pot_regrow>[grasp.pot_regrow]</pot_regrow>
+               <te_std>[grasp.te_std]</te_std>
+               <rad_factor>[grasp.rad_factor]</rad_factor>
+               <residual_plant_N>[grasp.residual_plant_N]</residual_plant_N>
+               <litter_n>[grasp.litter_n]</litter_n>
+               <n_uptk_per100>[grasp.n_uptk_per100]</n_uptk_per100>
+               <frost_start>[grasp.frost_start]</frost_start>
+               <frost_kill>[grasp.frost_kill]</frost_kill>
+               <death_slope>[grasp.death_slope]</death_slope>
+               <death_intercept>[grasp.death_intercept]</death_intercept>
+               <leaf_death_ratio>[grasp.leaf_death_ratio]</leaf_death_ratio>
+               <stem_death_ratio>[grasp.stem_death_ratio]</stem_death_ratio>
+               <n_conc_dm_crit>[grasp.n_conc_dm_crit]</n_conc_dm_crit>
+               <n_conc_dm_min>[grasp.n_conc_dm_min]</n_conc_dm_min>
+               <n_conc_dm_max>[grasp.n_conc_dm_max]</n_conc_dm_max>
+               <stem_thresh>[grasp.stem_thresh]</stem_thresh>
+               <detach_dryseason>[grasp.detach_dryseason]</detach_dryseason>
+               <detach_wetseason>[grasp.detach_wetseason]</detach_wetseason>
+               <day_start_summer>[grasp.day_start_summer]</day_start_summer>
+               <day_end_summer>[grasp.day_end_summer]</day_end_summer>
+               <acc_et_reset>[grasp.acc_et_reset]</acc_et_reset>
+               <acc_growth_reset>[grasp.acc_growth_reset]</acc_growth_reset>
+               <trans_for_n_reset>[grasp.trans_for_n_reset]</trans_for_n_reset>
+               <growth_for_n_reset>[grasp.growth_for_n_reset]</growth_for_n_reset>
+               <day_start_wet>[grasp.day_start_wet]</day_start_wet>
+               <day_start_dry>[grasp.day_start_dry]</day_start_dry>
+               <enr_a_coeff>[grasp.enr_a_coeff]</enr_a_coeff>
+               <enr_b_coeff>[grasp.enr_b_coeff]</enr_b_coeff>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <!--  limits, etc
+      -->
+      <ll_lb>0</ll_lb>
+      <ll_ub description="Upper limit of lower limit">2000</ll_ub>
+      <year_ub>2250</year_ub>
+      <year_lb>1800</year_lb>
+      <latitude_ub units="oL">90</latitude_ub>
+      <latitude_lb units="oL">-90</latitude_lb>
+      <maxt_ub units="oC">55</maxt_ub>
+      <maxt_lb units="oC">0</maxt_lb>
+      <mint_ub units="oC">40</mint_ub>
+      <mint_lb units="oC">-10</mint_lb>
+      <radn_ub units="MJ/m2">50</radn_ub>
+      <radn_lb units="MJ/m2">0</radn_lb>
+      <dlayer_ub units="mm">2000</dlayer_ub>
+      <dlayer_lb units="mm">0</dlayer_lb>
+      <dul_dep_ub units="mm">2000</dul_dep_ub>
+      <dul_dep_lb units="mm">0</dul_dep_lb>
+      <sw_dep_ub units="mm">2000</sw_dep_ub>
+      <sw_dep_lb units="mm">0</sw_dep_lb>
+      <no3_ub units="kg/ha">10000</no3_ub>
+      <no3_lb units="kg/ha">0</no3_lb>
+      <no3_min_ub units="kg/ha">10000</no3_min_ub>
+      <no3_min_lb units="kg/ha">0</no3_min_lb>
+      <ba_ll description="Basal area lower limit">0.5</ba_ll>
+      <ba_ul description="Basal area upper limit (p161)">9</ba_ul>
+      <pan_lb units="mm">0</pan_lb>
+      <pan_ub units="mm" description="Limits to pan evap">100</pan_ub>
+      <vpd_lb units="hPa">0</vpd_lb>
+      <vpd_ub units="hPa" description="Limits to vpd">100</vpd_ub>
+      <es_lb units="mm">0</es_lb>
+      <es_ub units="mm" description="Limits to es from soilwat">100</es_ub>
+      <tree_sw_lb units="mm" description="lower bound of tree sw usage">0</tree_sw_lb>
+      <tree_sw_ub units="mm" description="upper bound of tree sw usage">500</tree_sw_ub>
+      <stage_names>sowing germination emergence establishment    </stage_names>
+      <stage_number>1        2        3        4</stage_number>
+      <rue description="Radiation use efficiency (p008)">0        0        0        12</rue>
+      <!-- svp_fract = 0.75 ()                                         ! Fraction of distance between svp at min temp
+      and svp at max temp where avg svp during transp
+      lies (0-1) (new to apsim)
+      -->
+      <svp_fract>1.0</svp_fract>
+      <x_ave_temp units="oC">14       24       45       50</x_ave_temp>
+      <y_stress_photo>0        1        1        0</y_stress_photo>
+      <y_swdef_leaf description="Stress indicies">0       1</y_swdef_leaf>
+      <x_sw_demand_ratio description="Water availability">0.1     1.1</x_sw_demand_ratio>
+      <x_sw_avail_ratio description="Water availability">0        0.16</x_sw_avail_ratio>
+      <y_swdef_pheno description="Stress indicies">0        1</y_swdef_pheno>
+      <x_sw_ratio description="Water availability">0        0.25</x_sw_ratio>
+      <y_sw_fac_root description="stress indicies">0        1</y_sw_fac_root>
+      <vpd_grnd_mult description="(p094*10) !CHECKME">1.5</vpd_grnd_mult>
+      <std_vpd description="Standard vapour pressure deficit of 20mb">20</std_vpd>
+      <minsw description="Lowest acceptable value for ll">1e-05</minsw>
+      <dead_cover_slope>0.0001</dead_cover_slope>
+   </Model>
+
+</Type>

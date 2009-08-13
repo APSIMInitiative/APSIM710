@@ -1,2 +1,35 @@
-<erosion>
-</erosion>
+<Type name="erosion">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/erosion/docs/erosion_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\shovel32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\shovel16.bmp</SmallIcon>
+      <dll>%apsim%\Model\Erosion.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <variables>
+         <variable name="soil_loss" description="Soil loss (t/ha)"/>
+         <variable name="soil_loss_mm" description="Soil loss (mm)"/>
+         <variable name="sed_conc" description="Sediment concentration (g/l)"/>
+         <variable name="bed_depth" description="Depth to bedrock (mm)"/>
+      </variables>
+      <ApsimToSim>
+         <component name="[erosion.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               <ll>[soil.ll]</ll>
+               <kl>[soil.kl]</kl>
+               <xf>[soil.xf]</xf>
+               [erosion.innerxml]
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+</Type>

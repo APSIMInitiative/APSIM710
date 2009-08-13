@@ -249,7 +249,7 @@ void ApsimComponentData::getProperties(const std::string& sectionName,
          }
       }
    }
- 
+
 std::string ApsimComponentData::findProperty(const std::string& name)
    {
    // ------------------------------------------------------------------
@@ -279,7 +279,7 @@ std::string ApsimComponentData::findProperty(const std::string& name)
 void ApsimComponentData::getVariables(vector<string>& variables) const
    {
    variables.erase(variables.begin(), variables.end());
-   
+
    Sections::iterator section = findSection("");
    pair<Parameters::iterator, Parameters::iterator>
       p = section->parameters.equal_range(ToLower("variable"));
@@ -298,20 +298,24 @@ class GetRulesFunction
          { }
       void operator () (T &arg)
          {
-         if (Str_i_Eq(arg.getName(), "rule"))
+         if (Str_i_Eq(arg.getName(), "script"))
             Container.push_back(arg.getAttribute("name"));
          };
    };
-
 // ------------------------------------------------------------------
 // return a list of rule names to caller.
 // ------------------------------------------------------------------
 void ApsimComponentData::getRuleNames(vector<string>& names) const
    {
    XMLNode initData = getInitData();
-   for_each(initData.begin(), initData.end(),
-            GetRulesFunction<XMLNode>(names));
+   for (XMLNode::iterator script = initData.begin(); script != initData.end(); script++)
+      {
+      XMLNode::iterator event = find_if(script->begin(), script->end(), EqualToName<XMLNode>("event"));
+      if (event->isValid())
+         names.push_back(event->getValue());
+      }
    }
+
 // ------------------------------------------------------------------
 // return a rule to caller or blank if not found.
 // ------------------------------------------------------------------
@@ -321,15 +325,40 @@ void ApsimComponentData::getRule(const std::string& name,
    {
    contents = "";
    XMLNode initData = getInitData();
-   XMLNode::iterator rule = find_if(initData.begin(), initData.end(),
-                                    NodeEquals<XMLNode>("rule", name));
-   while (rule != initData.end())
+   XMLNode::iterator ui = find_if(initData.begin(), initData.end(),
+                                  EqualToName<XMLNode>("ui"));
+
+   for (XMLNode::iterator script = initData.begin(); script != initData.end(); script++)
       {
-      condition = rule->getAttribute("condition");
-      contents += rule->getValue();
-      rule = find_if(++rule, initData.end(), NodeEquals<XMLNode>("rule", name));
+      string eventName = findNodeValue(*script, "event");
+      if (eventName == name)
+         {
+         condition = eventName;
+         replaceManagerMacros(condition, *ui);
+
+         contents = findNodeValue(*script, "text");
+         replaceManagerMacros(contents, *ui);
+         }
       }
    Replace_all(contents, "[cr]", "\n");
+   }
+// ------------------------------------------------------------------
+// Replace all manager macros found in the specified contents
+// by using the nodes under <ui>
+// ------------------------------------------------------------------
+void ApsimComponentData::replaceManagerMacros(std::string& contents, XMLNode ui) const
+   {
+   if (ui.isValid())
+      {
+      for (XMLNode::iterator child = ui.begin(); child != ui.end(); child++)
+         {
+         if (child->getName() != "category")
+            {
+            replaceAll(contents, "[" + child->getName() + "]", child->getValue());
+
+            }
+         }
+      }
    }
 // ------------------------------------------------------------------
 // Return the contents of this service as an xml string.

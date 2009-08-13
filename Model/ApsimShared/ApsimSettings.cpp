@@ -225,7 +225,9 @@ void versionStringToMajorMinor(const std::string& versionString,
    {
    string versionMajor = versionString;
    string versionMinor = splitOffBracketedValue(versionMajor, '(', ')');
-   major = int(atof(versionMajor.c_str()) * 10);
+   double majorfloat = atof(versionMajor.c_str()) * 10;
+   major = int(majorfloat + 0.01);  // we need the 0.01 as there is sometimes round off error.
+
    if (versionMinor == "")
       minor = 1;
    else
@@ -236,6 +238,8 @@ void versionStringToMajorMinor(const std::string& versionString,
 // Return a list of conversion nodes to get the specified version number
 // up to the most recent APSIM version.
 // ------------------------------------------------------------------
+#include <windows.h>
+
 void ApsimSettings::getConversionNodes(const std::string& version,
                                        std::vector<XMLNode>& conversionNodes,
                                        std::string& toVersionString)
@@ -254,10 +258,14 @@ void ApsimSettings::getConversionNodes(const std::string& version,
          {
          int toMajor, toMinor;
          toVersionString = ToNode.getValue();
+
          versionStringToMajorMinor(toVersionString, toMajor, toMinor);
+
          if (toMajor > versionMajor ||
              (toMajor == versionMajor && toMinor > versionMinor) )
+             {
             conversionNodes.push_back(*node);
+            }
          }
       }
    }

@@ -53,8 +53,7 @@ namespace GraphDataUserInterface
          {
          // Find and load the graph toolbox into a XmlDocument ready for processing.
          XmlDocument Doc = new XmlDocument();
-         Toolboxes Tools = new Toolboxes();
-         foreach (string FileName in Tools.Filenames)
+         foreach (string FileName in Toolboxes.Instance.AllToolBoxes)
             {
             if (Path.GetFileNameWithoutExtension(FileName).ToLower() == "graph")
                {

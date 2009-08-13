@@ -77,6 +77,7 @@ class SimCreatorSectionNew : public SimCreatorSection
       bool waitingForTableHeader;
       std::vector<std::string> tableHeaders;
       std::vector<std::string> tableUnits;
+      std::string eventName;
    public:
       SimCreatorSectionNew() : inTable(false), waitingForTableHeader(false) { }
       virtual SimCreatorSection* clone()
@@ -93,6 +94,7 @@ class SimCreatorSectionNew : public SimCreatorSection
          newSection->tableHeaders = tableHeaders;
          newSection->tableUnits = tableUnits;
          newSection->tableName = tableName;
+         newSection->eventName = eventName;
          return newSection;
          }
       virtual void writeToOut(std::ostream& out);

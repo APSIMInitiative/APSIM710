@@ -17,7 +17,11 @@ Public Class BaseController
     Private ActionFile As XmlNode
     Private MyExplorer As ExplorerUI
     Private MyMainForm As Form
-
+    Private LargeIcons As ImageList = Nothing
+    Private MediumIcons As ImageList = Nothing
+    Private SmallIcons As ImageList = Nothing
+    Private ImageIndexes As List(Of Integer) = Nothing
+    Private ImageFileNames As List(Of String) = Nothing
     Public ApsimData As ApsimFile.ApsimFile
 
     Delegate Sub NotifyEventHandler()
@@ -38,14 +42,45 @@ Public Class BaseController
         ApsimFile.Configuration.Instance.ApplicationName = SectionName
         ApsimData = New ApsimFile.ApsimFile()
 
+        ' Setup the image lists.
+        LargeIcons = New ImageList()
+        MediumIcons = New ImageList()
+        SmallIcons = New ImageList()
+        LargeIcons.ImageSize = New Size(32, 32)
+        MediumIcons.ImageSize = New Size(24, 24)
+        SmallIcons.ImageSize = New Size(16, 16)
+        LargeIcons.Tag = "LargeIcon"
+        MediumIcons.Tag = "MediumIcon"
+        SmallIcons.Tag = "SmallIcon"
+        ImageFileNames = New List(Of String)
+        ImageIndexes = New List(Of Integer)
+
+        ' Setup the types
+        For Each FileName As String In Types.Instance.SmallIconFileNames
+            LoadIcon(FileName, SmallIcons)
+        Next
+        For Each FileName As String In Types.Instance.LargeIconFileNames
+            LoadIcon(FileName, LargeIcons)
+        Next
+
         ' Setup the actions file and load all images specified by it.
         Dim ActionFileName As String = Configuration.Instance.Setting("ActionFile")
         If ActionFileName <> "" Then
             Dim ActionDoc As New XmlDocument()
             ActionDoc.Load(ActionFileName)
             ActionFile = ActionDoc.DocumentElement
-            Configuration.Instance.LoadAllImages(XmlHelper.Find(ActionDoc.DocumentElement, "Actions"))
+            Dim ActionsNode As XmlNode = XmlHelper.Find(ActionDoc.DocumentElement, "Actions")
+            Dim SmallIconFileNames As List(Of String) = XmlHelper.ValuesRecursive(ActionsNode, "SmallIcon")
+            For Each IconFileName As String In SmallIconFileNames
+                LoadIcon(IconFileName, SmallIcons)
+            Next
+            Dim MediumIconFileNames As List(Of String) = XmlHelper.ValuesRecursive(ActionsNode, "MediumIcon")
+            For Each IconFileName As String In MediumIconFileNames
+                LoadIcon(IconFileName, MediumIcons)
+            Next
+
         End If
+
         If MainController Then
             AddHandler ApsimData.FileNameChanged, AddressOf OnFileNameChanged
         End If
@@ -55,13 +90,12 @@ Public Class BaseController
         ' Create a User interface form for the
         ' specified type.
         ' -------------------------------------
-        Dim UIType As String = Configuration.Instance.Info(ComponentType, "UItype")
+        Dim UIType As String = Types.Instance.MetaData(ComponentType, "UItype")
         If UIType <> "" Then
             Return CreateClass(UIType)
         End If
         Return Nothing
     End Function
-
     Public ReadOnly Property MainForm() As Form
         Get
             Return MyMainForm
@@ -76,6 +110,46 @@ Public Class BaseController
         End Set
     End Property
 
+#Region "Image handling"
+    Private Sub LoadIcon(ByVal ImageFileName As String, ByRef Icons As ImageList)
+        ' Load the specified icon into the specified imagelist. The filename
+        ' of the icon is stored in the tag field of the bitmap so that we
+        ' can look for it later.
+        ImageFileName = Configuration.RemoveMacros(ImageFileName)
+        If File.Exists(ImageFileName) And ImageFileNames.IndexOf(ImageFileName) = -1 Then
+            Dim Icon As New Bitmap(ImageFileName)
+            Icons.Images.Add(Icon)
+
+            ImageFileNames.Add(ImageFileName)
+            ImageIndexes.Add(Icons.Images.Count - 1)
+        End If
+    End Sub
+    Public Function ImageList(ByVal ImageType As String) As ImageList
+        ' Return an image list to caller. ImageType can be SmallIcon,
+        ' MediumIcon or LargeIcon.
+        If ImageType = "SmallIcon" Then
+            Return SmallIcons
+        ElseIf ImageType = "MediumIcon" Then
+            Return MediumIcons
+        Else
+            Return LargeIcons
+        End If
+    End Function
+    Public Function ImageIndex(ByVal TypeName As String, ByVal ImageType As String) As Integer
+        Dim ImageFileName As String = Types.Instance.MetaData(TypeName, ImageType)
+        Return ConvertImageFileNameToIndex(ImageFileName, ImageType)
+    End Function
+    Public Function ConvertImageFileNameToIndex(ByVal ImageFileName As String, ByVal ImageType As String) As Integer
+        ImageFileName = Configuration.RemoveMacros(ImageFileName)
+        For I As Integer = 0 To ImageFileNames.Count - 1
+            If ImageFileNames(I) = ImageFileName Then
+                Return ImageIndexes(I)
+            End If
+        Next
+        Return -1
+    End Function
+
+#End Region
 
 #Region "File handling methods"
     Public Function FileSaveAfterPrompt() As Boolean
@@ -325,8 +399,6 @@ Public Class BaseController
     Public Sub RemoveToolStrip(ByVal Strip As ToolStrip)
         ToolStrips.Remove(Strip)
     End Sub
-
-
     Private Sub PopulateToolStrip(ByVal Strip As ToolStrip, ByVal ToolStripDescriptor As XmlNode, ByVal ImageAboveText As Boolean)
         ' --------------------------------------------------------------
         ' This method populates the specified context menu given the
@@ -335,7 +407,7 @@ Public Class BaseController
         For Each ChildDescriptor As XmlNode In XmlHelper.ChildNodes(ToolStripDescriptor, "")
 
             If XmlHelper.Type(ChildDescriptor) = "ImageSize" Then
-                Strip.ImageList = Configuration.Instance.ImageList(ChildDescriptor.InnerText)
+                Strip.ImageList = ImageList(ChildDescriptor.InnerText)
 
             ElseIf XmlHelper.Type(ChildDescriptor) = "Item" Then
                 Dim Item As ToolStripItem = CreateToolStripItem(Strip, ChildDescriptor.InnerText)
@@ -356,7 +428,7 @@ Public Class BaseController
                     DropDownStrip = New ToolStripDropDownMenu
                 End If
                 DropDownButton.Text = XmlHelper.Value(Action, "text")
-                DropDownButton.ImageIndex = Configuration.Instance.ImageIndex(Action, Strip.ImageList.Tag.ToString)
+                DropDownButton.ImageIndex = ImageIndexForAction(Action, Strip.ImageList.Tag.ToString)
                 DropDownButton.ImageScaling = ToolStripItemImageScaling.None
                 DropDownButton.AutoToolTip = False
                 DropDownButton.Tag = DropDownActionName
@@ -364,7 +436,7 @@ Public Class BaseController
                 If ImageAboveText Then
                     DropDownButton.TextImageRelation = TextImageRelation.ImageAboveText
                 End If
-                DropDownStrip.ImageList = Configuration.Instance.ImageList("SmallIcon")
+                DropDownStrip.ImageList = ImageList("SmallIcon")
                 AddHandler DropDownStrip.ItemClicked, AddressOf ActionOnClick   'add a handler
                 PopulateToolStrip(DropDownStrip, ChildDescriptor, False)        'recursion call
                 DropDownButton.DropDown = DropDownStrip
@@ -393,7 +465,7 @@ Public Class BaseController
             Item.Name = XmlHelper.Value(Action, "text")
             Item.ToolTipText = XmlHelper.Value(Action, "description")
             Item.Tag = ActionName
-            Item.ImageIndex = Configuration.Instance.ImageIndex(Action, Strip.ImageList.Tag.ToString)
+            Item.ImageIndex = ImageIndexForAction(Action, Strip.ImageList.Tag.ToString)
             Item.ImageScaling = ToolStripItemImageScaling.None
             Dim ShortCut As String = XmlHelper.Value(Action, "shortcut")
             If TypeOf Item Is ToolStripMenuItem AndAlso ShortCut <> "" Then
@@ -404,6 +476,16 @@ Public Class BaseController
         Else
             Return Nothing
         End If
+    End Function
+    Public Function ImageIndexForAction(ByVal Node As XmlNode, ByVal ImageType As String) As Integer
+        ' The node passed in will be an action node i.e. <FileNew>. This method needs to 
+        ' find the child element as specified by ImageType (e.g. <SmallIcon>) and then
+        ' convert the icon filename into an index.
+        If Node IsNot Nothing Then
+            Dim IconFileName As String = XmlHelper.Value(Node, ImageType)
+            Return ConvertImageFileNameToIndex(IconFileName, ImageType)
+        End If
+        Return -1
     End Function
     Private Function IsActionAllowed(ByVal Action As XmlNode) As Boolean
         'need to pass the strip so you can get the parent, to see if toolstrip belongs to an apsim toolbox (needed for "InToolbox" test)

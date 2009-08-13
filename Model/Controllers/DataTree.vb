@@ -34,7 +34,7 @@ Public Class DataTree
         AddHandler Controller.SelectionChangedEvent, AddressOf OnSelectionChanged
 
         PathSeparator = "/"
-        ImageList = Configuration.Instance.ImageList("SmallIcon")
+        ImageList = Controller.ImageList("SmallIcon")
 
         Me.ShowNodeToolTips = True
         Me.Controller = Controller
@@ -200,7 +200,7 @@ Public Class DataTree
 
         ' Refresh the specified node first.
         Node.Text = Comp.Name
-        Node.ImageIndex = Configuration.Instance.ImageIndex(Comp.Type, "SmallIcon")
+        Node.ImageIndex = Controller.ImageIndex(Comp.Type, "SmallIcon")
         Node.SelectedImageIndex = Node.ImageIndex
         Node.Tag = Comp.Type
         Node.ToolTipText = Comp.Description

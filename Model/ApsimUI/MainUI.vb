@@ -87,6 +87,7 @@ Public Class MainUI
 
 
         ' Create our controller
+        PlugIns.LoadAll()
         SimulationController = New BaseController(Me, ApplicationName, True)
 
         ' Display splash screen
@@ -474,12 +475,12 @@ Public Class MainUI
         ' ---------------------------------------------------------------
         ' User wants to modify user interface options.
         ' ---------------------------------------------------------------
-        Dim Form As New UIBits.OptionsForm
+        Dim Form As New OptionsForm
         Form.ShowDialog()
         Dim F As MainUI = Controller.MainForm
+        PlugIns.LoadAll()
         F.PopulateToolBoxStrip()
         F.SimulationToolStrip.Visible = Configuration.Instance.Setting("HideMainMenu") <> "Yes"
-
     End Sub
 
     Public Sub PopulateToolBoxStrip()
@@ -490,14 +491,10 @@ Public Class MainUI
         'Remove existing buttons first.
         ToolBoxesToolStrip.Items.Clear()
 
-        Dim toolboxes As New UIUtility.Toolboxes
-
         ' Loop through each of the known toolboxes
-        For Each FileName As String In toolboxes.Names
+        For Each FileName As String In Toolboxes.Instance.AllToolBoxes
             Dim Doc As New XmlDocument
-            Dim toolBoxPath As String = toolboxes.NameToFileName(FileName)
-
-            Doc.Load(toolBoxPath)
+            Doc.Load(FileName)
 
             ' Get the image attribute from the root node of the loaded xml file
             Dim ImageFileName As String = XmlHelper.Attribute(Doc.DocumentElement, "image")
@@ -506,10 +503,12 @@ Public Class MainUI
             End If
             ImageFileName = Configuration.RemoveMacros(ImageFileName)
 
-            Dim NewItem As New ToolStripButton(FileName, New System.Drawing.Bitmap(ImageFileName))
+            Dim ToolBoxName As String = Path.GetFileNameWithoutExtension(FileName)
+            Dim NewItem As New ToolStripButton(ToolBoxName, New System.Drawing.Bitmap(ImageFileName))
             NewItem.TextImageRelation = TextImageRelation.ImageBeforeText
             NewItem.ImageScaling = ToolStripItemImageScaling.None
             NewItem.CheckOnClick = True
+            NewItem.Tag = FileName
             AddHandler NewItem.Click, AddressOf OnToolBoxClick
             ToolBoxesToolStrip.Items.Add(NewItem)
         Next
@@ -542,8 +541,8 @@ Public Class MainUI
             ToolBoxPanel.Visible = True
             Me.ToolBoxSplitterPoint = ToolboxSplitter.SplitPosition
 
-            Dim toolboxes As New UIUtility.Toolboxes
-            Dim filename As String = toolboxes.NameToFileName(Sender.ToString)
+            Dim ToolBoxButton As ToolStripButton = Sender
+            Dim filename As String = ToolBoxButton.Tag
             ToolboxController.ApsimData.OpenFile(filename)
 
         End If

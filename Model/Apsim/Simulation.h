@@ -44,7 +44,9 @@ class Simulation : public ISimulation
 
       // resolve any includes in the specified sdml.
       void resolveIncludes(string& sdml);
-   };
+
+      std::string findModelNode(XMLNode Node, const std::string& modelType);
+      };
 
 } // namespace protocol
 #endif

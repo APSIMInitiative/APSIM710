@@ -10,6 +10,7 @@ namespace ApsimFile
     using System.Windows.Forms;
 
     using CSGeneral;
+    using System.Diagnostics;
 
 
    public class ApsimFile : Runnable
@@ -294,35 +295,31 @@ namespace ApsimFile
             }
          }
 
-      void Runnable.WriteSimFile(string SimulationName, out string SimFileName, out string Messages)
+      void Runnable.WriteSimFile(string SimulationPath, out string SimFileName, out string Messages)
          {
          // ------------------------------------------------
          // Produce a .sim file and return it's name to the
          // caller.
          // ------------------------------------------------
-         Component Simulation = Find(SimulationName);
-         if (Simulation == null)
-            throw new Exception("Cannot run simulation " + SimulationName + " in file " + MyFileName + ". Simulation doesn't exist.");
+         ProcessStartInfo Info = new ProcessStartInfo();
+         Info.FileName = Configuration.ApsimBinDirectory() + "\\ApsimToSim.exe";
+         Info.Arguments = "\"" + FileName + "\" \"" + SimulationPath + "\"";
+         Info.UseShellExecute = false;
+         Info.RedirectStandardError = true;
+         Info.RedirectStandardOutput = true;
+         Info.CreateNoWindow = true;
+         Process ApsimToSim = Process.Start(Info);
+         Messages = ApsimToSim.StandardOutput.ReadToEnd();
+         ApsimToSim.WaitForExit();
+         Messages += ApsimToSim.StandardError.ReadToEnd();
 
-         SimFileName = Path.GetDirectoryName(MyFileName) + "\\" + Simulation.Name + ".sim";
-         if (File.Exists(SimFileName))
-            File.Delete(SimFileName);
+         // create a simulation name from the simulation path.
+         string SimulationName = SimulationPath;
+         int PosLastSlash = SimulationPath.LastIndexOf('/');
+         if (PosLastSlash != -1)
+            SimulationName = SimulationPath.Substring(PosLastSlash + 1);
 
-         try
-            {
-            XmlDocument Doc = new XmlDocument();
-            Simulation.WriteSim(Doc);
-            string Contents = XmlHelper.FormattedXML(Doc.DocumentElement.OuterXml);
-
-            StreamWriter Writer = new StreamWriter(SimFileName);
-            Writer.Write(Contents);
-            Writer.Close();
-            Messages = "";
-            }
-         catch (Exception err)
-            {
-            Messages = err.Message;
-            }
+         SimFileName = Path.GetDirectoryName(FileName) + "\\" + SimulationName + ".sim";
          }
       public bool DeleteSimOnceRunCompleted
          {

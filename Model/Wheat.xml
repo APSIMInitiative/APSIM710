@@ -1,1467 +1,1622 @@
-<wheat>
-   <!-- ***********************************************************************************************************
-     CONSTANTS  - SPECIES-SPECIFIC PARAMETERS
-   ***********************************************************************************************************
-    -->
-   <options>
-      <Environment/>
-      <Population/>
-      <Phenology/>
-      <Zadok/>
-      <Root/>
-      <GenericArbitratorXY/>
-      <GenericLeaf name="Leaf"/>
-      <Stem/>
-      <CompositePart name="Head">
-         <FruitCohort name="Cohort1">
-            <FruitPodPart name="Pod"/>
-            <FruitGrainPartGN name="Grain"/>
-         </FruitCohort>
-      </CompositePart>
-      <Parts name="Tops">
-         <Leaf/>
+<Type name="wheat">
+   <MetaData>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\wheat.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Wheat science documentation">../apsim/wheat/docs/wheat_science.htm</Documentation>
+      <Documentation name="Generic plant documentation" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <Documentation name="Gunnedah and Walgett sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/nsw.gif</Documentation>
+      <Documentation name="Birchip sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/birchip.gif</Documentation>
+      <Documentation name="Warra sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/warra.gif</Documentation>
+      <Documentation name="Darling downs sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/darlingdowns.gif</Documentation>
+      <Documentation name="Mingenew sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/Mingenew.gif</Documentation>
+      <Documentation name="Walpeup sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/Walpeup.gif</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <dll>%apsim%\Model\Plant.dll</dll>
+
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <variables link="%apsim%\Documentation\ModelInfo\wheat.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\wheat.xml"/>
+
+      <class    name="plant"/>
+      <cultivar name="agtscythe"/>
+      <cultivar name="anlace"/>
+      <cultivar name="annuello"/>
+      <cultivar name="arrino"/>
+      <cultivar name="arrivato"/>
+      <cultivar name="babbler"/>
+      <cultivar name="barham"/>
+      <cultivar name="barque"/>
+      <cultivar name="barunga"/>
+      <cultivar name="batavia"/>
+      <cultivar name="baudin"/>
+      <cultivar name="baxter"/>
+      <cultivar name="beaufort"/>
+      <cultivar name="bellaroi"/>
+      <cultivar name="bolac"/>
+      <cultivar name="bonnie_rock"/>
+      <cultivar name="bowerbird"/>
+      <cultivar name="bowie"/>
+      <cultivar name="braewood"/>
+      <cultivar name="brennan"/>
+      <cultivar name="buckley"/>
+      <cultivar name="buckly"/>
+      <cultivar name="calingiri"/>
+      <cultivar name="camm"/>
+      <cultivar name="carinya"/>
+      <cultivar name="catalina"/>
+      <cultivar name="chara"/>
+      <cultivar name="clf-jnz"/>
+      <cultivar name="clf_stiletto"/>
+      <cultivar name="correll"/>
+      <cultivar name="cunningham"/>
+      <cultivar name="declic"/>
+      <cultivar name="dennis"/>
+      <cultivar name="derrimut"/>
+      <cultivar name="diamondbird"/>
+      <cultivar name="dingxi24"/>
+      <cultivar name="dollarbird"/>
+      <cultivar name="drysdale"/>
+      <cultivar name="ellison"/>
+      <cultivar name="frame"/>
+      <cultivar name="franklin"/>
+      <cultivar name="gairdner"/>
+      <cultivar name="gamenya"/>
+      <cultivar name="gatton_hartog"/>
+      <cultivar name="giles"/>
+      <cultivar name="gladius"/>
+      <cultivar name="goroke"/>
+      <cultivar name="gregory"/>
+      <cultivar name="guardian"/>
+      <cultivar name="gutha"/>
+      <cultivar name="h45"/>
+      <cultivar name="h46"/>
+      <cultivar name="halbred"/>
+      <cultivar name="hamelin"/>
+      <cultivar name="hartog_dry"/>
+      <cultivar name="hartog"/>
+      <cultivar name="hartog_wet"/>
+      <cultivar name="hybrid_mercury"/>
+      <cultivar name="hybrid_meteor"/>
+      <cultivar name="janz"/>
+      <cultivar name="kalka"/>
+      <cultivar name="keel"/>
+      <cultivar name="kelallac"/>
+      <cultivar name="kirchauff"/>
+      <cultivar name="kukri"/>
+      <cultivar name="kulin"/>
+      <cultivar name="lang"/>
+      <cultivar name="lorikeet"/>
+      <cultivar name="mackellar"/>
+      <cultivar name="maritime"/>
+      <cultivar name="marombi"/>
+      <cultivar name="mitre"/>
+      <cultivar name="ouyen"/>
+      <cultivar name="pasture"/>
+      <cultivar name="perengori"/>
+      <cultivar name="pugsley"/>
+      <cultivar name="rongotea"/>
+      <cultivar name="rosella"/>
+      <cultivar name="ruby"/>
+      <cultivar name="saphire"/>
+      <cultivar name="schooner"/>
+      <cultivar name="silverstar"/>
+      <cultivar name="skiff"/>
+      <cultivar name="Sloop_SA"/>
+      <cultivar name="sloop"/>
+      <cultivar name="Sloop_VIC"/>
+      <cultivar name="spear"/>
+      <cultivar name="stiletto"/>
+      <cultivar name="strzelecki"/>
+      <cultivar name="sunbri"/>
+      <cultivar name="sunbrook"/>
+      <cultivar name="sunco"/>
+      <cultivar name="suneca"/>
+      <cultivar name="sunlin"/>
+      <cultivar name="sunstate"/>
+      <cultivar name="sunvale"/>
+      <cultivar name="tamaroi"/>
+      <cultivar name="tennant"/>
+      <cultivar name="vb0021"/>
+      <cultivar name="ventura"/>
+      <cultivar name="wedgetail"/>
+      <cultivar name="westonia"/>
+      <cultivar name="whistler"/>
+      <cultivar name="wilgoyne"/>
+      <cultivar name="wollaroi"/>
+      <cultivar name="wyalkatchem"/>
+      <cultivar name="wylah"/>
+      <cultivar name="xifeng24"/>
+      <cultivar name="yallaroi"/>
+      <cultivar name="yecora"/>
+      <cultivar name="yitpi"/>
+      <cultivar name="young"/>
+      <ApsimToSim>
+         <component name="[wheat.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               <ll>[soil.ll]</ll>
+               <kl>[soil.kl]</kl>
+               <xf>[soil.xf]</xf>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <!-- ***********************************************************************************************************
+      CONSTANTS  - SPECIES-SPECIFIC PARAMETERS
+      ***********************************************************************************************************
+      -->
+      <options>
+         <Environment/>
+         <Population/>
+         <Phenology/>
+         <Zadok/>
+         <Root/>
+         <GenericArbitratorXY/>
+         <GenericLeaf name="Leaf"/>
          <Stem/>
-         <Head/>
-      </Parts>
-      <Parts name="Grain1">
-         <Head.Cohort1.Grain/>
-      </Parts>
-   </options>
-   <RadiationPartitioningOrder>head leaf</RadiationPartitioningOrder>
+         <CompositePart name="Head">
+            <FruitCohort name="Cohort1">
+               <FruitPodPart name="Pod"/>
+               <FruitGrainPartGN name="Grain"/>
+            </FruitCohort>
+         </CompositePart>
+         <Parts name="Tops">
+            <Leaf/>
+            <Stem/>
+            <Head/>
+         </Parts>
+         <Parts name="Grain1">
+            <Head.Cohort1.Grain/>
+         </Parts>
+      </options>
+      <RadiationPartitioningOrder>head leaf</RadiationPartitioningOrder>
 
-   <crop_type>wheat</crop_type>
-   <default_crop_class>plant</default_crop_class>
-   <default_cultivar>hartog</default_cultivar>
-   <!--  Parts than can supply retranslocate to grain
-    -->
-   <stress_determinants>leaf stem</stress_determinants>
-   <yield_parts>meal</yield_parts>
-   <retrans_parts>stem leaf</retrans_parts>
-   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   SECTION - VALUE LIMITS - MAX AND MINS
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   ______________________________________________________________________________
-   OTHER VARIABLES
-    limits set to check inputs
-    -->
-   <sw_ub>1.0</sw_ub>
-   <sw_lb>0.0</sw_lb>
-   <year_ub description="year upper limit">2000</year_ub>
-   <year_lb description="year lower limit">1800</year_lb>
-   <latitude_ub units="oL" description="latitude upper limit">90</latitude_ub>
-   <latitude_lb units="oL" description="latitude lower limit">-90</latitude_lb>
-   <maxt_ub units="oC" description="max. temperature upper limit">55</maxt_ub>
-   <maxt_lb units="oC" description="max. temperature lower limit">0</maxt_lb>
-   <mint_ub units="oC" description="min. temperature upper limit">40</mint_ub>
-   <mint_lb units="oC" description="min. temperature lower limit">-10</mint_lb>
-   <radn_ub units="MJ/m^2" description="radiation upper limit">50</radn_ub>
-   <radn_lb units="MJ/m^2" description="radiation lower limit">1</radn_lb>
-   <dlayer_ub units="mm" description="layer depth upper limit">1000</dlayer_ub>
-   <dlayer_lb units="mm" description="layer depth lower limit">0</dlayer_lb>
-   <dul_dep_ub units="mm" description="drained upper limit upper limit">1000</dul_dep_ub>
-   <dul_dep_lb units="mm" description="drained upper limit lower limit">0</dul_dep_lb>
-   <sw_dep_ub units="mm" description="soil water upper limit">1000</sw_dep_ub>
-   <sw_dep_lb units="mm" description="soil water lower limit">0</sw_dep_lb>
-   <no3_ub units="kg/ha" description="soil nitrate upper limit">10000</no3_ub>
-   <no3_lb units="kg/ha" description="soil nitrate lower limit">0</no3_lb>
-   <no3_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</no3_min_ub>
-   <no3_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</no3_min_lb>
-   <nh4_ub units="kg/ha" description="soil ammonium upper limit">10000</nh4_ub>
-   <nh4_lb units="kg/ha" description="soil ammonium lower limit">0</nh4_lb>
-   <nh4_min_ub units="kg/ha" description="min. soil ammonium upper limit">10000</nh4_min_ub>
-   <nh4_min_lb units="kg/ha" description="min. soil ammonium lower limit">0</nh4_min_lb>
-   <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   SECTION - CROP PHENOLOGY
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    -->
-   <stage_code_list>1         2          3         4                5               6           7               8             9            10       12</stage_code_list>
-   <phase_names>sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</phase_names>
-   <phase_type>cwsowing cwemergent  cwinductive   cwinductive      cwinductive       cwfixed        cwfixed     cwfixed    cwfixed  cwfixed      cwfixed</phase_type>
-   <composite_phases>under_ground above_ground grainfill reproductive leaf_senescence vernalisation eme2ej preflowering tiller_formation hi_stress_sensitive stress_reporting postflowering  n_stress</composite_phases>
-   <under_ground>sowing germination</under_ground>
-   <above_ground>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</above_ground>
-   <vernalisation>germination emergence end_of_juvenile</vernalisation>
-   <leaf_senescence>end_of_juvenile(0.4) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</leaf_senescence>
-   <tiller_formation>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity</tiller_formation>
-   <preflowering>emergence end_of_juvenile floral_initiation</preflowering>
-   <postflowering>flowering start_grain_fill</postflowering>
-   <reproductive>flowering start_grain_fill</reproductive>
-   <hi_stress_sensitive>flowering</hi_stress_sensitive>
-   <grainfill>start_grain_fill</grainfill>
-   <eme2ej>emergence end_of_juvenile</eme2ej>
-   <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
-   <n_stress>end_of_juvenile(0.3) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
-   <plant>
-      <partition_option>2</partition_option>
-      <partitionparts>root  head  leaf stem</partitionparts>
-      <partitionrules>magic demand frac remainder</partitionrules>
-      <n_retrans_option>2</n_retrans_option>
-      <n_retrans_fraction description="0.33">1.0 </n_retrans_fraction>
-      <n_deficit_uptake_fraction>0.0001</n_deficit_uptake_fraction>
-      <x_temp_grainfill>0 26 35</x_temp_grainfill>
-      <y_rel_grainfill>0  1  1</y_rel_grainfill>
-      <n_uptake_option>3</n_uptake_option>
-      <!-- no3_uptake_max = 0.9e-6
-      no3_conc_half_max = 80
-       -->
-      <kno3>0.02</kno3>
-      <no3ppm_min>0.0</no3ppm_min>
-      <knh4>0.0</knh4>
-      <nh4ppm_min>0.0</nh4ppm_min>
-      <total_n_uptake_max units="g/m2">0.6</total_n_uptake_max>
-      <fruit_no_option>1</fruit_no_option>
-      <parasite_option>1</parasite_option>
-      <!--  list of crop class definitions
-      !!!plant = wheat
-       -->
-      <class_action>harvest</class_action>
-      <class_change>unchanged</class_change>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 0 - CO2
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-       -->
-      <co2_default units="ppm">350</co2_default>
-      <photosynthetic_pathway units="C3, or C4">C3</photosynthetic_pathway>
-      <x_co2_te_modifier units="ppm co2">0  350  700   1000</x_co2_te_modifier>
-      <y_co2_te_modifier>0  1.0  1.37  1.69</y_co2_te_modifier>
-      <x_co2_nconc_modifier units="ppm co2">0  350  700   1000</x_co2_nconc_modifier>
-      <y_co2_nconc_modifier>0  1.0  0.93  0.9</y_co2_nconc_modifier>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION - CROP PHENOLOGY
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-       -->
-      <phenology_option>2</phenology_option>
-      <stage_code description="numeric code for phenological stages">1      2          3           4             5                 6           7              8            9        10     11</stage_code>
-      <stage_names description="stage names">sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop </stage_names>
-      <!-- __________________________________________________________________________________________________________-
-      STEM REDUCTION EFFECT ON PHENOLOGY
-                                         sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
-       -->
-      <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9    10     11</stage_code_list>
-      <stage_stem_reduction_harvest>1      2    3     4     4     4     4      4     4     4     11</stage_stem_reduction_harvest>
-      <stage_stem_reduction_kill_stem>1      2    3     3     4     4     4      4     4     4     11</stage_stem_reduction_kill_stem>
-      <!-- __________________________________________________________________________________________________________-
-      SEED GERMINATION
-      Water stress factor for germination
-       -->
-      <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.00</pesw_germ>
-      <!-- __________________________________________________________________________________________________________-
-      EMERGENCE
-       -->
-      <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">40.0</shoot_lag>
-      <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">1.50</shoot_rate>
-      <!-- Water stress factor for emergence
-       -->
-      <fasw_emerg description="Fraction of available soil water">0.0  1.0    </fasw_emerg>
-      <rel_emerg_rate description="Stress factor for thermal time calculation between germination and emergence">1.0  1.0    </rel_emerg_rate>
-      <!-- __________________________________________________________________________________________________________-
-      PHOTOPERIOD AND TWILIGHT
-       -->
-      <twilight description="-2.2 (o)   ! Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0 </twilight>
-      <!--  centre of the sun is 2.2 degrees below the horizon. Sunrise or sunset is defined as when
-       the true centre of the sun is 50' below the horizon.
-      __________________________________________________________________________________________________________-
-      Vernalisation
-       -->
-      <x_vernal_temp>0 2  8  15</x_vernal_temp>
-      <y_vernal_days>0 1  0.5  0</y_vernal_days>
-      <!-- __________________________________________________________________________________________________________-
-      THERMAL TIME CALCULATION
-      Thermal time calculation
-       -->
-      <x_temp units="oC" description="cardinal temps.">0  26  34</x_temp>
-      <y_tt units="oCd" description="effective thermal time">0  26   0</y_tt>
-      <x_removeBiomPheno description="fraction of above ground biomass removed">0.0  0.1   0.4  0.5  1.0</x_removeBiomPheno>
-      <y_removeFractPheno description="fraction of above ground thermal time removed">0.0  0.08  0.4  0.5  1.0</y_removeFractPheno>
-      <!-- __________________________________________________________________________________________________________-
-      LEAF NUMBER DEVELOPMENT
-      currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
-       -->
-      <leaf_no_at_emerg description="0.5     ! (expanded) leaf number at emergence ()">2.0 </leaf_no_at_emerg>
-      <leaf_app_rate1 units="oCd" description="Growing deg day required to develop the most leaf ligules. (deg day).">75.0</leaf_app_rate1>
-      <leaf_app_rate2 units="oCd" description="Growing deg day required to develop last leaf ligules. (deg day).">2.0</leaf_app_rate2>
-      <leaf_no_rate_change description="Leaf no below flag above which leaf appearance rate changes from rate1 to rate2.">7</leaf_no_rate_change>
-      <!--  RELATIVE to FLAG
-       -->
-      <leaf_no_pot_option>2</leaf_no_pot_option>
-      <x_node_no_app>0    20</x_node_no_app>
-      <y_node_app_rate>95   95</y_node_app_rate>
-      <!-- x_node_no_leaf    =   0    5   8
-       -->
-      <x_node_no_leaf>0    2.5   6</x_node_no_leaf>
-      <y_leaves_per_node>1    1   6.0</y_leaves_per_node>
-      <x_lai_ratio description="ratio table for critical leaf size below which leaf number is reduced ()">0.0  0.1 0.8 1.0</x_lai_ratio>
-      <y_leaf_no_frac description="reduction in leaf appearance ()">0.0  1.0 1.0 1.0</y_leaf_no_frac>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 2 - PHOTOSYNTHESIS, BIOMASS GROWTH AND PARTITION
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      PHOTOSYNTHESIS AND RADIATION USE EFFICIENCY (RUE)
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      STAGE DEPENDENT RUE
-       -->
-      <x_stage_rue description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9      10    11</x_stage_rue>
-      <y_rue units="g/MJ">0      0    1.24  1.24  1.24  1.24  1.24   1.24  0.00  0.00   0</y_rue>
-      <!-- __________________________________________________________________________________________________________-
-      EXTINCTION COEFFICIENT
-      ROW SPACING DETERMINED
-       -->
-      <skiprow_default>0</skiprow_default>
-      <row_spacing_default units="mm">250</row_spacing_default>
-      <x_row_spacing>200  350  1000</x_row_spacing>
-      <y_extinct_coef>0.50 0.50 0.50</y_extinct_coef>
-      <!-- y_extinct_coef     = 0.45 0.45 0.45
-       -->
-      <y_extinct_coef_dead>0.30 0.30 0.30</y_extinct_coef_dead>
-      <!-- POD EXTINCTION COEFFICIENT and RUE
-       -->
-      <extinct_coef_pod>0.0</extinct_coef_pod>
-      <spec_pod_area units="mm^2/g">0.0</spec_pod_area>
-      <rue_pod units="g/MJ">0.0</rue_pod>
-      <!-- __________________________________________________________________________________________________________-
-      TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
-       -->
-      <x_ave_temp units="oC" description="mean daily temperature">0  10 25 35</x_ave_temp>
-      <y_stress_photo description="multiplier on RUE">0  1  1  0</y_stress_photo>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      BIOMASS INITIATION, PARTITION AND TRANSLOCATION
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      INITIATION
-       root
-       -->
-      <dm_init units="g/plant" description="part weight at emergence xxx">0.010</dm_init>
-      <root_dm_init units="g/plant" description="part weight at emergence">0.010</root_dm_init>
-      <leaf_dm_init>0.003</leaf_dm_init>
-      <stem_dm_init>0.0016</stem_dm_init>
-      <pod_dm_init>0.0</pod_dm_init>
-      <meal_dm_init>0.0</meal_dm_init>
-      <oil_dm_init>0.0</oil_dm_init>
-      <!-- __________________________________________________________________________________________________________-
-      TRANSLOCATION PARTS
-       -->
-
-      <stemGrowthStructuralFractionStage>  7 7.01</stemGrowthStructuralFractionStage>
-      <stemGrowthStructuralFraction>  .65 0.0</stemGrowthStructuralFraction>
-
-      <!-- __________________________________________________________________________________________________________-
-      BIOMASS PARTITIONING
-                                 sow    ger   eme  juv   endjuv    fi    flag  flow  endhead st_gf end_gf  mat hv_rpe  end
-       -->
-      <x_stage_no_partition>1      2    3     4    4.9       5     5.4   6       6.9    7      8     9    10     11</x_stage_no_partition>
-      <!-- y_ratio_root_shoot         = 0      0    1.0   0.6  0.3       0.25  0.10  0.08          0      0     0     0      0   (0-1)
-       -->
-      <y_ratio_root_shoot units="0-1">0      0    1.0   1.0  0.3       0.30  0.30  0.08    0.01   0      0     0     0      0</y_ratio_root_shoot>
-      <y_frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">0      0    0.6   0.6  0.6       0.42  0.0   0.0     0.0    0      0     0     0      0</y_frac_leaf>
-      <y_frac_pod units="0-1" description="fraction of dm allocated to pod or multiplier of grain dm to account for pod dm">0      0    0     0     0        0     0.33  0.33    0.33   0      0     0     0      0</y_frac_pod>
-      <!-- __________________________________________________________________________________________________________-
-      __________________________________________________________________________________________________________-
-      GRAIN NUMBER DETERMINATION
-      __________________________________________________________________________________________________________-
-      GRAIN FILLING
-       -->
-      <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
-      <temp_fac_min description="temperature stress factor minimum">0.69</temp_fac_min>
-      <sfac_slope description="soil water stress factor slope">-0.125</sfac_slope>
-      <tfac_slope description="temperature stress factor slope">0.0125</tfac_slope>
-      <potential_grain_n_filling_rate units="g/grain/d">0.000055</potential_grain_n_filling_rate>
-      <minimum_grain_n_filling_rate units="g/grain/d">0.000015</minimum_grain_n_filling_rate>
-      <x_temp_grain_n_fill>0 25</x_temp_grain_n_fill>
-      <y_rel_grain_n_fill>0   1</y_rel_grain_n_fill>
-      <crit_grainfill_rate description="0.0005">0. </crit_grainfill_rate>
-      <x_temp_grain units="oC" description="temperature table for grain growth rate">0.0   15.0</x_temp_grain>
-      <y_grain_rate units="0-1" description="temperature factor on grain growth rate">0.0   1.0</y_grain_rate>
-      <carbo_oil_conv_ratio description="Carbohydrate:oil conversion ratio (>= 1.0)">1.0                 </carbo_oil_conv_ratio>
-      <grain_oil_conc description="fractional oil content of grain (0-1)">0.0                 </grain_oil_conc>
-      <!-- __________________________________________________________________________________________________________-
-      GRAIN WATER CONTENT
-       -->
-      <grn_water_cont units="g/g" description="water content of grain g/g">0.125</grn_water_cont>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 3 - LEAF/STEM/POD AREA GROWTH
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      ______________________________________________________________________________
-      LEAF SIZE AS A FUNCTION OF LEAF NUMBER
-       -->
-      <node_no_correction>2.0</node_no_correction>
-      <x_node_no>1     5    8    10</x_node_no>
-      <y_leaf_size>1400 3700 4800 5600</y_leaf_size>
-      <!-- ______________________________________________________________________________
-      SPECIFIC LEAF AREA - SLA
-       -->
-      <x_lai>0     5</x_lai>
-      <!-- y_sla_max   =   27000 27000    ! maximum specific leaf area for delta LAI
-       -->
-      <y_sla_max description="maximum specific leaf area for delta LAI">27000 22000    </y_sla_max>
-      <!-- sla_min         =  10000           ! minimum specific leaf area for delta LAI
-       -->
-      <sla_min description="minimum specific leaf area for delta LAI">18000           </sla_min>
-      <!-- ______________________________________________________________________________
-      TPLA  - USED TO INTIALISE THE INITIAL LAI
-       -->
-      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">200</initial_tpla>
-      <!-- ______________________________________________________________________________
-      HARVESTING EFFECTS ON LEAF AREA
-       -->
-      <fr_height_cut>0.0  0.1    1</fr_height_cut>
-      <fr_stem_remain>0.0  0.2    1</fr_stem_remain>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      __________________________________________________________________________________________________________-
-      ROOTING DEPTH
-                            sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
-      stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
-      root_depth_rate       = 0      5.0  40    40    40    40    0      0.0   0.0   0.0    0  (mm/d)
-       -->
-      <root_depth_rate units="mm/d">0      5.0  30    30    30    30    30      0.0   0.0   0.0    0</root_depth_rate>
-      <!-- Effect of sw_supply_demand_ratio on root depth increase
-       -->
-      <x_ws_root description="sw_supply_demand_ratio">0   1   </x_ws_root>
-      <y_ws_root_fac description="effect of supply_demand_ratio on root depth increase">1   1   </y_ws_root_fac>
-      <!-- x_sw_ratio = [sw_dep(lay)-ll_dep(lay)]/[dul_dep(lay)-ll_dep(lay)] in the deepest root layer
-       -->
-      <x_sw_ratio description="water availability for effects on root depth growth">0.0 0.25</x_sw_ratio>
-      <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
-      <!-- __________________________________________________________________________________________________________-
-      TEMPERATURE EFFECT ON ROOT ADVANCE
-       -->
-      <x_temp_root_advance>0 25 35</x_temp_root_advance>
-      <y_rel_root_advance>0 1  0</y_rel_root_advance>
-      <!-- __________________________________________________________________________________________________________-
-      ROOT LENGTH CALCULATION
-       -->
-      <initial_root_depth units="mm" description="initial depth of roots (mm)">100</initial_root_depth>
-      <specific_root_length units="mm/g" description="CEREs Wheat">105000</specific_root_length>
-      <!-- The following can increase or decrease the root length density in a layer based on the rld per plant
-       -->
-      <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
-      <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
-      <!-- y_rel_root_rate          = 1.0   1.0   1.0   (0-1)
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 5 - WATER RELATIONS AND WATER STRESS FACTORS
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      STAGE DEPENDENT TRANSPIRATION EFFICIENCY COEFFICIENTS
-      Transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)
-      The following transp_eff_cf values are
-      in the form kpa/g carbo per m^2 / g water per m^2 (kpa/g carbo per m^2 / mm water) because 1g water = 1 cm^3 water
-                            sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
-      stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
-       -->
-      <transp_eff_cf units="Pa">0      0    .006  .006  .006  .006  .006  .006   .0025 .00    0</transp_eff_cf>
-      <!-- __________________________________________________________________________________________________________-
-      VPD FRACTION
-      Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
-       -->
-      <svp_fract description="(0-1)">0.75  </svp_fract>
-      <eo_crop_factor_default description="default crop factor for limiting soil">1.5  </eo_crop_factor_default>
-      <!--  water demand to some fraction/multiple
-       of atmospheric potential.
-      __________________________________________________________________________________________________________-
-      WATER STRESS FACTORS FOR PHOTOSYNTHESIS, EXPANSION AND DEVELOPMENT
-      swdef_photo for photosynthesis is calculated in the code as = sw_supply_sum/sw_demand - function crop_swdef_photo
-      For expansion growth, more sensitive than other growth processes
-      x_sw_demand_ratio = sw_supply_sum/sw_demand
-       -->
-      <x_sw_demand_ratio description="water availability">0.1 1.1</x_sw_demand_ratio>
-      <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
-      <!-- For phenology stress factor based on available soil water portion
-      sw_avail_pot_sum = sum_real_array (sw_avail_pot, deepest_layer),
-      sw_avail_sum     = sum_real_array (sw_avail, deepest_layer)
-      sw_avail_ratio   = divide (sw_avail_sum, sw_avail_pot_sum, 1.0) !???
-       -->
-      <x_sw_avail_ratio description="water availability">0.0 0.16</x_sw_avail_ratio>
-      <y_swdef_pheno description="stress index for phenology">1.0 1.0</y_swdef_pheno>
-      <x_sw_avail_ratio_flowering description="water availability">0.2   0.50  1.0</x_sw_avail_ratio_flowering>
-      <y_swdef_pheno_flowering description="stress index for flowering phenology">1.0   1.0    1.0</y_swdef_pheno_flowering>
-      <x_sw_avail_ratio_start_grain_fill description="water availability">0.2   0.50   1.0</x_sw_avail_ratio_start_grain_fill>
-      <y_swdef_pheno_start_grain_fill description="stress index for grainfilling phenology">1.0   1.0    1.0</y_swdef_pheno_start_grain_fill>
-      <!-- __________________________________________________________________________________________________________-
-      WATERLOGGING STRESS (OXYGEN DEFICIT) FACTOR FOR PHOTOSYNTHESIS
-       -->
-      <oxdef_photo_rtfr description="fraction of roots waterlogged for effect on photosynthesis">0.0  0.8   1.0</oxdef_photo_rtfr>
-      <oxdef_photo units="0-1" description="stress index on photosynthesis">1.0  1.0   1.0</oxdef_photo>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 6 -NITROGEN RELATIONS, UPTAKE AND STRESS FACTORS
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      ______________________________________________________________________________
-      UPTAKE PREFERENCE AND CONSTANTS
-      preference for n supply - it is assumed that mass flow is always predominant, but further crop preference can
-      be specified as follows:
-       'active'   = diffusive flow before fixation
-       'fixation' = fixed N before active uptake.
-       -->
-      <n_supply_preference>active</n_supply_preference>
-      <!-- Time constant for N uptake by diffusion. H van Keulen &  NG Seligman. Purdoe 1987.
-      This is the  time it would take to remove, by diffusion, current amount of N if it wasn't depleted between time steps
-       -->
-      <no3_diffn_const description="2.0 (days)">4.0 </no3_diffn_const>
-      <!-- ______________________________________________________________________________
-      LEGUME N FIXATION RATE - potential rate of N fixation (g N fixed per g above ground biomass)
-                            sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
-      stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
-       -->
-      <N_fix_rate units="gN/gDM">0      0    0     .00  0.00  0.00  0.00   0.00  0.00  0.00    0</N_fix_rate>
-      <x_sw_avail_fix description="soil water ratio for effect on N fixation">0.0  0.50  0.95  1.0</x_sw_avail_fix>
-      <y_swdef_fix units="0-1" description="stress index on N fixation">1.0  1.0   1.0   1.0</y_swdef_fix>
-      <!-- ______________________________________________________________________________
-      NITROGEN STRESS FACTORS FOR PHOTOSYNTHESIS,LEAF GROWTH AND DEVELOPMENT
-      n_conc_ratio      = divide ((N_conc_stover - N_conc_stover_min),(N_conc_stover_crit-N_conc_stover_min),0.0)
-      n_conc_ratio_leaf = divide ((N_conc_leaf - N_conc_leaf_min), (N_conc_leaf_crit - N_conc_leaf_min), 0.0)
-      g_nfact_photo     = N_fact_photo * N_conc_ratio
-      g_n_fact_pheno    = N_fact_pheno * N_conc_ratio
-      g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf
-       -->
-      <n_stress_option>2</n_stress_option>
-      <N_fact_photo description="multipler for N deficit effect on photosynthesis">1.5    </N_fact_photo>
-      <N_fact_expansion description="multipler for N deficit effect on leaf expansion">1.0    </N_fact_expansion>
-      <N_fact_pheno description="multipler for N deficit effect on phenology">100    </N_fact_pheno>
-      <N_fact_grain description="multipler for N deficit effect on grain filling">1    </N_fact_grain>
-      <!-- ______________________________________________________________________________
-      NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
-                            emerg   endjuv fi    flow   end gf maturity
-       -->
-      <x_stage_code>3       4      5     6      8      10</x_stage_code>
-      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.005  0.0025</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.015  0.008  0.0035</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf>0.070   0.070  0.050 0.020  0.010  0.005</y_n_conc_max_leaf>
-      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.003  0.0025</y_n_conc_min_stem>
-      <y_n_conc_crit_stem>0.050   0.050  0.020 0.010  0.005  0.0035</y_n_conc_crit_stem>
-      <y_n_conc_max_stem>0.070   0.070  0.040 0.015  0.015  0.015</y_n_conc_max_stem>
-      <y_n_conc_min_pod>0.025   0.025  0.004 0.003  0.003  0.0025</y_n_conc_min_pod>
-      <y_n_conc_crit_pod>0.050   0.050  0.020 0.010  0.005  0.0035</y_n_conc_crit_pod>
-      <y_n_conc_max_pod>0.070   0.070  0.040 0.015  0.015  0.015</y_n_conc_max_pod>
-      <!-- n_conc_min_root    =  0.010   0.010  0.006 0.006  0.006  0.006 ()
-      n_conc_crit_root   =  0.020   0.016  0.016 0.016  0.015  0.015 ()
-       -->
-      <n_conc_min_root>0.010</n_conc_min_root>
-      <n_conc_crit_root>0.020</n_conc_crit_root>
-      <n_conc_max_root>0.020</n_conc_max_root>
-      <n_conc_min_grain>0.014</n_conc_min_grain>
-      <n_conc_crit_grain>0.030</n_conc_crit_grain>
-      <n_conc_max_grain>0.030</n_conc_max_grain>
-      <y_n_conc_min_meal>0.0     0.0     0.0    0.0   0.014  0.014</y_n_conc_min_meal>
-      <y_n_conc_crit_meal>0.0     0.0     0.0    0.0   0.030  0.030</y_n_conc_crit_meal>
-      <y_n_conc_max_meal>0.0     0.0     0.0    0.0   0.030  0.030</y_n_conc_max_meal>
-      <y_n_conc_min_oil>0.0     0.0     0.0    0.0    0.0    0.0</y_n_conc_min_oil>
-      <y_n_conc_crit_oil>0.0     0.0     0.0    0.0    0.0    0.0</y_n_conc_crit_oil>
-      <y_n_conc_max_oil>0.0     0.0     0.0    0.0    0.0    0.0</y_n_conc_max_oil>
-      <!-- ______________________________________________________________________________
-      INITIAL NITROGEN CONCENTRATION OF ORGANS
-                   root
-       -->
-      <n_init_conc description="xxx">0.020 </n_init_conc>
-      <root_n_init_conc>0.020</root_n_init_conc>
-      <leaf_n_init_conc>0.063</leaf_n_init_conc>
-      <stem_n_init_conc>0.050</stem_n_init_conc>
-      <pod_n_init_conc>0.063</pod_n_init_conc>
-      <meal_n_init_conc>0.0</meal_n_init_conc>
-      <oil_n_init_conc>0.0</oil_n_init_conc>
-      <!-- ______________________________________________________________________________
-      NITROGEN CONCENTRATION IN SENESCENCED ORGANS
-      This means that as soon as leaves fall off, all N except for the amount below is
-      instantly transferred from leaves to stem (need to stop this occuring if you 'kill' crop)
-       -->
-      <n_senescence_option>2</n_senescence_option>
-      <!--             root
-       -->
-      <n_sen_conc description="xxxx">0.005 </n_sen_conc>
-      <root_n_sen_conc description="shouldn't they more or less match the min_conc of plant parts?">0.005 </root_n_sen_conc>
-      <leaf_n_sen_conc>0.005</leaf_n_sen_conc>
-      <stem_n_sen_conc>0.0025</stem_n_sen_conc>
-      <pod_n_sen_conc>0.007</pod_n_sen_conc>
-      <meal_n_sen_conc>0.014</meal_n_sen_conc>
-      <oil_n_sen_conc>0.0</oil_n_sen_conc>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 7 -SENESCENCE AND DETACHMENT
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      ______________________________________________________________________________
-      DM SENESCENCE
-       -->
-      <root_die_back_fr units="0-1" description="fraction of roots lost at harvest">0.0</root_die_back_fr>
-      <dm_senescence_option>1</dm_senescence_option>
-      <!--  dm fraction senesced for each fraction of canopy senesced.
-       -->
-      <x_dm_sen_frac_root description="root">0    1     </x_dm_sen_frac_root>
-      <y_dm_sen_frac_root>0.005 0.005</y_dm_sen_frac_root>
-      <x_dm_sen_frac_leaf description="leaf">0    1     </x_dm_sen_frac_leaf>
-      <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf>
-      <x_dm_sen_frac_stem description="stem">0    1     </x_dm_sen_frac_stem>
-      <y_dm_sen_frac_stem>0    0</y_dm_sen_frac_stem>
-      <x_dm_sen_frac_pod description="flower">0    1     </x_dm_sen_frac_pod>
-      <y_dm_sen_frac_pod>0    0</y_dm_sen_frac_pod>
-      <x_dm_sen_frac_meal description="meal">0    1     </x_dm_sen_frac_meal>
-      <y_dm_sen_frac_meal>0    0</y_dm_sen_frac_meal>
-      <x_dm_sen_frac_oil description="oil">0    1     </x_dm_sen_frac_oil>
-      <y_dm_sen_frac_oil>0    0</y_dm_sen_frac_oil>
-      <!-- ______________________________________________________________________________
-      LEAF NUMBER AND AREA SENESCENCE
-       -->
-      <min_tpla description="lower limit of total plant leaf area">5.0</min_tpla>
-      <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">60.0</node_sen_rate>
-      <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.035</fr_lf_sen_rate>
-      <n_fact_lf_sen_rate>0.0</n_fact_lf_sen_rate>
-      <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">7.0</lai_sen_light>
-      <!-- sen_light_slope = 0.005()         ! sensitivity of leaf area senescence to shading
-       -->
-      <sen_light_slope description="sensitivity of leaf area senescence to shading">0.002</sen_light_slope>
-      <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-15.0 -5.0     </x_temp_senescence>
-      <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1    0       </y_senescence_fac>
-      <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
-      <!-- ______________________________________________________________________________
-      DETACHMENT
-       root
-       -->
-      <dead_detach_frac description="xxx">0</dead_detach_frac>
-      <sen_detach_frac description="xxx">1</sen_detach_frac>
-      <root_dead_detach_frac description="fraction detached from each part of a dead plant per day.">0</root_dead_detach_frac>
-      <root_sen_detach_frac description="fraction of senesced plant part detached each day from live plants">1</root_sen_detach_frac>
-      <leaf_dead_detach_frac>0.0</leaf_dead_detach_frac>
-      <leaf_sen_detach_frac>0.0</leaf_sen_detach_frac>
-      <stem_dead_detach_frac>0.0</stem_dead_detach_frac>
-      <stem_sen_detach_frac>0.0</stem_sen_detach_frac>
-      <pod_dead_detach_frac>0.0</pod_dead_detach_frac>
-      <pod_sen_detach_frac>0.0</pod_sen_detach_frac>
-      <meal_dead_detach_frac>0.0</meal_dead_detach_frac>
-      <meal_sen_detach_frac>0.0</meal_sen_detach_frac>
-      <oil_dead_detach_frac>0.0</oil_dead_detach_frac>
-      <oil_sen_detach_frac>0.0</oil_sen_detach_frac>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 8 - WE MIGHT PUT RETRANSLOCATION OF DM AND N IN THIS SECTION
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 9 - CROP FAILURE AND DEATH
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      ______________________________________________________________________________
-       crop failure
-       -->
-      <leaf_no_crit description="critical number of leaves, below which portion of the crop may die due to water stress">10.0</leaf_no_crit>
-      <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">300.0</tt_emerg_limit>
-      <days_germ_limit units="days" description="maximum days allowed after sowing for germination to take place (days)">40.0</days_germ_limit>
-      <swdf_photo_limit description="critical cumulative photosynthesis water stress, above which the crop partly fails (unitless)">99.0</swdf_photo_limit>
-      <swdf_photo_rate description="rate of plant reduction with photosynthesis water stress">0.0</swdf_photo_rate>
-      <swdf_pheno_limit description="critical cumulative phenology water stress, above which the crop fails (unitless)">25</swdf_pheno_limit>
-      <!-- ______________________________________________________________________________
-      PLANT DEATH
-       -->
-      <x_weighted_temp units="oC">55.0  60.0</x_weighted_temp>
-      <y_plant_death>0.0   1.0</y_plant_death>
-      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 11 - DIGESTIBILITY
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      green
-       -->
-      <XLeafGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMaxStageCode>
-      <YLeafGreenDigestibilityMax>0.92  0.92  0.92   0.92  0.8  0.78  0.78  0.78</YLeafGreenDigestibilityMax>
-      <XLeafGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityAvgStageCode>
-      <YLeafGreenDigestibilityAvg>0.82  0.82  0.82   0.82  0.7  0.68  0.68  0.68</YLeafGreenDigestibilityAvg>
-      <XLeafGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMinStageCode>
-      <YLeafGreenDigestibilityMin>0.72  0.72  0.72   0.72  0.6  0.58  0.58  0.58</YLeafGreenDigestibilityMin>
-      <XStemGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMaxStageCode>
-      <YStemGreenDigestibilityMax>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMax>
-      <XStemGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityAvgStageCode>
-      <YStemGreenDigestibilityAvg>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityAvg>
-      <XStemGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMinStageCode>
-      <YStemGreenDigestibilityMin>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMin>
-      <XPodGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMaxStageCode>
-      <YPodGreenDigestibilityMax>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMax>
-      <XPodGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityAvgStageCode>
-      <YPodGreenDigestibilityAvg>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityAvg>
-      <XPodGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMinStageCode>
-      <YPodGreenDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMin>
-      <XMealGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMaxStageCode>
-      <YMealGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMax>
-      <XMealGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityAvgStageCode>
-      <YMealGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityAvg>
-      <XMealGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMinStageCode>
-      <YMealGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMin>
-      <XOilGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMaxStageCode>
-      <YOilGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMax>
-      <XOilGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityAvgStageCode>
-      <YOilGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityAvg>
-      <XOilGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMinStageCode>
-      <YOilGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMin>
-      <!-- senesced
-       -->
-      <XLeafSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMaxStageCode>
-      <YLeafSenescedDigestibilityMax>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMax>
-      <XLeafSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityAvgStageCode>
-      <YLeafSenescedDigestibilityAvg>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityAvg>
-      <XLeafSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMinStageCode>
-      <YLeafSenescedDigestibilityMin>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMin>
-      <XStemSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMaxStageCode>
-      <YStemSenescedDigestibilityMax>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMax>
-      <XStemSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityAvgStageCode>
-      <YStemSenescedDigestibilityAvg>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityAvg>
-      <XStemSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMinStageCode>
-      <YStemSenescedDigestibilityMin>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMin>
-      <XPodSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMaxStageCode>
-      <YPodSenescedDigestibilityMax>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMax>
-      <XPodSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityAvgStageCode>
-      <YPodSenescedDigestibilityAvg>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityAvg>
-      <XPodSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMinStageCode>
-      <YPodSenescedDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMin>
-      <XMealSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMaxStageCode>
-      <YMealSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMax>
-      <XMealSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityAvgStageCode>
-      <YMealSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityAvg>
-      <XMealSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMinStageCode>
-      <YMealSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMin>
-      <XOilSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMaxStageCode>
-      <YOilSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMax>
-      <XOilSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityAvgStageCode>
-      <YOilSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityAvg>
-      <XOilSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMinStageCode>
-      <YOilSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMin>
+      <crop_type>wheat</crop_type>
+      <default_crop_class>plant</default_crop_class>
+      <default_cultivar>hartog</default_cultivar>
+      <!--  Parts than can supply retranslocate to grain
+      -->
+      <stress_determinants>leaf stem</stress_determinants>
+      <yield_parts>meal</yield_parts>
+      <retrans_parts>stem leaf</retrans_parts>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       SECTION - VALUE LIMITS - MAX AND MINS
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       ______________________________________________________________________________
-      ROOT PARAMETERS
-       -->
-      <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
-      <kl_ub description="upper limit of water uptake factor">1.0</kl_ub>
-      <!-- ______________________________________________________________________________
-      SOIL WATER
-       -->
-      <minsw description="lowest acceptable value for ll">0.00001</minsw>
-      <!--  cultivar parameter upper bounds
-       -->
-      <tt_emergence_ub units="oCd" description="upper limit">1000.0</tt_emergence_ub>
-      <tt_flower_to_maturity_ub units="oCd" description="upper limit">1500.0</tt_flower_to_maturity_ub>
-      <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
-      <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
-      <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
-   </plant>
-   <!-- ***********************************************************************************************************
-     PARAMETERS  - CULTIVAR-SPECIFIC VALUES
-   ***********************************************************************************************************
-    -->
-   <base_cultivar>
-      <!--  Basic Cultivar information from which other cultivars can inherit information.  Do not use this cultivar in
-       Simulations but choose from the following list of cultivars.
-       -->
-      <grains_per_gram_stem>25.0</grains_per_gram_stem>
-      <potential_grain_filling_rate description="grain growth rate during grainfill">0.0020  </potential_grain_filling_rate>
-      <potential_grain_growth_rate description="grain growth from flowering to grain fill">0.0010  </potential_grain_growth_rate>
-      <max_grain_size>0.041</max_grain_size>
-      <tt_emergence units="oCd">1.0</tt_emergence>
-      <tt_end_of_juvenile units="oCd">400.0</tt_end_of_juvenile>
-      <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
-      <tt_flowering units="oCd">120.0</tt_flowering>
-
-      <!--
-      startgf_to_mat = 580
-      tt_end_grain_fill = (0.05 * (tt_flowering + startgf_to_mat))
-                        = 35
-      tt_start_grain_fill = startgf_to_mat - tt_end_grain_fill
-                          = 545
+      OTHER VARIABLES
+      limits set to check inputs
       -->
+      <sw_ub>1.0</sw_ub>
+      <sw_lb>0.0</sw_lb>
+      <year_ub description="year upper limit">2000</year_ub>
+      <year_lb description="year lower limit">1800</year_lb>
+      <latitude_ub units="oL" description="latitude upper limit">90</latitude_ub>
+      <latitude_lb units="oL" description="latitude lower limit">-90</latitude_lb>
+      <maxt_ub units="oC" description="max. temperature upper limit">55</maxt_ub>
+      <maxt_lb units="oC" description="max. temperature lower limit">0</maxt_lb>
+      <mint_ub units="oC" description="min. temperature upper limit">40</mint_ub>
+      <mint_lb units="oC" description="min. temperature lower limit">-10</mint_lb>
+      <radn_ub units="MJ/m^2" description="radiation upper limit">50</radn_ub>
+      <radn_lb units="MJ/m^2" description="radiation lower limit">1</radn_lb>
+      <dlayer_ub units="mm" description="layer depth upper limit">1000</dlayer_ub>
+      <dlayer_lb units="mm" description="layer depth lower limit">0</dlayer_lb>
+      <dul_dep_ub units="mm" description="drained upper limit upper limit">1000</dul_dep_ub>
+      <dul_dep_lb units="mm" description="drained upper limit lower limit">0</dul_dep_lb>
+      <sw_dep_ub units="mm" description="soil water upper limit">1000</sw_dep_ub>
+      <sw_dep_lb units="mm" description="soil water lower limit">0</sw_dep_lb>
+      <no3_ub units="kg/ha" description="soil nitrate upper limit">10000</no3_ub>
+      <no3_lb units="kg/ha" description="soil nitrate lower limit">0</no3_lb>
+      <no3_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</no3_min_ub>
+      <no3_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</no3_min_lb>
+      <nh4_ub units="kg/ha" description="soil ammonium upper limit">10000</nh4_ub>
+      <nh4_lb units="kg/ha" description="soil ammonium lower limit">0</nh4_lb>
+      <nh4_min_ub units="kg/ha" description="min. soil ammonium upper limit">10000</nh4_min_ub>
+      <nh4_min_lb units="kg/ha" description="min. soil ammonium lower limit">0</nh4_min_lb>
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION - CROP PHENOLOGY
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      -->
+      <stage_code_list>1         2          3         4                5               6           7               8             9            10       12</stage_code_list>
+      <phase_names>sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</phase_names>
+      <phase_type>cwsowing cwemergent  cwinductive   cwinductive      cwinductive       cwfixed        cwfixed     cwfixed    cwfixed  cwfixed      cwfixed</phase_type>
+      <composite_phases>under_ground above_ground grainfill reproductive leaf_senescence vernalisation eme2ej preflowering tiller_formation hi_stress_sensitive stress_reporting postflowering  n_stress</composite_phases>
+      <under_ground>sowing germination</under_ground>
+      <above_ground>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</above_ground>
+      <vernalisation>germination emergence end_of_juvenile</vernalisation>
+      <leaf_senescence>end_of_juvenile(0.4) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</leaf_senescence>
+      <tiller_formation>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity</tiller_formation>
+      <preflowering>emergence end_of_juvenile floral_initiation</preflowering>
+      <postflowering>flowering start_grain_fill</postflowering>
+      <reproductive>flowering start_grain_fill</reproductive>
+      <hi_stress_sensitive>flowering</hi_stress_sensitive>
+      <grainfill>start_grain_fill</grainfill>
+      <eme2ej>emergence end_of_juvenile</eme2ej>
+      <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
+      <n_stress>end_of_juvenile(0.3) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
+      <plant>
+         <partition_option>2</partition_option>
+         <partitionparts>root  head  leaf stem</partitionparts>
+         <partitionrules>magic demand frac remainder</partitionrules>
+         <n_retrans_option>2</n_retrans_option>
+         <n_retrans_fraction description="0.33">1.0 </n_retrans_fraction>
+         <n_deficit_uptake_fraction>0.0001</n_deficit_uptake_fraction>
+         <x_temp_grainfill>0 26 35</x_temp_grainfill>
+         <y_rel_grainfill>0  1  1</y_rel_grainfill>
+         <n_uptake_option>3</n_uptake_option>
+         <!-- no3_uptake_max = 0.9e-6
+         no3_conc_half_max = 80
+         -->
+         <kno3>0.02</kno3>
+         <no3ppm_min>0.0</no3ppm_min>
+         <knh4>0.0</knh4>
+         <nh4ppm_min>0.0</nh4ppm_min>
+         <total_n_uptake_max units="g/m2">0.6</total_n_uptake_max>
+         <fruit_no_option>1</fruit_no_option>
+         <parasite_option>1</parasite_option>
+         <!--  list of crop class definitions
+         !!!plant = wheat
+         -->
+         <class_action>harvest</class_action>
+         <class_change>unchanged</class_change>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 0 - CO2
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         -->
+         <co2_default units="ppm">350</co2_default>
+         <photosynthetic_pathway units="C3, or C4">C3</photosynthetic_pathway>
+         <x_co2_te_modifier units="ppm co2">0  350  700   1000</x_co2_te_modifier>
+         <y_co2_te_modifier>0  1.0  1.37  1.69</y_co2_te_modifier>
+         <x_co2_nconc_modifier units="ppm co2">0  350  700   1000</x_co2_nconc_modifier>
+         <y_co2_nconc_modifier>0  1.0  0.93  0.9</y_co2_nconc_modifier>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION - CROP PHENOLOGY
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         -->
+         <phenology_option>2</phenology_option>
+         <stage_code description="numeric code for phenological stages">1      2          3           4             5                 6           7              8            9        10     11</stage_code>
+         <stage_names description="stage names">sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop </stage_names>
+         <!-- __________________________________________________________________________________________________________-
+         STEM REDUCTION EFFECT ON PHENOLOGY
+         sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
+         -->
+         <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9    10     11</stage_code_list>
+         <stage_stem_reduction_harvest>1      2    3     4     4     4     4      4     4     4     11</stage_stem_reduction_harvest>
+         <stage_stem_reduction_kill_stem>1      2    3     3     4     4     4      4     4     4     11</stage_stem_reduction_kill_stem>
+         <!-- __________________________________________________________________________________________________________-
+         SEED GERMINATION
+         Water stress factor for germination
+         -->
+         <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.00</pesw_germ>
+         <!-- __________________________________________________________________________________________________________-
+         EMERGENCE
+         -->
+         <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">40.0</shoot_lag>
+         <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">1.50</shoot_rate>
+         <!-- Water stress factor for emergence
+         -->
+         <fasw_emerg description="Fraction of available soil water">0.0  1.0    </fasw_emerg>
+         <rel_emerg_rate description="Stress factor for thermal time calculation between germination and emergence">1.0  1.0    </rel_emerg_rate>
+         <!-- __________________________________________________________________________________________________________-
+         PHOTOPERIOD AND TWILIGHT
+         -->
+         <twilight description="-2.2 (o)   ! Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0 </twilight>
+         <!--  centre of the sun is 2.2 degrees below the horizon. Sunrise or sunset is defined as when
+         the true centre of the sun is 50' below the horizon.
+         __________________________________________________________________________________________________________-
+         Vernalisation
+         -->
+         <x_vernal_temp>0 2  8  15</x_vernal_temp>
+         <y_vernal_days>0 1  0.5  0</y_vernal_days>
+         <!-- __________________________________________________________________________________________________________-
+         THERMAL TIME CALCULATION
+         Thermal time calculation
+         -->
+         <x_temp units="oC" description="cardinal temps.">0  26  34</x_temp>
+         <y_tt units="oCd" description="effective thermal time">0  26   0</y_tt>
+         <x_removeBiomPheno description="fraction of above ground biomass removed">0.0  0.1   0.4  0.5  1.0</x_removeBiomPheno>
+         <y_removeFractPheno description="fraction of above ground thermal time removed">0.0  0.08  0.4  0.5  1.0</y_removeFractPheno>
+         <!-- __________________________________________________________________________________________________________-
+         LEAF NUMBER DEVELOPMENT
+         currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
+         -->
+         <leaf_no_at_emerg description="0.5     ! (expanded) leaf number at emergence ()">2.0 </leaf_no_at_emerg>
+         <leaf_app_rate1 units="oCd" description="Growing deg day required to develop the most leaf ligules. (deg day).">75.0</leaf_app_rate1>
+         <leaf_app_rate2 units="oCd" description="Growing deg day required to develop last leaf ligules. (deg day).">2.0</leaf_app_rate2>
+         <leaf_no_rate_change description="Leaf no below flag above which leaf appearance rate changes from rate1 to rate2.">7</leaf_no_rate_change>
+         <!--  RELATIVE to FLAG
+         -->
+         <leaf_no_pot_option>2</leaf_no_pot_option>
+         <x_node_no_app>0    20</x_node_no_app>
+         <y_node_app_rate>95   95</y_node_app_rate>
+         <!-- x_node_no_leaf    =   0    5   8
+         -->
+         <x_node_no_leaf>0    2.5   6</x_node_no_leaf>
+         <y_leaves_per_node>1    1   6.0</y_leaves_per_node>
+         <x_lai_ratio description="ratio table for critical leaf size below which leaf number is reduced ()">0.0  0.1 0.8 1.0</x_lai_ratio>
+         <y_leaf_no_frac description="reduction in leaf appearance ()">0.0  1.0 1.0 1.0</y_leaf_no_frac>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 2 - PHOTOSYNTHESIS, BIOMASS GROWTH AND PARTITION
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         PHOTOSYNTHESIS AND RADIATION USE EFFICIENCY (RUE)
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         STAGE DEPENDENT RUE
+         -->
+         <x_stage_rue description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9      10    11</x_stage_rue>
+         <y_rue units="g/MJ">0      0    1.24  1.24  1.24  1.24  1.24   1.24  0.00  0.00   0</y_rue>
+         <!-- __________________________________________________________________________________________________________-
+         EXTINCTION COEFFICIENT
+         ROW SPACING DETERMINED
+         -->
+         <skiprow_default>0</skiprow_default>
+         <row_spacing_default units="mm">250</row_spacing_default>
+         <x_row_spacing>200  350  1000</x_row_spacing>
+         <y_extinct_coef>0.50 0.50 0.50</y_extinct_coef>
+         <!-- y_extinct_coef     = 0.45 0.45 0.45
+         -->
+         <y_extinct_coef_dead>0.30 0.30 0.30</y_extinct_coef_dead>
+         <!-- POD EXTINCTION COEFFICIENT and RUE
+         -->
+         <extinct_coef_pod>0.0</extinct_coef_pod>
+         <spec_pod_area units="mm^2/g">0.0</spec_pod_area>
+         <rue_pod units="g/MJ">0.0</rue_pod>
+         <!-- __________________________________________________________________________________________________________-
+         TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
+         -->
+         <x_ave_temp units="oC" description="mean daily temperature">0  10 25 35</x_ave_temp>
+         <y_stress_photo description="multiplier on RUE">0  1  1  0</y_stress_photo>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         BIOMASS INITIATION, PARTITION AND TRANSLOCATION
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         INITIATION
+         root
+         -->
+         <dm_init units="g/plant" description="part weight at emergence xxx">0.010</dm_init>
+         <root_dm_init units="g/plant" description="part weight at emergence">0.010</root_dm_init>
+         <leaf_dm_init>0.003</leaf_dm_init>
+         <stem_dm_init>0.0016</stem_dm_init>
+         <pod_dm_init>0.0</pod_dm_init>
+         <meal_dm_init>0.0</meal_dm_init>
+         <oil_dm_init>0.0</oil_dm_init>
+         <!-- __________________________________________________________________________________________________________-
+         TRANSLOCATION PARTS
+         -->
 
-      <tt_start_grain_fill units="oCd">545</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">35</tt_end_grain_fill>
-      <tt_maturity units="oCd">1</tt_maturity>
-      <tt_end_crop units="oCd">1000</tt_end_crop>
+         <stemGrowthStructuralFractionStage>  7 7.01</stemGrowthStructuralFractionStage>
+         <stemGrowthStructuralFraction>  .65 0.0</stemGrowthStructuralFraction>
 
-      <tt_harvest_ripe units="oCd">1000</tt_harvest_ripe>
-      <startgf_to_mat>580</startgf_to_mat>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-      <cum_vernal_days>0    25</cum_vernal_days>
-      <tt_emergence units="oCd">800  600</tt_emergence>
-      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
-      <x_pp_endjuv_to_init>10.8   16.3</x_pp_endjuv_to_init>
-      <y_tt_endjuv_to_init>50     50</y_tt_endjuv_to_init>
-      <x_pp_init_to_flower units="h">10.8   16.3</x_pp_init_to_flower>
-      <y_tt_init_to_flower units="oCd">450    200</y_tt_init_to_flower>
-      <x_pp_flower_to_start_grain units="h">1      24</x_pp_flower_to_start_grain>
-      <y_tt_flower_to_start_grain units="oCd">120     120</y_tt_flower_to_start_grain>
-      <x_pp_start_to_end_grain units="h">1      24</x_pp_start_to_end_grain>
-      <y_tt_start_to_end_grain units="oCd">580    580</y_tt_start_to_end_grain>
-      <tt_end_grain_to_maturity units="oCd">50.0</tt_end_grain_to_maturity>
-      <tt_maturity_to_ripe units="oCd">1.0</tt_maturity_to_ripe>
-      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+         <!-- __________________________________________________________________________________________________________-
+         BIOMASS PARTITIONING
+         sow    ger   eme  juv   endjuv    fi    flag  flow  endhead st_gf end_gf  mat hv_rpe  end
+         -->
+         <x_stage_no_partition>1      2    3     4    4.9       5     5.4   6       6.9    7      8     9    10     11</x_stage_no_partition>
+         <!-- y_ratio_root_shoot         = 0      0    1.0   0.6  0.3       0.25  0.10  0.08          0      0     0     0      0   (0-1)
+         -->
+         <y_ratio_root_shoot units="0-1">0      0    1.0   1.0  0.3       0.30  0.30  0.08    0.01   0      0     0     0      0</y_ratio_root_shoot>
+         <y_frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">0      0    0.6   0.6  0.6       0.42  0.0   0.0     0.0    0      0     0     0      0</y_frac_leaf>
+         <y_frac_pod units="0-1" description="fraction of dm allocated to pod or multiplier of grain dm to account for pod dm">0      0    0     0     0        0     0.33  0.33    0.33   0      0     0     0      0</y_frac_pod>
+         <!-- __________________________________________________________________________________________________________-
+         __________________________________________________________________________________________________________-
+         GRAIN NUMBER DETERMINATION
+         __________________________________________________________________________________________________________-
+         GRAIN FILLING
+         -->
+         <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
+         <temp_fac_min description="temperature stress factor minimum">0.69</temp_fac_min>
+         <sfac_slope description="soil water stress factor slope">-0.125</sfac_slope>
+         <tfac_slope description="temperature stress factor slope">0.0125</tfac_slope>
+         <potential_grain_n_filling_rate units="g/grain/d">0.000055</potential_grain_n_filling_rate>
+         <minimum_grain_n_filling_rate units="g/grain/d">0.000015</minimum_grain_n_filling_rate>
+         <x_temp_grain_n_fill>0 25</x_temp_grain_n_fill>
+         <y_rel_grain_n_fill>0   1</y_rel_grain_n_fill>
+         <crit_grainfill_rate description="0.0005">0. </crit_grainfill_rate>
+         <x_temp_grain units="oC" description="temperature table for grain growth rate">0.0   15.0</x_temp_grain>
+         <y_grain_rate units="0-1" description="temperature factor on grain growth rate">0.0   1.0</y_grain_rate>
+         <carbo_oil_conv_ratio description="Carbohydrate:oil conversion ratio (>= 1.0)">1.0                 </carbo_oil_conv_ratio>
+         <grain_oil_conc description="fractional oil content of grain (0-1)">0.0                 </grain_oil_conc>
+         <!-- __________________________________________________________________________________________________________-
+         GRAIN WATER CONTENT
+         -->
+         <grn_water_cont units="g/g" description="water content of grain g/g">0.125</grn_water_cont>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 3 - LEAF/STEM/POD AREA GROWTH
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         ______________________________________________________________________________
+         LEAF SIZE AS A FUNCTION OF LEAF NUMBER
+         -->
+         <node_no_correction>2.0</node_no_correction>
+         <x_node_no>1     5    8    10</x_node_no>
+         <y_leaf_size>1400 3700 4800 5600</y_leaf_size>
+         <!-- ______________________________________________________________________________
+         SPECIFIC LEAF AREA - SLA
+         -->
+         <x_lai>0     5</x_lai>
+         <!-- y_sla_max   =   27000 27000    ! maximum specific leaf area for delta LAI
+         -->
+         <y_sla_max description="maximum specific leaf area for delta LAI">27000 22000    </y_sla_max>
+         <!-- sla_min         =  10000           ! minimum specific leaf area for delta LAI
+         -->
+         <sla_min description="minimum specific leaf area for delta LAI">18000           </sla_min>
+         <!-- ______________________________________________________________________________
+         TPLA  - USED TO INTIALISE THE INITIAL LAI
+         -->
+         <initial_tpla units="mm^2/plant" description="initial total plant leaf area">200</initial_tpla>
+         <!-- ______________________________________________________________________________
+         HARVESTING EFFECTS ON LEAF AREA
+         -->
+         <fr_height_cut>0.0  0.1    1</fr_height_cut>
+         <fr_stem_remain>0.0  0.2    1</fr_stem_remain>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         __________________________________________________________________________________________________________-
+         ROOTING DEPTH
+         sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
+         stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
+         root_depth_rate       = 0      5.0  40    40    40    40    0      0.0   0.0   0.0    0  (mm/d)
+         -->
+         <root_depth_rate units="mm/d">0      5.0  30    30    30    30    30      0.0   0.0   0.0    0</root_depth_rate>
+         <!-- Effect of sw_supply_demand_ratio on root depth increase
+         -->
+         <x_ws_root description="sw_supply_demand_ratio">0   1   </x_ws_root>
+         <y_ws_root_fac description="effect of supply_demand_ratio on root depth increase">1   1   </y_ws_root_fac>
+         <!-- x_sw_ratio = [sw_dep(lay)-ll_dep(lay)]/[dul_dep(lay)-ll_dep(lay)] in the deepest root layer
+         -->
+         <x_sw_ratio description="water availability for effects on root depth growth">0.0 0.25</x_sw_ratio>
+         <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
+         <!-- __________________________________________________________________________________________________________-
+         TEMPERATURE EFFECT ON ROOT ADVANCE
+         -->
+         <x_temp_root_advance>0 25 35</x_temp_root_advance>
+         <y_rel_root_advance>0 1  0</y_rel_root_advance>
+         <!-- __________________________________________________________________________________________________________-
+         ROOT LENGTH CALCULATION
+         -->
+         <initial_root_depth units="mm" description="initial depth of roots (mm)">100</initial_root_depth>
+         <specific_root_length units="mm/g" description="CEREs Wheat">105000</specific_root_length>
+         <!-- The following can increase or decrease the root length density in a layer based on the rld per plant
+         -->
+         <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
+         <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
+         <!-- y_rel_root_rate          = 1.0   1.0   1.0   (0-1)
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 5 - WATER RELATIONS AND WATER STRESS FACTORS
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         STAGE DEPENDENT TRANSPIRATION EFFICIENCY COEFFICIENTS
+         Transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)
+         The following transp_eff_cf values are
+         in the form kpa/g carbo per m^2 / g water per m^2 (kpa/g carbo per m^2 / mm water) because 1g water = 1 cm^3 water
+         sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
+         stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
+         -->
+         <transp_eff_cf units="Pa">0      0    .006  .006  .006  .006  .006  .006   .0025 .00    0</transp_eff_cf>
+         <!-- __________________________________________________________________________________________________________-
+         VPD FRACTION
+         Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
+         -->
+         <svp_fract description="(0-1)">0.75  </svp_fract>
+         <eo_crop_factor_default description="default crop factor for limiting soil">1.5  </eo_crop_factor_default>
+         <!--  water demand to some fraction/multiple
+         of atmospheric potential.
+         __________________________________________________________________________________________________________-
+         WATER STRESS FACTORS FOR PHOTOSYNTHESIS, EXPANSION AND DEVELOPMENT
+         swdef_photo for photosynthesis is calculated in the code as = sw_supply_sum/sw_demand - function crop_swdef_photo
+         For expansion growth, more sensitive than other growth processes
+         x_sw_demand_ratio = sw_supply_sum/sw_demand
+         -->
+         <x_sw_demand_ratio description="water availability">0.1 1.1</x_sw_demand_ratio>
+         <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+         <!-- For phenology stress factor based on available soil water portion
+         sw_avail_pot_sum = sum_real_array (sw_avail_pot, deepest_layer),
+         sw_avail_sum     = sum_real_array (sw_avail, deepest_layer)
+         sw_avail_ratio   = divide (sw_avail_sum, sw_avail_pot_sum, 1.0) !???
+         -->
+         <x_sw_avail_ratio description="water availability">0.0 0.16</x_sw_avail_ratio>
+         <y_swdef_pheno description="stress index for phenology">1.0 1.0</y_swdef_pheno>
+         <x_sw_avail_ratio_flowering description="water availability">0.2   0.50  1.0</x_sw_avail_ratio_flowering>
+         <y_swdef_pheno_flowering description="stress index for flowering phenology">1.0   1.0    1.0</y_swdef_pheno_flowering>
+         <x_sw_avail_ratio_start_grain_fill description="water availability">0.2   0.50   1.0</x_sw_avail_ratio_start_grain_fill>
+         <y_swdef_pheno_start_grain_fill description="stress index for grainfilling phenology">1.0   1.0    1.0</y_swdef_pheno_start_grain_fill>
+         <!-- __________________________________________________________________________________________________________-
+         WATERLOGGING STRESS (OXYGEN DEFICIT) FACTOR FOR PHOTOSYNTHESIS
+         -->
+         <oxdef_photo_rtfr description="fraction of roots waterlogged for effect on photosynthesis">0.0  0.8   1.0</oxdef_photo_rtfr>
+         <oxdef_photo units="0-1" description="stress index on photosynthesis">1.0  1.0   1.0</oxdef_photo>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 6 -NITROGEN RELATIONS, UPTAKE AND STRESS FACTORS
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         ______________________________________________________________________________
+         UPTAKE PREFERENCE AND CONSTANTS
+         preference for n supply - it is assumed that mass flow is always predominant, but further crop preference can
+         be specified as follows:
+         'active'   = diffusive flow before fixation
+         'fixation' = fixed N before active uptake.
+         -->
+         <n_supply_preference>active</n_supply_preference>
+         <!-- Time constant for N uptake by diffusion. H van Keulen &  NG Seligman. Purdoe 1987.
+         This is the  time it would take to remove, by diffusion, current amount of N if it wasn't depleted between time steps
+         -->
+         <no3_diffn_const description="2.0 (days)">4.0 </no3_diffn_const>
+         <!-- ______________________________________________________________________________
+         LEGUME N FIXATION RATE - potential rate of N fixation (g N fixed per g above ground biomass)
+         sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
+         stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
+         -->
+         <N_fix_rate units="gN/gDM">0      0    0     .00  0.00  0.00  0.00   0.00  0.00  0.00    0</N_fix_rate>
+         <x_sw_avail_fix description="soil water ratio for effect on N fixation">0.0  0.50  0.95  1.0</x_sw_avail_fix>
+         <y_swdef_fix units="0-1" description="stress index on N fixation">1.0  1.0   1.0   1.0</y_swdef_fix>
+         <!-- ______________________________________________________________________________
+         NITROGEN STRESS FACTORS FOR PHOTOSYNTHESIS,LEAF GROWTH AND DEVELOPMENT
+         n_conc_ratio      = divide ((N_conc_stover - N_conc_stover_min),(N_conc_stover_crit-N_conc_stover_min),0.0)
+         n_conc_ratio_leaf = divide ((N_conc_leaf - N_conc_leaf_min), (N_conc_leaf_crit - N_conc_leaf_min), 0.0)
+         g_nfact_photo     = N_fact_photo * N_conc_ratio
+         g_n_fact_pheno    = N_fact_pheno * N_conc_ratio
+         g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf
+         -->
+         <n_stress_option>2</n_stress_option>
+         <N_fact_photo description="multipler for N deficit effect on photosynthesis">1.5    </N_fact_photo>
+         <N_fact_expansion description="multipler for N deficit effect on leaf expansion">1.0    </N_fact_expansion>
+         <N_fact_pheno description="multipler for N deficit effect on phenology">100    </N_fact_pheno>
+         <N_fact_grain description="multipler for N deficit effect on grain filling">1    </N_fact_grain>
+         <!-- ______________________________________________________________________________
+         NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
+         emerg   endjuv fi    flow   end gf maturity
+         -->
+         <x_stage_code>3       4      5     6      8      10</x_stage_code>
+         <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.005  0.0025</y_n_conc_min_leaf>
+         <y_n_conc_crit_leaf>0.063   0.063  0.042 0.015  0.008  0.0035</y_n_conc_crit_leaf>
+         <y_n_conc_max_leaf>0.070   0.070  0.050 0.020  0.010  0.005</y_n_conc_max_leaf>
+         <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.003  0.0025</y_n_conc_min_stem>
+         <y_n_conc_crit_stem>0.050   0.050  0.020 0.010  0.005  0.0035</y_n_conc_crit_stem>
+         <y_n_conc_max_stem>0.070   0.070  0.040 0.015  0.015  0.015</y_n_conc_max_stem>
+         <y_n_conc_min_pod>0.025   0.025  0.004 0.003  0.003  0.0025</y_n_conc_min_pod>
+         <y_n_conc_crit_pod>0.050   0.050  0.020 0.010  0.005  0.0035</y_n_conc_crit_pod>
+         <y_n_conc_max_pod>0.070   0.070  0.040 0.015  0.015  0.015</y_n_conc_max_pod>
+         <!-- n_conc_min_root    =  0.010   0.010  0.006 0.006  0.006  0.006 ()
+         n_conc_crit_root   =  0.020   0.016  0.016 0.016  0.015  0.015 ()
+         -->
+         <n_conc_min_root>0.010</n_conc_min_root>
+         <n_conc_crit_root>0.020</n_conc_crit_root>
+         <n_conc_max_root>0.020</n_conc_max_root>
+         <n_conc_min_grain>0.014</n_conc_min_grain>
+         <n_conc_crit_grain>0.030</n_conc_crit_grain>
+         <n_conc_max_grain>0.030</n_conc_max_grain>
+         <y_n_conc_min_meal>0.0     0.0     0.0    0.0   0.014  0.014</y_n_conc_min_meal>
+         <y_n_conc_crit_meal>0.0     0.0     0.0    0.0   0.030  0.030</y_n_conc_crit_meal>
+         <y_n_conc_max_meal>0.0     0.0     0.0    0.0   0.030  0.030</y_n_conc_max_meal>
+         <y_n_conc_min_oil>0.0     0.0     0.0    0.0    0.0    0.0</y_n_conc_min_oil>
+         <y_n_conc_crit_oil>0.0     0.0     0.0    0.0    0.0    0.0</y_n_conc_crit_oil>
+         <y_n_conc_max_oil>0.0     0.0     0.0    0.0    0.0    0.0</y_n_conc_max_oil>
+         <!-- ______________________________________________________________________________
+         INITIAL NITROGEN CONCENTRATION OF ORGANS
+         root
+         -->
+         <n_init_conc description="xxx">0.020 </n_init_conc>
+         <root_n_init_conc>0.020</root_n_init_conc>
+         <leaf_n_init_conc>0.063</leaf_n_init_conc>
+         <stem_n_init_conc>0.050</stem_n_init_conc>
+         <pod_n_init_conc>0.063</pod_n_init_conc>
+         <meal_n_init_conc>0.0</meal_n_init_conc>
+         <oil_n_init_conc>0.0</oil_n_init_conc>
+         <!-- ______________________________________________________________________________
+         NITROGEN CONCENTRATION IN SENESCENCED ORGANS
+         This means that as soon as leaves fall off, all N except for the amount below is
+         instantly transferred from leaves to stem (need to stop this occuring if you 'kill' crop)
+         -->
+         <n_senescence_option>2</n_senescence_option>
+         <!--             root
+         -->
+         <n_sen_conc description="xxxx">0.005 </n_sen_conc>
+         <root_n_sen_conc description="shouldn't they more or less match the min_conc of plant parts?">0.005 </root_n_sen_conc>
+         <leaf_n_sen_conc>0.005</leaf_n_sen_conc>
+         <stem_n_sen_conc>0.0025</stem_n_sen_conc>
+         <pod_n_sen_conc>0.007</pod_n_sen_conc>
+         <meal_n_sen_conc>0.014</meal_n_sen_conc>
+         <oil_n_sen_conc>0.0</oil_n_sen_conc>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 7 -SENESCENCE AND DETACHMENT
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         ______________________________________________________________________________
+         DM SENESCENCE
+         -->
+         <root_die_back_fr units="0-1" description="fraction of roots lost at harvest">0.0</root_die_back_fr>
+         <dm_senescence_option>1</dm_senescence_option>
+         <!--  dm fraction senesced for each fraction of canopy senesced.
+         -->
+         <x_dm_sen_frac_root description="root">0    1     </x_dm_sen_frac_root>
+         <y_dm_sen_frac_root>0.005 0.005</y_dm_sen_frac_root>
+         <x_dm_sen_frac_leaf description="leaf">0    1     </x_dm_sen_frac_leaf>
+         <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf>
+         <x_dm_sen_frac_stem description="stem">0    1     </x_dm_sen_frac_stem>
+         <y_dm_sen_frac_stem>0    0</y_dm_sen_frac_stem>
+         <x_dm_sen_frac_pod description="flower">0    1     </x_dm_sen_frac_pod>
+         <y_dm_sen_frac_pod>0    0</y_dm_sen_frac_pod>
+         <x_dm_sen_frac_meal description="meal">0    1     </x_dm_sen_frac_meal>
+         <y_dm_sen_frac_meal>0    0</y_dm_sen_frac_meal>
+         <x_dm_sen_frac_oil description="oil">0    1     </x_dm_sen_frac_oil>
+         <y_dm_sen_frac_oil>0    0</y_dm_sen_frac_oil>
+         <!-- ______________________________________________________________________________
+         LEAF NUMBER AND AREA SENESCENCE
+         -->
+         <min_tpla description="lower limit of total plant leaf area">5.0</min_tpla>
+         <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">60.0</node_sen_rate>
+         <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.035</fr_lf_sen_rate>
+         <n_fact_lf_sen_rate>0.0</n_fact_lf_sen_rate>
+         <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">7.0</lai_sen_light>
+         <!-- sen_light_slope = 0.005()         ! sensitivity of leaf area senescence to shading
+         -->
+         <sen_light_slope description="sensitivity of leaf area senescence to shading">0.002</sen_light_slope>
+         <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-15.0 -5.0     </x_temp_senescence>
+         <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1    0       </y_senescence_fac>
+         <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
+         <!-- ______________________________________________________________________________
+         DETACHMENT
+         root
+         -->
+         <dead_detach_frac description="xxx">0</dead_detach_frac>
+         <sen_detach_frac description="xxx">1</sen_detach_frac>
+         <root_dead_detach_frac description="fraction detached from each part of a dead plant per day.">0</root_dead_detach_frac>
+         <root_sen_detach_frac description="fraction of senesced plant part detached each day from live plants">1</root_sen_detach_frac>
+         <leaf_dead_detach_frac>0.0</leaf_dead_detach_frac>
+         <leaf_sen_detach_frac>0.0</leaf_sen_detach_frac>
+         <stem_dead_detach_frac>0.0</stem_dead_detach_frac>
+         <stem_sen_detach_frac>0.0</stem_sen_detach_frac>
+         <pod_dead_detach_frac>0.0</pod_dead_detach_frac>
+         <pod_sen_detach_frac>0.0</pod_sen_detach_frac>
+         <meal_dead_detach_frac>0.0</meal_dead_detach_frac>
+         <meal_sen_detach_frac>0.0</meal_sen_detach_frac>
+         <oil_dead_detach_frac>0.0</oil_dead_detach_frac>
+         <oil_sen_detach_frac>0.0</oil_sen_detach_frac>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 8 - WE MIGHT PUT RETRANSLOCATION OF DM AND N IN THIS SECTION
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 9 - CROP FAILURE AND DEATH
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         ______________________________________________________________________________
+         crop failure
+         -->
+         <leaf_no_crit description="critical number of leaves, below which portion of the crop may die due to water stress">10.0</leaf_no_crit>
+         <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">300.0</tt_emerg_limit>
+         <days_germ_limit units="days" description="maximum days allowed after sowing for germination to take place (days)">40.0</days_germ_limit>
+         <swdf_photo_limit description="critical cumulative photosynthesis water stress, above which the crop partly fails (unitless)">99.0</swdf_photo_limit>
+         <swdf_photo_rate description="rate of plant reduction with photosynthesis water stress">0.0</swdf_photo_rate>
+         <swdf_pheno_limit description="critical cumulative phenology water stress, above which the crop fails (unitless)">25</swdf_pheno_limit>
+         <!-- ______________________________________________________________________________
+         PLANT DEATH
+         -->
+         <x_weighted_temp units="oC">55.0  60.0</x_weighted_temp>
+         <y_plant_death>0.0   1.0</y_plant_death>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 11 - DIGESTIBILITY
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         green
+         -->
+         <XLeafGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMaxStageCode>
+         <YLeafGreenDigestibilityMax>0.92  0.92  0.92   0.92  0.8  0.78  0.78  0.78</YLeafGreenDigestibilityMax>
+         <XLeafGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityAvgStageCode>
+         <YLeafGreenDigestibilityAvg>0.82  0.82  0.82   0.82  0.7  0.68  0.68  0.68</YLeafGreenDigestibilityAvg>
+         <XLeafGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMinStageCode>
+         <YLeafGreenDigestibilityMin>0.72  0.72  0.72   0.72  0.6  0.58  0.58  0.58</YLeafGreenDigestibilityMin>
+         <XStemGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMaxStageCode>
+         <YStemGreenDigestibilityMax>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMax>
+         <XStemGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityAvgStageCode>
+         <YStemGreenDigestibilityAvg>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityAvg>
+         <XStemGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMinStageCode>
+         <YStemGreenDigestibilityMin>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMin>
+         <XPodGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMaxStageCode>
+         <YPodGreenDigestibilityMax>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMax>
+         <XPodGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityAvgStageCode>
+         <YPodGreenDigestibilityAvg>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityAvg>
+         <XPodGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMinStageCode>
+         <YPodGreenDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMin>
+         <XMealGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMaxStageCode>
+         <YMealGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMax>
+         <XMealGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityAvgStageCode>
+         <YMealGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityAvg>
+         <XMealGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMinStageCode>
+         <YMealGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMin>
+         <XOilGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMaxStageCode>
+         <YOilGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMax>
+         <XOilGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityAvgStageCode>
+         <YOilGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityAvg>
+         <XOilGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMinStageCode>
+         <YOilGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMin>
+         <!-- senesced
+         -->
+         <XLeafSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMaxStageCode>
+         <YLeafSenescedDigestibilityMax>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMax>
+         <XLeafSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityAvgStageCode>
+         <YLeafSenescedDigestibilityAvg>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityAvg>
+         <XLeafSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMinStageCode>
+         <YLeafSenescedDigestibilityMin>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMin>
+         <XStemSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMaxStageCode>
+         <YStemSenescedDigestibilityMax>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMax>
+         <XStemSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityAvgStageCode>
+         <YStemSenescedDigestibilityAvg>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityAvg>
+         <XStemSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMinStageCode>
+         <YStemSenescedDigestibilityMin>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMin>
+         <XPodSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMaxStageCode>
+         <YPodSenescedDigestibilityMax>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMax>
+         <XPodSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityAvgStageCode>
+         <YPodSenescedDigestibilityAvg>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityAvg>
+         <XPodSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMinStageCode>
+         <YPodSenescedDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMin>
+         <XMealSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMaxStageCode>
+         <YMealSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMax>
+         <XMealSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityAvgStageCode>
+         <YMealSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityAvg>
+         <XMealSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMinStageCode>
+         <YMealSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMin>
+         <XOilSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMaxStageCode>
+         <YOilSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMax>
+         <XOilSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityAvgStageCode>
+         <YOilSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityAvg>
+         <XOilSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMinStageCode>
+         <YOilSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMin>
+         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION - VALUE LIMITS - MAX AND MINS
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         ______________________________________________________________________________
+         ROOT PARAMETERS
+         -->
+         <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
+         <kl_ub description="upper limit of water uptake factor">1.0</kl_ub>
+         <!-- ______________________________________________________________________________
+         SOIL WATER
+         -->
+         <minsw description="lowest acceptable value for ll">0.00001</minsw>
+         <!--  cultivar parameter upper bounds
+         -->
+         <tt_emergence_ub units="oCd" description="upper limit">1000.0</tt_emergence_ub>
+         <tt_flower_to_maturity_ub units="oCd" description="upper limit">1500.0</tt_flower_to_maturity_ub>
+         <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
+         <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
+         <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
+      </plant>
+      <!-- ***********************************************************************************************************
+      PARAMETERS  - CULTIVAR-SPECIFIC VALUES
+      ***********************************************************************************************************
+      -->
+      <base_cultivar>
+         <!--  Basic Cultivar information from which other cultivars can inherit information.  Do not use this cultivar in
+         Simulations but choose from the following list of cultivars.
+         -->
+         <grains_per_gram_stem>25.0</grains_per_gram_stem>
+         <potential_grain_filling_rate description="grain growth rate during grainfill">0.0020  </potential_grain_filling_rate>
+         <potential_grain_growth_rate description="grain growth from flowering to grain fill">0.0010  </potential_grain_growth_rate>
+         <max_grain_size>0.041</max_grain_size>
+         <tt_emergence units="oCd">1.0</tt_emergence>
+         <tt_end_of_juvenile units="oCd">400.0</tt_end_of_juvenile>
+         <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
+         <tt_flowering units="oCd">120.0</tt_flowering>
 
-   </base_cultivar>
-   <!--  ===================== Eastern Australian Cultivars  ==================
-    In order from fastest to slowest maturing varieties.
-    -->
-   <hartog>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </hartog>
-   <janz>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </janz>
-   <cunningham>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </cunningham>
-   <hybrid_meteor>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </hybrid_meteor>
-   <buckly>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </buckly>
-   <anlace>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </anlace>
-   <bowie>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </bowie>
-   <sunco>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.0</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </sunco>
-   <batavia>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.0</vern_sens>
-      <photop_sens>4.0</photop_sens>
-   </batavia>
-   <suneca>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </suneca>
-   <sunbri>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.5</vern_sens>
-      <photop_sens>4.0</photop_sens>
-   </sunbri>
-   <sunbrook>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>3.0</vern_sens>
-      <photop_sens>4.0</photop_sens>
-   </sunbrook>
-   <ellison>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.0</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </ellison>
+         <!--
+         startgf_to_mat = 580
+         tt_end_grain_fill = (0.05 * (tt_flowering + startgf_to_mat))
+         = 35
+         tt_start_grain_fill = startgf_to_mat - tt_end_grain_fill
+         = 545
+         -->
+
+         <tt_start_grain_fill units="oCd">545</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">35</tt_end_grain_fill>
+         <tt_maturity units="oCd">1</tt_maturity>
+         <tt_end_crop units="oCd">1000</tt_end_crop>
+
+         <tt_harvest_ripe units="oCd">1000</tt_harvest_ripe>
+         <startgf_to_mat>580</startgf_to_mat>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+         <cum_vernal_days>0    25</cum_vernal_days>
+         <tt_emergence units="oCd">800  600</tt_emergence>
+         <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+         <x_pp_endjuv_to_init>10.8   16.3</x_pp_endjuv_to_init>
+         <y_tt_endjuv_to_init>50     50</y_tt_endjuv_to_init>
+         <x_pp_init_to_flower units="h">10.8   16.3</x_pp_init_to_flower>
+         <y_tt_init_to_flower units="oCd">450    200</y_tt_init_to_flower>
+         <x_pp_flower_to_start_grain units="h">1      24</x_pp_flower_to_start_grain>
+         <y_tt_flower_to_start_grain units="oCd">120     120</y_tt_flower_to_start_grain>
+         <x_pp_start_to_end_grain units="h">1      24</x_pp_start_to_end_grain>
+         <y_tt_start_to_end_grain units="oCd">580    580</y_tt_start_to_end_grain>
+         <tt_end_grain_to_maturity units="oCd">50.0</tt_end_grain_to_maturity>
+         <tt_maturity_to_ripe units="oCd">1.0</tt_maturity_to_ripe>
+         <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+         <y_height units="mm" description="plant canopy height">0  1500</y_height>
+
+      </base_cultivar>
+      <!--  ===================== Eastern Australian Cultivars  ==================
+      In order from fastest to slowest maturing varieties.
+      -->
+      <hartog>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </hartog>
+      <janz>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </janz>
+      <cunningham>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </cunningham>
+      <hybrid_meteor>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </hybrid_meteor>
+      <buckly>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </buckly>
+      <anlace>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </anlace>
+      <bowie>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </bowie>
+      <sunco>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.0</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </sunco>
+      <batavia>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.0</vern_sens>
+         <photop_sens>4.0</photop_sens>
+      </batavia>
+      <suneca>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </suneca>
+      <sunbri>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.5</vern_sens>
+         <photop_sens>4.0</photop_sens>
+      </sunbri>
+      <sunbrook>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>3.0</vern_sens>
+         <photop_sens>4.0</photop_sens>
+      </sunbrook>
+      <ellison>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.0</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </ellison>
 
 
-   <!--  Barley Varieties
-    ===================== Western Australian Cultivars  ==================
-    dsg 240504 The following "pasture" cultivar is for testing purposes only
-    -->
-   <pasture>
-      <derived_from>base_cultivar</derived_from>
-      <grains_per_gram_stem>0.0</grains_per_gram_stem>
-   </pasture>
-   <kulin>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
-      <tt_start_grain_fill units="oCd">646</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">34</tt_end_grain_fill>
+      <!--  Barley Varieties
+      ===================== Western Australian Cultivars  ==================
+      dsg 240504 The following "pasture" cultivar is for testing purposes only
+      -->
+      <pasture>
+         <derived_from>base_cultivar</derived_from>
+         <grains_per_gram_stem>0.0</grains_per_gram_stem>
+      </pasture>
+      <kulin>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+         <tt_start_grain_fill units="oCd">646</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">34</tt_end_grain_fill>
 
-      <startgf_to_mat>680</startgf_to_mat>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </kulin>
-   <gamenya>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>2.0</photop_sens>
-      <tt_floral_initiation units="oCd">630.0</tt_floral_initiation>
-      <tt_start_grain_fill units="oCd">665</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">35</tt_end_grain_fill>
+         <startgf_to_mat>680</startgf_to_mat>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </kulin>
+      <gamenya>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>2.0</photop_sens>
+         <tt_floral_initiation units="oCd">630.0</tt_floral_initiation>
+         <tt_start_grain_fill units="oCd">665</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">35</tt_end_grain_fill>
 
-      <startgf_to_mat>700</startgf_to_mat>
-   </gamenya>
-   <gutha>
-      <derived_from>base_cultivar</derived_from>
-      <grains_per_gram_stem description="Not sure why this is different??? NIH">20.0 </grains_per_gram_stem>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </gutha>
-   <spear>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
+         <startgf_to_mat>700</startgf_to_mat>
+      </gamenya>
+      <gutha>
+         <derived_from>base_cultivar</derived_from>
+         <grains_per_gram_stem description="Not sure why this is different??? NIH">20.0 </grains_per_gram_stem>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </gutha>
+      <spear>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
 
-      <startgf_to_mat description="was 740">580 </startgf_to_mat>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-      <grains_per_gram_stem description="was 27.0">20 </grains_per_gram_stem>
-      <max_grain_size>0.045</max_grain_size>
-   </spear>
-   <wilgoyne>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
+         <startgf_to_mat description="was 740">580 </startgf_to_mat>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+         <grains_per_gram_stem description="was 27.0">20 </grains_per_gram_stem>
+         <max_grain_size>0.045</max_grain_size>
+      </spear>
+      <wilgoyne>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
 
-      <startgf_to_mat description="was 680">580 </startgf_to_mat>
-      <vern_sens>1.4</vern_sens>
-      <photop_sens>1.6</photop_sens>
-      <grains_per_gram_stem>20.0</grains_per_gram_stem>
-      <max_grain_size>0.045</max_grain_size>
-   </wilgoyne>
-   <!--  ===================== American Cultivars  ==================
-    -->
-   <yecora>
-      <derived_from>base_cultivar</derived_from>
-      <grains_per_gram_stem description="Not sure why this is different??? NIH">20.0 </grains_per_gram_stem>
-      <vern_sens>2.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </yecora>
-   <!--  ===================== New Zealand Cultivars  ==================
-    -->
-   <rongotea>
-      <derived_from>base_cultivar</derived_from>
-      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
-      <max_grain_size>0.047</max_grain_size>
-      <vern_sens>2.0</vern_sens>
-      <photop_sens>4.0</photop_sens>
-   </rongotea>
-   <!-- x_pp_endjuv_to_init =           10.8   16.3
-   y_tt_endjuv_to_init =           700    600
+         <startgf_to_mat description="was 680">580 </startgf_to_mat>
+         <vern_sens>1.4</vern_sens>
+         <photop_sens>1.6</photop_sens>
+         <grains_per_gram_stem>20.0</grains_per_gram_stem>
+         <max_grain_size>0.045</max_grain_size>
+      </wilgoyne>
+      <!--  ===================== American Cultivars  ==================
+      -->
+      <yecora>
+         <derived_from>base_cultivar</derived_from>
+         <grains_per_gram_stem description="Not sure why this is different??? NIH">20.0 </grains_per_gram_stem>
+         <vern_sens>2.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </yecora>
+      <!--  ===================== New Zealand Cultivars  ==================
+      -->
+      <rongotea>
+         <derived_from>base_cultivar</derived_from>
+         <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+         <max_grain_size>0.047</max_grain_size>
+         <vern_sens>2.0</vern_sens>
+         <photop_sens>4.0</photop_sens>
+      </rongotea>
+      <!-- x_pp_endjuv_to_init =           10.8   16.3
+      y_tt_endjuv_to_init =           700    600
 
-   x_pp_init_to_flower        =   1      24   (h)
-   y_tt_init_to_flower =          50     50  (oCd)
-    ====================== Chinese Cultivars  ============================
-    -->
-   <xifeng24 description="tested and revised by mike and wen on 26 Nov.02">
-      <derived_from>base_cultivar</derived_from>
-      <tt_start_grain_fill units="oCd">617.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">32.5</tt_end_grain_fill>
+      x_pp_init_to_flower        =   1      24   (h)
+      y_tt_init_to_flower =          50     50  (oCd)
+      ====================== Chinese Cultivars  ============================
+      -->
+      <xifeng24 description="tested and revised by mike and wen on 26 Nov.02">
+         <derived_from>base_cultivar</derived_from>
+         <tt_start_grain_fill units="oCd">617.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">32.5</tt_end_grain_fill>
 
-      <startgf_to_mat>650</startgf_to_mat>
-      <vern_sens>2.0</vern_sens>
-      <photop_sens>2.0</photop_sens>
-      <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
-   </xifeng24>
-   <dingxi24 description="based on cv. hartog">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>0.5</vern_sens>
-      <photop_sens>1.0</photop_sens>
-   </dingxi24>
-   <!--  ===================== Special Cultivars for Validation simulations ONLY ==================
-    -->
-   <hartog_wet>
-      <!--  Cultivar to "fix" phenology for APS26 to observed dates to allow comparison of the rest of the model w.r.t water and N use.
-       -->
-      <derived_from>base_cultivar</derived_from>
-   </hartog_wet>
-   <hartog_dry>
-      <!--  Cultivar to "fix" phenology for APS26 to observed dates to allow comparison of the rest of the model w.r.t water and N use.
-       -->
-      <derived_from>base_cultivar</derived_from>
-   </hartog_dry>
-   <gatton_hartog>
-      <derived_from>base_cultivar</derived_from>
-      <!--  special parameterisation for simulations at Gatton where there appears to be consistant problems with
-       use of temperature data from the remote met square.
-       -->
-      <vern_sens>2.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </gatton_hartog>
-   <!--  ===================== yield Prophet Cultivars ==================
-    Very Early maturing
-    __________________
-    -->
-   <h45>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>1.5</photop_sens>
-   </h45>
-   <h46>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>1.5</photop_sens>
-   </h46>
-   <silverstar>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>1.5</photop_sens>
-   </silverstar>
-   <westonia>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>1.5</photop_sens>
-   </westonia>
-   <wollaroi>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>1.5</photop_sens>
-   </wollaroi>
-   <!--  Early maturing
-    __________________
-    -->
-   <arrino>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </arrino>
-   <ruby>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </ruby>
-   <kirchauff>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </kirchauff>
-   <kalka>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </kalka>
-   <kukri>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </kukri>
-   <hybrid_mercury>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </hybrid_mercury>
-   <ouyen>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </ouyen>
-   <tamaroi>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </tamaroi>
-   <wyalkatchem>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </wyalkatchem>
-   <young>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </young>
-   <bowerbird>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </bowerbird>
-   <drysdale>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </drysdale>
-   <bonnie_rock>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </bonnie_rock>
-   <perengori>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </perengori>
-   <agtscythe>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </agtscythe>
-   <livingston>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </livingston>
-   <crusader>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
-   </crusader>   
-    
-   <!--  Early-Mid maturing
-    __________________
-    -->
-   <annuello>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </annuello>
-   <diamondbird>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </diamondbird>
-   <frame>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </frame>
-   <goroke>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </goroke>
-   <ventura>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </ventura>
-   <mitre>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </mitre>
-   <yallaroi>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </yallaroi>
-   <yitpi>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </yitpi>
-   <sunstate>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </sunstate>
-   <guardian>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </guardian>
-   <barunga>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </barunga>
-   <catalina>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </catalina>
-   <gladius>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </gladius>
-   <halbred>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </halbred>
-   <stiletto>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </stiletto>
-   <clf_stiletto>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </clf_stiletto>
-   <pugsley>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </pugsley>
-   <lincoln>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </lincoln>
-   
-   <!--  Mid maturing
-    ____________
-    -->
-   <baxter>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </baxter>
-   <babbler>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </babbler>
-   <camm>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </camm>
-   <clf-jnz>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </clf-jnz>
-   <dollarbird>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </dollarbird>
-   <saphire>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </saphire>
-   <arrivato>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </arrivato>
-   <correll>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </correll>
-   <derrimut>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </derrimut>
-   <barham>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </barham>
-   <buckley>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </buckley>
-   <carinya>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </carinya>
-   <!--  Mid+ maturing
-    ________________-
-    -->
-   <bellaroi>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.0</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </bellaroi>
-   <lang>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.0</vern_sens>
-      <photop_sens>3.5</photop_sens>
-   </lang>
-   <!--  Mid-late maturing
-    ________________-
-    -->
-   <braewood>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </braewood>
-   <calingiri>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </calingiri>
-   <chara>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </chara>
-   <giles>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </giles>
-   <sunlin>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </sunlin>
-   <sunvale>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </sunvale>
-   <gregory>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
-   </gregory>
+         <startgf_to_mat>650</startgf_to_mat>
+         <vern_sens>2.0</vern_sens>
+         <photop_sens>2.0</photop_sens>
+         <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
+      </xifeng24>
+      <dingxi24 description="based on cv. hartog">
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>0.5</vern_sens>
+         <photop_sens>1.0</photop_sens>
+      </dingxi24>
+      <!--  ===================== Special Cultivars for Validation simulations ONLY ==================
+      -->
+      <hartog_wet>
+         <!--  Cultivar to "fix" phenology for APS26 to observed dates to allow comparison of the rest of the model w.r.t water and N use.
+         -->
+         <derived_from>base_cultivar</derived_from>
+      </hartog_wet>
+      <hartog_dry>
+         <!--  Cultivar to "fix" phenology for APS26 to observed dates to allow comparison of the rest of the model w.r.t water and N use.
+         -->
+         <derived_from>base_cultivar</derived_from>
+      </hartog_dry>
+      <gatton_hartog>
+         <derived_from>base_cultivar</derived_from>
+         <!--  special parameterisation for simulations at Gatton where there appears to be consistant problems with
+         use of temperature data from the remote met square.
+         -->
+         <vern_sens>2.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </gatton_hartog>
+      <!--  ===================== yield Prophet Cultivars ==================
+      Very Early maturing
+      __________________
+      -->
+      <h45>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>1.5</photop_sens>
+      </h45>
+      <h46>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>1.5</photop_sens>
+      </h46>
+      <silverstar>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>1.5</photop_sens>
+      </silverstar>
+      <westonia>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>1.5</photop_sens>
+      </westonia>
+      <wollaroi>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>1.5</photop_sens>
+      </wollaroi>
+      <!--  Early maturing
+      __________________
+      -->
+      <arrino>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </arrino>
+      <ruby>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </ruby>
+      <kirchauff>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </kirchauff>
+      <kalka>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </kalka>
+      <kukri>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </kukri>
+      <hybrid_mercury>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </hybrid_mercury>
+      <ouyen>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </ouyen>
+      <tamaroi>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </tamaroi>
+      <wyalkatchem>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </wyalkatchem>
+      <young>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </young>
+      <bowerbird>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </bowerbird>
+      <drysdale>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </drysdale>
+      <bonnie_rock>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </bonnie_rock>
+      <perengori>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </perengori>
+      <agtscythe>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </agtscythe>
+      <livingston>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </livingston>
+      <crusader>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.6</vern_sens>
+         <photop_sens>1.8</photop_sens>
+      </crusader>
 
-   <!--  Late Maturing
-    ____________-
-    -->
-   <kelallac>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.5</vern_sens>
-      <photop_sens>4.0</photop_sens>
-   </kelallac>
-   <strzelecki>
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.5</vern_sens>
-      <photop_sens>4.0</photop_sens>
-   </strzelecki>
-   <bolac>
-      <derived_from>kelallac</derived_from>
-   </bolac>
-   <beaufort>
-      <derived_from>kelallac</derived_from>
-   </beaufort>
+      <!--  Early-Mid maturing
+      __________________
+      -->
+      <annuello>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </annuello>
+      <diamondbird>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </diamondbird>
+      <frame>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </frame>
+      <goroke>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </goroke>
+      <ventura>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </ventura>
+      <mitre>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </mitre>
+      <yallaroi>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </yallaroi>
+      <yitpi>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </yitpi>
+      <sunstate>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </sunstate>
+      <guardian>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </guardian>
+      <barunga>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </barunga>
+      <catalina>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </catalina>
+      <gladius>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </gladius>
+      <halbred>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </halbred>
+      <stiletto>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </stiletto>
+      <clf_stiletto>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </clf_stiletto>
+      <pugsley>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </pugsley>
+      <lincoln>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </lincoln>
 
-   <!--  Winter Wheat
-    ____________
-    Based on data in Penrose et al 2003 (AJAR)
+      <!--  Mid maturing
+      ____________
+      -->
+      <baxter>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </baxter>
+      <babbler>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </babbler>
+      <camm>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </camm>
+      <clf-jnz>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </clf-jnz>
+      <dollarbird>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </dollarbird>
+      <saphire>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </saphire>
+      <arrivato>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </arrivato>
+      <correll>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </correll>
+      <derrimut>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </derrimut>
+      <barham>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </barham>
+      <buckley>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </buckley>
+      <carinya>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>1.5</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </carinya>
+      <!--  Mid+ maturing
+      ________________-
+      -->
+      <bellaroi>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.0</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </bellaroi>
+      <lang>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.0</vern_sens>
+         <photop_sens>3.5</photop_sens>
+      </lang>
+      <!--  Mid-late maturing
+      ________________-
+      -->
+      <braewood>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </braewood>
+      <calingiri>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </calingiri>
+      <chara>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </chara>
+      <giles>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </giles>
+      <sunlin>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </sunlin>
+      <sunvale>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </sunvale>
+      <gregory>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.8</vern_sens>
+         <photop_sens>3.0</photop_sens>
+      </gregory>
 
-   wagga maturity types
+      <!--  Late Maturing
+      ____________-
+      -->
+      <kelallac>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.5</vern_sens>
+         <photop_sens>4.0</photop_sens>
+      </kelallac>
+      <strzelecki>
+         <derived_from>base_cultivar</derived_from>
+         <vern_sens>2.5</vern_sens>
+         <photop_sens>4.0</photop_sens>
+      </strzelecki>
+      <bolac>
+         <derived_from>kelallac</derived_from>
+      </bolac>
+      <beaufort>
+         <derived_from>kelallac</derived_from>
+      </beaufort>
 
-    -->
-   <lorikeet>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+      <!--  Winter Wheat
+      ____________
+      Based on data in Penrose et al 2003 (AJAR)
 
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>3.9</photop_sens>
-   </lorikeet>
-   <wylah>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>3.9</photop_sens>
-   </wylah>
-   <rosella>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>3.9</photop_sens>
-   </rosella>
-   <whistler>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>3.9</photop_sens>
-   </whistler>
-   <wedgetail>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>3.9</photop_sens>
-   </wedgetail>
-   <!--
-   mid maturity types
+      wagga maturity types
 
-    -->
-   <marombi>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">455.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>4.0</photop_sens>
-   </marombi>
-   <!--
-   CSIRO maturity types
+      -->
+      <lorikeet>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
 
-    -->
-   <declic>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>4.3</photop_sens>
-   </declic>
-   <mackellar>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>4.3</photop_sens>
-   </mackellar>
-   <brennan>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>4.3</photop_sens>
-   </brennan>
-   <!--
-   Late maturity types
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>3.9</photop_sens>
+      </lorikeet>
+      <wylah>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>3.9</photop_sens>
+      </wylah>
+      <rosella>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>3.9</photop_sens>
+      </rosella>
+      <whistler>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>3.9</photop_sens>
+      </whistler>
+      <wedgetail>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>3.9</photop_sens>
+      </wedgetail>
+      <!--
+      mid maturity types
 
-    -->
-   <dennis>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>4.5</photop_sens>
-   </dennis>
-   <tennant>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>4.5</photop_sens>
-   </tennant>
-   <teesdale>
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
-      <vern_sens>3.9</vern_sens>
-      <photop_sens>4.5</photop_sens>
-   </teesdale>
-   <!-- !!!!!!!!! BARLEY cultivars !!!!!!!!!!!!!!!!
-    Phenology Based on David Moody's data at Horsham and Walpeup - ZH 6 Aug 2005
-    potential_grain_filling_rate optimised to fit BCG trial sites 2003/2004 - ZH 6 Aug 2005
-    __________________
-    -->
-   <schooner>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+      -->
+      <marombi>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">455.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>4.0</photop_sens>
+      </marombi>
+      <!--
+      CSIRO maturity types
 
-      <startgf_to_mat>530</startgf_to_mat>
-      <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </schooner>
-   <!--  __________________
-    -->
-   <skiff>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
+      -->
+      <declic>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>4.3</photop_sens>
+      </declic>
+      <mackellar>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>4.3</photop_sens>
+      </mackellar>
+      <brennan>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>4.3</photop_sens>
+      </brennan>
+      <!--
+      Late maturity types
 
-      <startgf_to_mat>550</startgf_to_mat>
-      <tt_floral_initiation units="oCd">255.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </skiff>
-   <!--  __________________
-    -->
-   <franklin>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <derived_from>base_cultivar</derived_from>
-      <startgf_to_mat>580</startgf_to_mat>
-      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>2.90</photop_sens>
-   </franklin>
-   <!--  __________________
-    -->
-   <sloop>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+      -->
+      <dennis>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>4.5</photop_sens>
+      </dennis>
+      <tennant>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>4.5</photop_sens>
+      </tennant>
+      <teesdale>
+         <derived_from>base_cultivar</derived_from>
+         <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+         <vern_sens>3.9</vern_sens>
+         <photop_sens>4.5</photop_sens>
+      </teesdale>
+      <!-- !!!!!!!!! BARLEY cultivars !!!!!!!!!!!!!!!!
+      Phenology Based on David Moody's data at Horsham and Walpeup - ZH 6 Aug 2005
+      potential_grain_filling_rate optimised to fit BCG trial sites 2003/2004 - ZH 6 Aug 2005
+      __________________
+      -->
+      <schooner>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
 
-      <startgf_to_mat>530</startgf_to_mat>
-      <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </sloop>
-   <!--  __________________
-    -->
-   <Sloop_SA>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <startgf_to_mat>530</startgf_to_mat>
-      <tt_floral_initiation units="oCd">255.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </Sloop_SA>
-   <!--  __________________
-    -->
-   <Sloop_VIC>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <startgf_to_mat>530</startgf_to_mat>
-      <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </Sloop_VIC>
-   <!--  __________________
-    -->
-   <gairdner>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <startgf_to_mat>580</startgf_to_mat>
-      <tt_floral_initiation units="oCd">280.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </gairdner>
-   <barque>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
-      <startgf_to_mat>550</startgf_to_mat>
-      <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.30</photop_sens>
-   </barque>
-   <!--  __________________
-    -->
-   <maritime>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <startgf_to_mat>530</startgf_to_mat>
-      <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.30</photop_sens>
-   </maritime>
-   <!--  __________________
-    -->
-   <baudin>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
-      <startgf_to_mat>550</startgf_to_mat>
-      <tt_floral_initiation units="oCd">255.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </baudin>
-   <!--  __________________
-    -->
-   <vb0021>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <startgf_to_mat>530</startgf_to_mat>
-      <tt_floral_initiation units="oCd">280.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-   </vb0021>
-   <!--  __________________
-    -->
-   <keel>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0035</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">475</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">25</tt_end_grain_fill>
-      <startgf_to_mat>500</startgf_to_mat>
-      <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>2.90</photop_sens>
-   </keel>
-   <!--  __________________
-    -->
-   <hamelin>
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <startgf_to_mat>530</startgf_to_mat>
-      <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>2.90</photop_sens>
-   </hamelin>
-</wheat>
+         <startgf_to_mat>530</startgf_to_mat>
+         <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </schooner>
+      <!--  __________________
+      -->
+      <skiff>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
+
+         <startgf_to_mat>550</startgf_to_mat>
+         <tt_floral_initiation units="oCd">255.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </skiff>
+      <!--  __________________
+      -->
+      <franklin>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <derived_from>base_cultivar</derived_from>
+         <startgf_to_mat>580</startgf_to_mat>
+         <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>2.90</photop_sens>
+      </franklin>
+      <!--  __________________
+      -->
+      <sloop>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+
+         <startgf_to_mat>530</startgf_to_mat>
+         <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </sloop>
+      <!--  __________________
+      -->
+      <Sloop_SA>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+         <startgf_to_mat>530</startgf_to_mat>
+         <tt_floral_initiation units="oCd">255.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </Sloop_SA>
+      <!--  __________________
+      -->
+      <Sloop_VIC>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+         <startgf_to_mat>530</startgf_to_mat>
+         <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </Sloop_VIC>
+      <!--  __________________
+      -->
+      <gairdner>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <startgf_to_mat>580</startgf_to_mat>
+         <tt_floral_initiation units="oCd">280.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </gairdner>
+      <barque>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
+         <startgf_to_mat>550</startgf_to_mat>
+         <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.30</photop_sens>
+      </barque>
+      <!--  __________________
+      -->
+      <maritime>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+         <startgf_to_mat>530</startgf_to_mat>
+         <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.30</photop_sens>
+      </maritime>
+      <!--  __________________
+      -->
+      <baudin>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
+         <startgf_to_mat>550</startgf_to_mat>
+         <tt_floral_initiation units="oCd">255.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </baudin>
+      <!--  __________________
+      -->
+      <vb0021>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+         <startgf_to_mat>530</startgf_to_mat>
+         <tt_floral_initiation units="oCd">280.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>3.50</photop_sens>
+      </vb0021>
+      <!--  __________________
+      -->
+      <keel>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0035</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">475</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">25</tt_end_grain_fill>
+         <startgf_to_mat>500</startgf_to_mat>
+         <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>2.90</photop_sens>
+      </keel>
+      <!--  __________________
+      -->
+      <hamelin>
+         <derived_from>base_cultivar</derived_from>
+         <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
+         <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
+         <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+         <startgf_to_mat>530</startgf_to_mat>
+         <tt_floral_initiation units="oCd">230.0</tt_floral_initiation>
+         <vern_sens>1.00</vern_sens>
+         <photop_sens>2.90</photop_sens>
+      </hamelin>
+   </Model>
+
+</Type>

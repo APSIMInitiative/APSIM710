@@ -123,7 +123,7 @@ namespace GraphUserInterface
          {
          BaseView View = null;
 
-         string UIType = Configuration.Instance.Info(XmlHelper.Type(NewComponent), "uitype");
+         string UIType = Types.Instance.MetaData(XmlHelper.Type(NewComponent), "uitype");
          if (UIType != "")
             View = (BaseView)BaseController.CreateClass(UIType);
 

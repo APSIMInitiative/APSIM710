@@ -1,0 +1,30 @@
+<Type name="channel">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/WaterSupply/docs/WaterSupply_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\drink_blue32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\drink_blue16.png</SmallIcon>
+      <dll>%apsim%\Model\WaterSupply.dll</dll>
+      <drops>
+         <drop name="simulation"/>
+         <drop name="area"/>
+         <drop name="folder"/>
+         <drop name="toolbox"/>
+      </drops>
+      <variables>
+         <variable name="available_water" description ="Available channel Water"/>
+         <variable name="irrig_water_supplied" description ="Irrigation Water Supplied ML"/>
+      </variables>
+      <ApsimToSim>
+         <component name="[channel.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               <source_type>bore</source_type>
+               [channel.innerxml]
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+</Type>

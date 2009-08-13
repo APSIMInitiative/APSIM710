@@ -1,139 +1,197 @@
-<bambatsi>
+<Type name="bambatsi">
+   <MetaData>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\bambatsi.jpg</Image>
+      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Generic Growth science documentation" >../apsim/growth/docs/growth_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <dll>%apsim%\Model\Growth.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <cultivar name="seedling"/>
+      <variables>
+         <variable name="lai" description ="Bambatsi leaf area index"/>
+         <variable name="fw" description ="Bambatsi water stress factor"/>
+         <variable name="fn" description ="Bambatsi N stress factor"/>
+         <variable name="ft" description ="Bambatsi Temperature stress factor"/>
+         <variable name="fvpd" description ="Bambatsi VPD stress factor"/>
+         <variable name="cover_green" description ="Bambatsi Canopy Cover"/>
+         <variable name="height" description ="Bambatsi Height"/>
+         <variable name="plants" description ="Bambatsi Plant Population"/>
+         <variable name="age" description ="Bambatsi Tree Age"/>
+         <variable name="sw_demand" description ="Bambatsi soil water demand"/>
+         <variable name="ep" description ="Bambatsi Tree water use"/>
+         <variable name="foliage_mass" description ="Bambatsi foliage mass"/>
+         <variable name="foliage_n" description ="Bambatsi foliage N mass"/>
+         <variable name="biomass" description ="Bambatsi Total Above-ground biomass"/>
+         <variable name="adm_green" array = "T" description ="Bambatsi Live Above-ground Biomass Pools"/>
+         <variable name="adm_dead" array = "T" description ="Bambatsi Dead Above-ground Biomass Pools"/>
+         <variable name="adm_sen" array = "T" description ="Bambatsi Senesced Above-ground Biomass Pools"/>
+         <variable name="root_mass" description ="Bambatsi root mass"/>
+         <variable name="root_n" description ="Bambatsi root N mass"/>
+         <variable name="root_depth" description ="Bambatsi rooting depth"/>
+      </variables>
 
-   <RadiationPartitioningOrder>fruit leaf</RadiationPartitioningOrder>
+      <ApsimToSim>
+         <component name="[bambatsi.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               <uptake_source>calc</uptake_source>
+               <n_uptake_source>calc</n_uptake_source>
+               <rlv> 0.01 0 0 0 0 0 0 0 0 0 0 0 0 0</rlv>
+               <ll>[soil.ll]</ll>
+               <kl>[soil.kl]</kl>
+               <xf>[soil.xf]</xf>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
 
-   <crop_type>bambatsi</crop_type>
-   <above_gnd_parts description="Names of all above-ground structural parts">stem         </above_gnd_parts>
-   <below_gnd_parts description="Names of all below-ground structural parts">crown       </below_gnd_parts>
-   <partition_option>1</partition_option>
-   <!--  ======================================================================
-                    Growth Coefficients for Eucalyptus grandis
-    ======================================================================
-    -->
-   <bambatsi>
-      <!--                   Photosynthesis Coefficients
-                        ===========================
-       -->
-      <rue units="g/MJ" description="Radiation Use Efficiency">2.0</rue>
-      <svp_fract description="Weighting factor for daily VPD from max and min VPD">0.5</svp_fract>
-      <vpd units="kPa">0     1      5</vpd>
-      <fvpd units="0-1" description="Photosynthesis Modifier for VPD">1     1      1</fvpd>
-      <min_temp units="oC" description="Daily minimum temperature">0 2</min_temp>
-      <ff description="Photosynthesis Modifier for Frost">0 1</ff>
-      <fasw description="fraction  of available soil water">0.3 0.4 1          </fasw>
-      <ffasw description="fasw growth factor - affects above-ground growth /root:shoot ratio">1.0  1  1          </ffasw>
-      <fasw_depth description="depth of soil over which fasw is calculated">300.    </fasw_depth>
-      <!-- av_temp = 13 25 35 50  (oC)          ! Average Daily Temperature
-      ft =       0  1  1  0  ()            ! Photosynthesis Modifier for Temperature
-       -->
-      <av_temp units="oC" description="Average Daily Temperature">8 20 35 50</av_temp>
-      <ft description="Photosynthesis Modifier for Temperature">0  1  1  0</ft>
-      <av_temp_ftcanopy description="temperature factor on canopy expansion">6 16  </av_temp_ftcanopy>
-      <ftcanopy>1 1</ftcanopy>
-      <x_sw_demand_ratio description="stress factor on canopy expansion">1 1.5  </x_sw_demand_ratio>
-      <y_fwcanopy>1  1</y_fwcanopy>
-      <day_length>12.5 13.5</day_length>
-      <fdl>0  1</fdl>
-      <!--                   Primary Partitioning Coefficients
-                        =================================
-       -->
-      <individual_adm units="???" description="Mass of above-ground biomass per plant">0  1  10</individual_adm>
-      <agnd_structure_fraction units="0-1" description="Fraction of growth going into structure (above+below)">.6 .6  .60</agnd_structure_fraction>
-      <partition_stress units="0-1" description="Stress level">0.2 0.4 1.0</partition_stress>
-      <below_gnd_fraction units="0-1" description="Fraction of growth going below ground">0.9 0.4 0.3</below_gnd_fraction>
-      <fta_av_temp>0 1</fta_av_temp>
-      <fta_above_gnd>1 1</fta_above_gnd>
-      <fta_below_gnd>1 1</fta_below_gnd>
-      <!--                   Forest Structural Component
-                        ===========================
-                        Above-ground Structure
-                        ======================
-      above_gnd_parts     = stem          ! Names of all above-ground structural parts
-       -->
-      <above_gnd_nconc units="g/g" description="N concentration of these parts">.010</above_gnd_nconc>
-      <adm_sen_detach_frac units="/day" description="Fraction of senesced material detached per day">.002</adm_sen_detach_frac>
-      <!--  Partitioning Coefficients
-       =========================
-       -->
-      <stem_partition_fr units="0-1">1.00</stem_partition_fr>
-      <crown_partition_fr units="0-1">0.00</crown_partition_fr>
-      <!--  Senescence Rates (Y) are a function of fractional foliage senescence rate (X).
-       -->
-      <x_adm_sen_stem units="/day">0 1</x_adm_sen_stem>
-      <y_adm_sen_stem units="/day">0 1</y_adm_sen_stem>
-      <!--                   Below-ground Structure
-                        ======================
-      below_gnd_parts     = crown       ! Names of all below-ground structural parts
-       -->
-      <below_gnd_nconc units="g/g" description="N concentration of these parts">0.01</below_gnd_nconc>
-      <bdm_sen_detach_frac units="/day" description="Fraction of senesced material detached per day">1</bdm_sen_detach_frac>
-      <x_bdm_sen_crown units="/day">0      1</x_bdm_sen_crown>
-      <y_bdm_sen_crown units="/day">0.00 0.00</y_bdm_sen_crown>
-      <!--                      Canopy Component
-                           ================
-       -->
-      <age>0       1</age>
-      <specific_leaf_area>15000 15000</specific_leaf_area>
-      <leaf_residence_time>130   130</leaf_residence_time>
-      <Fage>1     1</Fage>
-      <foliage_n_conc units="gN/g">0.005 .010</foliage_n_conc>
-      <fn units="0-1">0   1.0</fn>
-      <foliage_n_conc_sen units="gN/g">0.005 .007</foliage_n_conc_sen>
-      <foliage_detach_frac>0.002</foliage_detach_frac>
-      <lai_extinction_coef units="m2/m2" description="LAI dependant variable">0.0  3.5</lai_extinction_coef>
-      <extinction_coef description="Light extinction coefficient">0.70 0.70</extinction_coef>
-      <lai_crown_cover units="m2/m2" description="LAI dependant variable">0  5. 6</lai_crown_cover>
-      <crown_cover units="0-1" description="Fractional Crown Cover">1  1  1</crown_cover>
-      <crown_determinants>stem</crown_determinants>
-      <x_crown_area>0 100</x_crown_area>
-      <y_crown_area>0 0</y_crown_area>
-      <min_lai>0.1</min_lai>
-      <leaf_sen_light_lai units="m2/m2" description="LAI at which light induced senescence commences">6.0</leaf_sen_light_lai>
-      <leaf_sen_light_rate units="/day" description="Rate of senescence of shaded leaves">0.001</leaf_sen_light_rate>
-      <max_leaf_sen_rate_stress>0</max_leaf_sen_rate_stress>
-      <height_determinants description="Names of above-ground parts used to determine height">stem                   </height_determinants>
-      <height_constant description="Constant in height power function">50.0                    </height_constant>
-      <height_power description="Power term in height power function">0.333                         </height_power>
-      <!--                   Forest Root Component
-                        =====================
-       -->
-      <root_front_velocity units="mm/day">10</root_front_velocity>
-      <specific_root_length units="mm/g" description="specific length of roots">100000</specific_root_length>
-      <root_sen_rate units="/day" description="Root senescence rate">0.005</root_sen_rate>
-      <root_n_conc units="g/g" description="Root N concentration">0.010</root_n_conc>
-      <max_n_uptake units="kg/ha/day" description="Maximum allowable N uptake rate">5</max_n_uptake>
-      <x_sw_ratio description="soil water ratio for effect on root elongation">0.0  0.25</x_sw_ratio>
-      <y_sw_fac_root units="0-1" description="stress index on root elongation">0.0  1.0</y_sw_fac_root>
-      <x_afps description="Air filled pore space (mm3 air/mm3 soil volume)">0.03 .06         </x_afps>
-      <y_afps_fac description="Modifier for root function">1     1          </y_afps_fac>
-      <self_thinning_coef>6.3e6</self_thinning_coef>
-      <self_thinning_power>1.5</self_thinning_power>
-      <self_thinning_determinants>stem</self_thinning_determinants>
-      <self_thinning_size>0.0</self_thinning_size>
-      <crit_cum_stress description="cum stress required for mortality">15  </crit_cum_stress>
-      <mortality_rate description="fraction dying per stress day">0.00 </mortality_rate>
-      <mortality_age description="seedlings do not die after 1 day of age">1  </mortality_age>
-      <mortality_size description="after reach 1g do not die">0.001 </mortality_size>
-   </bambatsi>
-   <!--  ======================================================================
-         Initialisation sets for various
-    ======================================================================
-    -->
-   <seedling>
-      <age>0.0</age>
-      <height units="mm">50</height>
-      <init_pla>0.00005</init_pla>
-      <foliage_n_conc>0.03</foliage_n_conc>
-      <!--  Specify weights of components of individual plants
-                           stem
-       -->
-      <ind_adm_green units="kg">0.0</ind_adm_green>
-      <ind_adm_sen units="kg">0</ind_adm_sen>
-      <ind_adm_dead units="kg">0</ind_adm_dead>
-      <!--                      crown
-       -->
-      <ind_bdm_green units="kg">0</ind_bdm_green>
-      <ind_bdm_sen units="kg">0</ind_bdm_sen>
-      <ind_bdm_dead units="kg">0</ind_bdm_dead>
-   </seedling>
-</bambatsi>
+      <RadiationPartitioningOrder>fruit leaf</RadiationPartitioningOrder>
+
+      <crop_type>bambatsi</crop_type>
+      <above_gnd_parts description="Names of all above-ground structural parts">stem         </above_gnd_parts>
+      <below_gnd_parts description="Names of all below-ground structural parts">crown       </below_gnd_parts>
+      <partition_option>1</partition_option>
+      <!--  ======================================================================
+      Growth Coefficients for Eucalyptus grandis
+      ======================================================================
+      -->
+      <bambatsi>
+         <!--                   Photosynthesis Coefficients
+         ===========================
+         -->
+         <rue units="g/MJ" description="Radiation Use Efficiency">2.0</rue>
+         <svp_fract description="Weighting factor for daily VPD from max and min VPD">0.5</svp_fract>
+         <vpd units="kPa">0     1      5</vpd>
+         <fvpd units="0-1" description="Photosynthesis Modifier for VPD">1     1      1</fvpd>
+         <min_temp units="oC" description="Daily minimum temperature">0 2</min_temp>
+         <ff description="Photosynthesis Modifier for Frost">0 1</ff>
+         <fasw description="fraction  of available soil water">0.3 0.4 1          </fasw>
+         <ffasw description="fasw growth factor - affects above-ground growth /root:shoot ratio">1.0  1  1          </ffasw>
+         <fasw_depth description="depth of soil over which fasw is calculated">300.    </fasw_depth>
+         <!-- av_temp = 13 25 35 50  (oC)          ! Average Daily Temperature
+         ft =       0  1  1  0  ()            ! Photosynthesis Modifier for Temperature
+         -->
+         <av_temp units="oC" description="Average Daily Temperature">8 20 35 50</av_temp>
+         <ft description="Photosynthesis Modifier for Temperature">0  1  1  0</ft>
+         <av_temp_ftcanopy description="temperature factor on canopy expansion">6 16  </av_temp_ftcanopy>
+         <ftcanopy>1 1</ftcanopy>
+         <x_sw_demand_ratio description="stress factor on canopy expansion">1 1.5  </x_sw_demand_ratio>
+         <y_fwcanopy>1  1</y_fwcanopy>
+         <day_length>12.5 13.5</day_length>
+         <fdl>0  1</fdl>
+         <!--                   Primary Partitioning Coefficients
+         =================================
+         -->
+         <individual_adm units="???" description="Mass of above-ground biomass per plant">0  1  10</individual_adm>
+         <agnd_structure_fraction units="0-1" description="Fraction of growth going into structure (above+below)">.6 .6  .60</agnd_structure_fraction>
+         <partition_stress units="0-1" description="Stress level">0.2 0.4 1.0</partition_stress>
+         <below_gnd_fraction units="0-1" description="Fraction of growth going below ground">0.9 0.4 0.3</below_gnd_fraction>
+         <fta_av_temp>0 1</fta_av_temp>
+         <fta_above_gnd>1 1</fta_above_gnd>
+         <fta_below_gnd>1 1</fta_below_gnd>
+         <!--                   Forest Structural Component
+         ===========================
+         Above-ground Structure
+         ======================
+         above_gnd_parts     = stem          ! Names of all above-ground structural parts
+         -->
+         <above_gnd_nconc units="g/g" description="N concentration of these parts">.010</above_gnd_nconc>
+         <adm_sen_detach_frac units="/day" description="Fraction of senesced material detached per day">.002</adm_sen_detach_frac>
+         <!--  Partitioning Coefficients
+         =========================
+         -->
+         <stem_partition_fr units="0-1">1.00</stem_partition_fr>
+         <crown_partition_fr units="0-1">0.00</crown_partition_fr>
+         <!--  Senescence Rates (Y) are a function of fractional foliage senescence rate (X).
+         -->
+         <x_adm_sen_stem units="/day">0 1</x_adm_sen_stem>
+         <y_adm_sen_stem units="/day">0 1</y_adm_sen_stem>
+         <!--                   Below-ground Structure
+         ======================
+         below_gnd_parts     = crown       ! Names of all below-ground structural parts
+         -->
+         <below_gnd_nconc units="g/g" description="N concentration of these parts">0.01</below_gnd_nconc>
+         <bdm_sen_detach_frac units="/day" description="Fraction of senesced material detached per day">1</bdm_sen_detach_frac>
+         <x_bdm_sen_crown units="/day">0      1</x_bdm_sen_crown>
+         <y_bdm_sen_crown units="/day">0.00 0.00</y_bdm_sen_crown>
+         <!--                      Canopy Component
+         ================
+         -->
+         <age>0       1</age>
+         <specific_leaf_area>15000 15000</specific_leaf_area>
+         <leaf_residence_time>130   130</leaf_residence_time>
+         <Fage>1     1</Fage>
+         <foliage_n_conc units="gN/g">0.005 .010</foliage_n_conc>
+         <fn units="0-1">0   1.0</fn>
+         <foliage_n_conc_sen units="gN/g">0.005 .007</foliage_n_conc_sen>
+         <foliage_detach_frac>0.002</foliage_detach_frac>
+         <lai_extinction_coef units="m2/m2" description="LAI dependant variable">0.0  3.5</lai_extinction_coef>
+         <extinction_coef description="Light extinction coefficient">0.70 0.70</extinction_coef>
+         <lai_crown_cover units="m2/m2" description="LAI dependant variable">0  5. 6</lai_crown_cover>
+         <crown_cover units="0-1" description="Fractional Crown Cover">1  1  1</crown_cover>
+         <crown_determinants>stem</crown_determinants>
+         <x_crown_area>0 100</x_crown_area>
+         <y_crown_area>0 0</y_crown_area>
+         <min_lai>0.1</min_lai>
+         <leaf_sen_light_lai units="m2/m2" description="LAI at which light induced senescence commences">6.0</leaf_sen_light_lai>
+         <leaf_sen_light_rate units="/day" description="Rate of senescence of shaded leaves">0.001</leaf_sen_light_rate>
+         <max_leaf_sen_rate_stress>0</max_leaf_sen_rate_stress>
+         <height_determinants description="Names of above-ground parts used to determine height">stem                   </height_determinants>
+         <height_constant description="Constant in height power function">50.0                    </height_constant>
+         <height_power description="Power term in height power function">0.333                         </height_power>
+         <!--                   Forest Root Component
+         =====================
+         -->
+         <root_front_velocity units="mm/day">10</root_front_velocity>
+         <specific_root_length units="mm/g" description="specific length of roots">100000</specific_root_length>
+         <root_sen_rate units="/day" description="Root senescence rate">0.005</root_sen_rate>
+         <root_n_conc units="g/g" description="Root N concentration">0.010</root_n_conc>
+         <max_n_uptake units="kg/ha/day" description="Maximum allowable N uptake rate">5</max_n_uptake>
+         <x_sw_ratio description="soil water ratio for effect on root elongation">0.0  0.25</x_sw_ratio>
+         <y_sw_fac_root units="0-1" description="stress index on root elongation">0.0  1.0</y_sw_fac_root>
+         <x_afps description="Air filled pore space (mm3 air/mm3 soil volume)">0.03 .06         </x_afps>
+         <y_afps_fac description="Modifier for root function">1     1          </y_afps_fac>
+         <self_thinning_coef>6.3e6</self_thinning_coef>
+         <self_thinning_power>1.5</self_thinning_power>
+         <self_thinning_determinants>stem</self_thinning_determinants>
+         <self_thinning_size>0.0</self_thinning_size>
+         <crit_cum_stress description="cum stress required for mortality">15  </crit_cum_stress>
+         <mortality_rate description="fraction dying per stress day">0.00 </mortality_rate>
+         <mortality_age description="seedlings do not die after 1 day of age">1  </mortality_age>
+         <mortality_size description="after reach 1g do not die">0.001 </mortality_size>
+      </bambatsi>
+      <!--  ======================================================================
+      Initialisation sets for various
+      ======================================================================
+      -->
+      <seedling>
+         <age>0.0</age>
+         <height units="mm">50</height>
+         <init_pla>0.00005</init_pla>
+         <foliage_n_conc>0.03</foliage_n_conc>
+         <!--  Specify weights of components of individual plants
+         stem
+         -->
+         <ind_adm_green units="kg">0.0</ind_adm_green>
+         <ind_adm_sen units="kg">0</ind_adm_sen>
+         <ind_adm_dead units="kg">0</ind_adm_dead>
+         <!--                      crown
+         -->
+         <ind_bdm_green units="kg">0</ind_bdm_green>
+         <ind_bdm_sen units="kg">0</ind_bdm_sen>
+         <ind_bdm_dead units="kg">0</ind_bdm_dead>
+      </seedling>
+   </Model>
+
+</Type>

@@ -1,0 +1,48 @@
+<Type name="operations">
+   <MetaData>
+      <UItype>VBUserInterface.OperationsUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/operatns/docs/operatns_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\gears32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\gears16.png</SmallIcon>
+      <dll>%apsim%\Model\Operations.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <ApsimToSim>
+         <component name="[operations.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               <script name="start_of_day">
+                  <text>
+                     <![CDATA[
+                     [foreach operations.operation]
+                     [if [operation.condition] = start_of_day]
+                     [operation.date] [operation.action]
+                     [endif]
+                     [endfor]
+                     ]]>
+                  </text>
+                  <event>start_of_day</event>
+               </script>
+               <script name="end_of_day">
+                  <text>
+                     <![CDATA[
+                     [foreach operations.operation]
+                     [if [operation.condition] = end_of_day]
+                     [operation.date] [operation.action]
+                     [endif]
+                     [endfor]
+                     ]]>
+                  </text>
+                  <event>end_of_day</event>
+               </script>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+</Type>

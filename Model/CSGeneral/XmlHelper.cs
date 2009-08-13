@@ -280,6 +280,24 @@ namespace CSGeneral
                 ReturnValues.Add(Child.InnerText);
             return ReturnValues;
             }
+      public static List<string> ValuesRecursive(XmlNode Node, string TypeFilter)
+         {
+         int PosDelimiter = TypeFilter.LastIndexOf('/');
+         if (PosDelimiter != -1)
+            {
+            Node = Find(Node, TypeFilter.Substring(0, PosDelimiter));
+            TypeFilter = TypeFilter.Substring(PosDelimiter + 1);
+            }
+
+         List<string> ReturnValues = new List<string>();
+         foreach (XmlNode Child in ChildNodes(Node, ""))
+            {
+            if (Child.Name == TypeFilter)
+               ReturnValues.Add(Child.InnerText);
+            ReturnValues.AddRange(ValuesRecursive(Child, TypeFilter)); // recursion
+            }
+         return ReturnValues;
+         }
       public static void SetValues(XmlNode Node, string NamePath, List<string> Values)
          {
          int PosDelimiter = NamePath.LastIndexOf('/');

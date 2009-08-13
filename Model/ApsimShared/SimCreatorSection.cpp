@@ -59,7 +59,7 @@ void SimCreatorSectionOld::open(const std::string& firstBit, const std::string s
       openTag = "_" + openTag;
       closeTag = openTag;
       }
-      
+
    replaceAll(name, " ", "");
    isManagerSection = (!Str_i_Eq(secondBit, "swim2") &&
                           (
@@ -134,7 +134,6 @@ void SimCreatorSectionOld::convertLine(const std::string& line)
          }
       }
    }
-
 // ------------------------------------------------------------------
 // Open the ParFile given the 1st, 2nd and 3rd bits of an APSIM
 // parameter file section e.g. sample.clock.parameters.
@@ -190,8 +189,9 @@ void SimCreatorSectionNew::open(const std::string& firstBit, const std::string s
    if (isManagerSection)
       {
       string ruleName = firstBit + "." + thirdBit;
-      openTag = "rule name=\"" + ruleName + "\" condition=\"" + openTag + "\"";
-      closeTag = "rule";
+      eventName = thirdBit;
+      openTag = "script name=\"" + ruleName + "\"";
+      closeTag = "script";
       }
    xml = "";
    variableNames.erase(variableNames.begin(), variableNames.end());
@@ -205,7 +205,8 @@ void SimCreatorSectionNew::writeToOut(ostream& out)
    if (isManagerSection)
       {
       out << "         <" + openTag + ">\n";
-      out << "            <![CDATA[\n" << xml << "            ]]>\n   ";
+      out << "            <text><![CDATA[\n" << xml << "            ]]>\n            </text>\n";
+      out << "            <event>" + eventName + "</event>\n";
       }
    else
       {

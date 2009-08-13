@@ -491,9 +491,13 @@ Public Class OutputFileDescUI
     End Sub
 
     Private Sub AddVariablesToListView(ByVal ComponentName As String, ByVal ComponentType As String, ByVal PropertyGroup As String)
+        Dim ModelInfo As XmlNode
+        If PropertyGroup = "variables" Then
+            ModelInfo = Types.Instance.Variables(ComponentType)
+        Else
+            ModelInfo = Types.Instance.Events(ComponentType)
+        End If
 
-
-        Dim ModelInfo As XmlNode = Configuration.Instance.GetVariablesForComponent(ComponentType, PropertyGroup)
         For Each Variables As XmlNode In XmlHelper.ChildNodes(ModelInfo, PropertyGroup)
             Dim GroupName As String = XmlHelper.Attribute(Variables, "name")
             If GroupName = "" Then

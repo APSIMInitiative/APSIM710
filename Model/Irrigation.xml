@@ -1,0 +1,42 @@
+<Type name="irrigation">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/irrigate/docs/irrigate_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\drink_blue32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\drink_blue16.png</SmallIcon>
+      <dll>%apsim%\Model\Irrigation.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="folder"/>
+      </drops>
+      <variables>
+         <variable name="irrigation" description="Irrigation entering the profile (mm)"/>
+         <variable name="irrig_loss" description="Irrigation losses (mm)"/>
+         <variable name="irrig_tot" description="Total applied irrigation (irrigation + loss) (mm)"/>
+         <variable name="allocation" description="Remaining irrigation allocation (Ml)"/>
+         <variable name="carry_over" description="Carry-over from allocation (Ml)"/>
+         <variable name="irr_fasw" description="Irrigation fraction of available soil water (0-1)"/>
+         <variable name="irr_deficit" description="Water deficit within the critical irrigation soil depth (mm)"/>
+      </variables>
+      <ApsimToSim>
+         <component name="[irrigation.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               <automatic_irrigation>[irrigation.automatic_irrigation]</automatic_irrigation>
+               <crit_fr_asw>[irrigation.crit_fr_asw]</crit_fr_asw>
+               <asw_depth>[irrigation.asw_depth]</asw_depth>
+               <irrigation_efficiency>[irrigation.irrigation_efficiency]</irrigation_efficiency>
+               <irrigation_allocation>[irrigation.irrigation_allocation]</irrigation_allocation>
+               <allocation>[irrigation.allocation]</allocation>
+               <solutes>nh4 no3 cl</solutes>
+               <default_no3_conc>[irrigation.default_no3_conc]</default_no3_conc>
+               <default_nh4_conc>[irrigation.default_nh4_conc]</default_nh4_conc>
+               <default_cl_conc>[irrigation.default_cl_conc]</default_cl_conc>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+</Type>

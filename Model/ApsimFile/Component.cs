@@ -89,7 +89,7 @@ namespace ApsimFile
             MyEnabled = false;
          foreach (XmlNode Child in Node.ChildNodes)
             {
-            if (Configuration.Instance.IsComponentVisible(Child.Name) && XmlHelper.Attribute(Child, "invisible") != "yes")
+            if (Types.Instance.IsVisible(Child.Name) && XmlHelper.Attribute(Child, "invisible") != "yes")
                {
                Component ChildComponent = new Component(MyFile, this);
                ChildNodes.Add(ChildComponent);
@@ -331,7 +331,7 @@ namespace ApsimFile
          MyFile.BeginUpdate();
          foreach (XmlNode Child in Doc.DocumentElement.ChildNodes)
             {
-            if (Configuration.Instance.AllowComponentAdd(Child.Name, Type))
+            if (Types.Instance.AllowComponentAdd(Child.Name, Type))
                {
                Component ChildComponent = new Component(MyFile, this);
                MyChildNodes.Add(ChildComponent);
@@ -360,7 +360,7 @@ namespace ApsimFile
             TempDoc.LoadXml("<dummy>" + Xml + "</dummy>");
             bool ok = true;
             foreach (XmlNode Child in XmlHelper.ChildNodes(TempDoc.DocumentElement, ""))
-               ok = ok & Configuration.Instance.AllowComponentAdd(Child.Name, Type);
+               ok = ok & Types.Instance.AllowComponentAdd(Child.Name, Type);
             return ok & TempDoc.DocumentElement.ChildNodes.Count > 0;
             }
          }
@@ -514,197 +514,6 @@ namespace ApsimFile
                                    Paddock.Type != "folder")
             Paddock = Paddock.Parent;
          return Paddock;
-         }
-
-      public void WriteSim(XmlDocument Doc)
-         {
-         WriteSim(Doc, null);
-         }
-      private void WriteSim(XmlDocument Doc, XmlNode ParentNode)
-         {
-         XmlNode ApsimToSim = Configuration.Instance.TypeNode(Type + "/ApsimToSim");
-         if (ApsimToSim != null && Enabled)
-            {
-            string ModuleType = XmlHelper.Value(ApsimToSim, "type");
-            XmlNode SimNode = XmlHelper.Find(ApsimToSim, "sim");
-            XmlNode CallDllNode = XmlHelper.Find(ApsimToSim, "calldll");
-            XmlNode Node = ParentNode;
-            if (ParentNode != null)
-               {
-               Node = XmlHelper.Find(ParentNode, "initdata");
-               if (Node == null)
-                  Node = ParentNode;
-               }
-            if (ModuleType == "xml")
-               {
-               XmlDocument ContentsDoc = new XmlDocument();
-               ContentsDoc.LoadXml(Contents);
-               Macro macro = new Macro();
-               string NewXMLContents = macro.Go(ContentsDoc.DocumentElement, XmlHelper.FormattedXML(SimNode.InnerXml));
-
-               if (Contents != "")
-                  {
-                  XmlDocument temp = new XmlDocument();
-                  temp.LoadXml("<dummy>" + NewXMLContents + "</dummy>");
-                  foreach (XmlNode Child in temp.DocumentElement)
-                     ParentNode.AppendChild(Node.OwnerDocument.ImportNode(Child, true));
-                  }
-               return;
-               }
-            else if (ModuleType != "")
-               {
-               string ModuleDLL = Configuration.RemoveMacros(XmlHelper.Value(ApsimToSim, "dll"));
-               Node = Doc.CreateElement(ModuleType);
-               if (ParentNode == null)
-                  Doc.AppendChild(Node);
-               else
-                  ParentNode.AppendChild(Node);
-
-               XmlHelper.SetName(Node, Name);
-               XmlHelper.SetAttribute(Node, "executable", ModuleDLL);
-               XmlHelper.SetValue(Node, "executable", ModuleDLL);
-               string ComponentInterfaceType = XmlHelper.Value(ApsimToSim, "componentinterface");
-               if (ComponentInterfaceType != "")
-                  XmlHelper.SetValue(Node, "componentinterface", ComponentInterfaceType);
-               if (ModuleType != "system" && ModuleType != "simulation")
-                  Node = Node.AppendChild(Doc.CreateElement("initdata"));
-
-               // See if user has an ini component in the .apsim file.
-               bool StandardSectionFound = false;
-               List<string> IniFileNames = new List<string>();
-               foreach (Component Child in ChildNodes)
-                  if (Child.Type.ToLower() == "ini")
-                     {
-                     XmlDocument IniDoc = new XmlDocument();
-                     IniDoc.LoadXml(Child.Contents);
-                     string IniFileName = XmlHelper.Value(IniDoc.DocumentElement, "filename");
-                     IniFileName = Configuration.RemoveMacros(IniFileName);
-                     IniFileNames.Add(IniFileName);
-                     }
-                  else if (Child.Name.ToLower() == "standard")
-                     {
-                     StandardSectionFound = true;
-                     }
-
-               // If user didn't specify an ini component then see if types has an ini for us
-               string defaultIni = Configuration.AddMacros(XmlHelper.Value(ApsimToSim, "ini"));
-
-               if (IniFileNames.Count == 0 && defaultIni != "")
-                  IniFileNames.Add(defaultIni);
-
-               // If we have an ini filename then write it to the sim.
-               if (IniFileNames.Count > 0 && !StandardSectionFound)
-                  XmlHelper.SetValues(Node, "include", IniFileNames);
-               }
-
-            // write module contents bit.
-            string NewContents = "";
-            if (SimNode != null)
-               {
-               XmlDocument ContentsDoc = new XmlDocument();
-               ContentsDoc.LoadXml(Contents);
-               Macro macro = new Macro();
-               NewContents = macro.Go(ContentsDoc.DocumentElement, XmlHelper.FormattedXML(SimNode.InnerXml));
-               }
-            else if (CallDllNode == null)
-               {
-               XmlDocument ContentsDoc = new XmlDocument();
-               ContentsDoc.LoadXml(Contents);
-               NewContents = ContentsDoc.DocumentElement.InnerXml;
-               }
-            if (Contents != "")
-               {
-               XmlDocument ContentsDoc = new XmlDocument();
-               ContentsDoc.LoadXml("<dummy>" + NewContents + "</dummy>");
-               foreach (XmlNode Child in ContentsDoc.DocumentElement)
-                  Node.AppendChild(Node.OwnerDocument.ImportNode(Child, true));
-               }
-
-            if (CallDllNode != null)
-               {
-               List<object> Arguments = new List<object>();
-               Arguments.Add(this);
-               Arguments.Add(Node);
-               Node = (XmlNode)CallDll.CallMethodOfClass(CallDllNode, Arguments);
-               }
-
-            if (Node != null)
-               {
-               // Iterate through all children and call their WriteSim methods.
-               foreach (Component Child in ChildNodes)
-                  Child.WriteSim(Doc, Node);
-
-               if (ModuleType == "system" || ModuleType == "simulation")
-                  {
-                  // Sort the nodes into component order.
-                  XmlHelper.Sort(Node, new ComponentSorter());
-                  }
-               }
-            }
-         else if (Type == "folder")
-            {
-            // Iterate through all children and call their WriteSim methods.
-            foreach (Component Child in ChildNodes)
-               Child.WriteSim(Doc, ParentNode);
-            XmlHelper.Sort(ParentNode, new ComponentSorter());
-            }
-         }
-
-      private class ComponentSorter : IComparer
-         {
-         private CaseInsensitiveComparer StringComparer = new CaseInsensitiveComparer();
-         private List<string> Components = new List<string>();
-         public ComponentSorter()
-            {
-            Components = Configuration.Instance.ComponentOrder();
-            }
-         int IComparer.Compare(object x, object y)
-            {
-            XmlNode Data1 = (XmlNode)x;
-            XmlNode Data2 = (XmlNode)y;
-            string ModuleName1 = Path.GetFileNameWithoutExtension(XmlHelper.Attribute(Data1, "executable")).ToLower();
-            string ModuleName2 = Path.GetFileNameWithoutExtension(XmlHelper.Attribute(Data2, "executable")).ToLower();
-
-            if (x == y)
-               return 0;
-            if (Data1.Name == "executable")
-               return -1;
-            if (Data2.Name == "executable")
-               return 1;
-            if (ModuleName1 == ModuleName2)
-               {
-               int ChildIndex1 = Array.IndexOf(XmlHelper.ChildNames(Data1.ParentNode, ""), XmlHelper.Name(Data1));
-               int ChildIndex2 = Array.IndexOf(XmlHelper.ChildNames(Data2.ParentNode, ""), XmlHelper.Name(Data2));
-               if (ChildIndex1 < ChildIndex2)
-                  return -1;
-               else
-                  return 1;
-               }
-            if (XmlHelper.Type(Data1) == "title")
-               return -1;
-            for (int i = 0; i != Components.Count; i++)
-               {
-               if (StringManip.StringsAreEqual(Components[i], ModuleName1))
-                  return -1;
-               if (StringManip.StringsAreEqual(Components[i], ModuleName2))
-                  return 1;
-               }
-            // Neither are in list so keep original order intact i.e. Node1 comes before Node2!!
-            // Find the relative positions of data1 and data2 in the parent list.
-            int Data1Pos = 0;
-            int Data2Pos = 0;
-            for (int i = 0; i != Data1.ParentNode.ChildNodes.Count; i++)
-               {
-               if (Data1.ParentNode.ChildNodes[i] == Data1)
-                  Data1Pos = i;
-               if (Data1.ParentNode.ChildNodes[i] == Data2)
-                  Data2Pos = i;
-               }
-            if (Data1Pos < Data2Pos)
-               return -1;
-            else
-               return 1;
-            }
          }
 
       public void Replace(string Xml)

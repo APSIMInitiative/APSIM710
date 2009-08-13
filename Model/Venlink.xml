@@ -1,0 +1,31 @@
+<Type name="venlink">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <LargeIcon>%apsim%\UserInterface\Images\link32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\link16.png</SmallIcon>
+      <Documentation name="Science documentation">../apsim/venlink/docs/Guide to linking APSIM with the VENSIM.htm</Documentation>
+      <dll>%apsim%\Model\VenLink.dll</dll>
+      <drops>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <ApsimToSim>
+         <component name="[venlink.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               <model_filename>[venlink.model_filename]</model_filename>
+               [foreach venlink.variable]
+               <variable>[variable.innerxml]</variable>
+               [endfor]
+               <initial_sum_htt>0</initial_sum_htt>
+               <soil_temp_threshold>20</soil_temp_threshold>
+               <soil_moisture_threshold>-0.9</soil_moisture_threshold>
+               <ll15>0.5</ll15>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+</Type>

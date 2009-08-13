@@ -1,0 +1,55 @@
+<Type name="dam">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/WaterSupply/docs/WaterSupply_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\drink_blue32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\drink_blue16.png</SmallIcon>
+      <dll>%apsim%\Model\WaterSupply.dll</dll>
+      <drops>
+         <drop name="simulation"/>
+         <drop name="area"/>
+         <drop name="folder"/>
+         <drop name="toolbox"/>
+      </drops>
+      <variables>
+         <variable name="evaporation" description ="Dam Evaporation"/>
+         <variable name="seepage" description ="Dam Seepage"/>
+         <variable name="available_water" description ="Available Dam Water"/>
+         <variable name="overflow" description ="Dam Overflow"/>
+         <variable name="available_depth" description ="Dam Water Depth"/>
+         <variable name="irrig_water_supplied" description ="Irrigation Water Supplied ML"/>
+      </variables>
+      <ApsimToSim>
+         <component name="[dam.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               <geometry name="standard">
+                  <dam_gully>1.1</dam_gully>
+                  <dam_ring>1.1</dam_ring>
+                  <dam_exc>1.1</dam_exc>
+                  <sump>1.1</sump>
+               </geometry>
+               <source_type>[dam.source_type]</source_type>
+               <max_available_water>[dam.max_available_water]</max_available_water>
+               <max_area>[dam.max_area]</max_area>
+               <init_available_water>[dam.init_available_water]</init_available_water>
+               <max_pump>[dam.max_pump]</max_pump>
+               <min_volume>[dam.min_volume]</min_volume>
+               <permeability>[dam.permeability]</permeability>
+               <seal_thickness>[dam.seal_thickness]</seal_thickness>
+               <receive_rainfall>[dam.receive_rainfall]</receive_rainfall>
+               <receive_catchment_runoff>[dam.receive_catchment_runoff]</receive_catchment_runoff>
+               <receive_crop_runoff>[dam.receive_crop_runoff]</receive_crop_runoff>
+               <crop_area>[dam.crop_area]</crop_area>
+               <init_salt_conc>[dam.init_salt_conc]</init_salt_conc>
+               <catchment_area>[dam.catchment_area]</catchment_area>
+               <catchment_runoff_factor>[dam.catchment_runoff_factor]</catchment_runoff_factor>
+               <runoff_salt_conc>[dam.runoff_salt_conc]</runoff_salt_conc>
+               <rainfall_salt_conc>[dam.rainfall_salt_conc]</rainfall_salt_conc>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+</Type>

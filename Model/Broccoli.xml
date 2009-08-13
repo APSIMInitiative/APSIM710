@@ -1,338 +1,370 @@
-<Broccoli>
-<Cultivar name="greenbelt">
-   <Construct>Transplant</Construct>
-</Cultivar>
-<Plant name="Transplant">
-   <CropType>broccoli</CropType>
-   <Population>
-     <Value>4</Value>
-   </Population>
-   <AnnualPlantArbitrator name="Arbitrator">
-      <DMSink>Stem</DMSink>
-   </AnnualPlantArbitrator>
-   <Phenology>
-      <TemperatureFunction name="ThermalTime">
-         <XYPairs>
-            <XY> 5 0.0</XY>
-            <XY>25 20.0</XY>
-            <XY>35 0.0</XY>
-         </XYPairs>
-      </TemperatureFunction>
-      <FixedPhase name="Shock">
-         <TTTarget>80</TTTarget>
-         <Start>Transplanting</Start>
-         <End>EndShock</End>
-      </FixedPhase>
-      <VernalPhase name="Juvenile">
-         <TTTarget>
-            <XY> 0 350</XY>
-            <XY> 30  0</XY>
-         </TTTarget>
-         <Start>EndShock</Start>
-         <End>FloralInitiation</End>
-         <TemperatureFunction name="VDModel">
-            <XYPairs>
+<Type name="broccoli">
+   <MetaData>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\broccoli.jpg</Image>
+      <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Generic plant" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+      <dll>%apsim%\Model\Plant2.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <variables link="%apsim%\Documentation\ModelInfo\broccoli.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\broccoli.xml"/>
+      <ApsimToSim>
+         <component name="[broccoli.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               <ll>[soil.ll]</ll>
+               <kl>[soil.kl]</kl>
+               <xf>[soil.xf]</xf>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <Cultivar name="greenbelt">
+         <Construct>Transplant</Construct>
+      </Cultivar>
+      <Plant name="Transplant">
+         <CropType>broccoli</CropType>
+         <Population>
+            <Value>4</Value>
+         </Population>
+         <AnnualPlantArbitrator name="Arbitrator">
+            <DMSink>Stem</DMSink>
+         </AnnualPlantArbitrator>
+         <Phenology>
+            <TemperatureFunction name="ThermalTime">
+               <XYPairs>
+                  <XY> 5 0.0</XY>
+                  <XY>25 20.0</XY>
+                  <XY>35 0.0</XY>
+               </XYPairs>
+            </TemperatureFunction>
+            <FixedPhase name="Shock">
+               <TTTarget>80</TTTarget>
+               <Start>Transplanting</Start>
+               <End>EndShock</End>
+            </FixedPhase>
+            <VernalPhase name="Juvenile">
+               <TTTarget>
+                  <XY> 0 350</XY>
+                  <XY> 30  0</XY>
+               </TTTarget>
+               <Start>EndShock</Start>
+               <End>FloralInitiation</End>
+               <TemperatureFunction name="VDModel">
+                  <XYPairs>
+                     <XY> 0 0.0</XY>
+                     <XY> 2 1.0</XY>
+                     <XY>15 0.0</XY>
+                  </XYPairs>
+               </TemperatureFunction>
+            </VernalPhase>
+            <LeafAppearancePhase name="Vegetative">
+               <Start>FloralInitiation</Start>
+               <End>StartBudding</End>
+               <RemainingLeaves>10.</RemainingLeaves>
+            </LeafAppearancePhase>
+            <FixedPhase name="Budding">
+               <TTTarget>120</TTTarget>
+               <Start>StartBudding</Start>
+               <End>Buttoning</End>
+            </FixedPhase>
+            <FixedPhase name="Heading">
+               <TTTarget>180</TTTarget>
+               <Start>Buttoning</Start>
+               <End>Maturity</End>
+            </FixedPhase>
+            <EndPhase name="Mature">
+               <Start>Maturity</Start>
+               <End>Unused</End>
+            </EndPhase>
+         </Phenology>
+         <Leaf>
+            <Frgr>1</Frgr>
+            <PrimaryBudNo>1</PrimaryBudNo>
+            <MaxCover>1.0</MaxCover>
+            <GenericFunction name="ExtinctionCoeff">
+               <XProperty>Leaf.LAI</XProperty>
+               <XYPairs>
+                  <XY> 0 0.8</XY>
+                  <XY> 0.8 0.5</XY>
+               </XYPairs>
+            </GenericFunction>
+            <KDead>0.5</KDead>
+            <GenericFunction name="Height">
+               <XProperty>Stem.Live.Wt</XProperty>
+               <XYPairs>
+                  <XY> 0 100.0</XY>
+                  <XY>300 750.0</XY>
+               </XYPairs>
+            </GenericFunction>
+            <FrostFraction>
                <XY> 0 0.0</XY>
-               <XY> 2 1.0</XY>
-               <XY>15 0.0</XY>
-            </XYPairs>
-         </TemperatureFunction>
-      </VernalPhase>
-      <LeafAppearancePhase name="Vegetative">
-         <Start>FloralInitiation</Start>
-         <End>StartBudding</End>
-         <RemainingLeaves>10.</RemainingLeaves>
-      </LeafAppearancePhase>
-      <FixedPhase name="Budding">
-         <TTTarget>120</TTTarget>
-         <Start>StartBudding</Start>
-         <End>Buttoning</End>
-      </FixedPhase>
-      <FixedPhase name="Heading">
-         <TTTarget>180</TTTarget>
-         <Start>Buttoning</Start>
-         <End>Maturity</End>
-      </FixedPhase>
-      <EndPhase name="Mature">
-         <Start>Maturity</Start>
-         <End>Unused</End>
-      </EndPhase>
-   </Phenology>
-   <Leaf>
-      <Frgr>1</Frgr>
-      <PrimaryBudNo>1</PrimaryBudNo>
-      <MaxCover>1.0</MaxCover>
-      <GenericFunction name="ExtinctionCoeff">
-         <XProperty>Leaf.LAI</XProperty>
-         <XYPairs>
-            <XY> 0 0.8</XY>
-            <XY> 0.8 0.5</XY>
-         </XYPairs>
-      </GenericFunction>
-      <KDead>0.5</KDead>
-      <GenericFunction name="Height">
-         <XProperty>Stem.Live.Wt</XProperty>
-         <XYPairs>
-            <XY> 0 100.0</XY>
-            <XY>300 750.0</XY>
-         </XYPairs>
-      </GenericFunction>
-      <FrostFraction>
-         <XY> 0 0.0</XY>
-         <XY> 2 0.0</XY>
-      </FrostFraction>
-      <RUEModel name="Photosynthesis">
-         <FT>
-            <XY> 0 0.0</XY>
-            <XY>10 1.0</XY>
-            <XY>22 1.0</XY>
-            <XY>35 0.0</XY>
-         </FT>
-         <FVPD>
-            <XY> 0 1.0</XY>
-            <XY>10 1.0</XY>
-            <XY>50 1.0</XY>
-         </FVPD>
-         <RUE>1.7</RUE>
-      </RUEModel>
-      <PhaseLookup name="PartitionFraction">
-         <PhaseLookupValue name="Early">
-            <Start>Transplanting</Start>
-            <End>FloralInitiation</End>
-            <Constant name="Function">
-               <Value>0.64</Value>
-            </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="Middle">
-            <Start>FloralInitiation</Start>
-            <End>Buttoning</End>
-            <Constant name="Function">
-               <Value>0.40</Value>
-            </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="Late">
-            <Start>Buttoning</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-               <Value>0.18</Value>
-            </Constant>
-         </PhaseLookupValue>
-      </PhaseLookup>
+               <XY> 2 0.0</XY>
+            </FrostFraction>
+            <RUEModel name="Photosynthesis">
+               <FT>
+                  <XY> 0 0.0</XY>
+                  <XY>10 1.0</XY>
+                  <XY>22 1.0</XY>
+                  <XY>35 0.0</XY>
+               </FT>
+               <FVPD>
+                  <XY> 0 1.0</XY>
+                  <XY>10 1.0</XY>
+                  <XY>50 1.0</XY>
+               </FVPD>
+               <RUE>1.7</RUE>
+            </RUEModel>
+            <PhaseLookup name="PartitionFraction">
+               <PhaseLookupValue name="Early">
+                  <Start>Transplanting</Start>
+                  <End>FloralInitiation</End>
+                  <Constant name="Function">
+                     <Value>0.64</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="Middle">
+                  <Start>FloralInitiation</Start>
+                  <End>Buttoning</End>
+                  <Constant name="Function">
+                     <Value>0.40</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="Late">
+                  <Start>Buttoning</Start>
+                  <End>Maturity</End>
+                  <Constant name="Function">
+                     <Value>0.18</Value>
+                  </Constant>
+               </PhaseLookupValue>
+            </PhaseLookup>
 
-      <TemperatureFunction name="ThermalTime">
-         <XYPairs>
-            <XY> 5 0.0</XY>
-            <XY>25 20.0</XY>
-            <XY>35 0.0</XY>
-         </XYPairs>
-      </TemperatureFunction>
-      <PhaseLookupValue name="NodeInitiationRate">
-         <Start>Transplanting</Start>
-         <End>FloralInitiation</End>
-         <Constant name="Function">
-            <Value>15.0</Value>
-         </Constant>
-      </PhaseLookupValue>
-      <MaxNodeNo>40</MaxNodeNo>
-      <PhaseLookupValue name="NodeAppearanceRate">
-         <Start>EndShock</Start>
-         <End>Maturity</End>
-         <GenericFunction name="Function">
-         <XProperty>Leaf.NodeNo</XProperty>
-         <XYPairs>
-            <XY> 1 30</XY>
-            <XY> 5 30</XY>
-            <XY> 6 30</XY>
-            <XY>30 30</XY>
-         </XYPairs>
-      </GenericFunction>
-      </PhaseLookupValue>
-      <InitialAreas>200 1326 990 844 167</InitialAreas>
-      <InitialAges>150 120 90 60 30</InitialAges>
-      <InitialiseStage>Transplanting</InitialiseStage>
-      <InitialLeafPrimordia>8</InitialLeafPrimordia>
-      <GenericFunction name="ExpansionStress">
-         <XProperty>WaterSupplyDemandRatio</XProperty>
-         <XYPairs>
-            <XY> 0.0 0</XY>
-            <XY> 1.0 1</XY>
-         </XYPairs>
-      </GenericFunction>
+            <TemperatureFunction name="ThermalTime">
+               <XYPairs>
+                  <XY> 5 0.0</XY>
+                  <XY>25 20.0</XY>
+                  <XY>35 0.0</XY>
+               </XYPairs>
+            </TemperatureFunction>
+            <PhaseLookupValue name="NodeInitiationRate">
+               <Start>Transplanting</Start>
+               <End>FloralInitiation</End>
+               <Constant name="Function">
+                  <Value>15.0</Value>
+               </Constant>
+            </PhaseLookupValue>
+            <MaxNodeNo>40</MaxNodeNo>
+            <PhaseLookupValue name="NodeAppearanceRate">
+               <Start>EndShock</Start>
+               <End>Maturity</End>
+               <GenericFunction name="Function">
+                  <XProperty>Leaf.NodeNo</XProperty>
+                  <XYPairs>
+                     <XY> 1 30</XY>
+                     <XY> 5 30</XY>
+                     <XY> 6 30</XY>
+                     <XY>30 30</XY>
+                  </XYPairs>
+               </GenericFunction>
+            </PhaseLookupValue>
+            <InitialAreas>200 1326 990 844 167</InitialAreas>
+            <InitialAges>150 120 90 60 30</InitialAges>
+            <InitialiseStage>Transplanting</InitialiseStage>
+            <InitialLeafPrimordia>8</InitialLeafPrimordia>
+            <GenericFunction name="ExpansionStress">
+               <XProperty>WaterSupplyDemandRatio</XProperty>
+               <XYPairs>
+                  <XY> 0.0 0</XY>
+                  <XY> 1.0 1</XY>
+               </XYPairs>
+            </GenericFunction>
 
-      <GenericFunction name="MaxArea">
-         <XProperty>Leaf.NodeNo</XProperty>
-         <XYPairs>
-            <XY> 1 200</XY>
-            <XY> 2 1800.0</XY>
-            <XY> 5 14700.0</XY>
-            <XY>11 83000.0</XY>
-         </XYPairs>
-      </GenericFunction>
-      <GenericFunction name="SpecificLeafArea">
-         <XProperty>Leaf.NodeNo</XProperty>
-         <XYPairs>
-            <XY> 1 16000.0</XY>
-            <XY>30 16000.0</XY>
-         </XYPairs>
-      </GenericFunction>
-      <GenericFunction name="GrowthDuration">
-         <XProperty>Leaf.NodeNo</XProperty>
-         <XYPairs>
-            <XY> 1  60.0 </XY>
-            <XY> 4  210.0</XY>
-            <XY> 16 450.0</XY>
-            <XY> 30 900.0</XY>
-         </XYPairs>
-      </GenericFunction>
-      <GenericFunction name="LagDuration">
-         <XProperty>Leaf.NodeNo</XProperty>
-         <XYPairs>
-            <XY> 1   50.0</XY>
-            <XY> 5  100.0</XY>
-            <XY> 11 250.0</XY>
-            <XY> 15 250.0</XY>
-         </XYPairs>
-      </GenericFunction>
-      <GenericFunction name="SenescenceDuration">
-         <XProperty>Leaf.NodeNo</XProperty>
-         <XYPairs>
-            <XY> 1  200.0</XY>
-            <XY> 5  200.0</XY>
-            <XY> 11 200.0</XY>
-            <XY> 15 200.0</XY>
-         </XYPairs>
-      </GenericFunction>
-      <GenericFunction name="BranchingRate">
-         <XProperty>Leaf.NodeNo</XProperty>
-         <XYPairs>
-            <XY> 5 0.0</XY>
-            <XY>10 0.0</XY>
-            <XY>15 0.2</XY>
-         </XYPairs>
-      </GenericFunction>
-      <PhaseLookup name="PartitionFractionMax">
-         <PhaseLookupValue name="Early">
-            <Start>Transplanting</Start>
-            <End>FloralInitiation</End>
-            <Constant name="Function">
-               <Value>0.60</Value>
+            <GenericFunction name="MaxArea">
+               <XProperty>Leaf.NodeNo</XProperty>
+               <XYPairs>
+                  <XY> 1 200</XY>
+                  <XY> 2 1800.0</XY>
+                  <XY> 5 14700.0</XY>
+                  <XY>11 83000.0</XY>
+               </XYPairs>
+            </GenericFunction>
+            <GenericFunction name="SpecificLeafArea">
+               <XProperty>Leaf.NodeNo</XProperty>
+               <XYPairs>
+                  <XY> 1 16000.0</XY>
+                  <XY>30 16000.0</XY>
+               </XYPairs>
+            </GenericFunction>
+            <GenericFunction name="GrowthDuration">
+               <XProperty>Leaf.NodeNo</XProperty>
+               <XYPairs>
+                  <XY> 1  60.0 </XY>
+                  <XY> 4  210.0</XY>
+                  <XY> 16 450.0</XY>
+                  <XY> 30 900.0</XY>
+               </XYPairs>
+            </GenericFunction>
+            <GenericFunction name="LagDuration">
+               <XProperty>Leaf.NodeNo</XProperty>
+               <XYPairs>
+                  <XY> 1   50.0</XY>
+                  <XY> 5  100.0</XY>
+                  <XY> 11 250.0</XY>
+                  <XY> 15 250.0</XY>
+               </XYPairs>
+            </GenericFunction>
+            <GenericFunction name="SenescenceDuration">
+               <XProperty>Leaf.NodeNo</XProperty>
+               <XYPairs>
+                  <XY> 1  200.0</XY>
+                  <XY> 5  200.0</XY>
+                  <XY> 11 200.0</XY>
+                  <XY> 15 200.0</XY>
+               </XYPairs>
+            </GenericFunction>
+            <GenericFunction name="BranchingRate">
+               <XProperty>Leaf.NodeNo</XProperty>
+               <XYPairs>
+                  <XY> 5 0.0</XY>
+                  <XY>10 0.0</XY>
+                  <XY>15 0.2</XY>
+               </XYPairs>
+            </GenericFunction>
+            <PhaseLookup name="PartitionFractionMax">
+               <PhaseLookupValue name="Early">
+                  <Start>Transplanting</Start>
+                  <End>FloralInitiation</End>
+                  <Constant name="Function">
+                     <Value>0.60</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="Middle">
+                  <Start>FloralInitiation</Start>
+                  <End>Buttoning</End>
+                  <Constant name="Function">
+                     <Value>0.40</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="Late">
+                  <Start>Buttoning</Start>
+                  <End>Maturity</End>
+                  <Constant name="Function">
+                     <Value>0.1</Value>
+                  </Constant>
+               </PhaseLookupValue>
+            </PhaseLookup>
+         </Leaf>
+         <GenericOrgan name="Stem">
+            <Biomass name="Live"/>
+            <Biomass name="Dead"/>
+
+            <PhaseLookup name="PartitionFraction">
+               <PhaseLookupValue name="Early">
+                  <Start>Transplanting</Start>
+                  <End>FloralInitiation</End>
+                  <Constant name="Function">
+                     <Value>0.16</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="Middle">
+                  <Start>FloralInitiation</Start>
+                  <End>Buttoning</End>
+                  <Constant name="Function">
+                     <Value>0.40</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="Late">
+                  <Start>Buttoning</Start>
+                  <End>Maturity</End>
+                  <Constant name="Function">
+                     <Value>0.18</Value>
+                  </Constant>
+               </PhaseLookupValue>
+            </PhaseLookup>
+            <Constant name="StructuralFraction">
+               <Value>1.0</Value>
             </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="Middle">
-            <Start>FloralInitiation</Start>
-            <End>Buttoning</End>
-            <Constant name="Function">
-               <Value>0.40</Value>
+         </GenericOrgan>
+         <Root>
+            <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+            <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+            <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+            <InitialDM>0.2</InitialDM>
+            <SpecificRootLength>40000</SpecificRootLength>
+            <GenericFunction name="KLModifier">
+               <XProperty>Leaf.LAI</XProperty>
+               <XYPairs>
+                  <XY> 0.0 0.1</XY>
+                  <XY> 3.0 1.0</XY>
+               </XYPairs>
+            </GenericFunction>
+            <PhaseLookup name="RootFrontVelocity">
+               <PhaseLookupValue name="Shock">
+                  <Start>Transplanting</Start>
+                  <End>EndShock</End>
+                  <Constant name="Function">
+                     <Value>0.0</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="Active">
+                  <Start>EndShock</Start>
+                  <End>Maturity</End>
+                  <Constant name="Function">
+                     <Value>20.0</Value>
+                  </Constant>
+               </PhaseLookupValue>
+            </PhaseLookup>
+            <Constant name="PartitionFraction">
+               <Value>0.2</Value>
             </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="Late">
-            <Start>Buttoning</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-               <Value>0.1</Value>
+            <TemperatureFunction name="TemperatureEffect">
+               <XYPairs>
+                  <XY> 0 0.0</XY>
+                  <XY>20 1.0</XY>
+                  <XY>32 0.0</XY>
+               </XYPairs>
+            </TemperatureFunction>
+         </Root>
+         <SimpleReproductiveOrgan name="Floret">
+            <Biomass name="Live"/>
+            <Biomass name="Dead"/>
+            <PhaseLookup name="PartitionFraction">
+               <PhaseLookupValue name="Early">
+                  <Start>Transplanting</Start>
+                  <End>Buttoning</End>
+                  <Constant name="Function">
+                     <Value>0.0</Value>
+                  </Constant>
+               </PhaseLookupValue>
+               <PhaseLookupValue name="HeadGrowth">
+                  <Start>Buttoning</Start>
+                  <End>Maturity</End>
+                  <Constant name="Function">
+                     <Value>0.65</Value>
+                  </Constant>
+               </PhaseLookupValue>
+            </PhaseLookup>
+            <Constant name="StructuralFraction">
+               <Value>1.0</Value>
             </Constant>
-         </PhaseLookupValue>
-      </PhaseLookup>
-   </Leaf>
-   <GenericOrgan name="Stem">
-    	<Biomass name="Live"/>
-    	<Biomass name="Dead"/>
-   	
-      <PhaseLookup name="PartitionFraction">
-         <PhaseLookupValue name="Early">
-            <Start>Transplanting</Start>
-            <End>FloralInitiation</End>
-            <Constant name="Function">
-               <Value>0.16</Value>
-            </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="Middle">
-            <Start>FloralInitiation</Start>
-            <End>Buttoning</End>
-            <Constant name="Function">
-               <Value>0.40</Value>
-            </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="Late">
-            <Start>Buttoning</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-               <Value>0.18</Value>
-            </Constant>
-         </PhaseLookupValue>
-      </PhaseLookup>
-      <Constant name="StructuralFraction">
-         <Value>1.0</Value>
-      </Constant>
-   </GenericOrgan>
-   <Root>
-      <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
-      <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
-      <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-      <InitialDM>0.2</InitialDM>
-      <SpecificRootLength>40000</SpecificRootLength>
-      <GenericFunction name="KLModifier">
-         <XProperty>Leaf.LAI</XProperty>
-         <XYPairs>
-            <XY> 0.0 0.1</XY>
-            <XY> 3.0 1.0</XY>
-         </XYPairs>
-      </GenericFunction>
-      <PhaseLookup name="RootFrontVelocity">
-         <PhaseLookupValue name="Shock">
-            <Start>Transplanting</Start>
-            <End>EndShock</End>
-            <Constant name="Function">
-               <Value>0.0</Value>
-            </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="Active">
-            <Start>EndShock</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-               <Value>20.0</Value>
-            </Constant>
-         </PhaseLookupValue>
-      </PhaseLookup>
-      <Constant name="PartitionFraction">
-         <Value>0.2</Value>
-      </Constant>
-      <TemperatureFunction name="TemperatureEffect">
-         <XYPairs>
-            <XY> 0 0.0</XY>
-            <XY>20 1.0</XY>
-            <XY>32 0.0</XY>
-         </XYPairs>
-      </TemperatureFunction>
-   </Root>
-   <SimpleReproductiveOrgan name="Floret">
-    	<Biomass name="Live"/>
-    	<Biomass name="Dead"/>
-      <PhaseLookup name="PartitionFraction">
-         <PhaseLookupValue name="Early">
-            <Start>Transplanting</Start>
-            <End>Buttoning</End>
-            <Constant name="Function">
-               <Value>0.0</Value>
-            </Constant>
-         </PhaseLookupValue>
-         <PhaseLookupValue name="HeadGrowth">
-            <Start>Buttoning</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-               <Value>0.65</Value>
-            </Constant>
-         </PhaseLookupValue>
-      </PhaseLookup>
-      <Constant name="StructuralFraction">
-         <Value>1.0</Value>
-      </Constant>
-      <RipeStage>Maturity</RipeStage>
-   </SimpleReproductiveOrgan>
-   <StageBasedInterpolation name="StageCode">
-     <Stages>Transplanting EndShock FloralInitiation FinalLeaf  Buttoning Maturity</Stages>
-     <Codes>   1               2              3            4           5      6</Codes>
-   </StageBasedInterpolation>
-   <Summary name="Summary"/>
-</Plant>
-</Broccoli>
+            <RipeStage>Maturity</RipeStage>
+         </SimpleReproductiveOrgan>
+         <StageBasedInterpolation name="StageCode">
+            <Stages>Transplanting EndShock FloralInitiation FinalLeaf  Buttoning Maturity</Stages>
+            <Codes>   1               2              3            4           5      6</Codes>
+         </StageBasedInterpolation>
+         <Summary name="Summary"/>
+      </Plant>
+   </Model>
+</Type>

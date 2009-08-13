@@ -15,11 +15,7 @@ namespace ApsimFile
    public class Configuration
       {
       private static Configuration Singleton = null;
-      private ImageList LargeIcons = null;
-      private ImageList MediumIcons = null;
-      private ImageList SmallIcons = null;
       protected XmlNode SettingsNode;
-      private XmlNode TypesNode;
       private string SectionName = "ApsimUI";
 
       protected Configuration()
@@ -50,12 +46,12 @@ namespace ApsimFile
          }
       public static string AddMacros(string St)
          {
-         int Pos = St.ToLower().IndexOf(ApsimDirectory());
+         int Pos = St.ToLower().IndexOf(ApsimDirectory().ToLower());
          if (Pos != -1)
             {
             string ReturnString = St;
-            ReturnString.Remove(Pos, ApsimDirectory().Length);
-            ReturnString.Insert(Pos, "%apsim%");
+            ReturnString = ReturnString.Remove(Pos, ApsimDirectory().Length);
+            ReturnString = ReturnString.Insert(Pos, "%apsim%");
             return ReturnString;
             }
          return St;
@@ -135,198 +131,6 @@ namespace ApsimFile
             }
          return null;
          }
-      public void LoadAllImages(XmlNode Node)
-         {
-         if (LargeIcons == null)
-            {
-            LargeIcons = new ImageList();
-            MediumIcons = new ImageList();
-            SmallIcons = new ImageList(); 
-            LargeIcons.ImageSize = new Size(32, 32);
-            MediumIcons.ImageSize = new Size(24, 24);
-            SmallIcons.ImageSize = new Size(16, 16);
-            LargeIcons.Tag = "LargeIcon";
-            MediumIcons.Tag = "MediumIcon";
-            SmallIcons.Tag = "SmallIcon";
-            LoadAllTypes();
-            LoadAllImages(TypesNode);
-            }
-         foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
-            {
-            LoadIcon(Child, "LargeIcon", ref LargeIcons);
-            LoadIcon(Child, "MediumIcon", ref MediumIcons);
-            LoadIcon(Child, "SmallIcon", ref SmallIcons);
-            }
-         }
-      private void LoadAllTypes()
-         {
-         if (TypesNode == null)
-            {
-            string ConfigurationXml = "";
-            List<string> ConfigFolders = Settings("UIConfigurationFolder");
-            foreach (string ConfigFolder in ConfigFolders)
-               {
-               foreach (string FileName in Directory.GetFiles(ConfigFolder, "*.xml"))
-                  {
-                  StreamReader Config = new StreamReader(FileName);
-                  ConfigurationXml += Config.ReadToEnd() + "\r\n";
-                  }
-               }
-            if (ConfigurationXml == "")
-               throw new Exception("Cannot find any user interface configuration files");
-            XmlDocument TypesDoc = new XmlDocument();
-            TypesDoc.LoadXml("<types>" + ConfigurationXml + "</types>");
-            TypesNode = TypesDoc.DocumentElement;
-            }
-         }
-      public static void LoadIcon(XmlNode Data, string Specifier, ref ImageList Icons)
-         {
-         // -----------------------------------------------------------------
-         // Load an icon for the 'Data' type using the specifier. The icon
-         // is stored in the specified imagelist and an index node createdef
-         // to store the position of the icon in the imagelist.
-         // -----------------------------------------------------------------
-         XmlNode IconChild = XmlHelper.Find(Data, Specifier);
-         if (IconChild != null)
-            {
-            string FileName = RemoveMacros(IconChild.InnerText);
-
-            if (File.Exists(FileName))
-               {
-               Bitmap Icon = new Bitmap(FileName);
-               Icons.Images.Add(Icon);
-               int IconIndex = Icons.Images.Count - 1;
-               XmlHelper.SetValue(Data, Specifier + "Index", IconIndex.ToString());
-               }
-            }
-         }
-      public ImageList ImageList(string ImageType)
-         {
-         if (ImageType == "SmallIcon")
-            return SmallIcons;
-         else if (ImageType == "MediumIcon")
-            return MediumIcons;
-         else
-            return LargeIcons;
-         }
-      public int ImageIndex(string Type, string ImageType)
-         {
-         return ImageIndex(XmlHelper.Find(TypesNode, Type), ImageType);
-         }
-      public int ImageIndex(XmlNode Node, string ImageType)
-         {
-         if (Node != null)
-            {
-            XmlNode ImageIndexChild = XmlHelper.Find(Node, ImageType + "Index");
-            if (ImageIndexChild != null)
-               return Convert.ToInt32(ImageIndexChild.InnerText);
-            }
-         return -1;
-         }
-
-      public string Info(string Type, string InfoType)
-         {
-         // -----------------------------------------------------------------
-         // Return description for the specified type.
-         // -----------------------------------------------------------------
-         LoadAllTypes();
-         XmlNode Node = XmlHelper.Find(TypesNode, Type + "/" + InfoType);
-         if (Node != null)
-            return Configuration.RemoveMacros(Node.InnerText);
-         else
-            return "";
-         }
-      public XmlNode TypeNode(string Type)
-         {
-         // ------------------------------------------------------------------
-         // Return type node for the specified type. Returns null if not found
-         // ------------------------------------------------------------------
-         LoadAllTypes();
-         return XmlHelper.Find(TypesNode, Type);
-         }
-      public bool IsComponentVisible(string ComponentType)
-         {
-         LoadAllTypes();
-         if ((XmlHelper.Find(TypesNode, ComponentType) != null))
-            {
-            if (XmlHelper.Value(TypesNode, ComponentType + "/ShowInMainTree") == "Yes")
-               return true;
-            }
-         return false;
-         }
-      public XmlNode GetVariablesForComponent(string Type, string PropertyGroup)
-         {
-         // -----------------------------------------------------------------
-         // Return variable or event info for the specified type. 
-         // "VariableData" argument.
-         // -----------------------------------------------------------------
-
-         XmlDocument Doc = new XmlDocument();
-         Doc.AppendChild(Doc.CreateElement("ModelInfo"));
-
-         LoadAllTypes();
-         XmlNode TypeNode = XmlHelper.Find(TypesNode, Type);
-         if (TypeNode != null)
-            {
-            foreach (XmlNode Variables in XmlHelper.ChildNodes(TypeNode, PropertyGroup))
-               {
-               string ModelInfoFileName = Configuration.RemoveMacros(XmlHelper.Attribute(Variables, "link"));
-               if (ModelInfoFileName != "")
-                  {
-                  if (File.Exists(ModelInfoFileName))
-                     {
-                     XmlDocument ModelInfoDoc = new XmlDocument();
-                     ModelInfoDoc.Load(ModelInfoFileName);
-                     XmlNode Node = XmlHelper.Find(ModelInfoDoc.DocumentElement, PropertyGroup);
-                     if (Node != null)
-                        {
-                        if (XmlHelper.Name(Variables) != "")
-                           XmlHelper.SetName(Node, XmlHelper.Name(Variables));
-                        Doc.DocumentElement.AppendChild(Doc.ImportNode(Node, true));
-                        }
-                     }
-                  }
-               else
-                  Doc.DocumentElement.AppendChild(Doc.ImportNode(Variables, true));
-               }
-            }
-         return Doc.DocumentElement;
-         }
-      public string[] GetCultivarsForCrop(string CropName)
-         {
-         if (CropName != "")
-            {
-            LoadAllTypes();
-            XmlNode Crop = XmlHelper.Find(TypesNode, CropName);
-            if (Crop != null)
-               {
-               List<string> Cultivars = new List<string>();
-               foreach (XmlNode Cultivar in XmlHelper.ChildNodes(Crop, "cultivar"))
-                  Cultivars.Add(XmlHelper.Name(Cultivar));
-               string[] ReturnCultivars = new string[Cultivars.Count];
-               Cultivars.CopyTo(ReturnCultivars, 0);
-               return ReturnCultivars;
-               }
-            }
-         return null;
-         }
-      public bool AllowComponentAdd(string ChildComponentType, string ParentComponentType)
-         {
-         // ------------------------------------------------- 
-         // Return true if the specified component type can 
-         // be added as a child to the specified parent type. 
-         // ------------------------------------------------- 
-         // Look in the componentinfo's drop targets. 
-         LoadAllTypes();
-         XmlNode DropNode = XmlHelper.Find(TypesNode, ChildComponentType + "/drops");
-         foreach (XmlNode Drop in XmlHelper.ChildNodes(DropNode, ""))
-            {
-            if (XmlHelper.Name(Drop).ToLower() == ParentComponentType.ToLower())
-               return true;
-            }
-         // if we get here we haven't found what we're after 
-         return false;
-         }
 
       private const int MAX_NUM_FREQUENT_SIMS = 10;
       public void AddFileToFrequentList(string FileName)
@@ -353,17 +157,5 @@ namespace ApsimFile
             }
          return GoodFileNames;
          }
-
-      public bool IsCrop(string CropNameToFind)
-         {
-         XmlNode CropsNode = XmlHelper.Find(SettingsNode, "Crops");
-         if (CropsNode != null)
-            {
-            string[] CropNames = XmlHelper.ChildNames(CropsNode, "");
-            return CSGeneral.StringManip.IndexOfCaseInsensitive(CropNames, CropNameToFind) != -1;
-            }
-         return false;
-         }
-
       }
    }

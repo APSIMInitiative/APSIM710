@@ -417,44 +417,48 @@ namespace ApsimFile
             if (PosNextElseIf == -1)
                PosNextElseIf = Contents.Length;
 
+            int PosIf;
             int PosEndBlock = Math.Min(Math.Min(PosNextElseIf, PosNextElse), PosEndIf);
-            if (PosEndBlock == -1)
-               throw new Exception("Missing endif for if: " + Contents.Substring(PosCondition));
-            bool ok;
-            if (PosCondition == PosElse && PosCondition != PosElseIf)
-               ok = true;
-
-            else
+            if (PosEndBlock != -1)
                {
-               int PosSpace = Contents.IndexOf(' ', PosCondition);
+               bool ok;
+               if (PosCondition == PosElse && PosCondition != PosElseIf)
+                  ok = true;
 
-               ok = EvaluateIf(Contents.Substring(PosSpace, PosEndMacro - PosSpace));
-               }
-            if (ok)
-               {
-               PosEndBlock = AdjustStartPos(Contents, PosEndBlock);
-               PosEndIf = AdjustEndPos(Contents, PosEndIf);
-
-               // remove everything from the end of block to after the endif.
-               Contents = Contents.Remove(PosEndBlock, PosEndIf - PosEndBlock);
-
-               // remove the condition line.
-               PosEndMacro = AdjustEndPos(Contents, PosEndMacro);
-               PosCondition = AdjustStartPos(Contents, PosCondition);
-               Contents = Contents.Remove(PosCondition, PosEndMacro - PosCondition);
-               }
-            else
-               {
-               // remove everything from start of condition down to end of block.
-               PosCondition = AdjustStartPos(Contents, PosCondition);
-               if (PosEndBlock == PosEndIf)
-                  PosEndBlock = AdjustEndPos(Contents, PosEndBlock);
                else
-                  PosEndBlock = AdjustStartPos(Contents, PosEndBlock);
-               Contents = Contents.Remove(PosCondition, PosEndBlock - PosCondition);
-               }
+                  {
+                  int PosSpace = Contents.IndexOf(' ', PosCondition);
 
-            int PosIf = Contents.IndexOf("[if");
+                  ok = EvaluateIf(Contents.Substring(PosSpace, PosEndMacro - PosSpace));
+                  }
+               if (ok)
+                  {
+                  PosEndBlock = AdjustStartPos(Contents, PosEndBlock);
+                  PosEndIf = AdjustEndPos(Contents, PosEndIf);
+
+                  // remove everything from the end of block to after the endif.
+                  Contents = Contents.Remove(PosEndBlock, PosEndIf - PosEndBlock);
+
+                  // remove the condition line.
+                  PosEndMacro = AdjustEndPos(Contents, PosEndMacro);
+                  PosCondition = AdjustStartPos(Contents, PosCondition);
+                  Contents = Contents.Remove(PosCondition, PosEndMacro - PosCondition);
+                  }
+               else
+                  {
+                  // remove everything from start of condition down to end of block.
+                  PosCondition = AdjustStartPos(Contents, PosCondition);
+                  if (PosEndBlock == PosEndIf)
+                     PosEndBlock = AdjustEndPos(Contents, PosEndBlock);
+                  else
+                     PosEndBlock = AdjustStartPos(Contents, PosEndBlock);
+                  Contents = Contents.Remove(PosCondition, PosEndBlock - PosCondition);
+                  }
+               PosIf = Contents.IndexOf("[if");
+               }
+            else
+               PosIf = Contents.IndexOf("[if", PosCondition+1);
+            
             PosElse = Contents.IndexOf("[else]");
             PosElseIf = Contents.IndexOf("[elseif");
             if (PosIf == -1)
@@ -561,6 +565,8 @@ namespace ApsimFile
             return StringManip.StringsAreEqual(lhs, rhs);
             }
          else if (op == "<>")
+            return !StringManip.StringsAreEqual(lhs, rhs);
+         else if (op == "!=")
             return !StringManip.StringsAreEqual(lhs, rhs);
          else if (op.IndexOfAny(operators) == -1)
             return (s.Count >= 1);

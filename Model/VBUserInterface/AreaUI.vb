@@ -113,14 +113,14 @@ Public Class AreaUI
     ' ----------------------------------
     Public Overrides Sub OnRefresh()
         ListView.Clear()
-        ListView.LargeImageList = Configuration.Instance.ImageList("LargeIcon")
+        ListView.LargeImageList = Controller.ImageList("LargeIcon")
 
         ' Add an item for all children of this system.
         Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
         For Each Child As ApsimFile.Component In Comp.ChildNodes
             'create new item
             Dim item As New ListViewItem(Child.Name, 0)
-            item.ImageIndex = Configuration.Instance.ImageIndex(Child.Type, "LargeIcon")
+            item.ImageIndex = Controller.ImageIndex(Child.Type, "LargeIcon")
             ListView.Items.Add(item)
         Next
 

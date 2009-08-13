@@ -1,31 +1,63 @@
-<Slurp>
+<Type name="slurp">
+   <MetaData>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Slurp science documentation">../apsim/slurp/docs/slurp_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\cubes32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\cubes16.png</SmallIcon>
+      <dll>%apsim%\Model\Plant2.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+         <drop name="area"/>
+      </drops>
+      <variables link="%apsim%\Documentation\ModelInfo\Slurp.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\Slurp.xml"/>
+      <ApsimToSim>
+         <component name="[Slurp.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+            <initdata>
+               [Model]
+               <ll>[soil.ll]</ll>
+               <kl>[soil.kl]</kl>
+               <xf>[soil.xf]</xf>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <Cultivar name="SlurpCultivar">
+         <Construct>Slurp</Construct>
+      </Cultivar>
 
-   <Cultivar name="SlurpCultivar">
-      <Construct>Slurp</Construct>
-   </Cultivar>
-
-   <Plant name="Slurp">
-      <CropType>Wheat</CropType>
-      <SimpleLeaf name="Leaf">
-         <Frgr>1</Frgr>
-         <FT>
-            <XY> 5 1.0</XY>
-            <XY>20 1.0</XY>
-            <XY>25 1.0</XY>
-            <XY>40 1.0</XY>
-         </FT>
-         <FVPD>
-            <XY> 0 1.0</XY>
-            <XY>10 1.0</XY>
-            <XY>50 1.0</XY>
-         </FVPD>
-         <Height>800</Height>
-         <LAI>6</LAI>
-         <LAIDead>0</LAIDead>
-         <K>0.5</K>
-         <KDead>0.5</KDead>
-      </SimpleLeaf>
-      <SimpleRoot name="Root">
-      </SimpleRoot>
-   </Plant>
-</Slurp>
+      <Plant name="Slurp">
+         <CropType>Wheat</CropType>
+         <SimpleLeaf name="Leaf">
+            <Frgr>1</Frgr>
+            <FT>
+               <XY> 5 1.0</XY>
+               <XY>20 1.0</XY>
+               <XY>25 1.0</XY>
+               <XY>40 1.0</XY>
+            </FT>
+            <FVPD>
+               <XY> 0 1.0</XY>
+               <XY>10 1.0</XY>
+               <XY>50 1.0</XY>
+            </FVPD>
+            <Height>800</Height>
+            <LAI>6</LAI>
+            <LAIDead>0</LAIDead>
+            <K>0.5</K>
+            <KDead>0.5</KDead>
+         </SimpleLeaf>
+         <SimpleRoot name="Root">
+         </SimpleRoot>
+      </Plant>
+   </Model>
+</Type>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using CSGeneral;
 
@@ -66,8 +67,24 @@ namespace CSGeneral
                 }
                 return -1;
 
-            } 
+            }
 
+        // ------------------------------------------------------- 
+        // A version of IndexOf that is case insensitive. 
+        // ------------------------------------------------------- 
+        public static int IndexOfCaseInsensitive(List<string> Values, string St)
+           {
+           string StLower = St.ToLower();
+           for (int i = 0; (i <= (Values.Count - 1)); i++)
+              {
+              if ((Values[i].ToLower() == StLower))
+                 {
+                 return i;
+                 }
+              }
+           return -1;
+
+           } 
 
 
 		// ------------------------------------------------------------------

@@ -135,12 +135,12 @@ Public Class EmptyUI
         Me.HelpText = "This module does not have any editable properties."
 
         Try
-            Label1.Text = Configuration.Instance.Info(XmlHelper.Type(Data), "Description")
+            Label1.Text = Types.Instance.MetaData(XmlHelper.Type(Data), "Description")
         Catch ex As System.Exception
             ' Don't update label.
         End Try
 
-        Dim imagefile As String = Configuration.Instance.Info(Data.Name, "image")
+        Dim imagefile As String = Types.Instance.MetaData(Data.Name, "image")
         If System.IO.File.Exists(imagefile) Then
             PictureBox.Image = Image.FromFile(imagefile)
         Else
@@ -151,7 +151,7 @@ Public Class EmptyUI
     End Sub
 
     Private Sub DocumentationLink_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles DocumentationLink.LinkClicked
-        Dim url As String = Configuration.Instance.Info(XmlHelper.Type(Data), "documentation")
+        Dim url As String = Types.Instance.MetaData(XmlHelper.Type(Data), "documentation")
         Process.Start("IExplore.exe", url)
     End Sub
 

@@ -1,4 +1,33 @@
-<fertiliz>
+   <Type name="fertiliser">
+      <MetaData>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Description>The fertiliser module doesn't have any properties. It is required though if you wish to apply fertiliser."</Description>
+      <Documentation name="Science documentation">../apsim/fertiliz/docs/fertiliz_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\fertiliser32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\fertiliser16.png</SmallIcon>
+      <dll>%apsim%\Model\Fertiliser.dll</dll>
+
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="folder"/>
+     </drops>
+      <variables>
+         <variable name="fertilizer" description="Amount of fertilizer applied (kg/ha)"/>
+      </variables>
+      <ApsimToSim>
+         <component name="[fertiliser.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+            </initdata>
+         </component>
+      </ApsimToSim>
+
+</MetaData>
+<Model>
    <calcite_ca>
       <full_name>Ca as finely ground Agricultural Lime</full_name>
       <components>CaCO3</components>
@@ -64,4 +93,6 @@
       <components>labile_p</components>
       <fraction>1.0</fraction>
    </broadcast_p>
-</fertiliz>
+</Model>
+
+   </Type>
