@@ -208,7 +208,7 @@ namespace ApsimToSim
                Soil SoilInPaddock = new Soil(SoilComponent.ContentsAsXML);
 
                // Soil / Crop variables
-               string CropName = ApsimComponent.Type;
+               string CropName = ApsimComponent.Name;
                ApsimToSimContents = ApsimToSimContents.Replace("[soil.ll]", WriteLayeredSoilValues(SoilInPaddock.LL(CropName)));
                ApsimToSimContents = ApsimToSimContents.Replace("[soil.kl]", WriteLayeredSoilValues(SoilInPaddock.KL(CropName)));
                ApsimToSimContents = ApsimToSimContents.Replace("[soil.xf]", WriteLayeredSoilValues(SoilInPaddock.XF(CropName)));

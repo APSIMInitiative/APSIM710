@@ -299,7 +299,12 @@ class GetRulesFunction
       void operator () (T &arg)
          {
          if (Str_i_Eq(arg.getName(), "script"))
-            Container.push_back(arg.getAttribute("name"));
+            {
+            string scriptName = arg.getAttribute("name");
+            if (scriptName == "")
+               scriptName = arg.childValue("event");
+            Container.push_back(scriptName);
+            }
          };
    };
 // ------------------------------------------------------------------
@@ -327,6 +332,8 @@ void ApsimComponentData::getRule(const std::string& name,
    for (XMLNode::iterator script = initData.begin(); script != initData.end(); script++)
       {
       string eventName = script->getAttribute("name");
+      if (eventName == "")
+         eventName = script->childValue("event");
       if (eventName == name)
          {
          condition = findNodeValue(*script, "event");
