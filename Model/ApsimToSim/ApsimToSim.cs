@@ -273,11 +273,15 @@ namespace ApsimToSim
          {
          // Replace the [Children] macro will child sim script.
 
-         if (ApsimToSimContents.Contains("[Children]"))
+         if (ApsimToSimContents.Contains("[Children]") || ApsimToSimContents.Contains("[HasChildren]"))
             {
             string ChildSimContents = "";
             foreach (Component Child in ApsimComponent.ChildNodes)
                ChildSimContents += WriteSimScript(Child);
+            if (ChildSimContents == "")
+               ApsimToSimContents = ApsimToSimContents.Replace("[HasChildren]", "");
+            else
+               ApsimToSimContents = ApsimToSimContents.Replace("[HasChildren]", "Yes");
             ApsimToSimContents = ApsimToSimContents.Replace("[Children]", ChildSimContents);
             }
          return ApsimToSimContents;

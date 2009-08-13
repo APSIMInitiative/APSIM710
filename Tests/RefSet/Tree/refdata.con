@@ -1,7 +1,7 @@
 ! Derived from McKeon's 7 steps.
 ! See http://apsru.sth.dpi.qld.gov.au/~devoilp/grasp for a detailed explanation
 
-version = 7.0(2)
+version = 7.1
 
 ! All off.
 [APSIM.step1.control]
@@ -10,7 +10,7 @@ module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
 module = report refdata.par[all] refdata.par[step1]
 module = input(met) narayen.met[weather]
 module = manager refdata.par[all]
-module = SoilWat   refdata.par [all] %apsim%/Model/SoilWat.xml [standard]
+module = SoilWat   refdata.par [all] %apsim%/Model/Soil.xml [SoilWat]
 module = tree   refdata.par [all] refdata.par [step1] refdata.par [soilwat] %apsim%/Model/tree.xml [standard]
 
 ! Transpiration
@@ -20,7 +20,7 @@ module = clock   refdata.par [all] %apsim%/Model/clock.xml [standard]
 module = report refdata.par[all] refdata.par[step2]
 module = input(met) narayen.met[weather]
 module = manager refdata.par[all]
-module = SoilWat   refdata.par [all] %apsim%/Model/SoilWat.xml [standard]
+module = SoilWat   refdata.par [all] %apsim%/Model/Soil.xml [SoilWat]
 module = tree   refdata.par [all] refdata.par [step2] refdata.par [soilwat] %apsim%/Model/tree.xml [standard]
 
 ! SWIM interface.

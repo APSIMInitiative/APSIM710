@@ -308,12 +308,8 @@ class GetRulesFunction
 void ApsimComponentData::getRuleNames(vector<string>& names) const
    {
    XMLNode initData = getInitData();
-   for (XMLNode::iterator script = initData.begin(); script != initData.end(); script++)
-      {
-      XMLNode::iterator event = find_if(script->begin(), script->end(), EqualToName<XMLNode>("event"));
-      if (event->isValid())
-         names.push_back(event->getValue());
-      }
+   for_each(initData.begin(), initData.end(),
+            GetRulesFunction<XMLNode>(names));
    }
 
 // ------------------------------------------------------------------
@@ -330,10 +326,10 @@ void ApsimComponentData::getRule(const std::string& name,
 
    for (XMLNode::iterator script = initData.begin(); script != initData.end(); script++)
       {
-      string eventName = findNodeValue(*script, "event");
+      string eventName = script->getAttribute("name");
       if (eventName == name)
          {
-         condition = eventName;
+         condition = findNodeValue(*script, "event");
          replaceManagerMacros(condition, *ui);
 
          contents = findNodeValue(*script, "text");

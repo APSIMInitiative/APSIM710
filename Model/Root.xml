@@ -1,4 +1,35 @@
 <Type name="Root">
+   <MetaData>
+      <UItype>VBUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\root.gif</Image>
+      <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+      <Documentation name="Generic plant" >../apsim/plant/docs/plant_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\root32.ico</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\root16.ico</SmallIcon>
+      <dll>%apsim%\model\root.dll</dll>
+      <drops>
+         <drop name="toolbox"/>
+         <drop name="area"/>
+         <drop name="simulation"/>
+         <drop name="folder"/>
+      </drops>
+      <variables link="%apsim%\Documentation\ModelInfo\root.xml"/>
+      <events link="%apsim%\Documentation\ModelInfo\root.xml"/>
+      <ApsimToSim>
+         <component name="[root.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+            <initdata>
+               [Model]
+               <ll>[soil.ll]</ll>
+               <kl>[soil.kl]</kl>
+               <xf>[soil.xf]</xf>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
    <Model>
       <Root>
          <ll>    </ll>
@@ -7,3 +38,4 @@
       </Root>
    </Model>
 </Type>
+

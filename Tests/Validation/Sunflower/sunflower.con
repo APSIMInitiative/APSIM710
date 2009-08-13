@@ -1,12 +1,12 @@
-version = 7.0(2)
+version = 7.1
 [apsim.sunflower_sample]
 title=Sunflower sample simulation
 module = clock   sunflower.par [sample] %apsim%/Model/clock.xml [standard]
 module = report    sunflower.par [sample]
 module = input(Met)       %apsim%/Examples/MetFiles/dalby.met [weather]
 module = manager   sunflower.par [sample]
-module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilWat.xml [standard]
-module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/SoilN.xml [standard]
+module = SoilWat   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/Soil.xml [SoilWat]
+module = SoilN   %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/Soil.xml [SoilN]
 module = SurfaceOM   %apsim%/Examples/Soils/Soil.par [no_residue] %apsim%/Model/SurfaceOM.xml [standard]
 module = CropMod(sunflower)   sunflower.par [sample] %apsim%/Model/sunflower.xml [standard]
 module = sysbal

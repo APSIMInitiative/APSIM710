@@ -1,4 +1,4 @@
-version = 7.0(2)
+version = 7.1
 title= c4 av pasture at Belyando Suttor (1-Alpha-Black Vertosol (Orion)) plus burn/graz & JO's preferred parameters
 
 [BSc4past]
@@ -7,8 +7,8 @@ module = input(met)    capella.met [standard]
 module = report(daily) BSc4past.par [daily]
 module = report(annual) BSc4past.par [annual]
 module = manager  BSc4past.man [BSc4past]
-module = SoilWat   BSc4past.par [BlackVertosol] %apsim%/Model/SoilWat.xml [standard]
-module = SoilN   BSc4past.par [BlackVertosol] %apsim%/Model/SoilN.xml [standard]
+module = SoilWat   BSc4past.par [BlackVertosol] %apsim%/Model/Soil.xml [SoilWat]
+module = SoilN   BSc4past.par [BlackVertosol] %apsim%/Model/Soil.xml [SoilN]
 module = SurfaceOM   BSc4past.par [BlackVertosol] %apsim%/Model/SurfaceOM.xml [standard]
 module = grasp   grasp.par [BSc4past] BSc4past.par [BlackVertosol] grasp.par [establishment] %apsim%/Model/grasp.xml [standard]
 module = graz   graz.par [BSc4past]
