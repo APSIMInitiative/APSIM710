@@ -65,7 +65,7 @@ public class Types
       {
       // Return true if an instance of the specified ChildTypeName can 
       // be added to an instance of ParentTypeName
-      XmlNode DropsNode = XmlHelper.Find(TypesDoc.DocumentElement, ChildTypeName + "/Drops");
+      XmlNode DropsNode = XmlHelper.Find(TypesDoc.DocumentElement, ChildTypeName + "/MetaData/Drops");
       if (DropsNode != null)
          {
          List<string> AllowedDrops = XmlHelper.Values(DropsNode, "Drop");

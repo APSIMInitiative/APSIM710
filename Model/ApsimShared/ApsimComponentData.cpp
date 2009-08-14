@@ -353,6 +353,7 @@ void ApsimComponentData::replaceManagerMacros(std::string& contents, XMLNode ui)
    {
    if (ui.isValid())
       {
+      replaceAll(contents, "[name]", getName());
       for (XMLNode::iterator child = ui.begin(); child != ui.end(); child++)
          {
          if (child->getName() != "category")

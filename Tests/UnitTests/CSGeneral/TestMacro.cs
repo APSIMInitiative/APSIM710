@@ -221,49 +221,6 @@ namespace test
             "s soil1 wheat\r\n");
          }
       // -------------------------------------------
-      // Test that if macros throw #1
-      // -------------------------------------------
-      [Test]
-      [ExpectedException(typeof(Exception))]
-      public void TestIfMacroThrows1()
-         {
-         const string Template =
-            "[foreach simulation.soil as s]\r\n" +
-            "[foreach s.crop]\r\n" +
-            "[if [s.name] = soil1]\r\n" +
-                  "[simulation.name] [s.name] [crop.name]\r\n" +
-            "[end if]\r\n" +
-            "[endfor]\r\n" +
-            "[endfor]\r\n";
-         XmlDocument Doc = new XmlDocument();
-         Doc.LoadXml(Values);
-
-         Macro macro = new Macro();
-         string Result = macro.Go(Doc.DocumentElement, Template);
-         }
-      // -------------------------------------------
-      // Test that if macros throw #2
-      // -------------------------------------------
-      [Test]
-      [ExpectedException(typeof(Exception))]
-      public void TestIfMacroThrows2()
-         {
-         const string Template =
-            "[foreach simulation.soil as s]\r\n" +
-            "[foreach s.crop]\r\n" +
-            "[if ([s.name] = soil1)]\r\n" +
-                  "[simulation.name] [s.name] [crop.name]\r\n" +
-            "[end if]\r\n" +
-            "[endfor]\r\n" +
-            "[endfor]\r\n";
-         XmlDocument Doc = new XmlDocument();
-         Doc.LoadXml(Values);
-
-         Macro macro = new Macro();
-         string Result = macro.Go(Doc.DocumentElement, Template);
-         }
-
-      // -------------------------------------------
       // Test for the existance of a macro.
       // -------------------------------------------
       [Test]

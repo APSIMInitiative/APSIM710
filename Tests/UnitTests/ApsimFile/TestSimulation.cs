@@ -41,6 +41,8 @@ namespace Test
       [SetUp]
       public void Init()
          {
+         PlugIns.LoadAll();
+
          Simulations = new ApsimFile();
          XmlDocument Doc = new XmlDocument();
          Doc.LoadXml(ApsimFileContents);

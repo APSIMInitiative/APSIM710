@@ -97,28 +97,30 @@ namespace ApsimToSim
          {
          // Write and return the .sim file contents for the specified 
          // Child component.
-
-         XmlNode ApsimToSim = Types.Instance.ApsimToSim(Child.Type);
-         if (ApsimToSim != null)
+         if (Child.Enabled)
             {
-            string ApsimToSimContents = ApsimToSim.InnerXml;
+            XmlNode ApsimToSim = Types.Instance.ApsimToSim(Child.Type);
+            if (ApsimToSim != null)
+               {
+               string ApsimToSimContents = ApsimToSim.InnerXml;
 
-            // Replace any occurrences of our macros with appropriate text.
-            // e.g. [Soil.] is replaced by the appropriate soil value.
-            //      [Model] is replaced by the contents of the [Model] node i.e. the ini contents.
-            //      [Dll] is replaced by the name of the model dll.
-            //      [Children] is replaced by the sim script for all children of this component.
-            ApsimToSimContents = ReplaceSoilMacros(ApsimToSimContents, Child);
-            ApsimToSimContents = ReplaceModelMacro(ApsimToSimContents, Child);
-            ApsimToSimContents = ReplaceDllMacro(ApsimToSimContents, Child);
-            ApsimToSimContents = ReplaceChildrenMacro(ApsimToSimContents, Child);
+               // Replace any occurrences of our macros with appropriate text.
+               // e.g. [Soil.] is replaced by the appropriate soil value.
+               //      [Model] is replaced by the contents of the [Model] node i.e. the ini contents.
+               //      [Dll] is replaced by the name of the model dll.
+               //      [Children] is replaced by the sim script for all children of this component.
+               ApsimToSimContents = ReplaceSoilMacros(ApsimToSimContents, Child);
+               ApsimToSimContents = ReplaceModelMacro(ApsimToSimContents, Child);
+               ApsimToSimContents = ReplaceDllMacro(ApsimToSimContents, Child);
+               ApsimToSimContents = ReplaceChildrenMacro(ApsimToSimContents, Child);
 
-            // Any other macros in the <ApsimToSim> will be removed by using the 
-            // APSIM macro language.
-            XmlDocument ChildValues = new XmlDocument();
-            ChildValues.LoadXml(Child.Contents);
-            Macro Macro = new Macro();
-            return Macro.Go(ChildValues.DocumentElement, XmlHelper.FormattedXML(ApsimToSimContents));
+               // Any other macros in the <ApsimToSim> will be removed by using the 
+               // APSIM macro language.
+               XmlDocument ChildValues = new XmlDocument();
+               ChildValues.LoadXml(Child.Contents);
+               Macro Macro = new Macro();
+               return Macro.Go(ChildValues.DocumentElement, XmlHelper.FormattedXML(ApsimToSimContents));
+               }
             }
          return "";
          }
@@ -143,12 +145,17 @@ namespace ApsimToSim
                   // Get the name of the model file.
                   XmlDocument IniComponent = new XmlDocument();
                   IniComponent.LoadXml(Child.Contents);
-                  string ModelFileName = XmlHelper.Value(IniComponent.DocumentElement, "filename");
+                  string ModelFileName = Configuration.RemoveMacros(XmlHelper.Value(IniComponent.DocumentElement, "filename"));
 
-                  // Find the <Model> node in the model file.
-                  XmlDocument ModelFile = new XmlDocument();
-                  ModelFile.Load(ModelFileName);
-                  ModelContents = FindModelContents(ModelFile.DocumentElement, ApsimComponent.Type);
+                  if (Path.GetExtension(ModelFileName) == ".xml")
+                     {
+                     // Find the <Model> node in the model file.
+                     XmlDocument ModelFile = new XmlDocument();
+                     ModelFile.Load(ModelFileName);
+                     ModelContents += FindModelContents(ModelFile.DocumentElement, ApsimComponent.Type);
+                     }
+                  else
+                     ModelContents += "<include>" + ModelFileName + "</include>";
                   }
                }
 
@@ -232,10 +239,15 @@ namespace ApsimToSim
                      InitWater Water = new InitWater(SoilChild.ContentsAsXML, SoilInPaddock);
                      ApsimToSimContents = ApsimToSimContents.Replace("[soil.SW]", SoilComponentUtility.LayeredToString(Water.SWMapedToSoil));
                      }
-                  else if (SoilChild.Type == "SoilSample")
+                  else if (SoilChild.Type.ToLower() == "soilsample")
                      {
                      SoilSample Sample = new SoilSample(SoilChild.ContentsAsXML, SoilInPaddock);
-                     ApsimToSimContents = ApsimToSimContents.Replace("[soil.SW]", SoilComponentUtility.LayeredToString(Sample.SWMapedToSoil));
+                     if (MathUtility.ValuesInArray(Sample.SWMapedToSoil))
+                        ApsimToSimContents = ApsimToSimContents.Replace("[soil.SW]", SoilComponentUtility.LayeredToString(Sample.SWMapedToSoil));
+                     if (MathUtility.ValuesInArray(Sample.NO3MapedToSoil))
+                        ApsimToSimContents = ApsimToSimContents.Replace("[soil.NO3]", SoilComponentUtility.LayeredToString(Sample.NO3MapedToSoil));
+                     if (MathUtility.ValuesInArray(Sample.NH4MapedToSoil))
+                        ApsimToSimContents = ApsimToSimContents.Replace("[soil.NH4]", SoilComponentUtility.LayeredToString(Sample.NH4MapedToSoil));
                      }
                   else if (SoilChild.Type == "InitNitrogen")
                      {
