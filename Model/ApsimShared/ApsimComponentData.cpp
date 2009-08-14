@@ -298,7 +298,7 @@ class GetRulesFunction
          { }
       void operator () (T &arg)
          {
-         if (Str_i_Eq(arg.getName(), "script"))
+         if (Str_i_Eq(arg.getName(), "script") || Str_i_Eq(arg.getName(), "rule"))
             {
             string scriptName = arg.getAttribute("name");
             if (scriptName == "")
@@ -336,11 +336,19 @@ void ApsimComponentData::getRule(const std::string& name,
          eventName = script->childValue("event");
       if (eventName == name)
          {
-         condition = findNodeValue(*script, "event");
-         replaceManagerMacros(condition, *ui);
+         if (script->getName() == "rule")
+            {
+            condition = script->getAttribute("condition");
+            contents = script->getValue();
+            }
+         else
+            {
+            condition = findNodeValue(*script, "event");
+            replaceManagerMacros(condition, *ui);
 
-         contents = findNodeValue(*script, "text");
-         replaceManagerMacros(contents, *ui);
+            contents += findNodeValue(*script, "text");
+            replaceManagerMacros(contents, *ui);
+            }
          }
       }
    Replace_all(contents, "[cr]", "\n");
