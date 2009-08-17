@@ -38,6 +38,12 @@ ref class WrapBuiltInVariable : ApsimType
          }
 	};
 
+int VariableType::ToBoolean()
+   {
+   WrapBuiltInVariable<bool>^ Data = gcnew WrapBuiltInVariable<bool>();
+   Component->Get(ComponentName + "." + Name, Data);
+   return Data->Value;
+   }	
 int VariableType::ToInt32()
    {
    WrapBuiltInVariable<int>^ Data = gcnew WrapBuiltInVariable<int>();

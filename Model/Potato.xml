@@ -1,234 +1,231 @@
 <Type name="potato">
-   <MetaData>
-      <UItype>VBUserInterface.EmptyUI</UItype>
-      <IsCrop>Yes</IsCrop>
-      <ShowInMainTree>Yes</ShowInMainTree>
-      <Image>%apsim%\UserInterface\Images\potato.jpg</Image>
-      <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process. NOTE THIS MODULE IS A PROTOTYPE ONLY.</Description>
-      <Documentation name="potato science documentation">../apsim/potato/docs/potato_science.htm</Documentation>
-      <Documentation name="Generic plant" >../apsim/plant/docs/plant_science.htm</Documentation>
-      <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
-      <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
-      <dll>%apsim%\Model\Plant.dll</dll>
-      <drops>
-         <drop>toolbox</drop>
-         <drop>area</drop>
-         <drop>simulation</drop>
-         <drop>folder</drop>
-      </drops>
-      <class    name="plant"/>
-      <cultivar name="MRPotatoHead"/>
-      <variables link="%apsim%\Documentation\ModelInfo\potato.xml"/>
-      <events link="%apsim%\Documentation\ModelInfo\potato.xml"/>
-      <ApsimToSim>
-         <component name="[Potato.name]" executable="[dll]">
-            <executable>[dll]</executable>
-            <initdata>
+  <MetaData>
+    <UItype>VBUserInterface.EmptyUI</UItype>
+    <IsCrop>Yes</IsCrop>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\potato.jpg</Image>
+    <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process. NOTE THIS MODULE IS A PROTOTYPE ONLY.</Description>
+    <Documentation name="potato science documentation">../apsim/potato/docs/potato_science.htm</Documentation>
+    <Documentation name="Generic plant">../apsim/plant/docs/plant_science.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+    <dll>%apsim%\Model\Plant.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <class name="plant" />
+    <cultivar name="MRPotatoHead" />
+    <variables link="%apsim%\Documentation\ModelInfo\potato.xml" />
+    <events link="%apsim%\Documentation\ModelInfo\potato.xml" />
+    <ApsimToSim>
+      <component name="[Potato.name]" executable="[dll]">
+        <executable>[dll]</executable>
+        <initdata>
                [Model]
-               <ll>[soil.ll]</ll>
-               <kl>[soil.kl]</kl>
-               <xf>[soil.xf]</xf>
-            </initdata>
-         </component>
-      </ApsimToSim>
-   </MetaData>
-   <Model>
-      <!-- ***********************************************************************************************************
+               <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <!-- ***********************************************************************************************************
       CONSTANTS  - SPECIES-SPECIFIC PARAMETERS
       ***********************************************************************************************************
       -->
-      <options>
-         <Environment/>
-         <Population/>
-         <Fixation/>
-         <Phenology/>
-         <Root/>
-         <GenericArbitratorXY/>
-         <CohortingLeaf name="leaf"/>
-         <Stem/>
-         <Floret/>
-         <Storage name="Tuber"/>
-         <Parts name="Tops">
-            <Leaf/>
-            <Stem/>
-            <Floret/>
-         </Parts>
-         <Parts name="Grain1">
-            <Floret/>
-         </Parts>    </options>
-         <RadiationPartitioningOrder>floret leaf</RadiationPartitioningOrder>
-
-         <crop_type>Potato</crop_type>
-         <default_crop_class>plant</default_crop_class>
-         <default_cultivar>russet</default_cultivar>
-         <grain_part_type>harvest_index</grain_part_type>
-         <stress_determinants>leaf stem meal</stress_determinants>
-         <yield_parts>meal oil</yield_parts>
-         <retrans_parts>leaf stem</retrans_parts>
-         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    <options>
+      <Environment />
+      <Population />
+      <Fixation />
+      <Phenology />
+      <Root />
+      <GenericArbitratorXY />
+      <CohortingLeaf name="leaf" />
+      <Stem />
+      <Floret />
+      <Storage name="Tuber" />
+      <Parts name="Tops">
+        <Leaf />
+        <Stem />
+        <Floret />
+      </Parts>
+      <Parts name="Grain1">
+        <Floret />
+      </Parts>
+    </options>
+    <RadiationPartitioningOrder>floret leaf</RadiationPartitioningOrder>
+    <crop_type>Potato</crop_type>
+    <default_crop_class>plant</default_crop_class>
+    <default_cultivar>russet</default_cultivar>
+    <grain_part_type>harvest_index</grain_part_type>
+    <stress_determinants>leaf stem meal</stress_determinants>
+    <yield_parts>meal oil</yield_parts>
+    <retrans_parts>leaf stem</retrans_parts>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          SECTION - VALUE LIMITS - MAX AND MINS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          ______________________________________________________________________________
          OTHER VARIABLES
          limits set to check inputs
          -->
-         <sw_ub>1.0</sw_ub>
-         <sw_lb>0.0</sw_lb>
-         <year_ub description="year upper limit">2000</year_ub>
-         <year_lb description="year lower limit">1800</year_lb>
-         <latitude_ub units="oL" description="latitude upper limit">90</latitude_ub>
-         <latitude_lb units="oL" description="latitude lower limit">-90</latitude_lb>
-         <maxt_ub units="oC" description="max. temperature upper limit">55</maxt_ub>
-         <maxt_lb units="oC" description="max. temperature lower limit">0</maxt_lb>
-         <mint_ub units="oC" description="min. temperature upper limit">40</mint_ub>
-         <mint_lb units="oC" description="min. temperature lower limit">-10</mint_lb>
-         <radn_ub units="MJ/m^2" description="radiation upper limit">50</radn_ub>
-         <radn_lb units="MJ/m^2" description="radiation lower limit">1</radn_lb>
-         <dlayer_ub units="mm" description="layer depth upper limit">1000</dlayer_ub>
-         <dlayer_lb units="mm" description="layer depth lower limit">0</dlayer_lb>
-         <dul_dep_ub units="mm" description="drained upper limit upper limit">1000</dul_dep_ub>
-         <dul_dep_lb units="mm" description="drained upper limit lower limit">0</dul_dep_lb>
-         <sw_dep_ub units="mm" description="soil water upper limit">1000</sw_dep_ub>
-         <sw_dep_lb units="mm" description="soil water lower limit">0</sw_dep_lb>
-         <no3_ub units="kg/ha" description="soil nitrate upper limit">10000</no3_ub>
-         <no3_lb units="kg/ha" description="soil nitrate lower limit">0</no3_lb>
-         <no3_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</no3_min_ub>
-         <no3_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</no3_min_lb>
-         <nh4_ub units="kg/ha" description="soil ammonium upper limit">10000</nh4_ub>
-         <nh4_lb units="kg/ha" description="soil ammonium lower limit">0</nh4_lb>
-         <nh4_min_ub units="kg/ha" description="min. soil ammonium upper limit">10000</nh4_min_ub>
-         <nh4_min_lb units="kg/ha" description="min. soil ammonium lower limit">0</nh4_min_lb>
-         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    <sw_ub>1.0</sw_ub>
+    <sw_lb>0.0</sw_lb>
+    <year_ub description="year upper limit">2000</year_ub>
+    <year_lb description="year lower limit">1800</year_lb>
+    <latitude_ub units="oL" description="latitude upper limit">90</latitude_ub>
+    <latitude_lb units="oL" description="latitude lower limit">-90</latitude_lb>
+    <maxt_ub units="oC" description="max. temperature upper limit">55</maxt_ub>
+    <maxt_lb units="oC" description="max. temperature lower limit">0</maxt_lb>
+    <mint_ub units="oC" description="min. temperature upper limit">40</mint_ub>
+    <mint_lb units="oC" description="min. temperature lower limit">-10</mint_lb>
+    <radn_ub units="MJ/m^2" description="radiation upper limit">50</radn_ub>
+    <radn_lb units="MJ/m^2" description="radiation lower limit">1</radn_lb>
+    <dlayer_ub units="mm" description="layer depth upper limit">1000</dlayer_ub>
+    <dlayer_lb units="mm" description="layer depth lower limit">0</dlayer_lb>
+    <dul_dep_ub units="mm" description="drained upper limit upper limit">1000</dul_dep_ub>
+    <dul_dep_lb units="mm" description="drained upper limit lower limit">0</dul_dep_lb>
+    <sw_dep_ub units="mm" description="soil water upper limit">1000</sw_dep_ub>
+    <sw_dep_lb units="mm" description="soil water lower limit">0</sw_dep_lb>
+    <no3_ub units="kg/ha" description="soil nitrate upper limit">10000</no3_ub>
+    <no3_lb units="kg/ha" description="soil nitrate lower limit">0</no3_lb>
+    <no3_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</no3_min_ub>
+    <no3_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</no3_min_lb>
+    <nh4_ub units="kg/ha" description="soil ammonium upper limit">10000</nh4_ub>
+    <nh4_lb units="kg/ha" description="soil ammonium lower limit">0</nh4_lb>
+    <nh4_min_ub units="kg/ha" description="min. soil ammonium upper limit">10000</nh4_min_ub>
+    <nh4_min_lb units="kg/ha" description="min. soil ammonium lower limit">0</nh4_min_lb>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          SECTION 1 - CROP PHENOLOGY: Stage and Phase names
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          -->
-         <stage_code_list>1            2             3               4                    5                   6                7</stage_code_list>
-         <stage_names>sowing    germination    emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</stage_names>
-         <phase_names>sowing    germination    emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</phase_names>
-         <phase_type>sowing     emergent       fixed              photo             fixed                fixed             fixed</phase_type>
-         <!-- TI/STF sensitive to photoperiod apparently - short-day plant. Other models include sensitivity. Emerg to EOJ equivalent to BVP. EOJ to STF sensitive to PP.
+    <stage_code_list>1            2             3               4                    5                   6                7</stage_code_list>
+    <stage_names>sowing    germination    emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</stage_names>
+    <phase_names>sowing    germination    emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</phase_names>
+    <phase_type>sowing     emergent       fixed              photo             fixed                fixed             fixed</phase_type>
+    <!-- TI/STF sensitive to photoperiod apparently - short-day plant. Other models include sensitivity. Emerg to EOJ equivalent to BVP. EOJ to STF sensitive to PP.
          No need to distinguish between TI and STF as TI taken as when stolon tip 2X diameter (ie stf started)?
          Some farmers kill crop with herbicide when weeds a problem and or senescence delayed (should be handled by the kill_crop manager command)
          Typically, crop left until total above-ground senescence occurs (end of tuber fill) and then left under ground (to avoid greening) for 2-3 weeks for skin set (harvest ripe)
          Asuming that we do not need to simulate flowering.
          -->
-         <composite_phases>under_ground    above_ground    leaf_senescence  node_formation    stress_reporting  tiller_formation  n_stress</composite_phases>
-         <under_ground>sowing   germination</under_ground>
-         <above_ground>emergence   end_of_juvenile    start_tuber_fill    end_tuber_fill    maturity</above_ground>
-         <leaf_senescence>end_tuber_fill    maturity</leaf_senescence>
-         <!-- Assuming leaf senescence commences after start_tuber_fill??
+    <composite_phases>under_ground    above_ground    leaf_senescence  node_formation    stress_reporting  tiller_formation  n_stress</composite_phases>
+    <under_ground>sowing   germination</under_ground>
+    <above_ground>emergence   end_of_juvenile    start_tuber_fill    end_tuber_fill    maturity</above_ground>
+    <leaf_senescence>end_tuber_fill    maturity</leaf_senescence>
+    <!-- Assuming leaf senescence commences after start_tuber_fill??
          reproductive = start_tuber_fill end_tuber_fill
          Assuming this refers to vegetative reproductive growth and not flower/seed production??
          emergence2floral_initiation  =    emergence end_of_juvenile tuber_initiation
          start_grain_fill2harvest_ripe =  start_tuber_fill end_tuber_fill
          preflowering  =                   emergence end_of_juvenile
          -->
-         <node_formation>emergence end_of_juvenile start_tuber_fill end_tuber_fill</node_formation>
-         <tiller_formation>emergence end_of_juvenile start_tuber_fill end_tuber_fill</tiller_formation>
-         <!-- hi_stress_sensitive =
+    <node_formation>emergence end_of_juvenile start_tuber_fill end_tuber_fill</node_formation>
+    <tiller_formation>emergence end_of_juvenile start_tuber_fill end_tuber_fill</tiller_formation>
+    <!-- hi_stress_sensitive =
          -->
-         <stress_reporting>start_tuber_fill end_tuber_fill</stress_reporting>
-         <n_stress>emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</n_stress>
-         <plant>
-            <class_action>harvest</class_action>
-            <class_change>unchanged</class_change>
-            <n_uptake_option>1</n_uptake_option>
-            <leaf_no_pot_option>1</leaf_no_pot_option>
-            <n_retrans_option>1</n_retrans_option>
-            <dm_senescence_option>1</dm_senescence_option>
-            <n_senescence_option>1</n_senescence_option>
-            <n_stress_option>1</n_stress_option>
-            <partition_option>genericxy</partition_option>
-            <partitionparts>root  leaf tuber stem</partitionparts>
-            <partitionrules>magic frac frac  remainder</partitionrules>
-            <fruit_no_option>1</fruit_no_option>
-            <parasite_option>1</parasite_option>
-            <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    <stress_reporting>start_tuber_fill end_tuber_fill</stress_reporting>
+    <n_stress>emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</n_stress>
+    <plant>
+      <class_action>harvest</class_action>
+      <class_change>unchanged</class_change>
+      <n_uptake_option>1</n_uptake_option>
+      <leaf_no_pot_option>1</leaf_no_pot_option>
+      <n_retrans_option>1</n_retrans_option>
+      <dm_senescence_option>1</dm_senescence_option>
+      <n_senescence_option>1</n_senescence_option>
+      <n_stress_option>1</n_stress_option>
+      <partition_option>genericxy</partition_option>
+      <partitionparts>root  leaf tuber stem</partitionparts>
+      <partitionrules>magic frac frac  remainder</partitionrules>
+      <fruit_no_option>1</fruit_no_option>
+      <parasite_option>1</parasite_option>
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 0 - CO2
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             -->
-            <co2_default units="ppm">350</co2_default>
-            <photosynthetic_pathway units="C3, or C4">C3</photosynthetic_pathway>
-            <x_co2_te_modifier units="ppm co2">350</x_co2_te_modifier>
-            <y_co2_te_modifier>1.0</y_co2_te_modifier>
-            <x_co2_nconc_modifier units="ppm co2">350</x_co2_nconc_modifier>
-            <y_co2_nconc_modifier>1.0</y_co2_nconc_modifier>
-            <stage_names>sowing    germination    emergence     end_of_juvenile     start_tuber_fill     end_tuber_fill     maturity</stage_names>
-            <stage_code>1            2             3               4                    5                   6                 7</stage_code>
-            <!-- __________________________________________________________________________________________________________-
+      <co2_default units="ppm">350</co2_default>
+      <photosynthetic_pathway units="C3, or C4">C3</photosynthetic_pathway>
+      <x_co2_te_modifier units="ppm co2">350</x_co2_te_modifier>
+      <y_co2_te_modifier>1.0</y_co2_te_modifier>
+      <x_co2_nconc_modifier units="ppm co2">350</x_co2_nconc_modifier>
+      <y_co2_nconc_modifier>1.0</y_co2_nconc_modifier>
+      <stage_names>sowing    germination    emergence     end_of_juvenile     start_tuber_fill     end_tuber_fill     maturity</stage_names>
+      <stage_code>1            2             3               4                    5                   6                 7</stage_code>
+      <!-- __________________________________________________________________________________________________________-
             STEM REDUCTION EFFECT ON PHENOLOGY
             sow    ger   eme   juv  st_tf end_tf mat
             -->
-            <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6      7</stage_code_list>
-            <stage_stem_reduction_harvest>1      2    3     4     5     6      7</stage_stem_reduction_harvest>
-            <stage_stem_reduction_kill_stem>1      2    3     4     5     6      7</stage_stem_reduction_kill_stem>
-            <!-- Development setback associated with grazing - disabled SNL
+      <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6      7</stage_code_list>
+      <stage_stem_reduction_harvest>1      2    3     4     5     6      7</stage_stem_reduction_harvest>
+      <stage_stem_reduction_kill_stem>1      2    3     4     5     6      7</stage_stem_reduction_kill_stem>
+      <!-- Development setback associated with grazing - disabled SNL
             __________________________________________________________________________________________________________-
             SEED GERMINATION
             Water stress factor for germination
             -->
-            <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.00</pesw_germ>
-            <!-- Only plant post dormant seed so no pesw threshold requirement.
+      <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.00</pesw_germ>
+      <!-- Only plant post dormant seed so no pesw threshold requirement.
             __________________________________________________________________________________________________________-
             EMERGENCE
             -->
-            <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">72</shoot_lag>
-            <!-- Lag phase for emergence inbetween germination planting and commencement of hypocotyl elongation (below)
+      <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">72</shoot_lag>
+      <!-- Lag phase for emergence inbetween germination planting and commencement of hypocotyl elongation (below)
             Sprouts active (germinated) at time of planting but require soil exposure to start elongating.
             Estimate from IRS trial
             -->
-            <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">6.3</shoot_rate>
-            <!-- Estimate from IRS trial
+      <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">6.3</shoot_rate>
+      <!-- Estimate from IRS trial
             Water stress factor for emergence
             -->
-            <fasw_emerg description="Fraction of available soil water">0.0  1.0    </fasw_emerg>
-            <rel_emerg_rate description="Stress factor for thermal time calculation between germination and emergence">1.0  1.0    </rel_emerg_rate>
-            <!-- Temperature regarded as main driver for emergence - hence deactivate for time being
+      <fasw_emerg description="Fraction of available soil water">0.0  1.0    </fasw_emerg>
+      <rel_emerg_rate description="Stress factor for thermal time calculation between germination and emergence">1.0  1.0    </rel_emerg_rate>
+      <!-- Temperature regarded as main driver for emergence - hence deactivate for time being
             Time to emergence has been shown to vary with 'age' but IRS trials suggest no SD between PA treatments - ignore IRS.
             __________________________________________________________________________________________________________-
             PHOTOPERIOD AND TWILIGHT
             -->
-            <twilight units="o" description="Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0</twilight>
-            <!--  centre of the sun is 2.2 degrees below the horizon. Sunrise or sunset is defined as when
+      <twilight units="o" description="Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0</twilight>
+      <!--  centre of the sun is 2.2 degrees below the horizon. Sunrise or sunset is defined as when
             the true centre of the sun is 50' below the horizon.
             -->
-            <end_of_juvenile_pp_inductive_cutoff>end</end_of_juvenile_pp_inductive_cutoff>
-            <!-- __________________________________________________________________________________________________________-
+      <end_of_juvenile_pp_inductive_cutoff>end</end_of_juvenile_pp_inductive_cutoff>
+      <!-- __________________________________________________________________________________________________________-
             Vernalisation
             -->
-            <x_vernal_temp>0 2  8   15</x_vernal_temp>
-            <y_vernal_days>0 0  0    0</y_vernal_days>
-            <!--  Potato does not have a vernalisation requirement so set to nil
+      <x_vernal_temp>0 2  8   15</x_vernal_temp>
+      <y_vernal_days>0 0  0    0</y_vernal_days>
+      <!--  Potato does not have a vernalisation requirement so set to nil
             __________________________________________________________________________________________________________-
             THERMAL TIME CALCULATION
             Thermal time calculation
             -->
-            <x_temp units="oC" description="temperature table for thermal time">2.0  20.0  35.0</x_temp>
-            <y_tt units="oCd" description="thermal time">0.0  18.0   0.0</y_tt>
-            <!--  Values are based on substor (Ritchie et al, 1995) and other refs. LINTUL (kooman and Haverkort, 1995) suggest maximum temperature as high as 35oC.
+      <x_temp units="oC" description="temperature table for thermal time">2.0  20.0  35.0</x_temp>
+      <y_tt units="oCd" description="thermal time">0.0  18.0   0.0</y_tt>
+      <!--  Values are based on substor (Ritchie et al, 1995) and other refs. LINTUL (kooman and Haverkort, 1995) suggest maximum temperature as high as 35oC.
             __________________________________________________________________________________________________________-
             LEAF NUMBER DEVELOPMENT
             currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
             -->
-            <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.5     </leaf_no_at_emerg>
-            <!-- Based on IRS leaf trial
+      <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.5     </leaf_no_at_emerg>
+      <!-- Based on IRS leaf trial
             -->
-            <x_node_no_app>0    17</x_node_no_app>
-            <y_node_app_rate>55   55</y_node_app_rate>
-            <!-- Node appearance on main stem from IRS glasshouse trial. No evidence that later nodes come faster (as for canola)
+      <x_node_no_app>0    17</x_node_no_app>
+      <y_node_app_rate>55   55</y_node_app_rate>
+      <!-- Node appearance on main stem from IRS glasshouse trial. No evidence that later nodes come faster (as for canola)
             -->
-            <x_node_no_leaf>0    10    13     17</x_node_no_leaf>
-            <y_leaves_per_node>1    1     17     1</y_leaves_per_node>
-            <!-- Based on IRS leaf trial and leaf no counts per node
+      <x_node_no_leaf>0    10    13     17</x_node_no_leaf>
+      <y_leaves_per_node>1    1     17     1</y_leaves_per_node>
+      <!-- Based on IRS leaf trial and leaf no counts per node
             Most nodes have one MS leaf. 3 nodes post node number 10 have branching.
             Need to incorprate stem number functions here (sensitive to PA, soil moisture and temperature at sowing).
             Conceptual model consists of positive linear relationship between potential (optimum conditions) stem number and 'age' since harvest of 'seed' (thermal time)
             The PSN is then modified downward depending on soil temp and soil moisture at sowing
             Effect of stem number (and hence age) on leaf area per stem (no effect on leaf appearance from IRS trials).
             -->
-            <x_lai_ratio description="ratio table for critical leaf size below which leaf number is reduced ()">0.0  0.01 0.8 1.0</x_lai_ratio>
-            <y_leaf_no_frac description="reduction in leaf appearance ()">1.0  1.0 1.0 1.0</y_leaf_no_frac>
-            <!-- Not sure what this does - doesn't change much with species
+      <x_lai_ratio description="ratio table for critical leaf size below which leaf number is reduced ()">0.0  0.01 0.8 1.0</x_lai_ratio>
+      <y_leaf_no_frac description="reduction in leaf appearance ()">1.0  1.0 1.0 1.0</y_leaf_no_frac>
+      <!-- Not sure what this does - doesn't change much with species
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 2 - PHOTOSYNTHESIS, BIOMASS GROWTH AND PARTITION
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -238,59 +235,58 @@
             STAGE DEPENDENT RUE
             sow    ger   eme  end_juv   st_tf   end_tf   mat
             -->
-            <x_stage_rue description="numeric code for phenological stages">1      2     3    4         5       6        7</x_stage_rue>
-            <y_rue units="g/MJ">0      0    1.6   1.6      1.6     1.6      1.6</y_rue>
-            <!-- Suggest 1.6g/MJ during vegetative (Allen and Scott 2001) increasing to 2.5 g/MJ (Kooman and Havertkort, 1995) after tuber initiation. Higher value attributed to 'sink' strength of tuber??
+      <x_stage_rue description="numeric code for phenological stages">1      2     3    4         5       6        7</x_stage_rue>
+      <y_rue units="g/MJ">0      0    1.6   1.6      1.6     1.6      1.6</y_rue>
+      <!-- Suggest 1.6g/MJ during vegetative (Allen and Scott 2001) increasing to 2.5 g/MJ (Kooman and Havertkort, 1995) after tuber initiation. Higher value attributed to 'sink' strength of tuber??
             Seems high to me - check latter (SL)
             __________________________________________________________________________________________________________-
             EXTINCTION COEFFICIENT
             ROW SPACING DETERMINED
             -->
-            <skiprow_default>0</skiprow_default>
-            <row_spacing_default units="mm">350</row_spacing_default>
-            <x_row_spacing>200  350  1000</x_row_spacing>
-            <y_extinct_coef description="From SUBSTOR">0.55 0.55 0.55  </y_extinct_coef>
-            <y_extinct_coef_dead description="unchanged from other species">0.30 0.30 0.30  </y_extinct_coef_dead>
-            <!-- POD EXTINCTION COEFFICIENT and RUE
+      <skiprow_default>0</skiprow_default>
+      <row_spacing_default units="mm">350</row_spacing_default>
+      <x_row_spacing>200  350  1000</x_row_spacing>
+      <y_extinct_coef description="From SUBSTOR">0.55 0.55 0.55  </y_extinct_coef>
+      <y_extinct_coef_dead description="unchanged from other species">0.30 0.30 0.30  </y_extinct_coef_dead>
+      <!-- POD EXTINCTION COEFFICIENT and RUE
             -->
-            <extinct_coef_floret>0.0</extinct_coef_floret>
-            <spec_floret_area units="mm^2/g">0.00</spec_floret_area>
-            <rue_floret units="g/MJ">0.00</rue_floret>
-            <!-- __________________________________________________________________________________________________________-
+      <extinct_coef_floret>0.0</extinct_coef_floret>
+      <spec_floret_area units="mm^2/g">0.00</spec_floret_area>
+      <rue_floret units="g/MJ">0.00</rue_floret>
+      <!-- __________________________________________________________________________________________________________-
             TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
             -->
-            <x_ave_temp units="oC" description="mean daily temperature">0  2  19  24  35</x_ave_temp>
-            <y_stress_photo description="multiplier on RUE">0  0   1  1  0</y_stress_photo>
-            <!-- from literature - Kooman and Haverkort (1995)
+      <x_ave_temp units="oC" description="mean daily temperature">0  2  19  24  35</x_ave_temp>
+      <y_stress_photo description="multiplier on RUE">0  0   1  1  0</y_stress_photo>
+      <!-- from literature - Kooman and Haverkort (1995)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             BIOMASS INITIATION, PARTITION AND TRANSLOCATION
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             INITIATION
             -->
-            <root_dm_init units="g/plant" description="part weight at emergence">0.2</root_dm_init>
-            <leaf_dm_init units="g/plant">0.03</leaf_dm_init>
-            <stem_dm_init units="g/plant">0.0</stem_dm_init>
-            <tuber_dm_init units="g/plant">0.0</tuber_dm_init>
-            <floret_dm_init>0.0</floret_dm_init>
-            <!-- __________________________________________________________________________________________________________-
+      <root_dm_init units="g/plant" description="part weight at emergence">0.2</root_dm_init>
+      <leaf_dm_init units="g/plant">0.03</leaf_dm_init>
+      <stem_dm_init units="g/plant">0.0</stem_dm_init>
+      <tuber_dm_init units="g/plant">0.0</tuber_dm_init>
+      <floret_dm_init>0.0</floret_dm_init>
+      <!-- __________________________________________________________________________________________________________-
             TRANSLOCATION PARTS
             -->
-            <stemGrowthStructuralFractionStage>  7 7.01</stemGrowthStructuralFractionStage>
-            <stemGrowthStructuralFraction>  .75 0.0</stemGrowthStructuralFraction>
-            <leafGrowthStructuralFractionStage>  7 7.01</leafGrowthStructuralFractionStage>
-            <leafGrowthStructuralFraction>  .85 0.0</leafGrowthStructuralFraction>
-
-            <!-- __________________________________________________________________________________________________________-
+      <stemGrowthStructuralFractionStage>  7 7.01</stemGrowthStructuralFractionStage>
+      <stemGrowthStructuralFraction>  .75 0.0</stemGrowthStructuralFraction>
+      <leafGrowthStructuralFractionStage>  7 7.01</leafGrowthStructuralFractionStage>
+      <leafGrowthStructuralFraction>  .85 0.0</leafGrowthStructuralFraction>
+      <!-- __________________________________________________________________________________________________________-
             BIOMASS PARTITIONING
             sow    ger   eme  juv  st_tf end_tf   mat
             stage_code            = 1      2    3     4     5      6     7  ()     ! numeric code for phenological stages
             -->
-            <x_stage_no_partition>1      2    3     4     5      6     7</x_stage_no_partition>
-            <y_ratio_root_shoot units="0-1">0      0    1.0   0.33  0.33   0.081  0</y_ratio_root_shoot>
-            <y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves">0      0    0.80  0.55  0.40   0.1    0</y_frac_leaf>
-            <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0.00  0.60   1.0    0</y_frac_tuber>
-            <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0    0       0     0</y_frac_floret>
-            <!-- From IRS trials
+      <x_stage_no_partition>1      2    3     4     5      6     7</x_stage_no_partition>
+      <y_ratio_root_shoot units="0-1">0      0    1.0   0.33  0.33   0.081  0</y_ratio_root_shoot>
+      <y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves">0      0    0.80  0.55  0.40   0.1    0</y_frac_leaf>
+      <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0.00  0.60   1.0    0</y_frac_tuber>
+      <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0    0       0     0</y_frac_floret>
+      <!-- From IRS trials
             frac_tuber needs revisiting
             __________________________________________________________________________________________________________-
             GRAIN NUMBER DETERMINATION
@@ -302,48 +298,48 @@
             __________________________________________________________________________________________________________-
             GRAIN FILLING
             -->
-            <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
-            <temp_fac_min description="temperature stress factor minimum">0.69</temp_fac_min>
-            <sfac_slope description="soil water stress factor slope">-0.125</sfac_slope>
-            <tfac_slope description="temperature stress factor slope">0.0125</tfac_slope>
-            <carbo_oil_conv_ratio description="Carbohydrate:oil conversion ratio (>= 1.0)">2.1                 </carbo_oil_conv_ratio>
-            <grain_oil_conc description="fractional oil content of grain (0-1)">0.45                </grain_oil_conc>
-            <!-- __________________________________________________________________________________________________________-
+      <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
+      <temp_fac_min description="temperature stress factor minimum">0.69</temp_fac_min>
+      <sfac_slope description="soil water stress factor slope">-0.125</sfac_slope>
+      <tfac_slope description="temperature stress factor slope">0.0125</tfac_slope>
+      <carbo_oil_conv_ratio description="Carbohydrate:oil conversion ratio (&gt;= 1.0)">2.1                 </carbo_oil_conv_ratio>
+      <grain_oil_conc description="fractional oil content of grain (0-1)">0.45                </grain_oil_conc>
+      <!-- __________________________________________________________________________________________________________-
             GRAIN WATER CONTENT
             -->
-            <grn_water_cont units="g/g" description="water content of grain g/g">0.75</grn_water_cont>
-            <!-- IRS field monitoring
+      <grn_water_cont units="g/g" description="water content of grain g/g">0.75</grn_water_cont>
+      <!-- IRS field monitoring
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 3 - LEAF/STEM/POD AREA GROWTH
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             ______________________________________________________________________________
             LEAF SIZE AS A FUNCTION OF LEAF NUMBER
             -->
-            <node_no_correction>0.0</node_no_correction>
-            <x_node_no>0     7    11     17</x_node_no>
-            <y_leaf_size>1000 18000 18000  5000</y_leaf_size>
-            <!-- IRS trial
+      <node_no_correction>0.0</node_no_correction>
+      <x_node_no>0     7    11     17</x_node_no>
+      <y_leaf_size>1000 18000 18000  5000</y_leaf_size>
+      <!-- IRS trial
             ______________________________________________________________________________
             SPECIFIC LEAF AREA - SLA
             -->
-            <x_lai>0    8</x_lai>
-            <y_sla_max description="maximum specific leaf area for delta LAI">35000 35000    </y_sla_max>
-            <sla_min description="minimum specific leaf area for delta LAI">10000           </sla_min>
-            <!-- ______________________________________________________________________________
+      <x_lai>0    8</x_lai>
+      <y_sla_max description="maximum specific leaf area for delta LAI">35000 35000    </y_sla_max>
+      <sla_min description="minimum specific leaf area for delta LAI">10000           </sla_min>
+      <!-- ______________________________________________________________________________
             TPLA  - USED TO INTIALISE THE INITIAL LAI
             -->
-            <initial_tpla units="mm^2/plant" description="initial total plant leaf area">100.</initial_tpla>
-            <x_leaf_cohort>1    5    11     15</x_leaf_cohort>
-            <y_leaf_growth_period units="oCd">150  200  500    500</y_leaf_growth_period>
-            <y_leaf_lag_period units="oCd">50   100  200   200</y_leaf_lag_period>
-            <y_leaf_sen_period units="oCd">150   150 150    150</y_leaf_sen_period>
-            <y_leaf_area_pot units="mm^2/cohort">83000 83000 83000 83000</y_leaf_area_pot>
-            <!-- ______________________________________________________________________________
+      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">100.</initial_tpla>
+      <x_leaf_cohort>1    5    11     15</x_leaf_cohort>
+      <y_leaf_growth_period units="oCd">150  200  500    500</y_leaf_growth_period>
+      <y_leaf_lag_period units="oCd">50   100  200   200</y_leaf_lag_period>
+      <y_leaf_sen_period units="oCd">150   150 150    150</y_leaf_sen_period>
+      <y_leaf_area_pot units="mm^2/cohort">83000 83000 83000 83000</y_leaf_area_pot>
+      <!-- ______________________________________________________________________________
             HARVESTING EFFECTS ON LEAF AREA
             -->
-            <fr_height_cut>0.0  0.1    1</fr_height_cut>
-            <fr_stem_remain>0.0  0.2    1</fr_stem_remain>
-            <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      <fr_height_cut>0.0  0.1    1</fr_height_cut>
+      <fr_stem_remain>0.0  0.2    1</fr_stem_remain>
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             __________________________________________________________________________________________________________-
@@ -351,35 +347,35 @@
             sow    ger  eme   end_juv   st_tf  end_tf  mat
             stage_code            = 1      2    3     4         5      6       7       ()     ! numeric code for phenological stages
             -->
-            <root_depth_rate units="mm/d">0      5.0  5.0   44.0      44.0   44.0    0.0</root_depth_rate>
-            <!-- Leave unchanged for time being
+      <root_depth_rate units="mm/d">0      5.0  5.0   44.0      44.0   44.0    0.0</root_depth_rate>
+      <!-- Leave unchanged for time being
             Effect of sw_supply_demand_ratio on root depth increase
             -->
-            <x_ws_root description="sw_supply_demand_ratio">0   1   </x_ws_root>
-            <y_ws_root_fac description="effect of supply_demand_ratio on root depth increase">1   1   </y_ws_root_fac>
-            <!-- Inactivated at present for all modules
+      <x_ws_root description="sw_supply_demand_ratio">0   1   </x_ws_root>
+      <y_ws_root_fac description="effect of supply_demand_ratio on root depth increase">1   1   </y_ws_root_fac>
+      <!-- Inactivated at present for all modules
             x_sw_ratio = [sw_dep(lay)-ll_dep(lay)]/[dul_dep(lay)-ll_dep(lay)] in the deepest root layer
             -->
-            <x_sw_ratio description="water availability for effects on root depth growth">0.0 0.25</x_sw_ratio>
-            <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
-            <!--  Consistent across other species models
+      <x_sw_ratio description="water availability for effects on root depth growth">0.0 0.25</x_sw_ratio>
+      <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
+      <!--  Consistent across other species models
             __________________________________________________________________________________________________________-
             TEMPERATURE EFFECT ON ROOT ADVANCE
             -->
-            <x_temp_root_advance>0 20 35</x_temp_root_advance>
-            <y_rel_root_advance>0 1  0</y_rel_root_advance>
-            <!--  Based on cardinal temps for potato
+      <x_temp_root_advance>0 20 35</x_temp_root_advance>
+      <y_rel_root_advance>0 1  0</y_rel_root_advance>
+      <!--  Based on cardinal temps for potato
             __________________________________________________________________________________________________________-
             ROOT LENGTH CALCULATION
             -->
-            <initial_root_depth units="mm" description="initial depth of roots (mm)">100</initial_root_depth>
-            <specific_root_length units="mm/g">40000</specific_root_length>
-            <!-- Unchanged
+      <initial_root_depth units="mm" description="initial depth of roots (mm)">100</initial_root_depth>
+      <specific_root_length units="mm/g">40000</specific_root_length>
+      <!-- Unchanged
             The following can increase or decrease the root length density in a layer based on the rld per plant
             -->
-            <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
-            <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
-            <!--  Consistent across other species models
+      <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
+      <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
+      <!--  Consistent across other species models
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 5 - WATER RELATIONS AND WATER STRESS FACTORS
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -390,16 +386,16 @@
             sow    ger   eme  end_juv   st_tf   end_tf  mat
             stage_code            = 1      2     3    4         5       6       7    ()     ! numeric code for phenological stages
             -->
-            <transp_eff_cf units="Pa">0      0    .005  .005      .005    .005    .00</transp_eff_cf>
-            <!-- Essential for determination of daily water limited biomass production (Transpiration efficiency derived from VPD and TEC. TE X SW supply = DM)
+      <transp_eff_cf units="Pa">0      0    .005  .005      .005    .005    .00</transp_eff_cf>
+      <!-- Essential for determination of daily water limited biomass production (Transpiration efficiency derived from VPD and TEC. TE X SW supply = DM)
             Estimates from literature.
             __________________________________________________________________________________________________________-
             VPD FRACTION
             Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
             -->
-            <svp_fract description="(0-1)">0.75  </svp_fract>
-            <eo_crop_factor_default description="default crop factor for limiting soil">100.0  </eo_crop_factor_default>
-            <!--  water demand to some fraction/multiple
+      <svp_fract description="(0-1)">0.75  </svp_fract>
+      <eo_crop_factor_default description="default crop factor for limiting soil">100.0  </eo_crop_factor_default>
+      <!--  water demand to some fraction/multiple
             of atmospheric potential.
             __________________________________________________________________________________________________________-
             WATER STRESS FACTORS FOR PHOTOSYNTHESIS, EXPANSION AND DEVELOPMENT
@@ -407,26 +403,26 @@
             For expansion growth, more sensitive than other growth processes
             x_sw_demand_ratio = sw_supply_sum/sw_demand
             -->
-            <x_sw_demand_ratio description="water availability">0.1 1.1</x_sw_demand_ratio>
-            <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
-            <!-- For phenology stress factor based on available soil water portion
+      <x_sw_demand_ratio description="water availability">0.1 1.1</x_sw_demand_ratio>
+      <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+      <!-- For phenology stress factor based on available soil water portion
             sw_avail_pot_sum = sum_real_array (sw_avail_pot, deepest_layer),
             sw_avail_sum     = sum_real_array (sw_avail, deepest_layer)
             sw_avail_ratio   = divide (sw_avail_sum, sw_avail_pot_sum, 1.0) !???
             -->
-            <x_sw_avail_ratio description="water availability">0.0 0.16</x_sw_avail_ratio>
-            <y_swdef_pheno description="stress index for phenology">1.0 1.0</y_swdef_pheno>
-            <x_sw_avail_ratio_flowering description="water availability">0.2   0.50  1.0</x_sw_avail_ratio_flowering>
-            <y_swdef_pheno_flowering description="stress index for flowering phenology">1.0   1.0    1.0</y_swdef_pheno_flowering>
-            <x_sw_avail_ratio_start_grain_fill description="water availability">0.2   0.50   1.0</x_sw_avail_ratio_start_grain_fill>
-            <y_swdef_pheno_start_grain_fill description="stress index for grainfilling phenology">1.0   1.0    1.0</y_swdef_pheno_start_grain_fill>
-            <!--  Consistent across other species models
+      <x_sw_avail_ratio description="water availability">0.0 0.16</x_sw_avail_ratio>
+      <y_swdef_pheno description="stress index for phenology">1.0 1.0</y_swdef_pheno>
+      <x_sw_avail_ratio_flowering description="water availability">0.2   0.50  1.0</x_sw_avail_ratio_flowering>
+      <y_swdef_pheno_flowering description="stress index for flowering phenology">1.0   1.0    1.0</y_swdef_pheno_flowering>
+      <x_sw_avail_ratio_start_grain_fill description="water availability">0.2   0.50   1.0</x_sw_avail_ratio_start_grain_fill>
+      <y_swdef_pheno_start_grain_fill description="stress index for grainfilling phenology">1.0   1.0    1.0</y_swdef_pheno_start_grain_fill>
+      <!--  Consistent across other species models
             __________________________________________________________________________________________________________-
             WATERLOGGING STRESS (OXYGEN DEFICIT) FACTOR FOR PHOTOSYNTHESIS
             -->
-            <oxdef_photo_rtfr description="fraction of roots waterlogged for effect on photosynthesis">0.0  0.8   1.0</oxdef_photo_rtfr>
-            <oxdef_photo units="0-1" description="stress index on photosynthesis">1.0  1.0   1.0</oxdef_photo>
-            <!--  Consistent across other species models
+      <oxdef_photo_rtfr description="fraction of roots waterlogged for effect on photosynthesis">0.0  0.8   1.0</oxdef_photo_rtfr>
+      <oxdef_photo units="0-1" description="stress index on photosynthesis">1.0  1.0   1.0</oxdef_photo>
+      <!--  Consistent across other species models
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 6 -NITROGEN RELATIONS, UPTAKE AND STRESS FACTORS
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -437,21 +433,21 @@
             'active'   = diffusive flow before fixation
             'fixation' = fixed N before active uptake.
             -->
-            <n_supply_preference>active</n_supply_preference>
-            <!-- Time constant for N uptake by diffusion. H van Keulen &  NG Seligman. Purdoe 1987.
+      <n_supply_preference>active</n_supply_preference>
+      <!-- Time constant for N uptake by diffusion. H van Keulen &  NG Seligman. Purdoe 1987.
             This is the  time it would take to remove, by diffusion, current amount of N if it wasn't depleted between time steps
             -->
-            <no3_diffn_const units="days">2.0</no3_diffn_const>
-            <!--  Consistent across other species models
+      <no3_diffn_const units="days">2.0</no3_diffn_const>
+      <!--  Consistent across other species models
             ______________________________________________________________________________
             LEGUME N FIXATION RATE - potential rate of N fixation (g N fixed per g above ground biomass)
             sow    ger  eme   end_juv     st_tf   end_tf  hv_rpe  end
             stage_code            = 1      2    3     4           5       6       7       8      ()     ! numeric code for phenological stages
             -->
-            <N_fix_rate units="gN/gDM">0      0    0     0           0       0       0       0</N_fix_rate>
-            <x_sw_avail_fix description="soil water ratio for effect on N fixation">0.0  0.50  0.95  1.0</x_sw_avail_fix>
-            <y_swdef_fix units="0-1" description="stress index on N fixation">1.0  1.0   1.0   1.0</y_swdef_fix>
-            <!-- N/A
+      <N_fix_rate units="gN/gDM">0      0    0     0           0       0       0       0</N_fix_rate>
+      <x_sw_avail_fix description="soil water ratio for effect on N fixation">0.0  0.50  0.95  1.0</x_sw_avail_fix>
+      <y_swdef_fix units="0-1" description="stress index on N fixation">1.0  1.0   1.0   1.0</y_swdef_fix>
+      <!-- N/A
             ______________________________________________________________________________
             NITROGEN STRESS FACTORS FOR PHOTOSYNTHESIS,LEAF GROWTH AND DEVELOPMENT
             n_conc_ratio      = divide ((N_conc_stover - N_conc_stover_min),(N_conc_stover_crit-N_conc_stover_min),0.0)
@@ -460,52 +456,52 @@
             g_n_fact_pheno    = N_fact_pheno * N_conc_ratio
             g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf
             -->
-            <N_fact_photo description="multipler for N deficit effect on photosynthesis">2.0     </N_fact_photo>
-            <N_fact_expansion description="multipler for N deficit effect on leaf expansion">0.7     </N_fact_expansion>
-            <N_fact_pheno description="multipler for N deficit effect on phenology">100     </N_fact_pheno>
-            <N_fact_grain description="multipler for N deficit effect on grain">1.   </N_fact_grain>
-            <!-- Set by calibration against quality dataset
+      <N_fact_photo description="multipler for N deficit effect on photosynthesis">2.0     </N_fact_photo>
+      <N_fact_expansion description="multipler for N deficit effect on leaf expansion">0.7     </N_fact_expansion>
+      <N_fact_pheno description="multipler for N deficit effect on phenology">100     </N_fact_pheno>
+      <N_fact_grain description="multipler for N deficit effect on grain">1.   </N_fact_grain>
+      <!-- Set by calibration against quality dataset
             ______________________________________________________________________________
             NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
             eme    juv     st_tf   end_tf  mat
             -->
-            <x_stage_code description="stage code used in table">3      4       5       6       7</x_stage_code>
-            <y_n_conc_min_leaf description="leaf min N conc.">0.0550 0.0500  0.0400      0.0300  0.0050</y_n_conc_min_leaf>
-            <y_n_conc_crit_leaf description="leaf critical N conc.">0.0650 0.0600  0.0550      0.0500  0.0500</y_n_conc_crit_leaf>
-            <y_n_conc_max_leaf description="leaf max N conc.">0.0800 0.0750  0.0650      0.0550  0.0550</y_n_conc_max_leaf>
-            <y_n_conc_min_stem description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_stem>
-            <y_n_conc_crit_stem description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_stem>
-            <y_n_conc_max_stem description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_stem>
-            <y_n_conc_min_floret description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_floret>
-            <y_n_conc_crit_floret description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_floret>
-            <y_n_conc_max_floret description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_floret>
-            <y_n_conc_min_tuber description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_tuber>
-            <y_n_conc_crit_tuber description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_tuber>
-            <y_n_conc_max_tuber description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_tuber>
-            <!--  new additions
+      <x_stage_code description="stage code used in table">3      4       5       6       7</x_stage_code>
+      <y_n_conc_min_leaf description="leaf min N conc.">0.0550 0.0500  0.0400      0.0300  0.0050</y_n_conc_min_leaf>
+      <y_n_conc_crit_leaf description="leaf critical N conc.">0.0650 0.0600  0.0550      0.0500  0.0500</y_n_conc_crit_leaf>
+      <y_n_conc_max_leaf description="leaf max N conc.">0.0800 0.0750  0.0650      0.0550  0.0550</y_n_conc_max_leaf>
+      <y_n_conc_min_stem description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_stem>
+      <y_n_conc_crit_stem description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_stem>
+      <y_n_conc_max_stem description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_stem>
+      <y_n_conc_min_floret description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_floret>
+      <y_n_conc_crit_floret description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_floret>
+      <y_n_conc_max_floret description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_floret>
+      <y_n_conc_min_tuber description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_tuber>
+      <y_n_conc_crit_tuber description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_tuber>
+      <y_n_conc_max_tuber description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_tuber>
+      <!--  new additions
             -->
-            <n_conc_min_root description="root minimum N conc.">0.00800</n_conc_min_root>
-            <n_conc_crit_root description="root critical N conc.">0.01000</n_conc_crit_root>
-            <n_conc_max_root description="root max N conc.">0.01200</n_conc_max_root>
-            <!-- ______________________________________________________________________________
+      <n_conc_min_root description="root minimum N conc.">0.00800</n_conc_min_root>
+      <n_conc_crit_root description="root critical N conc.">0.01000</n_conc_crit_root>
+      <n_conc_max_root description="root max N conc.">0.01200</n_conc_max_root>
+      <!-- ______________________________________________________________________________
             INITIAL NITROGEN CONCENTRATION OF ORGANS
             -->
-            <root_n_init_conc>0.010</root_n_init_conc>
-            <leaf_n_init_conc>0.065</leaf_n_init_conc>
-            <stem_n_init_conc>0.040</stem_n_init_conc>
-            <tuber_n_init_conc>0.040</tuber_n_init_conc>
-            <floret_n_init_conc>0.040</floret_n_init_conc>
-            <!-- ______________________________________________________________________________
+      <root_n_init_conc>0.010</root_n_init_conc>
+      <leaf_n_init_conc>0.065</leaf_n_init_conc>
+      <stem_n_init_conc>0.040</stem_n_init_conc>
+      <tuber_n_init_conc>0.040</tuber_n_init_conc>
+      <floret_n_init_conc>0.040</floret_n_init_conc>
+      <!-- ______________________________________________________________________________
             NITROGEN CONCENTRATION IN SENESCENCED ORGANS
             This means that as soon as leaves fall off, all N except for the amount below is
             instantly transferred from leaves to stem
             -->
-            <root_n_sen_conc>0.008</root_n_sen_conc>
-            <leaf_n_sen_conc>0.015</leaf_n_sen_conc>
-            <stem_n_sen_conc>0.000</stem_n_sen_conc>
-            <tuber_n_sen_conc description="new addition">0.0 </tuber_n_sen_conc>
-            <floret_n_sen_conc description="new addition">0.0 </floret_n_sen_conc>
-            <!-- ______________________________________________________________________________
+      <root_n_sen_conc>0.008</root_n_sen_conc>
+      <leaf_n_sen_conc>0.015</leaf_n_sen_conc>
+      <stem_n_sen_conc>0.000</stem_n_sen_conc>
+      <tuber_n_sen_conc description="new addition">0.0 </tuber_n_sen_conc>
+      <floret_n_sen_conc description="new addition">0.0 </floret_n_sen_conc>
+      <!-- ______________________________________________________________________________
             GRAIN NITROGEN CONCENTRATION
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 7 -SENESCENCE AND DETACHMENT
@@ -513,59 +509,59 @@
             ______________________________________________________________________________
             DM SENESCENCE
             -->
-            <root_die_back_fr units="0-1" description="fraction of roots lost at harvest">0.1</root_die_back_fr>
-            <!--  dm fraction senesced for each fraction of canopy senesced.
+      <root_die_back_fr units="0-1" description="fraction of roots lost at harvest">0.1</root_die_back_fr>
+      <!--  dm fraction senesced for each fraction of canopy senesced.
             -->
-            <x_dm_sen_frac_root description="root">0    1     </x_dm_sen_frac_root>
-            <y_dm_sen_frac_root>0.005 0.005</y_dm_sen_frac_root>
-            <x_dm_sen_frac_leaf description="leaf">0    1     </x_dm_sen_frac_leaf>
-            <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf>
-            <x_dm_sen_frac_stem description="stem">0    1     </x_dm_sen_frac_stem>
-            <y_dm_sen_frac_stem>0    0</y_dm_sen_frac_stem>
-            <x_dm_sen_frac_tuber description="tuber">0    1     </x_dm_sen_frac_tuber>
-            <y_dm_sen_frac_tuber>0    0</y_dm_sen_frac_tuber>
-            <x_dm_sen_frac_floret description="floret">0    1     </x_dm_sen_frac_floret>
-            <y_dm_sen_frac_floret>0    0</y_dm_sen_frac_floret>
-            <!-- ______________________________________________________________________________
+      <x_dm_sen_frac_root description="root">0    1     </x_dm_sen_frac_root>
+      <y_dm_sen_frac_root>0.005 0.005</y_dm_sen_frac_root>
+      <x_dm_sen_frac_leaf description="leaf">0    1     </x_dm_sen_frac_leaf>
+      <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf>
+      <x_dm_sen_frac_stem description="stem">0    1     </x_dm_sen_frac_stem>
+      <y_dm_sen_frac_stem>0    0</y_dm_sen_frac_stem>
+      <x_dm_sen_frac_tuber description="tuber">0    1     </x_dm_sen_frac_tuber>
+      <y_dm_sen_frac_tuber>0    0</y_dm_sen_frac_tuber>
+      <x_dm_sen_frac_floret description="floret">0    1     </x_dm_sen_frac_floret>
+      <y_dm_sen_frac_floret>0    0</y_dm_sen_frac_floret>
+      <!-- ______________________________________________________________________________
             LEAF NUMBER AND AREA SENESCENCE
             -->
-            <min_tpla description="lower limit of total plant leaf area">50.0</min_tpla>
-            <!--  Consistent across most other species models
+      <min_tpla description="lower limit of total plant leaf area">50.0</min_tpla>
+      <!--  Consistent across most other species models
             -->
-            <!--  Consistent across other species models
+      <!--  Consistent across other species models
             -->
-            <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">114.0</node_sen_rate>
-            <!--  From IRS trial
+      <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">114.0</node_sen_rate>
+      <!--  From IRS trial
             -->
-            <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.04</fr_lf_sen_rate>
-            <n_fact_lf_sen_rate description="max relative increase in leaf senescence due to N stress">0.0     </n_fact_lf_sen_rate>
-            <!--  Consistent across most other species models
+      <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.04</fr_lf_sen_rate>
+      <n_fact_lf_sen_rate description="max relative increase in leaf senescence due to N stress">0.0     </n_fact_lf_sen_rate>
+      <!--  Consistent across most other species models
             -->
-            <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
-            <sen_light_slope description="sensitivity of leaf area senescence to shading">0.008</sen_light_slope>
-            <!--  Consistent across most other species models
+      <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
+      <sen_light_slope description="sensitivity of leaf area senescence to shading">0.008</sen_light_slope>
+      <!--  Consistent across most other species models
             x_temp_senescence = -15.0 -5.0     ! minimum temperature for frost senescence table (oC)
             -->
-            <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-15.0 -5.0     </x_temp_senescence>
-            <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1    0       </y_senescence_fac>
-            <!-- Set using literature temperature figures for frost susceptibility
+      <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-15.0 -5.0     </x_temp_senescence>
+      <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1    0       </y_senescence_fac>
+      <!-- Set using literature temperature figures for frost susceptibility
             -->
-            <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
-            <!-- Leave as is for time being
+      <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
+      <!-- Leave as is for time being
             ______________________________________________________________________________
             DETACHMENT
             -->
-            <root_dead_detach_frac description="fraction detached from each part of a dead plant per day.">0</root_dead_detach_frac>
-            <root_sen_detach_frac description="fraction of senesced plant part detached each day from live plants">1</root_sen_detach_frac>
-            <leaf_dead_detach_frac>0.0</leaf_dead_detach_frac>
-            <leaf_sen_detach_frac>0.0</leaf_sen_detach_frac>
-            <stem_dead_detach_frac>0.0</stem_dead_detach_frac>
-            <stem_sen_detach_frac>0.0</stem_sen_detach_frac>
-            <tuber_dead_detach_frac>0.0</tuber_dead_detach_frac>
-            <tuber_sen_detach_frac>0.0</tuber_sen_detach_frac>
-            <floret_dead_detach_frac>0.0</floret_dead_detach_frac>
-            <floret_sen_detach_frac>0.0</floret_sen_detach_frac>
-            <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      <root_dead_detach_frac description="fraction detached from each part of a dead plant per day.">0</root_dead_detach_frac>
+      <root_sen_detach_frac description="fraction of senesced plant part detached each day from live plants">1</root_sen_detach_frac>
+      <leaf_dead_detach_frac>0.0</leaf_dead_detach_frac>
+      <leaf_sen_detach_frac>0.0</leaf_sen_detach_frac>
+      <stem_dead_detach_frac>0.0</stem_dead_detach_frac>
+      <stem_sen_detach_frac>0.0</stem_sen_detach_frac>
+      <tuber_dead_detach_frac>0.0</tuber_dead_detach_frac>
+      <tuber_sen_detach_frac>0.0</tuber_sen_detach_frac>
+      <floret_dead_detach_frac>0.0</floret_dead_detach_frac>
+      <floret_sen_detach_frac>0.0</floret_sen_detach_frac>
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 8 - WE MIGHT PUT RETRANSLOCATION OF DM AND N IN THIS SECTION
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -574,19 +570,19 @@
             ______________________________________________________________________________
             crop failure
             -->
-            <leaf_no_crit description="critical number of leaves, below which portion of the crop may die due to water stress">10.0</leaf_no_crit>
-            <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">300.0</tt_emerg_limit>
-            <days_germ_limit units="days" description="maximum days allowed after sowing for germination to take place (days)">40.0</days_germ_limit>
-            <swdf_photo_limit description="critical cumulative photosynthesis water stress, above which the crop partly fails (unitless)">99.0</swdf_photo_limit>
-            <swdf_photo_rate description="rate of plant reduction with photosynthesis water stress">0.0</swdf_photo_rate>
-            <swdf_pheno_limit description="critical cumulative phenology water stress, above which the crop fails (unitless)">25</swdf_pheno_limit>
-            <!--  Consistent across other species models
+      <leaf_no_crit description="critical number of leaves, below which portion of the crop may die due to water stress">10.0</leaf_no_crit>
+      <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">300.0</tt_emerg_limit>
+      <days_germ_limit units="days" description="maximum days allowed after sowing for germination to take place (days)">40.0</days_germ_limit>
+      <swdf_photo_limit description="critical cumulative photosynthesis water stress, above which the crop partly fails (unitless)">99.0</swdf_photo_limit>
+      <swdf_photo_rate description="rate of plant reduction with photosynthesis water stress">0.0</swdf_photo_rate>
+      <swdf_pheno_limit description="critical cumulative phenology water stress, above which the crop fails (unitless)">25</swdf_pheno_limit>
+      <!--  Consistent across other species models
             ______________________________________________________________________________
             PLANT DEATH
             -->
-            <x_weighted_temp units="oC">55.0  60.0</x_weighted_temp>
-            <y_plant_death>0.0   1.0</y_plant_death>
-            <!--  Consistent across other species models
+      <x_weighted_temp units="oC">55.0  60.0</x_weighted_temp>
+      <y_plant_death>0.0   1.0</y_plant_death>
+      <!--  Consistent across other species models
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -596,21 +592,21 @@
             ______________________________________________________________________________
             ROOT PARAMETERS
             -->
-            <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
-            <kl_ub description="upper limit of water uptake factor">1.0</kl_ub>
-            <!-- ______________________________________________________________________________
+      <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
+      <kl_ub description="upper limit of water uptake factor">1.0</kl_ub>
+      <!-- ______________________________________________________________________________
             SOIL WATER
             -->
-            <minsw description="lowest acceptable value for ll">0.00001</minsw>
-            <!--  cultivar parameter upper bounds
+      <minsw description="lowest acceptable value for ll">0.00001</minsw>
+      <!--  cultivar parameter upper bounds
             -->
-            <tt_emergence_ub units="oCd" description="upper limit">1000.0</tt_emergence_ub>
-            <tt_flower_to_maturity_ub units="oCd" description="upper limit">1500.0</tt_flower_to_maturity_ub>
-            <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
-            <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
-            <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
-         </plant>
-         <!-- ***********************************************************************************************************
+      <tt_emergence_ub units="oCd" description="upper limit">1000.0</tt_emergence_ub>
+      <tt_flower_to_maturity_ub units="oCd" description="upper limit">1500.0</tt_flower_to_maturity_ub>
+      <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
+      <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
+      <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
+    </plant>
+    <!-- ***********************************************************************************************************
          PARAMETERS  - CULTIVAR-SPECIFIC VALUES
          ***********************************************************************************************************
          !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -620,17 +616,681 @@
          PARAMETERS  - CULTIVAR-SPECIFIC VALUES
          ***********************************************************************************************************
          -->
-         <russet>
-            <x_pp_end_of_juvenile>12     18</x_pp_end_of_juvenile>
-            <y_tt_end_of_juvenile>0      0</y_tt_end_of_juvenile>
-            <!-- Tuber initiation is photoperiod sensitive
+    <russet>
+      <x_pp_end_of_juvenile>12     18</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>0      0</y_tt_end_of_juvenile>
+      <!-- Tuber initiation is photoperiod sensitive
             Disable at this stage until estimates available
             -->
-            <tt_emergence units="oCd" description="BVP">275</tt_emergence>
-            <tt_start_tuber_fill units="oCd">1530</tt_start_tuber_fill>
-            <tt_end_tuber_fill units="oCd">450.0</tt_end_tuber_fill>
-            <tt_maturity>5</tt_maturity>
-         </russet>
-      </Model>
-
-   </Type>
+      <tt_emergence units="oCd" description="BVP">275</tt_emergence>
+      <tt_start_tuber_fill units="oCd">1530</tt_start_tuber_fill>
+      <tt_end_tuber_fill units="oCd">450.0</tt_end_tuber_fill>
+      <tt_maturity>5</tt_maturity>
+    </russet>
+  </Model>
+  <Info name="Plant">
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="biomass" description="Biomass" read="T" write="F" kind="single" array="F" units="kg/ha" />
+      <variable name="biomass_n" description="N in total biomass" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="biomass_p" description="P in biomass" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="biomass_wt" description="Biomass weight" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="cover_green" description="Green cover" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="cover_tot" description="Total cover" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="crop_class" description="Plant crop class" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="crop_type" description="Crop Type" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="daysafteremergence" description="emergence - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="daysafterend_of_juvenile" description="end_of_juvenile - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="daysafterend_tuber_fill" description="end_tuber_fill - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="daysaftergermination" description="germination - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="daysaftermaturity" description="maturity - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="daysafterout" description="out - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="daysaftersowing" description="sowing - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="daysafterstart_tuber_fill" description="start_tuber_fill - days spent in this phase" read="T" write="F" kind="integer4" array="F" units="day" />
+      <variable name="deltastage" description="Change in plant stage" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="detachingn" description="Change in Detaching  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="detachingp" description="Change in Detaching  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="detachingwt" description="Change in Detaching  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_dm" description="Actual above_ground dry matter production" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_dm_green_retrans" description="change in green pool from retranslocation" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_dm_pot_rue" description="Potential above_ground dry matter production via photosynthesis" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_dm_pot_rue_floret" description="Potential dry matter production via photosynthesis" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_lai" description="Actual change in live plant lai" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_lai_carbon" description="Potential change in lai allowing for growth" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_lai_pot" description="Potential change in live plant lai" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_lai_stressed" description="Potential change in lai allowing for stress" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_leaf_no" description="Change in number of leaves" read="T" write="F" kind="single" array="F" units="leaves/m2" />
+      <variable name="dlt_leaf_no_pot" description="Potential Leaf no" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_n_fixed" description="N fixation" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_fixed_pot" description="potential N fixation" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans" description="N retranslocated to/from senesced  plant" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans_floret" description="N retranslocated to/from senesced Floret" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans_leaf" description="N retranslocated to/from senesced leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans_root" description="N retranslocated to/from senesced Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans_stem" description="N retranslocated to/from senesced Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans_tuber" description="N retranslocated to/from senesced Tuber" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans" description="N translocated to/from senesced  plant" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans_floret" description="N translocated to/from senesced Floret" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans_leaf" description="N translocated to/from senesced leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans_root" description="N translocated to/from senesced Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans_stem" description="N translocated to/from senesced Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans_tuber" description="N translocated to/from senesced Tuber" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_node_no" description="Change in number of main stem nodes" read="T" write="F" kind="single" array="F" units="/m2" />
+      <variable name="dlt_p_retrans" description="dlt P parts" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_pai" description="Delta Floret area index" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_slai" description="Change in lai" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_slai_age" description="Change in lai via age" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_slai_frost" description="Change in lai via low temperature" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_slai_light" description="Change in lai via light" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_slai_water" description="Change in lai via water stress" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="dlt_tiller_no" description="Change in number of tillers" read="T" write="F" kind="single" array="F" units="tillers/m2" />
+      <variable name="dm_demand_floret" description="DM demand of Floret" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dm_demand_leaf" description="DM demand of leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dm_demand_root" description="DM demand of Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dm_demand_stem" description="DM demand of Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dm_demand_tuber" description="DM demand of Tuber" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dm_plant_min" description="Minimum weights" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="effective_rue" description="EffectiveRUE" read="T" write="F" kind="single" array="F" units="g/m2/MJ" />
+      <variable name="emergence_das" description="Days from sowing to emergence" read="T" write="F" kind="integer4" array="F" units="days" />
+      <variable name="emergence_date" description="Day number of emergence" read="T" write="F" kind="integer4" array="F" units="doy" />
+      <variable name="emergencetttarget" description="emergence thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="end_of_juveniletttarget" description="end_of_juvenile thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="end_tuber_filltttarget" description="end_tuber_fill thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ep" description="Plant water uptake" read="T" write="F" kind="single" array="F" units="mm" />
+      <variable name="esw_layr" description="Extractable soil water" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="floral_initiation_das" description="Days from sowing to floral_initiation" read="T" write="F" kind="integer4" array="F" units="days" />
+      <variable name="floral_initiation_date" description="Day number of floral_initiation" read="T" write="F" kind="integer4" array="F" units="doy" />
+      <variable name="floretdetachingn" description="Change in Detaching Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretdetachingp" description="Change in Detaching Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretdetachingwt" description="Change in Detaching Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreenn" description="Green Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreennconc" description="N concentration in Green Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretgreennonstructuralwt" description="Green Floret nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreenp" description="Green Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreenpconc" description="P concentration in Green Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretgreenremovedn" description="Change in GreenRemoved Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreenremovedp" description="Change in GreenRemoved Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreenremovedwt" description="Change in GreenRemoved Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreenstructuralwt" description="Green Floret structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgreenwt" description="Green Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgrowthn" description="Change in Growth Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgrowthp" description="Change in Growth Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretgrowthwt" description="Change in Growth Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretretranslocationn" description="Change in Retranslocation Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretretranslocationp" description="Change in Retranslocation Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretretranslocationwt" description="Change in Retranslocation Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescedn" description="Senesced Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescednconc" description="N concentration in Senesced Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretsenescednonstructuralwt" description="Senesced Floret nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescedp" description="Senesced Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescedpconc" description="P concentration in Senesced Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretsenescedremovedn" description="Change in SenescedRemoved Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescedremovedp" description="Change in SenescedRemoved Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescedremovedwt" description="Change in SenescedRemoved Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescedstructuralwt" description="Senesced Floret structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescedwt" description="Senesced Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescingn" description="Change in Senescing Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescingp" description="Change in Senescing Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretsenescingwt" description="Change in Senescing Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="florettotaln" description="Total Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="florettotalnconc" description="N concentration in Total Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="florettotalnonstructuralwt" description="Total Floret nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="florettotalp" description="Total Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="florettotalpconc" description="P concentration in Total Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="florettotalstructuralwt" description="Total Floret structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="florettotalwt" description="Total Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativen" description="Vegetative Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativenconc" description="N concentration in Vegetative Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretvegetativenonstructuralwt" description="Vegetative Floret nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativep" description="Vegetative Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativepconc" description="P concentration in Vegetative Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretvegetativestructuralwt" description="Vegetative Floret structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativetotaln" description="VegetativeTotal Floret nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativetotalnconc" description="N concentration in VegetativeTotal Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretvegetativetotalnonstructuralwt" description="VegetativeTotal Floret nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativetotalp" description="VegetativeTotal Floret phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativetotalpconc" description="P concentration in VegetativeTotal Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="floretvegetativetotalstructuralwt" description="VegetativeTotal Floret structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativetotalwt" description="VegetativeTotal Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="floretvegetativewt" description="Vegetative Floret dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="flowering_das" description="Days from sowing to flowering" read="T" write="F" kind="integer4" array="F" units="days" />
+      <variable name="flowering_date" description="Day number of flowering" read="T" write="F" kind="integer4" array="F" units="doy" />
+      <variable name="germinationtttarget" description="germination thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="grain1detachingn" description="Change in Detaching Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1detachingp" description="Change in Detaching Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1detachingwt" description="Change in Detaching Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1grainn" description="Grain Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1grainnconc" description="N concentration in Grain Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1grainnonstructuralwt" description="Grain Grain1 nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1grainp" description="Grain Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1grainpconc" description="P concentration in Grain Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1grainstructuralwt" description="Grain Grain1 structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1graintotaln" description="GrainTotal Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1graintotalnconc" description="N concentration in GrainTotal Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1graintotalnonstructuralwt" description="GrainTotal Grain1 nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1graintotalp" description="GrainTotal Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1graintotalpconc" description="P concentration in GrainTotal Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1graintotalstructuralwt" description="GrainTotal Grain1 structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1graintotalwt" description="GrainTotal Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1grainwt" description="Grain Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greenn" description="Green Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greennconc" description="N concentration in Green Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1greennonstructuralwt" description="Green Grain1 nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greenp" description="Green Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greenpconc" description="P concentration in Green Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1greenremovedn" description="Change in GreenRemoved Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greenremovedp" description="Change in GreenRemoved Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greenremovedwt" description="Change in GreenRemoved Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greenstructuralwt" description="Green Grain1 structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1greenwt" description="Green Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1growthn" description="Change in Growth Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1growthp" description="Change in Growth Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1growthwt" description="Change in Growth Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1retranslocationn" description="Change in Retranslocation Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1retranslocationp" description="Change in Retranslocation Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1retranslocationwt" description="Change in Retranslocation Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescedn" description="Senesced Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescednconc" description="N concentration in Senesced Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1senescednonstructuralwt" description="Senesced Grain1 nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescedp" description="Senesced Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescedpconc" description="P concentration in Senesced Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1senescedremovedn" description="Change in SenescedRemoved Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescedremovedp" description="Change in SenescedRemoved Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescedremovedwt" description="Change in SenescedRemoved Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescedstructuralwt" description="Senesced Grain1 structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescedwt" description="Senesced Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescingn" description="Change in Senescing Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescingp" description="Change in Senescing Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1senescingwt" description="Change in Senescing Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1totaln" description="Total Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1totalnconc" description="N concentration in Total Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1totalnonstructuralwt" description="Total Grain1 nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1totalp" description="Total Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1totalpconc" description="P concentration in Total Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1totalstructuralwt" description="Total Grain1 structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1totalwt" description="Total Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativen" description="Vegetative Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativenconc" description="N concentration in Vegetative Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1vegetativenonstructuralwt" description="Vegetative Grain1 nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativep" description="Vegetative Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativepconc" description="P concentration in Vegetative Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1vegetativestructuralwt" description="Vegetative Grain1 structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativetotaln" description="VegetativeTotal Grain1 nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativetotalnconc" description="N concentration in VegetativeTotal Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1vegetativetotalnonstructuralwt" description="VegetativeTotal Grain1 nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativetotalp" description="VegetativeTotal Grain1 phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativetotalpconc" description="P concentration in VegetativeTotal Grain1" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grain1vegetativetotalstructuralwt" description="VegetativeTotal Grain1 structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativetotalwt" description="VegetativeTotal Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grain1vegetativewt" description="Vegetative Grain1 dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grainn" description="Grain  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grainnconc" description="N concentration in Grain " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grainnonstructuralwt" description="Grain  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grainp" description="Grain  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grainpconc" description="P concentration in Grain " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="grainstructuralwt" description="Grain  structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="graintotaln" description="GrainTotal  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="graintotalnconc" description="N concentration in GrainTotal " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="graintotalnonstructuralwt" description="GrainTotal  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="graintotalp" description="GrainTotal  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="graintotalpconc" description="P concentration in GrainTotal " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="graintotalstructuralwt" description="GrainTotal  structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="graintotalwt" description="GrainTotal  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="grainwt" description="Grain  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="green_biomass" description="Green Biomass weight" read="T" write="F" kind="single" array="F" units="kg/ha" />
+      <variable name="green_biomass_n" description="N in green biomass" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="green_biomass_p" description="P in green biomass" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="green_biomass_wt" description="Green Biomass weight" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greenn" description="Green  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greennconc" description="N concentration in Green " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="greennonstructuralwt" description="Green  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greenp" description="Green  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greenpconc" description="P concentration in Green " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="greenremovedn" description="Change in GreenRemoved  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greenremovedp" description="Change in GreenRemoved  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greenremovedwt" description="Change in GreenRemoved  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greenstructuralwt" description="Green  structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="greenwt" description="Green  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="growthn" description="Change in Growth  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="growthp" description="Change in Growth  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="growthwt" description="Change in Growth  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="height" description="Height of crop" read="T" write="F" kind="single" array="F" units="mm" />
+      <variable name="kl" description="Root water uptake parameter" read="T" write="F" kind="single" array="T" units="" />
+      <variable name="lai" description="Leaf area index" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="lai_sum" description="LAI of all leaf components" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="leaf_age" description="Age of each leaf cohort" read="T" write="F" kind="single" array="T" units="oCd" />
+      <variable name="leaf_area" description="Leaf area for each leaf cohort" read="T" write="F" kind="single" array="T" units="mm^2/plant" />
+      <variable name="leaf_area_max" description="Maximum Leaf area for each leaf cohort" read="T" write="F" kind="single" array="T" units="mm^2/plant" />
+      <variable name="leaf_area_tot" description="Total plant leaf area" read="T" write="F" kind="single" array="F" units="mm^2/plant" />
+      <variable name="leaf_no" description="Number of leaves on the plant" read="T" write="F" kind="single" array="F" units="/plant" />
+      <variable name="leafdetachingn" description="Change in Detaching leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafdetachingp" description="Change in Detaching leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafdetachingwt" description="Change in Detaching leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenn" description="Green leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreennconc" description="N concentration in Green leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafgreennonstructuralwt" description="Green leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenp" description="Green leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenpconc" description="P concentration in Green leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafgreenremovedn" description="Change in GreenRemoved leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenremovedp" description="Change in GreenRemoved leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenremovedwt" description="Change in GreenRemoved leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenstructuralwt" description="Green leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenwt" description="Green leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgrowthn" description="Change in Growth leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgrowthp" description="Change in Growth leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgrowthwt" description="Change in Growth leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafretranslocationn" description="Change in Retranslocation leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafretranslocationp" description="Change in Retranslocation leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafretranslocationwt" description="Change in Retranslocation leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedn" description="Senesced leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescednconc" description="N concentration in Senesced leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafsenescednonstructuralwt" description="Senesced leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedp" description="Senesced leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedpconc" description="P concentration in Senesced leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafsenescedremovedn" description="Change in SenescedRemoved leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedremovedp" description="Change in SenescedRemoved leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedremovedwt" description="Change in SenescedRemoved leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedstructuralwt" description="Senesced leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedwt" description="Senesced leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescingn" description="Change in Senescing leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescingp" description="Change in Senescing leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescingwt" description="Change in Senescing leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotaln" description="Total leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalnconc" description="N concentration in Total leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leaftotalnonstructuralwt" description="Total leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalp" description="Total leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalpconc" description="P concentration in Total leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leaftotalstructuralwt" description="Total leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalwt" description="Total leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativen" description="Vegetative leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativenconc" description="N concentration in Vegetative leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativenonstructuralwt" description="Vegetative leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativep" description="Vegetative leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativepconc" description="P concentration in Vegetative leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativestructuralwt" description="Vegetative leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotaln" description="VegetativeTotal leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalnconc" description="N concentration in VegetativeTotal leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativetotalnonstructuralwt" description="VegetativeTotal leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalp" description="VegetativeTotal leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalpconc" description="P concentration in VegetativeTotal leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativetotalstructuralwt" description="VegetativeTotal leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalwt" description="VegetativeTotal leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativewt" description="Vegetative leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaves_per_node" description="" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="ll" description="Crop lower limit" read="T" write="F" kind="single" array="T" units="%vol" />
+      <variable name="ll_dep" description="Plant Lower Limit (mm/mm)" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="maturity_das" description="Days from sowing to maturity" read="T" write="F" kind="integer4" array="F" units="days" />
+      <variable name="maturity_date" description="Day number of maturity" read="T" write="F" kind="integer4" array="F" units="doy" />
+      <variable name="maturitytttarget" description="maturity thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="n_conc_crit" description="critical N content" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_crit_floret" description="Critical N content in Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_crit_leaf" description="Critical N content in leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_crit_root" description="Critical N content in Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_crit_stem" description="Critical N content in Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_crit_tuber" description="Critical N content in Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min" description="minimum N content" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min_floret" description="Minimum N content in Floret" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min_leaf" description="Minimum N content in leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min_root" description="Minimum N content in Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min_stem" description="Minimum N content in Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min_tuber" description="Minimum N content in Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_stover" description="N concentration in stover" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_demand" description="N demand of  plant" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demand_floret" description="N demand of Floret" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demand_leaf" description="N demand of leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demand_root" description="N demand of Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demand_stem" description="N demand of Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demand_tuber" description="N demand of Tuber" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demanded" description="N demanded" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="n_fixed_tops" description="N fixation" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_stress_expan" description="N stress for leaf expansion" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="n_stress_grain" description="N stress for grain filling" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="n_stress_pheno" description="N stress for phenology" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="n_stress_photo" description="N stress for photosyntesis" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="n_supply_soil" description="N supply" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_uptake" description="N uptake" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_uptake_stover" description="N taken up by agp" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="nfact_expan" description="N factor for leaf expansion" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="nfact_grain" description="N factor for ??" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="nfact_grain_tot" description="Summed grain N factor for current stage" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="nfact_pheno" description="N factor for phenology" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="nfact_photo" description="N factor for photosynthesis" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="nh4_uptake" description="NH4 uptake" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="nh4gsm_uptake_pot" description="Pot NH4 uptake" read="T" write="F" kind="single" array="T" units="g/m2" />
+      <variable name="no3_demand" description="Demand for NO3" read="T" write="F" kind="single" array="F" units="kg/ha" />
+      <variable name="no3_tot" description="NO3 available to plants" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="no3_uptake" description="NO3 uptake" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3gsm_uptake_pot" description="Pot NO3 uptake" read="T" write="F" kind="single" array="T" units="g/m2" />
+      <variable name="node_no" description="Number of main stem nodes" read="T" write="F" kind="single" array="F" units="/plant" />
+      <variable name="node_no_fx" description="Number of main stem nodes senesced" read="T" write="F" kind="single" array="F" units="/plant" />
+      <variable name="node_no_sen" description="Number of main stem nodes senesced" read="T" write="F" kind="single" array="F" units="/plant" />
+      <variable name="outtttarget" description="out thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="oxdef_photo" description="Oxygen deficit in photosynthesis" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="p_conc_stover" description="P in stover" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="p_demand" description="" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="p_demand_parts" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="p_uptake" description="P  uptake" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="p_uptake_stover" description="P in stover" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="pai" description="Floret area index" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="parasite_dm_supply" description="Assimilate to parasite" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="phase" description="" read="F" write="T" kind="single" array="" units="" />
+      <variable name="plant_status" description="Plant Status" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="plants" description="Plant desnity" read="T" write="F" kind="single" array="F" units="plants/m^2" />
+      <variable name="remove_biom_pheno" description="biomass removal factor for phenology" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="respiration" description="Whole Plant Respiration" read="T" write="F" kind="single" array="F" units="g/m2" />
+      <variable name="retranslocationn" description="Change in Retranslocation  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="retranslocationp" description="Change in Retranslocation  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="retranslocationwt" description="Change in Retranslocation  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rld" description="Root length density" read="T" write="F" kind="single" array="T" units="mm/mm^3" />
+      <variable name="rlv" description="Root length density" read="T" write="F" kind="single" array="T" units="mm/mm^3" />
+      <variable name="root_depth" description="depth of roots" read="T" write="F" kind="single" array="F" units="mm" />
+      <variable name="root_length" description="Root length" read="T" write="F" kind="single" array="T" units="mm/mm^2" />
+      <variable name="root_length_senesced" description="Senesced root length" read="T" write="F" kind="single" array="T" units="mm/mm^2" />
+      <variable name="rootdetachingn" description="Change in Detaching Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootdetachingp" description="Change in Detaching Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootdetachingwt" description="Change in Detaching Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenn" description="Green Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreennconc" description="N concentration in Green Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootgreennonstructuralwt" description="Green Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenp" description="Green Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenpconc" description="P concentration in Green Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootgreenremovedn" description="Change in GreenRemoved Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenremovedp" description="Change in GreenRemoved Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenremovedwt" description="Change in GreenRemoved Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenstructuralwt" description="Green Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenwt" description="Green Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgrowthn" description="Change in Growth Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgrowthp" description="Change in Growth Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgrowthwt" description="Change in Growth Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootretranslocationn" description="Change in Retranslocation Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootretranslocationp" description="Change in Retranslocation Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootretranslocationwt" description="Change in Retranslocation Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedn" description="Senesced Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescednconc" description="N concentration in Senesced Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootsenescednonstructuralwt" description="Senesced Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedp" description="Senesced Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedpconc" description="P concentration in Senesced Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootsenescedremovedn" description="Change in SenescedRemoved Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedremovedp" description="Change in SenescedRemoved Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedremovedwt" description="Change in SenescedRemoved Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedstructuralwt" description="Senesced Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedwt" description="Senesced Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescingn" description="Change in Senescing Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescingp" description="Change in Senescing Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescingwt" description="Change in Senescing Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotaln" description="Total Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalnconc" description="N concentration in Total Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="roottotalnonstructuralwt" description="Total Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalp" description="Total Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalpconc" description="P concentration in Total Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="roottotalstructuralwt" description="Total Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalwt" description="Total Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativen" description="Vegetative Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativenconc" description="N concentration in Vegetative Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativenonstructuralwt" description="Vegetative Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativep" description="Vegetative Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativepconc" description="P concentration in Vegetative Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativestructuralwt" description="Vegetative Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotaln" description="VegetativeTotal Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalnconc" description="N concentration in VegetativeTotal Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativetotalnonstructuralwt" description="VegetativeTotal Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalp" description="VegetativeTotal Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalpconc" description="P concentration in VegetativeTotal Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativetotalstructuralwt" description="VegetativeTotal Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalwt" description="VegetativeTotal Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativewt" description="Vegetative Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescedn" description="Senesced  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescednconc" description="N concentration in Senesced " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="senescednonstructuralwt" description="Senesced  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescedp" description="Senesced  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescedpconc" description="P concentration in Senesced " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="senescedremovedn" description="Change in SenescedRemoved  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescedremovedp" description="Change in SenescedRemoved  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescedremovedwt" description="Change in SenescedRemoved  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescedstructuralwt" description="Senesced  structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescedwt" description="Senesced  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescingn" description="Change in Senescing  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescingp" description="Change in Senescing  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="senescingwt" description="Change in Senescing  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="slai" description="Senesced leaf area index" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="sowing_das" description="Days from sowing to sowing" read="T" write="F" kind="integer4" array="F" units="days" />
+      <variable name="sowing_date" description="Day number of sowing" read="T" write="F" kind="integer4" array="F" units="doy" />
+      <variable name="sowingtttarget" description="sowing thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="stage" description="Plant stage" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="stagename" description="Plant stage name" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="start_tuber_filltttarget" description="start_tuber_fill thermal time target" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="stemdetachingn" description="Change in Detaching Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemdetachingp" description="Change in Detaching Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemdetachingwt" description="Change in Detaching Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreenn" description="Green Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreennconc" description="N concentration in Green Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemgreennonstructuralwt" description="Green Stem nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreenp" description="Green Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreenpconc" description="P concentration in Green Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemgreenremovedn" description="Change in GreenRemoved Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreenremovedp" description="Change in GreenRemoved Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreenremovedwt" description="Change in GreenRemoved Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreenstructuralwt" description="Green Stem structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreenwt" description="Green Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgrowthn" description="Change in Growth Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgrowthp" description="Change in Growth Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgrowthwt" description="Change in Growth Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemretranslocationn" description="Change in Retranslocation Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemretranslocationp" description="Change in Retranslocation Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemretranslocationwt" description="Change in Retranslocation Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescedn" description="Senesced Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescednconc" description="N concentration in Senesced Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemsenescednonstructuralwt" description="Senesced Stem nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescedp" description="Senesced Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescedpconc" description="P concentration in Senesced Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemsenescedremovedn" description="Change in SenescedRemoved Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescedremovedp" description="Change in SenescedRemoved Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescedremovedwt" description="Change in SenescedRemoved Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescedstructuralwt" description="Senesced Stem structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescedwt" description="Senesced Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescingn" description="Change in Senescing Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescingp" description="Change in Senescing Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenescingwt" description="Change in Senescing Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemtotaln" description="Total Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemtotalnconc" description="N concentration in Total Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemtotalnonstructuralwt" description="Total Stem nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemtotalp" description="Total Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemtotalpconc" description="P concentration in Total Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemtotalstructuralwt" description="Total Stem structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemtotalwt" description="Total Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativen" description="Vegetative Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativenconc" description="N concentration in Vegetative Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemvegetativenonstructuralwt" description="Vegetative Stem nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativep" description="Vegetative Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativepconc" description="P concentration in Vegetative Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemvegetativestructuralwt" description="Vegetative Stem structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativetotaln" description="VegetativeTotal Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativetotalnconc" description="N concentration in VegetativeTotal Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemvegetativetotalnonstructuralwt" description="VegetativeTotal Stem nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativetotalp" description="VegetativeTotal Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativetotalpconc" description="P concentration in VegetativeTotal Stem" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="stemvegetativetotalstructuralwt" description="VegetativeTotal Stem structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativetotalwt" description="VegetativeTotal Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemvegetativewt" description="Vegetative Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stover_wt" description="Stover Biomass weight" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="sw_demand" description="Demand for soil water" read="T" write="F" kind="single" array="F" units="mm" />
+      <variable name="sw_demand_te" description="TE Demand for soil water" read="T" write="F" kind="single" array="F" units="mm" />
+      <variable name="sw_stress_expan" description="Soil water stress for leaf expansion" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="sw_stress_fixation" description="Soil water stress for N fixation" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="sw_stress_pheno" description="Soil water stress for phenological development" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="sw_stress_photo" description="Soil water stress for photosynthesis" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="sw_supply" description="Soil water supply" read="T" write="F" kind="single" array="F" units="mm" />
+      <variable name="sw_supply_layr" description="Soil water supply" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="sw_uptake" description="Plant water uptake per layer" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="swdef_expan" description="Soil water deficit in leaf expansion" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="swdef_fixation" description="Soil water deficit in N fixation" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="swdef_pheno" description="Soil water deficit in phenological development" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="swdef_photo" description="Soil water deficit in photosynthesis" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="temp_stress_photo" description="Temperature Stress in photosynthesis" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="temp_stress_photo_co2" description="Temperature Stress in photosynthesis via co2Modifier" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="tlai" description="Total lai" read="T" write="F" kind="single" array="F" units="m^2/m^2" />
+      <variable name="topsdetachingn" description="Change in Detaching Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsdetachingp" description="Change in Detaching Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsdetachingwt" description="Change in Detaching Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrainn" description="Grain Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrainnconc" description="N concentration in Grain Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsgrainnonstructuralwt" description="Grain Tops nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrainp" description="Grain Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrainpconc" description="P concentration in Grain Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsgrainstructuralwt" description="Grain Tops structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgraintotaln" description="GrainTotal Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgraintotalnconc" description="N concentration in GrainTotal Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsgraintotalnonstructuralwt" description="GrainTotal Tops nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgraintotalp" description="GrainTotal Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgraintotalpconc" description="P concentration in GrainTotal Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsgraintotalstructuralwt" description="GrainTotal Tops structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgraintotalwt" description="GrainTotal Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrainwt" description="Grain Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreenn" description="Green Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreennconc" description="N concentration in Green Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsgreennonstructuralwt" description="Green Tops nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreenp" description="Green Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreenpconc" description="P concentration in Green Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsgreenremovedn" description="Change in GreenRemoved Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreenremovedp" description="Change in GreenRemoved Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreenremovedwt" description="Change in GreenRemoved Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreenstructuralwt" description="Green Tops structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgreenwt" description="Green Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrowthn" description="Change in Growth Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrowthp" description="Change in Growth Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsgrowthwt" description="Change in Growth Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsretranslocationn" description="Change in Retranslocation Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsretranslocationp" description="Change in Retranslocation Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsretranslocationwt" description="Change in Retranslocation Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescedn" description="Senesced Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescednconc" description="N concentration in Senesced Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topssenescednonstructuralwt" description="Senesced Tops nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescedp" description="Senesced Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescedpconc" description="P concentration in Senesced Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topssenescedremovedn" description="Change in SenescedRemoved Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescedremovedp" description="Change in SenescedRemoved Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescedremovedwt" description="Change in SenescedRemoved Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescedstructuralwt" description="Senesced Tops structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescedwt" description="Senesced Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescingn" description="Change in Senescing Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescingp" description="Change in Senescing Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topssenescingwt" description="Change in Senescing Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topstotaln" description="Total Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topstotalnconc" description="N concentration in Total Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topstotalnonstructuralwt" description="Total Tops nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topstotalp" description="Total Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topstotalpconc" description="P concentration in Total Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topstotalstructuralwt" description="Total Tops structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topstotalwt" description="Total Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativen" description="Vegetative Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativenconc" description="N concentration in Vegetative Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsvegetativenonstructuralwt" description="Vegetative Tops nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativep" description="Vegetative Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativepconc" description="P concentration in Vegetative Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsvegetativestructuralwt" description="Vegetative Tops structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativetotaln" description="VegetativeTotal Tops nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativetotalnconc" description="N concentration in VegetativeTotal Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsvegetativetotalnonstructuralwt" description="VegetativeTotal Tops nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativetotalp" description="VegetativeTotal Tops phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativetotalpconc" description="P concentration in VegetativeTotal Tops" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="topsvegetativetotalstructuralwt" description="VegetativeTotal Tops structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativetotalwt" description="VegetativeTotal Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="topsvegetativewt" description="Vegetative Tops dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="totaln" description="Total  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="totalnconc" description="N concentration in Total " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="totalnonstructuralwt" description="Total  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="totalp" description="Total  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="totalpconc" description="P concentration in Total " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="totalstructuralwt" description="Total  structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="totalwt" description="Total  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="transp_eff" description="Transpiration Efficiency" read="T" write="F" kind="single" array="F" units="g/m2/mm" />
+      <variable name="tt" description="Todays thermal time" read="T" write="F" kind="single" array="F" units="deg. day" />
+      <variable name="ttafteremergence" description="emergence - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ttafterend_of_juvenile" description="end_of_juvenile - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ttafterend_tuber_fill" description="end_tuber_fill - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ttaftergermination" description="germination - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ttaftermaturity" description="maturity - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ttafterout" description="out - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ttaftersowing" description="sowing - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="ttafterstart_tuber_fill" description="start_tuber_fill - thermal time spent in this phase" read="T" write="F" kind="single" array="F" units="deg. days" />
+      <variable name="tuberdetachingn" description="Change in Detaching Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tuberdetachingp" description="Change in Detaching Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tuberdetachingwt" description="Change in Detaching Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreenn" description="Green Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreennconc" description="N concentration in Green Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubergreennonstructuralwt" description="Green Tuber nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreenp" description="Green Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreenpconc" description="P concentration in Green Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubergreenremovedn" description="Change in GreenRemoved Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreenremovedp" description="Change in GreenRemoved Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreenremovedwt" description="Change in GreenRemoved Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreenstructuralwt" description="Green Tuber structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergreenwt" description="Green Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergrowthn" description="Change in Growth Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergrowthp" description="Change in Growth Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubergrowthwt" description="Change in Growth Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tuberretranslocationn" description="Change in Retranslocation Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tuberretranslocationp" description="Change in Retranslocation Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tuberretranslocationwt" description="Change in Retranslocation Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescedn" description="Senesced Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescednconc" description="N concentration in Senesced Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubersenescednonstructuralwt" description="Senesced Tuber nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescedp" description="Senesced Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescedpconc" description="P concentration in Senesced Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubersenescedremovedn" description="Change in SenescedRemoved Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescedremovedp" description="Change in SenescedRemoved Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescedremovedwt" description="Change in SenescedRemoved Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescedstructuralwt" description="Senesced Tuber structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescedwt" description="Senesced Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescingn" description="Change in Senescing Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescingp" description="Change in Senescing Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubersenescingwt" description="Change in Senescing Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubertotaln" description="Total Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubertotalnconc" description="N concentration in Total Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubertotalnonstructuralwt" description="Total Tuber nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubertotalp" description="Total Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubertotalpconc" description="P concentration in Total Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubertotalstructuralwt" description="Total Tuber structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubertotalwt" description="Total Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativen" description="Vegetative Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativenconc" description="N concentration in Vegetative Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubervegetativenonstructuralwt" description="Vegetative Tuber nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativep" description="Vegetative Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativepconc" description="P concentration in Vegetative Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubervegetativestructuralwt" description="Vegetative Tuber structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativetotaln" description="VegetativeTotal Tuber nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativetotalnconc" description="N concentration in VegetativeTotal Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubervegetativetotalnonstructuralwt" description="VegetativeTotal Tuber nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativetotalp" description="VegetativeTotal Tuber phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativetotalpconc" description="P concentration in VegetativeTotal Tuber" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="tubervegetativetotalstructuralwt" description="VegetativeTotal Tuber structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativetotalwt" description="VegetativeTotal Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="tubervegetativewt" description="Vegetative Tuber dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="vegetativen" description="Vegetative  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativenconc" description="N concentration in Vegetative " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="vegetativenonstructuralwt" description="Vegetative  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativep" description="Vegetative  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativepconc" description="P concentration in Vegetative " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="vegetativestructuralwt" description="Vegetative  structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativetotaln" description="VegetativeTotal  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativetotalnconc" description="N concentration in VegetativeTotal " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="vegetativetotalnonstructuralwt" description="VegetativeTotal  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativetotalp" description="VegetativeTotal  phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativetotalpconc" description="P concentration in VegetativeTotal " read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="vegetativetotalstructuralwt" description="VegetativeTotal  structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativetotalwt" description="VegetativeTotal  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="vegetativewt" description="Vegetative  dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="width" description="canopy row width" read="T" write="F" kind="single" array="F" units="mm" />
+      <variable name="xf" description="Root exploration factor" read="T" write="F" kind="single" array="T" units="" />
+    </variables>
+    <events>
+      <event name="harvesting" description="" />
+      <event name="sowing" description="" />
+    </events>
+  </Info>
+</Type>

@@ -90,6 +90,7 @@ STDMETHODIMP CContextMenuHandler::QueryContextMenu
             InsertMenu(subMenu, 0xFFFFFFFF, MF_STRING | MF_BYPOSITION, idCmd++,
                        menuDescriptions[menu].name.c_str());
             }
+
          string subMenuName = "&Apsim" + getApsimVersion();
          InsertMenu(hMenu,
                     indexMenu++,
@@ -228,7 +229,8 @@ void CContextMenuHandler::createMenus(string& subMenuName,
           strcmpi(extension.c_str(), ".sim") == 0 ||
           strcmpi(extension.c_str(), ".report") == 0 ||
           strcmpi(extension.c_str(), ".graph") == 0 ||
-          strcmpi(extension.c_str(), ".apsim") == 0)
+          strcmpi(extension.c_str(), ".apsim") == 0 ||
+          strcmpi(extension.c_str(), ".xml") == 0)
          {
 
          if (strcmpi(extension.c_str(), ".out") == 0)
@@ -271,6 +273,19 @@ void CContextMenuHandler::createMenus(string& subMenuName,
                                "run",
                                &runFiles));
             }
+         else if (strcmpi(extension.c_str(), ".con") == 0)
+            {
+            menuDescriptions.push_back(
+               MenuDescription("&Run Apsim",
+                               "Run Apsim",
+                               "run",
+                               &runFiles));
+            menuDescriptions.push_back(
+               MenuDescription("&Convert to SIM",
+                               "Convert the specified control file to a SIM file",
+                               "sim",
+                               &createSimFiles));
+            }
          else if (strcmpi(extension.c_str(), ".report") == 0)
             {
             menuDescriptions.push_back(
@@ -305,9 +320,14 @@ void CContextMenuHandler::createMenus(string& subMenuName,
                                "sim",
                                &createSimFiles));
             }
-
+         else if (strcmpi(extension.c_str(), ".xml") == 0)
+            {
+            menuDescriptions.push_back(
+               MenuDescription("&Probe PlugIn / Type file",
+                               "Run probe over the DLL the type/plugin file points to",
+                               "probeFile",
+                               &probeFile));
+            }
          }
       }
    }
-
-

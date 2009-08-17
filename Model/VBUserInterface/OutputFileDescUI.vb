@@ -1,6 +1,7 @@
 
 Imports System
 Imports System.Collections
+Imports System.Collections.Generic
 Imports System.Collections.Specialized
 Imports System.IO
 Imports System.Xml
@@ -491,14 +492,14 @@ Public Class OutputFileDescUI
     End Sub
 
     Private Sub AddVariablesToListView(ByVal ComponentName As String, ByVal ComponentType As String, ByVal PropertyGroup As String)
-        Dim ModelInfo As XmlNode
+        Dim ModelInfo As List(Of XmlNode)
         If PropertyGroup = "variables" Then
             ModelInfo = Types.Instance.Variables(ComponentType)
         Else
             ModelInfo = Types.Instance.Events(ComponentType)
         End If
 
-        For Each Variables As XmlNode In XmlHelper.ChildNodes(ModelInfo, PropertyGroup)
+        For Each Variables As XmlNode In ModelInfo
             Dim GroupName As String = XmlHelper.Attribute(Variables, "name")
             If GroupName = "" Then
                 GroupName = ComponentName + " " + PropertyGroup

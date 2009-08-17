@@ -25,6 +25,7 @@ public ref class VariableType : NamedItem
          Name = VariableName;
          }
       // getters.
+      int ToBoolean();
       int ToInt32();
       float ToSingle();
       double ToDouble();

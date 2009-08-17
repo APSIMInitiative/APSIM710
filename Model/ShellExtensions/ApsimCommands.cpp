@@ -200,4 +200,18 @@ extern "C" _export void __stdcall apsimFiles(const char* csvFiles)
       }
    }
 
+//---------------------------------------------------------------------------
+// Probe a types file or plugin file
+//---------------------------------------------------------------------------
+extern "C" _export void __stdcall probeFile(const char* csvFiles)
+   {
+   vector<string> fileNames;
+   Split_string(csvFiles, ",", fileNames);
+
+   for (unsigned f = 0; f != fileNames.size(); f++)
+      {
+      string command = getApsimDirectory() + "\\Model\\ProbeDll.exe \"" + fileNames[f] + "\"";
+      WinExec(command.c_str(), SW_SHOW);
+      }
+   }
 

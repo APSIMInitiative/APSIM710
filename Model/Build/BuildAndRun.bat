@@ -49,12 +49,6 @@ rem ----------------------------------------------
 call ProbeAll
 
 rem ----------------------------------------------
-rem Create manager helpers
-rem ----------------------------------------------
-call CreateManagerHelpers
-
-
-rem ----------------------------------------------
 rem Create a release installation
 rem ----------------------------------------------
 pushd %APSIM%\Release\

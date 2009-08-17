@@ -163,7 +163,7 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'flower_wt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'stem+flower_wt', floatTypeDDML, 'g/m^2')
+     :                     'stemandflower_wt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'grain_wt', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,

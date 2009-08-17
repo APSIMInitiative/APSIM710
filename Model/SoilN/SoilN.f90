@@ -1047,7 +1047,7 @@ subroutine soiln2_check_pond ()
 
 ! dsg 180508 check for the presence of a pond
       call get_char_var_optional (Unknown_module,'pond_active','',g%pond_active,numvals)
-     
+
       if (numvals.eq.0) then
           g%pond_active = 'no'
       endif
@@ -1441,7 +1441,7 @@ subroutine soiln2_send_my_variable (variable_name)
 
       call respond2get_real_array (variable_name,'(kg/ha)', carbon_tot, num_layers)
 
-   elseif (variable_name .eq. 'oc%') then
+   elseif (variable_name .eq. 'oc') then
    !                           ------
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call fill_real_array (oc_percent,0.0,max_layer)
@@ -3245,8 +3245,8 @@ subroutine soiln2_process ()
    if (g%pond_active.eq.'no') then
         ! decompose surface residues
 
-       ! dsg 010508 If there is no pond, then mineralise residues into top soil layer 
-       !     as done previously.  If there is a pond, then we need to mineralise directly into the pond water, calculating the 
+       ! dsg 010508 If there is no pond, then mineralise residues into top soil layer
+       !     as done previously.  If there is a pond, then we need to mineralise directly into the pond water, calculating the
        !     immobilisation demand using mineral N in the pond also.  If 'pond_active' = 'yes' then this will be done in the 'pond' module.
        !     SoilN2 would get some of the N back from the Pond module via a combination of mass flow and adsorption.
        call soiln2_min_residues (g%dlt_res_C_decomp,g%dlt_res_N_decomp,g%dlt_res_c_biom,g%dlt_res_c_hum,g%dlt_res_c_atm,g%dlt_res_nh4_min,g%dlt_res_no3_min)
@@ -3271,14 +3271,14 @@ subroutine soiln2_process ()
    else
      !  dsg 190508,  there is a pond, so POND module will decompose residues - not SoilN2
      !  dsg 110708   Get the biom & hum C decomposed in the pond and add to soil - on advice of MEP
- 
+
        call get_real_var (unknown_module, 'pond_biom_C', 'kg/ha', dlt_pond_c_biom, numvals, -1000.0, 1000.0)
        call get_real_var (unknown_module, 'pond_hum_C', 'kg/ha', dlt_pond_c_hum, numvals, -1000.0, 1000.0)
 
-       ! increment the soiln2 hum and biom C pools in top soil layer        
+       ! increment the soiln2 hum and biom C pools in top soil layer
        g%hum_c(1) = g%hum_c(1) + dlt_pond_c_hum
        g%biom_c(1) = g%biom_c(1) + dlt_pond_c_biom
-      
+
        g%hum_n(1) = divide (g%hum_c(1), g%soil_cn, 0.0)
        g%biom_n(1) = divide (g%biom_c(1), c%mcn, 0.0)
 
@@ -3971,7 +3971,7 @@ real function soiln2_wf_nitrf (layer,index)
         ! if pond is active, and aerobic conditions dominate, assume wf_nitrf = 0
         soiln2_wf_nitrf = 0.0
    else
-   endif     
+   endif
 
    call pop_routine (my_name)
    return
@@ -4080,8 +4080,8 @@ real function soiln2_wf (layer,index)
         ! if pond is active, and liquid conditions dominate, assume wf = 1
         soiln2_wf = 1.0
    else
-   endif     
-   
+   endif
+
 
    call pop_routine (my_name)
    return
@@ -5015,7 +5015,7 @@ subroutine Main (action, data_string)
       call soiln2_process ()
       call soiln2_send_Nbalance_Event ()
       call soiln2_send_Cbalance_Event ()
-      if (g%pond_active.eq.'no') then 
+      if (g%pond_active.eq.'no') then
         call Soiln2_sendActualResidueDecompositionCalculated()
       endif
 
@@ -5033,7 +5033,7 @@ subroutine Main (action, data_string)
    else
       ! Don't use message
       call message_unused ()
- 
+
    endif
 
    call pop_routine (my_name)
@@ -5111,7 +5111,7 @@ subroutine doInit1()
    dummy = add_registration_with_units(respondToGetReg, 'hum_c', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'biom_c', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'carbon_tot', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'oc%', floatarrayTypeDDML, '%')
+   dummy = add_registration_with_units(respondToGetReg, 'oc', floatarrayTypeDDML, '%')
    dummy = add_registration_with_units(respondToGetReg, 'nh4_transform_net', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'no3_transform_net', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'dlt_res_nh4_min', floatarrayTypeDDML, 'kg/ha')

@@ -5,12 +5,22 @@ PROJECT = ShellExtensions
 SRC = ContextHandler.cpp \
       ApsimCommands.cpp \
       ApsimContextMenu.cpp \
-      ClsFact.cpp
+      ClsFact.cpp \
+      ..\General\Path.cpp \
+      ..\General\String_functions.cpp \
+      ..\General\Xml.cpp \
+      ..\General\StriStr.cpp \
+      ..\General\Stream_functions.cpp \
+      ..\General\io_functions.cpp \
+      ..\ApsimShared\ApsimDirectories.cpp \
+      ..\ApsimShared\ApsimVersion.cpp \
+      ..\ApsimShared\ApsimSettings.cpp \
+      ..\ApsimShared\ApsimShared.cpp
 
 RES = Icons.res
 PROJECTTYPE = dll
 VCL = yes
-LIBS = General ApsimShared
+LIBS =
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 

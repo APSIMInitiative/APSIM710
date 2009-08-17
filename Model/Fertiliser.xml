@@ -1,98 +1,104 @@
-   <Type name="fertiliser">
-      <MetaData>
-      <UItype>VBUserInterface.EmptyUI</UItype>
-      <ShowInMainTree>Yes</ShowInMainTree>
-      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-      <Description>The fertiliser module doesn't have any properties. It is required though if you wish to apply fertiliser."</Description>
-      <Documentation name="Science documentation">../apsim/fertiliz/docs/fertiliz_science.htm</Documentation>
-      <LargeIcon>%apsim%\UserInterface\Images\fertiliser32.png</LargeIcon>
-      <SmallIcon>%apsim%\UserInterface\Images\fertiliser16.png</SmallIcon>
-      <dll>%apsim%\Model\Fertiliser.dll</dll>
-
-      <drops>
-         <drop>toolbox</drop>
-         <drop>area</drop>
-         <drop>folder</drop>
-     </drops>
-      <variables>
-         <variable name="fertilizer" description="Amount of fertilizer applied (kg/ha)"/>
-      </variables>
-      <ApsimToSim>
-         <component name="[fertiliser.name]" executable="[dll]">
-            <executable>[dll]</executable>
-            <initdata>
+<Type name="fertiliser">
+  <MetaData>
+    <UItype>VBUserInterface.EmptyUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Description>The fertiliser module doesn't have any properties. It is required though if you wish to apply fertiliser."</Description>
+    <Documentation name="Science documentation">../apsim/fertiliz/docs/fertiliz_science.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\fertiliser32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\fertiliser16.png</SmallIcon>
+    <dll>%apsim%\Model\Fertiliser.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>folder</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[fertiliser.name]" executable="[dll]">
+        <executable>[dll]</executable>
+        <initdata>
                [Model]
             </initdata>
-         </component>
-      </ApsimToSim>
-
-</MetaData>
-<Model>
-   <calcite_ca>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <calcite_ca>
       <full_name>Ca as finely ground Agricultural Lime</full_name>
       <components>CaCO3</components>
       <fraction description="The weight of the Ca component of the lime.">1.0   </fraction>
-   </calcite_ca>
-   <calcite_fine>
+    </calcite_ca>
+    <calcite_fine>
       <full_name>finely ground Agricultural Lime</full_name>
       <components>CaCO3</components>
       <fraction description="The weight of the Ca component of the calcite.">0.4   </fraction>
-   </calcite_fine>
-   <dolomite>
+    </calcite_fine>
+    <dolomite>
       <full_name>finely ground dolomite</full_name>
       <components>CaCO3</components>
       <fraction description="The weight of the Ca component of the dolomite">0.22   </fraction>
-   </dolomite>
-   <NO3_N>
+    </dolomite>
+    <NO3_N>
       <full_name>N as nitrate</full_name>
       <components>no3</components>
       <fraction>1.0</fraction>
-   </NO3_N>
-   <NH4_N>
+    </NO3_N>
+    <NH4_N>
       <full_name>N as ammonium</full_name>
       <components>nh4</components>
       <fraction>1.0</fraction>
-   </NH4_N>
-   <NH4NO3>
+    </NH4_N>
+    <NH4NO3>
       <full_name>ammonium nitrate</full_name>
       <components>nh4  no3</components>
       <fraction>0.5  0.5</fraction>
-   </NH4NO3>
-   <urea_N>
+    </NH4NO3>
+    <urea_N>
       <full_name>N as urea</full_name>
       <components>urea</components>
       <fraction>1.0</fraction>
-   </urea_N>
-   <urea_no3>
+    </urea_N>
+    <urea_no3>
       <full_name>N as urea</full_name>
       <components>urea no3</components>
       <fraction>0.50 0.50</fraction>
-   </urea_no3>
-   <urea>
+    </urea_no3>
+    <urea>
       <full_name>Urea ferilizer</full_name>
       <components>urea</components>
       <fraction>0.46</fraction>
-   </urea>
-   <nh4so4_n>
+    </urea>
+    <nh4so4_n>
       <full_name>ammonium sulphate</full_name>
       <components>nh4</components>
       <fraction>1.0</fraction>
-   </nh4so4_n>
-   <rock_p>
+    </nh4so4_n>
+    <rock_p>
       <full_name>Rock Phosphorus</full_name>
       <components>rock_p labile_p</components>
       <fraction>0.8     0.2</fraction>
-   </rock_p>
-   <banded_p>
+    </rock_p>
+    <banded_p>
       <full_name>Banded Phosphorus</full_name>
       <components>banded_p</components>
       <fraction>1.0</fraction>
-   </banded_p>
-   <broadcast_p>
+    </banded_p>
+    <broadcast_p>
       <full_name>Broadcast Phosporus</full_name>
       <components>labile_p</components>
       <fraction>1.0</fraction>
-   </broadcast_p>
-</Model>
-
-   </Type>
+    </broadcast_p>
+  </Model>
+  <Info name="Fertiliser">
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="fertiliser" description="Amount of fertiliser" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="" units="" />
+    </variables>
+    <events />
+  </Info>
+</Type>

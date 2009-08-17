@@ -3,6 +3,7 @@ using System.Xml;
 using CSGeneral;
 using ApsimFile;
 using System.IO;
+using System;
 
 public class Types
    {
@@ -73,15 +74,39 @@ public class Types
          }
       return false;
       }
-   public XmlNode Variables(string TypeName)
+   public List<XmlNode> Variables(string TypeName)
       {
+      List<XmlNode> VariableNodes = new List<XmlNode>();
+      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
+      foreach (XmlNode InfoNode in XmlHelper.ChildNodes(TypeNode, "info"))
+         {
+         XmlNode VariableNode = XmlHelper.Find(InfoNode, "variables");
+         if (VariableNode != null)
+            {
+            if (XmlHelper.Name(InfoNode) != "Info")
+               XmlHelper.SetName(VariableNode, XmlHelper.Name(InfoNode));
+            VariableNodes.Add(VariableNode);
+            }
+         }
       // Return the variables node to the caller for the specified TypeName
-      return XmlHelper.Find(TypesDoc.DocumentElement, TypeName + "/MetaData/Variables");
+      return VariableNodes;
       }
-   public XmlNode Events(string TypeName)
+   public List<XmlNode> Events(string TypeName)
       {
-      // Return the events node to the caller for the specified TypeName
-      return XmlHelper.Find(TypesDoc.DocumentElement, TypeName + "/MetaData/Events");
+      List<XmlNode> EventNodes = new List<XmlNode>();
+      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
+      foreach (XmlNode InfoNode in XmlHelper.ChildNodes(TypeNode, "info"))
+         {
+         XmlNode EventNode = XmlHelper.Find(InfoNode, "events");
+         if (EventNode != null)
+            {
+            if (XmlHelper.Name(InfoNode) != "Info")
+               XmlHelper.SetName(EventNode, XmlHelper.Name(InfoNode));
+            EventNodes.Add(EventNode);
+            }
+         }
+      // Return the variables node to the caller for the specified TypeName
+      return EventNodes;
       }
    public string[] Cultivars(string TypeName)
       {
@@ -149,6 +174,36 @@ public class Types
    public List<string> Dlls(string TypeName)
       {
       XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
-      return XmlHelper.Values(TypeNode, "dll");
+      return XmlHelper.Values(TypeNode, "MetaData/dll");
+      }
+   public void SetInfo(string TypeName, string ModuleName, string ProbeInfo)
+      {
+      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
+      XmlNode ProbeInfoNode = null;
+      if (ModuleName == "")
+         ProbeInfoNode = XmlHelper.Find(TypeNode, "Info");
+      else
+         {
+         string[] ProbeInfoNames = XmlHelper.ChildNames(TypeNode, "Info");
+         int ProbeInfoIndex = Array.IndexOf(ProbeInfoNames, ModuleName);
+         if (ProbeInfoIndex != -1)
+            ProbeInfoNode = XmlHelper.ChildNodes(TypeNode, "Info")[ProbeInfoIndex];
+         }
+      if (ProbeInfoNode == null)
+         {
+         ProbeInfoNode = TypeNode.AppendChild(TypesDoc.CreateElement("Info"));
+         if (ModuleName != "")
+            XmlHelper.SetName(ProbeInfoNode, ModuleName);
+         }
+      XmlDocument ProbeInfoDoc = new XmlDocument();
+      ProbeInfoDoc.LoadXml(ProbeInfo);
+      ProbeInfoNode.RemoveAll();
+      foreach (XmlNode Child in ProbeInfoDoc.DocumentElement)
+         ProbeInfoNode.AppendChild(TypesDoc.ImportNode(Child, true));
+      }
+   public void Save(string TypeName, TextWriter Out)
+      {
+      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
+      Out.Write(XmlHelper.FormattedXML(TypeNode.OuterXml));
       }
    }

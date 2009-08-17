@@ -1197,7 +1197,7 @@ c      end if
      :                             , '(g/m^2)'
      :                             , g%dm_green(flower))
 
-      elseif (variable_name .eq. 'stem+flower_wt') then
+      elseif (variable_name .eq. 'stemandflower_wt') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%dm_green(stem)

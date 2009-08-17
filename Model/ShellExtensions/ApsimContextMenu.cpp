@@ -218,11 +218,14 @@ __declspec(dllexport) HRESULT STDMETHODCALLTYPE DllUnregisterServer(void)
    else
       return SELFREG_E_CLASS;
    }
+
+extern HINSTANCE hInstance;
 //---------------------------------------------------------------------------
 // Main entry point into the DLL - called by Windows.
 //---------------------------------------------------------------------------
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
    {
+   hInstance = hinst;
    Application->Initialize();
    switch(reason)
       {

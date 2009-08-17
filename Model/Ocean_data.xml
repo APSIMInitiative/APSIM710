@@ -1,5 +1,5 @@
-   <Type name="ocean_data">
-      <MetaData>
+<Type name="ocean_data">
+   <MetaData>
       <UItype>VBUserInterface.FileUI</UItype>
       <ShowInMainTree>Yes</ShowInMainTree>
       <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
@@ -12,7 +12,17 @@
          <drop>area</drop>
          <drop>simulation</drop>
          <drop>folder</drop>
-     </drops>
+      </drops>
+      <ApsimToSim>
+         <component name="[ocean_data.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [ocean_data.innerxml]
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Info>
       <variables>
          <variable name="sst" description="Sea surface temperature anomaly (oC)"/>
          <variable name="soi_index" description="SOI Index "/>
@@ -23,15 +33,6 @@
          <variable name="qri" description="qri"/>
          <variable name="swpi" description="swpi"/>
          <variable name="bom_Pacific_SSTs" description="bom"/>
-
       </variables>
-      <ApsimToSim>
-         <component name="[ocean_data.name]" executable="[dll]">
-            <executable>[dll]</executable>
-            <initdata>
-               [ocean_data.innerxml]
-            </initdata>
-         </component>
-      </ApsimToSim>
-      </MetaData>
-   </Type>
+   </Info>
+</Type>

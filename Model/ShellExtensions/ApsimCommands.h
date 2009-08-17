@@ -50,4 +50,9 @@ extern "C" _export void __stdcall interfaceFiles(const char* csvFiles);
 //---------------------------------------------------------------------------
 extern "C" _export void __stdcall apsimFiles(const char* csvFiles);
 
+//---------------------------------------------------------------------------
+// Probe a types file or plugin file
+//---------------------------------------------------------------------------
+extern "C" _export void __stdcall probeFile(const char* csvFiles);
+
 #endif

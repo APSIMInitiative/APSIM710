@@ -16,6 +16,22 @@
          <drop>folder</drop>
       </drops>
       <cultivar name="melliodora"/>
+      <ApsimToSim>
+         <component name="[Seedling.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               <uptake_source>calc</uptake_source>
+               <n_uptake_source>calc</n_uptake_source>
+               <rlv> 0.01 0 0 0 0 0 0 0 0 0 0 0 0 0</rlv>
+               <ll>[soil.ll]</ll>
+               <kl>[soil.kl]</kl>
+               <xf>[soil.xf]</xf>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Info>
       <variables>
          <variable name="lai" description ="E. grandis leaf area index"/>
          <variable name="fw" description ="E. grandis water stress factor"/>
@@ -35,20 +51,5 @@
          <variable name="adm_dead" array = "T" description ="E. grandis Dead Above-ground Biomass Pools"/>
          <variable name="adm_sen" array = "T" description ="E. grandis Senesced Above-ground Biomass Pools"/>
       </variables>
-
-      <ApsimToSim>
-         <component name="[Seedling.name]" executable="[dll]">
-            <executable>[dll]</executable>
-            <initdata>
-               [Model]
-               <uptake_source>calc</uptake_source>
-               <n_uptake_source>calc</n_uptake_source>
-               <rlv> 0.01 0 0 0 0 0 0 0 0 0 0 0 0 0</rlv>
-               <ll>[soil.ll]</ll>
-               <kl>[soil.kl]</kl>
-               <xf>[soil.xf]</xf>
-            </initdata>
-         </component>
-      </ApsimToSim>
-   </MetaData>
+   </Info>
 </Type>
