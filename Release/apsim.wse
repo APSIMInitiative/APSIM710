@@ -1548,6 +1548,7 @@ item: Display Message
 end
 item: Execute Program
   Pathname=%INST%\dotnetfx2.exe
+  Flags=00000010
 end
 item: Else Statement
 end
@@ -1562,6 +1563,7 @@ item: Display Message
 end
 item: Execute Program
   Pathname=\\192.168.0.1\public\apsim\dotnetfx2.exe
+  Flags=00000010
 end
 item: Else Statement
 end
@@ -1572,6 +1574,57 @@ item: Display Message
 end
 item: Execute Program
   Pathname=http://www.apsim.info/apsim/downloads/dotnetfx2.exe
+  Flags=00000010
+end
+item: End Block
+end
+item: End Block
+end
+item: End Block
+end
+item: End Block
+end
+item: Check if File/Dir Exists
+  Pathname=x86_Microsoft.VC90.CRT_1fc8b3b9a1e18e3b_9.0.21022.8_x-ww_d08d0375
+  Flags=01000101
+end
+item: Else Statement
+end
+item: Check if File/Dir Exists
+  Pathname=%INST%\vcredist_x86.exe
+  Flags=00000100
+end
+item: Display Message
+  Title=Microsoft Visual C++ runtime 2008
+  Text=The Microsoft Visual C++ runtime 2008 components are not installed on this computer. They will now be installed.
+  Flags=00100100
+end
+item: Execute Program
+  Pathname=%INST%\vcredist_x86.exe
+end
+item: Else Statement
+end
+item: Check if File/Dir Exists
+  Pathname=\\192.168.0.1\public\apsim\vcredist_x86
+  Flags=00000100
+end
+item: Display Message
+  Title=Microsoft Visual C++ runtime 2008
+  Text=The Microsoft Visual C++ runtime 2008 components are not installed on this computer. They will now be installed.
+  Flags=00100100
+end
+item: Execute Program
+  Pathname=\\192.168.0.1\public\apsim\vcredist_x86.exe
+end
+item: Else Statement
+end
+item: Display Message
+  Title=Microsoft .NET
+  Text=The Microsoft Visual C++ runtime 2008 components are not installed on this computer. They need to be downloaded from www.apsim.info (2Mb). Do you wish to do this now?
+  Flags=00100101
+end
+item: Execute Program
+  Pathname=http://www.apsim.info/apsim/downloads/vcredist_x86.exe
 end
 item: End Block
 end
