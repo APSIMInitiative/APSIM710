@@ -36,7 +36,9 @@ namespace Tools
          {
          StreamWriter Out = null;
          bool First = true;
-         foreach (string FileName in Directory.GetFiles(Dir, FileSpec))
+         string[] FileNames = Directory.GetFiles(Dir, FileSpec);
+         Array.Sort(FileNames);
+         foreach (string FileName in FileNames)
             {
             if (Path.GetFileName(FileName) != Path.GetFileName(DestinationFile))
                {
