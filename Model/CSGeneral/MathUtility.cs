@@ -283,10 +283,13 @@ namespace CSGeneral
 
       static public bool ValuesInArray(double[] Values)
          {
-         foreach (double Value in Values)
+         if (Values != null)
             {
-            if (Value != MathUtility.MissingValue)
-               return true;
+            foreach (double Value in Values)
+               {
+               if (Value != MathUtility.MissingValue)
+                  return true;
+               }
             }
          return false;
          }

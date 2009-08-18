@@ -171,30 +171,33 @@ namespace ApsimFile
                 else
                     DefaultValues = ParentSoil.LL15;
 
-                double[] SampleSW; 
+                double[] SampleSW = null; 
                 double[] SampleThickness;
-                SampleSW = new double[SW.Length + 2];
-                SampleThickness = new double[Thickness.Length + 2];
-                SW.CopyTo(SampleSW, 0);
-                Thickness.CopyTo(SampleThickness, 0);
-                int SecondBottomLayer = SampleThickness.Length - 2;
-                int BottomLayer = SampleThickness.Length - 1;
-                double BottomMeasuredSW = SW[Thickness.Length - 1];
-                SampleThickness[SecondBottomLayer] = Thickness[Thickness.Length - 1];
-                SampleSW[SecondBottomLayer] = 0.8 * BottomMeasuredSW;
-                SampleThickness[BottomLayer] = Thickness[Thickness.Length - 1];
-                SampleSW[BottomLayer] = 0.4 * BottomMeasuredSW;
+                if (SW.Length != 0)
+                   {
+                   SampleSW = new double[SW.Length + 2];
+                   SampleThickness = new double[Thickness.Length + 2];
+                   SW.CopyTo(SampleSW, 0);
+                   Thickness.CopyTo(SampleThickness, 0);
+                   int SecondBottomLayer = SampleThickness.Length - 2;
+                   int BottomLayer = SampleThickness.Length - 1;
+                   double BottomMeasuredSW = SW[Thickness.Length - 1];
+                   SampleThickness[SecondBottomLayer] = Thickness[Thickness.Length - 1];
+                   SampleSW[SecondBottomLayer] = 0.8 * BottomMeasuredSW;
+                   SampleThickness[BottomLayer] = Thickness[Thickness.Length - 1];
+                   SampleSW[BottomLayer] = 0.4 * BottomMeasuredSW;
 
-                SampleSW = SoilComponentUtility.MapSampleToSoilUsingSpatial(SampleSW, SampleThickness, DefaultValues, ParentSoil.Thickness);
+                   SampleSW = SoilComponentUtility.MapSampleToSoilUsingSpatial(SampleSW, SampleThickness, DefaultValues, ParentSoil.Thickness);
 
-                double[] CumMeasuredThickness = SoilComponentUtility.ToCumThickness(Thickness);
-                double BottomMeasuredThickness = CumMeasuredThickness[CumMeasuredThickness.Length - 1];
-                double[] CumThickness = SoilComponentUtility.ToCumThickness(ParentSoil.Thickness);
-                for (int i = 0; i != SampleSW.Length; i++)
-                    {
-                    if (CumThickness[i] > BottomMeasuredThickness)
-                        SampleSW[i] = Math.Max(SampleSW[i], DefaultValues[i]);
-                    }
+                   double[] CumMeasuredThickness = SoilComponentUtility.ToCumThickness(Thickness);
+                   double BottomMeasuredThickness = CumMeasuredThickness[CumMeasuredThickness.Length - 1];
+                   double[] CumThickness = SoilComponentUtility.ToCumThickness(ParentSoil.Thickness);
+                   for (int i = 0; i != SampleSW.Length; i++)
+                      {
+                      if (CumThickness[i] > BottomMeasuredThickness)
+                         SampleSW[i] = Math.Max(SampleSW[i], DefaultValues[i]);
+                      }
+                   }
                 return SampleSW;
                 }
             }
