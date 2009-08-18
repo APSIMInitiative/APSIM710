@@ -1,7 +1,7 @@
       module oryzaModule
       use registrations
       Use CropLibrary
-
+ 
 ! ===================================================================
 !     oryza constants
 ! ===================================================================
@@ -4191,6 +4191,7 @@
       REAL    TEFF
       REAL    TSHCKL
       REAL    WLVGIT
+      character  Err_string*400      ! Event message string
       
       g%WST    = g%WSTS + g%WSTR
       g%WLV    = g%WLVG + g%WLVD
@@ -4500,8 +4501,14 @@
 !!===========Checks on simulation run
 !!-----------If biomass is negative: set at 0 and abort simulation
             IF (g%WSO.LT.-5..OR.g%WLVG.LT.-5..OR.g%WST.LT.-5.) THEN
-               call fatal_error(err_user,
-     :               'Negative biomass in oryza1')
+!               call fatal_error(err_user,
+!     :               'Negative biomass in oryza1')
+ 
+
+              Write (Err_string,*) 'Negative biomass CROP DEATH'
+   	      call Write_string (Err_string)
+              call oryza_end_crop ()
+
                IF (g%WSO.LT.0.) g%WSO = 0.
                IF (g%WST.LT.0.) g%WST = 0.
                IF (g%WLVG.LT.0.) g%WLVG = 0.
