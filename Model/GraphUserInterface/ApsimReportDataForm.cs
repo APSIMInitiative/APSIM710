@@ -12,6 +12,7 @@ using System.Xml;
 using Controllers;
 using CSGeneral;
 using UIUtility;
+using ApsimFile;
 
 
 namespace GraphUserInterface
@@ -34,6 +35,7 @@ namespace GraphUserInterface
                 Application.DoEvents();
                 Application.DoEvents();
 
+                PlugIns.Load(Configuration.ApsimDirectory() + "\\UserInterface\\ApsimReport.xml");
                 Processor = new UIUtility.DataProcessor(Convert.ToUInt32(CommandLine));
                 ChartPage.Processor = Processor;
 

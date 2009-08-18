@@ -245,9 +245,10 @@ namespace ApsimToSim
                      if (MathUtility.ValuesInArray(Sample.SW))
                         ApsimToSimContents = ApsimToSimContents.Replace("[soil.SW]", SoilComponentUtility.LayeredToString(Sample.SWMapedToSoil));
                      if (MathUtility.ValuesInArray(Sample.NO3))
+                        {
                         ApsimToSimContents = ApsimToSimContents.Replace("[soil.NO3]", SoilComponentUtility.LayeredToString(Sample.NO3MapedToSoil));
-                     if (MathUtility.ValuesInArray(Sample.NH4))
                         ApsimToSimContents = ApsimToSimContents.Replace("[soil.NH4]", SoilComponentUtility.LayeredToString(Sample.NH4MapedToSoil));
+                        }
                      }
                   else if (SoilChild.Type == "InitNitrogen")
                      {
