@@ -2,7 +2,7 @@ module PondModule
    use ComponentInterfaceModule
    use registrations
    use DataTypes
-     
+      
 !  ====================================================================
 !  Pond constants
 !  ====================================================================
@@ -14,7 +14,7 @@ module PondModule
 
 !  attributes:
 
- 
+   
 !  ----------------------- Declaration section ------------------------
 
    Use ConstantsModule
@@ -1463,7 +1463,7 @@ subroutine Pond_move_solutes_down_mass_flow ()
 ! dsg 311008   Move solutes from the pond into the soil by the processes of mass flow
 !              Assume that the effective infiltration of water from pond into the soil is equal to the 
 !              SOILWAT variable 'flow_water' from the 2nd soil layer down
-      call get_real_array (unknown_module, 'flow_water', max_layer, '(mm)', infiltration, numvals, 0.0, 1000.0)
+      call get_real_array (unknown_module, 'flow_water', max_layer, '(mm)', infiltration, numvals, -1000.0, 1000.0)
 
 !      assume that the flow of water out of soil layer 2 is equal to the infiltration from pond into soil
        g%infiltration = infiltration(2)      
@@ -1668,46 +1668,46 @@ subroutine Pond_diffusion()
             DIFFN(solute) = DELC(solute) / DELX * DE(solute) *360.0 * 24.0 / timesteps_per_day
       end do
 
-              Write (Err_string,*) ' ______________________________________________ '
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' DE - diffusion coefficient urea = ',DE(1)
-   	      call Write_string (Err_string)
-              Write (Err_string,*) '        pond urea conc = ',g%pond_urea_conc
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) '        soil1 urea conc = ',soil_ureappm(1)
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' DIFFN urea = ',DIFFN(1)
-   	      call Write_string (Err_string)
-              Write (Err_string,*) ' Diffused proportion urea = ',(DIFFN(1)/g%pond_urea)
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' ______________________________________________ '
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' DE - diffusion coefficient no3 = ',DE(2)
-   	      call Write_string (Err_string)
-              Write (Err_string,*) '        pond no3 conc = ',g%pond_no3_conc
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) '        soil1 no3 conc = ',soil_no3ppm(1)
-   	      call Write_string (Err_string)              
-   	      Write (Err_string,*) ' DIFFN no3 = ',DIFFN(2)
-   	      call Write_string (Err_string)
-              Write (Err_string,*) ' Diffused proportion no3 = ',(DIFFN(2)/g%pond_no3)
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' ______________________________________________ '
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' DE - diffusion coefficient nh4 = ',DE(3)
-   	      call Write_string (Err_string)
-              Write (Err_string,*) '        pond nh4 conc = ',g%pond_nh4_conc
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) '        soil1 nh4 conc = ',soil_nh4ppm(1)
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) '        soil1 "diffusable" nh4 conc = ',diffusable_soil_nh4ppm
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' DIFFN nh4 = ',DIFFN(3)
-   	      call Write_string (Err_string)
-              Write (Err_string,*) ' Diffused proportion nh4 = ',(DIFFN(3)/g%pond_nh4)
-   	      call Write_string (Err_string)              
-              Write (Err_string,*) ' ______________________________________________ '
-   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' ______________________________________________ '
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' DE - diffusion coefficient urea = ',DE(1)
+!   	      call Write_string (Err_string)
+!              Write (Err_string,*) '        pond urea conc = ',g%pond_urea_conc
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) '        soil1 urea conc = ',soil_ureappm(1)
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' DIFFN urea = ',DIFFN(1)
+!   	      call Write_string (Err_string)
+!              Write (Err_string,*) ' Diffused proportion urea = ',(DIFFN(1)/g%pond_urea)
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' ______________________________________________ '
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' DE - diffusion coefficient no3 = ',DE(2)
+!   	      call Write_string (Err_string)
+!              Write (Err_string,*) '        pond no3 conc = ',g%pond_no3_conc
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) '        soil1 no3 conc = ',soil_no3ppm(1)
+!   	      call Write_string (Err_string)              
+!   	      Write (Err_string,*) ' DIFFN no3 = ',DIFFN(2)
+!   	      call Write_string (Err_string)
+!              Write (Err_string,*) ' Diffused proportion no3 = ',(DIFFN(2)/g%pond_no3)
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' ______________________________________________ '
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' DE - diffusion coefficient nh4 = ',DE(3)
+!   	      call Write_string (Err_string)
+!              Write (Err_string,*) '        pond nh4 conc = ',g%pond_nh4_conc
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) '        soil1 nh4 conc = ',soil_nh4ppm(1)
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) '        soil1 "diffusable" nh4 conc = ',diffusable_soil_nh4ppm
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' DIFFN nh4 = ',DIFFN(3)
+!   	      call Write_string (Err_string)
+!              Write (Err_string,*) ' Diffused proportion nh4 = ',(DIFFN(3)/g%pond_nh4)
+!   	      call Write_string (Err_string)              
+!              Write (Err_string,*) ' ______________________________________________ '
+!   	      call Write_string (Err_string)              
 
 !     So now, DIFFN(solute) will be the diffusion in kg/ha either from pond to soil (+ve) 
 !             or from soil up into pond (-ve)
