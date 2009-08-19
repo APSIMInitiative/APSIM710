@@ -90,9 +90,9 @@ class ProbeDll
             // Dynamically create a method for the entry point we're going to call.
             AppDomain currentDomain = AppDomain.CurrentDomain;
             AssemblyName myAssemblyName = new AssemblyName();
-            myAssemblyName.Name = "TempAssembly";
+            myAssemblyName.Name = ModuleName + "Assembly";
             AssemblyBuilder myAssemblyBuilder = currentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Run);
-            ModuleBuilder moduleBuilder = myAssemblyBuilder.DefineDynamicModule("TempModule");
+            ModuleBuilder moduleBuilder = myAssemblyBuilder.DefineDynamicModule(ModuleName + "Module");
             MethodBuilder method;
             method = moduleBuilder.DefinePInvokeMethod("getDescription", DllFileName,
                                                MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
@@ -122,7 +122,7 @@ class ProbeDll
 
             // Put the results of the probe into the type.
             string ProbeContents = SWriter.ToString();
-            if (Types.Instance.Dlls(TypeName).Count > 0)
+            if (Types.Instance.Dlls(TypeName).Count > 1)
                Types.Instance.SetInfo(TypeName, ModuleName, ProbeContents);
             else
                Types.Instance.SetInfo(TypeName, "", ProbeContents);
@@ -146,7 +146,7 @@ class ProbeDll
                Utility.CheckProcessExitedProperly(P);
 
                // Rename the DLL.
-               File.Copy(ModelDirectory + "ManagerHelper.dll", ModelDirectory + ModuleName + "ManagerHelper.dll", true);
+               //File.Copy(ModelDirectory + "ManagerHelper.dll", ModelDirectory + ModuleName + "ManagerHelper.dll", true);
 
                // Get rid of all temporary files and directories.
                if (Directory.Exists(ModelDirectory + "Release"))

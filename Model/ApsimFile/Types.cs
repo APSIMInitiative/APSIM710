@@ -180,24 +180,29 @@ public class Types
       {
       XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
       XmlNode ProbeInfoNode = null;
+
+      // Get an <info> node to write to.
       if (ModuleName == "")
-         ProbeInfoNode = XmlHelper.Find(TypeNode, "Info");
+         ProbeInfoNode = XmlHelper.FindByType(TypeNode, "Info");
       else
-         {
+         { 
          string[] ProbeInfoNames = XmlHelper.ChildNames(TypeNode, "Info");
          int ProbeInfoIndex = Array.IndexOf(ProbeInfoNames, ModuleName);
          if (ProbeInfoIndex != -1)
             ProbeInfoNode = XmlHelper.ChildNodes(TypeNode, "Info")[ProbeInfoIndex];
          }
       if (ProbeInfoNode == null)
-         {
          ProbeInfoNode = TypeNode.AppendChild(TypesDoc.CreateElement("Info"));
-         if (ModuleName != "")
-            XmlHelper.SetName(ProbeInfoNode, ModuleName);
-         }
+
+      // Name the info name if necessary.
+      ProbeInfoNode.RemoveAll();
+      if (ModuleName == "")
+         XmlHelper.DeleteAttribute(ProbeInfoNode, "name");
+      else
+         XmlHelper.SetName(ProbeInfoNode, ModuleName);
+
       XmlDocument ProbeInfoDoc = new XmlDocument();
       ProbeInfoDoc.LoadXml(ProbeInfo);
-      ProbeInfoNode.RemoveAll();
       foreach (XmlNode Child in ProbeInfoDoc.DocumentElement)
          ProbeInfoNode.AppendChild(TypesDoc.ImportNode(Child, true));
       }

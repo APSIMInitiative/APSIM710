@@ -35,9 +35,9 @@ void ApsimRegistry::reset(void)
         i != registrations.end();
         i++)
       delete i->second;
-   registrations.empty();
-   components.empty();
-   taintedComponents.empty();
+   registrations.clear();
+   components.clear();
+   taintedComponents.clear();
    }
 
 // Create a native registration.

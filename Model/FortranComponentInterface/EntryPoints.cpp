@@ -68,6 +68,7 @@ extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
 
    // delete the instance.
    deleteInstance(&instanceNumber);
+   ApsimRegistry::getApsimRegistry().reset();
    }
 
 extern "C" void EXPORT STDCALL getDescriptionLengthInternal(char* initScript, int* length)
