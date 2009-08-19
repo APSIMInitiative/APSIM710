@@ -12,6 +12,9 @@ call CreateAllOut.bat
 cd ..\2007
 call CreateAllOut.bat
 
+cd ..\2008
+call CreateAllOut.bat
+
 cd ..\
 
 rem -----------------------------------------------
@@ -30,6 +33,9 @@ rem -----------------------------------------------
 %APSIM%\Model\SetXMLValue YieldProphet.report Data/Filter/FilterString "Crop='Wheat' and year=2007"
 %APSIM%\Model\ApsimReport.exe YieldProphet.report %APSIM%\Graphs\YieldProphet\Validation\Wheat\2007.gif
 
+%APSIM%\Model\SetXMLValue YieldProphet.report Data/Filter/FilterString "Crop='Wheat' and year=2008"
+%APSIM%\Model\ApsimReport.exe YieldProphet.report %APSIM%\Graphs\YieldProphet\Validation\Wheat\2008.gif
+
 %APSIM%\Model\SetXMLValue YieldProphet.report Data/Filter/FilterString "Crop='Wheat'"
 %APSIM%\Model\ApsimReport.exe YieldProphet.report %APSIM%\Graphs\YieldProphet\Validation\Wheat\All.gif
 
@@ -45,6 +51,9 @@ rem -----------------------------------------------
 
 %APSIM%\Model\SetXMLValue YieldProphet.report Data/Filter/FilterString "Crop='Barley' and year=2007"
 %APSIM%\Model\ApsimReport.exe YieldProphet.report %APSIM%\Graphs\YieldProphet\Validation\Barley\2007.gif
+
+%APSIM%\Model\SetXMLValue YieldProphet.report Data/Filter/FilterString "Crop='Barley' and year=2008"
+%APSIM%\Model\ApsimReport.exe YieldProphet.report %APSIM%\Graphs\YieldProphet\Validation\Barley\2008.gif
 
 %APSIM%\Model\SetXMLValue YieldProphet.report Data/Filter/FilterString "Crop='Barley'"
 %APSIM%\Model\ApsimReport.exe YieldProphet.report %APSIM%\Graphs\YieldProphet\Validation\Barley\All.gif
