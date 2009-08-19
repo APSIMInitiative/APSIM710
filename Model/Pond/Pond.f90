@@ -2067,9 +2067,9 @@ subroutine Pond_get_daily_variables ()
           endif
 
 ! determine the organic carbon in soil layer 1 - required to calculate potential urea hydrolysis in pond (kg/ha) 
-       call get_real_array (unknown_module, 'oc%', max_layer, '(%)', temp, numvals, 0.0, 100.0)
+       call get_real_array (unknown_module, 'oc', max_layer, '(%)', temp, numvals, 0.0, 100.0)
           if (numvals.eq.0) then
-              err_string = 'Cannot find variable "oc%"'
+              err_string = 'Cannot find variable "oc"'
               call FATAL_ERROR (ERR_user, err_string)
           endif
           g%oc1 = temp(1)          
