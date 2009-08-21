@@ -1,0 +1,488 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.1
+Title                  = 14-Deloraine1_06
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component      "Fertilise on fixed date" = %apsim%\Model\Manager.dll
+   Component                        "Logic" = %apsim%\Model\Manager.dll
+   Component               "Tulich_3 Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component            "Tulich_3 Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "potato" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/08/2005
+     Simulation end date   = 30/07/2006
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: deloraine.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        lai
+        LeafGreenWt
+        StemGreenWt
+        TuberGreenWt
+        st(1)
+        plants
+        node_no
+        node_no_sen
+        stf
+        stage
+        nfact_pheno
+        nfact_photo
+        swdef_pheno
+        swdef_photo
+        StemGreenP
+        density
+        applied_irr_tot
+        n_uptake
+        stage
+
+     Output file = 14-Deloraine1_06.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'potato')) then
+              if (date_within('7-nov, 8-nov') = 1) then
+     if (rain[7] >= 0 and esw >= 0) or
+         ('yes' = 'yes' and today = date('8-nov'))) then
+        choosenextcrop = 'yes'
+       stem_per_seed = -100+(0.3*150)
+       if stem_per_seed > 10 then
+          stem_per_seed = 10
+       elseif stem_per_seed < 2 then
+          stem_per_seed = 4.5
+       endif
+       stf = st(1)/10
+       if (stf < 0) then
+           stf = 0
+        endif
+        if (stf > 1) then
+           stf = 1
+        endif
+        swf = (sw(1) - ll(1))/(dul(1) - ll(1))
+        if (swf < 0) then
+           swf = 0
+        endif
+        if (swf > 1) then
+           swf = 1
+        endif
+        density = 6 * stem_per_seed * stf * swf
+        potato sow plants = density, sowing_depth = 20, cultivar = russet, row_spacing = 815, crop_class = plant
+     endif
+     if today = date('8-nov') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
+       potato  harvest
+       potato  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- potato.sowing
+             fertiliser apply amount = 144 (kg/ha), depth = 50 (mm), type = no3_n
+     END of rules
+     
+
+------- Fertilise on fixed date Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('21-dec') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 115 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Logic Initialisation --------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+      irriginterval = 0
+     applied_irr_tot = 0
+     
+     SECTION:- start_of_day
+     irriginterval = irriginterval + 1
+      if potato.plant_status = 'alive'  and (potato.stage > 3) and (potato.stage < 6) and (irriginterval > 12) then
+     'tulich_3 water' set dlt_sw_dep = 28.0 0.0 0.0 0.0
+                irriginterval = 0
+                applied_irr_tot = applied_irr_tot + 28
+      endif
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : irriginterval = 0.00000
+     Manager creating a new local real variable : applied_irr_tot = 0.00000
+
+------- Tulich_3 Water Initialisation -----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mwcon is being replaced with a saturated conductivity. See documentation for details.
+     Component name: Tulich_3 Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  230.  0.090  0.190  0.440  0.590  0.190  1.050  0.895  0.500
+          230.-  430.  0.330  0.370  0.550  0.590  0.370  1.070  0.102  0.100
+          430.-  800.  0.340  0.340  0.540  0.560  0.340  1.130  0.003  0.100
+          800.- 1200.  0.340  0.340  0.540  0.560  0.340  1.130  0.000  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  230.      43.70       0.00      57.50      34.50
+          230.-  430.      74.00       0.00      36.00       8.00
+          430.-  800.     125.80       0.00      74.00       7.40
+          800.- 1200.     136.00       0.00      80.00       8.00
+          ---------------------------------------------------------
+               Totals     379.50       0.00     247.50      57.90
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.10       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              70.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Tulich_3 Nitrogen Initialisation --------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Medium clay
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.00  0.70    0.24    0.24    0.00
+             2     5.00  0.70    0.21    0.21    0.00
+             3     5.00  0.40    0.42    0.42    0.00
+             4     5.00  0.20    0.45    0.45    0.00
+          ------------------------------------------------
+           Totals                1.33    1.33    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      16319.8  1125.5   585.2    73.1   310.0    10.3
+             2      14461.5   997.3   518.5    64.8   188.0     6.3
+             3      16285.6  1123.1   438.4    54.8    74.6     2.5
+             4       8959.4   617.9    80.6    10.1    27.4     0.9
+          ---------------------------------------------------------
+           Totals   56026.3  3863.9  1622.7   202.8   600.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "fallowin".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : fallowin = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "nextcrop".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+7 November 2005(Day of year=311), Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager creating a new local real variable : stem_per_seed = -55.00000
+     Manager creating a new local real variable : stf = 1.80922
+     Manager creating a new local real variable : swf = 0.98654
+     Manager creating a new local real variable : density = 26.63658
+7 November 2005(Day of year=311), potato: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = russet
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      72 (dd)
+              shoot_rate                 =       6 (dd/mm)
+           emergence
+              tt_emergence               =     275 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =      12      18 (h)
+              y_tt_end_of_juvenile       =       0       0 (dd)
+           start_tuber_fill
+              tt_start_tuber_fill        =    1530 (dd)
+           end_tuber_fill
+              tt_end_tuber_fill          =       5 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+     
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         230.0     0.060          0.190       1.000
+         200.0     0.060          0.370       1.000
+         370.0     0.060          0.340       1.000
+         400.0     0.060          0.340       1.000
+         -----------------------------------------------
+         Extractable SW:   248mm in  1200mm total depth ( 21%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            311   20.0   26.6  815.0   0.0   0.0 russet
+         ------------------------------------------------
+     
+7 November 2005(Day of year=311), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 144 (kg/ha), depth = 50 (mm), type = no3_n
+7 November 2005(Day of year=311), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       144.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+8 November 2005(Day of year=312), potato: 
+      stage 2.0 germination
+26 November 2005(Day of year=330), potato: 
+      stage 3.0 emergence
+                     biomass =           0.80 (g/m^2)   lai          =   1.065 (m^2/m^2)
+                     stover N conc =     6.93 (%)    extractable sw =   68.80 (mm)
+18 December 2005(Day of year=352), potato: 
+      stage 4.0 end_of_juvenile
+                     biomass =         254.38 (g/m^2)   lai          =   1.839 (m^2/m^2)
+                     stover N conc =     2.90 (%)    extractable sw =  101.15 (mm)
+19 December 2005(Day of year=353), potato: 
+      stage 5.0 start_tuber_fill
+                     biomass =         263.27 (g/m^2)   lai          =   1.785 (m^2/m^2)
+                     stover N conc =     2.83 (%)    extractable sw =   99.31 (mm)
+21 December 2005(Day of year=355), Fertilise on fixed date: 
+     Manager creating a new local real variable : n_topsoil = 30.42093
+     Manager sending message :- fertiliser apply  amount = 115 (kg/ha), depth = 50 (mm), type = urea_n
+21 December 2005(Day of year=355), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       115.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+20 April 2006(Day of year=110): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.596247      in layer   1
+              is above saturation of     0.590000
+     Component name: Tulich_3 Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 May 2006(Day of year=121), potato: 
+      stage 6.0 end_tuber_fill
+                     biomass =        1263.06 (g/m^2)   lai          =   0.250 (m^2/m^2)
+                     stover N conc =     2.01 (%)    extractable sw =  227.95 (mm)
+2 May 2006(Day of year=122), potato: 
+      stage 7.0 maturity
+                     biomass =        1263.94 (g/m^2)   lai          =   0.242 (m^2/m^2)
+                     stover N conc =     2.01 (%)    extractable sw =  229.45 (mm)
+2 May 2006(Day of year=122), Harvesting rule: 
+     Manager sending message :- potato harvest
+     
+      flowering day          =    0                           stover (kg/ha)         =    12639.4
+      maturity day           =  122                           grain yield (kg/ha)    =        0.0
+      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.314
+      total above ground biomass (kg/ha)    =    12639.4
+      live above ground biomass (kg/ha)     =    12639.4
+      green above ground biomass (kg/ha)    =    10666.2
+      senesced above ground biomass (kg/ha) =     1973.1
+      number of leaves       =     50.8
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.00
+      Stover C:N ratio       =    20.84                       Root C:N ratio         =     127.74
+      grain N percent        =     0.00                       total N content (kg/ha)=     242.55
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   28.10
+      green N content (kg/ha)=   214.44
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         end_of_juvenile      to start_tuber_fill        0.014        0.022        0.139        0.286
+         start_tuber_fill     to end_tuber_fill          0.004        0.007        0.285        0.571
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =               12631.4                     0.0
+                          N  (kg/ha) =                 242.03                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               11002.1                     0.0
+                          N  (kg/ha) =                  33.04                    0.00
+     
+     Manager sending message :- potato end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   8.0                  1899.6
+                          N  (kg/ha) =                   0.52                    5.95
+     
+30 July 2006(Day of year=211), clock: 
+     Simulation is terminating due to end criteria being met.
