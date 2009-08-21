@@ -49,7 +49,6 @@ extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
 extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
                                                          char* description)
    {
-   ::MessageBox(NULL, initScript, "d", 0); asdf      
    ApsimComponentData componentData(initScript);
    std::string dllFileName = componentData.getExecutableFileName();
    std::string instanceName = componentData.getName();
