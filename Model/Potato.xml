@@ -207,16 +207,16 @@
             LEAF NUMBER DEVELOPMENT
             currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
             -->
-      <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.5     </leaf_no_at_emerg>
-      <!-- Based on IRS leaf trial
+            <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.5     </leaf_no_at_emerg>
+            <!-- Based on IRS leaf trial
             -->
-      <x_node_no_app>0    17</x_node_no_app>
-      <y_node_app_rate>55   55</y_node_app_rate>
-      <!-- Node appearance on main stem from IRS glasshouse trial. No evidence that later nodes come faster (as for canola)
+            <x_node_no_app>0    17</x_node_no_app>
+            <y_node_app_rate>39.5   39.5</y_node_app_rate>
+            <!-- Node appearance on main stem from IRS glasshouse trial. No evidence that later nodes come faster (as for canola)
             -->
-      <x_node_no_leaf>0    10    13     17</x_node_no_leaf>
-      <y_leaves_per_node>1    1     17     1</y_leaves_per_node>
-      <!-- Based on IRS leaf trial and leaf no counts per node
+            <x_node_no_leaf>0    10    13     17</x_node_no_leaf>
+            <y_leaves_per_node>1    1     17     1</y_leaves_per_node>
+            <!-- Based on IRS leaf trial and leaf no counts per node
             Most nodes have one MS leaf. 3 nodes post node number 10 have branching.
             Need to incorprate stem number functions here (sensitive to PA, soil moisture and temperature at sowing).
             Conceptual model consists of positive linear relationship between potential (optimum conditions) stem number and 'age' since harvest of 'seed' (thermal time)
@@ -235,9 +235,9 @@
             STAGE DEPENDENT RUE
             sow    ger   eme  end_juv   st_tf   end_tf   mat
             -->
-      <x_stage_rue description="numeric code for phenological stages">1      2     3    4         5       6        7</x_stage_rue>
-      <y_rue units="g/MJ">0      0    1.6   1.6      1.6     1.6      1.6</y_rue>
-      <!-- Suggest 1.6g/MJ during vegetative (Allen and Scott 2001) increasing to 2.5 g/MJ (Kooman and Havertkort, 1995) after tuber initiation. Higher value attributed to 'sink' strength of tuber??
+            <x_stage_rue description="numeric code for phenological stages">1      2     3    4         5       6        7</x_stage_rue>
+            <y_rue units="g/MJ">0      0    1.6   1.6      2.5     2.5      2.5</y_rue>
+            <!-- Suggest 1.6g/MJ during vegetative (Allen and Scott 2001) increasing to 2.5 g/MJ (Kooman and Havertkort, 1995) after tuber initiation. Higher value attributed to 'sink' strength of tuber??
             Seems high to me - check latter (SL)
             __________________________________________________________________________________________________________-
             EXTINCTION COEFFICIENT
@@ -281,12 +281,13 @@
             sow    ger   eme  juv  st_tf end_tf   mat
             stage_code            = 1      2    3     4     5      6     7  ()     ! numeric code for phenological stages
             -->
-      <x_stage_no_partition>1      2    3     4     5      6     7</x_stage_no_partition>
-      <y_ratio_root_shoot units="0-1">0      0    1.0   0.33  0.33   0.081  0</y_ratio_root_shoot>
-      <y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves">0      0    0.80  0.55  0.40   0.1    0</y_frac_leaf>
-      <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0.00  0.60   1.0    0</y_frac_tuber>
-      <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0    0       0     0</y_frac_floret>
-      <!-- From IRS trials
+            <x_stage_no_partition>1      2    3     4     5      6     7</x_stage_no_partition>
+            <y_ratio_root_shoot units="0-1">0      0    0.2   0.20  0.20   0.01  0</y_ratio_root_shoot>
+            <y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves">0      0    0.65  0.50  0.10   0.0    0</y_frac_leaf>
+            <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber">0      0     0     0.1   0.25  1.0     0</y_frac_tuber>
+            <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0    0       0     0</y_frac_floret>
+            <!-- From IRS trials
+
             frac_tuber needs revisiting
             __________________________________________________________________________________________________________-
             GRAIN NUMBER DETERMINATION
@@ -315,26 +316,26 @@
             ______________________________________________________________________________
             LEAF SIZE AS A FUNCTION OF LEAF NUMBER
             -->
-      <node_no_correction>0.0</node_no_correction>
-      <x_node_no>0     7    11     17</x_node_no>
-      <y_leaf_size>1000 18000 18000  5000</y_leaf_size>
-      <!-- IRS trial
+            <node_no_correction>0.0</node_no_correction>
+            <x_node_no>0     7    11     17</x_node_no>
+            <y_leaf_size>1000 10000 10000  1000</y_leaf_size>
+            <!-- IRS trial
             ______________________________________________________________________________
             SPECIFIC LEAF AREA - SLA
             -->
-      <x_lai>0    8</x_lai>
-      <y_sla_max description="maximum specific leaf area for delta LAI">35000 35000    </y_sla_max>
-      <sla_min description="minimum specific leaf area for delta LAI">10000           </sla_min>
-      <!-- ______________________________________________________________________________
+            <x_lai>0    8</x_lai>
+            <y_sla_max description="maximum specific leaf area for delta LAI">45000 45000    </y_sla_max>
+            <sla_min description="minimum specific leaf area for delta LAI">13000           </sla_min>
+            <!-- ______________________________________________________________________________
             TPLA  - USED TO INTIALISE THE INITIAL LAI
             -->
-      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">100.</initial_tpla>
-      <x_leaf_cohort>1    5    11     15</x_leaf_cohort>
-      <y_leaf_growth_period units="oCd">150  200  500    500</y_leaf_growth_period>
-      <y_leaf_lag_period units="oCd">50   100  200   200</y_leaf_lag_period>
-      <y_leaf_sen_period units="oCd">150   150 150    150</y_leaf_sen_period>
-      <y_leaf_area_pot units="mm^2/cohort">83000 83000 83000 83000</y_leaf_area_pot>
-      <!-- ______________________________________________________________________________
+            <initial_tpla units="mm^2/plant" description="initial total plant leaf area">25.</initial_tpla>
+            <x_leaf_cohort>1    4    9  13   17</x_leaf_cohort>
+            <y_leaf_growth_period units="oCd">150     250     400    500    500</y_leaf_growth_period>
+            <y_leaf_lag_period units="oCd">100     150     150    150    150 </y_leaf_lag_period>
+            <y_leaf_sen_period units="oCd">100     100     100    100    100</y_leaf_sen_period>
+            <y_leaf_area_pot units="mm^2/cohort">20000   20000   20000  100000 100000</y_leaf_area_pot>
+            <!-- ______________________________________________________________________________
             HARVESTING EFFECTS ON LEAF AREA
             -->
       <fr_height_cut>0.0  0.1    1</fr_height_cut>
@@ -386,8 +387,8 @@
             sow    ger   eme  end_juv   st_tf   end_tf  mat
             stage_code            = 1      2     3    4         5       6       7    ()     ! numeric code for phenological stages
             -->
-      <transp_eff_cf units="Pa">0      0    .005  .005      .005    .005    .00</transp_eff_cf>
-      <!-- Essential for determination of daily water limited biomass production (Transpiration efficiency derived from VPD and TEC. TE X SW supply = DM)
+            <transp_eff_cf units="Pa">0      0    .006  .006      .006    .006    .00</transp_eff_cf>
+            <!-- Essential for determination of daily water limited biomass production (Transpiration efficiency derived from VPD and TEC. TE X SW supply = DM)
             Estimates from literature.
             __________________________________________________________________________________________________________-
             VPD FRACTION
@@ -465,25 +466,25 @@
             NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
             eme    juv     st_tf   end_tf  mat
             -->
-      <x_stage_code description="stage code used in table">3      4       5       6       7</x_stage_code>
-      <y_n_conc_min_leaf description="leaf min N conc.">0.0550 0.0500  0.0400      0.0300  0.0050</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf description="leaf critical N conc.">0.0650 0.0600  0.0550      0.0500  0.0500</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf description="leaf max N conc.">0.0800 0.0750  0.0650      0.0550  0.0550</y_n_conc_max_leaf>
-      <y_n_conc_min_stem description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_stem>
-      <y_n_conc_crit_stem description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_stem>
-      <y_n_conc_max_stem description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_stem>
-      <y_n_conc_min_floret description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_floret>
-      <y_n_conc_crit_floret description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_floret>
-      <y_n_conc_max_floret description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_floret>
-      <y_n_conc_min_tuber description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_tuber>
-      <y_n_conc_crit_tuber description="stem critical N conc.">0.0650 0.0600  0.0500      0.0400  0.0400</y_n_conc_crit_tuber>
-      <y_n_conc_max_tuber description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_tuber>
-      <!--  new additions
+            <x_stage_code description="stage code used in table">3      4       5       6       7</x_stage_code>
+            <y_n_conc_min_leaf description="leaf min N conc.">0.0250 0.0200  0.0200      0.0050  0.0050</y_n_conc_min_leaf>
+            <y_n_conc_crit_leaf description="leaf critical N conc.">0.07350 0.0750  0.0600      0.0420  0.0420</y_n_conc_crit_leaf>
+            <y_n_conc_max_leaf description="leaf max N conc.">0.0800 0.0750  0.0650      0.0550  0.0550</y_n_conc_max_leaf>
+            <y_n_conc_min_stem description="stem min N conc.">0.0250 0.0200  0.0200      0.0050  0.0050</y_n_conc_min_stem>
+            <y_n_conc_crit_stem description="stem critical N conc.">0.07350 0.0750  0.0600      0.0420  0.0420</y_n_conc_crit_stem>
+            <y_n_conc_max_stem description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_stem>
+            <y_n_conc_min_floret description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_floret>
+            <y_n_conc_crit_floret description="stem critical N conc.">0.07350 0.0700  0.0530      0.0420  0.0420 </y_n_conc_crit_floret>
+            <y_n_conc_max_floret description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_floret>
+            <y_n_conc_min_tuber description="stem min N conc.">0.0250 0.0200  0.0200      0.0050  0.0050</y_n_conc_min_tuber>
+            <y_n_conc_crit_tuber description="stem critical N conc.">0.0300 0.0300  0.0250      0.0250  0.0250</y_n_conc_crit_tuber>
+            <y_n_conc_max_tuber description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_tuber>
+            <!--  new additions
             -->
-      <n_conc_min_root description="root minimum N conc.">0.00800</n_conc_min_root>
-      <n_conc_crit_root description="root critical N conc.">0.01000</n_conc_crit_root>
-      <n_conc_max_root description="root max N conc.">0.01200</n_conc_max_root>
-      <!-- ______________________________________________________________________________
+            <n_conc_min_root description="root minimum N conc.">0.00800</n_conc_min_root>
+            <n_conc_crit_root description="root critical N conc.">0.01000</n_conc_crit_root>
+            <n_conc_max_root description="root max N conc.">0.01200</n_conc_max_root>
+            <!-- ______________________________________________________________________________
             INITIAL NITROGEN CONCENTRATION OF ORGANS
             -->
       <root_n_init_conc>0.010</root_n_init_conc>
@@ -623,8 +624,9 @@
             Disable at this stage until estimates available
             -->
       <tt_emergence units="oCd" description="BVP">275</tt_emergence>
+            <tt_end_of_juvenile>50</tt_end_of_juvenile>
       <tt_start_tuber_fill units="oCd">1530</tt_start_tuber_fill>
-      <tt_end_tuber_fill units="oCd">450.0</tt_end_tuber_fill>
+      <tt_end_tuber_fill units="oCd">5.0</tt_end_tuber_fill>
       <tt_maturity>5</tt_maturity>
     </russet>
   </Model>
