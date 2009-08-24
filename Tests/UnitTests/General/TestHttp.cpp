@@ -45,10 +45,10 @@ void testGetError2(void)
       itoa(stationNumber) +
       string("&ddStart=1&mmStart=1&yyyyStart=1800&ddFinish=31&mmFinish=12&yyyyFinish=2100");
 
-   string result = t.Get(url);
+   //string result = t.Get(url);
    //string text = t.responseText();
    int code = t.responseCode();
-   BOOST_CHECK(code == 200);
+   BOOST_CHECK(code != 200);
    }
 
 void testGetError3(void)
@@ -60,10 +60,10 @@ void testGetError3(void)
       itoa(stationNumber) +
       string("&ddStart=1&mmStart=1&yyyyStart=1800&ddFinish=31&mmFinish=12&yyyyFinish=2100");
 
-   string result = t.Get(url);
+   //string result = t.Get(url);
    //string text = t.responseText();
    int code = t.responseCode();
-   BOOST_CHECK(code == 200);
+   BOOST_CHECK(code != 200);
    }
 
 //---------------------------------------------------------------------------
