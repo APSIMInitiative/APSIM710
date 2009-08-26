@@ -444,6 +444,7 @@ public class DataProcessor
                   }
                // Handle pred/obs for checkpointed series.
                string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
+               CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
                DataRow[] PredictedMatch = Predicted.Select(CheckPointedFilter);
                if (PredictedMatch.Length > 0)
                   WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed");
