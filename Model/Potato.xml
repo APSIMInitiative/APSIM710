@@ -99,10 +99,11 @@
          SECTION 1 - CROP PHENOLOGY: Stage and Phase names
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          -->
-    <stage_code_list>1            2             3               4                    5                   6                7</stage_code_list>
-    <stage_names>sowing    germination    emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</stage_names>
-    <phase_names>sowing    germination    emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</phase_names>
-    <phase_type>sowing     emergent       fixed              photo             fixed                fixed             fixed</phase_type>
+    <stage_code_list>1            2             3               4         5         6               7              8        </stage_code_list>
+    <stage_names>sowing    germination    emergence     floralinit   tuberinit    flowering        fullsenescence  maturity </stage_names>
+    <phase_names>sowing    emerging      emergence      vegetative   earlytuber   senescing        senesced        maturity </phase_names>
+    <phase_type>sowing     emergent       photo         fixed        fixed        fixed            fixed           fixed    </phase_type>
+
     <!-- TI/STF sensitive to photoperiod apparently - short-day plant. Other models include sensitivity. Emerg to EOJ equivalent to BVP. EOJ to STF sensitive to PP.
          No need to distinguish between TI and STF as TI taken as when stolon tip 2X diameter (ie stf started)?
          Some farmers kill crop with herbicide when weeds a problem and or senescence delayed (should be handled by the kill_crop manager command)
@@ -110,9 +111,9 @@
          Asuming that we do not need to simulate flowering.
          -->
     <composite_phases>under_ground    above_ground    leaf_senescence  node_formation    stress_reporting  tiller_formation  n_stress</composite_phases>
-    <under_ground>sowing   germination</under_ground>
-    <above_ground>emergence   end_of_juvenile    start_tuber_fill    end_tuber_fill    maturity</above_ground>
-    <leaf_senescence>end_tuber_fill    maturity</leaf_senescence>
+    <under_ground>sowing   emerging</under_ground>
+    <above_ground>emergence      vegetative   earlytuber   senescing        senesced        maturity</above_ground>
+    <leaf_senescence>senescing        senesced </leaf_senescence>
     <!-- Assuming leaf senescence commences after start_tuber_fill??
          reproductive = start_tuber_fill end_tuber_fill
          Assuming this refers to vegetative reproductive growth and not flower/seed production??
@@ -120,12 +121,12 @@
          start_grain_fill2harvest_ripe =  start_tuber_fill end_tuber_fill
          preflowering  =                   emergence end_of_juvenile
          -->
-    <node_formation>emergence end_of_juvenile start_tuber_fill end_tuber_fill</node_formation>
-    <tiller_formation>emergence end_of_juvenile start_tuber_fill end_tuber_fill</tiller_formation>
+    <node_formation>emergence      vegetative    </node_formation>
+    <tiller_formation>emergence      vegetative    </tiller_formation>
     <!-- hi_stress_sensitive =
          -->
-    <stress_reporting>start_tuber_fill end_tuber_fill</stress_reporting>
-    <n_stress>emergence     end_of_juvenile    start_tuber_fill     end_tuber_fill       maturity</n_stress>
+    <stress_reporting>earlytuber   senescing </stress_reporting>
+    <n_stress> emergence      vegetative   earlytuber   senescing        senesced </n_stress>
     <plant>
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
@@ -136,8 +137,8 @@
       <n_senescence_option>1</n_senescence_option>
       <n_stress_option>1</n_stress_option>
       <partition_option>genericxy</partition_option>
-      <partitionparts>root  leaf tuber stem</partitionparts>
-      <partitionrules>magic frac frac  remainder</partitionrules>
+      <partitionparts>root  tuber leaf  stem</partitionparts>
+      <partitionrules>magic frac  frac  remainder</partitionrules>
       <fruit_no_option>1</fruit_no_option>
       <parasite_option>1</parasite_option>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,15 +151,11 @@
       <y_co2_te_modifier>1.0</y_co2_te_modifier>
       <x_co2_nconc_modifier units="ppm co2">350</x_co2_nconc_modifier>
       <y_co2_nconc_modifier>1.0</y_co2_nconc_modifier>
-      <stage_names>sowing    germination    emergence     end_of_juvenile     start_tuber_fill     end_tuber_fill     maturity</stage_names>
-      <stage_code>1            2             3               4                    5                   6                 7</stage_code>
-      <!-- __________________________________________________________________________________________________________-
-            STEM REDUCTION EFFECT ON PHENOLOGY
-            sow    ger   eme   juv  st_tf end_tf mat
-            -->
-      <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6      7</stage_code_list>
-      <stage_stem_reduction_harvest>1      2    3     4     5     6      7</stage_stem_reduction_harvest>
-      <stage_stem_reduction_kill_stem>1      2    3     4     5     6      7</stage_stem_reduction_kill_stem>
+      <stage_names>sowing    germination    emergence     floralinit   tuberinit    flowering        fullsenescence  maturity</stage_names>
+      <stage_code>1            2             3               4                    5                   6                 7   8 </stage_code>
+      <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6      7 8</stage_code_list>
+      <stage_stem_reduction_harvest>1      2    3     4     5     6      7  8</stage_stem_reduction_harvest>
+      <stage_stem_reduction_kill_stem>1      2    3     4     5     6      7 8 </stage_stem_reduction_kill_stem>
       <!-- Development setback associated with grazing - disabled SNL
             __________________________________________________________________________________________________________-
             SEED GERMINATION
@@ -174,7 +171,7 @@
             Sprouts active (germinated) at time of planting but require soil exposure to start elongating.
             Estimate from IRS trial
             -->
-      <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">6.3</shoot_rate>
+      <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">1.35</shoot_rate>
       <!-- Estimate from IRS trial
             Water stress factor for emergence
             -->
@@ -189,7 +186,7 @@
       <!--  centre of the sun is 2.2 degrees below the horizon. Sunrise or sunset is defined as when
             the true centre of the sun is 50' below the horizon.
             -->
-      <end_of_juvenile_pp_inductive_cutoff>end</end_of_juvenile_pp_inductive_cutoff>
+      <emergence_pp_inductive_cutoff>start</emergence_pp_inductive_cutoff>
       <!-- __________________________________________________________________________________________________________-
             Vernalisation
             -->
@@ -210,12 +207,12 @@
             <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.5     </leaf_no_at_emerg>
             <!-- Based on IRS leaf trial
             -->
-            <x_node_no_app>0    17</x_node_no_app>
-            <y_node_app_rate>39.5   39.5</y_node_app_rate>
+            <x_node_no_app>6 7    17</x_node_no_app>
+            <y_node_app_rate> 20 39.5   39.5</y_node_app_rate>
             <!-- Node appearance on main stem from IRS glasshouse trial. No evidence that later nodes come faster (as for canola)
             -->
-            <x_node_no_leaf>0    10    13     17</x_node_no_leaf>
-            <y_leaves_per_node>1    1     17     1</y_leaves_per_node>
+            <x_node_no_leaf>0    9 10 11 12 13 17</x_node_no_leaf>
+            <y_leaves_per_node>1 1  2 4  9  17  1</y_leaves_per_node>
             <!-- Based on IRS leaf trial and leaf no counts per node
             Most nodes have one MS leaf. 3 nodes post node number 10 have branching.
             Need to incorprate stem number functions here (sensitive to PA, soil moisture and temperature at sowing).
@@ -235,8 +232,8 @@
             STAGE DEPENDENT RUE
             sow    ger   eme  end_juv   st_tf   end_tf   mat
             -->
-            <x_stage_rue description="numeric code for phenological stages">1      2     3    4         5       6        7</x_stage_rue>
-            <y_rue units="g/MJ">0      0    1.6   1.6      2.5     2.5      2.5</y_rue>
+            <x_stage_rue description="numeric code for phenological stages">1      2     3    4         5       6        7   8</x_stage_rue>
+            <y_rue units="g/MJ">0      0    1.2   1.2      1.2     1.2      1.2  1.2</y_rue>
             <!-- Suggest 1.6g/MJ during vegetative (Allen and Scott 2001) increasing to 2.5 g/MJ (Kooman and Havertkort, 1995) after tuber initiation. Higher value attributed to 'sink' strength of tuber??
             Seems high to me - check latter (SL)
             __________________________________________________________________________________________________________-
@@ -246,7 +243,7 @@
       <skiprow_default>0</skiprow_default>
       <row_spacing_default units="mm">350</row_spacing_default>
       <x_row_spacing>200  350  1000</x_row_spacing>
-      <y_extinct_coef description="From SUBSTOR">0.55 0.55 0.55  </y_extinct_coef>
+      <y_extinct_coef description="From SUBSTOR">0.9 0.9 0.9  </y_extinct_coef>
       <y_extinct_coef_dead description="unchanged from other species">0.30 0.30 0.30  </y_extinct_coef_dead>
       <!-- POD EXTINCTION COEFFICIENT and RUE
             -->
@@ -256,7 +253,7 @@
       <!-- __________________________________________________________________________________________________________-
             TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
             -->
-      <x_ave_temp units="oC" description="mean daily temperature">0  2  19  24  35</x_ave_temp>
+      <x_ave_temp units="oC" description="mean daily temperature">0  2  15  24  35</x_ave_temp>
       <y_stress_photo description="multiplier on RUE">0  0   1  1  0</y_stress_photo>
       <!-- from literature - Kooman and Haverkort (1995)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -281,11 +278,11 @@
             sow    ger   eme  juv  st_tf end_tf   mat
             stage_code            = 1      2    3     4     5      6     7  ()     ! numeric code for phenological stages
             -->
-            <x_stage_no_partition>1      2    3     4     5      6     7</x_stage_no_partition>
-            <y_ratio_root_shoot units="0-1">0      0    0.2   0.20  0.20   0.01  0</y_ratio_root_shoot>
-            <y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves">0      0    0.65  0.50  0.10   0.0    0</y_frac_leaf>
-            <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber">0      0     0     0.1   0.25  1.0     0</y_frac_tuber>
-            <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0    0       0     0</y_frac_floret>
+            <x_stage_no_partition>1      2    3     4     5      6     7   8 </x_stage_no_partition>
+            <y_ratio_root_shoot units="0-1">0      0    0.2   0.20  0.20   0.00  0   0 </y_ratio_root_shoot>
+            <y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves">0      0    0.65  0.65 0.650  0.10   0.0    0   </y_frac_leaf>
+            <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber">0      0     0   0.1    0.75  1.0   1.0    0   </y_frac_tuber>
+            <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0    0       0     0  0 </y_frac_floret>
             <!-- From IRS trials
 
             frac_tuber needs revisiting
@@ -330,11 +327,11 @@
             TPLA  - USED TO INTIALISE THE INITIAL LAI
             -->
             <initial_tpla units="mm^2/plant" description="initial total plant leaf area">25.</initial_tpla>
-            <x_leaf_cohort>1    4    9  13   17</x_leaf_cohort>
-            <y_leaf_growth_period units="oCd">150     250     400    500    500</y_leaf_growth_period>
-            <y_leaf_lag_period units="oCd">100     150     150    150    150 </y_leaf_lag_period>
-            <y_leaf_sen_period units="oCd">100     100     100    100    100</y_leaf_sen_period>
-            <y_leaf_area_pot units="mm^2/cohort">20000   20000   20000  100000 100000</y_leaf_area_pot>
+            <x_leaf_cohort>                       1    2      4       9     13     17</x_leaf_cohort>
+            <y_leaf_growth_period units="oCd">   150   150   150     150    150    150</y_leaf_growth_period>
+            <y_leaf_lag_period units="oCd">      500   500   550     600    700    700 </y_leaf_lag_period>
+            <y_leaf_sen_period units="oCd">      150   150   150     150    150    150</y_leaf_sen_period>
+            <y_leaf_area_pot units="mm^2/cohort">1000  3000  15000   20000  30000  20000</y_leaf_area_pot>
             <!-- ______________________________________________________________________________
             HARVESTING EFFECTS ON LEAF AREA
             -->
@@ -346,9 +343,9 @@
             __________________________________________________________________________________________________________-
             ROOTING DEPTH
             sow    ger  eme   end_juv   st_tf  end_tf  mat
-            stage_code            = 1      2    3     4         5      6       7       ()     ! numeric code for phenological stages
+            stage_code            = 1      2    3     4         5      6       7   8    ()     ! numeric code for phenological stages
             -->
-      <root_depth_rate units="mm/d">0      5.0  5.0   44.0      44.0   44.0    0.0</root_depth_rate>
+      <root_depth_rate units="mm/d">0      5.0  44.0   44.0      44.0   44.0    0.0 0 </root_depth_rate>
       <!-- Leave unchanged for time being
             Effect of sw_supply_demand_ratio on root depth increase
             -->
@@ -387,7 +384,7 @@
             sow    ger   eme  end_juv   st_tf   end_tf  mat
             stage_code            = 1      2     3    4         5       6       7    ()     ! numeric code for phenological stages
             -->
-            <transp_eff_cf units="Pa">0      0    .006  .006      .006    .006    .00</transp_eff_cf>
+            <transp_eff_cf units="Pa">0      0    .006  .006      .006    .006    .006 0.0</transp_eff_cf>
             <!-- Essential for determination of daily water limited biomass production (Transpiration efficiency derived from VPD and TEC. TE X SW supply = DM)
             Estimates from literature.
             __________________________________________________________________________________________________________-
@@ -445,7 +442,7 @@
             sow    ger  eme   end_juv     st_tf   end_tf  hv_rpe  end
             stage_code            = 1      2    3     4           5       6       7       8      ()     ! numeric code for phenological stages
             -->
-      <N_fix_rate units="gN/gDM">0      0    0     0           0       0       0       0</N_fix_rate>
+      <N_fix_rate units="gN/gDM">0      0    0     0           0       0       0       0  0 </N_fix_rate>
       <x_sw_avail_fix description="soil water ratio for effect on N fixation">0.0  0.50  0.95  1.0</x_sw_avail_fix>
       <y_swdef_fix units="0-1" description="stress index on N fixation">1.0  1.0   1.0   1.0</y_swdef_fix>
       <!-- N/A
@@ -458,7 +455,7 @@
             g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf
             -->
       <N_fact_photo description="multipler for N deficit effect on photosynthesis">2.0     </N_fact_photo>
-      <N_fact_expansion description="multipler for N deficit effect on leaf expansion">0.7     </N_fact_expansion>
+      <N_fact_expansion description="multipler for N deficit effect on leaf expansion">1.0    </N_fact_expansion>
       <N_fact_pheno description="multipler for N deficit effect on phenology">100     </N_fact_pheno>
       <N_fact_grain description="multipler for N deficit effect on grain">1.   </N_fact_grain>
       <!-- Set by calibration against quality dataset
@@ -466,19 +463,23 @@
             NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
             eme    juv     st_tf   end_tf  mat
             -->
-            <x_stage_code description="stage code used in table">3      4       5       6       7</x_stage_code>
-            <y_n_conc_min_leaf description="leaf min N conc.">0.0250 0.0200  0.0200      0.0050  0.0050</y_n_conc_min_leaf>
-            <y_n_conc_crit_leaf description="leaf critical N conc.">0.07350 0.0750  0.0600      0.0420  0.0420</y_n_conc_crit_leaf>
-            <y_n_conc_max_leaf description="leaf max N conc.">0.0800 0.0750  0.0650      0.0550  0.0550</y_n_conc_max_leaf>
-            <y_n_conc_min_stem description="stem min N conc.">0.0250 0.0200  0.0200      0.0050  0.0050</y_n_conc_min_stem>
-            <y_n_conc_crit_stem description="stem critical N conc.">0.07350 0.0750  0.0600      0.0420  0.0420</y_n_conc_crit_stem>
-            <y_n_conc_max_stem description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_stem>
-            <y_n_conc_min_floret description="stem min N conc.">0.0550 0.0500  0.0350      0.0300  0.0030</y_n_conc_min_floret>
-            <y_n_conc_crit_floret description="stem critical N conc.">0.07350 0.0700  0.0530      0.0420  0.0420 </y_n_conc_crit_floret>
-            <y_n_conc_max_floret description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_floret>
-            <y_n_conc_min_tuber description="stem min N conc.">0.0250 0.0200  0.0200      0.0050  0.0050</y_n_conc_min_tuber>
-            <y_n_conc_crit_tuber description="stem critical N conc.">0.0300 0.0300  0.0250      0.0250  0.0250</y_n_conc_crit_tuber>
-            <y_n_conc_max_tuber description="stem max N conc.">0.0800 0.0750  0.0550      0.0450  0.0450</y_n_conc_max_tuber>
+            <x_stage_code description="stage code used in table">    3      4       5       6       7   8 </x_stage_code>
+
+            <y_n_conc_min_leaf description="leaf min N conc.">      0.0250 0.0200  0.0200  0.0050  0.0050 0.0050</y_n_conc_min_leaf>
+            <y_n_conc_crit_leaf description="leaf critical N conc.">0.0650 0.0550  0.0500  0.0350  0.0350 0.0350 </y_n_conc_crit_leaf>
+            <y_n_conc_max_leaf description="leaf max N conc.">      0.0700 0.060   0.0550  0.0400  0.0400 0.0400 </y_n_conc_max_leaf>
+
+            <y_n_conc_min_stem description="stem min N conc.">      0.0250 0.0200  0.0200      0.0050  0.0050 0.0050 </y_n_conc_min_stem>
+            <y_n_conc_crit_stem description="stem critical N conc.">0.0400 0.0300  0.0250      0.0100  0.0100 0.0100 </y_n_conc_crit_stem>
+            <y_n_conc_max_stem description="stem max N conc.">      0.0460 0.0340  0.0550      0.0160  0.0130 0.0130 </y_n_conc_max_stem>
+
+            <y_n_conc_min_floret description="stem min N conc.">      0.0550 0.0500  0.0350      0.0300  0.0030 0.0030 </y_n_conc_min_floret>
+            <y_n_conc_crit_floret description="stem critical N conc.">0.07350 0.0700  0.0530      0.0420  0.0420 0.0420 </y_n_conc_crit_floret>
+            <y_n_conc_max_floret description="stem max N conc.">      0.0800 0.0750  0.0550      0.0450  0.0450 0.0450 </y_n_conc_max_floret>
+
+            <y_n_conc_min_tuber description="stem min N conc.">      0.0080 0.00800  0.0080      0.0080  0.0080 0.0080 </y_n_conc_min_tuber>
+            <y_n_conc_crit_tuber description="stem critical N conc.">0.01500 0.01500  0.0150      0.0150  0.0150 0.0150 </y_n_conc_crit_tuber>
+            <y_n_conc_max_tuber description="stem max N conc.">      0.0200 0.0200  0.0200      0.0200  0.0200 0.0200 </y_n_conc_max_tuber>
             <!--  new additions
             -->
             <n_conc_min_root description="root minimum N conc.">0.00800</n_conc_min_root>
@@ -538,7 +539,7 @@
       <n_fact_lf_sen_rate description="max relative increase in leaf senescence due to N stress">0.0     </n_fact_lf_sen_rate>
       <!--  Consistent across most other species models
             -->
-      <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
+      <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">5.0</lai_sen_light>
       <sen_light_slope description="sensitivity of leaf area senescence to shading">0.008</sen_light_slope>
       <!--  Consistent across most other species models
             x_temp_senescence = -15.0 -5.0     ! minimum temperature for frost senescence table (oC)
@@ -618,16 +619,16 @@
          ***********************************************************************************************************
          -->
     <russet>
-      <x_pp_end_of_juvenile>12     18</x_pp_end_of_juvenile>
-      <y_tt_end_of_juvenile>0      0</y_tt_end_of_juvenile>
-      <!-- Tuber initiation is photoperiod sensitive
-            Disable at this stage until estimates available
-            -->
-      <tt_emergence units="oCd" description="BVP">275</tt_emergence>
-            <tt_end_of_juvenile>50</tt_end_of_juvenile>
-      <tt_start_tuber_fill units="oCd">1530</tt_start_tuber_fill>
-      <tt_end_tuber_fill units="oCd">5.0</tt_end_tuber_fill>
+      <x_pp_emergence>12     18</x_pp_emergence>
+      <y_tt_emergence>200      200</y_tt_emergence>
+      <tt_vegetative>100</tt_vegetative>
+      <tt_earlytuber>600</tt_earlytuber>
+      <tt_senescing units="oCd">800</tt_senescing>
+      <tt_senesced units="oCd">5.0</tt_senesced>
       <tt_maturity>5</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">20  500</y_height>
+
     </russet>
   </Model>
   <Info>
