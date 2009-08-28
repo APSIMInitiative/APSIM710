@@ -5253,4 +5253,33 @@
       </area>
     </simulation>
   </folder>
+  <RegressionGraph name="PredictedObserved TuberDW">
+    <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	</memo>
+    <Plot>
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Observed TuberGreenWt</X>
+      <Y>Predicted TuberGreenWt</Y>
+      <GDPredObs name="PredictedObserved">
+        <FieldsToMatch>title</FieldsToMatch>
+        <GDApsimFileReader name="Observed">
+          <FileName>c:\apsim\Tests\Validation\Potato\Observed\FinalHarvest.txt</FileName>
+        </GDApsimFileReader>
+        <GDFilter name="Predicted">
+          <Filter>stagename = 'maturity'</Filter>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </GDFilter>
+      </GDPredObs>
+    </Plot>
+  </RegressionGraph>
 </folder>
