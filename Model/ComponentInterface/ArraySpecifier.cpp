@@ -1,5 +1,6 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
+#include <stdio.h>
 #include <string>
 #include <stdexcept>
 #ifdef __WIN32__
