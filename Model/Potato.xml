@@ -121,8 +121,9 @@
          start_grain_fill2harvest_ripe =  start_tuber_fill end_tuber_fill
          preflowering  =                   emergence end_of_juvenile
          -->
-    <node_formation>emergence      vegetative    </node_formation>
-    <tiller_formation>emergence      vegetative    </tiller_formation>
+    <!-- I have allowed leaves to form during early tuber and senescence also -->
+    <node_formation>emergence      vegetative    earlytuber  senescing</node_formation> 
+    <tiller_formation>emergence      vegetative    earlytuber senescing</tiller_formation>
     <!-- hi_stress_sensitive =
          -->
     <stress_reporting>earlytuber   senescing </stress_reporting>
@@ -207,12 +208,12 @@
             <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.5     </leaf_no_at_emerg>
             <!-- Based on IRS leaf trial
             -->
-            <x_node_no_app>6 7    17</x_node_no_app>
-            <y_node_app_rate> 20 39.5   39.5</y_node_app_rate>
+            <x_node_no_app>   0  7  8  40</x_node_no_app>
+            <y_node_app_rate> 17 17 42 42</y_node_app_rate>  <!-- Based on analysis of cultivar trial at Lincoln (HEB) -->
             <!-- Node appearance on main stem from IRS glasshouse trial. No evidence that later nodes come faster (as for canola)
             -->
-            <x_node_no_leaf>0    9 10 11 12 13 17</x_node_no_leaf>
-            <y_leaves_per_node>1 1  2 4  9  17  1</y_leaves_per_node>
+            <x_node_no_leaf>   0 9 10 11 12 13 17</x_node_no_leaf>
+            <y_leaves_per_node>1 1 1  1  1  1  1</y_leaves_per_node>  <!-- have turned this off and put all the leaf size on the mainstem (HEB) -->
             <!-- Based on IRS leaf trial and leaf no counts per node
             Most nodes have one MS leaf. 3 nodes post node number 10 have branching.
             Need to incorprate stem number functions here (sensitive to PA, soil moisture and temperature at sowing).
@@ -233,7 +234,7 @@
             sow    ger   eme  end_juv   st_tf   end_tf   mat
             -->
             <x_stage_rue description="numeric code for phenological stages">1      2     3    4         5       6        7   8</x_stage_rue>
-            <y_rue units="g/MJ">0      0    1.2   1.2      1.2     1.2      1.2  1.2</y_rue>
+            <y_rue units="g/MJ">0      0    0.6   0.6      1.2     1.2      1.2  1.2</y_rue>  <!-- I have reduced RUE in pre tuber stages to reduce stem growth -->
             <!-- Suggest 1.6g/MJ during vegetative (Allen and Scott 2001) increasing to 2.5 g/MJ (Kooman and Havertkort, 1995) after tuber initiation. Higher value attributed to 'sink' strength of tuber??
             Seems high to me - check latter (SL)
             __________________________________________________________________________________________________________-
@@ -243,7 +244,7 @@
       <skiprow_default>0</skiprow_default>
       <row_spacing_default units="mm">350</row_spacing_default>
       <x_row_spacing>200  350  1000</x_row_spacing>
-      <y_extinct_coef description="From SUBSTOR">0.9 0.9 0.9  </y_extinct_coef>
+      <y_extinct_coef description="From SUBSTOR">0.9 0.9 0.9  </y_extinct_coef>  <!-- based on lincoln cultivar trial -->
       <y_extinct_coef_dead description="unchanged from other species">0.30 0.30 0.30  </y_extinct_coef_dead>
       <!-- POD EXTINCTION COEFFICIENT and RUE
             -->
@@ -253,8 +254,8 @@
       <!-- __________________________________________________________________________________________________________-
             TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
             -->
-      <x_ave_temp units="oC" description="mean daily temperature">0  2  15  24  35</x_ave_temp>
-      <y_stress_photo description="multiplier on RUE">0  0   1  1  0</y_stress_photo>
+      <x_ave_temp units="oC" description="mean daily temperature">0  12  24  35</x_ave_temp>  <!-- consistent with temp response in potato calculator -->
+      <y_stress_photo description="multiplier on RUE">            0  1   1    0</y_stress_photo>
       <!-- from literature - Kooman and Haverkort (1995)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             BIOMASS INITIATION, PARTITION AND TRANSLOCATION
@@ -278,11 +279,11 @@
             sow    ger   eme  juv  st_tf end_tf   mat
             stage_code            = 1      2    3     4     5      6     7  ()     ! numeric code for phenological stages
             -->
-            <x_stage_no_partition>1      2    3     4     5      6     7   8 </x_stage_no_partition>
-            <y_ratio_root_shoot units="0-1">0      0    0.2   0.20  0.20   0.00  0   0 </y_ratio_root_shoot>
-            <y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves">0      0    0.65  0.65 0.650  0.10   0.0    0   </y_frac_leaf>
-            <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber">0      0     0   0.1    0.75  1.0   1.0    0   </y_frac_tuber>
-            <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0      0    0     0    0       0     0  0 </y_frac_floret>
+            <x_stage_no_partition>                                                                  1   2  3     4     5      6     7    8 </x_stage_no_partition>
+            <y_ratio_root_shoot units="0-1">                                                        0   0  0.2   0.20  0.20   0.00  0    0 </y_ratio_root_shoot>
+            <y_frac_tuber units="0-1" description="fraction of below ground dm allocated to tuber"> 0   0  0     0     0.5    0.95  1.0  0   </y_frac_tuber>  <!-- Proportion of DM partitioned to tubers increases throughout the early bulking state reaches 1 at at the onset of senescense, cultivar trial (HEB) -->
+			<y_frac_leaf units="0-1" description="fraction of above ground dm allocated to leaves"> 0   0  0.85  0.85  0.600  1.00  1.0  0   </y_frac_leaf>
+            <y_frac_floret units="0-1" description="fraction of below ground dm allocated to tuber">0   0  0     0     0      0     0    0 </y_frac_floret>
             <!-- From IRS trials
 
             frac_tuber needs revisiting
@@ -320,18 +321,20 @@
             ______________________________________________________________________________
             SPECIFIC LEAF AREA - SLA
             -->
-            <x_lai>0    8</x_lai>
-            <y_sla_max description="maximum specific leaf area for delta LAI">45000 45000    </y_sla_max>
-            <sla_min description="minimum specific leaf area for delta LAI">13000           </sla_min>
+            <x_lai>0    7</x_lai>
+            <y_sla_max description="maximum specific leaf area for delta LAI">45000 65000    </y_sla_max>
+            <sla_min description="minimum specific leaf area for delta LAI">25000           </sla_min>
             <!-- ______________________________________________________________________________
             TPLA  - USED TO INTIALISE THE INITIAL LAI
+			
+			I have backed these out of an analysis of the cultivar trial.
             -->
             <initial_tpla units="mm^2/plant" description="initial total plant leaf area">25.</initial_tpla>
-            <x_leaf_cohort>                       1    2      4       9     13     17</x_leaf_cohort>
-            <y_leaf_growth_period units="oCd">   150   150   150     150    150    150</y_leaf_growth_period>
-            <y_leaf_lag_period units="oCd">      500   500   550     600    700    700 </y_leaf_lag_period>
-            <y_leaf_sen_period units="oCd">      150   150   150     150    150    150</y_leaf_sen_period>
-            <y_leaf_area_pot units="mm^2/cohort">1000  3000  15000   20000  30000  20000</y_leaf_area_pot>
+            <x_leaf_cohort>                       1    7      8       18     35     40</x_leaf_cohort>
+            <y_leaf_growth_period units="oCd">   130   130    130     130    130    130</y_leaf_growth_period>  
+            <y_leaf_lag_period units="oCd">      130   130    215     215    215    215 </y_leaf_lag_period>
+            <y_leaf_sen_period units="oCd">      130   130    130     130    130    130</y_leaf_sen_period>
+            <y_leaf_area_pot units="mm^2/cohort">1000  15280  17660   41460  1000   1000</y_leaf_area_pot>
             <!-- ______________________________________________________________________________
             HARVESTING EFFECTS ON LEAF AREA
             -->
@@ -343,9 +346,9 @@
             __________________________________________________________________________________________________________-
             ROOTING DEPTH
             sow    ger  eme   end_juv   st_tf  end_tf  mat
-            stage_code            = 1      2    3     4         5      6       7   8    ()     ! numeric code for phenological stages
+            stage_code            = 1    2    3     4     5    6     7     8    ()     ! numeric code for phenological stages
             -->
-      <root_depth_rate units="mm/d">0      5.0  44.0   44.0      44.0   44.0    0.0 0 </root_depth_rate>
+      <root_depth_rate units="mm/d">0   14.0 14.0  14.0  14.0  14.0  14.0  0 </root_depth_rate>  <!-- set root advance equivlent to 0.7 mm/ocd -->
       <!-- Leave unchanged for time being
             Effect of sw_supply_demand_ratio on root depth increase
             -->
@@ -435,7 +438,7 @@
       <!-- Time constant for N uptake by diffusion. H van Keulen &  NG Seligman. Purdoe 1987.
             This is the  time it would take to remove, by diffusion, current amount of N if it wasn't depleted between time steps
             -->
-      <no3_diffn_const units="days">2.0</no3_diffn_const>
+      <no3_diffn_const units="days">1.0</no3_diffn_const> <!-- Having this set at 2.0 seemed to cause early stress so I set it to 1.0 (HEB) -->
       <!--  Consistent across other species models
             ______________________________________________________________________________
             LEGUME N FIXATION RATE - potential rate of N fixation (g N fixed per g above ground biomass)
@@ -539,7 +542,7 @@
       <n_fact_lf_sen_rate description="max relative increase in leaf senescence due to N stress">0.0     </n_fact_lf_sen_rate>
       <!--  Consistent across most other species models
             -->
-      <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">5.0</lai_sen_light>
+      <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">3.0</lai_sen_light>  <!-- critical LAI with an extinction coeff of .9 is 3 (HEB) -->
       <sen_light_slope description="sensitivity of leaf area senescence to shading">0.008</sen_light_slope>
       <!--  Consistent across most other species models
             x_temp_senescence = -15.0 -5.0     ! minimum temperature for frost senescence table (oC)
@@ -620,10 +623,10 @@
          -->
     <russet>
       <x_pp_emergence>12     18</x_pp_emergence>
-      <y_tt_emergence>200      200</y_tt_emergence>
-      <tt_vegetative>100</tt_vegetative>
-      <tt_earlytuber>600</tt_earlytuber>
-      <tt_senescing units="oCd">800</tt_senescing>
+      <y_tt_emergence>280      280</y_tt_emergence>
+      <tt_vegetative>20</tt_vegetative>              <!-- 300 degree days for tubers to initiate from emergence from cultivar trial (HEB) -->
+      <tt_earlytuber>550</tt_earlytuber>             <!-- 850 days from emergence to begin senescent phase -->
+      <tt_senescing units="oCd">850</tt_senescing>   <!-- senescing phase is half duration of crop, from cultivar trial (HEB) -->
       <tt_senesced units="oCd">5.0</tt_senesced>
       <tt_maturity>5</tt_maturity>
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
