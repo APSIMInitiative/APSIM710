@@ -4,11 +4,11 @@
 #include <io.h>
 #include <direct.h>
 #else
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
+#include <string.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-//#include <libiberty.h>
 #include <sys/types.h>
 #include <unistd.h>
 #endif

@@ -1,5 +1,6 @@
 //---------------------------------------------------------------------------
 #include <stdlib.h>
+#include <string.h>
 #include <fstream>
 #include "macro.h"
 #include <General/TreeNodeIterator.h>

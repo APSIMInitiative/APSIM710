@@ -1,6 +1,5 @@
 #include <stdlib.h>
-
-#include <string>
+#include <string.h>
 #include <sstream>
 #include <iomanip>
 

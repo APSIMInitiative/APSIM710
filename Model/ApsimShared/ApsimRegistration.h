@@ -2,11 +2,11 @@
 #ifndef ApsimRegistrationH
 #define ApsimRegistrationH
 
-#include <string>
+#include <string.h>
 #include <General/platform.h>
 #include <General/string_functions.h>
 #include <ApsimShared/ApsimRegistrationType.h>
-#include <iostream.h>
+#include <iostream>
 
 class EXPORT  ApsimRegistration
    {

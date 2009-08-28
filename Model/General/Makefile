@@ -17,6 +17,6 @@ SRC =   date_class.cpp		\
 	dll.cpp			\
 	http.cpp
 
-PROJECTTYPE = dll
+PROJECTTYPE=staticlib
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

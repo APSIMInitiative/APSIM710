@@ -1,7 +1,7 @@
 #if !defined (DATE_CLASS_H)
 #define DATE_CLASS_H
 
-#include <iostream.h>
+#include <iostream>
 #include <string>
 #include <General/platform.h>
 

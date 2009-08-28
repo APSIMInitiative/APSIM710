@@ -1,7 +1,7 @@
 #ifndef FortranStringH
 #define FortranStringH
 
-#include <string>
+#include <string.h>
 #include <vector>
 #include <stdexcept>
 #include <General/platform.h>

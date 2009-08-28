@@ -1,4 +1,4 @@
-#include <string>
+#include <string.h>
 #include <vector>
 #include <General/TreeNodeIterator.h>
 #include <General/xml.h>

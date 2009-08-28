@@ -3,7 +3,7 @@
 #define MessageDataH
 
 #include "message.h"
-#include <string>
+#include <string.h>
 #include <vector>
 #include <General/string_functions.h>
 #ifdef __WIN32__

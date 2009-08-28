@@ -2,7 +2,7 @@
 #define STREAM_FUNCTIONS_H
 
 #include <string>
-#include <iostream.h>
+#include <iostream>
 #include "platform.h"
 // ------------------------------------------------------------------
 //  Short description:

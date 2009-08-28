@@ -238,7 +238,6 @@ void versionStringToMajorMinor(const std::string& versionString,
 // Return a list of conversion nodes to get the specified version number
 // up to the most recent APSIM version.
 // ------------------------------------------------------------------
-#include <windows.h>
 
 void ApsimSettings::getConversionNodes(const std::string& version,
                                        std::vector<XMLNode>& conversionNodes,

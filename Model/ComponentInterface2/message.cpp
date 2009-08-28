@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <string.h>
 #include <stdexcept>
 #include <General/platform.h>
 
@@ -21,10 +21,10 @@ void EXPORT initMessageFactory(void)
    // Initialise the message factory.
    // ------------------------------------------------------------------
    {
-   if (messages[0] == NULL)
+   if (::messages[0] == NULL)
       {
       for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
-         messages[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
+         ::messages[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
       nextFreeMessage = 0;
       }
    }
@@ -34,12 +34,12 @@ void EXPORT shutDownMessageFactory(void)
    // Shutdown the message system.
    // ------------------------------------------------------------------
    {
-   if (messages[0] != NULL)
+   if (::messages[0] != NULL)
       {
       for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
          {
-         delete [] messages[messageI];
-         messages[messageI] = NULL;
+         delete [] ::messages[messageI];
+         ::messages[messageI] = NULL;
          }
       }
    }
@@ -64,7 +64,7 @@ Message& EXPORT constructMessage(Message::Type messageType,
 
    else
       {
-      message = messages[nextFreeMessage];
+      message = ::messages[nextFreeMessage];
       nextFreeMessage++;
       }
 

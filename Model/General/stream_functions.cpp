@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <General/stream_functions.h>
 #include <sstream>
 using namespace std;
