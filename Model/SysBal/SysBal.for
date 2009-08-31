@@ -503,13 +503,17 @@
   ! define system states
   !---------------
 
-      state_crop =
+      state_crop =  sysbal_get_variable('TotalN', gm2) * gm2kg/sm2ha
+
+      if (state_crop.eq.0) then
+         state_crop =
      :      sysbal_get_variable(n_green, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(GreenN, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(n_senesced, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(SenescedN, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(n_dead, gm2) * gm2kg/sm2ha
-
+      endif
+     
       state_soil = sysbal_get_variable(nit_tot, kgha)
       state_surface = sysbal_get_variable(surfaceom_n, kgha)
      :    + sysbal_get_variable(surfaceom_no3, kgha)
@@ -637,12 +641,18 @@
   ! define system states
   !---------------
 
-      state_crop =
+      state_crop =  sysbal_get_variable('TotalP', gm2) * gm2kg/sm2ha
+
+      if (state_crop.eq.0) then
+
+         state_crop =
      :      sysbal_get_variable(p_green, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(GreenP, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(p_senesced, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(SenescedP, gm2) * gm2kg/sm2ha
      :    + sysbal_get_variable(p_dead, gm2) * gm2kg/sm2ha
+
+      endif
 
       state_soil = sysbal_get_variable(fom_p, kgha)
      :           + sysbal_get_variable(hum_p, kgha)
@@ -775,11 +785,17 @@
   ! define system states
   !---------------
 
-      state_crop = sysbal_get_variable(dm_green, gm2)* gm2kg/sm2ha * 0.4
+      state_crop =  sysbal_get_variable('TotalC', gm2) * gm2kg/sm2ha
+
+      if (state_crop.eq.0) then
+
+         state_crop=sysbal_get_variable(dm_green, gm2)*gm2kg/sm2ha*0.4
      :       + sysbal_get_variable(GreenWt, gm2) * gm2kg/sm2ha * 0.4
-     :       + sysbal_get_variable(dm_senesced, gm2) * gm2kg/sm2ha * 0.4
-     :       + sysbal_get_variable(SenescedWt, gm2) * gm2kg/sm2ha * 0.4
-     :       + sysbal_get_variable(dm_dead, gm2) * gm2kg/sm2ha * 0.4
+     :       + sysbal_get_variable(dm_senesced, gm2) * gm2kg/sm2ha *0.4
+     :       + sysbal_get_variable(SenescedWt, gm2) * gm2kg/sm2ha *0.4
+     :       + sysbal_get_variable(dm_dead, gm2) * gm2kg/sm2ha *0.4
+
+      endif  
 
       state_soil = sysbal_get_variable(carbon_tot, kgha)
       state_surface = sysbal_get_variable(surfaceom_c, kgha)
@@ -926,6 +942,8 @@
      :           + sysbal_get_variable(dm_senesced, gm2) * gm2kg/sm2ha
      :           + sysbal_get_variable(SenescedWt, gm2) * gm2kg/sm2ha
      :           + sysbal_get_variable(dm_dead, gm2) * gm2kg/sm2ha
+
+     
 
       state_soil = sysbal_get_variable(carbon_tot, kgha) / 0.4
       state_surface = sysbal_get_variable(surfaceom_wt, kgha)
