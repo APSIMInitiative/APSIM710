@@ -86,13 +86,12 @@ void ControlFileConverter::go(const string& fileName)
 bool ControlFileConverter::convert(const string& fileName,
                                    XMLNode script,
                                    bool writeToStdOut)
-   {
-   Path savedDirectory = Path::getCurrentFolder();
+   {   string savedDirectory = getCurrentDirectory();
    string fullFileName = fileName;
    if (fullFileName.find_first_of("\\/") == string::npos)
       {
       // no directory supplied - add current working directory.
-      fullFileName = Path::getCurrentFolder().Get_directory() + Path::dirDelim() + fileName;
+      fullFileName = getCurrentDirectory() + "/" + fileName;
       }
    typedef map<string, vector<string> > Output;
    Output output;
@@ -102,8 +101,7 @@ bool ControlFileConverter::convert(const string& fileName,
 
    // Make the working directory the same directory as the where the
    // control file resides.
-   Path p(fullFileName);
-   p.Change_directory();
+   setCurrentDirectory(fileDirName(fullFileName));
 
    vector<string> controlFileSections;
    con->getAllSectionNames(controlFileSections);
@@ -146,7 +144,7 @@ bool ControlFileConverter::convert(const string& fileName,
       }
 
    // restore the original directory
-   savedDirectory.Change_directory();
+   setCurrentDirectory(savedDirectory);
    return somethingWasConverted;
    }
 

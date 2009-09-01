@@ -153,5 +153,10 @@ std::string EXPORT fileRoot(const std::string &filename);
 std::string EXPORT fileDirName(const std::string &filename);
 // Return whether a file exists or not
 bool EXPORT fileExists(const std::string &filename);
+// Return the current working directory
+std::string EXPORT getCurrentDirectory(void);
+// Change working directory
+void EXPORT setCurrentDirectory(const std::string & dir);
+
 #endif
 

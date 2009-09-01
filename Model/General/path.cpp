@@ -580,3 +580,28 @@ bool fileExists(const std::string &filename)
    return (access(filename.c_str(), 0) == 0);
    }
 
+std::string getCurrentDirectory(void)
+{
+#ifndef __WIN32__
+   const int _MAX_PATH = 1024;
+#endif
+
+   char Buffer[_MAX_PATH];
+#ifdef __WIN32__
+   GetCurrentDirectory(sizeof Buffer, Buffer);
+#else
+   getcwd(Buffer, sizeof(Buffer));
+#endif
+
+   return std::string(Buffer);
+}
+
+void setCurrentDirectory(const std::string & dir)
+{
+#ifdef __WIN32__
+   SetCurrentDirectory (dir.c_str());
+#else
+   chdir (dir.c_str());
+#endif
+}
+

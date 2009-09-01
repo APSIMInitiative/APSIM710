@@ -132,6 +132,7 @@ void Computation::deleteInstance(void) const
 //    dph 22/2/2000
 
 // ------------------------------------------------------------------
+#include <iostream>
 bool Computation::loadComponent(const std::string& filename,
                                 std::string componentInterfaceExecutable) throw (std::runtime_error)
    {
@@ -140,7 +141,6 @@ bool Computation::loadComponent(const std::string& filename,
    createInstanceProc = NULL;
    deleteInstanceProc = NULL;
    messageToLogicProc = NULL;
-
    string componentInterface;
    if (componentInterfaceExecutable != "")
       {
@@ -159,7 +159,6 @@ bool Computation::loadComponent(const std::string& filename,
 #endif
        if (wrapperDll == NULL)
           throw std::runtime_error("Cannot find entry point 'wrapperDll' in dll: " + filename);
-
        // Go get the wrapperDll filename.
        char wrapperFileName[1024];
        (*wrapperDll)(&wrapperFileName[0]);
@@ -204,6 +203,7 @@ bool Computation::loadComponent(const std::string& filename,
           const char* dlError;
           int return_code;
           return_code = dlclose(handle);
+          componentInterface = getExecutableDirectory() + "/" + componentInterface;
           handle = dlopen(componentInterface.c_str(), RTLD_NOW|RTLD_LOCAL);
           dlError = dlerror();
           if ( dlError )

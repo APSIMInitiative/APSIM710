@@ -15,7 +15,8 @@ CFLAGS=$(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) -I$(APSIM)/Model 	\
 
 LDFLAGS= $(XML2_LIBDIR) $(LDDEBUGFLAGS)
 
-LIBS := $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) -lboost_filesystem-mt -lxml2
+LIBS := $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) \
+        -lboost_filesystem-mt -lboost_regex-mt -lboost_date_time-mt -lxml2
 
 OBJ:=	$(SRC:.cpp=.o)
 
@@ -32,7 +33,7 @@ $(LIB): $(OBJ)
 
 $(PROJECT): $(PREBUILD) $(OBJ)
 ifeq ($(PROJECTTYPE),exe)
-	$(CC) -o $(APSIM)/Model/$(PROJECT) $(OBJ) $(LDFLAGS) $(LIBS)
+	$(CC) -o $(APSIM)/Model/$(PROJECT).x $(OBJ) $(LDFLAGS) $(LIBS)
 else
 	$(CC) -shared -o $(APSIM)/Model/$(PROJECT).so $(OBJ) $(LDFLAGS) $(LIBS)
 endif

@@ -27,10 +27,11 @@
       FileName(23) = ichar('a')
       FileName(24) = ichar('c')
       FileName(25) = ichar('e')
-      FileName(26) = ichar('.')
-      FileName(27) = ichar('s')
-      FileName(28) = ichar('o')
-      FileName(29) = 0
+      FileName(26) = ichar('2')
+      FileName(27) = ichar('.')
+      FileName(28) = ichar('s')
+      FileName(29) = ichar('o')
+      FileName(30) = 0
       end subroutine
 
       function getInstance()
