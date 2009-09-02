@@ -1342,27 +1342,19 @@ subroutine Pond_temperature_balance ()
 !             Agricultural and Forest Meteorology, 148(11), pp 1754-1766
 !             And field data of Roland Buresh, Philippines experiments 1985-86
 
-	      do i = 1, 8
-                 tmfac1(i) = 0.931+0.114*i-0.0703*i**2+0.0053*i**3   ! from CERES Rice
-              end do
 
-
-      g%ftmax = g%maxt + 5.0*((5.0 - g%rlai)/5.0)
+      g%ftmax = g%maxt + 5.0*((8.0 - g%rlai)/5.0)
       g%ftmin = g%mint + 2.0
-      
+
+     
 !      the floodwater temperature calculations are based on salus soil
 !      temperature routine.
 	
-      do i = 1, 8
-          fwtmp = g%ftmin + tmfac1(i)*(g%ftmax+2.0-g%ftmin)
-	  tot_fwt = tot_fwt + fwtmp
-      end do
 
-      g%ftmean     = tot_fwt/8.
+      g%ftmean     = (g%ftmax + g%ftmin)/2
       g%ftmin_yest = g%ftmin
       g%ftmax_yest = g%ftmax
       g%ftmean_yest= g%ftmean
-
 
 
    call pop_routine (my_name)
@@ -1930,6 +1922,8 @@ subroutine Pond_calculate_daily_variables ()
       endif
 
       g%fti = min (g%fti,1.0)
+              Write (Err_string,*)'ALGAACT STUFF ...  g%ftmean g%fti ',g%ftmean,g%fti
+   	      call Write_string (Err_string)
 
 
 !     Calculate biological activity of floodwater, algact (0-1 value)
@@ -1948,7 +1942,6 @@ subroutine Pond_calculate_daily_variables ()
       if(g%algact.lt.0.0) then
         g%algact = 0.0
       endif
-
 
       
 !  dsg 130209  - if no algae present (as specified by user) then make g%algact always equal to zero 
@@ -2331,6 +2324,9 @@ subroutine Pond_grow_pab ()
    dlt_pab  = c%maxrate_pab * g%algact
    g%pab_mass = g%pab_mass + dlt_pab
    
+
+              Write (Err_string,*)' algal stuff .... dlt_pab  g%algal_act ',dlt_pab, g%algact
+   	      call Write_string (Err_string)
 
 
    if (g%pab_mass.gt.500.0) then
