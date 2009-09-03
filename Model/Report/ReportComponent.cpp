@@ -7,6 +7,7 @@
 #include <General/stl_functions.h>
 #include <General/string_functions.h>
 #include <General/date_class.h>
+#include <General/path.h>
 #include <General/StringTokenizer.h>
 
 #include "ReportComponent.h"
@@ -42,14 +43,14 @@ Field::Field (ScienceAPI& scienceAPI,
 
    if (this->unitsToOutput != "" && this->unitsToOutput[0] != '(')
       this->unitsToOutput = "(" + this->unitsToOutput + ")";
-      
+
    if (this->format == "")
       {
       if (this->unitsToOutput == "(g/m^2)")
          this->format = "2";
       else if (this->unitsToOutput == "(kg/ha)")
          this->format = "1";
-      else 
+      else
          this->format = "3";
       }
    }
@@ -111,10 +112,10 @@ void Field::writeUnits(ostream& out)
 void Field::getValues()
    {
    values.erase(values.begin(), values.end());
-   try 
+   try
       {
       scienceAPI->get(fqn, "", true, values);
-      } 
+      }
    catch (const std::exception& err)
 		{
       string msg = "Error getting value from system.\nVariable=";
@@ -128,7 +129,7 @@ void Field::getValues()
       values.push_back(nastring);
    else
       {
-      applyUnitConversion();   
+      applyUnitConversion();
       formatValues();
       }
    }
@@ -212,8 +213,8 @@ void Field::applyUnitConversion(void)
                   error = true;
 
                if (error)
-                  throw runtime_error("Invalid unit conversion from " + units + " to " + unitsToOutput 
-                        + "\nCan only convert between (g/m^2), (kg/ha) and (t/ha)" 
+                  throw runtime_error("Invalid unit conversion from " + units + " to " + unitsToOutput
+                        + "\nCan only convert between (g/m^2), (kg/ha) and (t/ha)"
                         + "\nError occurred while outputting variable " + fqn);
                values[i] = ftoa(value, 5);
                }
@@ -407,9 +408,9 @@ void ReportComponent::createVariable(const string& name)
 
    if (matches.size() == 0)
       {
-      fields.push_back(Field(scienceAPI, 
-                             variable, 
-                             "", 
+      fields.push_back(Field(scienceAPI,
+                             variable,
+                             "",
                              alias,
                              nastring, format, csv, units));
       }
@@ -430,7 +431,7 @@ void ReportComponent::createVariable(const string& name)
                                 thisAlias,
                                 nastring, format, csv, units));
          }
-      } 
+      }
    }
 
 // ------------------------------------------------------------------
@@ -438,7 +439,7 @@ void ReportComponent::createVariable(const string& name)
 // ------------------------------------------------------------------
 string ReportComponent::calcFileName()
    {
-   string title, FQName;
+   string FQName;
 
    scienceAPI.get("title", "", true, title);
    string fileName = title;
@@ -461,6 +462,7 @@ string ReportComponent::calcFileName()
       fileName += scienceAPI.name();
       }
    fileName += ".out";
+   title = Path(fileName).Get_name();
 
    return fileName;
    }
@@ -575,8 +577,6 @@ void ReportComponent::writeHeadings(void)
    // output title if no other constants found.
    if (!ConstantsFound)
       {
-      string title;
-      scienceAPI.get("title", "", true, title);
       file << "Title = " << title << endl;
       }
 

@@ -38,7 +38,7 @@ class Field
       std::string format;
       bool csv;
       std::string unitsToOutput;
-      
+
       std::vector<unsigned> widths;
       std::vector<string> values;
 
@@ -68,12 +68,13 @@ class ReportComponent
       bool haveWrittenHeadings;
       int precision;
       std::string nastring;
+      std::string title;
 
       void createVariable(const std::string& name);
       void onReport();
       void onDoOutput();
       void onDoEndDayOutput();
-      void onFrequency();      
+      void onFrequency();
 
       std::string calcFileName();
       void writeHeadings(void);
