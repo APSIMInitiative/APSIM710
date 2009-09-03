@@ -107,8 +107,18 @@ Public Class MainUI
             WindowState = Convert.ToInt32(Configuration.Instance.Setting("windowstate"))
             Top = Convert.ToInt32(Configuration.Instance.Setting("top"))
             Left = Convert.ToInt32(Configuration.Instance.Setting("left"))
+            If (Left < 0 Or Left > Width) Then
+                Left = 1
+            End If
+            If (Top < 0 Or Top > Height) Then
+                Top = 1
+            End If
             Height = Convert.ToInt32(Configuration.Instance.Setting("height"))
             Width = Convert.ToInt32(Configuration.Instance.Setting("width"))
+            If (Height = 0 Or Width = 0) Then
+                Height = 600
+                Width = 400
+            End If
         Catch ex As System.Exception
             Me.WindowState = FormWindowState.Normal
         End Try
