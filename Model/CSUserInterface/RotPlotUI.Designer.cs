@@ -43,11 +43,11 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.split2 = new System.Windows.Forms.SplitContainer();
             this.pnlLegend = new System.Windows.Forms.Panel();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.panel3 = new System.Windows.Forms.Panel();
             this.spnDate = new System.Windows.Forms.VScrollBar();
             this.label10 = new System.Windows.Forms.Label();
             this.calSelected = new System.Windows.Forms.DateTimePicker();
-            this.treeView1 = new System.Windows.Forms.TreeView();
             this.panel5.SuspendLayout();
             this.split1.Panel1.SuspendLayout();
             this.split1.Panel2.SuspendLayout();
@@ -169,6 +169,7 @@
             this.split1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.split1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.split1.Location = new System.Drawing.Point(0, 52);
             this.split1.Name = "split1";
             // 
@@ -183,8 +184,9 @@
             this.split1.Panel2.AutoScroll = true;
             this.split1.Panel2.Controls.Add(this.split2);
             this.split1.Size = new System.Drawing.Size(655, 450);
-            this.split1.SplitterDistance = 399;
+            this.split1.SplitterDistance = 449;
             this.split1.TabIndex = 40;
+            this.split1.Visible = false;
             // 
             // panel1
             // 
@@ -195,7 +197,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(8);
-            this.panel1.Size = new System.Drawing.Size(399, 450);
+            this.panel1.Size = new System.Drawing.Size(449, 450);
             this.panel1.TabIndex = 31;
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
             // 
@@ -226,7 +228,7 @@
             // 
             this.split2.Panel2.Controls.Add(this.treeView1);
             this.split2.Panel2.Controls.Add(this.panel3);
-            this.split2.Size = new System.Drawing.Size(252, 450);
+            this.split2.Size = new System.Drawing.Size(202, 450);
             this.split2.SplitterDistance = 100;
             this.split2.TabIndex = 1;
             // 
@@ -236,9 +238,18 @@
             this.pnlLegend.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlLegend.Location = new System.Drawing.Point(0, 0);
             this.pnlLegend.Name = "pnlLegend";
-            this.pnlLegend.Size = new System.Drawing.Size(250, 59);
+            this.pnlLegend.Size = new System.Drawing.Size(200, 59);
             this.pnlLegend.TabIndex = 40;
             this.pnlLegend.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLegend_Paint);
+            // 
+            // treeView1
+            // 
+            this.treeView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 35);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(200, 309);
+            this.treeView1.TabIndex = 45;
             // 
             // panel3
             // 
@@ -250,13 +261,13 @@
             this.panel3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(250, 35);
+            this.panel3.Size = new System.Drawing.Size(200, 35);
             this.panel3.TabIndex = 43;
             // 
             // spnDate
             // 
             this.spnDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.spnDate.Location = new System.Drawing.Point(224, 0);
+            this.spnDate.Location = new System.Drawing.Point(174, 0);
             this.spnDate.Name = "spnDate";
             this.spnDate.Size = new System.Drawing.Size(17, 34);
             this.spnDate.TabIndex = 31;
@@ -266,7 +277,7 @@
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(54, 10);
+            this.label10.Location = new System.Drawing.Point(4, 10);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(75, 13);
             this.label10.TabIndex = 30;
@@ -276,22 +287,13 @@
             // 
             this.calSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.calSelected.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.calSelected.Location = new System.Drawing.Point(132, 6);
+            this.calSelected.Location = new System.Drawing.Point(82, 6);
             this.calSelected.MaxDate = new System.DateTime(3000, 12, 31, 0, 0, 0, 0);
             this.calSelected.MinDate = new System.DateTime(1800, 1, 1, 0, 0, 0, 0);
             this.calSelected.Name = "calSelected";
             this.calSelected.Size = new System.Drawing.Size(91, 20);
             this.calSelected.TabIndex = 29;
             this.calSelected.ValueChanged += new System.EventHandler(this.calSelected_ValueChanged);
-            // 
-            // treeView1
-            // 
-            this.treeView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 35);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(250, 309);
-            this.treeView1.TabIndex = 45;
             // 
             // RotPlotUI
             // 
