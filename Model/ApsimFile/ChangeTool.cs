@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 17;
+      public static int CurrentVersion = 18;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -49,7 +49,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion14),
                                           new UpgraderDelegate(ToVersion15),
                                           new UpgraderDelegate(ToVersion16),
-                                          new UpgraderDelegate(ToVersion17)
+                                          new UpgraderDelegate(ToVersion17),
+                                          new UpgraderDelegate(ToVersion18)
                                        };
          if (Data != null)
             {
@@ -1083,6 +1084,22 @@ namespace ApsimFile
          Node.RemoveChild(Filter);
          }
 
+
+      private static void ToVersion18(XmlNode Node)
+         {
+         // ---------------------------------------------------------------
+         // Removes:
+         //     <registrations name="global" />
+         // from all paddocks
+         //  ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "area")
+            {
+            XmlNode RegistrationsNode = XmlHelper.FindByType(Node, "registrations");
+            if (RegistrationsNode != null)
+               Node.RemoveChild(RegistrationsNode);
+            }
+         }
 
       }
    }
