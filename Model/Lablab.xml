@@ -16,12 +16,6 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <class name="plant" />
-    <cultivar name="lablab_small_leaf_perennial" />
-    <cultivar name="endurance" />
-    <cultivar name="highworth" />
-    <variables link="%apsim%\Documentation\ModelInfo\lablab.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\lablab.xml" />
     <ApsimToSim>
       <component name="[LabLab.name]" executable="[dll]">
         <executable>[dll]</executable>
@@ -147,7 +141,7 @@
     <hi_stress_sensitive>flowering</hi_stress_sensitive>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
-    <plant>
+    <plant class="yes">
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
       <partition_option>1</partition_option>
@@ -659,7 +653,7 @@
       PARAMETERS  - CROP CLASS SPECIFIC VALUES
       ***********************************************************************************************************
       -->
-    <small_leaf>
+    <small_leaf cultivar="yes">
       <derived_from>plant</derived_from>
       <!--  smaller leaf sizes for Endurance type of cultivar
          -->
@@ -672,7 +666,7 @@
       PARAMETERS  - CULTIVAR-SPECIFIC VALUES
       ***********************************************************************************************************
       -->
-    <endurance>
+    <endurance cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.03   0.03</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0  1.0</x_hi_max_pot_stress>
@@ -693,7 +687,7 @@
       <x_stem_wt units="g" description="stem weight (g/plant)">0      15</x_stem_wt>
       <y_height units="mm" description="plant height (mm)">0      1200</y_height>
     </endurance>
-    <highworth>
+    <highworth cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.03   0.03</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0  1.0</x_hi_max_pot_stress>

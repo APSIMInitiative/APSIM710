@@ -16,13 +16,6 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <class name="plant" />
-    <cultivar name="banjo" />
-    <cultivar name="red_caloona" />
-    <cultivar name="CPI28215" />
-    <cultivar name="spreading" />
-    <variables link="%apsim%\Documentation\ModelInfo\cowpea.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\cowpea.xml" />
     <ApsimToSim>
       <component name="[cowpea.name]" executable="[dll]">
         <executable>[dll]</executable>
@@ -188,7 +181,7 @@
     <hi_stress_sensitive>flowering</hi_stress_sensitive>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
-    <plant>
+    <plant class="yes">
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
       <partition_option>1</partition_option>
@@ -629,7 +622,7 @@
       ! varieties listed from early to late maturing!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <banjo>
+    <banjo cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr description="0.0164  (1/days)      ! rate of HI increase (optional)">0.0140 0.014 </y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -650,7 +643,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      15                </x_stem_wt>
       <y_height description="plant height (mm)">0      1000              </y_height>
     </banjo>
-    <red_caloona description="assumed same as Banjo for now">
+    <red_caloona description="assumed same as Banjo for now" cultivar="yes">
       <!--  MJR 980127 lengthened emerg_to_endjuv on basis of Muchow and Sinclair flowering dates
          -->
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
@@ -673,7 +666,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      15                </x_stem_wt>
       <y_height description="plant height (mm)">0      1000              </y_height>
     </red_caloona>
-    <CPI28215 description="assumed same as Banjo for now">
+    <CPI28215 description="assumed same as Banjo for now" cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr description="0.0164  (1/days)      ! rate of HI increase (optional)">0.0140 0.014 </y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -694,7 +687,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      15                </x_stem_wt>
       <y_height description="plant height (mm)">0      1000              </y_height>
     </CPI28215>
-    <spreading>
+    <spreading cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.01 0.01</y_hi_incr>
       <x_hi_max_pot_stress>0.0 1.0</x_hi_max_pot_stress>

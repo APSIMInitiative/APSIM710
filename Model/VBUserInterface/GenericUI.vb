@@ -322,6 +322,15 @@ Public Class GenericUI
                         Dim CropComponent As Component = Controller.ApsimData.RootComponent.FindComponentInPaddock(Us, Grid.Cells(e.Row, 4).Text)
                         Combo.Items = Types.Instance.Cultivars(CropComponent.Type)
                         Exit For                    'stop looking for cultivar properties once you found the next one after the crop. 
+                    ElseIf Grid.Cells(CultRow, 1).Text.ToLower = "class" Then
+                        'get rid of the value for the old crop. It won't make sense with new crop
+                        Grid.Cells(CultRow, 4).Text = ""
+                        'go and get all cultivars for the new crop.
+                        Dim Combo As FarPoint.Win.Spread.CellType.ComboBoxCellType = Grid.Cells(CultRow, 4).CellType
+                        Dim Us As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
+                        Dim CropComponent As Component = Controller.ApsimData.RootComponent.FindComponentInPaddock(Us, Grid.Cells(e.Row, 4).Text)
+                        Combo.Items = Types.Instance.Classes(CropComponent.Type)
+                        Exit For                    'stop looking for cultivar properties once you found the next one after the crop. 
                     End If
                 Next
 
@@ -519,6 +528,22 @@ Public Class GenericUI
                 ' If we found a crop row then go and get all cultivars for that crop.
                 If CropRow < UIUtility.GridUtility.FindFirstBlankCell(Grid, 1) - 1 Then
                     Combo.Items = Types.Instance.Cultivars(Grid.Cells(CropRow, 4).Text)
+                End If
+
+            Case "class"
+                Dim Combo As FarPoint.Win.Spread.CellType.ComboBoxCellType = New FarPoint.Win.Spread.CellType.ComboBoxCellType
+                Combo.Editable = True                                       'allow the user to directly add stuff to the combo box.
+                Grid.Cells(Row, 4).CellType = Combo
+                ' Try and locate a row with crop as the name.
+                Dim CropRow As Integer
+                For CropRow = 0 To UIUtility.GridUtility.FindFirstBlankCell(Grid, 1) - 1
+                    If Grid.Cells(CropRow, 0).Text.ToLower = "crop" Then
+                        Exit For
+                    End If
+                Next
+                ' If we found a crop row then go and get all cultivars for that crop.
+                If CropRow < UIUtility.GridUtility.FindFirstBlankCell(Grid, 1) - 1 Then
+                    Combo.Items = Types.Instance.Classes(Grid.Cells(CropRow, 4).Text)
                 End If
 
 

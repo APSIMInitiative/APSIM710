@@ -16,29 +16,6 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <class name="plant" />
-    <class name="winter_grass" />
-    <class name="winter_dicot" />
-    <class name="summer_grass" />
-    <class name="perennial_legume" />
-    <cultivar name="annual" />
-    <cultivar name="perennial" />
-    <cultivar name="determinate" />
-    <cultivar name="indeterminate" />
-    <cultivar name="C3" />
-    <cultivar name="C4" />
-    <cultivar name="non_legume ! maize" />
-    <cultivar name="legume ! lucerne" />
-    <cultivar name="vsmall_leaf  ! lucerne" />
-    <cultivar name="small_leaf  ! wheat" />
-    <cultivar name="medium_leaf ! canola" />
-    <cultivar name="large_leaf  ! sorghum" />
-    <cultivar name="cool_season" />
-    <cultivar name="warm_season" />
-    <cultivar name="early" />
-    <cultivar name="late   " />
-    <variables link="%apsim%\Documentation\ModelInfo\weed.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\weed.xml" />
     <ApsimToSim>
       <component name="[Weed.name]" executable="[dll]">
         <executable>[dll]</executable>
@@ -195,7 +172,7 @@
     <hi_stress_sensitive>flowering</hi_stress_sensitive>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
-    <plant>
+    <plant class="yes">
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
       <partition_option>1</partition_option>
@@ -623,7 +600,7 @@
       CLASS DEFINITIONS
       ***********************************************************************************************************
       -->
-    <perennial_legume>
+    <perennial_legume class="yes">
       <!--  ==============================
          -->
       <derived_from>c3</derived_from>
@@ -712,12 +689,12 @@
       <frac_leaf description="fraction of remaining dm allocated to leaves">0.000 0.000 0.800 0.700 0.400 0.217 0.000 0.000 0.000 0.000 0.000</frac_leaf>
       <frac_pod description="fraction of dm allocated to pod or multiplier of grain dm to account for pod dm">0.000 0.000 0.000 0.000 0.000 0.080 0.080 0.400 0.000 0.000 0.000</frac_pod>
     </annual_c3>
-    <winter_grass>
+    <winter_grass class="yes">
       <derived_from>annual_c3</derived_from>
       <x_node_no>1    5    8     10</x_node_no>
       <y_leaf_size>1400 3700 5800  6000</y_leaf_size>
     </winter_grass>
-    <winter_dicot>
+    <winter_dicot class="yes">
       <derived_from>annual_c3</derived_from>
       <x_node_no>1    3    7     14    18    20</x_node_no>
       <y_leaf_size>1000 5000 20000 20000 10000 1000</y_leaf_size>
@@ -739,7 +716,7 @@
       <x_temp_senescence units="oC" description="temperature senescence table">0.0  6.0</x_temp_senescence>
       <y_senescence_fac units="0-1" description="temperature senescence factor">1.0  0.0</y_senescence_fac>
     </C4>
-    <summer_grass>
+    <summer_grass class="yes">
       <derived_from>c4</derived_from>
       <!--  Annual
          ======
@@ -818,7 +795,7 @@
          -->
       <transp_eff_cf units="Pa" description="transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)">0      0    .005  .005  .005  .005  .005  .005   .005  .00    0</transp_eff_cf>
     </perennial_grass>
-    <medic>
+    <medic cultivar="yes">
       <!--  PLP
          -->
       <derived_from>c3</derived_from>
@@ -877,7 +854,7 @@
       <x_node_no>1        15</x_node_no>
       <y_leaf_size>400      1200</y_leaf_size>
     </medic>
-    <millet>
+    <millet cultivar="yes">
       <derived_from>c4</derived_from>
       <!--  Annual
          ======
@@ -914,7 +891,7 @@
       !!!! Cultivar parameters !!!!!!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <early>
+    <early cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
@@ -935,7 +912,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  3</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  800</y_height>
     </early>
-    <late>
+    <late cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
@@ -956,7 +933,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  3</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  800</y_height>
     </late>
-    <perennial description="JNGH">
+    <perennial description="JNGH" cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
@@ -977,7 +954,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  3</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  800</y_height>
     </perennial>
-    <bsmillet>
+    <bsmillet cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0150 0.015</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
@@ -998,7 +975,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  3</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  800</y_height>
     </bsmillet>
-    <mmedic>
+    <mmedic cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.01 0.01</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>

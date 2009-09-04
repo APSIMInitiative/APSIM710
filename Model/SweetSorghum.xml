@@ -15,10 +15,6 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <class name="plant" />
-    <cultivar name="sugargraze" />
-    <variables link="%apsim%\Documentation\ModelInfo\sweetsorghum.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\sweetsorghum.xml" />
     <ApsimToSim>
       <component name="[SweetSorghum.name]" executable="[dll]">
         <executable>[dll]</executable>
@@ -121,7 +117,7 @@
     <tiller_formation>emergence endjuv_to_fi fi_to_flag</tiller_formation>
     <leaf_initiation>germination emergence endjuv_to_fi</leaf_initiation>
     <n_stress>endjuv_to_fi(0.3)     fi_to_flag          flag_to_flower    flowering   start_grain_fill end_grain_fill  maturity  harvest_ripe</n_stress>
-    <plant>
+    <plant class="yes">
       <partition_option>2</partition_option>
       <partitionparts>root  head   leaf stem</partitionparts>
       <partitionrules>magic demand frac remainder</partitionrules>
@@ -702,13 +698,13 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  50</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  3000</y_height>
     </base_cultivar>
-    <wray>
+    <wray cultivar="yes">
       <derived_from>base_cultivar</derived_from>
     </wray>
-    <sugargraze>
+    <sugargraze cultivar="yes">
       <derived_from>base_cultivar</derived_from>
     </sugargraze>
-    <sugargrazeold>
+    <sugargrazeold cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <!--    x_pp_endjuv_to_init      = 12     14.5                ! photoperiod (h)
          y_tt_endjuv_to_init      = 100    800                  ! TT from end juvenile to floral initiation

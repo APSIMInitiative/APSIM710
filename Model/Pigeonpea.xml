@@ -16,13 +16,6 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <class name="plant" />
-    <cultivar name="long_duration" />
-    <cultivar name="medium_duration" />
-    <cultivar name="short_duration" />
-    <cultivar name="extrashort_duration" />
-    <variables link="%apsim%\Documentation\ModelInfo\pigeonpea.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\pigeonpea.xml" />
     <ApsimToSim>
       <component name="[PigeonPea.name]" executable="[dll]">
         <executable>[dll]</executable>
@@ -214,7 +207,7 @@
     <hi_stress_sensitive>flowering</hi_stress_sensitive>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
-    <plant>
+    <plant class="yes">
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
       <partition_option>1</partition_option>
@@ -652,7 +645,7 @@
       ! varieties listed from early to late maturing!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <long_duration>
+    <long_duration cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0020 0.002</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0  1.0</x_hi_max_pot_stress>
@@ -673,7 +666,7 @@
       <x_stem_wt units="g" description="Stem weight per plant">0  4     9    25    85    130</x_stem_wt>
       <y_height units="mm" description="Plant height at given stem weight">0  600  1000 1300  2000  2100</y_height>
     </long_duration>
-    <medium_duration description="uses ST 1 phenology">
+    <medium_duration description="uses ST 1 phenology" cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0040 0.004</y_hi_incr>
       <x_hi_max_pot_stress>0.0 1.0</x_hi_max_pot_stress>
@@ -694,7 +687,7 @@
       <x_stem_wt units="g" description="Stem weight per plant">0   4    9    25    85   130</x_stem_wt>
       <y_height units="mm" description="Plant height at given stem weight">0  600  1000 1300  2000  2100</y_height>
     </medium_duration>
-    <short_duration description="ICPL87">
+    <short_duration description="ICPL87" cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0075 0.0075</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -715,7 +708,7 @@
       <x_stem_wt units="g" description="Stem weight per plant">0   4     9   25    85    130</x_stem_wt>
       <y_height units="mm" description="Plant height at given stem weight">0  600  1000 1300  2000  2100</y_height>
     </short_duration>
-    <extrashort_duration>
+    <extrashort_duration cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="[GOL - RADHA#3] rate of HI increase (optional)">0.0085 0.0085</y_hi_incr>
       <x_hi_max_pot_stress description="[GOL - RADHA#3maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>

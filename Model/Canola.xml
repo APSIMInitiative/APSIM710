@@ -16,38 +16,6 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <variables link="%apsim%\Documentation\ModelInfo\canola.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\canola.xml" />
-    <class name="plant" />
-    <class name="plant" />
-    <class name="winter" />
-    <class name="triazine" />
-    <cultivar name="PacN145" />
-    <cultivar name="monty" />
-    <cultivar name="JL1" />
-    <cultivar name="mustard_397" />
-    <cultivar name="Hyola42" />
-    <cultivar name="Surpass400" />
-    <cultivar name="rainbow" />
-    <cultivar name="Mystic" />
-    <cultivar name="Karoo" />
-    <cultivar name="narendra" />
-    <cultivar name="Surpass600" />
-    <cultivar name="geordie" />
-    <cultivar name="oscar" />
-    <cultivar name="marnoo   " />
-    <cultivar name="eureka   " />
-    <cultivar name="taparoo" />
-    <cultivar name="charlton" />
-    <cultivar name="Drum" />
-    <cultivar name="clancy" />
-    <cultivar name="pinnacle" />
-    <cultivar name="dunkeld" />
-    <cultivar name="late" />
-    <cultivar name="mid" />
-    <cultivar name="early" />
-    <cultivar name="mustard" />
-    <cultivar name="french_winter" />
     <ApsimToSim>
       <component name="[Canola.name]" executable="[dll]">
         <executable>[dll]</executable>
@@ -174,7 +142,7 @@
     <hi_stress_sensitive>flowering</hi_stress_sensitive>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
-    <plant>
+    <plant class="yes">
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
       <n_uptake_option>1</n_uptake_option>
@@ -601,7 +569,7 @@
       !! section for parameters for triazine tolerant varieties!!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <triazine>
+    <triazine class="yes">
       <derived_from>plant</derived_from>
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
@@ -620,7 +588,7 @@
       !! section for winter varieties!!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <winter>
+    <winter class="yes">
       <derived_from>plant</derived_from>
       <x_temp_senescence units="oC" description="temperature senescence table">-20.0 -15.0 -4.0 0.0</x_temp_senescence>
       <y_senescence_fac units="0-1" description="temperature senescence factor">0.2  0.1   0.05 0.0</y_senescence_fac>
@@ -634,7 +602,7 @@
       ! varieties listed from early to late maturing!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <PacN145>
+    <PacN145 cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -655,7 +623,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </PacN145>
-    <monty>
+    <monty cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -677,7 +645,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </monty>
-    <JL1>
+    <JL1 cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -699,7 +667,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </JL1>
-    <mustard_397>
+    <mustard_397 cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -721,7 +689,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </mustard_397>
-    <Hyola42>
+    <Hyola42 cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -743,7 +711,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </Hyola42>
-    <Surpass400>
+    <Surpass400 cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -765,7 +733,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </Surpass400>
-    <rainbow>
+    <rainbow cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -787,7 +755,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </rainbow>
-    <Mystic>
+    <Mystic cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -809,7 +777,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </Mystic>
-    <Karoo>
+    <Karoo cultivar="yes">
       <derived_from>triazine</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -831,7 +799,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </Karoo>
-    <narendra>
+    <narendra cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -853,7 +821,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </narendra>
-    <Surpass600>
+    <Surpass600 cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -875,7 +843,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </Surpass600>
-    <geordie>
+    <geordie cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -897,7 +865,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </geordie>
-    <oscar>
+    <oscar cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -919,13 +887,13 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </oscar>
-    <marnoo description="same as Oscar">
+    <marnoo description="same as Oscar" cultivar="yes">
       <derived_from>oscar</derived_from>
     </marnoo>
-    <eureka description="same as Oscar">
+    <eureka description="same as Oscar" cultivar="yes">
       <derived_from>oscar</derived_from>
     </eureka>
-    <taparoo>
+    <taparoo cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -947,7 +915,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </taparoo>
-    <charlton>
+    <charlton cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -969,7 +937,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </charlton>
-    <Drum>
+    <Drum cultivar="yes">
       <derived_from>triazine</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -991,7 +959,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </Drum>
-    <clancy>
+    <clancy cultivar="yes">
       <derived_from>triazine</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -1013,7 +981,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </clancy>
-    <pinnacle>
+    <pinnacle cultivar="yes">
       <derived_from>triazine</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -1035,7 +1003,7 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </pinnacle>
-    <range>
+    <range cultivar="yes">
       <!-- same param as pinnacle
          -->
       <x_pp_hi_incr units="h">1        24</x_pp_hi_incr>
@@ -1058,7 +1026,7 @@
       <x_stem_wt units="g/m2">0  6</x_stem_wt>
       <y_height units="mm">0  1500</y_height>
     </range>
-    <dunkeld>
+    <dunkeld cultivar="yes">
       <derived_from>plant</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
@@ -1084,23 +1052,23 @@
       ! Generic varieties !!
       !!!!!!!!!!!!!!!!!!!!!!
       -->
-    <late>
+    <late cultivar="yes">
       <derived_from>dunkeld</derived_from>
     </late>
-    <mid>
+    <mid cultivar="yes">
       <derived_from>Hyola42</derived_from>
     </mid>
-    <early>
+    <early cultivar="yes">
       <derived_from>PacN145</derived_from>
     </early>
     <!-- !!!!!!!!!!!MUSTARD!!!!!!!!!!
       -->
-    <mustard>
+    <mustard cultivar="yes">
       <derived_from>JL1</derived_from>
     </mustard>
     <!-- !!!!!!!!! WINTER VARIETIES !!!!!!!!!!
       -->
-    <french_winter>
+    <french_winter cultivar="yes">
       <derived_from>winter</derived_from>
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>

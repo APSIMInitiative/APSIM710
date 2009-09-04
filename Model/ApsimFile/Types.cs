@@ -111,16 +111,37 @@ public class Types
    public string[] Cultivars(string TypeName)
       {
       // Return a list of cultivar names to caller.
-      XmlNode CultivarsNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName + "/Cultivars");
-      if (CultivarsNode != null)
+      List<string> CultivarNames = new List<string>();
+
+      XmlDocument ModelDoc = new XmlDocument();
+      ModelDoc.LoadXml("<Model>" + ModelContents(TypeName) + "</Model>");
+      foreach (XmlNode Child in ModelDoc.DocumentElement.ChildNodes)
          {
-         List<string> Values = XmlHelper.Values(CultivarsNode, "Cultivar");
-         string[] ReturnValues = new string[Values.Count];
-         Values.CopyTo(ReturnValues);
-         return ReturnValues;
+         if (XmlHelper.Attribute(Child, "cultivar").ToLower() == "yes")
+            CultivarNames.Add(Child.Name);
+         if (Child.Name.ToLower() == "cultivar")
+            CultivarNames.Add(XmlHelper.Name(Child));
          }
-      else
-         return null;
+      string[] ReturnValues = new string[CultivarNames.Count];
+      CultivarNames.CopyTo(ReturnValues);
+      Array.Sort(ReturnValues);
+      return ReturnValues;
+      }
+   public string[] Classes(string TypeName)
+      {
+      // Return a list of cultivar names to caller.
+      List<string> ClassNames = new List<string>();
+
+      XmlDocument ModelDoc = new XmlDocument();
+      ModelDoc.LoadXml("<Model>" + ModelContents(TypeName) + "</Model>");
+      foreach (XmlNode Child in ModelDoc.DocumentElement.ChildNodes)
+         {
+         if (XmlHelper.Attribute(Child, "class").ToLower() == "yes")
+            ClassNames.Add(Child.Name);
+         }
+      string[] ReturnValues = new string[ClassNames.Count];
+      ClassNames.CopyTo(ReturnValues);
+      return ReturnValues;
       }
    public XmlNode ApsimToSim(string TypeName)
       {
