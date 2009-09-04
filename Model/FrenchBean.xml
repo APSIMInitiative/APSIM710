@@ -1,0 +1,412 @@
+<Type name="frenchbean">
+  <MetaData>
+    <UItype>VBUserInterface.EmptyUI</UItype>
+    <IsCrop>Yes</IsCrop>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\frenchbean.jpg</Image>
+    <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+    <Documentation name="Generic plant">../apsim/plant/docs/plant_science.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+    <dll>%apsim%\Model\Plant2.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <variables link="%apsim%\Documentation\ModelInfo\frenchbean.xml" />
+    <events link="%apsim%\Documentation\ModelInfo\frenchbean.xml" />
+    <ApsimToSim>
+      <component name="[frenchbean.name]" executable="[dll]">
+        <executable>[dll]</executable>
+        <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+        <initdata>
+               [Model]
+               <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <Cultivar name="simba">
+      <Construct>frenchbean</Construct>
+    </Cultivar>
+    <Plant name="frenchbean">
+      <CropType>frenchbean</CropType>
+      <Population>
+        <Value>4</Value>
+      </Population>
+      <AnnualPlantArbitrator name="Arbitrator">
+        <DMSink>Stem</DMSink>
+      </AnnualPlantArbitrator>
+      <Phenology>
+        <TemperatureFunction name="ThermalTime">
+          <XYPairs>
+            <XY> 9 0.0</XY>
+            <XY>25 16.0</XY>
+            <XY>37 0.0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+      <FixedPhase name="Emergent">
+         <TTTarget>80</TTTarget>
+         <Start>Germination</Start>
+         <End>Emergence</End>
+      </FixedPhase>
+      <FixedPhase name="Vegetative">
+         <TTTarget>320</TTTarget>
+         <Start>Emergence</Start>
+         <End>Flowering</End>
+      </FixedPhase>
+      <FixedPhase name="Flowering">
+         <TTTarget>50</TTTarget>
+         <Start>Flowering</Start>
+         <End>StartPodGrowth</End>
+      </FixedPhase>
+      <FixedPhase name="PodFilling">
+         <TTTarget>250</TTTarget>
+         <Start>StartPodGrowth</Start>
+         <End>Maturity</End>
+      </FixedPhase>
+      <EndPhase name="HarvestRipe">
+         <Start>Maturity</Start>
+         <End>Unused</End>
+      </EndPhase>
+
+      </Phenology>
+      <Leaf>
+        <Frgr>1</Frgr>
+        <PrimaryBudNo>1</PrimaryBudNo>
+        <MaxCover>1.0</MaxCover>
+        <GenericFunction name="ExtinctionCoeff">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY> 0 0.8</XY>
+            <XY> 0.5 0.5</XY>
+          </XYPairs>
+        </GenericFunction>
+        <KDead>0.5</KDead>
+        <GenericFunction name="Height">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY> 0 100.0</XY>
+            <XY>300 750.0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <FrostFraction>
+          <XY> 0 0.0</XY>
+          <XY> 2 0.0</XY>
+        </FrostFraction>
+        <RUEModel name="Photosynthesis">
+         <FT>
+            <XY>12 0.0</XY>
+            <XY>20 1.0</XY>
+            <XY>28 1.0</XY>
+            <XY>35 0.5</XY>
+            <XY>40 0.0</XY>
+         </FT>
+         <FVPD>
+            <XY> 0 1.0</XY>
+            <XY>10 1.0</XY>
+            <XY>50 1.0</XY>
+         </FVPD>
+         <RUE>1.25</RUE>
+        </RUEModel>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start>Emergence</Start>
+            <End>Flowering</End>
+            <Constant name="Function">
+              <Value>0.7</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>Flowering</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value>0.2</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <TemperatureFunction name="ThermalTime">
+          <XYPairs>
+            <XY> 5 9.0</XY>
+            <XY>25 16.0</XY>
+            <XY>37 0.0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <PhaseLookupValue name="NodeInitiationRate">
+          <Start>Emergence</Start>
+          <End>Flowering</End>
+          <Constant name="Function">
+            <Value>30.0</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <MaxNodeNo>40</MaxNodeNo>
+        <PhaseLookupValue name="NodeAppearanceRate">
+          <Start>Emergence</Start>
+          <End>Maturity</End>
+          <GenericFunction name="Function">
+            <XProperty>Leaf.NodeNo</XProperty>
+            <XYPairs>
+              <XY> 1 60</XY>
+              <XY> 3 60</XY>
+              <XY> 6 60</XY>
+              <XY>30 60</XY>
+            </XYPairs>
+          </GenericFunction>
+        </PhaseLookupValue>
+        <InitialAreas>1000 </InitialAreas>
+        <InitialAges>150  </InitialAges>
+        <InitialiseStage>Emergence</InitialiseStage>
+        <InitialLeafPrimordia>6</InitialLeafPrimordia>
+        <GenericFunction name="ExpansionStress">
+          <XProperty>WaterSupplyDemandRatio</XProperty>
+          <XYPairs>
+            <XY> 0.0 0</XY>
+            <XY> 1.0 1</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="MaxArea">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY> 2  5000.0</XY>
+            <XY> 6 30000.0</XY>
+            <XY>30 30000.0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="SpecificLeafArea">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY> 1 18000.0</XY>
+            <XY> 6 30000.0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="GrowthDuration">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY> 4 180.0</XY>
+            <XY> 5 180.0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="LagDuration">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY> 1 150.0</XY>
+            <XY> 6 300.0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="SenescenceDuration">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY> 5 150.0</XY>
+            <XY>30 150.0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="BranchingRate">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY> 4 0.0</XY>
+            <XY> 5 0.7</XY>
+            <XY> 8 0.0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <PhaseLookup name="PartitionFractionMax">
+          <PhaseLookupValue name="Early">
+            <Start>Emergence</Start>
+            <End>Flowering</End>
+            <Constant name="Function">
+              <Value>0.70</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>Flowering</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value>0.5</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+      </Leaf>
+      <GenericOrgan name="Stem">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start>Emergence</Start>
+            <End>StartPodGrowth</End>
+            <Constant name="Function">
+              <Value>0.3</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value>0.5</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="StructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+      </GenericOrgan>
+      <Root>
+        <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+        <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+        <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <InitialDM>0.2</InitialDM>
+        <SpecificRootLength>40000</SpecificRootLength>
+        <GenericFunction name="KLModifier">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY> 0.0 0.1</XY>
+            <XY> 3.0 1.0</XY>
+          </XYPairs>
+        </GenericFunction>
+      <Constant name="RootFrontVelocity">
+         <Value>10.0</Value>
+      </Constant>
+        <Constant name="PartitionFraction">
+          <Value>0.2</Value>
+        </Constant>
+        <TemperatureFunction name="TemperatureEffect">
+          <XYPairs>
+            <XY> 0 0.0</XY>
+            <XY>26 1.0</XY>
+            <XY>35 0.0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+      </Root>
+      <SimpleReproductiveOrgan name="Pod">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start>Emergence</Start>
+            <End>StartPodGrowth</End>
+            <Constant name="Function">
+              <Value>0.0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="HeadGrowth">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value>0.3</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="StructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+        <RipeStage>Maturity</RipeStage>
+      </SimpleReproductiveOrgan>
+      <StageBasedInterpolation name="StageCode">
+        <Stages>Germination Emergence Flowering StartPodGrowth Maturity</Stages>
+        <Codes>   1               2          3            4           5      </Codes>
+      </StageBasedInterpolation>
+      <Summary name="Summary" />
+    </Plant>
+  </Model>
+  <Info>
+    <variables>
+      <variable name="Crop_Type" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="WaterSupplyDemandRatio" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PlantStatus" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="WaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="AboveGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="BelowGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="TotalDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="ReserveDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Population" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="ArbitratorDMSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyCurrentPhaseName" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="PhenologyThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="PhenologyShockTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileCumulativeVD" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileVDModelValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="PhenologyVegetativeTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyBuddingTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyHeadingTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyMatureTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Height" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafMaxCover" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPrimaryBudNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafFinalNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPotentialGrowth" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSize" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="LeafMaxSize" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="LeafMaxLeafArea" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="LeafBranchNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafTotalNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafGreenNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSLAcheck" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSpecificArea" description="" read="T" write="F" kind="double" array="" units="mm^2/g" />
+      <variable name="LeafCohortNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDeadNodeNo" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="LeafFullyExpandedNodeNo" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="LeafDMDemand" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDMSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafWaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="LeafTranspiration" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="LeafFrgr" description="" read="T" write="T" kind="double" array="" units="" />
+      <variable name="LeafFw" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafLAI" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
+      <variable name="LeafLAIDead" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
+      <variable name="Cover_green" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Cover_tot" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Cover_dead" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafExtinctionCoeffValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafHeightValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFt" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFvpd" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="LeafNodeAppearanceRateFunctionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafExpansionStressValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafMaxAreaValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSpecificLeafAreaValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafGrowthDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafLagDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSenescenceDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafBranchingRateValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPartitionFractionMaxValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="StemLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootDepth" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="RootLengthDensity" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="RootDMAllocation" description="" read="T" write="T" kind="double" array="" units="" />
+      <variable name="RootWaterSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootWaterUptake" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="RootKLModifierValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootRootFrontVelocityValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootTemperatureEffectValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="FloretLiveFWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="ReadyForHarvest" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="FloretLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="StageCodeValue" description="" read="T" write="F" kind="double" array="" units="" />
+    </variables>
+    <events>
+      <event name="NewCrop" description="" />
+      <event name="GrowthStage" description="" />
+      <event name="NewPotentialGrowth" description="" />
+      <event name="New_Canopy" description="" />
+      <event name="WaterChanged" description="" />
+      <event name="Harvesting" description="" />
+    </events>
+  </Info>
+</Type>
