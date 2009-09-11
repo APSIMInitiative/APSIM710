@@ -44,5 +44,6 @@ public ref class Factory
       void GetAllProperties(Instance^ Obj, XmlNode^ Parent);
       void GetAllEventHandlers(Instance^ Obj);
       void GetAllEvents(Instance^ Obj);
+      void RemoveRegisteredOutput(String^ OuptutName);
       FactoryProperty^ FindProperty(XmlNode^ Node);
    };

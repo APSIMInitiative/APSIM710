@@ -62,32 +62,62 @@ void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)
    for each (FieldInfo^ Property in Obj->GetType()->GetFields(BindingFlags::FlattenHierarchy | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic))
       {
       bool AddProperty = false;
+      bool IsOutput = false;
       array<Object^>^ Attributes = Property->GetCustomAttributes(false);
       for each (Object^ Attr in Attributes)
          {
+         IsOutput = (IsOutput || dynamic_cast<Output^>(Attr) != nullptr);
          if (dynamic_cast<Param^>(Attr) != nullptr || 
              dynamic_cast<Input^>(Attr) != nullptr || 
              dynamic_cast<Output^>(Attr) != nullptr)
              AddProperty = true;
          }
       if (AddProperty)
+         {
+         if (IsOutput)
+            RemoveRegisteredOutput(Property->Name);
          RegisteredProperties->Add(gcnew FactoryProperty(gcnew ReflectedField(Property, Obj), Parent));
+         }
       }
    for each (PropertyInfo^ Property in Obj->GetType()->GetProperties(BindingFlags::FlattenHierarchy | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic))
       {
       bool AddProperty = false;
+      bool IsOutput = false;
       array<Object^>^ Attributes = Property->GetCustomAttributes(false);
       for each (Object^ Attr in Attributes)
          {
+         IsOutput = (IsOutput || dynamic_cast<Output^>(Attr) != nullptr);
          if (dynamic_cast<Param^>(Attr) != nullptr || 
              dynamic_cast<Input^>(Attr) != nullptr || 
              dynamic_cast<Output^>(Attr) != nullptr)
             AddProperty = true;
          }
       if (AddProperty)
+         {
+         if (IsOutput)
+            RemoveRegisteredOutput(Property->Name);
          RegisteredProperties->Add(gcnew FactoryProperty(gcnew ReflectedProperty(Property, Obj), Parent));
+         }
       }
    }
+void Factory::RemoveRegisteredOutput(String^ OutputName)
+   {
+   // --------------------------------------------------------------------
+   // Remove the specified [output] from the list of registered properties.
+   // Duplicates can happen when an [output] in a base class is
+   // overridden in a derived class [output]. In this case we want the last
+   // duplicate and it superseeds previous ones (base classes)
+   // --------------------------------------------------------------------
+   for (int i = 0; i != RegisteredProperties->Count; i++)
+      {
+      if (RegisteredProperties[i]->IsOutput && 
+          String::Compare(RegisteredProperties[i]->OutputName, OutputName) == 0)
+         {
+         RegisteredProperties->RemoveAt(i);
+         return;
+         }
+      }
+   }   
 void Factory::GetAllEventHandlers(Instance^ Obj)
    {
    // --------------------------------------------------------------------
