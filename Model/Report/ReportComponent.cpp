@@ -462,7 +462,11 @@ string ReportComponent::calcFileName()
       fileName += scienceAPI.name();
       }
    fileName += ".out";
-   title = Path(fileName).Get_name();
+
+   title =  fileTail(fileName);
+   size_t pos = title.rfind(".");
+   if (pos != string::npos)
+      title.erase(pos);
 
    return fileName;
    }
