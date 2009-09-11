@@ -286,7 +286,20 @@ namespace GraphDataUserInterface
                   while (Processor.GroupByTitle(View))
                      {
                      string SeriesTitle = SeriesName + "," + View[0]["Title"];
+
                      Steema.TeeChart.Styles.Series NewSeries = GetSeries(SeriesType, PointType, ColourString, X2, Y2, SeriesTitle);
+                     Error ErrorBarSeries = null;
+                     if (DataSource.Columns.IndexOf(YColumnName + "Error") != -1)
+                        {
+                        ErrorBarSeries = new Steema.TeeChart.Styles.Error();
+                        Chart.Series.Add(ErrorBarSeries);
+                        ErrorBarSeries.Color = NewSeries.Color;
+                        ErrorBarSeries.Title = NewSeries.Title;
+                        ErrorBarSeries.HorizAxis = NewSeries.HorizAxis;
+                        ErrorBarSeries.VertAxis = NewSeries.VertAxis;
+                        ErrorBarSeries.ShowInLegend = false;
+                        }
+
                      NewSeries.YValues.Name = YFieldName;
 
                      double CumulativeXSoFar = 0.0;
@@ -294,57 +307,106 @@ namespace GraphDataUserInterface
                      // Loop through all data rows and populate series.
                      for (int Row = 0; Row < View.Count; Row++)
                         {
-                        // Now feed new x and y data to our series.
-                        if (!Convert.IsDBNull(View[Row][YColumnName]))
-                           {
-                           double YValue = Convert.ToDouble(View[Row][YColumnName]);
-                           if (CumulativeY)
-                              {
-                              CumulativeYSoFar += YValue;
-                              YValue = CumulativeYSoFar;
-                              }
-                           if (XDataPresent)
-                              {
-                              if (!Convert.IsDBNull(View[Row][YColumnName]))
-                                 {
-                                 NewSeries.XValues.Name = XFieldName;
-                                 if (DataSource.Columns[XColumnName].DataType == typeof(string))
-                                    {
-                                    // X as string
-                                    NewSeries.Add(YValue, View[Row][XColumnName].ToString());
-                                    }
-                                 else if (DataSource.Columns[XColumnName].DataType == typeof(DateTime))
-                                    {
-                                    // X as datetime
-                                    NewSeries.XValues.DateTime = true;
-                                    NewSeries.Add(Convert.ToDateTime(View[Row][XColumnName]), YValue);
-                                    }
-                                 else if (!Convert.IsDBNull(View[Row][XColumnName]))
-                                    {
-                                    // X as double.
-                                    double XValue = Convert.ToDouble(View[Row][XColumnName]);
-                                    if (CumulativeX)
-                                       {
-                                       CumulativeXSoFar += XValue;
-                                       XValue = CumulativeXSoFar;
-                                       }
-                                    NewSeries.Add(XValue, YValue);
-                                    }
-                                 }
-                              }
-                           else
-                              {
-                              NewSeries.Add(YValue);
-                              if (NewSeries.Count == 1)
-                                 Chart.Axes.Bottom.Labels.Items.Add(Chart.Series.Count, NewSeries.Title);
-                              Chart.Axes.Bottom.Visible = true;
-                              }
-                           }
+                        AddDataToSeries(DataSource, XFieldName, XDataPresent, CumulativeY, CumulativeX, YColumnName, XColumnName, View, NewSeries, ref CumulativeXSoFar, ref CumulativeYSoFar, Row, ErrorBarSeries);
                         }
                      }
                   }
                }
             }
+         }
+
+      private void AddDataToSeries(DataTable DataSource, string XFieldName, bool XDataPresent, bool CumulativeY, bool CumulativeX, string YColumnName, string XColumnName, DataView View, Steema.TeeChart.Styles.Series NewSeries, ref double CumulativeXSoFar, ref double CumulativeYSoFar, int Row, Error ErrorBarSeries)
+         {
+         // Now feed new x and y data to our series.
+         if (!Convert.IsDBNull(View[Row][YColumnName]))
+            {
+            double YValue = Convert.ToDouble(View[Row][YColumnName]);
+            if (CumulativeY)
+               {
+               CumulativeYSoFar += YValue;
+               YValue = CumulativeYSoFar;
+               }
+            if (XDataPresent)
+               {
+               if (!Convert.IsDBNull(View[Row][YColumnName]))
+                  {
+                  NewSeries.XValues.Name = XFieldName;
+                  if (ErrorBarSeries != null)
+                     AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
+                                   View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
+                                   ErrorBarSeries, View[Row][YColumnName+"Error"]);
+                  else
+                     AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
+                                   View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
+                                   ErrorBarSeries, null);
+
+                  }
+               }
+            else
+               {
+               NewSeries.Add(YValue);
+               if (NewSeries.Count == 1)
+                  Chart.Axes.Bottom.Labels.Items.Add(Chart.Series.Count, NewSeries.Title);
+               Chart.Axes.Bottom.Visible = true;
+               }
+            }
+         }
+
+      private void AddXYToSeries(Steema.TeeChart.Styles.Series NewSeries,
+                                 Type XDataType, object XValue, double YValue,
+                                 bool CumulativeX, ref double CumulativeXSoFar,
+                                 Error ErrorBarSeries, object ErrorBarValue)
+         {
+         if (ErrorBarSeries != null && !Convert.IsDBNull(ErrorBarValue))
+            {
+            ErrorBarSeries.XValues.Name = NewSeries.XValues.Name;
+            ErrorBarSeries.YValues.Name = NewSeries.YValues.Name;
+            double ErrorValue = Convert.ToDouble(ErrorBarValue);
+            if (XDataType == typeof(string))
+               {
+               // not sure what to do here.
+               }
+            else if (XDataType == typeof(DateTime))
+               {
+               DateTime d = Convert.ToDateTime(XValue);
+               NewSeries.XValues.DateTime = true;
+               ErrorBarSeries.Add(d.ToOADate(), YValue, ErrorValue);
+               }
+            else if (!Convert.IsDBNull(XValue))
+               {
+               double XValueAsDouble = Convert.ToDouble(XValue);
+               if (CumulativeX)
+                  {
+                  CumulativeXSoFar += XValueAsDouble;
+                  XValueAsDouble = CumulativeXSoFar;
+                  }
+               ErrorBarSeries.Add(XValueAsDouble, YValue, ErrorValue);
+               }
+            }
+
+         if (XDataType == typeof(string))
+            {
+            // X as string
+            NewSeries.Add(YValue, XValue.ToString());
+            }
+         else if (XDataType == typeof(DateTime))
+            {
+            // X as datetime
+            NewSeries.XValues.DateTime = true;
+            NewSeries.Add(Convert.ToDateTime(XValue), YValue);
+            }
+         else if (!Convert.IsDBNull(XValue))
+            {
+            // X as double.
+            double XValueAsDouble = Convert.ToDouble(XValue);
+            if (CumulativeX)
+               {
+               CumulativeXSoFar += XValueAsDouble;
+               XValueAsDouble = CumulativeXSoFar;
+               }
+            NewSeries.Add(XValueAsDouble, YValue);
+            }
+
          }
 
       private Series GetSeries(string SeriesType, string PointType, string ColourString, bool X2, bool Y2, string SeriesTitle)
@@ -387,7 +449,6 @@ namespace GraphDataUserInterface
             NewSeries = Box;
             NewSeries.Marks.Visible = false;
             }
-
          else
             {
             Steema.TeeChart.Styles.Line LineSeries = new Steema.TeeChart.Styles.Line();
