@@ -121,7 +121,10 @@ FactoryProperty::FactoryProperty(ReflectedType^ Property, XmlNode^ Parent)
             }
          }
       else if (I != nullptr)
+         {
          IsInput = true;
+         OptionalInput = I->Optional;
+         }
       else if (O != nullptr)
          {
          IsOutput = true;

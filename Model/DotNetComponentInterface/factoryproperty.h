@@ -98,6 +98,7 @@ public ref class FactoryProperty : Instance, ApsimType
       bool IsOutput;
       bool ReadOnly;
       bool HaveSet;
+      bool OptionalInput;
       String^ TypeName;
       String^ Units;
       String^ Description;

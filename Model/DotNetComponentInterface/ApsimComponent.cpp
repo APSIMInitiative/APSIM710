@@ -266,7 +266,7 @@ void ApsimComponent::GetAllInputs()
 	      {
          int RegistrationIndex = Registrations->Count;
          Registrations->Add(Property);
-         CIGet(ComponentI, Property->Name, Property->Units, false, &::CallBack,
+         CIGet(ComponentI, Property->Name, Property->Units, Property->OptionalInput, &::CallBack,
                instanceNumber, RegistrationIndex, Property->DDML());
          }
       }

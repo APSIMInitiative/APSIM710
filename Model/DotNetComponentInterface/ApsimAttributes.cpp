@@ -27,6 +27,16 @@ public ref class Param : public System::Attribute
 [AttributeUsage(AttributeTargets::Field | AttributeTargets::Property, AllowMultiple = true)]
 public ref class Input : public System::Attribute
 	{
+	public:
+	   bool Optional;
+	   Input()
+	      {
+	      Optional = false;
+	      }
+	   Input(bool IsOptional)
+	      {
+	      Optional = IsOptional;
+	      }
 	};
 	
 [AttributeUsage(AttributeTargets::Field | AttributeTargets::Property, AllowMultiple = true)]
