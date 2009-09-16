@@ -312,6 +312,8 @@ void ReportComponent::onInit2(void)
    string fileName;
    if (!scienceAPI.read("outputfile", "", true, fileName))
       fileName = calcFileName();
+   else
+      scienceAPI.get("title", "", true, title);
 
    file.open(fileName.c_str());
    if (!file)
@@ -467,7 +469,6 @@ string ReportComponent::calcFileName()
    size_t pos = title.rfind(".");
    if (pos != string::npos)
       title.erase(pos);
-
    return fileName;
    }
 
