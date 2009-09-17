@@ -427,8 +427,12 @@ Public Class MainUI
             	ToolboxExplorer.OnLoad(ToolboxController)
 
                 ToolboxController.Explorer = ToolboxExplorer    'give the toolbox ExplorerUI to the toolbox controller.
+                Try
+                    PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
 
-                PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
             Else
                 ToolBoxesToolStrip.Visible = False
             End If
