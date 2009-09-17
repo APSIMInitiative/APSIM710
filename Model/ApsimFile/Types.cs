@@ -70,7 +70,8 @@ public class Types
       if (DropsNode != null)
          {
          List<string> AllowedDrops = XmlHelper.Values(DropsNode, "Drop");
-         return CSGeneral.StringManip.IndexOfCaseInsensitive(AllowedDrops, ParentTypeName) != -1;
+         return CSGeneral.StringManip.IndexOfCaseInsensitive(AllowedDrops, ParentTypeName) != -1 ||
+                CSGeneral.StringManip.IndexOfCaseInsensitive(AllowedDrops, "any") != -1;
          }
       return false;
       }
