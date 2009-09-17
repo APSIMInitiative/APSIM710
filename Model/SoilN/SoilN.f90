@@ -616,7 +616,7 @@ subroutine soiln2_read_param ()
 
    call read_real_var (section_name, 'soil_cn', '()', g%soil_cn, numvals, 5.0, 30.0)
 
-   call read_real_array (section_name, 'oc', max_layer, '(%)', g%oc, numvals, 0.01, 4.0)
+   call read_real_array (section_name, 'oc', max_layer, '(%)', g%oc, numvals, 0.01, 10.0)
 
    if (.not. g%use_external_ph) then
       call read_real_array (section_name, 'ph', max_layer, '()', g%ph, numvals, 3.5, 11.0)
