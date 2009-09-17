@@ -16,6 +16,8 @@ Public Class FileUI
     Friend WithEvents SearchTextBox As System.Windows.Forms.ToolStripTextBox
     Friend WithEvents SearchButton As System.Windows.Forms.ToolStripButton
     Friend WithEvents ToolStrip1 As System.Windows.Forms.ToolStrip
+    Friend WithEvents GotoErrorButton As System.Windows.Forms.ToolStripButton
+    Friend WithEvents GotoWarningButton As System.Windows.Forms.ToolStripButton
     Dim FullFileName As String
 
 #Region " Windows Form Designer generated code "
@@ -60,6 +62,8 @@ Public Class FileUI
         Me.SearchTextBox = New System.Windows.Forms.ToolStripTextBox
         Me.SearchButton = New System.Windows.Forms.ToolStripButton
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip
+        Me.GotoErrorButton = New System.Windows.Forms.ToolStripButton
+        Me.GotoWarningButton = New System.Windows.Forms.ToolStripButton
         Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -125,12 +129,28 @@ Public Class FileUI
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BrowseButton, Me.ToolStripLabel1, Me.SearchTextBox, Me.SearchButton})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BrowseButton, Me.ToolStripLabel1, Me.SearchTextBox, Me.SearchButton, Me.GotoErrorButton, Me.GotoWarningButton})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 16)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(794, 25)
         Me.ToolStrip1.TabIndex = 16
         Me.ToolStrip1.Text = "ToolStrip1"
+        '
+        'GotoErrorButton
+        '
+        Me.GotoErrorButton.Image = CType(resources.GetObject("GotoErrorButton.Image"), System.Drawing.Image)
+        Me.GotoErrorButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.GotoErrorButton.Name = "GotoErrorButton"
+        Me.GotoErrorButton.Size = New System.Drawing.Size(102, 22)
+        Me.GotoErrorButton.Text = "Goto next error"
+        '
+        'GotoWarningButton
+        '
+        Me.GotoWarningButton.Image = CType(resources.GetObject("GotoWarningButton.Image"), System.Drawing.Image)
+        Me.GotoWarningButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.GotoWarningButton.Name = "GotoWarningButton"
+        Me.GotoWarningButton.Size = New System.Drawing.Size(116, 22)
+        Me.GotoWarningButton.Text = "Goto next warning"
         '
         'FileUI
         '
@@ -175,6 +195,8 @@ Public Class FileUI
             FullFileName = FullFileName
         End If
 
+        Dim ErrorsFound As Boolean = False
+        Dim WarningsFound As Boolean = False
         If File.Exists(FullFileName) Then
             Dim text As String
             Dim sr As StreamReader
@@ -186,6 +208,9 @@ Public Class FileUI
                 sr = Nothing
                 FileContentsBox.Text = text
                 FileDateTime = File.GetLastWriteTime(FullFileName)
+
+                ErrorsFound = text.Contains("APSIM  Fatal  Error")
+                WarningsFound = text.Contains("APSIM Warning Error")
             Catch e As System.Exception
             End Try
 
@@ -204,6 +229,13 @@ Public Class FileUI
         End While
 
         BrowseButton.Visible = (XmlHelper.Type(Data) <> "outputfile" And XmlHelper.Type(Data) <> "summaryfile")
+
+        GotoErrorButton.Visible = ErrorsFound
+        GotoWarningButton.Visible = WarningsFound
+        If ErrorsFound Then
+            SearchString("APSIM  Fatal  Error")
+        End If
+
     End Sub
 
 
@@ -269,5 +301,13 @@ Public Class FileUI
             SearchString(SearchTextBox.Text)
         End If
 
+    End Sub
+
+    Private Sub OnGotoErrorClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GotoErrorButton.Click
+        SearchString("APSIM  Fatal  Error")
+    End Sub
+
+    Private Sub OnGotoWarningClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GotoWarningButton.Click
+        SearchString("APSIM Warning Error")
     End Sub
 End Class
