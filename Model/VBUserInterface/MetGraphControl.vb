@@ -199,8 +199,8 @@ Public Class MetGraphControl
         Me.YearStartBox.CausesValidation = False
         Me.YearStartBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.YearStartBox.Location = New System.Drawing.Point(41, 5)
-        Me.YearStartBox.Maximum = New Decimal(New Integer() {2050, 0, 0, 0})
-        Me.YearStartBox.Minimum = New Decimal(New Integer() {1900, 0, 0, 0})
+        Me.YearStartBox.Maximum = New Decimal(New Integer() {2200, 0, 0, 0})
+        Me.YearStartBox.Minimum = New Decimal(New Integer() {1800, 0, 0, 0})
         Me.YearStartBox.Name = "YearStartBox"
         Me.YearStartBox.Size = New System.Drawing.Size(64, 21)
         Me.YearStartBox.TabIndex = 16
