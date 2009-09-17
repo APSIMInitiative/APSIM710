@@ -24,6 +24,7 @@ Public Class OutputFileDescUI
     Friend WithEvents ConstantsLabel As System.Windows.Forms.Label
     Friend WithEvents DictionaryLabel As System.Windows.Forms.Label
     Friend WithEvents HelpButton As System.Windows.Forms.Button
+    Friend WithEvents DeleteVariablesMenuItem As System.Windows.Forms.ToolStripMenuItem
     Private ComponentTypes As New StringCollection
 
 #Region " Windows Form Designer generated code "
@@ -80,6 +81,7 @@ Public Class OutputFileDescUI
         Me.GridContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.MoveUpMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.MoveDownMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.DeleteVariablesMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.Grid = New FarPoint.Win.Spread.SheetView
         Me.GridLabel = New System.Windows.Forms.Label
         Me.Splitter1 = New System.Windows.Forms.Splitter
@@ -161,9 +163,9 @@ Public Class OutputFileDescUI
         '
         'GridContextMenu
         '
-        Me.GridContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MoveUpMenuItem, Me.MoveDownMenuItem})
+        Me.GridContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MoveUpMenuItem, Me.MoveDownMenuItem, Me.DeleteVariablesMenuItem})
         Me.GridContextMenu.Name = "ContextMenu"
-        Me.GridContextMenu.Size = New System.Drawing.Size(246, 48)
+        Me.GridContextMenu.Size = New System.Drawing.Size(246, 92)
         '
         'MoveUpMenuItem
         '
@@ -178,6 +180,12 @@ Public Class OutputFileDescUI
         Me.MoveDownMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Down), System.Windows.Forms.Keys)
         Me.MoveDownMenuItem.Size = New System.Drawing.Size(245, 22)
         Me.MoveDownMenuItem.Text = "Move variables &down"
+        '
+        'DeleteVariablesMenuItem
+        '
+        Me.DeleteVariablesMenuItem.Name = "DeleteVariablesMenuItem"
+        Me.DeleteVariablesMenuItem.Size = New System.Drawing.Size(245, 22)
+        Me.DeleteVariablesMenuItem.Text = "Delete variables"
         '
         'Grid
         '
@@ -566,16 +574,7 @@ Public Class OutputFileDescUI
         ' If user has hit delete then delete the entire row.
         ' --------------------------------------------------
         If e.KeyCode = Keys.Delete Then
-            If Grid.SelectionCount > 0 Then
-                Dim Range As FarPoint.Win.Spread.Model.CellRange = Grid.GetSelection(0)
-                If Range.ColumnCount = 5 Then
-                    ' delete the entire rows.
-                    Grid.Rows(Range.Row, Range.Row + Range.RowCount - 1).Remove()
-                Else
-                    ' just clear the cell contents.
-                    Grid.Cells(Range.Row, Range.Column, Range.Row + Range.RowCount - 1, Range.Column + Range.ColumnCount - 1).Value = ""
-                End If
-            End If
+            DeleteSelection()
         End If
     End Sub
     Public Overrides Sub OnSave()
@@ -600,6 +599,13 @@ Public Class OutputFileDescUI
             Next
             'SaveVariableGrid()
             UserChange = True
+        End If
+    End Sub
+    Sub DeleteSelection()
+        If Grid.SelectionCount > 0 Then
+            Dim Range As FarPoint.Win.Spread.Model.CellRange = Grid.GetSelection(0)
+            ' delete the entire rows.
+            Grid.Rows(Range.Row, Range.Row + Range.RowCount - 1).Remove()
         End If
     End Sub
 
@@ -759,5 +765,9 @@ Public Class OutputFileDescUI
                        "  harvesting  - reporting will be done at harvest of a crop"
         End If
         MessageBox.Show(HelpText, "", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    Private Sub OnDeleteClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DeleteVariablesMenuItem.Click
+        DeleteSelection()
     End Sub
 End Class
