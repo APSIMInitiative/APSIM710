@@ -1,4 +1,5 @@
 <folder version="18" name="simulations">
+  <shared name="shared" />
   <folder name="Gatton">
     <simulation name="GattonOct08">
       <metfile name="met">
@@ -567,56 +568,6 @@
             <ui>
               <category description="Sowing criteria" />
               <date type="text" description="Enter sowing date (dd-mmm) : ">25-feb</date>
-              <category description="Sowing parameters" />
-              <crop type="modulename" description="Enter name of crop to sow : ">frenchbean</crop>
-              <density type="text" description="Enter sowing density  (plants/m2) : ">27</density>
-              <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-              <cultivar type="text" description="Enter cultivar : ">simba</cultivar>
-              <row_spacing type="text" description="Enter row spacing (mm) : ">750</row_spacing>
-              <class type="text" description="Enter Crop Class:">frenchbean</class>
-            </ui>
-            <script name="start_of_day">
-              <text>
-      if (today = date('[date]') then
-                    [crop] sow population =[density], depth = [depth], cultivar = [cultivar], MaxCover = 1.0, BudNumber = 1, row_spacing = [row_spacing], crop_class = [class]
-        endif
-               </text>
-              <event>start_of_day</event>
-            </script>
-          </manager>
-          <manager name="Sowing fertiliser" shortcut="/simulations/Gatton/GattonOct08/paddock/Manager folder/Sowing fertiliser" />
-          <manager name="Harvesting rule" shortcut="/simulations/Gatton/GattonOct08/paddock/Manager folder/Harvesting rule" />
-        </folder>
-        <micromet name="Micromet" shortcut="/simulations/Gatton/GattonOct08/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile">
-          <variables name="Variables" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Variables" />
-          <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Reporting Frequency" />
-          <Graph shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Graph">
-            <Plot shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Graph/Plot">
-              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Graph/Plot/ApsimFileReader" />
-            </Plot>
-          </Graph>
-        </outputfile>
-        <frenchbean shortcut="/simulations/Gatton/GattonOct08/paddock/frenchbean" />
-        <irrigation name="Irrigation" shortcut="/simulations/Gatton/GattonOct08/paddock/Irrigation" />
-      </area>
-    </simulation>
-    <simulation name="Dummy" shortcut="/simulations/Gatton/GattonOct08">
-      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met" />
-      <clock shortcut="/simulations/Gatton/GattonOct08/clock" />
-      <summaryfile shortcut="/simulations/Gatton/GattonOct08/summaryfile" />
-      <area name="paddock" shortcut="/simulations/Gatton/GattonOct08/paddock">
-        <soil name="Soil" shortcut="/simulations/Gatton/GattonOct08/paddock/Soil">
-          <InitWater shortcut="/simulations/Gatton/GattonOct08/paddock/Soil/InitWater" />
-          <InitNitrogen shortcut="/simulations/Gatton/GattonOct08/paddock/Soil/InitNitrogen" />
-        </soil>
-        <surfaceom name="surface organic matter" shortcut="/simulations/Gatton/GattonOct08/paddock/surface organic matter" />
-        <fertiliser shortcut="/simulations/Gatton/GattonOct08/paddock/fertiliser" />
-        <folder name="Manager folder" shortcut="/simulations/Gatton/GattonOct08/paddock/Manager folder">
-          <manager name="Sow on a fixed date">
-            <ui>
-              <category description="Sowing criteria" />
-              <date type="text" description="Enter sowing date (dd-mmm) : ">15-apr</date>
               <category description="Sowing parameters" />
               <crop type="modulename" description="Enter name of crop to sow : ">frenchbean</crop>
               <density type="text" description="Enter sowing density  (plants/m2) : ">27</density>

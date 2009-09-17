@@ -10,17 +10,15 @@
              Copyright(c) APSRU               
 
 Version                = 7.1
-Title                  = GattonOct08
+Title                  = Griffith77T
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
-   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -37,13 +35,13 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/10/2008
-     Simulation end date   = 30/05/2009
+     Simulation start date = 11/11/1977
+     Simulation end date   = 20/01/1978
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: Gatton0809.met
+     INPUT File name: Griffith7679.met
 
 ------- outputfile Initialisation ---------------------------------------------
      Output frequency:
@@ -68,11 +66,18 @@ Paddock:
         PodLiveWt
         LeafLiveWt
 
-     Output file = GattonOct08.out
+     Output file = Griffith77T.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+         11-nov  Prepare        frenchbean sow population =22.7, depth = 50, cultivar = simba, MaxCover = 1.0, BudNumber = 1, row_spacing = 750, crop_class = frenchbean
+         20-jan  Post         frenchbean harvest
+         20-jan  Post         frenchbean EndCrop
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -81,41 +86,10 @@ Paddock:
                       Irrigation parameters
           -----------------------------------------------
            Automatic Irrigation Application (Enabled)
-           critical fraction of available soil water =  0.80
+           critical fraction of available soil water =  0.90
            depth for calculating available soil water =     600.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
-
-------- Sow on a fixed date Initialisation ------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-           if (today = date('1-oct') then
-             frenchbean sow population =27, depth = 50, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
-             endif
-     END of rules
-     
-
-------- Sowing fertiliser Initialisation --------------------------------------
-     Manager rules:
-     
-     SECTION:- frenchbean.sowing
-             fertiliser apply amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
-     END of rules
-     
-
-------- Harvesting rule Initialisation ----------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-                if frenchbean.phenologycurrentphasename = 'harvestripe' then
-       frenchbean  harvest
-       frenchbean  endcrop
-                endif
-     
-     SECTION:- process
-     END of rules
-     
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -281,26 +255,23 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- frenchbean sow  population = 27, depth = 50, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
-9/10/2008 - Emergence
+      Sending sow message to frenchbean
+20/11/1977 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-10/11/2008 - Flowering
-                            LAI = 4.55 (m^2/m^2)
-           Above Ground Biomass = 231.32 (g/m^2)
-15/11/2008 - StartPodGrowth
-                            LAI = 5.25 (m^2/m^2)
-           Above Ground Biomass = 332.41 (g/m^2)
-8/12/2008 - Maturity
-                            LAI = 5.87 (m^2/m^2)
-           Above Ground Biomass = 805.30 (g/m^2)
-8 December 2008(Day of year=343), Harvesting rule: 
-     Manager sending message :- frenchbean harvest
+24/12/1977 - Flowering
+                            LAI = 4.44 (m^2/m^2)
+           Above Ground Biomass = 310.02 (g/m^2)
+30/12/1977 - StartPodGrowth
+                            LAI = 5.51 (m^2/m^2)
+           Above Ground Biomass = 422.32 (g/m^2)
+20 January 1978(Day of year=20), operations: 
+      Sending harvest message to frenchbean
 
-     8/12/2008  - Harvesting Pod from frenchbean
-     ------------------------------------------------
-     Pod Yield DWt: 168.00 (g/m^2)
+     20/01/1978  - Harvesting Pod from frenchbean
+     -------------------------------------------------
+     Pod Yield DWt: 166.21 (g/m^2)
 
-     Manager sending message :- frenchbean endcrop
-30 May 2009(Day of year=150), clock: 
+      Sending endcrop message to frenchbean
+20 January 1978(Day of year=20), clock: 
      Simulation is terminating due to end criteria being met.
