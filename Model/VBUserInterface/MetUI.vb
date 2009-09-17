@@ -117,7 +117,7 @@ Public Class MetUI
         MetGraphControl1.OnRefresh()
         HelpText = FileName
         OpenFileDialog.InitialDirectory = Path.GetDirectoryName(FileName)
-        MetGraphControl1.SetFileName(Configuration.RemoveMacros(FileName))
+        MetGraphControl1.SetFileName(FileName)
     End Sub
 
     Public Overrides Sub OnSave()

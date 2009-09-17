@@ -93,7 +93,9 @@ namespace ApsimFile
 
          _FileName = FileName;
          CSV = Path.GetExtension(FileName).ToLower() == ".csv";
-            
+
+         _Constants.Clear();
+
          StreamReaderRandomAccess In = new StreamReaderRandomAccess(_FileName);
          ReadApsimHeader(In);
          ReadAllData(In, Data);

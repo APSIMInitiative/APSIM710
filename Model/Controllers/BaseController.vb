@@ -199,14 +199,18 @@ Public Class BaseController
         End If
     End Function
     Public Function ToAbsolute(ByVal FileName As String) As String
-        Dim st As String = Configuration.RemoveMacros(FileName)
-        If Path.GetDirectoryName(ApsimData.FileName) <> "" Then
-            Dim CWD = Directory.GetCurrentDirectory()
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(ApsimData.FileName))
-            st = Path.GetFullPath(st)
-            Directory.SetCurrentDirectory(CWD)
+        If IsNothing(FileName) Then
+            Return FileName
+        Else
+            Dim st As String = Configuration.RemoveMacros(FileName)
+            If Path.GetDirectoryName(ApsimData.FileName) <> "" Then
+                Dim CWD = Directory.GetCurrentDirectory()
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(ApsimData.FileName))
+                st = Path.GetFullPath(st)
+                Directory.SetCurrentDirectory(CWD)
+            End If
+            Return st
         End If
-        Return st
     End Function
 
 #End Region

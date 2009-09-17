@@ -2478,10 +2478,12 @@ Public Class MetGraphControl
 
     Public Overrides Sub OnRefresh()
         ContentsBox.Text = ""
-        If File.Exists(FileName) Then
+
+        Dim FullFileName As String = Controller.ToAbsolute(FileName)
+        If File.Exists(FullFileName) Then
             MetData = New DataTable()
             MetData.TableName = "Met"
-            Metfile.ReadFromFile(Controller.ToAbsolute(FileName), MetData)
+            Metfile.ReadFromFile(FullFileName, MetData)
             StartDate = DataTableUtility.GetDateFromRow(MetData.Rows(0))
             EndDate = DataTableUtility.GetDateFromRow(MetData.Rows(MetData.Rows.Count - 1))
             PopulateRawData()
@@ -2513,7 +2515,7 @@ Public Class MetGraphControl
     End Sub
 
     Private Sub PopulateRawData()
-        Dim sr As StreamReader = New StreamReader(FileName)
+        Dim sr As StreamReader = New StreamReader(Controller.ToAbsolute(FileName))
         ContentsBox.Text = sr.ReadToEnd
         sr.Close()
     End Sub
