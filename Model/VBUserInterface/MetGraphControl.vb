@@ -45,10 +45,14 @@ Public Class MetGraphControl
     Friend WithEvents MaximumRadiationLine As Steema.TeeChart.Styles.Line
     Friend WithEvents MonthlyRainfallBar As Steema.TeeChart.Styles.Bar
     Friend WithEvents MonthlyEvaporationLine As Steema.TeeChart.Styles.Line
-    Friend WithEvents YearBox As System.Windows.Forms.NumericUpDown
-    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents YearStartBox As System.Windows.Forms.NumericUpDown
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents RainfallLabel As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents NumYearsBox As System.Windows.Forms.NumericUpDown
+    Friend WithEvents YearPanel As System.Windows.Forms.Panel
+    Friend WithEvents Label4 As System.Windows.Forms.Label
+    Friend WithEvents Label5 As System.Windows.Forms.Label
     Private CurrentShortCut As Shortcut
 
 #Region " Windows Form Designer generated code "
@@ -80,9 +84,14 @@ Public Class MetGraphControl
         Me.TabImages = New System.Windows.Forms.ImageList(Me.components)
         Me.TabControl = New System.Windows.Forms.TabControl
         Me.TabPage1 = New System.Windows.Forms.TabPage
+        Me.YearPanel = New System.Windows.Forms.Panel
+        Me.Label5 = New System.Windows.Forms.Label
+        Me.Label4 = New System.Windows.Forms.Label
+        Me.YearStartBox = New System.Windows.Forms.NumericUpDown
+        Me.NumYearsBox = New System.Windows.Forms.NumericUpDown
+        Me.Label3 = New System.Windows.Forms.Label
         Me.ContentsBox = New System.Windows.Forms.TextBox
         Me.TabPage2 = New System.Windows.Forms.TabPage
-        Me.Label2 = New System.Windows.Forms.Label
         Me.Label1 = New System.Windows.Forms.Label
         Me.RainfallLabel = New System.Windows.Forms.Label
         Me.RainfallChart = New Steema.TeeChart.TChart
@@ -100,14 +109,15 @@ Public Class MetGraphControl
         Me.RainfallBar2 = New Steema.TeeChart.Styles.Bar
         Me.RadiationLine = New Steema.TeeChart.Styles.Line
         Me.MaximumRadiationLine = New Steema.TeeChart.Styles.Line
-        Me.YearBox = New System.Windows.Forms.NumericUpDown
         Me.TabControl.SuspendLayout()
         Me.TabPage1.SuspendLayout()
+        Me.YearPanel.SuspendLayout()
+        CType(Me.YearStartBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NumYearsBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage2.SuspendLayout()
         Me.TabPage3.SuspendLayout()
         Me.TabPage5.SuspendLayout()
         Me.TabPage4.SuspendLayout()
-        CType(Me.YearBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'MyHelpLabel
@@ -140,6 +150,7 @@ Public Class MetGraphControl
         '
         'TabPage1
         '
+        Me.TabPage1.Controls.Add(Me.YearPanel)
         Me.TabPage1.Controls.Add(Me.ContentsBox)
         Me.TabPage1.ImageIndex = 0
         Me.TabPage1.Location = New System.Drawing.Point(4, 23)
@@ -149,6 +160,73 @@ Public Class MetGraphControl
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Raw data"
         Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'YearPanel
+        '
+        Me.YearPanel.BackColor = System.Drawing.Color.White
+        Me.YearPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.YearPanel.Controls.Add(Me.Label5)
+        Me.YearPanel.Controls.Add(Me.Label4)
+        Me.YearPanel.Controls.Add(Me.YearStartBox)
+        Me.YearPanel.Controls.Add(Me.NumYearsBox)
+        Me.YearPanel.Controls.Add(Me.Label3)
+        Me.YearPanel.Location = New System.Drawing.Point(6, 26)
+        Me.YearPanel.Name = "YearPanel"
+        Me.YearPanel.Size = New System.Drawing.Size(171, 60)
+        Me.YearPanel.TabIndex = 19
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(3, 36)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(34, 13)
+        Me.Label5.TabIndex = 20
+        Me.Label5.Text = "Show"
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(3, 7)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(32, 13)
+        Me.Label4.TabIndex = 19
+        Me.Label4.Text = "Year:"
+        '
+        'YearStartBox
+        '
+        Me.YearStartBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.YearStartBox.CausesValidation = False
+        Me.YearStartBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.YearStartBox.Location = New System.Drawing.Point(41, 5)
+        Me.YearStartBox.Maximum = New Decimal(New Integer() {2050, 0, 0, 0})
+        Me.YearStartBox.Minimum = New Decimal(New Integer() {1900, 0, 0, 0})
+        Me.YearStartBox.Name = "YearStartBox"
+        Me.YearStartBox.Size = New System.Drawing.Size(64, 21)
+        Me.YearStartBox.TabIndex = 16
+        Me.YearStartBox.Value = New Decimal(New Integer() {2000, 0, 0, 0})
+        '
+        'NumYearsBox
+        '
+        Me.NumYearsBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.NumYearsBox.CausesValidation = False
+        Me.NumYearsBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.NumYearsBox.Location = New System.Drawing.Point(41, 32)
+        Me.NumYearsBox.Maximum = New Decimal(New Integer() {200, 0, 0, 0})
+        Me.NumYearsBox.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumYearsBox.Name = "NumYearsBox"
+        Me.NumYearsBox.Size = New System.Drawing.Size(49, 21)
+        Me.NumYearsBox.TabIndex = 17
+        Me.NumYearsBox.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(96, 36)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(74, 13)
+        Me.Label3.TabIndex = 18
+        Me.Label3.Text = "year(s) of data"
         '
         'ContentsBox
         '
@@ -166,7 +244,6 @@ Public Class MetGraphControl
         '
         'TabPage2
         '
-        Me.TabPage2.Controls.Add(Me.Label2)
         Me.TabPage2.Controls.Add(Me.Label1)
         Me.TabPage2.Controls.Add(Me.RainfallLabel)
         Me.TabPage2.Controls.Add(Me.RainfallChart)
@@ -178,15 +255,6 @@ Public Class MetGraphControl
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Rainfall chart"
         Me.TabPage2.UseVisualStyleBackColor = True
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(439, 11)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(23, 13)
-        Me.Label2.TabIndex = 17
-        Me.Label2.Text = "mm"
         '
         'Label1
         '
@@ -236,7 +304,7 @@ Public Class MetGraphControl
         '
         '
         Me.RainfallChart.Axes.Bottom.Labels.CustomSize = 40
-        Me.RainfallChart.Axes.Bottom.Labels.DateTimeFormat = "MMM"
+        Me.RainfallChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
@@ -739,7 +807,7 @@ Public Class MetGraphControl
         '
         '
         Me.MonthlyRainfallChart.Axes.Bottom.Labels.CustomSize = 40
-        Me.MonthlyRainfallChart.Axes.Bottom.Labels.DateTimeFormat = "MMM"
+        Me.MonthlyRainfallChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
@@ -1295,7 +1363,7 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Axes.Bottom.Labels.DateTimeFormat = "MMM"
+        Me.TemperatureChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
@@ -1854,7 +1922,7 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Axes.Bottom.Labels.DateTimeFormat = "MMM"
+        Me.RadiationChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
@@ -2439,37 +2507,25 @@ Public Class MetGraphControl
         '
         Me.MaximumRadiationLine.YValues.DataMember = "Y"
         '
-        'YearBox
-        '
-        Me.YearBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.YearBox.CausesValidation = False
-        Me.YearBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.YearBox.Location = New System.Drawing.Point(84, 50)
-        Me.YearBox.Maximum = New Decimal(New Integer() {2050, 0, 0, 0})
-        Me.YearBox.Minimum = New Decimal(New Integer() {1900, 0, 0, 0})
-        Me.YearBox.Name = "YearBox"
-        Me.YearBox.Size = New System.Drawing.Size(64, 21)
-        Me.YearBox.TabIndex = 16
-        Me.YearBox.Value = New Decimal(New Integer() {2000, 0, 0, 0})
-        '
         'MetGraphControl
         '
-        Me.Controls.Add(Me.YearBox)
         Me.Controls.Add(Me.TabControl)
         Me.Name = "MetGraphControl"
         Me.Size = New System.Drawing.Size(1015, 724)
         Me.Controls.SetChildIndex(Me.MyHelpLabel, 0)
         Me.Controls.SetChildIndex(Me.TabControl, 0)
-        Me.Controls.SetChildIndex(Me.YearBox, 0)
         Me.TabControl.ResumeLayout(False)
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage1.PerformLayout()
+        Me.YearPanel.ResumeLayout(False)
+        Me.YearPanel.PerformLayout()
+        CType(Me.YearStartBox, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NumYearsBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage2.ResumeLayout(False)
         Me.TabPage2.PerformLayout()
         Me.TabPage3.ResumeLayout(False)
         Me.TabPage5.ResumeLayout(False)
         Me.TabPage4.ResumeLayout(False)
-        CType(Me.YearBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -2487,15 +2543,21 @@ Public Class MetGraphControl
             StartDate = DataTableUtility.GetDateFromRow(MetData.Rows(0))
             EndDate = DataTableUtility.GetDateFromRow(MetData.Rows(MetData.Rows.Count - 1))
             PopulateRawData()
-            RemoveHandler YearBox.ValueChanged, AddressOf YearBox_ValueChanged
-            YearBox.Value = EndDate.Year
-            AddHandler YearBox.ValueChanged, AddressOf YearBox_ValueChanged
+            RemoveHandler YearStartBox.ValueChanged, AddressOf YearStartBoxChanged
+            RemoveHandler NumYearsBox.ValueChanged, AddressOf NumYearsBoxChanged
+            YearStartBox.Value = StartDate.Year
+            NumYearsBox.Value = 1
+            AddHandler YearStartBox.ValueChanged, AddressOf YearStartBoxChanged
+            AddHandler NumYearsBox.ValueChanged, AddressOf NumYearsBoxChanged
             RefreshAllCharts()
         End If
-        YearBox.Visible = (TabControl.SelectedIndex <> 0)
+        YearPanel.Visible = (TabControl.SelectedIndex <> 0)
+        YearPanel.Parent = Me
+        YearPanel.BringToFront()
     End Sub
 
     Public Sub SetFileName(ByVal FileName As String)
+
         FileName = Controller.ToRelativePath(FileName)
         If Me.FileName <> FileName Then
             XmlHelper.SetValue(Data, "filename", FileName)
@@ -2506,12 +2568,14 @@ Public Class MetGraphControl
     Public Function GetFileName() As String
         Return Me.FileName
     End Function
-    Private Sub YearBox_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub YearStartBoxChanged(ByVal sender As Object, ByVal e As System.EventArgs)
         RefreshAllCharts()
     End Sub
-
+    Private Sub NumYearsBoxChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NumYearsBox.ValueChanged
+        RefreshAllCharts()
+    End Sub
     Private Sub TabControl_TabIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TabControl.SelectedIndexChanged
-        YearBox.Visible = (TabControl.SelectedIndex <> 0)
+        YearPanel.Visible = (TabControl.SelectedIndex <> 0)
     End Sub
 
     Private Sub PopulateRawData()
@@ -2526,11 +2590,16 @@ Public Class MetGraphControl
         ' ----------------------------------------------------------------------------------
 
         If MetData.Rows.Count > 0 Then
-            YearlyData = DataTableUtility.FilterTableForYear(MetData, YearBox.Value)
+            YearlyData = DataTableUtility.FilterTableForYear(MetData, YearStartBox.Value, YearStartBox.Value + NumYearsBox.Value - 1)
 
             If YearlyData.Table.Columns.IndexOf("Rain") <> -1 Then
                 Dim Rainfall As Double() = DataTableUtility.ColumnValues(YearlyData, "rain")
-                RainfallLabel.Text = MathUtility.Sum(Rainfall).ToString("f1")
+                If NumYearsBox.Value = 1 Then
+                    RainfallLabel.Text = MathUtility.Sum(Rainfall).ToString("f1") + " mm for the year " + YearStartBox.Value.ToString
+                Else
+                    RainfallLabel.Text = MathUtility.Sum(Rainfall).ToString("f1") + " mm for the years " + YearStartBox.Value.ToString + " to " + (YearStartBox.Value + NumYearsBox.Value - 1).ToString
+                End If
+
             Else
                 RainfallLabel.Text = ""
             End If
@@ -2548,7 +2617,6 @@ Public Class MetGraphControl
             Else
                 PopulateSeries(MonthlyEvaporationLine, MonthlyData, "Evap")
             End If
-
         End If
     End Sub
 
@@ -2600,6 +2668,7 @@ Public Class MetGraphControl
         Next
 
     End Sub
+
 
 
 End Class

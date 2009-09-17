@@ -218,20 +218,20 @@ namespace CSGeneral
                              "[a year, month and day column]");
          }
 
-      static public DataView FilterTableForYear(DataTable Table, int Year)
+      static public DataView FilterTableForYear(DataTable Table, int StartYear, int EndYear)
          {
          // ---------------------------------------------------------------------
-         // Filter the specified data table for the specified year.
+         // Filter the specified data table for the specified year range.
          // ---------------------------------------------------------------------
          DataView View = new DataView();
          View.Table = Table;
          if (Table.Columns.IndexOf("year") != -1)
-            View.RowFilter = "Year = " + Year.ToString();
+            View.RowFilter = "Year >= " + StartYear.ToString() + " and Year <= " + EndYear;
 
          else if (Table.Columns.IndexOf("date") != -1)
             {
-            DateTime StartDate = new DateTime(Year, 1, 1);
-            DateTime EndDate = new DateTime(Year, 12, 31);
+            DateTime StartDate = new DateTime(StartYear, 1, 1);
+            DateTime EndDate = new DateTime(EndYear, 12, 31);
             View.RowFilter = "Date >= #" + StartDate.ToShortDateString() + "# and Date <= #" + EndDate.ToShortDateString() + "#";
             }
          else
