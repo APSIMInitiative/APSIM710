@@ -23,7 +23,11 @@ namespace CSUserInterface
       private Steema.TeeChart.Styles.Line SatLine;
       private Steema.TeeChart.Styles.Line DulLine;
       private Steema.TeeChart.Styles.Line LL15Line;
+      private Steema.TeeChart.Tools.DragPoint DragPoint;
       private Steema.TeeChart.Styles.Line InitialWaterLine;
+
+      public delegate void OnWaterChangeDelegate(int LayerNumber, double NewValue);
+      public event OnWaterChangeDelegate OnWaterChange;
 
       public WaterChartControl()
          {
@@ -55,6 +59,7 @@ namespace CSUserInterface
          this.LL15Line = new Steema.TeeChart.Styles.Line();
          this.AirDryLine = new Steema.TeeChart.Styles.Line();
          this.InitialWaterLine = new Steema.TeeChart.Styles.Line();
+         this.DragPoint = new Steema.TeeChart.Tools.DragPoint();
          this.SuspendLayout();
          // 
          // WaterChart
@@ -471,6 +476,7 @@ namespace CSUserInterface
          // 
          this.WaterChart.SubHeader.Shadow.Visible = false;
          this.WaterChart.TabIndex = 25;
+         this.WaterChart.Tools.Add(this.DragPoint);
          // 
          // 
          // 
@@ -766,6 +772,7 @@ namespace CSUserInterface
          // 
          this.InitialWaterLine.Pointer.Brush.Color = System.Drawing.Color.Green;
          this.InitialWaterLine.Pointer.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle;
+         this.InitialWaterLine.Pointer.Visible = true;
          this.InitialWaterLine.Title = "Initial water";
          // 
          // 
@@ -776,6 +783,13 @@ namespace CSUserInterface
          // 
          // 
          this.InitialWaterLine.YValues.DataMember = "Y";
+         // 
+         // DragPoint
+         // 
+         this.DragPoint.Cursor = System.Windows.Forms.Cursors.SizeWE;
+         this.DragPoint.Series = this.InitialWaterLine;
+         this.DragPoint.Style = Steema.TeeChart.Tools.DragPointStyles.X;
+         this.DragPoint.Drag += new Steema.TeeChart.Tools.DragPointEventHandler(this.OnDragInitWater);
          // 
          // WaterChartControl
          // 
@@ -883,6 +897,19 @@ namespace CSUserInterface
                TickedCrops.Add(MySoil.Crops[s - 5]);
             }
          Configuration.Instance.SetSettings("CropsOnGraph", TickedCrops);
+         }
+
+      private void OnDragInitWater(Steema.TeeChart.Tools.DragPoint sender, int index)
+         {
+         // -----------------------------------------------
+         // User is dragging a initwater point - send out
+         // an event so that our parent form can subscribe
+         // to the event and update their table.
+         // -----------------------------------------------
+         Steema.TeeChart.Tools.DragPoint dp = (Steema.TeeChart.Tools.DragPoint)sender;
+         double NewValue = InitialWaterLine.XValues[index];
+         if (OnWaterChange != null)
+            OnWaterChange.Invoke(index, NewValue);
          }
 
 
