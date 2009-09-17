@@ -240,9 +240,8 @@ bool ControlFileConverter::evaluate(const string& expression, string& value) con
 
    // look for a macro.
    if (value.find("%controlfilenamebase%") != string::npos)
-      {
-      Replace_all(value, "%controlfilenamebase%",
-                  Path(con->getFileName()).Get_name_without_ext().c_str());
+      {       Replace_all(value, "%controlfilenamebase%",
+                  fileRoot(fileTail(con->getFileName())).c_str());
       return true;
       }
 

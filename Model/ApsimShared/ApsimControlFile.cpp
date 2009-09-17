@@ -185,10 +185,7 @@ void parseModuleLine(const string& controlFileName, const string& moduleLine,
       p.instanceName = instanceName;
       if (instanceName == "")
          {
-         if (moduleName.find('.') != string::npos)
-            p.instanceName = Path(moduleName).Get_name_without_ext();
-         else
-            p.instanceName = moduleName;
+         p.instanceName = fileRoot(moduleName);
          }
       p.fixUpModuleName();
       paramFiles.push_back(p);
@@ -1045,7 +1042,7 @@ bool ApsimControlFile::moveParametersOutOfCon(const std::string& section,
    // if parFileToUse is blank then ask user for a file to put all
    // parameters into.
 
-   if (!Path(parFileForConParams.c_str()).Exists())
+   if (!fileExists(parFileForConParams))
       {
       ofstream dummy(parFileForConParams.c_str());
       dummy.close();
