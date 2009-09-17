@@ -23,6 +23,7 @@ class Arbitrator : public plantThing
       Arbitrator(ScienceAPI& scienceAPI, plantInterface& p);
       virtual ~Arbitrator(void) {};
 
+      virtual void zeroAllGlobals();
       void partitionDM();
       void doDmRetranslocate(plantPart* stemPart, plantPart* leafPart,
                                      plantPart* fruitPart);
