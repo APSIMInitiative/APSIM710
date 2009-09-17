@@ -755,7 +755,7 @@ endif
           <category name="Fertiliser application details" />
           <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
           <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
-          <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
         </ui>
       </manager>
       <manager name="Fertilise on fixed date">
@@ -776,7 +776,7 @@ endif
           <category name="Fertiliser application details" />
           <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
           <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">150</fert_amount>
-          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
         </ui>
       </manager>
       <manager name="Fertilise in a zadok stage window">
@@ -817,7 +817,7 @@ endif
           <category name="Fertiliser application details" />
           <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
           <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">25</fert_amount>
-          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
         </ui>
       </manager>
       <manager name="Fertilise on fixed date - top up">
@@ -835,7 +835,7 @@ endif
           <fert_criteria type="text" description="Amount of N required in top 3 layers (kg/ha) : ">1000</fert_criteria>
           <category name="Fertiliser application details" />
           <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
-          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
         </ui>
       </manager>
       <manager name="Fertilise on days after sowing - top up">
@@ -854,7 +854,7 @@ endif
           <fert_criteria type="text" description="Amount of N required in top 3 layers (kg/ha) : ">1000</fert_criteria>
           <category name="Fertiliser application details" />
           <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
-          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
         </ui>
       </manager>
       <manager name="Fertilise incrop on critical NO3 level- top up">
@@ -876,7 +876,7 @@ endif
           <fert_critical type="text" description="Critical Amount of NO3 in top 3 layers (kg/ha) : ">100</fert_critical>
           <category name="Fertiliser application details" />
           <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
-          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">NO3_N</fert_type>
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">NO3_N</fert_type>
         </ui>
       </manager>
       <manager name="Irrigate at sowing">
@@ -1811,7 +1811,7 @@ public class Script : Instance
             <category name="TopDress fertiliser application" />
             <fert_days_TopDress description="Enter number of days after sowing to apply top-dress fertiliser (days)" type="text">60</fert_days_TopDress>
             <fert_amount_TopDress description="Amount of TopDress fertiliser (kg/ha)" type="text">0</fert_amount_TopDress>
-            <fert_type_TopDress description="Type" type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea">urea_N</fert_type_TopDress>
+            <fert_type_TopDress description="Type" type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p">urea_N</fert_type_TopDress>
             <category name="Pre-sowing manure application" />
             <surfaceommodule_pre_sow type="modulename" description="Module used to apply the manure : ">surface organic matter</surfaceommodule_pre_sow>
             <manure_days_pre_sow description="Enter number of days before window to apply pre-crop manure (days)" type="text">30</manure_days_pre_sow>
@@ -1824,7 +1824,7 @@ public class Script : Instance
             <fert_amount_pre_sow description="Amount of pre-crop fertiliser (kg/ha)" type="text">0</fert_amount_pre_sow>
             <fert_criteria_pre_sow description="Don't add fertiliser if pre-crop N in top 2 layers exceeds (kg/ha)" type="text">1000</fert_criteria_pre_sow>
             <totn_pre_sow description=" OR  Amount of pre-crop N required in top 3 layers (kg/ha)" type="text">0</totn_pre_sow>
-            <fert_type_pre_sow description="Type (NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea)" type="text">urea_N</fert_type_pre_sow>
+            <fert_type_pre_sow description="Type (NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p)" type="text">urea_N</fert_type_pre_sow>
             <category name="Tillage components" />
             <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">surface organic matter</surfaceommodule>
             <soilmodule type="modulename" description="Name of your soil module : " />
