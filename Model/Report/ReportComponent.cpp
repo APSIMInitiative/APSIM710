@@ -387,14 +387,14 @@ void ReportComponent::createVariable(const string& name)
    while (currTok < tokens.size())
       {
       keyword = tokens[currTok++];
-      if (keyword == "format")
+      if (Str_i_Eq(keyword, "format"))
          {
          format = tokens[currTok++];
          To_upper(format);
          }
-      else if (keyword == "units")
+      else if (Str_i_Eq(keyword, "units"))
          units = tokens[currTok++];
-      else if (keyword == "as")
+      else if (Str_i_Eq(keyword, "as"))
          alias = tokens[currTok++];
       }
 
