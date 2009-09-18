@@ -141,7 +141,7 @@ namespace UIUtility
         {
             if (((Grid.Cells[RowIndex, ColumnIndex].Value != null)))
             {
-                return (string)Grid.Cells[RowIndex, ColumnIndex].Value;
+                return (string)Grid.Cells[RowIndex, ColumnIndex].Value.ToString();
             }
             else
             {

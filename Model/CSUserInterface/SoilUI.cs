@@ -597,6 +597,10 @@ namespace CSUserInterface
             MySoil.Site = GridUtility.GetCellAsString(General, 1, 3);
             MySoil.ApsoilNumber = GridUtility.GetCellAsString(General, 1, 5);
             MySoil.Classification = GridUtility.GetCellAsString(General, 1, 6);
+            if (MySoil.Classification.Length > 30)
+               MessageBox.Show("The soil classification is greater than 30 characters. " +
+                               "The APSIM soil nitrogen component will produce an error when " +
+                               "the simulation is run.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             MySoil.Latitude = Convert.ToDouble(GridUtility.GetCellAsString(General, 1, 7));
             MySoil.Longitude = Convert.ToDouble(GridUtility.GetCellAsString(General, 1, 8));
             MySoil.LocationAccuracy = GridUtility.GetCellAsString(General, 1, 9);
