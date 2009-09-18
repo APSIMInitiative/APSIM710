@@ -1,17 +1,16 @@
-<folder name="Simulations" version="15">
+<folder version="18" name="Simulations">
   <simulation name="WaterSupply">
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
-    <clock name="clock">
+    <clock>
       <start_date name="start_date" description="Select the start date of the simulation" type="date">1/01/1940</start_date>
       <end_date name="end_date" description="Select the end date of the simulation" type="date">31/12/1942</end_date>
     </clock>
-    <summaryfile name="summaryfile">
+    <summaryfile>
       <filename name="filename">Continuous Wheat Simulation.sum</filename>
     </summaryfile>
     <area name="paddock">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Sowing rule">
           <script>
@@ -80,7 +79,7 @@
           </ui>
         </manager>
       </folder>
-      <fertiliser name="fertiliser" />
+      <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>
         <type type="list" description="Organic Matter type" listvalues="inert,manure,fym,bambatsi,barley,broccoli,camaldulensis,canola,chickpea,cowpea,danthonia,globulus,grandis,fababean,fieldpea,grass,lablab,lucerne,lupin,maize,millet,mucuna,mungbean,horsegram,navybean,cotton,orobanche,peanut,pigeonpea,rice,soybean,sorghum,stylo,sugar,sunflower,sweetcorn,sweetsorghum,weed,wheat">wheat</type>
@@ -89,7 +88,7 @@
         <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
       </surfaceom>
       <wheat />
-      <outputfile name="outputfile">
+      <outputfile>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
           <variable name="wheat.biomass" description="Biomass" array="?" units="kg/ha" />
@@ -103,8 +102,7 @@
           <variable name="irrigation" array="No" description="Irrigation entering the profile (mm)" />
           <variable name="logic.deficit" />
         </variables>
-        <events name="Reporting Frequency">
-        </events>
+        <events name="Reporting Frequency" />
       </outputfile>
       <soil name="Jimbour,Waco (#016)">
         <Site>Jimbour</Site>
@@ -113,71 +111,6 @@
         <SoilType>Black Vertosol</SoilType>
         <NearestTown>Jimbour, Q 4352</NearestTown>
         <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
-        <InitWater>
-          <PercentMethod>
-            <Percent>0.22</Percent>
-            <Distributed>Filled from top</Distributed>
-          </PercentMethod>
-        </InitWater>
-        <InitNitrogen>
-          <profile>
-            <layer>
-              <no3>6.503</no3>
-              <nh4>0.599</nh4>
-              <thickness>150</thickness>
-            </layer>
-            <layer>
-              <no3>2.101</no3>
-              <nh4>0.100</nh4>
-              <thickness>150</thickness>
-            </layer>
-            <layer>
-              <no3>2.101</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-            <layer>
-              <no3>1.701</no3>
-              <nh4>0.100</nh4>
-              <thickness>300</thickness>
-            </layer>
-          </profile>
-        </InitNitrogen>
         <profile>
           <layer>
             <thickness>150</thickness>
@@ -612,6 +545,71 @@
         <SoilCn>12.5</SoilCn>
         <EnrACoeff>7.4</EnrACoeff>
         <EnrBCoeff>0.2</EnrBCoeff>
+        <InitWater>
+          <PercentMethod>
+            <Percent>0.22</Percent>
+            <Distributed>Filled from top</Distributed>
+          </PercentMethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <no3>6.503</no3>
+              <nh4>0.599</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.101</no3>
+              <nh4>0.100</nh4>
+              <thickness>150</thickness>
+            </layer>
+            <layer>
+              <no3>2.101</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+            <layer>
+              <no3>1.701</no3>
+              <nh4>0.100</nh4>
+              <thickness>300</thickness>
+            </layer>
+          </profile>
+        </InitNitrogen>
       </soil>
       <manager name="Logic">
         <script>
@@ -655,7 +653,7 @@ endif
 outputfile do_output</text>
         </script>
       </manager>
-      <channel name="channel">
+      <channel>
         <max_available_water description="Capacity (ML)">1000</max_available_water>
         <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
         <max_pump description="Maximum pump delivery volume per day (ML/day)">200</max_pump>
@@ -664,7 +662,7 @@ outputfile do_output</text>
         <allocation_renewal_day description="Day of year on which allocation is granted">180</allocation_renewal_day>
         <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
       </channel>
-      <bore name="bore">
+      <bore>
         <max_available_water description="Capacity (ML)">100</max_available_water>
         <init_available_water description="Supply volume available at start of simulation (ML)">50</init_available_water>
         <max_pump description="Maximum pump delivery volume per day (ML/day)">200</max_pump>
@@ -682,7 +680,7 @@ outputfile do_output</text>
         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
       </irrigation>
-      <dam name="dam">
+      <dam>
         <source_type type="list" listvalues="dam_gully,dam_ring,dam_exc,sump" description="Source Type">dam_gully</source_type>
         <max_available_water description="Capacity (ML)">100</max_available_water>
         <max_area description="Storage water surface area at capacity (ha)">5</max_area>
@@ -705,7 +703,25 @@ outputfile do_output</text>
     </area>
   </simulation>
   <simulation name="Multipaddock Watersupply">
-    <memo name="Notes">e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzMwODF7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMjQgV2hhdCBzdGlsbCBuZWVkcyB0byBiZSBkb25lXHBhcg0KLSBjYW4ndCBkcmFnJmRyb3AgYSBtYW5hZ2VyIGZvbGRlciBpbnRvIHRvcCBsZXZlbCBccGFyDQpccGFyDQotIGFjY3VtIGlzIHN0dWZmZWQgLSB0eXBlcy54bWwgcHV0cyBvbmUgaW4gZWFjaCBwYWRkb2NrLlxwYXINClxwYXINCi0gcGFkZG9ja19pc19mYWxsb3cgaXMgc3R1ZmZlZCAtIG5lZWRzIG5hbWUgb2YgcGFkZG9jayBpbiBxdWVzdGlvbiAoYXMgb3B0aW9uYWwgYXJndW1lbnQ/KVxwYXINClxwYXINCi0gdG9wIGxldmVsIG91dHB1dGZpbGUgbmVlZHMgaGFuZGxlIHBhZGRvY2tzIGJldHRlciAtIHRoZSBjb21wb25lbnQgZmlsdGVyIG5lZWRzIGFsbCBtb2R1bGVzIGluIGFsbCBwYWRkb2Nrc1xwYXINClxwYXINCi0gcmVwb3J0IG1vZHVsZSAob3V0cHV0ZmlsZSkgc3BsaXRzIHNwYWNlcyBpbiB2YXJpYWJsZXMgdGhlIHdyb25nIHdheSAtIHVzZXMgYSBzdHJpbmdUb2tlbmlzZXIgY2xhc3MgdGhhdCBkb2Vzbid0IHJlc3BlY3QgcXVvdGVzLlxwYXINClxwYXINCi0gc29yZ2h1bSBicm9rZW4gKENJLzIgcHJvYmxlbSB3aXRoIGV2ZW50cz8pIGFuZCB3b250IHJ1blxwYXINClxwYXINCi0gbmVlZCB0byBiZSBhYmxlIHRvIHNlbGVjdCBhIHBhZGRvY2sgaW4gdGhlIGdlbmVyaWNVSSAoZWcgUDEgV2hlYXQgU293aW5nIHJ1bGUpIGZyb20gYSBkcm9wZG93biwgYW5kIGZpbmQgYSBub24tZG90dGVkIG5hbWVccGFyDQpccGFyDQotIG1hbmFnZXIgY2FuJ3QgZ2V0IGl0cyBoZWFkIGFyb3VuZCBtb2R1bGVzIHdpdGggc3BhY2VzIGluIHRoZWlyIG5hbWVzIChlZyB4ID0gJ3dhdGVyIGJhbGFuY2UnLmR1bF9kZXAoKSlccGFyDQpccGFyDQpccGFyDQpcZnMxN1xwYXINCn0NCg==</memo>
+    <memo name="Notes"><![CDATA[What still needs to be done
+- can't drag&drop a manager folder into top level 
+
+- accum is stuffed - types.xml puts one in each paddock.
+
+- paddock_is_fallow is stuffed - needs name of paddock in question (as optional argument?)
+
+- top level outputfile needs handle paddocks better - the component filter needs all modules in all paddocks
+
+- report module (outputfile) splits spaces in variables the wrong way - uses a stringTokeniser class that doesn't respect quotes.
+
+- sorghum broken (CI/2 problem with events?) and wont run
+
+- need to be able to select a paddock in the genericUI (eg P1 Wheat Sowing rule) from a dropdown, and find a non-dotted name
+
+- manager can't get its head around modules with spaces in their names (eg x = 'water balance'.dul_dep())
+
+
+]]></memo>
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
@@ -1014,7 +1030,6 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
       <rainfall_salt_conc type="text" description="Rainfall chloride concentration (ppm)">20</rainfall_salt_conc>
     </dam>
     <area name="paddock1">
-      <registrations name="global" />
       <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
@@ -1547,7 +1562,6 @@ if {[apsimGet ${paddockName}InCrop] == "yes" } {
       </irrigation>
     </area>
     <area name="paddock2">
-      <registrations name="global" />
       <fertiliser />
       <surfaceom name="surface organic matter">
         <PoolName description="Organic Matter pool name">wheat</PoolName>

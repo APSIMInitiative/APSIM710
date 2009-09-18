@@ -1,6 +1,6 @@
-<folder version="15" name="Simulations">
+<folder version="18" name="Simulations">
   <simulation name="Upland Aus">
-    <memo>e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMTcgVXBsYW5kIGJyb2FkY2FzdCAtIGxvY2FsIGN1bHRpdmFyIC0gc2hvcnQgc2Vhc29uIGxvdyB5aWVsZGluZy5ccGFyDQp9DQo=</memo>
+    <memo>Upland broadcast - local cultivar - short season low yielding.</memo>
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
     </metfile>
@@ -19,7 +19,6 @@
       <filename name="filename">Blank Simulation.sum</filename>
     </summaryfile>
     <area name="paddock">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Rice sowing rule">
           <script name="init">
@@ -545,213 +544,94 @@ endif
         <events name="Reporting Frequency">
           <event name="daily" description="End of daily simulation time step" />
         </events>
-        <SplitReport name="Yield">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\UplandAus Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Bar</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>wso</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Biomass">
-          <Page name="Data" Left="0" Top="0" Width="1019" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>wagt</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="1019" Height="415">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Water">
-          <Page name="Data" Left="0" Top="0" Width="1019" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Bar</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>esw</Y>
-              <YRight>water_table</YRight>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="1019" Height="415">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="629" Height="363">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Nitrogen">
-          <Page name="Data" Left="0" Top="0" Width="1019" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>ancr</Y>
-              <Y>TopsTotalN</Y>
-              <Y>NO3()</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="1019" Height="404">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Stress">
-          <Page name="Data" Left="0" Top="0" Width="1019" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>ldstrs</Y>
-              <Y>lestrs</Y>
-              <Y>lrstrs</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="1019" Height="415">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="483" Height="373">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Irrigation">
-          <Page name="Data" Left="0" Top="0" Width="1019" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>irrig</Y>
-              <YRight>evap_amount</YRight>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="1019" Height="404">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Residue">
-          <Page name="Data" Left="0" Top="0" Width="1019" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>surfaceom_wt</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="1019" Height="404">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
+        <Graph name="Yield">
+          <Plot>
+            <SeriesType>Bar</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wso</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\UplandAus Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Biomass">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wagt</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Water">
+          <Plot>
+            <SeriesType>Bar</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>esw</Y>
+            <YRight>water_table</YRight>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Nitrogen">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ancr</Y>
+            <Y>TopsTotalN</Y>
+            <Y>NO3()</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Stress">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ldstrs</Y>
+            <Y>lestrs</Y>
+            <Y>lrstrs</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Irrigation">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>irrig</Y>
+            <YRight>evap_amount</YRight>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Residue">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>surfaceom_wt</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\Upland_Aus Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
       </outputfile>
     </area>
   </simulation>
   <simulation name="Paddy Transplanted Aman">
-    <memo>e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMTcgUGFkZHkgcmljZSAtIFRyYW5zcGxhbnRlZCAtIG1pZCBzZWFzb24gLSB1c2luZyBhIEJSMjMgY3VsdGl2YXIgZGVzY3JpYmVkIGluIHRoZSBJTkkuXHBhcg0KfQ0K</memo>
+    <memo>Paddy rice - Transplanted - mid season - using a BR23 cultivar described in the INI.</memo>
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
     </metfile>
@@ -770,7 +650,6 @@ endif
       <filename name="filename">Blank Simulation.sum</filename>
     </summaryfile>
     <area name="paddock">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Rice sowing rule">
           <script name="init">
@@ -1300,182 +1179,96 @@ endif
         <events name="Reporting Frequency">
           <event name="daily" description="End of daily simulation time step" />
         </events>
-        <SplitReport name="Yield">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>wso</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Biomass">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>wagt</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Water">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Bar</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>esw</Y>
-              <YRight>water_table</YRight>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="629" Height="363">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Nitrogen">
-          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-wheat Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>ancr</Y>
-              <Y>tnsoil</Y>
-              <Y>TopsTotalN</Y>
-              <Y>no3()</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Stress">
-          <Page name="Data" Left="0" Top="0" Width="946" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-T_Aman-wheat Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>ldstrs</Y>
-              <Y>lestrs</Y>
-              <Y>lrstrs</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="946" Height="395">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="483" Height="373">
-              <Source>XY</Source>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Irrigation">
-          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aman Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>irrig</Y>
-              <YRight>evap_amount</YRight>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Residue">
-          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-T_Aman-wheat Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>surfaceom_wt</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-            </Chart>
-          </Page>
-        </SplitReport>
+        <Graph name="Yield">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wso</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Biomass">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wagt</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Water">
+          <Plot>
+            <SeriesType>Bar</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>esw</Y>
+            <YRight>water_table</YRight>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\PaddyTransplantedAman Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Nitrogen">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ancr</Y>
+            <Y>tnsoil</Y>
+            <Y>TopsTotalN</Y>
+            <Y>no3()</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-wheat Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Stress">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ldstrs</Y>
+            <Y>lestrs</Y>
+            <Y>lrstrs</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-T_Aman-wheat Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Irrigation">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>irrig</Y>
+            <YRight>evap_amount</YRight>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\DATA\Temp\Bangladesh\2008\Rice\T_Aman Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Residue">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>surfaceom_wt</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\DATA\Temp\Bangladesh\2008\Rice\T_Aus-T_Aman-wheat Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
       </outputfile>
     </area>
   </simulation>
   <simulation name="Paddy Transplated Rotation">
-    <memo>e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZvbnR0Ymx7XGYwXGZuaWxcZmNoYXJzZXQwIE1pY3Jvc29mdCBTYW5zIFNlcmlmO319DQpcdmlld2tpbmQ0XHVjMVxwYXJkXGYwXGZzMTcgVHJhbnNwbGFudGVkIC0gZWFybHkgc2Vhc29uIC0gdXNpbmcgYSBCUjMgY3VsdGl2YXIgZGVzY3JpYmVkIGluIHRoZSBJTkkuXHBhcg0KICAgICAgICAgICAgICAgICAgICAtIG1pZCBzZWFzb24gLSBBdWd1c3QgLSBCUjIzXHBhcg0KfQ0K</memo>
+    <memo>Transplanted - early season - using a BR3 cultivar described in the INI.
+                    - mid season - August - BR23</memo>
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
     </metfile>
@@ -1494,7 +1287,6 @@ endif
       <filename name="filename">Blank Simulation.sum</filename>
     </summaryfile>
     <area name="paddock">
-      <registrations name="global" />
       <folder name="Manager folder">
         <manager name="Rice sowing rule">
           <script name="init">
@@ -2033,185 +1825,90 @@ endif
         <events name="Reporting Frequency">
           <event name="daily" description="End of daily simulation time step" />
         </events>
-        <SplitReport name="Yield">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>wso</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Biomass">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>wagt</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="687" Height="348">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Water">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Bar</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>esw</Y>
-              <YRight>water_table</YRight>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="676" Height="566">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="629" Height="363">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Nitrogen">
-          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>ancr</Y>
-              <Y>tnsoil</Y>
-              <Y>TopsTotalN</Y>
-              <Y>no3()</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Stress">
-          <Page name="Data" Left="0" Top="0" Width="946" Height="256">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>ldstrs</Y>
-              <Y>lestrs</Y>
-              <Y>lrstrs</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="259" Width="946" Height="395">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="483" Height="373">
-              <Source>XY</Source>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Irrigation">
-          <Page name="Data" Left="0" Top="0" Width="946" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>irrig</Y>
-              <YRight>evap_amount</YRight>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="946" Height="384">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-            </Chart>
-          </Page>
-        </SplitReport>
-        <SplitReport name="Residue">
-          <Page name="Data" Left="0" Top="0" Width="676" Height="267">
-            <ApsimFileReader name="OutputFile" Visible="no" Left="0" Top="0" Width="318" Height="75">
-              <FileName type="filenames">C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
-            </ApsimFileReader>
-            <XY Left="12" Top="6" Width="357" Height="250">
-              <Source>OutputFile</Source>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <Colour>-65536</Colour>
-              <X>Date</X>
-              <Y>surfaceom_wt</Y>
-            </XY>
-          </Page>
-          <Page name="Report" Left="0" Top="270" Width="676" Height="555">
-            <Chart Left="3" Top="3" RightMargin="5" BottomMargin="5" Width="623" Height="374">
-              <Source>XY</Source>
-              <Properties>
-                <Axes>
-                  <LeftAxis />
-                  <BottomAxis />
-                  <TopAxis />
-                  <RightAxis />
-                </Axes>
-              </Properties>
-            </Chart>
-          </Page>
-        </SplitReport>
+        <Graph name="Yield">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wso</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Biomass">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wagt</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Water">
+          <Plot>
+            <SeriesType>Bar</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>esw</Y>
+            <YRight>water_table</YRight>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Nitrogen">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ancr</Y>
+            <Y>tnsoil</Y>
+            <Y>TopsTotalN</Y>
+            <Y>no3()</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Stress">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ldstrs</Y>
+            <Y>lestrs</Y>
+            <Y>lrstrs</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Irrigation">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>irrig</Y>
+            <YRight>evap_amount</YRight>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\DATA\Temp\Bangladesh\2008\Rice\test\T_Aus-T_Aman Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="Residue">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>surfaceom_wt</Y>
+            <GDApsimFileReader name="OutputFile">
+              <FileName>C:\hol353\Desktop\rice\PaddyTransplatedRotation Output.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
       </outputfile>
     </area>
   </simulation>
