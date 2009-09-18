@@ -271,6 +271,10 @@ namespace ApsimToSim
                ApsimToSimContents = ApsimToSimContents.Replace("[soil.RockP]", WriteLayeredSoilValues(SoilInPaddock.RockP));
                ApsimToSimContents = ApsimToSimContents.Replace("[soil.Sorption]", WriteLayeredSoilValues(SoilInPaddock.Sorption));
 
+               ApsimToSimContents = ApsimToSimContents.Replace("[soil.RootCP]", SoilInPaddock.RootCP.ToString());
+               ApsimToSimContents = ApsimToSimContents.Replace("[soil.RateDissolRock]", SoilInPaddock.RateDissolRock.ToString());
+               ApsimToSimContents = ApsimToSimContents.Replace("[soil.RateLossAvail]", SoilInPaddock.RateLossAvail.ToString());
+
                }
             }
          return ApsimToSimContents;
