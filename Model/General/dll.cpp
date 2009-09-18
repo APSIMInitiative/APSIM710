@@ -65,7 +65,7 @@ void closeDLL(void* handle)
    #ifdef __WIN32__
       FreeLibrary((HINSTANCE)handle);
    #else
-      dlclose(handle);
+      //dlclose(handle);
    #endif
    }
 

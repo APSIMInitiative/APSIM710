@@ -132,7 +132,6 @@ void Computation::deleteInstance(void) const
 //    dph 22/2/2000
 
 // ------------------------------------------------------------------
-#include <iostream>
 bool Computation::loadComponent(const std::string& filename,
                                 std::string componentInterfaceExecutable) throw (std::runtime_error)
    {
@@ -157,8 +156,10 @@ bool Computation::loadComponent(const std::string& filename,
 #else
        wrapperDll = (void (*)(char *))dlsym(handle, "wrapperDLL");
 #endif
+
        if (wrapperDll == NULL)
-          throw std::runtime_error("Cannot find entry point 'wrapperDll' in dll: " + filename);
+          throw std::runtime_error("Cannot find entry point 'wrapperDll' in dll: " + executableFileName);
+
        // Go get the wrapperDll filename.
        char wrapperFileName[1024];
        (*wrapperDll)(&wrapperFileName[0]);
@@ -166,49 +167,17 @@ bool Computation::loadComponent(const std::string& filename,
 
        if (componentInterface != "")
           {
-#ifdef __WIN32__
-          char oldwd[MAX_PATH];
-          getcwd(oldwd, MAX_PATH);
-
           // This is a wrapped dll - it has no "entry points". Load the wrapper.
-          FreeLibrary(handle);
+          closeDLL(handle);
+
+          componentInterface = getExecutableDirectory() + "/" + componentInterface;
+#ifdef __WIN32__
           if (Str_i_Eq(fileTail(componentInterface), "piwrapper.dll"))
              {
-             chdir(fileDirName(executableFileName).c_str());
-             handle = LoadLibrary(componentInterface.c_str());
+             //chdir(fileDirName(executableFileName).c_str());?? Make sure this still works in 7.1!!!! FIXME
              }
-          else
-             {
-             componentInterface = getExecutableDirectory() + "\\" + componentInterface;
-             handle = loadDLL(componentInterface.c_str());
-             }
-          if (handle == NULL)
-             {
-             // Get windows error message.
-             LPVOID lpMsgBuf;
-             FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-                      NULL,
-                      GetLastError(),
-                      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                      (LPTSTR) &lpMsgBuf,
-                      0,
-                      NULL
-                      );
-             string errorMessage = ("Cannot load DLL: " + componentInterface + ".\n  " + (LPTSTR) lpMsgBuf);
-             LocalFree( lpMsgBuf );
-             throw runtime_error(errorMessage);
-             }
-          chdir(oldwd);
-#else
-          const char* dlError;
-          int return_code;
-          return_code = dlclose(handle);
-          componentInterface = getExecutableDirectory() + "/" + componentInterface;
-          handle = dlopen(componentInterface.c_str(), RTLD_NOW|RTLD_LOCAL);
-          dlError = dlerror();
-          if ( dlError )
-            throw std::runtime_error(std::string(dlError));
 #endif
+          handle = loadDLL(componentInterface.c_str());
           }
        else
           {
@@ -221,8 +190,7 @@ bool Computation::loadComponent(const std::string& filename,
    (FARPROC) deleteInstanceProc = GetProcAddress(handle, "deleteInstance");
    (FARPROC) messageToLogicProc = GetProcAddress(handle, "messageToLogic");
 #else
-
-   createInstanceProc = (void (*)(const char*,
+   createInstanceProc = (void (*)(const char*,
               const unsigned int*,
               const unsigned int*,
               const int*,
@@ -257,20 +225,6 @@ bool Computation::loadComponent(const std::string& filename,
 // ------------------------------------------------------------------
 void Computation::unloadComponent(void)
    {
-#ifdef __WIN32__
-  if (handle != 0) {
-    FreeLibrary(handle);
-  }
-#else
-  int return_code;
-  const char *dlError;   /* Pointer to error string for Linux */
-
-  if ( handle != 0) {
-    return_code = dlclose(handle);
-    dlError = dlerror();
-    if ( return_code ) {
-      throw runtime_error(dlError);
-    }
-  }
-#endif
+   if (handle) 
+     closeDLL(handle);
    }

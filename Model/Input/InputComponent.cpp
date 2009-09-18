@@ -231,7 +231,7 @@ date InputComponent::advanceToTodaysData(void)
       else
          return data.getDate();
       }
-   catch (const exception& err)
+   catch (const std::exception& err)
       {
       string msg = err.what();
       msg +=". This error occurred while trying to read from input file " + fileName;
@@ -339,7 +339,7 @@ void InputComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID,
             newmet.vp = getVariableValue("vp");
             newmets.push_back(newmet);
             }
-         catch (const exception&)
+         catch (const std::exception&)
             {
             string msg = "Cannot find patch data in INPUT file for date ";
             msg += to_simple_string(dataDate).c_str();

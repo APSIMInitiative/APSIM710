@@ -8,7 +8,7 @@
 #    LIBPATH
 #    LIBS
 #    OBJS
-#    PROJECTTYPE = exe or dll
+#    PROJECTTYPE = exe, libdll or dll
 #    DEBUG
 #    PRECOMPILEDHEADERS
 #    VCL
@@ -40,15 +40,8 @@ LFLAGS := -D""  -x -Gn -Gi
 SYSOBJS := Memmgr.Lib
 
 ifeq ($(PROJECTTYPE),exe)
-   DEFFILE := nul
-   IMPFILE := nul
-   PROJECT := $(PROJECT).exe
    LFLAGS := $(LFLAGS) -Tpe
-
 else
-   DEFFILE := $(PROJECT).def
-   IMPFILE := $(PROJECT).imp
-   PROJECT := $(PROJECT).dll
    LFLAGS := $(LFLAGS) -Tpd
 endif
 
@@ -121,11 +114,14 @@ SOURCEOBJS:=	$(SRC:.cpp=.obj)
 #OBJSNODIR := $(foreach obj,$(SOURCEOBJS),$(notdir $(obj)))
 
 
-$(PROJECT): $(PREBUILD) $(SOURCEOBJS)
 ifeq ($(PROJECTTYPE),exe)
-	$(LD) $(LFLAGS) -L$(LIBPATH) $(SOURCEOBJS) $(SYSOBJS), $(APSIM)\Model\$(PROJECT),, $(LIBS), , $(RES)
+$(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS)
+	$(LD) $(LFLAGS) -L$(LIBPATH) $(SOURCEOBJS) $(SYSOBJS), $(APSIM)\Model\$(PROJECT).exe,, $(LIBS), , $(RES)
 else
-	$(LD) $(LFLAGS) -L$(LIBPATH) $(SOURCEOBJS) $(SYSOBJS), $(APSIM)\Model\$(PROJECT),, $(LIBS), , $(RES)
-	$(IMPDEF) $(DEFFILE) $(APSIM)\Model\$(PROJECT)
-	if exist $(APSIM)\Model\def2imp.exe $(APSIM)\Model\def2imp.exe $(DEFFILE) $(IMPFILE)
+$(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS)
+	$(LD) $(LFLAGS) -L$(LIBPATH) $(SOURCEOBJS) $(SYSOBJS), $(APSIM)\Model\$(PROJECT).dll,, $(LIBS), , $(RES)
+	$(IMPDEF) $(PROJECT).def $(APSIM)\Model\$(PROJECT)
+	if exist $(APSIM)\Model\def2imp.exe $(APSIM)\Model\def2imp.exe $(PROJECT).def $(PROJECT).imp
 endif
+
+

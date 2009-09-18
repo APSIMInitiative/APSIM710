@@ -26,6 +26,6 @@ SRC =   ApsimShared.cpp \
 	Phi_functions.cpp
 
 LIBS = General
-PROJECTTYPE = dll
+PROJECTTYPE = libdll
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

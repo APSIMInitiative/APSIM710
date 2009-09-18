@@ -2,12 +2,8 @@
 // Wrapper dll for fortran routines.
 // Keeps pointers to fortran entry points (Main(), do_init1() etc..
 // and calls them when reqd.
-#ifndef __WIN32__
-   #include <dlfcn.h>
-#else
-   #include <windows.h>  // for LoadLibrary
-#endif
 #include <ComponentInterface/ScienceAPI.h>
+#include <General/dll.h>
 #include "FORTRANComponentWrapper.h"
 
 static const char* nullType = "<type/>";
@@ -46,25 +42,16 @@ FortranWrapper::~FortranWrapper(void)
    {
    // get FORTRAN to release memory blocks.
    const unsigned int doAllocate = false;
-   const char *dlError;
    swapInstanceIn();
    alloc_dealloc_instance(&doAllocate);
 
    if (libraryHandle)
-   {
-#ifdef __WIN32__
-      FreeLibrary(libraryHandle);
-#else
-      int return_code;
-      return_code = dlclose(libraryHandle);
-      if ( return_code ) {
-	dlError = dlerror();
-	throw runtime_error(dlError);
+      {
+      closeDLL (libraryHandle);
+      libraryHandle = NULL;
       }
-#endif
    }
-   }
-
+   
 void FortranWrapper::setup(void)
    {
    setupFortranDll();
@@ -83,34 +70,15 @@ void FortranWrapper::setupFortranDll(void)
    my_Main = NULL;
    my_alloc_dealloc_instance = NULL;
    my_respondToEvent = NULL;
-   const char *dlError = NULL;
 
-#ifdef __WIN32__
-   libraryHandle = LoadLibrary(this->getDllName().c_str());
-#else
-   libraryHandle = dlopen(this->getDllName().c_str(), RTLD_NOW | RTLD_LOCAL);
-   dlError = dlerror();
-#endif
+   libraryHandle = loadDLL(this->getDllName().c_str());
 
-   if (libraryHandle != NULL || dlError)
+   if (libraryHandle != NULL)
       {
-#ifdef __WIN32__
-      my_Main = (Main_t*) GetProcAddress(libraryHandle, "Main");
-      my_alloc_dealloc_instance = (alloc_dealloc_instance_t*) GetProcAddress(libraryHandle, "alloc_dealloc_instance");
-      my_do_init1 = (do_init1_t*) GetProcAddress(libraryHandle, "doInit1");
-      //my_do_init2 = GetProcAddress(handle, "");
-      //my_do_commence = GetProcAddress(handle, "");
-      //my_notify_termination = GetProcAddress(handle, "");
-      //my_respondToGet = GetProcAddress(handle, "");
-      //my_respondToSet = GetProcAddress(handle, "");
-      my_respondToEvent = (respondToEvent_t*) GetProcAddress(libraryHandle, "respondToEvent");
-      //my_respondToMethod = GetProcAddress(handle, "");
-#else
-      my_Main = (Main_t*) dlsym(libraryHandle, "Main");
-      my_alloc_dealloc_instance = (alloc_dealloc_instance_t*) dlsym(libraryHandle, "alloc_dealloc_instance");
-      my_do_init1 = (do_init1_t*) dlsym(libraryHandle, "doInit1");
-      my_respondToEvent = (respondToEvent_t*) dlsym(libraryHandle, "respondToEvent");
-#endif
+      my_Main = (Main_t*) dllProcAddress(libraryHandle, "Main");
+      my_alloc_dealloc_instance = (alloc_dealloc_instance_t*) dllProcAddress(libraryHandle, "alloc_dealloc_instance");
+      my_do_init1 = (do_init1_t*) dllProcAddress(libraryHandle, "doInit1");
+      my_respondToEvent = (respondToEvent_t*) dllProcAddress(libraryHandle, "respondToEvent");
       }
    }
 // ------------------------------------------------------------------
@@ -123,11 +91,9 @@ void FortranWrapper::setupInstancePointers(void)
 
    if (libraryHandle != NULL)
       {
-#ifdef __WIN32__
-      getInstance_t *proc = (getInstance_t *) GetProcAddress(libraryHandle, "getInstance");
-#else
-      getInstance_t *proc = (getInstance_t *) dlsym(libraryHandle, "getInstance");
-#endif
+
+      getInstance_t *proc = (getInstance_t *) dllProcAddress(libraryHandle, "getInstance");
+
       if (proc != NULL)
          {
          instance = (*proc) ();

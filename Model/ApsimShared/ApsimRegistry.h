@@ -87,7 +87,7 @@ class EXPORT ApsimRegistry
       // Reset the whole registry
       void reset(void);
 
-      std::string ApsimRegistry::getDescription(int componentID);
+      std::string getDescription(int componentID);
 
       void dumpStats(void);
       void dumpComponentTree(void);

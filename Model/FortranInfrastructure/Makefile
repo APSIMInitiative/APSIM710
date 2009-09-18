@@ -25,7 +25,7 @@ ifeq ($(PLATFORM),WIN32)
 endif
 
 ifeq ($(PLATFORM),Linux)
-      SRC = $(SRC1) EntryPointsLinux.for EntryPointsLinux2.for  
+      SRC = $(SRC1) EntryPointsLinux.for
 endif
 
 PROJECTTYPE = lib
