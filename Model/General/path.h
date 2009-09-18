@@ -147,6 +147,8 @@ std::string EXPORT fileExtension(const std::string &filename);
 bool EXPORT fileExtensionEquals(const std::string &filename, const std::string &ext);
 // Return the tail (anything after final "\") of a filename.
 std::string EXPORT fileTail(const std::string &filename);
+// Return the tail (anything after final "/") of a filename not including the extension.
+std::string EXPORT fileTailNoExtension(const std::string &filename);
 // Return the root (all of the characters in "filename" up to but not including the last "." ).
 std::string EXPORT fileRoot(const std::string &filename);
 // Return the directory that this file lives in

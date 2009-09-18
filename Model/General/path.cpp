@@ -533,7 +533,17 @@ std::string fileTail(const std::string &filename)
 
    return filename;
    }
-
+std::string fileTailNoExtension(const std::string &filename)
+   //---------------------------------------------------------------------------
+   // Return the tail (anything after final "/") of a filename not including the extension.
+   {
+   string tail = fileTail(filename);
+   size_t pos = tail.rfind(".");
+   if (pos != string::npos)
+      return tail.substr(0,pos);
+   else
+      return tail;
+   }
 bool hasDirectories(const string &filename)
    //---------------------------------------------------------------------------
    // Return whether a filename has directories
