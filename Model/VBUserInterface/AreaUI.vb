@@ -107,7 +107,17 @@ Public Class AreaUI
 
 #End Region
 
+    Protected Overrides Sub OnLoad()
+        ' ---------------------------------------------------
+        ' Set ourselves up.
+        ' ---------------------------------------------------
 
+        AddHandler Controller.ApsimData.ComponentChangedEvent, AddressOf OnRefresh
+    End Sub
+
+    Public Overrides Sub OnClose()
+        RemoveHandler Controller.ApsimData.ComponentChangedEvent, AddressOf OnRefresh
+    End Sub
     ' ----------------------------------
     ' Refresh the listview
     ' ----------------------------------
