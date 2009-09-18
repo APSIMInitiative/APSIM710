@@ -1282,6 +1282,11 @@ subroutine soiln2_send_my_variable (variable_name)
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_rntrf, num_layers)
 
+   elseif (variable_name .eq. 'nitrification') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_rntrf, num_layers)
+
    elseif (variable_name .eq. 'dlt_urea_hydrol') then
    !                           ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
