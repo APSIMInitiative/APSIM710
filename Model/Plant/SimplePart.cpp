@@ -167,6 +167,7 @@ void SimplePart::zeroAllGlobals(void)
    relativeGrowthRate = 0.0;
    radiationInterceptedGreen = 0.0;
    transpEff = 0.0;
+   pEoCropFactor = 0.0;
 
    zeroDeltas();
    }
