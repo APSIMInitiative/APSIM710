@@ -5,7 +5,7 @@
 
 using namespace protocol;
 
-static const unsigned int MAX_NUM_REGISTRATIONS = 1000;
+static const unsigned int MAX_NUM_REGISTRATIONS = 2000;
 
 //---------------------------------------------------------------------------
 // constructor
@@ -29,7 +29,7 @@ Registrations::~Registrations(void)
 RegistrationItem* Registrations::find(RegistrationType kind,
                                       const FString& name)
    {
-   return(find(kind, name, FString("")));	
+   return(find(kind, name, FString("")));
    }
 
 RegistrationItem* Registrations::find(RegistrationType kind,
