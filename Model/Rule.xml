@@ -7,11 +7,14 @@
       <SmallIcon>%apsim%\UserInterface\Images\tclmanager16.png</SmallIcon>
       <drops>
          <drop>tclmanager</drop>
-         <drop>farmmanager</drop>
-         <drop>paddockmanager</drop>
       </drops>
       <ApsimToSim>
-         [rule.innerxml]
+         [foreach rule.script]
+         <script name="[rule.name] - [script.name]">
+         <event>[script.event]</event>
+[script.innerxml]
+</script>
+         [endfor]
       </ApsimToSim>
    </MetaData>
 </Type>
