@@ -30,7 +30,10 @@ namespace ApsimRun
                }
             catch (Exception err)
                {
-               MessageBox.Show(err.InnerException.Message);
+               if (err.InnerException == null)
+                  MessageBox.Show(err.Message);
+               else
+                  MessageBox.Show(err.InnerException.Message);
                }
             }
          }

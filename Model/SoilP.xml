@@ -1,25 +1,28 @@
-<Type name="phos">
-   <MetaData>
-      <UItype>VBUserInterface.EmptyUI</UItype>
-      <ShowInMainTree>Yes</ShowInMainTree>
-      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-      <Documentation name="Science documentation">../apsim/soilp/docs/soilp_science.htm</Documentation>
-      <LargeIcon>%apsim%\UserInterface\Images\phosphorus32.bmp</LargeIcon>
-      <SmallIcon>%apsim%\UserInterface\Images\phosphorus16.png</SmallIcon>
-      <dll>%apsim%\Model\SoilP.dll</dll>
-      <drops>
-         <drop>toolbox</drop>
-         <drop>area</drop>
-         <drop>simulation</drop>
-         <drop>folder</drop>
-      </drops>
-      <ApsimToSim>
-         <component name="[phos.name]" executable="%apsim%\Model\SoilP.dll"><executable>[dll]</executable><initdata>
-               [Model SoilP]
-               <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP]</labile_p><banded_p>[soil.BandedP]</banded_p><rock_p>[soil.RockP]</rock_p><sorption>[soil.Sorption]</sorption></initdata></component>
-      </ApsimToSim>
-   </MetaData>
-  <Model name="SoilP">
+<Type name="SoilP">
+  <MetaData>
+    <UItype>VBUserInterface.EmptyUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation name="Science documentation">../apsim/soilp/docs/soilp_science.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\phosphorus32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\phosphorus16.png</SmallIcon>
+    <dll>%apsim%\Model\SoilP.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[SoilP.name]" executable="%apsim%\Model\SoilP.dll">
+        <executable>[dll]</executable>
+        <initdata>
+               [Model]
+               <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP]</labile_p><banded_p>[soil.BandedP]</banded_p><rock_p>[soil.RockP]</rock_p><sorption>[soil.Sorption]</sorption></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
     <!--  CHANGES by MEP
       -->
     <!-- rate_loss_avail_P =   0.7 !0.5 !0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC
@@ -87,7 +90,7 @@
     <lb_fom_cp>0.0</lb_fom_cp>
     <ub_fom_cp>3000.0</ub_fom_cp>
   </Model>
-  <Info name="SoilP">
+  <Info>
     <variables>
       <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
       <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />

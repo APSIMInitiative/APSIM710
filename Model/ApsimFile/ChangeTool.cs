@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 18;
+      public static int CurrentVersion = 19;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -50,7 +50,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion15),
                                           new UpgraderDelegate(ToVersion16),
                                           new UpgraderDelegate(ToVersion17),
-                                          new UpgraderDelegate(ToVersion18)
+                                          new UpgraderDelegate(ToVersion18),
+                                          new UpgraderDelegate(ToVersion19)
                                        };
          if (Data != null)
             {
@@ -1098,6 +1099,19 @@ namespace ApsimFile
             XmlNode RegistrationsNode = XmlHelper.FindByType(Node, "registrations");
             if (RegistrationsNode != null)
                Node.RemoveChild(RegistrationsNode);
+            }
+         }
+
+      private static void ToVersion19(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // Renames phos type to soilp:
+         //     <phos />   to <soilp />
+         //  ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "phos")
+            {
+            XmlHelper.ChangeType(Node, "soilp");
             }
          }
 

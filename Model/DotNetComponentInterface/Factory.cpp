@@ -74,9 +74,10 @@ void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)
          }
       if (AddProperty)
          {
+         FactoryProperty^ NewProperty = gcnew FactoryProperty(gcnew ReflectedField(Property, Obj), Parent);
          if (IsOutput)
-            RemoveRegisteredOutput(Property->Name);
-         RegisteredProperties->Add(gcnew FactoryProperty(gcnew ReflectedField(Property, Obj), Parent));
+            RemoveRegisteredOutput(NewProperty->OutputName);
+         RegisteredProperties->Add(NewProperty);
          }
       }
    for each (PropertyInfo^ Property in Obj->GetType()->GetProperties(BindingFlags::FlattenHierarchy | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic))
@@ -94,9 +95,10 @@ void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)
          }
       if (AddProperty)
          {
+         FactoryProperty^ NewProperty = gcnew FactoryProperty(gcnew ReflectedProperty(Property, Obj), Parent);
          if (IsOutput)
-            RemoveRegisteredOutput(Property->Name);
-         RegisteredProperties->Add(gcnew FactoryProperty(gcnew ReflectedProperty(Property, Obj), Parent));
+            RemoveRegisteredOutput(NewProperty->OutputName);
+         RegisteredProperties->Add(NewProperty);
          }
       }
    }

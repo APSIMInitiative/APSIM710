@@ -86,9 +86,10 @@ public class ChangeToolTest
       }
 
    [Test]
-   public void ToVersion18()
+   public void ToVersion19()
       {
-      ConvertFileToVersion("..\\..\\Files\\Apsim70.apsimoriginal", 18);
+      ConvertFileToVersion("..\\..\\Files\\Apsim70.apsimoriginal", 19);
       CompareFiles("..\\..\\Files\\Apsim70.apsimconverted", "..\\..\\Files\\Apsim70.apsimoriginaltestconverted");
       }
+
    }
