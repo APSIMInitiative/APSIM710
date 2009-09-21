@@ -267,7 +267,7 @@ void Coordinator::addComponent(const string& compName,
       // assume it's foreign until we know more about it..
       string componentType = compExecutable;
       replaceAll(componentType, "/", "\\");
-      componentType = fileTailNoExtension(componentType);
+      componentType = fileTail(fileRoot(componentType));
       registry.addComponent(componentID, childComponentID, fqn, componentType);
       registry.setForeignTaint(childComponentID);
 

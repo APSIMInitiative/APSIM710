@@ -18,6 +18,8 @@
 using namespace std;
 using namespace protocol;
 
+typedef EXPORT STDCALL void (wrapperDll_t) (char* dllFileName);
+
 // ------------------------------------------------------------------
 //  Short description:
 //     Callback routine that all components call when sending a message.
@@ -150,13 +152,8 @@ bool Computation::loadComponent(const std::string& filename,
       {
        handle = loadDLL(executableFileName);
 
-       void EXPORT STDCALL (*wrapperDll)(char* dllFileName);
-#ifdef __WIN32__
-       (FARPROC) wrapperDll = GetProcAddress(handle, "wrapperDLL");
-#else
-       wrapperDll = (void (*)(char *))dlsym(handle, "wrapperDLL");
-#endif
-
+       wrapperDll_t *wrapperDll;
+       wrapperDll = (wrapperDll_t *) dllProcAddress(handle, "wrapperDLL");
        if (wrapperDll == NULL)
           throw std::runtime_error("Cannot find entry point 'wrapperDll' in dll: " + executableFileName);
 
@@ -167,17 +164,45 @@ bool Computation::loadComponent(const std::string& filename,
 
        if (componentInterface != "")
           {
-          // This is a wrapped dll - it has no "entry points". Load the wrapper.
+          // This is a wrapped dll - it has no "entry points". Load the wrapper instead.
           closeDLL(handle);
 
-          componentInterface = getExecutableDirectory() + "/" + componentInterface;
 #ifdef __WIN32__
           if (Str_i_Eq(fileTail(componentInterface), "piwrapper.dll"))
              {
-             //chdir(fileDirName(executableFileName).c_str());?? Make sure this still works in 7.1!!!! FIXME
+             // AUSFarm dlls are treated differently - need to be loaded with the ausfarm 
+             // infrastructure in the same working dir
+             char oldwd[MAX_PATH];
+             getcwd(oldwd, MAX_PATH);
+             chdir(fileDirName(executableFileName).c_str());
+             handle = LoadLibrary(componentInterface.c_str());
+             if (handle == NULL)
+               {
+               // Get windows error message.
+               LPVOID lpMsgBuf;
+               FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                        NULL,
+                        GetLastError(),
+                        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                        (LPTSTR) &lpMsgBuf,
+                        0,
+                        NULL
+                        );
+               string errorMessage = ("Cannot load DLL: " + componentInterface + ".\n  " + (LPTSTR) lpMsgBuf);
+               LocalFree( lpMsgBuf );
+               throw runtime_error(errorMessage);
+               }
+             chdir(oldwd);
              }
-#endif
+          else 
+             {
+             componentInterface = getExecutableDirectory() + "/" + componentInterface;
+             handle = loadDLL(componentInterface.c_str());
+             }
+#else
+          componentInterface = getExecutableDirectory() + "/" + componentInterface;
           handle = loadDLL(componentInterface.c_str());
+#endif
           }
        else
           {
