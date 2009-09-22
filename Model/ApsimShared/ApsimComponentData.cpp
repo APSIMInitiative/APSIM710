@@ -318,6 +318,9 @@ void ApsimComponentData::getRuleNames(vector<string>& names) const
 
 // ------------------------------------------------------------------
 // return a rule to caller or blank if not found.
+// Some are "rules", some are "scripts". 
+// "rules" are found in both .con files and .apsim files.
+// "scripts" are only in .apsim files
 // ------------------------------------------------------------------
 void ApsimComponentData::getRule(const std::string& name,
                                  std::string& condition,
@@ -330,15 +333,17 @@ void ApsimComponentData::getRule(const std::string& name,
 
    for (XMLNode::iterator script = initData.begin(); script != initData.end(); script++)
       {
-      string eventName = script->getAttribute("name");
-      if (eventName == "")
-         eventName = script->childValue("event");
-      if (eventName == name)
+      string scriptName = script->getAttribute("name");
+      if (scriptName == "")
+         scriptName = script->childValue("event");
+      if (scriptName == name)
          {
          if (script->getName() == "rule")
             {
             condition = script->getAttribute("condition");
-            contents = script->getValue();
+            replaceManagerMacros(condition, *ui);
+
+            contents += script->getValue();
             }
          else
             {
@@ -346,10 +351,10 @@ void ApsimComponentData::getRule(const std::string& name,
             replaceManagerMacros(condition, *ui);
 
             contents += findNodeValue(*script, "text");
-            replaceManagerMacros(contents, *ui);
             }
          }
       }
+   replaceManagerMacros(contents, *ui);
    Replace_all(contents, "[cr]", "\n");
    }
 // ------------------------------------------------------------------

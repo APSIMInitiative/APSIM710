@@ -35,7 +35,6 @@ class TclComponent : public protocol::Component,
 
       typedef std::multimap<unsigned, std::string, std::less<unsigned> >   UInt2StringMap;
       UInt2StringMap rules;
-      string     terminationRule;
       Tcl_Interp *Interp;
 
       void callback(const protocol::Message* message);

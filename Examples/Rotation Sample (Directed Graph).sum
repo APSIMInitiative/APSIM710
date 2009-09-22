@@ -209,18 +209,12 @@ Paddock:
      Copyright (C) 1991-1994 The Regents of the University of California.
      Copyright (C) 1996-1997 Sun Microsystems, Inc.
      Copyright (C) 2001      ActiveState.
-     --->Section: init
-     source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
-     set state "WinterFallow"
-     
-     --->Section: process
-     checkSetup
-     doProcess
-     
      --->Section: exit
      exit
      
      --->Section: init
+     source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
+     set state "WinterFallow"
      package require struct
      ::struct::graph stateGraph
      stateGraph node insert "SummerFallow2"
@@ -272,8 +266,6 @@ Paddock:
      stateGraph arc insert "SummerFallow2" "WinterFallow" "arc9"
      stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
      stateGraph arc lappend "arc9" actions {}
-     
-     --->Section: init
      
      # Support procedures
      # Can we plant a crop today?
@@ -337,8 +329,6 @@ Paddock:
      
      
      
-     --->Section: init
-     
      # Support procedures
      # Can we plant a crop today?
      proc canPlant_chickpea {} {
@@ -399,8 +389,6 @@ Paddock:
      
      
      
-     
-     --->Section: init
      
      # Support procedures
      # Can we plant a crop today?
@@ -463,6 +451,10 @@ Paddock:
      
      
      
+     
+     --->Section: process
+     checkSetup
+     doProcess
      
      --->End
 ------- Start of simulation  --------------------------------------------------

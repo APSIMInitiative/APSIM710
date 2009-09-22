@@ -104,11 +104,6 @@ TclComponent::~TclComponent(void)
    {
    if (Interp != NULL) 
       {
-      if (!hasFatalError) 
-         {
-         if (!terminationRule.empty()) { Tcl_Eval(Interp, terminationRule.c_str()); }
-         }
-      
       StopTcl(Interp);
       Interp = NULL;
       }
@@ -150,23 +145,33 @@ void TclComponent::doInit2(void)
 
    Tcl_SetVar(Interp, "apsuite", getApsimDirectory().c_str(), TCL_GLOBAL_ONLY);
    
-   string initRule;
+   std::string initRule;
    std::vector<string> ruleNames;
+   std::map<string,string> ruleContents;
+   
    componentData->getRuleNames(ruleNames);
    rules.clear();
 
    for (unsigned int i = 0; i != ruleNames.size(); i++)
       {
-         string condition, rule;
-         componentData->getRule(ruleNames[i], condition, rule);
-         unsigned id = addRegistration(::respondToEvent, -1, condition, "");
-         rules.insert(UInt2StringMap::value_type(id, rule));
-
-         string msg = "--->Section: " + condition;
+      string condition, rule;
+      componentData->getRule(ruleNames[i], condition, rule);
+      if (condition != "") 
+          {
+          ruleContents[condition] += rule;
+          }
+      }
+ 
+    for (std::map<string,string>::iterator i = ruleContents.begin();
+         i != ruleContents.end(); i++) 
+      {
+         unsigned id = addRegistration(::respondToEvent, -1, i->first, "");
+         rules.insert(UInt2StringMap::value_type(id, i->second));
+         
+         string msg = "--->Section: " + i->first;
          writeString(msg.c_str());
-         writeString(rule.c_str());
-         if (condition == string("init")) {initRule.append(rule);}
-         if (condition == string("exit")) {terminationRule.append(rule);}
+         writeString(i->second.c_str());
+         if (i->first == string("init")) {initRule += i->second;}
       }
    writeString("--->End");
 
@@ -589,7 +594,6 @@ unsigned int TclComponent::registerEvent(string &eventName, string &script)
                                  "<variant/>");
    rules.insert(UInt2StringMap::value_type(id, script));
 
-   if (eventName == string("exit")) {terminationRule.append(script);}
    return id;
    }
 

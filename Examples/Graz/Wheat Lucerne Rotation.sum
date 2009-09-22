@@ -299,27 +299,6 @@ Paddock:
         }
      }
      
-     # Initialisation
-     set nLucerneDays 0
-     set annual_lwg  0.0
-     set paddockState "empty"
-     set ready_to_graze 0
-     set growth 0.0
-     
-     # Tell the grazing module we only graze lucerne. This is needed when there is more than one crop
-     # in the paddock - even though only one may be "alive".
-     apsimSet graz.pasture_source "lucerne"
-     
-     
-     --->Section: start_simulation
-     
-     log "changeState [currentState]"
-     
-     --->Section: process
-     
-     doProcess
-     
-     --->Section: init
      package require struct
      ::struct::graph stateGraph
      stateGraph node insert "Wheat"
@@ -360,8 +339,6 @@ Paddock:
      stateGraph arc lappend "arc0" actions {apsimSendMessage wheat end_crop}
      stateGraph arc lappend "arc0" rules {[canHarvest_wheat]}
      stateGraph arc lappend "arc0" actions {}
-     
-     --->Section: init
      
      # Support procedures
      # Can we plant a crop today?
@@ -432,8 +409,6 @@ Paddock:
      
      
      
-     --->Section: init
-     
      # Support procedures
      # Can we plant a crop today?
      proc canPlant_lucerne {} {
@@ -489,97 +464,6 @@ Paddock:
        }
      }
      
-     
-     --->Section: init
-     
-     
-     # Initial state of the system
-     set state "lucernePrepn"
-     
-     # Support procedures for (single paddock) rotations
-     
-     # Return the current state of the system
-     proc currentState {} {
-        global state
-        return $state
-     }
-     
-     # Default log option is to do nothing. May be overridden later.
-     proc log {msg} { }
-     
-     ############### The decision routine.
-     # Return the score for planting "what"
-     proc checkRules {} {
-       log "State is [currentState]. (esw=[format %.0f [apsimGet esw]])"
-     
-       set bestScore -1.0; set bestTarget {}
-       foreach arc [stateGraph arcs -out [currentState]] {
-          set expr {}
-          set target [stateGraph arc target $arc]
-          foreach rule [stateGraph arc get $arc rules] {
-             set value [uplevel #0 expr $rule]
-             log "target=$target,rule=$rule, value=$value"
-             lappend expr $value
-          }
-          set score [expr [join $expr "*"]]
-          if {$score > $bestScore} {
-             set bestScore $score
-             set bestTarget $target
-          }
-       }
-       return [list $bestTarget $bestScore]
-     }
-     
-     # Change state to another
-     proc changeState {newState} {
-        global state
-        set arcs {}
-        foreach arc [stateGraph arcs -out [currentState]] {
-           if {[stateGraph arc target $arc] == "$newState" } {
-              lappend arcs $arc
-           }
-        }
-        if {[llength $arcs] == 0} {error "No paths from [currentState] to $newState!"}
-        if {[llength $arcs] > 1} {
-           # More than 1 path - evaluate best option
-           set bestScore -1.0; set bestArc {}
-           foreach arc $arcs {
-              set expr {}
-              foreach rule [stateGraph arc get $arc rules] {
-                 set value [uplevel #0 expr $rule]
-                 lappend expr $value
-              }
-              set score [expr [join $expr "*"]]
-              if {$score > $bestScore} {
-                 set bestScore $score
-                 set bestArc $arc
-              }
-           }
-           if {$bestScore > 0.0} {
-              apsimWriteToSummaryFile "Taking arc $bestArc from [currentState] to $newState"
-              set arc $bestArc
-           } else {
-              error "No viable paths from [currentState] to $newState! (candidates are $arcs)"
-           }
-        } else {
-           # Only 1 path - take it.
-           set arc $arcs
-        }
-        foreach action [stateGraph arc get $arc actions] { uplevel #0 $action }
-        set state $newState
-        log "changeState $newState"
-     }
-     
-     proc doProcess {} {
-        log "[apsimGet day],[apsimGet year]"
-        set more 1
-        while {$more} {
-           set more 0
-           foreach  {target score} [checkRules] {break}
-           if {$score > 0} {changeState $target; set more 1}
-        }
-     }
-     
      # Initialisation
      set nLucerneDays 0
      set annual_lwg  0.0
@@ -591,6 +475,11 @@ Paddock:
      # in the paddock - even though only one may be "alive".
      apsimSet graz.pasture_source "lucerne"
      
+     
+     --->Section: post
+     if  {[apsimGet day_of_month] == 1}  {
+       apsimSendMessage outputfile do_output
+     }
      
      --->Section: prepare
      
@@ -616,10 +505,13 @@ Paddock:
      }
      
      
-     --->Section: post
-     if  {[apsimGet day_of_month] == 1}  {
-       apsimSendMessage outputfile do_output
-     }
+     --->Section: process
+     
+     doProcess
+     
+     --->Section: start_simulation
+     
+     log "changeState [currentState]"
      
      --->End
 ------- Start of simulation  --------------------------------------------------
