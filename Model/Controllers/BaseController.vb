@@ -560,7 +560,7 @@ Public Class BaseController
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
-    Private Sub InvokeAction(ByVal Sender As Object, ByVal ActionName As String)
+    Public Sub InvokeAction(ByVal Sender As Object, ByVal ActionName As String)
 
         'close the menu
         ' For some reason, if we don't explicitly close the menus they remain open,

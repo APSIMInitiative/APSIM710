@@ -12,13 +12,11 @@ namespace ApsimRun
    {
    public partial class SelectionForm : Form
       {
-      private Runnable SimulationFile;
 
-      public SelectionForm(Runnable SimulationFile)
+      public SelectionForm(List<string> SimulationsToRun)
          {
          InitializeComponent();
-         this.SimulationFile = SimulationFile;
-         SimulationList.Items.AddRange(SimulationFile.SimulationsToRun.ToArray());
+         SimulationList.Items.AddRange(SimulationsToRun.ToArray());
          MakeDefaultSelections();
          }
 
@@ -26,15 +24,17 @@ namespace ApsimRun
       private void OnClosing(object sender, FormClosingEventArgs e)
          {
          if (DialogResult == DialogResult.OK)
-            {
             SaveDefaultSelections();
-            List<string> Selections = new List<string>();
+         }
+      public List<string> Selections
+         {
+         get
+            {
+            List<string> UserSelections = new List<string>();
             foreach (string Item in SimulationList.SelectedItems)
-               Selections.Add(Item);
-            SimulationFile.SimulationsToRun = Selections;
+               UserSelections.Add(Item);
+            return UserSelections;
             }
-         else
-            SimulationFile.SimulationsToRun = new List<string>();
          }
 
       private void MakeDefaultSelections()
@@ -57,7 +57,7 @@ namespace ApsimRun
 
       private void SaveDefaultSelections()
          {
-         List<string> Selections = new List<string> ();
+         List<string> Selections = new List<string>();
          foreach (string Selection in SimulationList.SelectedItems)
             Selections.Add(Selection);
          Configuration.Instance.SetSettings("Recent", Selections);
@@ -77,6 +77,6 @@ namespace ApsimRun
             }
          }
 
-      
+
       }
    }

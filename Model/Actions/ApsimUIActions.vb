@@ -54,17 +54,12 @@ Public Class ApsimUIActions
         ' their parents until some simulations are found.
         ' ------------------------------------------------
         BaseActions.FileSave(Controller)
-        Dim SimulationsToRun As New List(Of String)
-
-        Dim TempFileName As String = Path.GetTempPath() + "FromGUI.txt"
-        Dim Out As StreamWriter = New StreamWriter(TempFileName)
-        Out.WriteLine(Controller.ApsimData.FileName)
-        For Each NodePath As String In Controller.SelectedPaths
-            Out.WriteLine(NodePath)
-        Next
-        Out.Close()
-        Process.Start(Configuration.ApsimBinDirectory() + "\\apsimrun.exe", _
-                      """@" + TempFileName + "")
+        Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
+        If RunPanels.Length = 1 Then
+            ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), _
+                                                Controller.ApsimData, _
+                                                Controller.SelectedPaths)
+        End If
     End Sub
 
     Public Shared Sub Enable(ByVal Controller As BaseController)

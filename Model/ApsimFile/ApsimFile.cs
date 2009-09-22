@@ -13,7 +13,7 @@ namespace ApsimFile
     using System.Diagnostics;
 
 
-   public class ApsimFile : Runnable
+   public class ApsimFile
       {
       // ---------------------------------------------
       // This class encapsulates a .apsim file.
@@ -226,48 +226,22 @@ namespace ApsimFile
          OpenFile(FileName);
          }
 
-      // ------------------------------------------------------------------
-      // The following code implements the Runnable interface that allows
-      // simulations from a .apsim file to be run.
-      // ------------------------------------------------------------------
-      
-      private List<string> SimsToRun = null;
-      List<string> Runnable.SimulationsToRun
+      public static List<string> GetSimsInApsimFile(string FileName)
          {
-         get
-            {
-            if (SimsToRun == null)
-               {
-               SimsToRun = new List<string>();
-               ExpandSimsToRun(RootComponent.FullPath);
-               }
-            return SimsToRun;
-            }
-         set
-            {
-            if (SimsToRun == null)
-               SimsToRun = new List<string>();
-            else
-               SimsToRun.Clear();
-
-            if (value == null)
-               ExpandSimsToRun(RootComponent.FullPath);
-            else
-               {
-               foreach (string NodePath in value)
-                  ExpandSimsToRun(NodePath);
-               }
-            }
+         List<string> SimsToRun = new List<string>();
+         ApsimFile Apsim = new ApsimFile(FileName);
+         ExpandSimsToRun(Apsim.RootComponent, ref SimsToRun);
+         return SimsToRun;
          }
 
-      private void ExpandSimsToRun(string NodePath)
+      public static void ExpandSimsToRun(Component Comp, ref List<string> SimsToRun)
          {
          // ------------------------------------------------
          // Go looking for simulations to run. Look at the
          // currently selected nodes first and progressively
          // their parents until some simulations are found.
          // ------------------------------------------------
-         Component Comp = Find(NodePath);
+
          while (Comp.Type != "simulation" && Comp.Type != "folder" && Comp.Type != "simulations")
             Comp = Comp.Parent;
 
@@ -279,7 +253,7 @@ namespace ApsimFile
             foreach (Component Child in Comp.ChildNodes)
                {
                if (Child.Type == "simulation" || Child.Type == "folder")
-                  ExpandSimsToRun(Child.FullPath); // recursion
+                  ExpandSimsToRun(Child, ref SimsToRun); // recursion
                }
 
             if (SimsToRun.Count == 0)
@@ -294,41 +268,6 @@ namespace ApsimFile
                }
             }
          }
-
-      void Runnable.WriteSimFile(string SimulationPath, out string SimFileName, out string Messages)
-         {
-         // ------------------------------------------------
-         // Produce a .sim file and return it's name to the
-         // caller.
-         // ------------------------------------------------
-         ProcessStartInfo Info = new ProcessStartInfo();
-         Info.FileName = Configuration.ApsimBinDirectory() + "\\ApsimToSim.exe";
-         Info.Arguments = "\"" + FileName + "\" \"" + SimulationPath + "\"";
-         Info.UseShellExecute = false;
-         Info.RedirectStandardError = true;
-         Info.RedirectStandardOutput = true;
-         Info.CreateNoWindow = true;
-         Process ApsimToSim = Process.Start(Info);
-         Messages = ApsimToSim.StandardOutput.ReadToEnd();
-         ApsimToSim.WaitForExit();
-         Messages += ApsimToSim.StandardError.ReadToEnd();
-
-         // create a simulation name from the simulation path.
-         string SimulationName = SimulationPath;
-         int PosLastSlash = SimulationPath.LastIndexOf('/');
-         if (PosLastSlash != -1)
-            SimulationName = SimulationPath.Substring(PosLastSlash + 1);
-
-         SimFileName = Path.GetDirectoryName(FileName) + "\\" + SimulationName + ".sim";
-         }
-      public bool DeleteSimOnceRunCompleted
-         {
-         get
-            {
-            return true;
-            }
-         }
-
 
       }
     }

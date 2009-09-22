@@ -50,6 +50,13 @@ Public Class MainUI
     Private CurrentStartDate As Date
     Private CurrentEndDate As Date
     Private CurrentSummaryFile As StreamWriter = Nothing
+    Friend WithEvents RunToolStrip As System.Windows.Forms.ToolStrip
+    Friend WithEvents RunProgress As System.Windows.Forms.ToolStripProgressBar
+    Friend WithEvents PauseButton As System.Windows.Forms.ToolStripButton
+    Friend WithEvents StopButton As System.Windows.Forms.ToolStripButton
+    Friend WithEvents ErrorsButton As System.Windows.Forms.ToolStripButton
+    Friend WithEvents RunButton As System.Windows.Forms.ToolStripButton
+    Friend WithEvents PercentLabel As System.Windows.Forms.ToolStripLabel
     Private CurrentErrors As New StringCollection
 
 
@@ -85,6 +92,7 @@ Public Class MainUI
             ApplicationName = "ApsimUI"
         End If
 
+        RunToolStrip.Visible = ApplicationName = "ApsimUI"
 
         ' Create our controller
         PlugIns.LoadAll()
@@ -163,6 +171,13 @@ Public Class MainUI
         Me.SimulationExplorer = New Controllers.ExplorerUI
         Me.ToolboxSplitter = New System.Windows.Forms.Splitter
         Me.SimulationToolStrip = New System.Windows.Forms.ToolStrip
+        Me.RunToolStrip = New System.Windows.Forms.ToolStrip
+        Me.RunButton = New System.Windows.Forms.ToolStripButton
+        Me.PauseButton = New System.Windows.Forms.ToolStripButton
+        Me.StopButton = New System.Windows.Forms.ToolStripButton
+        Me.RunProgress = New System.Windows.Forms.ToolStripProgressBar
+        Me.PercentLabel = New System.Windows.Forms.ToolStripLabel
+        Me.ErrorsButton = New System.Windows.Forms.ToolStripButton
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem
         Me.ToolBoxPanel.SuspendLayout()
@@ -171,6 +186,7 @@ Public Class MainUI
         Me.SimulationContainer.ContentPanel.SuspendLayout()
         Me.SimulationContainer.TopToolStripPanel.SuspendLayout()
         Me.SimulationContainer.SuspendLayout()
+        Me.RunToolStrip.SuspendLayout()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -178,7 +194,7 @@ Public Class MainUI
         '
         Me.ToolBoxPanel.Controls.Add(Me.ToolBoxToolBarPanel)
         Me.ToolBoxPanel.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.ToolBoxPanel.Location = New System.Drawing.Point(0, 429)
+        Me.ToolBoxPanel.Location = New System.Drawing.Point(0, 410)
         Me.ToolBoxPanel.Name = "ToolBoxPanel"
         Me.ToolBoxPanel.Size = New System.Drawing.Size(735, 104)
         Me.ToolBoxPanel.TabIndex = 12
@@ -260,7 +276,7 @@ Public Class MainUI
         Me.SimulationContainer.ContentPanel.Controls.Add(Me.SimulationExplorer)
         Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolboxSplitter)
         Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolBoxPanel)
-        Me.SimulationContainer.ContentPanel.Size = New System.Drawing.Size(735, 533)
+        Me.SimulationContainer.ContentPanel.Size = New System.Drawing.Size(735, 514)
         Me.SimulationContainer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SimulationContainer.Location = New System.Drawing.Point(0, 0)
         Me.SimulationContainer.Name = "SimulationContainer"
@@ -272,6 +288,7 @@ Public Class MainUI
         '
         Me.SimulationContainer.TopToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight
         Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.SimulationToolStrip)
+        Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.RunToolStrip)
         '
         'ToolBoxesToolStrip
         '
@@ -289,13 +306,13 @@ Public Class MainUI
         Me.SimulationExplorer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SimulationExplorer.Location = New System.Drawing.Point(0, 0)
         Me.SimulationExplorer.Name = "SimulationExplorer"
-        Me.SimulationExplorer.Size = New System.Drawing.Size(735, 426)
+        Me.SimulationExplorer.Size = New System.Drawing.Size(735, 407)
         Me.SimulationExplorer.TabIndex = 36
         '
         'ToolboxSplitter
         '
         Me.ToolboxSplitter.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.ToolboxSplitter.Location = New System.Drawing.Point(0, 426)
+        Me.ToolboxSplitter.Location = New System.Drawing.Point(0, 407)
         Me.ToolboxSplitter.Name = "ToolboxSplitter"
         Me.ToolboxSplitter.Size = New System.Drawing.Size(735, 3)
         Me.ToolboxSplitter.TabIndex = 25
@@ -311,16 +328,85 @@ Public Class MainUI
         Me.SimulationToolStrip.Size = New System.Drawing.Size(102, 25)
         Me.SimulationToolStrip.TabIndex = 1
         '
+        'RunToolStrip
+        '
+        Me.RunToolStrip.Dock = System.Windows.Forms.DockStyle.None
+        Me.RunToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RunButton, Me.PauseButton, Me.StopButton, Me.RunProgress, Me.PercentLabel, Me.ErrorsButton})
+        Me.RunToolStrip.Location = New System.Drawing.Point(105, 0)
+        Me.RunToolStrip.Name = "RunToolStrip"
+        Me.RunToolStrip.Size = New System.Drawing.Size(319, 44)
+        Me.RunToolStrip.TabIndex = 2
+        '
+        'RunButton
+        '
+        Me.RunButton.Image = CType(resources.GetObject("RunButton.Image"), System.Drawing.Image)
+        Me.RunButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.RunButton.Name = "RunButton"
+        Me.RunButton.Size = New System.Drawing.Size(30, 41)
+        Me.RunButton.Text = "Run"
+        Me.RunButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+        Me.RunButton.ToolTipText = "Run APSIM"
+        '
+        'PauseButton
+        '
+        Me.PauseButton.CheckOnClick = True
+        Me.PauseButton.Enabled = False
+        Me.PauseButton.Image = CType(resources.GetObject("PauseButton.Image"), System.Drawing.Image)
+        Me.PauseButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.PauseButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.PauseButton.Name = "PauseButton"
+        Me.PauseButton.Size = New System.Drawing.Size(40, 41)
+        Me.PauseButton.Text = "Pause"
+        Me.PauseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+        Me.PauseButton.ToolTipText = "Pause APSIM"
+        '
+        'StopButton
+        '
+        Me.StopButton.Enabled = False
+        Me.StopButton.Image = CType(resources.GetObject("StopButton.Image"), System.Drawing.Image)
+        Me.StopButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.StopButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.StopButton.Name = "StopButton"
+        Me.StopButton.Size = New System.Drawing.Size(33, 41)
+        Me.StopButton.Text = "Stop"
+        Me.StopButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+        Me.StopButton.ToolTipText = "Stop APSIM"
+        '
+        'RunProgress
+        '
+        Me.RunProgress.AutoSize = False
+        Me.RunProgress.Name = "RunProgress"
+        Me.RunProgress.Size = New System.Drawing.Size(100, 24)
+        Me.RunProgress.Step = 1
+        Me.RunProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        '
+        'PercentLabel
+        '
+        Me.PercentLabel.Name = "PercentLabel"
+        Me.PercentLabel.Size = New System.Drawing.Size(0, 41)
+        '
+        'ErrorsButton
+        '
+        Me.ErrorsButton.Image = CType(resources.GetObject("ErrorsButton.Image"), System.Drawing.Image)
+        Me.ErrorsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.ErrorsButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ErrorsButton.Name = "ErrorsButton"
+        Me.ErrorsButton.Size = New System.Drawing.Size(71, 41)
+        Me.ErrorsButton.Text = "Errors found"
+        Me.ErrorsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+        Me.ErrorsButton.Visible = False
+        '
         'ContextMenuStrip1
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(240, 28)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(182, 26)
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(239, 24)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(181, 22)
         Me.ToolStripMenuItem1.Text = "ToolStripMenuItem1"
         '
         'MainUI
@@ -343,6 +429,8 @@ Public Class MainUI
         Me.SimulationContainer.TopToolStripPanel.PerformLayout()
         Me.SimulationContainer.ResumeLayout(False)
         Me.SimulationContainer.PerformLayout()
+        Me.RunToolStrip.ResumeLayout(False)
+        Me.RunToolStrip.PerformLayout()
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -462,6 +550,7 @@ Public Class MainUI
             If Not IsNothing(ToolboxExplorer) AndAlso ToolboxExplorer.Visible AndAlso Not ToolboxController.ApsimData.IsReadOnly Then
                 ToolboxController.ApsimData.Save()
             End If
+            ApsimRunToolStrip.Instance.OnStop()
         End If
     End Sub
     Private Sub OnDirtyChanged(ByVal IsDirty As Boolean)
@@ -591,4 +680,26 @@ Public Class MainUI
 #End Region
 
 
+    Private Sub OnRunButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RunButton.Click
+        SimulationController.InvokeAction(Nothing, "Run")
+    End Sub
+
+    Private Sub OnPauseClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PauseButton.Click
+        ApsimRunToolStrip.Instance.OnPause()
+    End Sub
+
+    Private Sub OnErrorsClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ErrorsButton.Click
+        Dim ErrorNodePath As String = ApsimRunToolStrip.Instance.GetSimulationWithError()
+        If ErrorNodePath <> "" Then
+            ErrorNodePath = ErrorNodePath + "/SummaryFile"
+            If Not IsNothing(SimulationController.ApsimData.Find(ErrorNodePath)) Then
+                SimulationController.SelectedPath = ErrorNodePath
+            End If
+
+        End If
+    End Sub
+
+    Private Sub OnStopClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles StopButton.Click
+        ApsimRunToolStrip.Instance.OnStop()
+    End Sub
 End Class

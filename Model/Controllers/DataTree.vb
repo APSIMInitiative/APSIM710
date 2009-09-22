@@ -80,14 +80,14 @@ Public Class DataTree
                 End If
             Else
                 For Each ChildNode In CurrentNode.Nodes
-                    If ChildNode.Text = name Then
+                    If ChildNode.Text.ToLower() = name.ToLower() Then
                         Exit For
                     End If
                 Next
             End If
             CurrentNode = ChildNode
             If Not IsNothing(CurrentNode) Then
-                If CurrentNode.Text <> name Then
+                If CurrentNode.Text.ToLower() <> name.ToLower() Then
                     CurrentNode = Nothing
                 End If
             End If

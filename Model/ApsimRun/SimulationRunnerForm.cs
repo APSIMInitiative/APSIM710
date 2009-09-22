@@ -12,30 +12,24 @@ using ApsimFile;
 using CSGeneral;
 using CSUserInterface;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ApsimRun
    {
    public partial class SimulationRunnerForm : Form
       {
-      private SimulationRunner Runner;
+      private JobRunner _JobRunner;
       private string[] Args;
       private bool FirstPaint = true;
       private bool AutoClose = false;
       private bool InDirectoryScan = false;
 
-      /// <summary>
-      /// Constructor
-      /// </summary>
       public SimulationRunnerForm(string[] Args)
          {
          InitializeComponent();
+         Height = 197;
+         Clear();
 
-         Runner = new SimulationRunner(this);
-         string NumCPUsString = Configuration.Instance.Setting("NumCPUs");
-         if (NumCPUsString != "")
-             Runner.NumCPUs = Convert.ToInt32(NumCPUsString);
-         NumCPUs.Value = Runner.NumCPUs;
-         NumCPUs.ValueChanged += OnNumCPUsChanged;
          this.Args = Args;
 
          // Load all plugins.
@@ -62,25 +56,25 @@ namespace ApsimRun
             }
 
          }
-
-      /// <summary>
-      /// Clear the run queue, add the specified files, and then run them.
-      /// </summary>
-      /// <param name="files">The files or directories to run</param>
+      void Clear()
+         {
+         if (_JobRunner != null)
+            _JobRunner.Stop();
+         _JobRunner = new JobRunner();
+         string NumCPUsString = Configuration.Instance.Setting("NumCPUs");
+         if (NumCPUsString != "")
+            _JobRunner.NumCPUs = Convert.ToInt32(NumCPUsString);
+         NumCPUs.Value = _JobRunner.NumCPUs;
+         NumCPUs.ValueChanged += OnNumCPUsChanged;
+         ShowDetailButton.Visible = false;
+         Timer1.Enabled = false;
+         Height = 197;
+         }
       public void RunSimulations(string[] files)
          {
-         Runner.Clear();
-         Add(files);
-         //OnButtonClick(null, new ToolStripItemClickedEventArgs(RunButton));
-         }
+         // Clear the run queue, add the specified files, and then run them.
+         Clear();
 
-
-      /// <summary>
-      /// Add a bunch of simulation files or directories to the run queue.
-      /// </summary>
-      /// <param name="files">The files or directories to run</param>
-      private void Add(string[] files)
-         {
          try
             {
             bool JustDoIt = false;
@@ -92,111 +86,60 @@ namespace ApsimRun
                   JustDoIt = true;
                else if (FileName == "/autoclose")
                   AutoClose = true;
-               else if (FileName[0] == '@')
-                  {
-                  StreamReader In = new StreamReader(FileName.Substring(1));
-                  string[] Lines = In.ReadToEnd().Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                  if (Lines.Length >= 2)
-                     {
-                     FileName = Lines[0];
-                     List<string> SimulationsToRun = new List<string>();
-                     for (int j = 1; j != Lines.Length; j++)
-                        SimulationsToRun.Add(Lines[j]);
-                     
-                     AddFile(FileName, true, SimulationsToRun);
-                     }
-                  }
                else if (Directory.Exists(FileName))
-                  {
-                  Cursor.Current = Cursors.WaitCursor;
-                  InDirectoryScan = true;
-                  AddDirectory(FileName);
-                  InDirectoryScan = false;
-                  Cursor.Current = Cursors.Default;
-                  }
-               else if (Path.GetExtension(FileName).ToLower() == ".txt")
-                  {
-                  StreamReader Txt = new StreamReader(FileName);
-                  string Contents = Txt.ReadToEnd();
-                  string[] Lines = Contents.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                  Add(Lines);
-                  Txt.Close();
-                  return;
-                  }
+                  _JobRunner.Add(new RunApsimDirectory(FileName, _JobRunner));
+               else if (Path.GetExtension(FileName).ToLower() == ".sim")
+                  _JobRunner.Add(new RunSimFile(FileName, _JobRunner));
                else
-                  AddFile(FileName, JustDoIt, null);
+                  AddFile(FileName, JustDoIt);
                }
+
+            Timer1.Enabled = true;
             }
          catch (Exception ex)
             {
             MessageBox.Show(ex.Message);
             }
          }
-
-      /// <summary>
-      /// Recursively add a directory of simulations to the run queue.
-      /// </summary>
-      /// <param name="DirectoryName">Directory name to search in</param>
-      private void AddDirectory(string DirectoryName)
+      private void AddFile(string FileName, bool JustDoIt)
          {
-         foreach (string FileName in Directory.GetFiles(DirectoryName))
-            {
-            string Extension = Path.GetExtension(FileName).ToLower();
-            if (Extension == ".con" || Extension == ".apsim")
-               AddFile(FileName, true, null);
-            }
-         foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
-            {
-            if (ChildDirectoryName != ".svn")
-               AddDirectory(ChildDirectoryName);
-            }
-         }
+         List<string> SimulationsToRun = null;
 
-      /// <summary>
-      /// Add the specified simulation file to the run queue.
-      /// </summary>
-      /// <param name="FileName">Simulation file to add</param>
-      private void AddFile(string FileName, bool JustDoIt, List<string> SimulationsToRun)
-         {
-         if (FileName.IndexOfAny("/\\".ToCharArray()) == -1)
-            FileName = Directory.GetCurrentDirectory() + "\\" + FileName;
-
-         Runnable FileToRun = null;
          if (Path.GetExtension(FileName).ToLower() == ".con")
-            FileToRun = new ConFile(FileName);
+            SimulationsToRun = ConFile.GetSimsInConFile(FileName);
          else if (Path.GetExtension(FileName).ToLower() == ".apsim")
-            FileToRun = new ApsimFile.ApsimFile(FileName);
-         else if (Path.GetExtension(FileName).ToLower() == ".sim")
-            FileToRun = new ApsimFile.SimFile(FileName);
+            SimulationsToRun = ApsimFile.ApsimFile.GetSimsInApsimFile(FileName);
          else
             throw new Exception("Unknown simulation file type: " + FileName);
 
-         if (SimulationsToRun != null)
-            FileToRun.SimulationsToRun = SimulationsToRun;
-
          // Display a selection form if there are more than 1 simulations and this isn't an AutoRun
-         if (FileToRun.SimulationsToRun.Count > 1 && !JustDoIt)
+         if (SimulationsToRun != null && SimulationsToRun.Count > 1 && !JustDoIt)
             {
-            SelectionForm Form = new SelectionForm(FileToRun);
-            Form.ShowDialog();
+            SelectionForm Form = new SelectionForm(SimulationsToRun);
+            if (Form.ShowDialog() == DialogResult.OK)
+               SimulationsToRun = Form.Selections;
+            else
+               return;
             }
 
-         if (FileToRun.SimulationsToRun.Count > 0)
-            Runner.Add(FileToRun);
-         Total.Text = Runner.Count.ToString();
-         Application.DoEvents();
+         foreach (string SimulationName in SimulationsToRun)
+            {
+            if (Path.GetExtension(FileName).ToLower() == ".con")
+               _JobRunner.Add(new RunConJob(FileName, SimulationName, _JobRunner));
+            else
+               _JobRunner.Add(new RunApsimFileJob(FileName, SimulationName, _JobRunner));
+            }
          }
 
       private void OnNumCPUsChanged(object sender, EventArgs e)
          {
-         Runner.NumCPUs = (int) NumCPUs.Value;
+         _JobRunner.NumCPUs = (int) NumCPUs.Value;
          Configuration.Instance.SetSetting("NumCPUs", NumCPUs.Value.ToString());
          }
  
       private void OnClosing(object sender, FormClosingEventArgs e)
          {
-         Runner.Stop();
-         Runner.Close();
+         _JobRunner.Stop();
          if (WindowState == FormWindowState.Minimized)
             Configuration.Instance.SetSetting("Minimised", "yes");
          else
@@ -211,12 +154,18 @@ namespace ApsimRun
          {
          try
             {
-            ProgressBar.Value = Runner.PercentageComplete;
-            Completed.Text = Runner.NumberCompleted.ToString();
-            NumberWithErrors.Text = Runner.NumberWithErrors.ToString();
-            NumberWithWarnings.Text = Runner.NumberWithWarnings.ToString();
+            Total.Text = _JobRunner.Jobs.Count.ToString();
+            ProgressBar.Value = _JobRunner.PercentageComplete;
 
-            if (Runner.PercentageComplete >= 100 && !this.Text.Contains("100% complete") && !InDirectoryScan)
+            int NumCompleted;
+            int NumWithErrors;
+            int NumWithWarnings;
+            _JobRunner.CalcStats(out NumCompleted, out NumWithErrors, out NumWithWarnings);
+            Completed.Text = NumCompleted.ToString();
+            NumberWithErrors.Text = NumWithErrors.ToString();
+            NumberWithWarnings.Text = NumWithWarnings.ToString();
+
+            if (ProgressBar.Value >= 100 && !this.Text.Contains("100% complete"))
                {
                string WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
                if (File.Exists(WavFileName))
@@ -224,12 +173,13 @@ namespace ApsimRun
                   System.Media.SoundPlayer Player = new System.Media.SoundPlayer(WavFileName);
                   Player.Play();
                   }
-               RunButton.Checked = false;
-               ReportButton.Visible = true;
+               ShowDetailButton.Visible = true;
                if (AutoClose)
                   Close();
+               Timer1.Enabled = false;
+               PerformanceSeries.Clear();
                }
-            this.Text = Runner.PercentageComplete.ToString() + "% complete";
+            this.Text = ProgressBar.Value.ToString() + "% complete";
             if (PauseButton.Checked)
                this.Text += " - Paused";
             if (StopButton.Checked)
@@ -249,38 +199,14 @@ namespace ApsimRun
             }
          }
 
-      private void OnDragEnter(object sender, DragEventArgs e)
-         {
-         // If the data is a file, display the copy cursor.
-         if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            e.Effect = DragDropEffects.Copy;
-         else
-            e.Effect = DragDropEffects.None;
-         }
-
-      private void OnDragDrop(object sender, DragEventArgs e)
-         {
-         // Handle FileDrop data.
-         if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-            // Assign the file names to a string array, in 
-            // case the user has selected multiple files.
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            Add(files);
-            }
-         }
-
-      /// <summary>
-      /// We need to override the windows message proc to intercept our WM_COPYDATA message. This is 
-      /// sent when a second instance of ApsimRun is created with a command line argument. The lpData
-      /// field of that WM_COPYDATA structure will contain the command line.
-      /// </summary>
-      /// <param name="m"></param>
       protected override void WndProc(ref Message m)
          {
+         // We need to override the windows message proc to intercept our WM_COPYDATA message. This is 
+         // sent when a second instance of ApsimRun is created with a command line argument. The lpData
+         // field of that WM_COPYDATA structure will contain the command line.
          if (m.Msg == SingleApplicationInstance.WM_COPYDATA)
             {
-            // Comes through here when an instance of ApsimRun was alread in memory.
+            // Comes through here when an instance of ApsimRun was already in memory.
             // Reusing the same instance.
             string[] files = { SingleApplicationInstance.ProcessWM_COPYDATA(m) };
             Activate();
@@ -307,39 +233,78 @@ namespace ApsimRun
 
       private void OnButtonClick(object sender, ToolStripItemClickedEventArgs e)
          {
-         if (e.ClickedItem == RunButton && !RunButton.Checked)
+         if (e.ClickedItem == StopButton)
             {
-            if (!PauseButton.Checked)
-               Runner.Reset();
-            RunButton.Checked = true;
-            StopButton.Checked = false;
-            PauseButton.Checked = false;
-            ReportButton.Enabled = false;
-            Runner.Run();
-            }
-         else if (e.ClickedItem == StopButton)
-            {
-            RunButton.Checked = false;
             StopButton.Checked = true;
+            StopButton.Enabled = false;
             PauseButton.Checked = false;
-            ReportButton.Enabled = true;
-            Runner.Stop();
+            PauseButton.Enabled = false;
+            _JobRunner.Stop();
+            Timer1.Enabled = false;
+            PerformanceSeries.Clear();
+            ShowDetailButton.Visible = true;
             }
          else if (e.ClickedItem == PauseButton)
             {
-            RunButton.Checked = false;
-            StopButton.Checked = false;
             PauseButton.Checked = true;
-            Runner.Pause();
-            }
-         else if (e.ClickedItem == ReportButton)
-            {
-            SimulationRunnerReportForm Form = new SimulationRunnerReportForm();
-            Form.Populate(Runner.SimulationDetails);
-            Form.ShowDialog();
+            _JobRunner.Pause();
             }
          }
 
+      private void OnShowDetailClicked(object sender, LinkLabelLinkClickedEventArgs e)
+         {
+         if (ShowDetailButton.Text == "Show detail")
+            {
+            PopulateDetailList();
+            ShowDetailButton.Text = "Hide detail";
+            Height = 515;
+            }
+         else
+            {
+            ShowDetailButton.Text = "Show detail";
+            Height = 197;
+            }
+         }
+      public void PopulateDetailList()
+         {
+         SimulationList.Items.Clear();
+         foreach (Job J in _JobRunner.Jobs)
+            {
+            ListViewItem Item = new ListViewItem(J.Name);
+            Item.ImageIndex = -1;
+            if (J.HasErrors)
+               Item.ImageIndex = 3;
+            else if (J.HasWarnings)
+               Item.ImageIndex = 4;
+            else if (J.PercentComplete > 0)
+               Item.ImageIndex = 5;
+            SimulationList.Items.Add(Item);
+            }
+         }
+
+      private void OnMouseDoubleClick(object sender, MouseEventArgs e)
+         {
+         ListViewItem ClickedItem = SimulationList.GetItemAt(e.X, e.Y);
+         if (ClickedItem != null)
+            {
+            RunApsimJob ApsimJob = (RunApsimJob)_JobRunner.Jobs[ClickedItem.Index];
+            if (ApsimJob != null)
+               {
+               string SummaryFileName = ApsimJob.SumFileName;
+               try
+                  {
+                  if (File.Exists(SummaryFileName))
+                     Process.Start(SummaryFileName);
+                  else
+                     MessageBox.Show("Cannot find summary file: " + SummaryFileName);
+                  }
+               catch
+                  {
+                  Process.Start("notepad", SummaryFileName);
+                  }
+               }
+            }
+         }
 
       }
    }

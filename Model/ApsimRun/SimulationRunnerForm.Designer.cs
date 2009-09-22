@@ -33,8 +33,9 @@ namespace ApsimRun
          {
          this.components = new System.ComponentModel.Container();
          System.Windows.Forms.GroupBox groupBox1;
-         System.Windows.Forms.Label label1;
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SimulationRunnerForm));
+         System.Windows.Forms.Label label1;
+         System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("          ");
          this.PerformanceChart = new Steema.TeeChart.TChart();
          this.PerformanceSeries = new Steema.TeeChart.Styles.Area();
          this.ImageList = new System.Windows.Forms.ImageList(this.components);
@@ -52,11 +53,11 @@ namespace ApsimRun
          this.label2 = new System.Windows.Forms.Label();
          this.NumCPUs = new System.Windows.Forms.NumericUpDown();
          this.ToolStrip = new System.Windows.Forms.ToolStrip();
-         this.RunButton = new System.Windows.Forms.ToolStripButton();
          this.StopButton = new System.Windows.Forms.ToolStripButton();
          this.PauseButton = new System.Windows.Forms.ToolStripButton();
-         this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-         this.ReportButton = new System.Windows.Forms.ToolStripButton();
+         this.ShowDetailButton = new System.Windows.Forms.LinkLabel();
+         this.SimulationList = new System.Windows.Forms.ListView();
+         this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
          groupBox1 = new System.Windows.Forms.GroupBox();
          label1 = new System.Windows.Forms.Label();
          groupBox1.SuspendLayout();
@@ -606,10 +607,12 @@ namespace ApsimRun
          this.ImageList.Images.SetKeyName(0, "media_play.png");
          this.ImageList.Images.SetKeyName(1, "media_stop.png");
          this.ImageList.Images.SetKeyName(2, "media_pause.png");
+         this.ImageList.Images.SetKeyName(3, "error.png");
+         this.ImageList.Images.SetKeyName(4, "warning.png");
+         this.ImageList.Images.SetKeyName(5, "check2.png");
          // 
          // Timer1
          // 
-         this.Timer1.Enabled = true;
          this.Timer1.Interval = 1000;
          this.Timer1.Tick += new System.EventHandler(this.OnTimerTick);
          // 
@@ -754,30 +757,15 @@ namespace ApsimRun
          this.ToolStrip.Dock = System.Windows.Forms.DockStyle.None;
          this.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
          this.ToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.RunButton,
             this.StopButton,
-            this.PauseButton,
-            this.toolStripSeparator1,
-            this.ReportButton});
+            this.PauseButton});
          this.ToolStrip.Location = new System.Drawing.Point(0, 2);
          this.ToolStrip.Name = "ToolStrip";
          this.ToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-         this.ToolStrip.Size = new System.Drawing.Size(132, 25);
+         this.ToolStrip.Size = new System.Drawing.Size(49, 25);
          this.ToolStrip.TabIndex = 20;
          this.ToolStrip.Text = "toolStrip1";
          this.ToolStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnButtonClick);
-         // 
-         // RunButton
-         // 
-         this.RunButton.Checked = true;
-         this.RunButton.CheckState = System.Windows.Forms.CheckState.Checked;
-         this.RunButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-         this.RunButton.Image = ((System.Drawing.Image)(resources.GetObject("RunButton.Image")));
-         this.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-         this.RunButton.Name = "RunButton";
-         this.RunButton.Size = new System.Drawing.Size(23, 22);
-         this.RunButton.Text = "toolStripButton1";
-         this.RunButton.ToolTipText = "Run simulations";
          // 
          // StopButton
          // 
@@ -799,27 +787,53 @@ namespace ApsimRun
          this.PauseButton.Text = "toolStripButton3";
          this.PauseButton.ToolTipText = "Pause running of simulations";
          // 
-         // toolStripSeparator1
+         // ShowDetailButton
          // 
-         this.toolStripSeparator1.Name = "toolStripSeparator1";
-         this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+         this.ShowDetailButton.AutoSize = true;
+         this.ShowDetailButton.Location = new System.Drawing.Point(6, 150);
+         this.ShowDetailButton.Name = "ShowDetailButton";
+         this.ShowDetailButton.Size = new System.Drawing.Size(62, 13);
+         this.ShowDetailButton.TabIndex = 21;
+         this.ShowDetailButton.TabStop = true;
+         this.ShowDetailButton.Text = "Show detail";
+         this.ShowDetailButton.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnShowDetailClicked);
          // 
-         // ReportButton
+         // SimulationList
          // 
-         this.ReportButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-         this.ReportButton.Image = ((System.Drawing.Image)(resources.GetObject("ReportButton.Image")));
-         this.ReportButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-         this.ReportButton.Name = "ReportButton";
-         this.ReportButton.Size = new System.Drawing.Size(23, 22);
-         this.ReportButton.Text = "toolStripButton4";
-         this.ReportButton.ToolTipText = "Report on simulations that ran";
+         this.SimulationList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                     | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.SimulationList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+         this.SimulationList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+         this.SimulationList.GridLines = true;
+         this.SimulationList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+         this.SimulationList.HideSelection = false;
+         this.SimulationList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
+         this.SimulationList.Location = new System.Drawing.Point(9, 175);
+         this.SimulationList.MultiSelect = false;
+         this.SimulationList.Name = "SimulationList";
+         this.SimulationList.ShowGroups = false;
+         this.SimulationList.Size = new System.Drawing.Size(366, 253);
+         this.SimulationList.SmallImageList = this.ImageList;
+         this.SimulationList.TabIndex = 22;
+         this.SimulationList.UseCompatibleStateImageBehavior = false;
+         this.SimulationList.View = System.Windows.Forms.View.Details;
+         this.SimulationList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.OnMouseDoubleClick);
+         // 
+         // columnHeader1
+         // 
+         this.columnHeader1.Width = 365;
          // 
          // SimulationRunnerForm
          // 
          this.AllowDrop = true;
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(381, 159);
+         this.ClientSize = new System.Drawing.Size(381, 440);
+         this.Controls.Add(this.SimulationList);
+         this.Controls.Add(this.ShowDetailButton);
          this.Controls.Add(this.ToolStrip);
          this.Controls.Add(this.groupBox2);
          this.Controls.Add(label1);
@@ -833,10 +847,8 @@ namespace ApsimRun
          this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
          this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
          this.Text = "APSIM runs";
-         this.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
          this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
          this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnClosing);
-         this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnDragEnter);
          this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
          groupBox1.ResumeLayout(false);
          this.groupBox2.ResumeLayout(false);
@@ -870,10 +882,10 @@ namespace ApsimRun
       private System.Windows.Forms.GroupBox groupBox3;
       private UIBits.VerticalProgressBar ProgressBar;
       private System.Windows.Forms.ToolStrip ToolStrip;
-      private System.Windows.Forms.ToolStripButton RunButton;
       private System.Windows.Forms.ToolStripButton StopButton;
       private System.Windows.Forms.ToolStripButton PauseButton;
-      private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-      private System.Windows.Forms.ToolStripButton ReportButton;
+      private System.Windows.Forms.LinkLabel ShowDetailButton;
+      private System.Windows.Forms.ListView SimulationList;
+      private System.Windows.Forms.ColumnHeader columnHeader1;
       }
    }
