@@ -21,6 +21,7 @@ Public Class BaseActions
             dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
             dialog.RestoreDirectory = True
             If dialog.ShowDialog = DialogResult.OK Then
+                Controller.Explorer.CloseUI()
                 Controller.ApsimData.OpenFile(dialog.FileName)
                 Controller.RefreshToolStrips()
             End If

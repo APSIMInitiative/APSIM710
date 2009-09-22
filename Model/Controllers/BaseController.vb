@@ -551,6 +551,7 @@ Public Class BaseController
         Try
             If Not IsNothing(E.ClickedItem.Tag) Then
                 If E.ClickedItem.Tag = "" AndAlso FileSaveAfterPrompt() Then
+                    Explorer.CloseUI()
                     ApsimData.OpenFile(E.ClickedItem.Text)
                 Else
                     InvokeAction(Sender, E.ClickedItem.Tag)

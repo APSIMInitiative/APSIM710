@@ -42,14 +42,17 @@ public class ApsimRunToolStrip
       // ----------------------------------------------------------
       // User has clicked stop button
       // ----------------------------------------------------------
-      ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
-      ToolStripButton PauseButton = (ToolStripButton)_Strip.Items["PauseButton"];
-      ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
-      RunButton.Enabled = true;
-      PauseButton.Checked = false;
-      PauseButton.Enabled = false;
-      StopButton.Enabled = false;
-      _JobRunner.Stop();
+      if (_Strip != null)
+         {
+         ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
+         ToolStripButton PauseButton = (ToolStripButton)_Strip.Items["PauseButton"];
+         ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
+         RunButton.Enabled = true;
+         PauseButton.Checked = false;
+         PauseButton.Enabled = false;
+         StopButton.Enabled = false;
+         _JobRunner.Stop();
+         }
       }
    public void OnPause()
       {
