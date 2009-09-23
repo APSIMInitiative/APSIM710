@@ -168,5 +168,6 @@ class EXPORT ScienceAPI
 
    };
 string addUnitsToDDML(const string& ddml, const string& units);
+string addDescToDDML(const string& ddml, const string& desc);
 
 #endif

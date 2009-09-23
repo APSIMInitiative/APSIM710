@@ -51,7 +51,7 @@ FortranWrapper::~FortranWrapper(void)
       libraryHandle = NULL;
       }
    }
-   
+
 void FortranWrapper::setup(void)
    {
    setupFortranDll();
@@ -374,6 +374,36 @@ extern "C" unsigned  EXPORT STDCALL add_registration_with_units
    {
    string ddml = addUnitsToDDML(asString(type, typeLength),
                                 asString(units, unitsLength));
+   int destID;
+   string regName;
+   ApsimRegistry::getApsimRegistry().unCrackPath(
+       FortranWrapper::currentInstance->getId(),
+       asString(name,nameLength), destID, regName);
+
+   return FortranWrapper::currentInstance->addRegistration
+      (*kind, destID, regName, ddml);
+   }
+// ------------------------------------------------------------------
+//  Short description:
+//    add a registration to the system.  Return it's registration ID
+//    to caller.
+
+//  Notes:
+
+//  Changes:
+//    DPH 7/6/2001
+
+// ------------------------------------------------------------------
+extern "C" unsigned  EXPORT STDCALL add_reg
+   (EventTypeCode* kind, const char* name, const char* type,
+    const char* units, const char* desc,
+    unsigned nameLength, unsigned typeLength, unsigned unitsLength, unsigned descLength)
+
+
+   {
+   string ddml = addUnitsToDDML(asString(type, typeLength),
+                                asString(units, unitsLength));
+   ddml = addDescToDDML(ddml, asString(desc, descLength));
    int destID;
    string regName;
    ApsimRegistry::getApsimRegistry().unCrackPath(

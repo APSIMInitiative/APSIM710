@@ -325,7 +325,14 @@ string EXPORT addUnitsToDDML(const string& ddml, const string& units)
       returnString = returnString.substr(0, pos) + " unit=\"" + units + "\"/>";
    return returnString;
    }
-
+string EXPORT addDescToDDML(const string& ddml, const string& desc)
+   {
+   string returnString = ddml;
+   unsigned pos = returnString.find("/>");
+   if (desc != "" && pos != string::npos)
+      returnString = returnString.substr(0, pos) + " description=\"" + desc + "\"/>";
+   return returnString;
+   }
 // -------------------------------------------------------------
 // GET methods.
 // -------------------------------------------------------------

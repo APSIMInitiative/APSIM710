@@ -31,6 +31,7 @@ ProbeDLL Soil.xml
 ProbeDLL Sorghum.xml
 ProbeDLL Soybean.xml
 ProbeDLL Stylo.xml
+ProbeDLL Sugar.xml
 ProbeDLL Sunflower.xml
 ProbeDLL SweetCorn.xml
 ProbeDLL SweetSorghum.xml
