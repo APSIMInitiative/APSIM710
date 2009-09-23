@@ -1,44 +1,82 @@
-   <Type name="clock">
-      <MetaData>
-         <UItype>VBUserInterface.GenericUI</UItype>
-         <ShowInMainTree>Yes</ShowInMainTree>
-         <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-         <Documentation name="Science documentation">../apsim/clock/docs/clock_science.htm</Documentation>
-         <LargeIcon>%apsim%\UserInterface\Images\clock32.png</LargeIcon>
-         <SmallIcon>%apsim%\UserInterface\Images\clock16.png</SmallIcon>
-         <DLL>%apsim%\Model\Clock.dll</DLL>
-         <drops>
-            <drop>toolbox</drop>
-            <drop>simulation</drop>
-            <drop>folder</drop>
-         </drops>
-         <variables name="Simulation variables" module="">
-            <variable name="year" description="Year"/>
-            <variable name="day" description="Day"/>
-            <variable name="month" description="Month"/>
-            <variable name="day_of_month" description="Day of month"/>
-            <variable name="dd/mm/yyyy" description="Date (dd/mm/yyyy)"/>
-            <variable name="dd/mmm/yyyy" description="Date (dd/mmm/yyyy)"/>
-            <variable name="dd/mm" description="Date (dd/mm)"/>
-            <variable name="dd_mmm" description="Date (dd_mmm  eg '1_Dec')"/>
-            <variable name="mm/dd/yyyy" description="Date (mm/dd/yyyy)"/>
-            <variable name="month_str" description="Month string (eg 'Dec')"/>
-         </variables>
-         <events>
-            <event name="prepare" description="Start of daily simulation time step"/>
-            <event name="post" description="End of daily simulation time step"/>
-         </events>
-         <ApsimToSim>
-            <component name="[clock.name]" executable="[dll]">
-               <executable>[dll]</executable>
-               <initdata>
+<Type name="clock">
+  <MetaData>
+    <UItype>VBUserInterface.GenericUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation name="Science documentation">../apsim/clock/docs/clock_science.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\clock32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\clock16.png</SmallIcon>
+    <DLL>%apsim%\Model\Clock.dll</DLL>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <variables name="Simulation variables" module="">
+      <variable name="year" description="Year" />
+      <variable name="day" description="Day" />
+      <variable name="month" description="Month" />
+      <variable name="day_of_month" description="Day of month" />
+      <variable name="dd/mm/yyyy" description="Date (dd/mm/yyyy)" />
+      <variable name="dd/mmm/yyyy" description="Date (dd/mmm/yyyy)" />
+      <variable name="dd/mm" description="Date (dd/mm)" />
+      <variable name="dd_mmm" description="Date (dd_mmm  eg '1_Dec')" />
+      <variable name="mm/dd/yyyy" description="Date (mm/dd/yyyy)" />
+      <variable name="month_str" description="Month string (eg 'Dec')" />
+    </variables>
+    <events>
+      <event name="prepare" description="Start of daily simulation time step" />
+      <event name="post" description="End of daily simulation time step" />
+    </events>
+    <ApsimToSim>
+      <component name="[clock.name]" executable="[dll]">
+        <executable>[dll]</executable>
+        <initdata>
                   [Model]
                   [clock.innerxml]
                </initdata>
-            </component>
-         </ApsimToSim>
-      </MetaData>
-      <Model>
-         <timestep_events>prepare init_step do_pasture_water process do_pasture_growth do_stock post end_step</timestep_events>
-      </Model>
-   </Type>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <timestep_events>prepare init_step do_pasture_water process do_pasture_growth do_stock post end_step</timestep_events>
+  </Model>
+  <Info>
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="day" description="" read="T" write="F" kind="integer4" array="" units="d" />
+      <variable name="day_of_month" description="" read="T" write="F" kind="integer4" array="" units="d" />
+      <variable name="day_of_year" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="end_month" description="" read="T" write="F" kind="boolean" array="" units="" />
+      <variable name="end_week" description="" read="T" write="F" kind="boolean" array="" units="" />
+      <variable name="end_year" description="" read="T" write="F" kind="boolean" array="" units="" />
+      <variable name="month" description="" read="T" write="F" kind="integer4" array="" units="month" />
+      <variable name="month_str" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="simulation_end_date" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="simulation_end_day" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="simulation_start_date" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="simulation_start_day" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="simulation_start_year" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="start_month" description="" read="T" write="F" kind="boolean" array="" units="" />
+      <variable name="start_week" description="" read="T" write="F" kind="boolean" array="" units="" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="timestep" description="" read="T" write="F" kind="integer4" array="" units="min" />
+      <variable name="today" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="year" description="" read="T" write="F" kind="integer4" array="" units="year" />
+    </variables>
+    <events>
+      <event name="end_day" description="" />
+      <event name="end_simulation" description="" />
+      <event name="post" description="" />
+      <event name="prepare" description="" />
+      <event name="process" description="" />
+      <event name="report" description="" />
+      <event name="start_simulation" description="" />
+      <event name="start_year" description="" />
+    </events>
+  </Info>
+</Type>

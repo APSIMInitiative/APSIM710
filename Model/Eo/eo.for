@@ -3053,7 +3053,7 @@ cjh      print*, 'g%da, fe = ', g%da, fe
      :              ,'(kpa)'
      :              , vpd)
 
-      else if (variable_name .eq. 'g%canopy_height') then
+      else if (variable_name .eq. 'canopy_height') then
          call respond2get_real_var (
      :               variable_name
      :              ,'(mm)'
@@ -3325,7 +3325,7 @@ cjh      print*, 'g%da, fe = ', g%da, fe
       subroutine alloc_dealloc_instance(doAllocate)
 !     ===========================================================
       use EoModule
-      implicit none  
+      implicit none
       ml_external alloc_dealloc_instance
 
 !+  Sub-Program Arguments
@@ -3416,9 +3416,9 @@ cjh      print*, 'g%da, fe = ', g%da, fe
       subroutine doInit1 ()
       use infrastructure
       use EoModule
-      
+
       ml_external doInit1
-      
+
       call doRegistrations(id)
       end subroutine
 
@@ -3429,11 +3429,11 @@ cjh      print*, 'g%da, fe = ', g%da, fe
       Use infrastructure
       implicit none
       ml_external respondToEvent
-      
+
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID
       integer, intent(in) :: variant
-      
+
       return
       end subroutine respondToEvent
 

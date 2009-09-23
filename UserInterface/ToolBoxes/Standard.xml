@@ -304,6 +304,22 @@ if (year > [startyear]) then
       <c_interception name="c_interception">0.0</c_interception>
       <d_interception name="d_interception">0.0</d_interception>
     </micromet>
+    <eo>
+      <vpd_fac description="Tanner Sinclair VPD factor for net positive radiation">0.75</vpd_fac>
+      <albedo description="Soil albedo (0-1). Used for net radiation">0.13</albedo>
+      <max_albedo description="Albedo at 100% green crop cover (0-1). Used for net radiation">0.23</max_albedo>
+      <z0soil description="Soil z0 (used when lai=0) (mm). This is the minimum that z0 may be">3</z0soil>
+      <default_wind description="default wind speed (km/day) if not found in system (eg met or manager)">60.0</default_wind>
+      <default_pa description="Default atmospheric pressure (hPa) if not found in met or manager">1000</default_pa>
+      <default_instrum_height description="Default instrument height (mm) if not found in system">2000</default_instrum_height>
+      <disp_instrum description="Zero plane displacement at instrument site (mm)">37.0</disp_instrum>
+      <z0_instrum description="Roughness length at instrument site (mm)">4.0</z0_instrum>
+      <extinct_coef description="Extinction coefficient for adjustment of Eo_pm to obtain">0.8</extinct_coef>
+      <eo_plant_method type="list" listvalues="eo_transpiration,eo_pm,eo_penman,eo_penman_x_cover,eo_penman_d_x_cover,eo_pm_x_cover,eo_pm_x_kfunction,eo_radn_x_kfunction,eo_priestly_taylor,eo_ritchie" description="Method used to calculate plant transpiration (eo_plant)">eo_penman_d_x_cover</eo_plant_method>
+      <wind_day_fraction description="Optional fraction of wind in daylight hours (day:night is 2:1)">0.66</wind_day_fraction>
+      <adjustment_factor description="Calibration or crop factor">1.0</adjustment_factor>
+      <wind_multiplier description="Multiplier for wind to alter wind run for shelter effects (-)">1.0</wind_multiplier>
+    </eo>
     <soi>
       <filename>%apsuite\soi\phases.soi</filename>
     </soi>

@@ -8,7 +8,9 @@ ProbeDLL ButterflyPea.xml
 ProbeDLL Canola.xml
 ProbeDLL Centro.xml
 ProbeDLL Chickpea.xml
+ProbeDLL Clock.xml
 ProbeDLL Cowpea.xml
+ProbeDLL eo.xml
 ProbeDLL Fertiliser.xml
 ProbeDLL Fieldpea.xml
 ProbeDLL Horsegram.xml
