@@ -163,6 +163,9 @@ namespace ApsimFile
          }
       public void OpenFile(string FileName)
          {
+         if (Path.GetDirectoryName(FileName) == "")
+            FileName = Path.Combine(Directory.GetCurrentDirectory(), FileName);
+
          DisabledEventCount++;
          XmlDocument doc = new XmlDocument();
          doc.Load(FileName);

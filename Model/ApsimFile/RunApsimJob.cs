@@ -25,6 +25,8 @@ public class RunApsimJob : RunExternalJob
       set
          {
          _SimFileName = value;
+         if (Path.GetDirectoryName(_SimFileName) == "")
+            _SimFileName = Path.Combine(Directory.GetCurrentDirectory(), _SimFileName);
          _SumFileName = Path.GetDirectoryName(_SimFileName) + "\\"
                       + Path.GetFileNameWithoutExtension(_SimFileName) + ".sum";
          _SumFile = new StreamWriter(_SumFileName);
