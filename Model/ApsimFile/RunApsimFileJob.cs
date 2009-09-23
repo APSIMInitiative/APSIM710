@@ -46,6 +46,12 @@ public class RunApsimFileJob : RunApsimJob
       // and attempt to run the next simulation
       if (_ApsimToSimProcess.process.ExitCode == 0)
          base.Run();
+      else
+         {
+         _SumFile.WriteLine(_StdErr);
+         _HasErrors = true;
+         OnExited(null);
+         }
       }
    public string SimulationPath
       {

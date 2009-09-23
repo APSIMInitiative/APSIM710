@@ -45,6 +45,12 @@ public class RunConJob : RunApsimJob
       // and attempt to run the next simulation
       if (_ConToSimProcess.process.ExitCode == 0)
          base.Run();
+      else
+         {
+         _SumFile.WriteLine(_StdErr);
+         _HasErrors = true;
+         OnExited(null);
+         }
       }
 
    }

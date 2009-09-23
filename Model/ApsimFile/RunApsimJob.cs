@@ -7,9 +7,9 @@ using System.IO;
 
 public class RunApsimJob : RunExternalJob
    {
-   private string       _SimFileName = "";
-   private string       _SumFileName = "";
-   private StreamWriter _SumFile = null;
+   protected string _SimFileName = "";
+   protected string _SumFileName = "";
+   protected StreamWriter _SumFile = null;
 
 
    public RunApsimJob(String Name, JobRunner JobRunner) 

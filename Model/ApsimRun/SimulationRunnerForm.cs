@@ -27,7 +27,7 @@ namespace ApsimRun
       public SimulationRunnerForm(string[] Args)
          {
          InitializeComponent();
-         Height = 197;
+         Height = 227;
          Clear();
 
          this.Args = Args;
@@ -68,7 +68,7 @@ namespace ApsimRun
          NumCPUs.ValueChanged += OnNumCPUsChanged;
          ShowDetailButton.Visible = false;
          Timer1.Enabled = false;
-         Height = 197;
+         Height = 227;
          }
       public void RunSimulations(string[] files)
          {
@@ -262,7 +262,7 @@ namespace ApsimRun
          else
             {
             ShowDetailButton.Text = "Show detail";
-            Height = 197;
+            Height = 227;
             }
          }
       public void PopulateDetailList()
