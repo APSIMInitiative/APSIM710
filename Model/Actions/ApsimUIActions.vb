@@ -26,7 +26,7 @@ Public Class ApsimUIActions
             dialog.Multiselect = False                      'don't let them select multiple files
             If dialog.ShowDialog = System.Windows.Forms.DialogResult.OK Then
                 Controller.Explorer.CloseUI()                           'close whatever simulation is currently in the ExplorerUI
-                Controller.ApsimData.OpenFile(dialog.FileName)          'store the xml in the .apsim file into the ApsimData variable in the Controller
+                Controller.ApsimData.NewFromFile(dialog.FileName)          'store the xml in the .apsim file into the ApsimData variable in the Controller
             End If
         End If
     End Sub

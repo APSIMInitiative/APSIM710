@@ -147,6 +147,13 @@ namespace ApsimFile
          Doc.LoadXml(Xml);
          Open(Doc.DocumentElement);
          }
+      public void NewFromFile(string FileName)
+         {
+         // Create a new .apsim file in memory.
+         XmlDocument Doc = new XmlDocument();
+         Doc.Load(FileName);
+         Open(Doc.DocumentElement);
+         }
       public bool Open(XmlNode Node)
          {
          bool UpgradeOccurred = APSIMChangeTool.Upgrade(Node);
