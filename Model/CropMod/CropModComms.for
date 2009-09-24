@@ -109,6 +109,8 @@
 
          if (numvals.eq.0) then
              g%row_spacing = c%row_spacing_default
+         elseif (g%row_spacing .gt. 20.0)
+            g%row_spacing = g%row_spacing / 1000;    ! Row spacing converted from mm to m
          endif
 
          g%skip_row = c%skip_row_default

@@ -321,8 +321,7 @@ Public Class GenericUI
                         Dim Us As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
                         Dim CropComponent As Component = Controller.ApsimData.RootComponent.FindComponentInPaddock(Us, Grid.Cells(e.Row, 4).Text)
                         Combo.Items = Types.Instance.Cultivars(CropComponent.Type)
-                        Exit For                    'stop looking for cultivar properties once you found the next one after the crop. 
-                    ElseIf Grid.Cells(CultRow, 1).Text.ToLower = "class" Then
+                    ElseIf Grid.Cells(CultRow, 1).Text.ToLower = "classes" Then
                         'get rid of the value for the old crop. It won't make sense with new crop
                         Grid.Cells(CultRow, 4).Text = ""
                         'go and get all cultivars for the new crop.
@@ -530,7 +529,7 @@ Public Class GenericUI
                     Combo.Items = Types.Instance.Cultivars(Grid.Cells(CropRow, 4).Text)
                 End If
 
-            Case "class"
+            Case "classes"
                 Dim Combo As FarPoint.Win.Spread.CellType.ComboBoxCellType = New FarPoint.Win.Spread.CellType.ComboBoxCellType
                 Combo.Editable = True                                       'allow the user to directly add stuff to the combo box.
                 Grid.Cells(Row, 4).CellType = Combo
