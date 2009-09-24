@@ -51,4 +51,7 @@ Public Class ScriptUI
     End Sub
 
 
+    Private Sub OnButtonClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles ToolStrip1.ItemClicked
+        TextBox.DisplaySearchDialog()
+    End Sub
 End Class

@@ -23,6 +23,7 @@ Public Class RuleUI
     Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents EditMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents PropertiesMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ImageList As System.Windows.Forms.ImageList
     Private Cultivars As XmlNode
 
 
@@ -58,36 +59,42 @@ Public Class RuleUI
     Friend WithEvents PropertiesTabPage As System.Windows.Forms.TabPage
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(RuleUI))
         Me.TabControl = New System.Windows.Forms.TabControl
         Me.PopupMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.AddMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.DeleteMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.EditMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator
+        Me.PropertiesMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.PropertiesTabPage = New System.Windows.Forms.TabPage
         Me.GenericUI = New VBUserInterface.GenericUI
-        Me.PropertiesMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.ImageList = New System.Windows.Forms.ImageList(Me.components)
         Me.TabControl.SuspendLayout()
         Me.PopupMenu.SuspendLayout()
         Me.PropertiesTabPage.SuspendLayout()
         Me.SuspendLayout()
+        '
+        'MyHelpLabel
+        '
+        Me.MyHelpLabel.Size = New System.Drawing.Size(1022, 16)
         '
         'TabControl
         '
         Me.TabControl.ContextMenuStrip = Me.PopupMenu
         Me.TabControl.Controls.Add(Me.PropertiesTabPage)
         Me.TabControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl.Location = New System.Drawing.Point(0, 18)
+        Me.TabControl.Location = New System.Drawing.Point(0, 16)
         Me.TabControl.Name = "TabControl"
         Me.TabControl.SelectedIndex = 0
-        Me.TabControl.Size = New System.Drawing.Size(1022, 798)
+        Me.TabControl.Size = New System.Drawing.Size(1022, 800)
         Me.TabControl.TabIndex = 3
         '
         'PopupMenu
         '
         Me.PopupMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddMenuItem, Me.DeleteMenuItem, Me.EditMenuItem, Me.ToolStripSeparator1, Me.PropertiesMenuItem})
         Me.PopupMenu.Name = "ContextMenuStrip"
-        Me.PopupMenu.Size = New System.Drawing.Size(236, 120)
+        Me.PopupMenu.Size = New System.Drawing.Size(236, 98)
         '
         'AddMenuItem
         '
@@ -112,12 +119,18 @@ Public Class RuleUI
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
         Me.ToolStripSeparator1.Size = New System.Drawing.Size(232, 6)
         '
+        'PropertiesMenuItem
+        '
+        Me.PropertiesMenuItem.Name = "PropertiesMenuItem"
+        Me.PropertiesMenuItem.Size = New System.Drawing.Size(235, 22)
+        Me.PropertiesMenuItem.Text = "Add a &properties user interface"
+        '
         'PropertiesTabPage
         '
         Me.PropertiesTabPage.Controls.Add(Me.GenericUI)
         Me.PropertiesTabPage.Location = New System.Drawing.Point(4, 22)
         Me.PropertiesTabPage.Name = "PropertiesTabPage"
-        Me.PropertiesTabPage.Size = New System.Drawing.Size(1014, 772)
+        Me.PropertiesTabPage.Size = New System.Drawing.Size(1014, 774)
         Me.PropertiesTabPage.TabIndex = 0
         Me.PropertiesTabPage.Text = "Properties"
         Me.PropertiesTabPage.UseVisualStyleBackColor = True
@@ -130,20 +143,21 @@ Public Class RuleUI
         Me.GenericUI.HelpText = ""
         Me.GenericUI.Location = New System.Drawing.Point(0, 0)
         Me.GenericUI.Name = "GenericUI"
-        Me.GenericUI.Size = New System.Drawing.Size(1014, 772)
+        Me.GenericUI.Size = New System.Drawing.Size(1014, 774)
         Me.GenericUI.TabIndex = 0
         '
-        'PropertiesMenuItem
+        'ImageList
         '
-        Me.PropertiesMenuItem.Name = "PropertiesMenuItem"
-        Me.PropertiesMenuItem.Size = New System.Drawing.Size(235, 22)
-        Me.PropertiesMenuItem.Text = "Add a &properties user interface"
+        Me.ImageList.ImageStream = CType(resources.GetObject("ImageList.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ImageList.TransparentColor = System.Drawing.Color.Transparent
+        Me.ImageList.Images.SetKeyName(0, "find.png")
         '
         'RuleUI
         '
         Me.Controls.Add(Me.TabControl)
         Me.Name = "RuleUI"
         Me.Size = New System.Drawing.Size(1022, 816)
+        Me.Controls.SetChildIndex(Me.MyHelpLabel, 0)
         Me.Controls.SetChildIndex(Me.TabControl, 0)
         Me.TabControl.ResumeLayout(False)
         Me.PopupMenu.ResumeLayout(False)
@@ -191,12 +205,27 @@ Public Class RuleUI
 
     Private Sub AddScriptTab(ByVal TabName As String, ByVal Value As String)
         Dim page As New TabPage(TabName)
-        Dim ScriptBox As New RichTextBox
-        ScriptBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+
+        'Add a menu to the page at the top.
+
+        Dim ToolStrip As New ToolStrip()
+        ToolStrip.Parent = page
+        ToolStrip.ImageList = ImageList
+        ToolStrip.Dock = DockStyle.Top
+        AddHandler ToolStrip.ItemClicked, AddressOf OnItemClicked
+        Dim FindReplaceButton As ToolStripItem = ToolStrip.Items.Add("Find/Replace")
+        FindReplaceButton.ImageIndex = 0
+
+        Dim ScriptBox As New QWhale.Editor.SyntaxEdit
         ScriptBox.Text = Value
         ScriptBox.WordWrap = False
+        ScriptBox.Gutter.Options = CType((((QWhale.Editor.GutterOptions.PaintLineNumbers Or QWhale.Editor.GutterOptions.PaintLinesOnGutter) _
+                            Or QWhale.Editor.GutterOptions.PaintBookMarks) _
+                            Or QWhale.Editor.GutterOptions.PaintLineModificators), QWhale.Editor.GutterOptions)
+
         page.Controls.Add(ScriptBox)
         ScriptBox.Dock = DockStyle.Fill
+        ScriptBox.BringToFront()
         TabControl.TabPages.Add(page)
     End Sub
 
@@ -221,7 +250,7 @@ Public Class RuleUI
             If Page.Text <> "Properties" Then
                 Dim Script As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement("script"))
                 XmlHelper.SetName(Script, Page.Text)
-                Dim ScriptBox As RichTextBox = Page.Controls.Item(0)
+                Dim ScriptBox As QWhale.Editor.SyntaxEdit = Page.Controls.Item(0)
                 XmlHelper.SetValue(Script, "text", ScriptBox.Text)
 
                 Dim EventNames As String() = Page.Text.Split(",".ToCharArray())
@@ -269,5 +298,10 @@ Public Class RuleUI
         DeleteMenuItem.Enabled = TabControl.TabPages.Count > 1
         EditMenuItem.Enabled = TabControl.SelectedTab.Text <> "Properties"
         PropertiesMenuItem.Enabled = TabControl.TabPages(0).Text <> "Properties"
+    End Sub
+
+    Private Sub OnItemClicked(ByVal sender As Object, ByVal E As ToolStripItemClickedEventArgs)
+        Dim ScriptBox As QWhale.Editor.SyntaxEdit = TabControl.SelectedTab.Controls.Item(0)
+        ScriptBox.DisplaySearchDialog()
     End Sub
 End Class

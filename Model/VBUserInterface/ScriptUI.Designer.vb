@@ -28,9 +28,12 @@ Partial Class ScriptUI
         Me.CsParser = New QWhale.Syntax.Parsers.CsParser
         Me.VbParser = New QWhale.Syntax.Parsers.VbParser
         Me.GenericUI = New VBUserInterface.GenericUI
+        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip
+        Me.FindReplaceButton = New System.Windows.Forms.ToolStripButton
         Me.TabControl.SuspendLayout()
         Me.Properties.SuspendLayout()
         Me.Script.SuspendLayout()
+        Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl
@@ -58,6 +61,7 @@ Partial Class ScriptUI
         'Script
         '
         Me.Script.Controls.Add(Me.TextBox)
+        Me.Script.Controls.Add(Me.ToolStrip1)
         Me.Script.Location = New System.Drawing.Point(4, 22)
         Me.Script.Name = "Script"
         Me.Script.Padding = New System.Windows.Forms.Padding(3)
@@ -75,9 +79,9 @@ Partial Class ScriptUI
         Me.TextBox.Gutter.Options = CType((((QWhale.Editor.GutterOptions.PaintLineNumbers Or QWhale.Editor.GutterOptions.PaintLinesOnGutter) _
                     Or QWhale.Editor.GutterOptions.PaintBookMarks) _
                     Or QWhale.Editor.GutterOptions.PaintLineModificators), QWhale.Editor.GutterOptions)
-        Me.TextBox.Location = New System.Drawing.Point(3, 3)
+        Me.TextBox.Location = New System.Drawing.Point(3, 28)
         Me.TextBox.Name = "TextBox"
-        Me.TextBox.Size = New System.Drawing.Size(641, 493)
+        Me.TextBox.Size = New System.Drawing.Size(641, 468)
         Me.TextBox.TabIndex = 0
         Me.TextBox.Text = ""
         '
@@ -116,6 +120,23 @@ Partial Class ScriptUI
         Me.GenericUI.Size = New System.Drawing.Size(641, 493)
         Me.GenericUI.TabIndex = 0
         '
+        'ToolStrip1
+        '
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FindReplaceButton})
+        Me.ToolStrip1.Location = New System.Drawing.Point(3, 3)
+        Me.ToolStrip1.Name = "ToolStrip1"
+        Me.ToolStrip1.Size = New System.Drawing.Size(641, 25)
+        Me.ToolStrip1.TabIndex = 1
+        Me.ToolStrip1.Text = "ToolStrip1"
+        '
+        'FindReplaceButton
+        '
+        Me.FindReplaceButton.Image = CType(resources.GetObject("FindReplaceButton.Image"), System.Drawing.Image)
+        Me.FindReplaceButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.FindReplaceButton.Name = "FindReplaceButton"
+        Me.FindReplaceButton.Size = New System.Drawing.Size(89, 22)
+        Me.FindReplaceButton.Text = "Find/Replace"
+        '
         'ScriptUI
         '
         Me.Controls.Add(Me.TabControl)
@@ -125,6 +146,9 @@ Partial Class ScriptUI
         Me.TabControl.ResumeLayout(False)
         Me.Properties.ResumeLayout(False)
         Me.Script.ResumeLayout(False)
+        Me.Script.PerformLayout()
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -135,5 +159,7 @@ Partial Class ScriptUI
     Friend WithEvents TextBox As QWhale.Editor.SyntaxEdit
     Friend WithEvents CsParser As QWhale.Syntax.Parsers.CsParser
     Friend WithEvents VbParser As QWhale.Syntax.Parsers.VbParser
+    Friend WithEvents ToolStrip1 As System.Windows.Forms.ToolStrip
+    Friend WithEvents FindReplaceButton As System.Windows.Forms.ToolStripButton
 
 End Class
