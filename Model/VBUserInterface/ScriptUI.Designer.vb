@@ -23,21 +23,25 @@ Partial Class ScriptUI
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ScriptUI))
         Me.TabControl = New System.Windows.Forms.TabControl
         Me.Properties = New System.Windows.Forms.TabPage
+        Me.GenericUI = New VBUserInterface.GenericUI
         Me.Script = New System.Windows.Forms.TabPage
         Me.TextBox = New QWhale.Editor.SyntaxEdit(Me.components)
-        Me.CsParser = New QWhale.Syntax.Parsers.CsParser
-        Me.VbParser = New QWhale.Syntax.Parsers.VbParser
-        Me.GenericUI = New VBUserInterface.GenericUI
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip
         Me.FindReplaceButton = New System.Windows.Forms.ToolStripButton
+        Me.CsParser = New QWhale.Syntax.Parsers.CsParser
+        Me.VbParser = New QWhale.Syntax.Parsers.VbParser
+        Me.PopupMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.PropertiesMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.TabControl.SuspendLayout()
         Me.Properties.SuspendLayout()
         Me.Script.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        Me.PopupMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl
         '
+        Me.TabControl.ContextMenuStrip = Me.PopupMenu
         Me.TabControl.Controls.Add(Me.Properties)
         Me.TabControl.Controls.Add(Me.Script)
         Me.TabControl.Dock = System.Windows.Forms.DockStyle.Fill
@@ -57,6 +61,17 @@ Partial Class ScriptUI
         Me.Properties.TabIndex = 0
         Me.Properties.Text = "Properties"
         Me.Properties.UseVisualStyleBackColor = True
+        '
+        'GenericUI
+        '
+        Me.GenericUI.AutoScroll = True
+        Me.GenericUI.BackColor = System.Drawing.SystemColors.Window
+        Me.GenericUI.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.GenericUI.HelpText = ""
+        Me.GenericUI.Location = New System.Drawing.Point(3, 3)
+        Me.GenericUI.Name = "GenericUI"
+        Me.GenericUI.Size = New System.Drawing.Size(641, 493)
+        Me.GenericUI.TabIndex = 0
         '
         'Script
         '
@@ -85,6 +100,23 @@ Partial Class ScriptUI
         Me.TextBox.TabIndex = 0
         Me.TextBox.Text = ""
         '
+        'ToolStrip1
+        '
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FindReplaceButton})
+        Me.ToolStrip1.Location = New System.Drawing.Point(3, 3)
+        Me.ToolStrip1.Name = "ToolStrip1"
+        Me.ToolStrip1.Size = New System.Drawing.Size(641, 25)
+        Me.ToolStrip1.TabIndex = 1
+        Me.ToolStrip1.Text = "ToolStrip1"
+        '
+        'FindReplaceButton
+        '
+        Me.FindReplaceButton.Image = CType(resources.GetObject("FindReplaceButton.Image"), System.Drawing.Image)
+        Me.FindReplaceButton.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.FindReplaceButton.Name = "FindReplaceButton"
+        Me.FindReplaceButton.Size = New System.Drawing.Size(89, 22)
+        Me.FindReplaceButton.Text = "Find/Replace"
+        '
         'CsParser
         '
         Me.CsParser.DefaultState = 0
@@ -109,33 +141,19 @@ Partial Class ScriptUI
                     Or QWhale.Syntax.SyntaxOptions.CodeCompletionTabs), QWhale.Syntax.SyntaxOptions)
         Me.VbParser.XmlScheme = resources.GetString("VbParser.XmlScheme")
         '
-        'GenericUI
+        'PopupMenu
         '
-        Me.GenericUI.AutoScroll = True
-        Me.GenericUI.BackColor = System.Drawing.SystemColors.Window
-        Me.GenericUI.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GenericUI.HelpText = ""
-        Me.GenericUI.Location = New System.Drawing.Point(3, 3)
-        Me.GenericUI.Name = "GenericUI"
-        Me.GenericUI.Size = New System.Drawing.Size(641, 493)
-        Me.GenericUI.TabIndex = 0
+        Me.PopupMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PropertiesMenuItem})
+        Me.PopupMenu.Name = "ContextMenuStrip"
+        Me.PopupMenu.Size = New System.Drawing.Size(169, 26)
         '
-        'ToolStrip1
+        'PropertiesMenuItem
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FindReplaceButton})
-        Me.ToolStrip1.Location = New System.Drawing.Point(3, 3)
-        Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(641, 25)
-        Me.ToolStrip1.TabIndex = 1
-        Me.ToolStrip1.Text = "ToolStrip1"
-        '
-        'FindReplaceButton
-        '
-        Me.FindReplaceButton.Image = CType(resources.GetObject("FindReplaceButton.Image"), System.Drawing.Image)
-        Me.FindReplaceButton.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.FindReplaceButton.Name = "FindReplaceButton"
-        Me.FindReplaceButton.Size = New System.Drawing.Size(89, 22)
-        Me.FindReplaceButton.Text = "Find/Replace"
+        Me.PropertiesMenuItem.Checked = True
+        Me.PropertiesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.PropertiesMenuItem.Name = "PropertiesMenuItem"
+        Me.PropertiesMenuItem.Size = New System.Drawing.Size(168, 22)
+        Me.PropertiesMenuItem.Text = "Show &properties?"
         '
         'ScriptUI
         '
@@ -149,6 +167,7 @@ Partial Class ScriptUI
         Me.Script.PerformLayout()
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        Me.PopupMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -161,5 +180,7 @@ Partial Class ScriptUI
     Friend WithEvents VbParser As QWhale.Syntax.Parsers.VbParser
     Friend WithEvents ToolStrip1 As System.Windows.Forms.ToolStrip
     Friend WithEvents FindReplaceButton As System.Windows.Forms.ToolStripButton
+    Friend WithEvents PopupMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents PropertiesMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

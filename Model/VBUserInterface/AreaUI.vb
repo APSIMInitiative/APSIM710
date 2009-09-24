@@ -127,23 +127,24 @@ Public Class AreaUI
 
         ' Add an item for all children of this system.
         Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
-        For Each Child As ApsimFile.Component In Comp.ChildNodes
-            'create new item
-            Dim item As New ListViewItem(Child.Name, 0)
-            item.ImageIndex = Controller.ImageIndex(Child.Type, "LargeIcon")
-            ListView.Items.Add(item)
-        Next
+        If Not IsNothing(Comp) Then
+            For Each Child As ApsimFile.Component In Comp.ChildNodes
+                'create new item
+                Dim item As New ListViewItem(Child.Name, 0)
+                item.ImageIndex = Controller.ImageIndex(Child.Type, "LargeIcon")
+                ListView.Items.Add(item)
+            Next
 
 
-        ' Put up a background bitmap on listview.
-        Dim BitmapNode As XmlNode = XmlHelper.Find(Data, "bitmap")
-        If Not IsNothing(BitmapNode) Then
-            Dim TempFileName As String = Path.GetTempPath() + "\\apsimui.jpg"
-            Dim b As Bitmap = CSGeneral.BitmapUtility.DecodeStringToBitmap(BitmapNode.Value)
-            b.Save(TempFileName)
-            UIUtility.ListViewAPI.SetListViewImage(ListView, TempFileName, UIUtility.ImagePosition.TopLeft)
+            ' Put up a background bitmap on listview.
+            Dim BitmapNode As XmlNode = XmlHelper.Find(Data, "bitmap")
+            If Not IsNothing(BitmapNode) Then
+                Dim TempFileName As String = Path.GetTempPath() + "\\apsimui.jpg"
+                Dim b As Bitmap = CSGeneral.BitmapUtility.DecodeStringToBitmap(BitmapNode.Value)
+                b.Save(TempFileName)
+                UIUtility.ListViewAPI.SetListViewImage(ListView, TempFileName, UIUtility.ImagePosition.TopLeft)
+            End If
         End If
-
     End Sub
 
     ' ---------------------------------------------------------

@@ -10,10 +10,14 @@ Public Class ScriptUI
     Overrides Sub OnRefresh()
         ' Fill the property grid.
         Dim UINode As XmlNode = XmlHelper.Find(Data, "ui")
-        If Not IsNothing(UINode) Then
+        If IsNothing(UINode) Then
+            TabControl.TabPages.Remove(Properties)
+
+        Else
             GenericUI.OnLoad(Controller, NodePath, UINode.OuterXml)
             GenericUI.OnRefresh()
         End If
+        PropertiesMenuItem.Checked = TabControl.TabPages.Count = 2
         TextBox.Text = XmlHelper.Value(Data, "text")
         If TextBox.Text.Contains("Imports ") Then
             TextBox.Lexer = VbParser
@@ -36,12 +40,15 @@ Public Class ScriptUI
         ' --------------------------------------
         ' Save the script box if it has changd.
         ' --------------------------------------
-        GenericUI.OnSave()
-        Dim Contents As String = GenericUI.GetData()
+        Dim Contents As String = ""
+        If Not IsNothing(GenericUI) Then
+            GenericUI.OnSave()
+            Contents = GenericUI.GetData()
+        End If
 
         Data.RemoveAll()
 
-        If Contents <> "" Then
+        If Contents <> "" And PropertiesMenuItem.Checked Then
             Dim Doc As New XmlDocument
             Doc.LoadXml(Contents)
             Data.AppendChild(Data.OwnerDocument.ImportNode(Doc.DocumentElement, True))
@@ -53,5 +60,14 @@ Public Class ScriptUI
 
     Private Sub OnButtonClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles ToolStrip1.ItemClicked
         TextBox.DisplaySearchDialog()
+    End Sub
+
+    Private Sub OnPropertiesMenuItemClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PropertiesMenuItem.Click
+        If TabControl.TabPages.Count = 1 Then
+            TabControl.TabPages.Insert(0, Properties)
+        Else
+            TabControl.TabPages.Remove(Properties)
+        End If
+        PropertiesMenuItem.Checked = TabControl.TabPages.Count = 2
     End Sub
 End Class

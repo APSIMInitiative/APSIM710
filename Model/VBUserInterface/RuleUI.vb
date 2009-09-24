@@ -94,7 +94,7 @@ Public Class RuleUI
         '
         Me.PopupMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddMenuItem, Me.DeleteMenuItem, Me.EditMenuItem, Me.ToolStripSeparator1, Me.PropertiesMenuItem})
         Me.PopupMenu.Name = "ContextMenuStrip"
-        Me.PopupMenu.Size = New System.Drawing.Size(236, 98)
+        Me.PopupMenu.Size = New System.Drawing.Size(236, 120)
         '
         'AddMenuItem
         '
