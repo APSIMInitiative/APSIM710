@@ -815,7 +815,7 @@ namespace ApsimRun
          this.SimulationList.MultiSelect = false;
          this.SimulationList.Name = "SimulationList";
          this.SimulationList.ShowGroups = false;
-         this.SimulationList.Size = new System.Drawing.Size(366, 254);
+         this.SimulationList.Size = new System.Drawing.Size(366, 0);
          this.SimulationList.SmallImageList = this.ImageList;
          this.SimulationList.TabIndex = 22;
          this.SimulationList.UseCompatibleStateImageBehavior = false;
@@ -831,7 +831,7 @@ namespace ApsimRun
          this.AllowDrop = true;
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(381, 441);
+         this.ClientSize = new System.Drawing.Size(381, 186);
          this.Controls.Add(this.SimulationList);
          this.Controls.Add(this.ShowDetailButton);
          this.Controls.Add(this.ToolStrip);

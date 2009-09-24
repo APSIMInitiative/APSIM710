@@ -5687,7 +5687,7 @@ c                     p%beta(solnum,node) = table_beta(solnum2)
      :              numvals,
      :              0d0,
      :              20d0)
-     
+
          endif
          if (numvals.gt.0) then
             g%pep(vegnum) = g%pep(vegnum)/10d0 ! convert mm to cm
@@ -6145,20 +6145,24 @@ cnh NOTE - intensity is not part of the official design !!!!?
       integer counter
       integer node
       type(WaterUptakesType) :: Water
+      character CropName*200
+
       Water%num_Uptakes = g%num_crops
-      
+
       do counter = 1, g%num_crops
-         Water%Uptakes(counter)%Name = g%crop_names(counter)
-         Water%Uptakes(counter)%Num_amount = p%n
+         CropName = g%crop_names(counter)
+         call NullTermString(CropName)                         ! YUK - need to fix this.
+         Water%Uptakes(counter)%Name = CropName
+         Water%Uptakes(counter)%Num_amount = p%n+1
          do node=0, p%n
             ! uptake may be very small -ve - assume error small
-            Water%Uptakes(counter)%Amount(node) = 
+            Water%Uptakes(counter)%Amount(node+1) =
      .            max(g%pwuptakepot(counter,node),0d0)
          end do
       end do
       call publish_WaterUptakes(id%WaterUptakesCalculated, Water);
 
-      end subroutine      
+      end subroutine
 
 * ====================================================================
        subroutine apswim_get_supply (ucrop, uname, uarray, uunits,uflag)
@@ -9936,21 +9940,21 @@ c      pause
       call pop_routine (myname)
       return
       end subroutine
-      
+
       ! ====================================================================
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
       use infrastructure
       use APSwimModule
-      
+
       ml_external doInit1
-      
+
       call doRegistrations(id)
       call apswim_zero_module_links()
       call apswim_zero_variables()
       end subroutine
-      
+
 ! ====================================================================
 ! This routine is the event handler for all events
 ! ====================================================================

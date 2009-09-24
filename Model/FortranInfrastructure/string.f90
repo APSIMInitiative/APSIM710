@@ -1517,5 +1517,16 @@ module StringModule
       return
       end subroutine
 
+      subroutine NullTermString(st)
+      implicit none
+
+      character st*(*)         ! (INPUT & OUTPUT)
+      integer PosNull
+
+      PosNull = len_trim(st) + 1
+      st(PosNull:PosNull) = char(0)
+
+      end subroutine
+
 end module StringModule
 

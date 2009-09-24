@@ -10,6 +10,7 @@ public class RunApsimJob : RunExternalJob
    protected string _SimFileName = "";
    protected string _SumFileName = "";
    protected StreamWriter _SumFile = null;
+   protected bool _DeleteSim = true;
 
 
    public RunApsimJob(String Name, JobRunner JobRunner) 
@@ -47,7 +48,7 @@ public class RunApsimJob : RunExternalJob
       lock (this)
          {
          // Permanently stop the job.
-         if (File.Exists(_SimFileName))
+         if (_DeleteSim && File.Exists(_SimFileName))
             File.Delete(_SimFileName);
          }
       }
