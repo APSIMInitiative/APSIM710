@@ -866,7 +866,13 @@ namespace CSUserInterface
                Steema.TeeChart.Styles.Line CropSeries = new Steema.TeeChart.Styles.Line();
                WaterChart.Series.Add(CropSeries);
                CropSeries.HorizAxis = Steema.TeeChart.Styles.HorizontalAxis.Top;
-               CropSeries.Title = Crop + " lower limit";
+               if (InitialWater != null)
+                  {
+                  double PAW = MathUtility.Sum(InitialWater.PAW(Crop));
+                  CropSeries.Title = Crop + " ll (PAW= " + PAW.ToString("f0") + ")";
+                  }
+               else
+                  CropSeries.Title = Crop + " ll";
                CropSeries.Color = Colours[ColourIndex];
                CropSeries.LinePen.Width = 2;
                CropSeries.Add(MathUtility.Multiply_Value(MySoil.LL(Crop), 100), CumThicknessMidPoints);

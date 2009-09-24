@@ -557,8 +557,11 @@ namespace CSUserInterface
             {
             if (InitialWater.Method != InitWater.MethodType.Layered)
                {
+               double[] CurrentValues = GridUtility.GetColumnAsDoubles(WaterGrid, 1, SoilData.Thickness.Length);
+               CurrentValues = MathUtility.Divide_Value(CurrentValues, 100.0);
+
                InitialWater.Thickness = SoilData.Thickness;
-               InitialWater.SetUsingLayered(SoilData.LL15);
+               InitialWater.SetUsingLayered(CurrentValues);
                }
             PopulateControls();
             }

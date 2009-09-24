@@ -226,7 +226,7 @@ namespace ApsimFile
             if (Thickness.Length > 0)
                 {
                 for (int layer = 0; layer != SW.Length; layer++)
-                    PAW[layer] = Math.Max((SW[layer] - LL[layer]), 0.0) * Thickness[layer];
+                    PAW[layer] = (SW[layer] - LL[layer]) * Thickness[layer];
                 }
             return PAW;
             }
