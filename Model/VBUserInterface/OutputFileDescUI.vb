@@ -723,8 +723,10 @@ Public Class OutputFileDescUI
             GetSiblingComponents(Paddock.Parent, ComponentNames, ComponentTypes)
         End If
         For Each Sibling As ApsimFile.Component In Paddock.ChildNodes
-            ComponentNames.Add(Sibling.Name)
-            ComponentTypes.Add(Sibling.Type.ToLower())
+            If Sibling.Type.ToLower <> "simulation" And Sibling.Type.ToLower <> "graph" Then
+                ComponentNames.Add(Sibling.Name)
+                ComponentTypes.Add(Sibling.Type.ToLower())
+            End If
         Next
     End Sub
 

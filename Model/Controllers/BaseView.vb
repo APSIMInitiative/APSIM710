@@ -84,7 +84,11 @@ Public Class BaseView
         OnLoad()
     End Sub
     Public Function GetData() As String
-        Return Data.OuterXml
+        If IsNothing(Data) Then
+            Return ""
+        Else
+            Return Data.OuterXml
+        End If
     End Function
     Public ReadOnly Property NodePath() As String
         Get
