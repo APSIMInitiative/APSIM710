@@ -349,33 +349,35 @@ Public Class GenericUI
         If Not IsNothing(Me.FpSpread1.ActiveSheet.ActiveCell) AndAlso Not IsNothing(Me.FpSpread1.ActiveSheet.ActiveCell.Editor) Then
             Me.FpSpread1.ActiveSheet.ActiveCell.Editor.StopEditing()
         End If
-        Data.RemoveAll()
-        For Row As Integer = 0 To UIUtility.GridUtility.FindFirstBlankCell(Grid, 1) - 1
-            Dim DataType As String = Grid.Cells(Row, 1).Text
-            If DataType <> "" Then
-                Dim Type As String = Grid.Cells(Row, 0).Text
-                If Type = "" Then
-                    Dim Category As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement("category"))
-                    XmlHelper.SetAttribute(Category, "description", Grid.Cells(Row, 3).Text)
-                Else
-                    Dim NewNode As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement(Type))
-                    XmlHelper.SetAttribute(NewNode, "type", DataType)
-                    If Grid.Cells(Row, 2).Text <> "" Then
-                        XmlHelper.SetAttribute(NewNode, "listvalues", Grid.Cells(Row, 2).Text)
-                    End If
-                    Dim Desc As String = Grid.Cells(Row, 3).Text
-                    If DataType = "date" Then
-                        StringManip.SplitOffBracketedValue(Desc, "(", ")")
-                    End If
-                    XmlHelper.SetAttribute(NewNode, "description", Desc)
-                    NewNode.InnerText = Grid.Cells(Row, 4).Text
-                    If DataType = "date" Then
-                        Dim D As DateTime = DateTime.Parse(NewNode.InnerText)
-                        NewNode.InnerText = D.ToString("d/MM/yyyy")
+        If Not IsNothing(Data) Then
+            Data.RemoveAll()
+            For Row As Integer = 0 To UIUtility.GridUtility.FindFirstBlankCell(Grid, 1) - 1
+                Dim DataType As String = Grid.Cells(Row, 1).Text
+                If DataType <> "" Then
+                    Dim Type As String = Grid.Cells(Row, 0).Text
+                    If Type = "" Then
+                        Dim Category As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement("category"))
+                        XmlHelper.SetAttribute(Category, "description", Grid.Cells(Row, 3).Text)
+                    Else
+                        Dim NewNode As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement(Type))
+                        XmlHelper.SetAttribute(NewNode, "type", DataType)
+                        If Grid.Cells(Row, 2).Text <> "" Then
+                            XmlHelper.SetAttribute(NewNode, "listvalues", Grid.Cells(Row, 2).Text)
+                        End If
+                        Dim Desc As String = Grid.Cells(Row, 3).Text
+                        If DataType = "date" Then
+                            StringManip.SplitOffBracketedValue(Desc, "(", ")")
+                        End If
+                        XmlHelper.SetAttribute(NewNode, "description", Desc)
+                        NewNode.InnerText = Grid.Cells(Row, 4).Text
+                        If DataType = "date" Then
+                            Dim D As DateTime = DateTime.Parse(NewNode.InnerText)
+                            NewNode.InnerText = D.ToString("d/MM/yyyy")
+                        End If
                     End If
                 End If
-            End If
-        Next
+            Next
+        End If
     End Sub
 
     Private Sub FpSpread1_ButtonClicked(ByVal sender As System.Object, ByVal e As FarPoint.Win.Spread.EditorNotifyEventArgs) Handles FpSpread1.ButtonClicked

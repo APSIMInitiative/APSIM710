@@ -101,6 +101,7 @@ class RootPart : public RootBase
       // External Getters and Setters etc
       void get_sw_uptake(protocol::Component *system, protocol::QueryValueData &qd);
       void get_sw_supply(protocol::Component *system, protocol::QueryValueData &qd);
+      void get_sw_deficit(protocol::Component *system, protocol::QueryValueData &qd);
       void get_sw_supply_layr(protocol::Component *system, protocol::QueryValueData &qd);
       void get_ep(protocol::Component *system, protocol::QueryValueData &qd);
       void get_esw_layr(protocol::Component *system, protocol::QueryValueData &qd);

@@ -104,6 +104,8 @@ void RootPart::onInit1(protocol::Component *system)
                     &RootPart::get_sw_uptake, "mm", "Plant water uptake per layer");
    setupGetFunction(system, "sw_supply", protocol::DTsingle, false,
                     &RootPart::get_sw_supply, "mm", "Soil water supply");
+   setupGetFunction(system, "sw_deficit", protocol::DTsingle, false,
+                    &RootPart::get_sw_deficit, "mm", "Soil water deficit");
    setupGetFunction(system, "sw_supply_layr", protocol::DTsingle, true,
                     &RootPart::get_sw_supply_layr, "mm", "Soil water supply");
    setupGetFunction(system, "ep", protocol::DTsingle, false,
@@ -782,7 +784,17 @@ void RootPart::get_sw_supply(protocol::Component *system, protocol::QueryValueDa
     float sw_supply_sum = sum_real_array ((*soil[0]).sw_supply, deepest_layer+1);
     system->sendVariable(qd, sw_supply_sum);
 }
-
+void RootPart::get_sw_deficit(protocol::Component *system, protocol::QueryValueData &qd)
+//=======================================================================================
+// Getter function for extractable soil water content of each layer
+{
+    float sw_deficit[max_layer];
+    for (int layer = 0; layer < (*soil[0]).num_layers; layer++)
+       {
+       sw_deficit[layer] = (*soil[0]).sw_dep[layer] - (*soil[0]).ll_dep[layer];
+       }
+    system->sendVariable(qd, std::vector<float>(sw_deficit,sw_deficit+(*soil[0]).num_layers));
+}
 void RootPart::get_sw_supply_layr(protocol::Component *system, protocol::QueryValueData &qd)
 //=======================================================================================
 // Getter function for soil water supply from each layer
