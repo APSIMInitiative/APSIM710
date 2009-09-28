@@ -1404,6 +1404,44 @@ c     :                    , 0.0, 100.0)
      :                     , c%y_sw_fac_root, c%num_sw_ratio
      :                     , 0.0, 100.0)
 
+      call read_real_var_optional (section_name
+     :                    , 'co2level', '(ppm)'
+     :                    , c%co2level, numvals
+     :                    , 0.0, 1000.0)
+
+      if (numvals .eq. 0) then
+         c%co2switch = 0
+         c%co2level = 350.0
+      else
+         c%co2switch = 1
+      end if
+
+      call read_real_array_optional (section_name
+     :                   , 'co2_level_te', max_table, '(ppm)'
+     :                   , c%co2_level_te, c%num_co2_level_te
+     :                   , 0.0, 1000.0)
+      if (c%num_co2_level_te .eq. 0) then
+        c%co2_level_te(1) = 350.0
+      endif
+
+      call read_real_array_optional (section_name
+     :                   , 'te_co2_modifier', max_table, '()'
+     :                   , c%te_co2_modifier, c%num_co2_level_te
+     :                   , 0.0, 10.0)
+      if (c%num_co2_level_te .eq. 0) then
+        c%te_co2_modifier(1) = 1.0
+        c%num_co2_level_te = 1
+      endif
+
+      call read_real_array_optional (section_name
+     :                   , 'co2_level_nconc', max_table, '(ppm)'
+     :                   , c%co2_level_nconc, c%num_co2_level_nconc
+     :                   , 0.0, 1000.0)
+
+      call read_real_array_optional (section_name
+     :                   , 'nconc_co2_modifier', max_table, '()'
+     :                   , c%nconc_co2_modifier, c%num_co2_level_nconc
+     :                   , 0.0, 10.0)
 
       call pop_routine (my_name)
       return
@@ -5832,13 +5870,17 @@ cpsc need to develop leaf senescence functions for crop
 
       if (Option .eq. 1) then
 
-         call cproc_transp_eff1 (
-     :               c%svp_fract
-     :             , c%transp_eff_cf
-     :             , g%current_stage
-     :             , g%maxt
-     :             , g%mint
-     :             , g%transp_eff
+        call cproc_transp_eff_co2 (
+     :              c%svp_fract
+     :            , c%transp_eff_cf
+     :            , g%current_stage
+     :            , g%maxt
+     :            , g%mint
+     :            , g%co2level
+     :            , c%co2_level_te
+     :            , c%te_co2_modifier
+     :            , c%num_co2_level_te
+     :            , g%transp_eff
      :             )
 
       else
