@@ -2525,27 +2525,14 @@ c         g%co2level = c%co2level
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
-      call print_routine (my_name)
 
       !-------------------------------------------------------------------
       ! Co2 and climate change
-
-       if (c%co2switch .ne. 0) then
-
-          if (c%co2level.gt.0.0) then
-             g%co2level = c%co2level
-
-          else
-             CALL get_real_var_optional(unknown_module, 'co2', '(ppm)',
+       CALL get_real_var_optional(unknown_module, 'co2', '(ppm)',
      :                                            g%co2level, numvals,
      :                                            0.0, 1000.0)
 
-             if (numvals .eq.0) c%co2switch = 0
-
-          endif
-
-       end if
-
+       if (numvals .eq.0) g%co2level = c%co2level
 
       !use the observed or calculated grain number from other module
       call get_real_var_optional(unknown_module,'obs_grainno_psm', '()'
@@ -5682,7 +5669,7 @@ c      g%dlt_n_uptake_stover=0.0
 
       !co2 level
       c%co2switch  = 0
-      c%co2level   = 0.0
+      c%co2level   = 350.0
 
       call fill_real_array(c%co2_level_te,       0.0, max_stage)
       call fill_real_array(c%te_co2_modifier,    0.0, max_table)
@@ -6431,7 +6418,6 @@ c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
       if (numvals .eq. 0) then
          c%co2switch = 0
-
          call read_real_array_optional (section_name
      :                   , 'co2_level_te', max_table, '(ppm)'
      :                   , c%co2_level_te, c%num_co2_level_te
@@ -6453,8 +6439,7 @@ c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      :                   , c%nconc_co2_modifier, c%num_co2_level_nconc
      :                   , 0.0, 10.0)
       else
-          c%co2switch = 1
-
+         c%co2switch = 1
          call read_real_array (section_name
      :                   , 'co2_level_te', max_table, '(ppm)'
      :                   , c%co2_level_te, c%num_co2_level_te
