@@ -5338,7 +5338,7 @@
 !-----Set CROPSTA: 0=before sowing; 1=day of sowing; 2=in seedbed;
 !                  3=day of transplanting; 4=main growth period
         
-         If(g%cropsta .GE.1)   g%DAE = g%DAE+1
+!         If(g%cropsta .GE.1)   !g%DAE = g%DAE+1
 
          IF (g%CROPSTA .EQ. 3) g%CROPSTA = 4
          IF (g%CROPSTA .EQ. 2) THEN
