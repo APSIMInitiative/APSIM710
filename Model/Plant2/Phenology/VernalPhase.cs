@@ -10,7 +10,7 @@ public class VernalPhase : Phase
    private DateTime _StartDate;
    [Param] private LinearInterpolation TTTarget = null;  //TT Target is a function of Cumulative Vernal Days
    [Output] private double CumulativeVD = 0;
-   private double CumulativeTT = 0;
+   [Output] private double CumulativeTT = 0;
    
    #endregion
 
