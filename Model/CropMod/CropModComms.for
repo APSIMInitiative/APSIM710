@@ -105,7 +105,7 @@
          call collect_real_var_optional (
      :                          'row_spacing', '(m)'
      :                        , g%row_spacing, numvals
-     :                        , 0.0, 2.0)
+     :                        , 0.0, 2000.0)
 
          if (numvals.eq.0) then
              g%row_spacing = c%row_spacing_default
