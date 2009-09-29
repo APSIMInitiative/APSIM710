@@ -42,7 +42,7 @@ public class VernalPhase : Phase
          CumulativeTT = Target;
          }
       }
-   public override bool MeetsTarget(){return TTTarget.Value(CumulativeVD) > 0 && CumulativeTT == TTTarget.Value(CumulativeVD);}
+   public override bool MeetsTarget(){return TTTarget.Value(CumulativeVD) > 0 && CSGeneral.MathUtility.FloatsAreEqual(CumulativeTT, TTTarget.Value(CumulativeVD));}
    public override void UseLeftOverTT(DateTime Today, double LeftOverTT)
       {
       _StartDate = Today;
