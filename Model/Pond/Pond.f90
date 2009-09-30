@@ -1922,8 +1922,8 @@ subroutine Pond_calculate_daily_variables ()
       endif
 
       g%fti = min (g%fti,1.0)
-              Write (Err_string,*)'ALGAACT STUFF ...  g%ftmean g%fti ',g%ftmean,g%fti
-   	      call Write_string (Err_string)
+!              Write (Err_string,*)'ALGAACT STUFF ...  g%ftmean g%fti ',g%ftmean,g%fti
+!   	      call Write_string (Err_string)
 
 
 !     Calculate biological activity of floodwater, algact (0-1 value)
@@ -2325,8 +2325,8 @@ subroutine Pond_grow_pab ()
    g%pab_mass = g%pab_mass + dlt_pab
    
 
-              Write (Err_string,*)' algal stuff .... dlt_pab  g%algal_act ',dlt_pab, g%algact
-   	      call Write_string (Err_string)
+!              Write (Err_string,*)' algal stuff .... dlt_pab  g%algal_act ',dlt_pab, g%algact
+!  	      call Write_string (Err_string)
 
 
    if (g%pab_mass.gt.500.0) then
