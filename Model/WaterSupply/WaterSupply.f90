@@ -50,7 +50,6 @@ module WaterSupplyModule
       real    available_water                      ! available water at any time (Ml)
       real    available_depth                      ! available depth of water at any time (m)
       real    overflow                             ! storage overflow above maximum capacity
-      real    irrig_water_supplied                 ! water provided (ML) on this day in response to a 'gimme_water' event from irrigate
       real    max_pump_today                       ! maximum amount of water we can pump today (Ml)
       character  top_up_source(max_sources)*(Max_module_name_size) ! String containing the #1 preference top-up water source
       character  solute_names(max_solutes)*32      ! array of system solute names
@@ -796,9 +795,6 @@ subroutine WaterSupply_send_my_variable (variable_name)
    elseif (variable_name .eq. 'runoff_input') then
        call respond2get_real_var (variable_name,'(ML)', g%total_runoff)
 
-   elseif (variable_name .eq. 'irrig_water_supplied') then
-       call respond2get_real_var (variable_name,'(ML)', g%irrig_water_supplied)
-
    elseif (variable_name .eq. 'available_depth') then
        call respond2get_real_var (variable_name,'(m)', g%available_depth)
 
@@ -927,10 +923,6 @@ subroutine WaterSupply_ONgimme_water ()
    g%max_pump_today = g%max_pump_today - water_supplied
 
    g%available_water = g%available_water - water_supplied
-
-   if(water_requester.eq.'irrigate') then                       !! WRONG - fixme
-   g%irrig_water_supplied = water_supplied
-   endif
 
    !***** Send WaterSupplied Method  ******
 
@@ -1254,7 +1246,6 @@ subroutine WaterSupply_zero_daily_variables ()
    g%evaporation        = 0.0
    g%seepage            = 0.0
    g%overflow           = 0.0
-   g%irrig_water_supplied     = 0.0
 
    g%max_pump_today     = p%max_pump
 
@@ -1502,7 +1493,6 @@ subroutine WaterSupply_init ()
    g%available_water = 0.0
    g%available_depth = 0.0
    g%overflow = 0.0
-   g%irrig_water_supplied = 0.0
    g%top_up_source(:) = ''
    g%solute_names(:) = ''
    g%solute_owners(:) = ''
@@ -1749,7 +1739,6 @@ subroutine doInit1()
    dummy = add_registration_with_units(respondToGetReg, 'seepage', floatTypeDDML, 'ML')
    dummy = add_registration_with_units(respondToGetReg, 'overflow', floatTypeDDML, 'ML')
    dummy = add_registration_with_units(respondToGetReg, 'runoff_input', floatTypeDDML, 'ML')
-   dummy = add_registration_with_units(respondToGetReg, 'irrig_water_supplied', floatTypeDDML, 'ML')
    dummy = add_registration_with_units(respondToGetReg, 'available_depth', floatTypeDDML, 'm')
    dummy = add_registration_with_units(respondToGetReg, 'max_available_water', floatTypeDDML, 'Ml')
    dummy = add_registration_with_units(respondToGetReg, 'min_volume', floatTypeDDML, 'Ml')
