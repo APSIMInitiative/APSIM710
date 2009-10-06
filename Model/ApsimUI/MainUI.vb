@@ -596,24 +596,30 @@ Public Class MainUI
 
         ' Loop through each of the known toolboxes
         For Each FileName As String In Toolboxes.Instance.AllToolBoxes
-            Dim Doc As New XmlDocument
-            Doc.Load(FileName)
+            If File.Exists(FileName) Then
+                Dim Doc As New XmlDocument
+                Doc.Load(FileName)
 
-            ' Get the image attribute from the root node of the loaded xml file
-            Dim ImageFileName As String = XmlHelper.Attribute(Doc.DocumentElement, "image")
-            If ImageFileName = "" Then
-                ImageFileName = "%apsim%\UserInterface\Images\Toolbox24.png"
+                ' Get the image attribute from the root node of the loaded xml file
+                Dim ImageFileName As String = XmlHelper.Attribute(Doc.DocumentElement, "image")
+                If ImageFileName = "" Then
+                    ImageFileName = "%apsim%\UserInterface\Images\Toolbox24.png"
+                End If
+                ImageFileName = Configuration.RemoveMacros(ImageFileName)
+
+                Dim ToolBoxName As String = Path.GetFileNameWithoutExtension(FileName)
+                Dim NewItem As New ToolStripButton(ToolBoxName, New System.Drawing.Bitmap(ImageFileName))
+                NewItem.TextImageRelation = TextImageRelation.ImageBeforeText
+                NewItem.ImageScaling = ToolStripItemImageScaling.None
+                NewItem.CheckOnClick = True
+                NewItem.Tag = FileName
+                AddHandler NewItem.Click, AddressOf OnToolBoxClick
+                ToolBoxesToolStrip.Items.Add(NewItem)
+            Else
+                MessageBox.Show("Cannot find toolbox file: " + FileName, _
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
-            ImageFileName = Configuration.RemoveMacros(ImageFileName)
 
-            Dim ToolBoxName As String = Path.GetFileNameWithoutExtension(FileName)
-            Dim NewItem As New ToolStripButton(ToolBoxName, New System.Drawing.Bitmap(ImageFileName))
-            NewItem.TextImageRelation = TextImageRelation.ImageBeforeText
-            NewItem.ImageScaling = ToolStripItemImageScaling.None
-            NewItem.CheckOnClick = True
-            NewItem.Tag = FileName
-            AddHandler NewItem.Click, AddressOf OnToolBoxClick
-            ToolBoxesToolStrip.Items.Add(NewItem)
         Next
     End Sub
     Private Sub OnToolBoxClick(ByVal Sender As Object, ByVal e As System.EventArgs)
