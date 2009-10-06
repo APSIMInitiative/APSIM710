@@ -326,6 +326,12 @@ void ApsimComponent::BuildObjects(XmlNode^ XML)
    Fact->Create(XML->OuterXml, modelAssembly);
    Model = dynamic_cast<Instance^> (Fact->Root);
    Model->Setup(Name, this);
+   String^ InstanceName = Name;
+   if (InstanceName->Contains("."))
+      {
+      InstanceName = InstanceName->Substring(InstanceName->LastIndexOf('.')+1);
+      }
+   Model->Name = InstanceName;
    RegisterAllProperties(Fact);
    RegisterAllEventHandlers(Fact);
    TrapAllEvents(Fact);

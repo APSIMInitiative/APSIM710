@@ -109,10 +109,12 @@ namespace ApsimToSim
                //      [Model] is replaced by the contents of the [Model] node i.e. the ini contents.
                //      [Dll] is replaced by the name of the model dll.
                //      [Children] is replaced by the sim script for all children of this component.
+               //      [InstanceName] is replaced by the instance name.
                ApsimToSimContents = ReplaceSoilMacros(ApsimToSimContents, Child);
                ApsimToSimContents = ReplaceModelMacro(ApsimToSimContents, Child);
                ApsimToSimContents = ReplaceDllMacro(ApsimToSimContents, Child);
                ApsimToSimContents = ReplaceChildrenMacro(ApsimToSimContents, Child);
+               ApsimToSimContents = ApsimToSimContents.Replace("[InstanceName]", Child.Name);
 
                // Any other macros in the <ApsimToSim> will be removed by using the 
                // APSIM macro language.
