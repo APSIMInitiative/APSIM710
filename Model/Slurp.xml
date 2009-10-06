@@ -4,7 +4,8 @@
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-    <Documentation name="Slurp science documentation">../apsim/slurp/docs/slurp_science.htm</Documentation>
+    <Documentation name="Slurp science documentation">
+    ../apsim/slurp/docs/slurp_science.htm</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\cubes32.png</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\cubes16.png</SmallIcon>
     <dll>%apsim%\Model\Plant2.dll</dll>
@@ -16,33 +17,32 @@
       <drop>area</drop>
     </drops>
     <ApsimToSim>
-      <component name="[Slurp.name]" executable="[dll]">
+      <component name="[InstanceName]" executable="[dll]">
         <executable>[dll]</executable>
-        <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
-        <initdata>
-               [Model]
-            </initdata>
+        <componentinterface>
+        %apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+        <initdata>[Model]</initdata>
       </component>
     </ApsimToSim>
   </MetaData>
   <Model>
     <Cultivar name="SlurpCultivar">
-      <Construct>Slurp</Construct>
+      <Construct>Plant</Construct>
     </Cultivar>
-    <Plant name="Slurp">
+    <Plant>
       <CropType>Wheat</CropType>
       <SimpleLeaf name="Leaf">
         <Frgr>1</Frgr>
         <FT>
-          <XY> 5 1.0</XY>
+          <XY>5 1.0</XY>
           <XY>20 1.0</XY>
           <XY>25 1.0</XY>
           <XY>40 1.0</XY>
         </FT>
         <FVPD>
-          <XY> 0 1.0</XY>
+          <XY>0 1.0</XY>
           <XY>10 1.0</XY>
-          <XY>50 1.0</XY>
+          <XY>50 0.0</XY>
         </FVPD>
         <Height>800</Height>
         <LAI>6</LAI>
@@ -55,28 +55,50 @@
   </Model>
   <Info>
     <variables>
-      <variable name="Crop_Type" description="" read="T" write="F" kind="string" array="" units="" />
-      <variable name="WaterSupplyDemandRatio" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="PlantStatus" description="" read="T" write="F" kind="string" array="" units="" />
-      <variable name="WaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
-      <variable name="AboveGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="BelowGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="TotalDM" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="ReserveDM" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafWaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
-      <variable name="LeafTranspiration" description="" read="T" write="F" kind="double" array="" units="mm" />
-      <variable name="LeafFrgr" description="" read="T" write="T" kind="double" array="" units="" />
-      <variable name="LeafFt" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafFvpd" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafFw" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafLAI" description="" read="T" write="T" kind="double" array="" units="" />
-      <variable name="LeafLAIDead" description="" read="T" write="T" kind="double" array="" units="" />
-      <variable name="Height" description="" read="T" write="T" kind="double" array="" units="mm" />
-      <variable name="Cover_green" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="Cover_tot" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="Cover_dead" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="RootWaterUptake" description="" read="T" write="F" kind="double" array="" units="mm" />
-      <variable name="RootWaterSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Crop_Type" description="" read="T" write="F"
+      kind="string" array="" units="" />
+      <variable name="WaterSupplyDemandRatio" description=""
+      read="T" write="F" kind="double" array="" units="" />
+      <variable name="PlantStatus" description="" read="T"
+      write="F" kind="string" array="" units="" />
+      <variable name="WaterDemand" description="" read="T"
+      write="F" kind="double" array="" units="mm" />
+      <variable name="AboveGroundDM" description="" read="T"
+      write="F" kind="double" array="" units="" />
+      <variable name="BelowGroundDM" description="" read="T"
+      write="F" kind="double" array="" units="" />
+      <variable name="TotalDM" description="" read="T" write="F"
+      kind="double" array="" units="" />
+      <variable name="ReserveDM" description="" read="T" write="F"
+      kind="double" array="" units="" />
+      <variable name="LeafWaterDemand" description="" read="T"
+      write="F" kind="double" array="" units="mm" />
+      <variable name="LeafTranspiration" description="" read="T"
+      write="F" kind="double" array="" units="mm" />
+      <variable name="LeafFrgr" description="" read="T" write="T"
+      kind="double" array="" units="" />
+      <variable name="LeafFt" description="" read="T" write="F"
+      kind="double" array="" units="" />
+      <variable name="LeafFvpd" description="" read="T" write="F"
+      kind="double" array="" units="" />
+      <variable name="LeafFw" description="" read="T" write="F"
+      kind="double" array="" units="" />
+      <variable name="LeafLAI" description="" read="T" write="T"
+      kind="double" array="" units="" />
+      <variable name="LeafLAIDead" description="" read="T"
+      write="T" kind="double" array="" units="" />
+      <variable name="Height" description="" read="T" write="T"
+      kind="double" array="" units="mm" />
+      <variable name="Cover_green" description="" read="T"
+      write="F" kind="double" array="" units="" />
+      <variable name="Cover_tot" description="" read="T" write="F"
+      kind="double" array="" units="" />
+      <variable name="Cover_dead" description="" read="T" write="F"
+      kind="double" array="" units="" />
+      <variable name="RootWaterUptake" description="" read="T"
+      write="F" kind="double" array="" units="mm" />
+      <variable name="RootWaterSupply" description="" read="T"
+      write="F" kind="double" array="" units="" />
     </variables>
     <events>
       <event name="NewCrop" description="" />
