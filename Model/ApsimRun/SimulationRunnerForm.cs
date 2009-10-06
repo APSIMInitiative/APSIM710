@@ -174,10 +174,16 @@ namespace ApsimRun
                   Player.Play();
                   }
                ShowDetailButton.Visible = true;
-               if (AutoClose)
-                  Close();
                Timer1.Enabled = false;
                PerformanceSeries.Clear();
+               if (AutoClose)
+                  {
+                  // pause for 5 sec to make sure Windows has finished writing everything to stdout.
+                  Thread.Sleep(5000);
+                  Close();
+                  }
+
+               
                }
             this.Text = ProgressBar.Value.ToString() + "% complete";
             if (PauseButton.Checked)

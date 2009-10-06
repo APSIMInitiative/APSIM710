@@ -6154,10 +6154,11 @@ cnh NOTE - intensity is not part of the official design !!!!?
          call NullTermString(CropName)                         ! YUK - need to fix this.
          Water%Uptakes(counter)%Name = CropName
          Water%Uptakes(counter)%Num_amount = p%n+1
+
          do node=0, p%n
             ! uptake may be very small -ve - assume error small
             Water%Uptakes(counter)%Amount(node+1) =
-     .            max(g%pwuptakepot(counter,node),0d0)
+     .            max(g%pwuptake(counter,node),0d0)
          end do
       end do
       call publish_WaterUptakes(id%WaterUptakesCalculated, Water);
