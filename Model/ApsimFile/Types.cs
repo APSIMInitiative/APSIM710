@@ -112,16 +112,22 @@ public class Types
    public string[] Cultivars(string TypeName)
       {
       // Return a list of cultivar names to caller.
+      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
+
+
       List<string> CultivarNames = new List<string>();
 
-      XmlDocument ModelDoc = new XmlDocument();
-      ModelDoc.LoadXml("<Model>" + ModelContents(TypeName) + "</Model>");
-      foreach (XmlNode Child in ModelDoc.DocumentElement.ChildNodes)
+      XmlNode ModelNode = XmlHelper.FindByType(TypeNode, "Model");
+
+      if (ModelNode != null)
          {
-         if (XmlHelper.Attribute(Child, "cultivar").ToLower() == "yes")
-            CultivarNames.Add(Child.Name);
-         if (Child.Name.ToLower() == "cultivar")
-            CultivarNames.Add(XmlHelper.Name(Child));
+         foreach (XmlNode Child in ModelNode.ChildNodes)
+            {
+            if (XmlHelper.Attribute(Child, "cultivar").ToLower() == "yes")
+               CultivarNames.Add(Child.Name);
+            if (Child.Name.ToLower() == "cultivar")
+               CultivarNames.Add(XmlHelper.Name(Child));
+            }
          }
       string[] ReturnValues = new string[CultivarNames.Count];
       CultivarNames.CopyTo(ReturnValues);
