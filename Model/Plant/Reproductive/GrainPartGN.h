@@ -48,6 +48,7 @@ protected:
    float cPotential_grain_n_filling_rate ;
    float cMinimum_grain_n_filling_rate ;
    float cCrit_grainfill_rate;
+   float cGrainMaxDailyNConc;
 
    interpolationFunction rel_grainfill;
    interpolationFunction rel_grain_n_fill;

@@ -125,6 +125,7 @@ void fruitGrainPartGN::zeroAllGlobals(void)
    cPotential_grain_n_filling_rate  = 0.0;
    cMinimum_grain_n_filling_rate  = 0.0;
    cCrit_grainfill_rate  = 0.0;
+   cGrainMaxDailyNConc = 0.0;
    pGrains_per_gram_stem = 0.0;
    pPotential_grain_growth_rate = 0.0;
    pMaxGrainSize = 0.0;
@@ -151,6 +152,7 @@ void fruitGrainPartGN::readSpeciesParameters(protocol::Component *system, vector
    scienceAPI.read("potential_grain_n_filling_rate", cPotential_grain_n_filling_rate, 0.0f, 1.0f);
    scienceAPI.read("minimum_grain_n_filling_rate", cMinimum_grain_n_filling_rate, 0.0f, 1.0f);
    scienceAPI.read("crit_grainfill_rate", cCrit_grainfill_rate, 0.0f, 1.0f);
+   scienceAPI.read("GrainMaxDailyNConc", cGrainMaxDailyNConc, 0.0f, 1.0f);
    }
 
 void fruitGrainPartGN::update(void)
@@ -266,7 +268,7 @@ void fruitGrainPartGN::doNDemandGrain (float nfact_grain_conc      //   (INPUT)
          gN_grain_demand = 0.0;
          }
       float dailyNconc = divide(gN_grain_demand,(mealPart->Growth.DM() + mealPart->Retranslocation.DM()),1.0);
-      if (dailyNconc > 0.03) gN_grain_demand = (mealPart->Growth.DM() + mealPart->Retranslocation.DM())*0.03;
+      if (dailyNconc > cGrainMaxDailyNConc) gN_grain_demand = (mealPart->Growth.DM() + mealPart->Retranslocation.DM())*cGrainMaxDailyNConc;
       }
 
 }
