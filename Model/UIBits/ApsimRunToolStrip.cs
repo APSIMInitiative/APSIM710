@@ -154,7 +154,7 @@ public class ApsimRunToolStrip
       int NumWithWarnings;
       _JobRunner.CalcStats(out NumCompleted, out NumWithErrors, out NumWithWarnings);
       ProgressBar.ToolTipText = "Running " + _JobRunner.Jobs.Count.ToString() + " simulations. "
-                              + ProgressBar.Value.ToString() + " completed.";
+                              + ProgressBar.Value.ToString() + "% completed.";
       ErrorsButton.Visible = NumWithErrors > 0;
       if (ErrorsButton.Visible)
          ErrorsButton.Text = NumWithErrors.ToString() + " sims. have errors";
