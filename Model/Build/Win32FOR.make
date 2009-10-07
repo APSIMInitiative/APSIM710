@@ -38,7 +38,7 @@ ifeq ($(PROJECTTYPE),lib)
 OBJSNODIR := $(foreach obj,$(OBJS),$(notdir $(obj)))
 OBJSWITHPLUS := $(foreach obj,$(OBJSNODIR),+$(obj))
 $(PROJECT).lib: $(OBJS)
-	del /Q $(PROJECT).lib 
+	cmd /C if exist $(PROJECT).lib del /Q $(PROJECT).lib 
 	$(LFLM) $(PROJECT).lib $(OBJSWITHPLUS),,
 	cmd /C move /Y $(PROJECT).lib ..
 

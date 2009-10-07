@@ -23,9 +23,21 @@ namespace ApsimFile
          // ---------------------------
          // Constructor
          // ---------------------------
+
+         // 1. Find version number
+         string SettingsFile = ApsimDirectory() + "\\Apsim.xml";
          XmlDocument SettingsDoc = new XmlDocument();
-         SettingsDoc.Load(ApsimDirectory() + "\\apsim.xml");
+         SettingsDoc.Load(SettingsFile);
          SettingsNode = SettingsDoc.DocumentElement;
+         
+         // 2. Update from local data
+         SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                     "\\Apsim\\" + ApsimVersion() + "\\Apsim.xml";
+         if (File.Exists(SettingsFile))
+             {
+             SettingsDoc.Load(SettingsFile);
+             SettingsNode = SettingsDoc.DocumentElement;
+             }
          }
       public static Configuration Instance
          {
@@ -38,9 +50,29 @@ namespace ApsimFile
          }
       private void Save()
          {
-         SettingsNode.OwnerDocument.Save(ApsimDirectory() + "\\apsim.xml");
+         // The settings in the installation dir are read only. Save in a local (ie writeable) path.
+         string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + 
+                 "\\Apsim\\" + ApsimVersion() + "\\Apsim.xml";
+
+         // The first time this runs on a machine, none of these dirs will exist.
+         makePathExist (Path.GetDirectoryName(SettingsFile));
+         SettingsNode.OwnerDocument.Save(SettingsFile);
          }
-      public static string RemoveMacros(string St)
+      public static void makePathExist(string path)
+         {
+         List<string> pathsToMake = new List<string>();
+         string dir = path;
+         while (!Directory.Exists(dir) && dir.Length > 3)
+             {
+             pathsToMake.Add(dir);
+             dir = Path.GetDirectoryName(dir);
+             }
+         for (int i = pathsToMake.Count - 1; i >= 0; i-- )
+             {
+             Directory.CreateDirectory(pathsToMake[i]);
+             }
+         }
+       public static string RemoveMacros(string St)
          {
          return St.Replace("%apsim%", ApsimDirectory());
          }
@@ -59,7 +91,7 @@ namespace ApsimFile
       public static string ApsimDirectory()
          {
          string Directory = Path.GetDirectoryName(CSGeneral.Utility.ConvertURLToPath(Assembly.GetExecutingAssembly().CodeBase));
-         while (Directory != "" && !File.Exists(Directory + "\\apsim.xml"))
+         while (Directory != "" && !File.Exists(Directory + "\\Apsim.xml"))
             Directory = Path.GetFullPath(Directory + "\\..");
          if (Directory == "")
             throw new Exception("Cannot find apsim.xml");

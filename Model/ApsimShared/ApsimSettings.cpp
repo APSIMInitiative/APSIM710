@@ -17,6 +17,7 @@
 
 #ifdef __WIN32__
    #include <windows.h>
+   #include <shlobj.h>
 #endif
 
 using namespace std;
@@ -27,10 +28,32 @@ using namespace boost;
 // ------------------------------------------------------------------
 ApsimSettings::ApsimSettings(void)
 	{
-   string originalPath = getApsimDirectory() + "/Apsim.xml";
-   if (!fileExists(originalPath.c_str())) {throw std::runtime_error("Couldn't find ApsimSettings file " + originalPath);}
-   original = new XMLDocument(originalPath);
-   }
+  string originalPath;
+  // 1. find our version number from installation dir
+  originalPath  =  getApsimDirectory() + "/Apsim.xml";
+  if (!fileExists(originalPath.c_str())) {throw std::runtime_error("Couldn't find ApsimSettings file " + originalPath);}
+  original = new XMLDocument(originalPath);
+
+  // 2. look for local customisations
+  string localPath;
+  string versionNumber;
+  this->read("version|apsim", versionNumber);
+#ifdef __WIN32__
+   char szPath[MAX_PATH];
+   if (SHGetFolderPath( NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath ) != S_OK)
+      throw runtime_error("CSIDL_LOCAL_APPDATA failed");
+
+   localPath  = string(szPath) + "/Apsim/" + versionNumber + "/Apsim.xml";
+#else 
+   localPath  = string(getenv("HOME")) + "/.Apsim/" + versionNumber + "/Apsim.xml";
+#endif
+
+  if (fileExists(localPath))  
+     {
+     delete original;
+     original = new XMLDocument(localPath);
+     }
+  }
 // ------------------------------------------------------------------
 //	destructor
 // ------------------------------------------------------------------
