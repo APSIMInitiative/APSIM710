@@ -298,6 +298,8 @@ namespace GraphDataUserInterface
                         ErrorBarSeries.HorizAxis = NewSeries.HorizAxis;
                         ErrorBarSeries.VertAxis = NewSeries.VertAxis;
                         ErrorBarSeries.ShowInLegend = false;
+                        ErrorBarSeries.MultiBar = Steema.TeeChart.Styles.MultiBars.None;
+                        ErrorBarSeries.ErrorWidth = 10;
                         }
 
                      NewSeries.YValues.Name = YFieldName;
@@ -414,13 +416,13 @@ namespace GraphDataUserInterface
          // See if we can find a series with the cor
          Steema.TeeChart.Styles.Series NewSeries = null;
 
-         if (SeriesNumber < Chart.Series.Count)
+/*         if (SeriesNumber < Chart.Series.Count)
             {
             NewSeries = Chart.Series[SeriesNumber];
             SeriesColourNumber++;
             }
          else
-            {
+*/            {
             // If we couldn't find an appropriate series then create a new series
             NewSeries = CreateSeries(SeriesType, PointType, ColourString, X2, Y2, SeriesTitle);
             Chart.Series.Add(NewSeries);
