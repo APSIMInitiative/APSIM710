@@ -661,7 +661,7 @@ namespace GraphDataUserInterface
                // between 100 days and 2 years.
                Min = new DateTime(Min.Year, Min.Month, 1);
                Max = new DateTime(Max.Year, Max.Month, 1);
-               Max.AddMonths(1);
+               Max = Max.AddMonths(1);
                TimeSpan Interval = Max - Min;
                if ((Maximum - Minimum) > 31 * 6)
                   Months = 2;
