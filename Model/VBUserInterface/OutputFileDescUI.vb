@@ -165,7 +165,7 @@ Public Class OutputFileDescUI
         '
         Me.GridContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MoveUpMenuItem, Me.MoveDownMenuItem, Me.DeleteVariablesMenuItem})
         Me.GridContextMenu.Name = "ContextMenu"
-        Me.GridContextMenu.Size = New System.Drawing.Size(246, 92)
+        Me.GridContextMenu.Size = New System.Drawing.Size(246, 70)
         '
         'MoveUpMenuItem
         '
@@ -424,6 +424,7 @@ Public Class OutputFileDescUI
 
         Dim InputMap As FarPoint.Win.Spread.InputMap = Spread.GetInputMap(FarPoint.Win.Spread.InputMapMode.WhenAncestorOfFocused)
         InputMap.Put(New FarPoint.Win.Spread.Keystroke(Keys.Enter, Keys.None), FarPoint.Win.Spread.SpreadActions.MoveToNextRow)
+        InputMap.Put(New FarPoint.Win.Spread.Keystroke(Keys.F2, Keys.None), FarPoint.Win.Spread.SpreadActions.StartEditing)
 
     End Sub
 
@@ -773,4 +774,5 @@ Public Class OutputFileDescUI
     Private Sub OnDeleteClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DeleteVariablesMenuItem.Click
         DeleteSelection()
     End Sub
+
 End Class

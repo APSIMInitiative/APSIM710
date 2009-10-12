@@ -31,6 +31,7 @@ Public Class GenericUI
         Dim InputMap As FarPoint.Win.Spread.InputMap = FpSpread1.GetInputMap(FarPoint.Win.Spread.InputMapMode.WhenAncestorOfFocused)
         InputMap.Put(New FarPoint.Win.Spread.Keystroke(Keys.Delete, Keys.None), _
                     FarPoint.Win.Spread.SpreadActions.ClipboardCut)
+        InputMap.Put(New FarPoint.Win.Spread.Keystroke(Keys.F2, Keys.None), FarPoint.Win.Spread.SpreadActions.StartEditing)
     End Sub
 
     'Form overrides dispose to clean up the component list.
@@ -185,6 +186,7 @@ Public Class GenericUI
                     FarPoint.Win.Spread.SpreadActions.ClipboardCut)
         InputMap.Put(New FarPoint.Win.Spread.Keystroke(Keys.Enter, Keys.None), _
                     FarPoint.Win.Spread.SpreadActions.MoveToNextRow)
+        InputMap.Put(New FarPoint.Win.Spread.Keystroke(Keys.F2, Keys.None), FarPoint.Win.Spread.SpreadActions.StartEditing)
     End Sub
 
     Public Overrides Sub OnRefresh()

@@ -511,7 +511,8 @@ namespace CSUserInterface
                         FarPoint.Win.Spread.SpreadActions.ClipboardCut);
             InputMap.Put(new FarPoint.Win.Spread.Keystroke(Keys.Enter, Keys.None),
                         FarPoint.Win.Spread.SpreadActions.MoveToNextRow);
-            this.PopupMenuChange();     //set the Grid context menu for the first time.
+            InputMap.Put(new FarPoint.Win.Spread.Keystroke(Keys.F2, Keys.None), FarPoint.Win.Spread.SpreadActions.StartEditing);
+           this.PopupMenuChange();     //set the Grid context menu for the first time.
         }
 
 		override public void OnRefresh()

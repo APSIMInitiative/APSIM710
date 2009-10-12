@@ -670,7 +670,8 @@ namespace CSUserInterface
                         FarPoint.Win.Spread.SpreadActions.ClipboardCut);
             InputMap.Put(new FarPoint.Win.Spread.Keystroke(Keys.Enter, Keys.None),
                         FarPoint.Win.Spread.SpreadActions.MoveToNextRow);
-            }
+            InputMap.Put(new FarPoint.Win.Spread.Keystroke(Keys.F2, Keys.None), FarPoint.Win.Spread.SpreadActions.StartEditing);
+           }
 		override public void OnRefresh()
 			{
 			try
