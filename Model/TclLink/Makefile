@@ -33,7 +33,7 @@ LIBS =
 INCLUDEPATH = .\tcl$(TCLVER)\generic;.\tk$(TCLVER)\generic;.\tk$(TCLVER)\xlib
 
  # This is built before tcllink.dll
-PREBUILD=$(APSIM)\Model\TclLink\Tcl$(TCLVER).license.terms .\bin\TclComponent.dll 
+PREBUILD=dummy .\bin\TclComponent.dll 
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 
