@@ -110,11 +110,21 @@ Public Class DataTree
             Dim RootNode As TreeNode = Nodes(0)
             CollapseAll()
             RootNode.Expand()
-            If RootNode.Nodes.Count = 1 AndAlso _
-               (RootNode.Nodes(0).Tag.ToString.ToLower = "simulation") Then
-                ExpandAll()
-            ElseIf RootNode.Nodes.Count = 1 AndAlso _
-                     RootNode.Nodes(0).Text.ToString.ToLower = "australia" Then
+            If RootNode.Nodes.Count = 1 Then
+                If RootNode.Nodes(0).Tag.ToString.ToLower = "simulation" Then
+                    ' Count the number of paddocks.
+                    Dim NumPaddocks As Integer = 0
+                    For Each Child As TreeNode In RootNode.Nodes(0).Nodes
+                        If Child.Tag = "area" Then
+                            NumPaddocks = NumPaddocks + 1
+                        End If
+                    Next
+                    If NumPaddocks = 1 Then
+                        For Each Child As TreeNode In RootNode.Nodes(0).Nodes
+                            Child.Expand()
+                        Next
+                    End If
+                End If
                 RootNode.Nodes(0).Expand()
             End If
             Controller.SelectedPath = Controller.ApsimData.RootComponent.FullPath
