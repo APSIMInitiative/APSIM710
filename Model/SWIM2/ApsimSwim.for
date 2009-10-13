@@ -7802,6 +7802,18 @@ cnh      end if
       call push_routine (myname)
 
       ! calculate value of isotherm function and the derivative.
+      if (Cw .lt. 0) then
+         if (Cw.lt.-1e-6) then
+            call fatal_error (err_internal,
+     :           '-ve concentration in calculating isotherm')
+            Ctot = 0
+            dCtot = 0
+         else
+            Ctot = 0
+            dCtot = g%th(node)
+         endif
+
+      else
 
          Ctot = g%th(node) * Cw
      :        + p%ex(solnum,node) * Cw ** p%fip(solnum,node)
@@ -7809,6 +7821,7 @@ cnh      end if
      :         + p%ex(solnum,node)
      :         *p%fip(solnum,node)
      :         *Cw**(p%fip(solnum,node)-1d0)
+      endif
 
       call pop_routine (myname)
       return
@@ -7847,7 +7860,7 @@ cnh      end if
       parameter (myname = 'apswim_freundlich')
 *
       double precision tolerance
-      parameter (tolerance = 1d-6)
+      parameter (tolerance = 1d-10)
 
 *+  Local Variables
       double precision Cw
@@ -7860,40 +7873,54 @@ cnh      end if
 *- Implementation Section ----------------------------------
       call push_routine (myname)
 
+      if (Ctot.lt.0) then
+         if (Ctot.lt.-1e-6) then
+            call fatal_error (err_internal,
+     :           '-ve concentration in isotherm calculation')
+            solved = .false.
+            CW = 0
+         else
+            Cw = 0
+            solved = .true.
+         endif
+      else
+
+
       ! Take intital guess at Cw
 
-      Cw = (ddivide (Ctot, (g%th(node)+p%ex(solnum,node))
-     :     , 0.d0))**(1.0/p%fip(solnum,node))
+         Cw = (ddivide (Ctot, (g%th(node)+p%ex(solnum,node))
+     :        , 0.d0))**(1.0/p%fip(solnum,node))
 
-      ! calculate value of isotherm function and the derivative.
+         ! calculate value of isotherm function and the derivative.
 
-      call apswim_freundlich (node,solnum,Cw,f,dfdCw)
+         call apswim_freundlich (node,solnum,Cw,f,dfdCw)
 
-      if (abs(f-Ctot) .lt. tolerance) then
-         ! It is already solved
-         solved = .true.
+         if (abs(f-Ctot) .lt. tolerance) then
+            ! It is already solved
+            solved = .true.
 
-      else if (dfdCw .eq. 0d0) then
-         ! We are at zero so Cw must be zero - this is a solution too
-         solved = .true.
+         else if (dfdCw .eq. 0d0) then
+            ! We are at zero so Cw must be zero - this is a solution too
+            solved = .true.
 
-      else
-         solved = .false.
-         do 100 iteration = 1,max_iterations
+         else
+            solved = .false.
+            do 100 iteration = 1,max_iterations
 
-            call apswim_freundlich (node,solnum,Cw,f,dfdCw)
+               call apswim_freundlich (node,solnum,Cw,f,dfdCw)
 
-            error_amount = f - Ctot
-            if (abs(error_amount) .lt. tolerance) then
-               solved = .true.
-               goto 200
-            else
-               Cw = Cw - ddivide(error_amount,dfdCw,0d0)
-            endif
+               error_amount = f - Ctot
+               if (abs(error_amount) .lt. tolerance) then
+                  solved = .true.
+                  goto 200
+               else
+                  Cw = Cw - ddivide(error_amount,dfdCw,0d0)
+               endif
 
-  100    continue
-  200    continue
+  100       continue
+  200       continue
 
+         endif
       endif
 
       if (.not.solved) then

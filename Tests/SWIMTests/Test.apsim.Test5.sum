@@ -14,6 +14,7 @@ Title                  = APSwim Test 5
    Component                        "clock" = %apsim%\Model\clock.dll
    Component                       "report" = %apsim%\Model\report.dll
    Component                          "met" = %apsim%\Model\input.dll
+   Component                   "irrigation" = %apsim%\Model\irrigation.dll
    Component                      "manager" = %apsim%\Model\manager.dll
    Component                     "micromet" = %apsim%\Model\micromet.dll
    Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
@@ -49,8 +50,23 @@ Title                  = APSwim Test 5
      Sparse data is not allowed
      INPUT File name: Sample2.MET
 
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
 ------- manager Initialisation ------------------------------------------------
      Manager rules:
+     
+     SECTION:- start_of_day
+     irrigation apply amount = 100
      
      SECTION:- end_of_day
      report do_output
@@ -192,5 +208,63 @@ Title                  = APSwim Test 5
      
         - Reading Constants
 ------- Start of simulation  --------------------------------------------------
+     Manager sending message :- irrigation apply  amount = 100
+     Maximum iterations reached - swim will reduce timestep
+          APSwim Numerical Diagnostics
+          ------------------------------------------------------------------------------
+           depth   Soil Type     Theta         g%psi        K           g%p          g%p*
+          ------------------------------------------------------------------------------
+             0.0  soil1         0.1909749   -279.210      0.092     -4.518     -4.519
+            10.0  -             0.1903989   -282.605      0.089     -4.533     -4.534
+            50.0  -             0.1886487   -293.245      0.081     -4.578     -4.578
+           150.0  -             0.1876833   -299.330      0.076     -4.603     -4.603
+           300.0  -             0.1875844   -299.962      0.076     -4.605     -4.605
+           450.0  -             0.1875922   -299.913      0.076     -4.605     -4.605
+           600.0  -             0.1878842   -298.051      0.077     -4.597     -4.598
+           750.0  -             0.1932668   -266.200      0.105     -4.460     -4.463
+          1000.0  -             0.2600541    -81.649      2.716     -2.545     -2.552
+          1200.0  -             0.3073949    -41.967     16.935      1.607      1.656
+          1500.0  -             0.3551427    -19.361     82.940      6.129      6.231
+          1800.0  -             0.3700000      0.552    130.951      9.982     10.124
+          2000.0  soil1         0.3700000      2.148    130.951      9.982     10.124
+          ------------------------------------------------------------------------------
+2 January 1995(Day of year=2), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+3 January 1995(Day of year=3), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+4 January 1995(Day of year=4), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+5 January 1995(Day of year=5), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+6 January 1995(Day of year=6), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+7 January 1995(Day of year=7), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+8 January 1995(Day of year=8), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+9 January 1995(Day of year=9), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+10 January 1995(Day of year=10), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+11 January 1995(Day of year=11), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+12 January 1995(Day of year=12), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+13 January 1995(Day of year=13), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+14 January 1995(Day of year=14), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+15 January 1995(Day of year=15), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+16 January 1995(Day of year=16), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+17 January 1995(Day of year=17), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+18 January 1995(Day of year=18), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+19 January 1995(Day of year=19), manager: 
+     Manager sending message :- irrigation apply  amount = 100
+20 January 1995(Day of year=20), manager: 
+     Manager sending message :- irrigation apply  amount = 100
 20 January 1995(Day of year=20), clock: 
      Simulation is terminating due to end criteria being met.
