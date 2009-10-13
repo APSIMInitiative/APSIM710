@@ -166,14 +166,19 @@ proc getImplementId {name} {
 }
 
 # return the work rate for this combo can cover per hour
-proc getRate {tid iid} {
+proc getCombo {tid iid thing} {
    set implement [getName $iid]
-   foreach rn [$tid selectNodes workrate] {
-       if {[string compare -nocase [$rn getAttribute implement] "$implement"] == 0} {
-          return [$rn text]
+   foreach rn [$tid childNodes] {
+     if {[string compare -nocase [$rn nodeName] $thing] == 0 &&
+         [string compare -nocase [$rn getAttribute implement] "$implement"] == 0} {
+           return [$rn text]
        }
    }
    error "No work rate for [[$tid child 1] text] + [[$iid child 1] text] specified"
+}
+
+proc getRate {tid iid} {
+   return [getCombo $tid $iid fuelrate]
 }
 
 # Return the cost of fuel per liter
@@ -185,14 +190,7 @@ proc fuelCost {} {
 
 # return the fuel cost this combo uses per hour 
 proc getFuelCost {tid iid} {
-   set implement [getName $iid]
-   foreach rn [$tid selectNodes fuelrate] {
-       if {[string compare -nocase [$rn getAttribute implement] $implement] == 0} {
-          set fuelrate [$rn text]
-          return [expr $fuelrate * [fuelCost]]
-       }
-   }
-   error "No fuel rate for [getName $tid] + [getName $iid] specified"
+   return [expr [getCombo $tid $iid fuelrate] * [fuelCost]]
 }
 
 # Return the number of hours worked per day

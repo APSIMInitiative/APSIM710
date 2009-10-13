@@ -29,7 +29,7 @@ proc findStates {} {
 proc findMachinery {} {
    global config
    foreach thing [list tractor implement] {
-      set config($thing) "<none>"
+      set config($thing) "none"
       foreach node [$config(gdocroot) selectNodes //$thing] {
          set name [getValue $node name]
          if {$name != "" && [lsearch $config($thing) $name] < 0} {
@@ -75,16 +75,12 @@ proc findCrops {} {
    global config
    set result {}
    set knownCrops {}
-   foreach node [[$config(typesDoc) documentElement] childNodes] {
-      foreach child [$node childNodes] {
-         if {[string equal -nocase [$child nodeName] "IsCrop"]} {
-             if {[string equal -nocase [$child text] "yes"]} {
-                lappend knownCrops [$node nodeName]
-             }
-         }
+   foreach node [[$config(typesDoc) documentElement] selectNodes Type/MetaData/IsCrop ] {
+      if {[string equal -nocase [$node text] "yes"]} {
+          lappend knownCrops [[[$node parent] parent] getAttribute name]
       }
    }
-   
+
    foreach crop $knownCrops {
       if {[llength [$config(gdocroot) selectNodes //$crop]] > 0} {
           lappend result $crop
@@ -93,43 +89,40 @@ proc findCrops {} {
    return $result
 }
 
-proc getCultivars {crop} { getTypesItem cultivar $crop }
-proc getClasses {crop}   { getTypesItem class $crop }
+# Return a list of cultivars for this crop
+proc getCultivars {crop} {
+   global config
 
-proc getTypesItem {what crop} {
-   global apsuite config
-
-   foreach node [[$config(typesDoc) documentElement] childNodes] {
-      if {[string equal -nocase [$node nodeName] "$crop"]} {
-          set cvs {}
-          foreach child [$node childNodes] {
-             if {[string equal -nocase [$child nodeName] "$what"]} {
-                 set name [$child getAttribute name]
+   set cvs {}
+   foreach node [[$config(typesDoc) documentElement] selectNodes Type\[@name='$crop'\]/Model ] {
+      foreach child [$node childNodes] {
+        catch {
+           if {[$child getAttribute cultivar] == "yes"} {
+                 set name [$child nodeName]
                  if {[lsearch $cvs $name] < 0} {lappend cvs $name}
-             }
-          }
-          return $cvs
+           }
+        }
       }
    }
-   tk_messageBox -title "Error" -message "No ${what}s found for $crop" -type ok
-   return ""
+   if {$cvs == {}} {tk_messageBox -title "Error" -message "No cultivars found for $crop" -type ok}
+   return $cvs
 }
 
+# return the filename of a photo of this crop
 proc getImage {crop}     { 
    global apsuite config
-   foreach node [[$config(typesDoc) documentElement] childNodes] {
-      if {[string equal -nocase [$node nodeName] "$crop"]} {
-          set img {}
-          foreach child [$node childNodes] {
+
+   foreach node [[$config(typesDoc) documentElement] selectNodes Type\[@name='$crop'\]/MetaData ] {
+      foreach child [$node childNodes] {
              if {[string equal -nocase [$child nodeName] "Image"]} {
                  set name [$child text]
                  regsub {%apsuite} $name $apsuite name
                  regsub {%apsim%} $name $apsuite name
                  return $name
              }
-          }
       }
    }
+
    return ""
 }
 
@@ -261,7 +254,7 @@ proc sowingParametersUI {w} {
 
    set row 1
                         
-   set cultivars [getTypesItem "cultivar" $config(crop)]
+   set cultivars [getCultivars $config(crop)]
    label $w.cultivarLabel -text "$config(crop) Cultivar"
    ComboBox $w.cultivarCbx -editable 0 \
                 -textvariable config(cultivar) \
@@ -551,12 +544,15 @@ set config(docroot)  [$config(doc) documentElement]
 set config(gdocroot) [[dom parse $GlobalXMLDoc] documentElement]
 
 set allTypes "<root>"
-foreach f [glob -dir $apsuite/UserInterface/Types  *.xml] {
-  set fp [open $f r]
-  append allTypes [read $fp]
-  close $fp
+foreach f [glob -nocomplain -dir $apsuite/Model *.xml] {
+  if {![string match -nocase farpoint* [file tail $f]] && ![string match -nocase teechart* [file tail $f]]} {
+     set fp [open $f r]
+     append allTypes [read $fp]
+     close $fp
+  }  
 }
 append allTypes "</root>\n"
+
 set config(typesDoc) [dom parse $allTypes]
 
 set config(crops)  [findCrops] 

@@ -217,7 +217,7 @@ proc cashbook:summary {args} {
 
       foreach v {date paddock area crop yield protein "fertiliser_type" \
                "fertiliser_rate" "interim_rainfall" "interim_runoff" "interim_drainage" \
-               "interim_soil_loss" "NO3_state" "fallow_cost" "incrop_cost" "crop_income" \
+               "interim_soil_loss" "SW_state" "NO3_state" "fallow_cost" "incrop_cost" "crop_income" \
                "interest_paid" "expenditure" "income" "comment"} {
          if {[info exists $v]} {
             puts -nonewline ${cashbook:summaryfp} "[set $v],"
@@ -300,6 +300,8 @@ proc cashbook:exitHandler {} {
    }
    close $fp
    
+   set paddocks [lsort $paddocks]
+   
    #2. Write annual cash flow summary
    set fp [open "[file root ${cashbook:summaryfilename}].Annual.csv" w]
 
@@ -349,9 +351,6 @@ proc cashbook:exitHandler {} {
    foreach year $years {
       set sum 0.0
       foreach {name value} [array get A $year,*income] {
-         set sum [expr $sum + $value]
-      }   
-      foreach {name value} [array get A $year,farm_interest_earned] {
          set sum [expr $sum + $value]
       }   
       puts -nonewline $fp ",[format %.0f $sum]"
@@ -406,9 +405,6 @@ proc cashbook:exitHandler {} {
    foreach year $years {
       set sum 0.0
       foreach {name value} [array get A $year,farm_expenditure] {
-         set sum [expr $sum + $value]
-      }   
-      foreach {name value} [array get A $year,farm_interest_paid] {
          set sum [expr $sum + $value]
       }   
       foreach {name value} [array get A $year,*cost] {
@@ -475,7 +471,7 @@ if {${cashbook:summaryfilename} != {}} {
    set cashbook:summaryfp [open ${cashbook:summaryfilename} w]
    puts ${cashbook:summaryfp} "date,paddock,area,crop,yield,protein,fertiliser_type,fertiliser_rate,\
 interim_rainfall,interim_runoff,interim_drainage,\
-interim_soil_loss,NO3_state,fallow_cost,incrop_cost,crop_income,interest_paid,expenditure,income,comment"
+interim_soil_loss,SW_state,NO3_state,fallow_cost,incrop_cost,crop_income,interest_paid,expenditure,income,comment"
    file delete -force "[file root ${cashbook:summaryfilename}].Annual.csv"
 }
 

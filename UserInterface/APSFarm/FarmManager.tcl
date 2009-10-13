@@ -78,6 +78,9 @@ proc linint {x_coords y_coords value} {
    return $y
 }
 
+#############################
+# Generic sowing/harvesting procedures. These rely on a "defaults" array for crop specifics
+#############################
 # Change to a new state (utility procedure). Sows crop and fertilises it
 proc sowCrop {paddock crop} {
    global defaults config
@@ -115,7 +118,10 @@ proc sowCrop {paddock crop} {
       eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
       apsimSendMessage economics expenditure {category fertilisercost} "name  $fert(type)" \
                "rate $fert(amount)" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type $fert(type)" \
-               "fertiliser_rate $fert(amount)" {incrop_cost {}} "crop $crop" "comment Fertiliser"
+               "fertiliser_rate $fert(amount)" {incrop_cost {}} "crop $crop" \
+               "SW_state [apsimGet $config($paddock,watBal).esw]" \
+               "NO3_state [apsimGet $config($paddock,nModule).no3()]" \
+               "comment Fertiliser" 
 
    } elseif {$fert(calcMethod) == "targetN"} {
       set n [apsimGet $config($paddock,nModule).no3()]
@@ -126,7 +132,10 @@ proc sowCrop {paddock crop} {
          apsimSendMessage economics expenditure {category fertilisercost} "name  $fert(type)" \
                        "rate $fert(amount)" "area $config($paddock,area)"  "paddock $paddock"  "crop $crop" \
                        "fertiliser_type $fert(type)" "fertiliser_rate $fert(amount)" \
-                       {incrop_cost {}} "comment Fertiliser"
+                       {incrop_cost {}} \
+                       "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                       "NO3_state [apsimGet $config($paddock,nModule).no3()]" \
+                       "comment Fertiliser"
 
       }                                 
    } elseif {$fert(calcMethod) == "howard"} {
@@ -139,6 +148,8 @@ proc sowCrop {paddock crop} {
          apsimSendMessage economics expenditure {category fertilisercost} "name  $fert(type)" \
                "rate $fert(amount)" "area $config($paddock,area)"  "paddock $paddock"  "crop $crop" \
                "fertiliser_type $fert(type)" "fertiliser_rate $fert(amount)" \
+               "SW_state [apsimGet $config($paddock,watBal).esw]" \
+               "NO3_state [apsimGet $config($paddock,nModule).no3()]" \
                {incrop_cost {}} "comment Fertiliser"
       }
    }
@@ -184,11 +195,17 @@ proc harvestAndEndCrop {paddock crop} {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
                           "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \
                           "protein [apsimGet .masterpm.$paddock.$realCrop.grain_protein]" \
-                          "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" 
+                          "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
+                          
       } else {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
                           "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \
-                          "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" 
+                          "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
+                          
       }  
       # Harvesting costs
       # {{category seedcost} {name cotton} {rate 3.5} {Comment "blah blah"}} ...
@@ -212,62 +229,9 @@ proc harvestAndEndCrop {paddock crop} {
    set daysSinceLastHarvest($paddock) 0
 }
 
-
-############### The decision routine.
-
-
-# Newer version of weed germination - spray 2 weeks after a {germination event & swCrit & temp}.
-proc checkWeeds {} {
-   global daysSinceLastHarvest weeds paddocks config
-
-   foreach paddock $paddocks {
-      if {$paddock != "toplevel" &&
-          ([currentState $paddock] == "Fallow" ) && 
-          $daysSinceLastHarvest($paddock) > 30} {
-
-         if {$weeds($paddock,GermDay) == {} && [sumLastRain 4] >= 25} {
-            set weeds($paddock,GermDay) [apsimGet day]
-            set weeds($paddock,tt) 0.0
-            apsimWriteToSummaryFile "Weeds germinating in $paddock"
-
-         } elseif {$weeds($paddock,GermDay) != {}} {
-            # Thermal time calc
-            set weeds($paddock,tt) [expr $weeds($paddock,tt) + ([apsimGet maxt] + [apsimGet mint])/2.0]
-         
-            # Surface SW calc
-            set ll [lindex [apsimGet $config($paddock,watBal).ll15] 0];
-            set sw [lindex [apsimGet $config($paddock,watBal).sw] 0]
-            set dul [lindex [apsimGet $config($paddock,watBal).dul] 0]
-            set swf [expr (($sw-$ll)/($dul-$ll))]
-         
-            if {$swf < 0.5} {
-               # kill off weeds
-               set weeds($paddock,GermDay) {}
-               apsimWriteToSummaryFile "Weeds die in $paddock"
-         
-            } elseif {$weeds($paddock,tt) > 250.0} {
-               # Weeds are mature - spray them
-               incr weeds($paddock,Events)
-               eval apsimSendMessage economics operate [mash [concat [gatherArgs spray herbicide] \
-                      area $config($paddock,area)  paddock $paddock  costtype fallow_cost]]
-
-               apsimSendMessage economics expenditure "category herbicide" "name Roundup" \
-                         "rate 5" "area $config($paddock,area)"  \
-                         "paddock $paddock" {fallow_cost {}} \
-                         {comment "Roundup weeds"}
-               apsimWriteToSummaryFile "Weeds mature in $paddock - sprayed out."
-         
-               set weeds($paddock,GermDay) {}
-               set weeds($paddock,tt)      0.0
-            }
-         }
-      }   
-   }
-}
-
-proc calcPAWC {} {
-  set dul [apsimGet dul_dep]
-  set ll [apsimGet ll15_dep]
+proc calcPAWC {paddock} {
+  set dul [apsimGet $paddock.dul_dep]
+  set ll [apsimGet $paddock.ll15_dep]
   set pawc 0.0
   for {set i 0} {$i < [llength $dul]} {incr i} {
       set pawc [expr $pawc + ([lindex $dul $i] - [lindex $ll $i])]
@@ -275,25 +239,7 @@ proc calcPAWC {} {
   return $pawc
 }
 
-
-proc sprayChickpeas {} {
-   global paddock area defaults
-   apsimWriteToSummaryFile "spraying Chickpeas"
-
-   apsimSendMessage economics expenditure \
-             {category insecticide} {name Steward} \
-             "rate 0.3" "area $area"  \
-             "paddock $paddock" {incrop_cost {}} \
-             "crop [currentState $paddock]"     
-   apsimSendMessage economics operate \
-             "tractor $defaults(spray,tractor)" "implement $defaults(spray,implement)" \
-             {category insecticide} {name Steward} \
-             "rate 0.3" "area $area"  "paddock $paddock" {incrop_cost {}} 
-}
-
-
 proc genericCosts {args} {
-
    # {{category seedcost} {name cotton} {rate 3.5} {Comment "blah blah"}} ...
    foreach {junk items} [concat [array get defaults $crop,sowCosts] [array get defaults $realCrop,sowCosts]]  {
       foreach item $items {
@@ -305,13 +251,12 @@ proc genericCosts {args} {
 }
 
 
-# Manager initialisation - set up a farm manager interpreter
-########### Support procedures
 proc dateWithin {t0 t1} {
    set d0 [date2day $t0]
    set d1 [date2day $t1]
    return [dayWithin $d0 $d1]
 }
+
 proc dateIs {t} {
    set d [date2day $t]
    return [dayIs $d]
@@ -351,11 +296,12 @@ proc accumRain {} {
 
 # Return the fraction planted under a crop
 proc areaPlanted {what} {
-   global paddocks
+   global config
    set sum 0; set n 0
-   foreach paddock $paddocks {
-      if {$paddock != "toplevel" && 
-          [currentState $paddock] == $what} {
+   foreach paddock $config(cropPaddocks) {
+      set state [currentState $paddock]
+      if {[info exists config($state,alias)]} {set state $config($state,alias)}
+      if {"$state" == "$what"} {
         incr sum
       }
       incr n
@@ -363,37 +309,26 @@ proc areaPlanted {what} {
    return [expr $sum/$n.0 ]
 }
 
-# "logfile" is used to generate the rugplots of farm activities
-set logFile {}
+proc machineryAvailable {what} {
+   # Arrays are returned as stringified lists
+   eval array set result [apsimGet available($what)]
+   return $result($what)
+}
+
+# simple logging to record farm activities in summary file
 proc setupLogging {logFileName} {
-   global logFile paddocks colour
-   set logFile [open $logFileName w]
-   puts $logFile "Starting [apsimGet day],[apsimGet year]"
-   puts $logFile "paddocks = $paddocks"
-   foreach {key col} [array get colour] {
-      foreach {graph state} [split $key ","] {}
-      puts $logFile "colour $state $col"
-   }
-   flush $logFile
+   global paddocks colour
    apsimWriteToSummaryFile "initialised logging:paddocks=$paddocks"
 }
 proc closeLogging {} {
-   global logFile date
-   puts $logFile "Finished $date"
-   close $logFile
+   apsimWriteToSummaryFile "Finished"
 }
 proc log {msg} {
-   global logFile
-   puts $logFile $msg
-   flush $logFile
-}
-proc logState {paddock state} {
-   global logFile
-   puts $logFile "changeState $paddock $state"
-   flush $logFile
+   apsimWriteToSummaryFile $msg
 }
 
-# Set up report CSV file, and alias procedures within paddocks.
+
+# Set up a report CSV file
 set reportFp {}
 proc setupReport {} {
    global reportFp crops paddocks 
@@ -475,6 +410,9 @@ proc reportEvent {from what} {
    reportCSV $from $event $args
 }
 
+
+#############################
+############### The decision routine(s).
 #############################
 # Return the score for planting "what"
 proc checkRules {thisPaddock} {
@@ -488,7 +426,6 @@ proc checkRules {thisPaddock} {
         set target [$graph arc target $arc]
         foreach rule [$graph arc get $arc rules] {
            set value [uplevel #0 expr $rule]
-           log "paddock=$thisPaddock,graph=$graph,target=$target,rule=$rule, value=$value"
            lappend expr $value
            if {$value == 0} {break} ;# no need to continue evaluating subsequent rules
         }
@@ -512,20 +449,13 @@ proc changeState {paddock graph arc} {
    uplevel #0 set paddock $paddock
    foreach action [$graph arc get $arc actions] { uplevel #0 $action }
    set state($paddock) [$graph arc target $arc]
-   logState $paddock $state($paddock)
 }
-
 
 # Do daily process at top level
 proc doProcess {} {
-   global date areaPlantedToday paddocks config daysSinceLastHarvest
+   global date paddocks config daysSinceLastHarvest
    
-   checkWeeds
-   
-   set areaPlantedToday 0
-
    set date "[apsimGet day],[apsimGet year]"
-   log "$date"
 
    set more 1
    while {$more} {
@@ -539,10 +469,7 @@ proc doProcess {} {
          }
       }
       if {$bestScore > 0.0} {
-         puts ">>> Changing state in $bestPaddock to $bestTarget<<<"
-         log ">>> Changing state in $bestPaddock to $bestTarget<<<"
          changeState $bestPaddock $bestGraph $bestArc
-         set areaPlantedToday [expr $areaPlantedToday + $config($bestPaddock,area)]
          set more 1
       }
    }
@@ -552,24 +479,4 @@ proc doProcess {} {
    }   
 }
 
-# A flag for initialisation procedures.
-# NB. some funny business here. Delay opening report file until the 1st day of
-# simulation as it's hard to know how many paddocks are present at init2 time.
-set setupDone 0
-proc checkSetup {} {
-   global paddocks setupDone simName
-   if {!$setupDone} {
-     setupLogging $simName.log
-     foreach paddock $paddocks {
-        logState $paddock [currentState $paddock]
-     }
-     setupReport
-     set setupDone 1
-   }
-}
 
-proc machineryAvailable {what} {
-   # Arrays are returned as stringified lists
-   eval array set result [apsimGet available($what)]
-   return $result($what)
-}
