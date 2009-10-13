@@ -1,0 +1,4410 @@
+<folder version="19" name="Simulations">
+  <folder name="Shared">
+    <area name="p">
+      <wheat />
+      <chickpea>
+        <ini>
+          <filename>chickpea.xml</filename>
+        </ini>
+      </chickpea>
+      <sorghum>
+        <ini>
+          <filename>sorghum.xml</filename>
+        </ini>
+      </sorghum>
+      <weed>
+        <ini>
+          <filename>weed.xml</filename>
+        </ini>
+      </weed>
+      <surfaceom name="surface organic matter">
+        <PoolName description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type description="Organic Matter type">wheat</type>
+        <mass description="Initial surface residue (kg/ha)">1000.</mass>
+        <cnr description="C:N ration of initial residue">80.0</cnr>
+        <standing_fraction description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <erosion name="Erosion">
+        <model description="Model Name">freebairn</model>
+        <slope description="Slope of plot in percent (%)">6.5</slope>
+        <slope_length description="Length of plot (m)">60.0</slope_length>
+        <k_factor description="Soil erodibility factor (t/ha/EI 30 )">0.4</k_factor>
+        <p_factor description="Supporting practise factor (unitless)">1.0</p_factor>
+        <bed_depth description="Depth to bedrock (mm)">3500</bed_depth>
+        <profile_reduction type="list" listvalues="off,on" description="Profile Reduction">off</profile_reduction>
+        <profile_layer_merge description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
+        <minimum_depth description="If the profile erodes to this depth, the simulation is stopped (mm)">100.0</minimum_depth>
+      </erosion>
+    </area>
+    <tclmanager name="Farm Manager">
+      <rule name="Weeds">
+        <script name="init">
+          <text><![CDATA[# Newer version of weed germination - spray 2 weeks after a {germination event & swCrit & temp}.
+proc checkWeeds {} {
+   global daysSinceLastHarvest weeds paddocks config
+
+   foreach paddock $paddocks {
+      if {$paddock != "toplevel" &&
+          ([currentState $paddock] == "Fallow" ) && 
+          $daysSinceLastHarvest($paddock) > 30} {
+
+         if {$weeds($paddock,GermDay) == {} && [sumLastRain 4] >= 25} {
+            set weeds($paddock,GermDay) [apsimGet day]
+            set weeds($paddock,tt) 0.0
+            apsimWriteToSummaryFile "Weeds germinating in $paddock"
+
+         } elseif {$weeds($paddock,GermDay) != {}} {
+            # Thermal time calc
+            set weeds($paddock,tt) [expr $weeds($paddock,tt) + ([apsimGet maxt] + [apsimGet mint])/2.0]
+         
+            # Surface SW calc
+            set ll [lindex [apsimGet $config($paddock,watBal).ll15] 0];
+            set sw [lindex [apsimGet $config($paddock,watBal).sw] 0]
+            set dul [lindex [apsimGet $config($paddock,watBal).dul] 0]
+            set swf [expr (($sw-$ll)/($dul-$ll))]
+         
+            if {$swf < 0.5} {
+               # kill off weeds
+               set weeds($paddock,GermDay) {}
+               apsimWriteToSummaryFile "Weeds die in $paddock"
+         
+            } elseif {$weeds($paddock,tt) > 250.0} {
+               # Weeds are mature - spray them
+               incr weeds($paddock,Events)
+               eval apsimSendMessage economics operate [mash [concat [gatherArgs spray herbicide] \
+                      area $config($paddock,area)  paddock $paddock  costtype fallow_cost]]
+
+               apsimSendMessage economics expenditure "category herbicide" "name Roundup" \
+                         "rate 5" "area $config($paddock,area)"  \
+                         "paddock $paddock" {fallow_cost {}} \
+                         {comment "Roundup weeds"}
+               apsimWriteToSummaryFile "Weeds mature in $paddock - sprayed out."
+         
+               set weeds($paddock,GermDay) {}
+               set weeds($paddock,tt)      0.0
+            }
+         }
+      }   
+   }
+}
+]]></text>
+          <event>init</event>
+        </script>
+        <script name="process">
+          <text>checkWeeds</text>
+          <event>process</event>
+        </script>
+        <script name="start_simulation">
+          <text>
+foreach paddock $paddocks {
+  set weeds($paddock,Events)  0                 ;# number of weed germination events
+  set weeds($paddock,GermDay) {}                ;# date of next weed spraying
+}
+          </text>
+          <event>process</event>
+        </script>
+      </rule>
+      <rule name="Financial year reporting">
+        <script name="init">
+          <text>
+
+proc do_end_financial_year {} {
+   global config ef
+   puts "do_end_financial_year called"
+
+   set year [apsimGet year]
+
+   foreach {accumulator} {runoff drain soil_loss es} {
+     foreach paddock $config(cropPaddocks) {
+        global $paddock.$accumulator
+        set ef($year,$paddock,$accumulator) [set $paddock.$accumulator]
+     }
+   }
+   global accRain
+   set ef($year,accRain) $accRain
+   set ef($year,balance) [apsimGet balance]
+   lappend ef(years) $year
+}
+
+# EF - used to be "end of financial" but has a lot more now.
+proc open_ef_stuff {} {
+   global ef
+   puts "open_ef_stuff called"
+   set year [expr [apsimGet year] - 1 ]
+   set ef(years) $year
+   set ef($year,balance) [apsimGet balance] 
+   set ef(states) {}
+   set ef(rules) {}
+}
+
+proc close_ef_stuff {} {
+   global simName config ef
+   puts "close_ef_stuff called"
+
+   # Heading
+   set fp [open $simName.financial.csv w]
+   puts -nonewline $fp "year"
+   foreach {accumulator} {runoff drain soil_loss es rain} {
+      puts -nonewline $fp ",$accumulator"
+   }
+   foreach state $ef(states) {
+      if {$state != {}} {
+        puts -nonewline $fp ",$state"
+      }
+   }
+   puts $fp ",profit"
+
+   # Area weighted averages of environmental stuff
+   set tfa 0.0
+   foreach paddock $config(cropPaddocks) {set tfa [expr $tfa + $config($paddock,area)]}
+   
+   foreach year [lrange $ef(years) 2 end] {
+      puts -nonewline $fp "$year"
+      foreach {accumulator} {runoff drain soil_loss es} {
+         set s 0.0
+         foreach paddock $config(cropPaddocks) {
+            set s [expr $s + $ef($year,$paddock,$accumulator) * $config($paddock,area) / $tfa]
+         }
+         puts -nonewline $fp ",$s"
+      }
+      puts -nonewline $fp ",$ef($year,accRain)"
+
+      # Number of "state transitions" made in each year
+      foreach state $ef(states) {
+         if {$state != {}} {
+            if {[info exists ef($year,$state)]} {
+              puts -nonewline $fp ",$ef($year,$state)"
+            } else {
+              puts -nonewline $fp ",0"
+            }  
+         }
+      }
+
+      # profit = change in bank balance each year
+      puts -nonewline $fp ",[expr $ef($year,balance) - $ef([expr $year-1],balance)]"
+      puts $fp ""
+   }
+   close $fp
+   
+   # per-crop yields etc..
+   foreach state $ef(states) {
+     if {$state != {}} {
+         set fp [open $simName.$state.csv w]
+         if {[info exists ef($state,yield)]} {
+            foreach yield $ef($state,yield) {
+               puts $fp $yield
+            }   
+         }  
+         close $fp
+      }   
+   }
+
+   # Finally the rule "failures"
+}
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Farm logic">
+        <script name="init">
+          <text><![CDATA[# Initial conditions
+set myName  "FarmManager"
+source $apsuite/UserInterface/APSFarm/FarmManager.tcl
+
+set paddocks [list toplevel p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 ]
+set config(cropPaddocks)    [list p1 p2 p3 p4 p5 p6 p7 p8 p9 p10]
+set config(foragePaddocks)  {}
+
+set config(toplevel,graphNames)  {}
+
+foreach p $config(cropPaddocks) {
+   set config($p,graphNames)  stateGraph
+   set config($p,area)        300.0
+   set weeds($p,Events)       0                      ;# number of weed germination events
+   set weeds($p,GermDay)      {}                     ;# date of next weed spraying
+
+   foreach {accumulator} {runoff drain soil_loss es} {
+      set $p.$accumulator 0.0
+   }
+}
+
+set accRain 0.0
+
+foreach p $paddocks {
+  set config($p,watBal)   ".masterpm.$p.Soil Water"
+  set config($p,nModule)  ".masterpm.$p.Soil Nitrogen"
+}
+
+
+# Initialisation for MCA
+
+   # Delete any old logfile so we dont get confused..
+   catch {file delete -force $simName.log}
+
+   # The 10 day rainfall accumulator - should be the 10 days of rain prior to start of simulation
+   set rainList {0.2 1.0 0 0 0 0 15 12 0 0 0 0}
+
+   # A list of variables to report from each paddock on each "event"
+   set reportVariables [list esw no3() ]
+
+   # Crop variables - name/event/value triplets
+   set reportCropVariables [list sorghum  harvest yield \
+                                 wheat    harvest yield \
+                                 chickpea harvest yield]
+
+   # Manager variables to report from each paddock on each "event"
+   set reportManagerVariables [list weeds(Events) annRunoff annDrain annSoil_loss annEvap annRain state]
+
+# Defaults for a lot of things.
+# we use this table to build a list of "name/value" pairs that get fed into
+# sow/fertiliser commands etc.
+# ***Check the summary file for what it uses, search other files for "gatherArgs"
+   set defaults(sow,sowing_depth)              30
+   set defaults(fertiliser,calcMethod)         targetN
+   set defaults(fertiliser,depth)              50
+   set defaults(fertiliser,type)               urea
+
+   set defaults(wheat,sow,cultivar)              Sunvale
+   set defaults(Sf_earlyWheat,sow,cultivar)      Sunbri
+   set defaults(Lf_earlyWheat,sow,cultivar)      Sunbri
+   set defaults(lateWheat,sow,cultivar)          Sunstate
+   set defaults(wheat,sow,plants)                100       ;# plants per sq mt established
+   set defaults(wheat,fertiliser,amount)         140       ;# kg urea/ha
+   set defaults(Lf_earlyWheat,fertiliser,amount) 180       ;# kg urea/ha
+   set defaults(Lf_Wheat,fertiliser,amount)      180       ;# kg urea/ha
+    
+   # (same as chickpea)
+   set defaults(wheat,sowingCosts)             {{category seedcost    name Wheat            rate 60  comment  "Wheat seed"} 
+                                                {category fertilisercost  name map              rate 20  comment  "Wheat MAP starter"} 
+                                                {category herbicide name "MCPA LVE"       rate 0.5 comment  "Wheat mcpa starter"}
+                                                {category herbicide name "Ally"           rate 5   comment  "Wheat metsulfuran starter"}}
+
+   set defaults(wheat,harvestingCosts)         {{category contract   name generic          rate 0.16666  comment  "Wheat contract harvest"} 
+                                                {category fuelcosts  name fuelcosts        rate 8.1      comment  "Wheat contract harvest fuel"}}
+
+   set defaults(sorghum,sow,cultivar)             medium
+   set defaults(Lf_earlySorghum,sow,cultivar)     late
+   set defaults(Sf_earlySorghum,sow,cultivar)     late
+   
+   set defaults(sorghum,sow,tiller_no_fertile)     0
+   set defaults(sorghum,sow,skip)                  "single"
+   set defaults(sorghum,sow,region)                "SQ"
+   set defaults(sorghum,sow,row_spacing)            1.0
+   set defaults(sorghum,sow,plants)                 4.0
+   set defaults(Sf_earlySorghum,sow,plants)         4.5
+   set defaults(Lf_earlySorghum,sow,plants)         4.5
+   
+   set defaults(Sf_Sorghum,fertiliser,amount)       140
+   set defaults(Sf_earlySorghum,fertiliser,amount)  140
+   set defaults(sorghum,fertiliser,amount)          180
+   set defaults(sorghum,sowingCosts)           {{category seedcost   name sorghum   rate 4 comment "Sorghum seed"}
+                                                 {category fertilisercost  name starter_z   rate 30  comment  "Sorghum Starter_z"}}
+## NBNB needs atrazine @3.5lt/ha in wet seasons
+   set defaults(sorghum,harvestingCosts)       {{category contract   name generic         rate 0.16666 comment  "Sorghum contract harvest"} 
+                                                {category herbicide  name Roundup         rate 1.5     comment  "Sorghum spray out"} 
+                                                {category fuelcosts  name fuelcosts       rate 8.1     comment  "Sorghum contract harvest fuel"}}
+
+   set defaults(CoverCrop,fertiliser,amount)   0
+   
+   set defaults(chickpea,sow,cultivar)         amethyst
+   set defaults(chickpea,sow,plants)           30
+   set defaults(chickpea,fertiliser,amount)    0
+   set defaults(chickpea,sowingCosts)          {{category seedcost    name Chickpea         rate 45   comment "Chickpea Seed"}              
+                                                {category herbicide   name Roundup          rate 1.3  comment "Pre plant roundup"}
+                                                {category herbicide   name Amicide625       rate 0.2  comment "Pre plant 2,4D"} 
+                                                {category herbicide   name "simazine"     rate 1.1    comment "Post Simazine"}
+                                                {category insecticide name "Larvin LV"    rate 0.75   comment "Insecticide"}
+                                                {category fertilisercost  name starter_z   rate 50  comment  "Ckpea Starter_z"}}
+                                                
+   set defaults(chickpea,harvestingCosts)      {{category contract    name generic        rate 0.1851 comment  "Chickpea contract harvest"} 
+                                                {category fuelcosts   name fuelcosts      rate 9.0    comment  "Chickpea contract harvest fuel"}}
+
+   set defaults(weed,sow,cultivar)             late
+   set defaults(weed,sow,plants)               15
+   set defaults(weed,sow,crop_class)           summer_grass
+   set defaults(weed,fertiliser,amount)        0
+
+   set defaults(sow,tractor)                   'tractor_1'
+   set defaults(sow,implement)                 'planter'
+   set defaults(spray,tractor)                 'tractor_1'
+   set defaults(spray,implement)               'spray_rig'  ;# this is spray rig
+   set defaults(herbicide,spray,name)          "Roundup"
+
+   set config(CoverCrop,alias) weed
+   set config(Lf_earlySorghum,alias) sorghum
+   set config(Sf_earlySorghum,alias) sorghum
+   set config(Lf_Sorghum,alias) sorghum
+   set config(Sf_Sorghum,alias) sorghum
+   set config(Sf_earlyWheat,alias) wheat
+   set config(Lf_earlyWheat,alias) wheat
+   set config(Sf_Wheat,alias) wheat
+   set config(Lf_Wheat,alias) wheat
+   set config(lateWheat,alias) wheat
+
+   set crops {sorghum wheat chickpea}
+
+# Initial conditions for each paddock
+set config(p1,initialState)         Fallow
+set config(p1,history)              {sorghum sorghum}
+set config(p1,daysSinceLastHarvest) 365              ;# A long time
+set config(p2,initialState)         Fallow
+set config(p2,history)              {wheat sorghum}
+set config(p2,daysSinceLastHarvest) 365              ;# A long time
+set config(p3,initialState)         Fallow
+set config(p3,history)              {wheat wheat}
+set config(p3,daysSinceLastHarvest) 365              ;# A long time
+set config(p4,initialState)         Fallow
+set config(p4,history)              {wheat maize}
+set config(p4,daysSinceLastHarvest) 365              ;# A long time
+set config(p5,initialState)         Fallow
+set config(p5,history)              {maize maize}
+set config(p5,daysSinceLastHarvest) 365              ;# A long time
+set config(p6,initialState)         Fallow
+set config(p6,history)              {sorghum sorghum}
+set config(p6,daysSinceLastHarvest) 365              ;# A long time
+set config(p7,initialState)         Fallow
+set config(p7,history)              {wheat sorghum}
+set config(p7,daysSinceLastHarvest) 365              ;# A long time
+set config(p8,initialState)         Fallow
+set config(p8,history)              {wheat wheat}
+set config(p8,daysSinceLastHarvest) 365              ;# A long time
+set config(p9,initialState)         Fallow
+set config(p9,history)              {wheat maize}
+set config(p9,daysSinceLastHarvest) 365              ;# A long time
+set config(p10,initialState)         Fallow
+set config(p10,history)              {maize maize}
+set config(p10,daysSinceLastHarvest) 365              ;# A long time
+
+foreach p $config(cropPaddocks) {
+   set state($p)   $config($p,initialState)
+   set history($p) $config($p,history)
+   set daysSinceLastHarvest($p) 60
+}
+
+set state(toplevel) {}
+set daysSinceLastHarvest(toplevel) 0
+
+
+
+# Return our reluctance to plant sorghum in the current paddock
+#  - no more than 3 in a row.
+proc sorghumHistory {paddock} {
+   global history 
+   if {"[lindex $history($paddock) end]" == "sorghum" &&
+       "[lindex $history($paddock) end-1]" == "sorghum"} {
+      return 0 ;# 2 in a row - no more.
+   }
+   return 1
+}
+
+# Last crop was a failed sorghum crop
+## XXX WRONG - should be 1 only if the last sorghum crop failed
+proc covercropHistory {paddock} {
+   global history
+   if {"[lindex $history($paddock) end]" == "sorghum"} {return 1}
+   return 0
+}
+
+# Return our "reluctance" to plant wheat
+proc wheatHistory {paddock} {
+   global history
+   if {"[lindex $history($paddock) end]" == "wheat" &&
+       "[lindex $history($paddock) end-1]" == "wheat"} {
+       return 0   ;# 2 in a row - no more.
+   }
+   return 1
+}
+# Return our "reluctance" to plant chickpea
+proc chickpeaHistory {paddock} {
+   global history
+   if {[lindex $history($paddock) end] == "chickpea" } {
+      return 0   ;# no more than 1 crop
+   }
+   return 1
+}
+
+proc getEsw {paddock} {
+   global config
+   return [apsimGetOptional $config($paddock,watBal).esw]
+}
+
+
+proc mseek2 {paddock} {
+   global config
+   set ll2   [lindex [apsimGet $config($paddock,watBal).ll15] 1] 
+   set swat2 [lindex [apsimGet $config($paddock,watBal).sw] 1]
+   set dul2  [lindex [apsimGet $config($paddock,watBal).dul] 1]
+   return [expr (($swat2-$ll2)/($dul2-$ll2))]
+}
+
+
+proc getCover {paddock} {
+   global config
+   return [apsimGetOptional "$paddock.surface organic matter.surfaceom_cover"]
+}
+
+proc sprayChickpeas {paddock} {
+   global defaults config
+   apsimWriteToSummaryFile "spraying Chickpeas"
+
+   apsimSendMessage economics expenditure \
+             {category insecticide} {name Steward} \
+             "rate 0.3" "area $config($paddock,area)"  \
+             "paddock $paddock" {incrop_cost {}} \
+             "crop [currentState $paddock]"     
+   apsimSendMessage economics operate \
+             "tractor $defaults(spray,tractor)" "implement $defaults(spray,implement)" \
+             {category insecticide} {name Steward} \
+             "rate 0.3" "area $config($paddock,area)"  "paddock $paddock" {incrop_cost {}} 
+}
+
+
+proc genericCosts {args} {
+
+   # {{category seedcost} {name cotton} {rate 3.5} {Comment "blah blah"}} ...
+   foreach {junk items} [concat [array get defaults $crop,sowCosts] [array get defaults $realCrop,sowCosts]]  {
+      foreach item $items {
+         eval apsimSendMessage economics expenditure \
+                    [mash [concat $item area $area  \
+                    paddock $paddock incrop_cost {} 
+      }
+   }
+}
+
+
+]]></text>
+          <event>init</event>
+        </script>
+        <script name="prepare">
+          <text>
+
+   if {[dayIs 181]} {
+      do_end_financial_year
+
+      set accRain 0.0
+      foreach {accumulator} {runoff drain soil_loss es } {
+         foreach paddock $paddocks {
+            set $paddock.$accumulator 0.0
+         }   
+      }
+   }
+   accumRain
+          </text>
+          <event>prepare</event>
+        </script>
+        <script name="process">
+          <text>
+# Housekeeping
+if {[catch {doProcess} msg]} {
+   puts "$errorInfo"
+   error "$msg\n$errorInfo"
+}
+</text>
+          <event>process</event>
+        </script>
+        <script name="post">
+          <text>
+   set accRain [expr $accRain + [apsimGet rain]]
+   
+   foreach {accumulator} {runoff drain es } {
+      foreach paddock $paddocks {
+         if {$paddock != "toplevel"} {
+            set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet $config($paddock,watBal).$accumulator]]
+         }
+      }   
+   }
+   foreach {accumulator} {soil_loss} {
+      foreach paddock $paddocks {
+         if {$paddock != "toplevel"} {
+            set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+         }
+      }   
+   }
+
+          </text>
+          <event>post</event>
+        </script>
+        <script name="start_simulation">
+          <text>
+ 
+      set accRain 0.0
+      foreach {accumulator} {runoff drain soil_loss es } {
+         foreach paddock $paddocks {
+            set $paddock.$accumulator 0.0
+         }   
+      }
+ 
+ foreach p $config(cropPaddocks) {
+   set config($p,pawc) [calcPAWC "$p.Soil Water"]
+}
+open_ef_stuff
+
+setupReport
+</text>
+          <event>start_simulation</event>
+        </script>
+        <script name="end_simulation">
+          <text>
+close_ef_stuff
+
+</text>
+          <event>end_simulation</event>
+        </script>
+      </rule>
+      <rule name="Rugplot stuff">
+        <script name="init">
+          <text><![CDATA[# Rug plotting facility
+
+# 2 areas of interest:
+# - logState - called when a graph is changing state, called just after the "actions" have been evaluated
+
+# a logfile is used to generate the rugplots of farm activities. There are 2 parts:
+# an xml of paddocks, states & times,
+# a binary of decision rules on each evaluation cycle
+proc log {msg} {
+   #puts $msg
+}
+
+package require cdftcl
+package require tdom
+
+proc setupLogging {} {
+   global simName config paddocks
+   set config(paddocks) $paddocks
+
+   # Find the number of graphs - 1 file for each. Delete each.
+   set config(graphs) {}
+   foreach paddock $config(paddocks) {
+     foreach graph $config($paddock,graphNames) {
+        if {[lsearch $config(graphs) $graph] < 0} {
+           lappend config(graphs) $graph
+        }
+     }
+  }
+  foreach graph $config(graphs) {
+    puts "deleting $simName.$graph.\[xml,nc\]"
+    file delete -force $simName.$graph.xml
+    file delete -force $simName.$graph.nc
+    foreach paddock $config(paddocks) {
+       set config(history,$paddock,$graph) {}
+    }
+  }
+  set config(states) {}
+  set config(rules) {}
+  set config(historyDays) {}
+}
+
+# Log a set of rule evaluations
+proc logRules {paddock graph rules values } {
+   global config
+
+   set data {}
+   for {set i 0} {$i < [llength $rules]} {incr i} {
+      lappend data [lindex $rules $i] [lindex $values $i]
+   }
+
+   set today [apsimGet today]
+
+   lappend config(history,$paddock,$graph,$today) $data
+
+   if {[lsearch $config(historyDays) $today] < 0} {
+       lappend config(historyDays) $today
+       set config($today,ddmmyyyy) [apsimGet clock.dd/mm/yyyy]
+   }
+}
+
+# Log a state transition
+proc logState {graph paddock state} {
+   global config
+   set today [apsimGet today]
+   lappend config(history,$paddock,$graph) $today $state
+   if {[lsearch $config(states) $state] < 0} {lappend config(states) $state}
+}
+
+# Write the files. 
+proc closeLogging {} {
+   global config simName
+
+   set config(xmldoc) [dom parse [apsimGetComponentXML]]
+   set config(docroot) [$config(xmldoc) documentElement]
+
+puts "graphs = $config(graphs)"
+
+   foreach graph $config(graphs) {
+puts "creating $simName.$graph.nc"
+      set ncfp [ncdf create $simName.$graph.nc] 
+      ncdfdim $ncfp create index [llength $config(historyDays)]
+      ncdfdim $ncfp create time -1
+
+      ncdfvar $ncfp create position long {index}
+      ncdfvar $ncfp create daynum float {index}
+
+      ncdfvar $ncfp create day     float {time}
+      ncdfvar $ncfp create paddock short {time}
+      ncdfvar $ncfp create rule    short {time}
+      ncdfvar $ncfp create value   float {time}
+
+      set day [lindex $config(historyDays) 0]
+      ncdfatt $ncfp GLOBAL put startdate float $day
+      ncdfatt $ncfp GLOBAL put startddmmyyyy char $config($day,ddmmyyyy)
+
+      set day [lindex $config(historyDays) end]
+      ncdfatt $ncfp GLOBAL put enddate float $day
+      ncdfatt $ncfp GLOBAL put endddmmyyyy char $config($day,ddmmyyyy)
+
+      ncdf enddef $ncfp
+      set id 0
+      foreach p $config(paddocks) {
+         set pid($p) $id; incr id
+      }   
+
+      set i 0
+      foreach day $config(historyDays) {
+         foreach paddock $config(paddocks) {
+            if {[info exists config(history,$paddock,$graph,$day)]} {
+               set pos($paddock,$day) $i
+               foreach data $config(history,$paddock,$graph,$day) {
+                  foreach {rule value} $data {
+                     ncdfvar $ncfp put day     $i $day
+                     ncdfvar $ncfp put paddock $i $pid($paddock)
+                     ncdfvar $ncfp put rule    $i $rule
+                     ncdfvar $ncfp put value   $i $value
+                     incr i
+                  } 
+               }
+            }
+         }
+      }
+
+      #Positions
+      for {set i 0} {$i < [llength $config(historyDays)]} {incr i} {
+         set day [lindex $config(historyDays) $i]
+         set f 0
+         foreach paddock $config(paddocks) {
+            if {[info exists pos($paddock,$day)]} {
+               ncdfvar $ncfp put position  $i $pos($paddock,$day)
+               set f 1
+               break
+            } 
+         }
+         if {!$f} {
+            ncdfvar $ncfp put position  $i -1
+         }   
+      }
+      
+      for {set j 0} {$j < [llength $config(historyDays)]} {incr j} {
+         ncdfvar $ncfp put daynum $j [lindex $config(historyDays) $j]
+      }   
+
+      ncdf close $ncfp
+puts "finished nc, opening $simName.$graph.xml"
+
+      set fp [open $simName.$graph.xml w]
+      puts $fp "<?xml version=\"1.0\" encoding=\"UTF-8\"?><simulation>"
+      set id 0
+      foreach paddock $config(paddocks) {
+         puts $fp "<history id=\"$id\" name=\"$paddock\">"
+         foreach {day state} $config(history,$paddock,$graph) {
+            if {[info exists pos($paddock,$day)]} {
+               puts $fp "<transition day=\"$day\" to=\"$state\" position=\"$pos($paddock,$day)\" />"
+            } 
+         }
+         puts $fp "</history>"
+         incr id
+      }
+
+      foreach paddock $config(paddocks) {
+         puts $fp "<paddock id=\"$pid($paddock)\" name=\"$paddock\" />"
+      }   
+      set id 0
+      foreach rule $config(rules) {
+         set rule [string map {\< "&lt;"  \> "&gt;"     
+                               \& "&amp;" \" "&quot;"  
+                               \[ "&#91;" \] "&#93;"    } $rule]
+         puts $fp "<rule id=\"$id\" name=\"$rule\" />"
+         incr id
+      }
+
+      # Colours
+      foreach node [$config(docroot) selectNodes //node] {
+          set state [getValue $node "name"]
+          set colour [getValue $node "fill"]
+          puts $fp "<state name=\"$state\" colour=\"$colour\" />"
+      }
+
+      set day [lindex $config(historyDays) 0]
+      puts $fp "<startdate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" />"
+      set day [lindex $config(historyDays) end]
+      puts $fp "<enddate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" />"
+
+      puts $fp "</simulation>"
+      close $fp
+puts "finished $simName.$graph.xml"
+   }  
+   # $config(xmldoc) delete
+}
+
+# Override the "standard" decision routine to keep track of state info
+proc checkRules {thisPaddock} {
+  global config 
+  uplevel #0 set paddock $thisPaddock
+  set bestScore -1.0; set bestTarget {}; set bestArc {}; set bestGraph {}
+  foreach graph $config($thisPaddock,graphNames) {
+     foreach arc [$graph arcs -out [currentState $thisPaddock]] {
+        set values {}; set rules {}
+        set target [$graph arc target $arc]
+        if {[$graph arc keyexists $arc window]} {set inWindow [uplevel #0 expr [$graph arc get $arc window]]} else {set inWindow 0}
+        foreach rule [$graph arc get $arc rules] {
+           set value [uplevel #0 expr $rule]
+           lappend values $value
+           lappend rules [enCodeRule $target $rule]
+        }
+        logRules $thisPaddock $graph $rules $values
+        if {[llength $values] > 0} {
+           set score [expr [join $values "*"]]
+           if {$score > $bestScore} {
+              set bestScore  $score
+              set bestTarget $target
+              set bestArc    $arc
+              set bestGraph  $graph
+           }
+        }
+     }
+  }   
+  return [list  $bestScore $bestGraph $bestTarget $bestArc]
+}
+
+proc enCodeRule {target ruleText} {
+  global config
+  regsub -all "\," $ruleText "\-" ruleText
+
+  for {set i 0} {$i < [llength $config(rules)]} {incr i} {
+     set rule [lindex $config(rules) $i]
+     if {[string equal $rule "$target,$ruleText"]} {
+        return $i
+     }
+  }
+  lappend config(rules) "$target,$ruleText"
+  return [expr [llength $config(rules)] - 1]
+}
+
+
+# Get the value of an objects 'thing'
+proc getValue {id thing} {
+   foreach node [$id childNodes] {
+      if {[string equal -nocase [$node nodeName] $thing]} {
+         return [$node text]
+      }
+   }
+   return ""
+}
+
+]]></text>
+          <event>init</event>
+        </script>
+        <script name="start_simulation">
+          <text>
+setupLogging
+foreach paddock $paddocks {
+   logState stateGraph $paddock [currentState $paddock]
+}
+</text>
+          <event>start_simulation</event>
+        </script>
+        <script name="end_simulation">
+          <text>
+closeLogging
+</text>
+          <event>end_simulation</event>
+        </script>
+      </rule>
+    </tclmanager>
+    <soil name="low">
+      <state>Queensland</state>
+      <region>Borders and Western Downs</region>
+      <nearesttown>Billa Billa, Q 4390</nearesttown>
+      <site>Billa Billa</site>
+      <SoilType>Grey Vertosol</SoilType>
+      <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+      <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</comment>
+      <naturalvegetation>Brigalow, Belah, Wilga</naturalvegetation>
+      <SummerCona>3.5</SummerCona>
+      <WinterCona>2.5</WinterCona>
+      <SummerU>6</SummerU>
+      <WinterU>4</WinterU>
+      <SummerDate>1-nov</SummerDate>
+      <WinterDate>1-apr</WinterDate>
+      <Salb>0.12</Salb>
+      <DiffusConst>40</DiffusConst>
+      <DiffusSlope>16</DiffusSlope>
+      <CN2Bare>73</CN2Bare>
+      <CNRed>20</CNRed>
+      <CNCov>0.8</CNCov>
+      <RootCN>40</RootCN>
+      <RootWT>1000</RootWT>
+      <SoilCN>12</SoilCN>
+      <EnrACoeff>7.4</EnrACoeff>
+      <EnrBCoeff>0.2</EnrBCoeff>
+      <profile>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.28</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.11</airdry>
+          <dul>0.44</dul>
+          <sat>0.49</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.04</fbiom>
+          <finert>0.4</finert>
+          <oc>1.24</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.21</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.21</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.21</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.21</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.26</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.17</airdry>
+          <dul>0.45</dul>
+          <sat>0.5</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>0.6</finert>
+          <oc>1.24</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.21</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.21</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.21</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.21</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.32</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.42</dul>
+          <sat>0.47</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>0.8</finert>
+          <oc>1.25</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.23</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.23</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.23</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.23</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.34</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.3</dul>
+          <sat>0.46</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>1</finert>
+          <oc>1.1</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.26</ll>
+          <kl name="wheat">0.04</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.26</ll>
+          <kl name="sorghum">0.05</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.26</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.26</ll>
+          <kl name="weed">0.04</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.36</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.33</dul>
+          <sat>0.46</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.01</fbiom>
+          <finert>1</finert>
+          <oc>0.71</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.33</ll>
+          <kl name="wheat">0.04</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.33</ll>
+          <kl name="sorghum">0.05</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.33</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.33</ll>
+          <kl name="weed">0.04</kl>
+          <xf name="weed">1</xf>
+        </layer>
+      </profile>
+      <InitWater>
+        <percentmethod>
+          <percent>0.80</percent>
+          <distributed>Filled from top</distributed>
+        </percentmethod>
+      </InitWater>
+      <InitNitrogen />
+    </soil>
+    <soil name="medium">
+      <state>Queensland</state>
+      <region>Borders and Western Downs</region>
+      <nearesttown>Billa Billa, Q 4390</nearesttown>
+      <site>Billa Billa</site>
+      <SoilType>Grey Vertosol</SoilType>
+      <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+      <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</comment>
+      <naturalvegetation>Brigalow, Belah, Wilga</naturalvegetation>
+      <SummerCona>3.5</SummerCona>
+      <WinterCona>2.5</WinterCona>
+      <SummerU>6</SummerU>
+      <WinterU>4</WinterU>
+      <SummerDate>1-nov</SummerDate>
+      <WinterDate>1-apr</WinterDate>
+      <Salb>0.12</Salb>
+      <DiffusConst>40</DiffusConst>
+      <DiffusSlope>16</DiffusSlope>
+      <CN2Bare>73</CN2Bare>
+      <CNRed>20</CNRed>
+      <CNCov>0.8</CNCov>
+      <RootCN>40</RootCN>
+      <RootWT>1000</RootWT>
+      <SoilCN>12</SoilCN>
+      <EnrACoeff>7.4</EnrACoeff>
+      <EnrBCoeff>0.2</EnrBCoeff>
+      <profile>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.28</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.11</airdry>
+          <dul>0.44</dul>
+          <sat>0.49</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.04</fbiom>
+          <finert>0.4</finert>
+          <oc>1.24</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.21</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.21</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.21</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.21</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.26</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.17</airdry>
+          <dul>0.45</dul>
+          <sat>0.5</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>0.6</finert>
+          <oc>1.24</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.21</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.21</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.21</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.21</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.32</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.42</dul>
+          <sat>0.47</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>0.8</finert>
+          <oc>1.25</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.23</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.23</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.23</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.23</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.34</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.37</dul>
+          <sat>0.46</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>1</finert>
+          <oc>1.1</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.26</ll>
+          <kl name="wheat">0.04</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.26</ll>
+          <kl name="sorghum">0.05</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.26</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.26</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.36</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.33</dul>
+          <sat>0.46</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.01</fbiom>
+          <finert>1</finert>
+          <oc>0.71</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.33</ll>
+          <kl name="wheat">0.04</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.33</ll>
+          <kl name="sorghum">0.05</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.33</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.33</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+      </profile>
+      <InitWater>
+        <percentmethod>
+          <percent>0.80</percent>
+          <distributed>Filled from top</distributed>
+        </percentmethod>
+      </InitWater>
+      <InitNitrogen />
+    </soil>
+    <soil name="high">
+      <state>Queensland</state>
+      <region>Borders and Western Downs</region>
+      <nearesttown>Billa Billa, Q 4390</nearesttown>
+      <site>Billa Billa</site>
+      <SoilType>Grey Vertosol</SoilType>
+      <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+      <comment>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</comment>
+      <naturalvegetation>Brigalow, Belah, Wilga</naturalvegetation>
+      <SummerCona>3.5</SummerCona>
+      <WinterCona>2.5</WinterCona>
+      <SummerU>6</SummerU>
+      <WinterU>4</WinterU>
+      <SummerDate>1-nov</SummerDate>
+      <WinterDate>1-apr</WinterDate>
+      <Salb>0.12</Salb>
+      <DiffusConst>40</DiffusConst>
+      <DiffusSlope>16</DiffusSlope>
+      <CN2Bare>73</CN2Bare>
+      <CNRed>20</CNRed>
+      <CNCov>0.8</CNCov>
+      <RootCN>40</RootCN>
+      <RootWT>1000</RootWT>
+      <SoilCN>12</SoilCN>
+      <EnrACoeff>7.4</EnrACoeff>
+      <EnrBCoeff>0.2</EnrBCoeff>
+      <profile>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.28</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.11</airdry>
+          <dul>0.44</dul>
+          <sat>0.49</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.04</fbiom>
+          <finert>0.4</finert>
+          <oc>1.24</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.21</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.21</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.21</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.21</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>150</thickness>
+          <bd>1.26</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.17</airdry>
+          <dul>0.45</dul>
+          <sat>0.5</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>0.6</finert>
+          <oc>1.24</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.21</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.21</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.21</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.21</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.32</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.42</dul>
+          <sat>0.47</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>0.8</finert>
+          <oc>1.25</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.23</ll>
+          <kl name="wheat">0.06</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.23</ll>
+          <kl name="sorghum">0.07</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.23</ll>
+          <kl name="chickpea">0.06</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.23</ll>
+          <kl name="weed">0.06</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.34</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.41</dul>
+          <sat>0.46</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.02</fbiom>
+          <finert>1</finert>
+          <oc>1.1</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.26</ll>
+          <kl name="wheat">0.04</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.26</ll>
+          <kl name="sorghum">0.05</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.26</ll>
+          <kl name="chickpea">0.04</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.26</ll>
+          <kl name="weed">0.04</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.36</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.35</dul>
+          <sat>0.46</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.01</fbiom>
+          <finert>1</finert>
+          <oc>0.71</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.33</ll>
+          <kl name="wheat">0.04</kl>
+          <xf name="wheat">1</xf>
+          <ll name="sorghum">0.33</ll>
+          <kl name="sorghum">0.05</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.33</ll>
+          <kl name="chickpea">0.04</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="weed">0.33</ll>
+          <kl name="weed">0.04</kl>
+          <xf name="weed">1</xf>
+        </layer>
+        <layer>
+          <thickness>300</thickness>
+          <bd>1.35</bd>
+          <ll15>0.21</ll15>
+          <airdry>0.21</airdry>
+          <dul>0.35</dul>
+          <sat>0.46</sat>
+          <swcon>0.3</swcon>
+          <fbiom>0.01</fbiom>
+          <finert>1</finert>
+          <oc>0.34</oc>
+          <ph>7</ph>
+          <ll name="wheat">0.34</ll>
+          <kl name="wheat">0.02</kl>
+          <xf name="wheat">1</xf>
+          <kl name="sorghum">0.04</kl>
+          <xf name="sorghum">1</xf>
+          <ll name="chickpea">0.34</ll>
+          <kl name="chickpea">0.02</kl>
+          <xf name="chickpea">1</xf>
+          <ll name="sorghum">0.34</ll>
+          <ll name="weed">0.34</ll>
+          <kl name="weed">0.02</kl>
+          <xf name="weed">1</xf>
+        </layer>
+      </profile>
+      <InitWater>
+        <percentmethod>
+          <percent>0.80</percent>
+          <distributed>Filled from top</distributed>
+        </percentmethod>
+      </InitWater>
+      <InitNitrogen />
+    </soil>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/1970</start_date>
+      <end_date type="date" description="Select the end date of the simulation">2/07/1975</end_date>
+    </clock>
+    <metfile name="met">
+      <filename name="filename">%apsim%/Examples/Metfiles/Goond.met</filename>
+    </metfile>
+  </folder>
+  <simulation name="MCA plastic">
+    <clock shortcut="/Simulations/Shared/clock" />
+    <metfile name="met" shortcut="/Simulations/Shared/met" />
+    <summaryfile>
+      <filename name="filename">MCA plastic.sum</filename>
+    </summaryfile>
+    <tclmanager name="Farm Manager">
+      <rule name="Name">
+        <script name="init">
+          <text>
+set simName "MCA plastic"
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Farm Logic" shortcut="/Simulations/Shared/Farm Manager/Farm logic" />
+      <rule name="Financial year reporting" shortcut="/Simulations/Shared/Farm Manager/Financial year reporting" />
+      <rule name="Weeds" shortcut="/Simulations/Shared/Farm Manager/Weeds"/>
+      <rule name="Rugplot stuff" shortcut="/Simulations/Shared/Farm Manager/Rugplot stuff" />
+      <tclui name="MCA Plastic Rotation Management">
+        <uiscript><![CDATA[source RotationsUI.tcl]]></uiscript>
+        <canvas_height>557</canvas_height>
+        <rules_height>40</rules_height>
+        <graph_name>stateGraph</graph_name>
+        <node>
+          <x1>268.0</x1>
+          <name>Sf_earlySorghum</name>
+          <y1>182.0</y1>
+          <x2>368.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>282.0</y2>
+        </node>
+        <node>
+          <x1>274.0</x1>
+          <name>CoverCrop</name>
+          <y1>289.0</y1>
+          <x2>374.0</x2>
+          <desc>yyy</desc>
+          <fill>yellow</fill>
+          <y2>389.0</y2>
+        </node>
+        <node>
+          <x1>441.0</x1>
+          <name>Sf_Sorghum</name>
+          <y1>51.0</y1>
+          <x2>541.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>151.0</y2>
+        </node>
+        <node>
+          <x1>565.0</x1>
+          <name>Lf_Sorghum</name>
+          <y1>55.0</y1>
+          <x2>665.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>155.0</y2>
+        </node>
+        <node>
+          <x1>370.0</x1>
+          <name>Sf_earlyWheat</name>
+          <y1>360.0</y1>
+          <x2>470.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>460.0</y2>
+        </node>
+        <node>
+          <x1>782.0</x1>
+          <name>Spray</name>
+          <y1>69.0</y1>
+          <x2>882.0</x2>
+          <desc>Spray chickpeas</desc>
+          <fill>palegreen</fill>
+          <y2>169.0</y2>
+        </node>
+        <node>
+          <x1>778.0</x1>
+          <name>lateWheat</name>
+          <y1>194.0</y1>
+          <x2>878.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>294.0</y2>
+        </node>
+        <node>
+          <x1>661.0</x1>
+          <name>Chickpea</name>
+          <y1>136.0</y1>
+          <x2>761.0</x2>
+          <desc>New state</desc>
+          <fill>pink</fill>
+          <y2>236.0</y2>
+        </node>
+        <node>
+          <x1>606.0</x1>
+          <name>Sf_Wheat</name>
+          <y1>355.0</y1>
+          <x2>706.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>455.0</y2>
+        </node>
+        <node>
+          <x1>713.0</x1>
+          <name>Lf_Wheat</name>
+          <y1>286.0</y1>
+          <x2>813.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>386.0</y2>
+        </node>
+        <node>
+          <x1>342.0</x1>
+          <name>Lf_earlySorghum</name>
+          <y1>98.0</y1>
+          <x2>442.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>198.0</y2>
+        </node>
+        <node>
+          <x1>490.0</x1>
+          <name>Fallow</name>
+          <y1>238.0</y1>
+          <x2>590.0</x2>
+          <desc>yyy</desc>
+          <fill>white</fill>
+          <y2>338.0</y2>
+        </node>
+        <node>
+          <x1>490.0</x1>
+          <name>Lf_earlyWheat</name>
+          <y1>370.0</y1>
+          <x2>590.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>470.0</y2>
+        </node>
+        <arc>
+          <name>arc11</name>
+          <source>Sf_earlyWheat</source>
+          <target>Fallow</target>
+          <x>492.0</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>340.0</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc12</name>
+          <source>Fallow</source>
+          <target>Chickpea</target>
+          <x>589.0</x>
+          <actions>sowCrop $paddock chickpea</actions>
+          <actions>lappend history($paddock) chickpea</actions>
+          <actions>set chickPeaRain($paddock) 0.0</actions>
+          <actions>set numChickSprays($paddock) 0</actions>
+          <y>244.0</y>
+          <rules>[dayWithin 135 151]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>[areaPlanted Chickpea] &lt;0.4</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[chickpeaHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc13</name>
+          <source>Chickpea</source>
+          <target>Fallow</target>
+          <x>578.0</x>
+          <actions>harvestAndEndCrop $paddock chickpea</actions>
+          <y>228.0</y>
+          <rules>[canHarvestCrop $paddock chickpea]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc14</name>
+          <source>Fallow</source>
+          <target>Lf_earlyWheat</target>
+          <x>512.0</x>
+          <actions>sowCrop $paddock Lf_earlyWheat; lappend history($paddock) wheat</actions>
+          <y>348.5</y>
+          <rules>[dayWithin 116 128]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[areaPlanted wheat] &lt; 0.5</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc15</name>
+          <source>Lf_earlyWheat</source>
+          <target>Fallow</target>
+          <x>539.0</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>342.5</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc16</name>
+          <source>Chickpea</source>
+          <target>Spray</target>
+          <x>774.0</x>
+          <actions>sprayChickpeas $paddock</actions>
+          <actions>set numChickSprays($paddock) 1</actions>
+          <y>167.5</y>
+          <rules>[set chickPeaRain($paddock) [expr $chickPeaRain($paddock) + [apsimGet rain]]] &gt; 150</rules>
+          <rules>$numChickSprays($paddock) == 0</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc0</name>
+          <source>Fallow</source>
+          <target>Sf_Wheat</target>
+          <x>557.0</x>
+          <actions>sowCrop $paddock Sf_Wheat; lappend history($paddock) wheat</actions>
+          <y>319.5</y>
+          <rules>[dayWithin 129 152]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[areaPlanted wheat]  &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc17</name>
+          <source>Spray</source>
+          <target>Chickpea</target>
+          <x>752.0</x>
+          <y>152.5</y>
+          <rules>1</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc18</name>
+          <source>Fallow</source>
+          <target>Lf_Wheat</target>
+          <x>582.5</x>
+          <actions>sowCrop $paddock Lf_Wheat; lappend history($paddock) wheat</actions>
+          <y>310.0</y>
+          <rules>[dayWithin 129 152]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[areaPlanted wheat]  &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc1</name>
+          <source>Sf_Wheat</source>
+          <target>Fallow</target>
+          <x>594.0</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>329.5</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc20</name>
+          <source>Fallow</source>
+          <target>Lf_earlySorghum</target>
+          <x>466.5</x>
+          <actions>sowCrop $paddock Lf_earlySorghum; lappend history($paddock) sorghum</actions>
+          <y>243.0</y>
+          <rules>[dayWithin 244 350]</rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;80</rules>
+          <rules>[areaPlanted sorghum] &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc19</name>
+          <source>Lf_Wheat</source>
+          <target>Fallow</target>
+          <x>596.5</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>295.0</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc2</name>
+          <source>Fallow</source>
+          <target>Sf_earlySorghum</target>
+          <x>416.5</x>
+          <actions>sowCrop $paddock Sf_earlySorghum; lappend history($paddock) sorghum</actions>
+          <y>265.0</y>
+          <rules>[dayWithin 244 350]</rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>$daysSinceLastHarvest($paddock) &lt;200</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;  80</rules>
+          <rules>[areaPlanted sorghum] &lt;0.4</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc21</name>
+          <source>Lf_earlySorghum</source>
+          <target>Fallow</target>
+          <x>468.5</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>205.0</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc3</name>
+          <source>Sf_earlySorghum</source>
+          <target>Fallow</target>
+          <x>423.5</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>239.0</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc22</name>
+          <source>Fallow</source>
+          <target>Lf_Sorghum</target>
+          <x>581.0</x>
+          <actions>sowCrop $paddock Lf_Sorghum; lappend history($paddock) sorghum</actions>
+          <y>186.0</y>
+          <rules>[dayWithin 244  350] </rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;80</rules>
+          <rules>[areaPlanted sorghum] &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc4</name>
+          <source>Fallow</source>
+          <target>Sf_Sorghum</target>
+          <x>498.0</x>
+          <actions>sowCrop $paddock Sf_Sorghum; lappend history($paddock) sorghum</actions>
+          <y>170.5</y>
+          <rules>[dayWithin 244 350] </rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;80</rules>
+          <rules>[areaPlanted sorghum] &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc23</name>
+          <source>Lf_Sorghum</source>
+          <target>Fallow</target>
+          <x>547.0</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>196.0</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc5</name>
+          <source>Sf_Sorghum</source>
+          <target>Fallow</target>
+          <x>506.0</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>131.5</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc6</name>
+          <source>Fallow</source>
+          <target>lateWheat</target>
+          <x>629.5</x>
+          <actions>sowCrop $paddock lateWheat; lappend history($paddock) wheat</actions>
+          <y>285.0</y>
+          <rules>[dayWithin 153 160]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[areaPlanted wheat]  &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc7</name>
+          <source>lateWheat</source>
+          <target>Fallow</target>
+          <x>609.5</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>256.0</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc8</name>
+          <source>Fallow</source>
+          <target>CoverCrop</target>
+          <x>423.5</x>
+          <actions>sowCrop $paddock weed; lappend history($paddock) weed</actions>
+          <y>318.5</y>
+          <rules>[dayWithin 245 274]</rules>
+          <rules>[expr [sumLastRain 1] == 0]</rules>
+          <rules>[getCover $paddock] &lt; 0.1</rules>
+          <rules>[getEsw $paddock] &gt;60</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &lt;14</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc9</name>
+          <source>CoverCrop</source>
+          <target>Fallow</target>
+          <x>409.5</x>
+          <actions>harvestAndEndCrop $paddock weed</actions>
+          <y>291.5</y>
+          <rules>{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc10</name>
+          <source>Fallow</source>
+          <target>Sf_earlyWheat</target>
+          <x>453.5</x>
+          <actions>sowCrop $paddock Sf_earlyWheat; lappend history($paddock) wheat</actions>
+          <y>340.0</y>
+          <rules>[dayWithin 116 128]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[areaPlanted wheat] &lt; 0.5</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <paddock>
+          <name>toplevel</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p1</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p2</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p3</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p4</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p5</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p6</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p7</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p8</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p9</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p10</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <rule name="MCA Plastic Rotation Management Init rule" invisible="yes" condition="init"><![CDATA[package require struct
+::struct::graph stateGraph
+stateGraph node insert "Sf_earlySorghum"
+set colour(Sf_earlySorghum) "lightblue"
+stateGraph node insert "CoverCrop"
+set colour(CoverCrop) "yellow"
+stateGraph node insert "Sf_Sorghum"
+set colour(Sf_Sorghum) "lightblue"
+stateGraph node insert "Lf_Sorghum"
+set colour(Lf_Sorghum) "lightblue"
+stateGraph node insert "Sf_earlyWheat"
+set colour(Sf_earlyWheat) "green"
+stateGraph node insert "Spray"
+set colour(Spray) "palegreen"
+stateGraph node insert "lateWheat"
+set colour(lateWheat) "green"
+stateGraph node insert "Chickpea"
+set colour(Chickpea) "pink"
+stateGraph node insert "Sf_Wheat"
+set colour(Sf_Wheat) "green"
+stateGraph node insert "Lf_Wheat"
+set colour(Lf_Wheat) "green"
+stateGraph node insert "Lf_earlySorghum"
+set colour(Lf_earlySorghum) "lightblue"
+stateGraph node insert "Fallow"
+set colour(Fallow) "white"
+stateGraph node insert "Lf_earlyWheat"
+set colour(Lf_earlyWheat) "green"
+stateGraph arc insert "Sf_earlyWheat" "Fallow" "arc11"
+stateGraph arc lappend "arc11" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc11" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc11" actions {}
+stateGraph arc insert "Fallow" "Chickpea" "arc12"
+stateGraph arc lappend "arc12" actions {sowCrop $paddock chickpea}
+stateGraph arc lappend "arc12" actions {lappend history($paddock) chickpea}
+stateGraph arc lappend "arc12" actions {set chickPeaRain($paddock) 0.0}
+stateGraph arc lappend "arc12" actions {set numChickSprays($paddock) 0}
+stateGraph arc lappend "arc12" rules {[dayWithin 135 151]}
+stateGraph arc lappend "arc12" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc12" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc12" rules {[areaPlanted Chickpea] <0.4}
+stateGraph arc lappend "arc12" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc12" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc12" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc12" rules {[chickpeaHistory $paddock]}
+stateGraph arc lappend "arc12" actions {}
+stateGraph arc insert "Chickpea" "Fallow" "arc13"
+stateGraph arc lappend "arc13" actions {harvestAndEndCrop $paddock chickpea}
+stateGraph arc lappend "arc13" rules {[canHarvestCrop $paddock chickpea]}
+stateGraph arc lappend "arc13" actions {}
+stateGraph arc insert "Fallow" "Lf_earlyWheat" "arc14"
+stateGraph arc lappend "arc14" actions {sowCrop $paddock Lf_earlyWheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc14" rules {[dayWithin 116 128]}
+stateGraph arc lappend "arc14" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc14" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc14" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc14" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc14" rules {[areaPlanted wheat] < 0.5}
+stateGraph arc lappend "arc14" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc14" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc14" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc14" actions {}
+stateGraph arc insert "Lf_earlyWheat" "Fallow" "arc15"
+stateGraph arc lappend "arc15" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc15" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc15" actions {}
+stateGraph arc insert "Chickpea" "Spray" "arc16"
+stateGraph arc lappend "arc16" actions {sprayChickpeas $paddock}
+stateGraph arc lappend "arc16" actions {set numChickSprays($paddock) 1}
+stateGraph arc lappend "arc16" rules {[set chickPeaRain($paddock) [expr $chickPeaRain($paddock) + [apsimGet rain]]] > 150}
+stateGraph arc lappend "arc16" rules {$numChickSprays($paddock) == 0}
+stateGraph arc lappend "arc16" actions {}
+stateGraph arc insert "Fallow" "Sf_Wheat" "arc0"
+stateGraph arc lappend "arc0" actions {sowCrop $paddock Sf_Wheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc0" rules {[dayWithin 129 152]}
+stateGraph arc lappend "arc0" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc0" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc0" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc0" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc0" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc0" rules {[areaPlanted wheat]  <0.8}
+stateGraph arc lappend "arc0" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc0" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc0" actions {}
+stateGraph arc insert "Spray" "Chickpea" "arc17"
+stateGraph arc lappend "arc17" rules {1}
+stateGraph arc lappend "arc17" actions {}
+stateGraph arc insert "Fallow" "Lf_Wheat" "arc18"
+stateGraph arc lappend "arc18" actions {sowCrop $paddock Lf_Wheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc18" rules {[dayWithin 129 152]}
+stateGraph arc lappend "arc18" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc18" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc18" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc18" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc18" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc18" rules {[areaPlanted wheat]  <0.8}
+stateGraph arc lappend "arc18" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc18" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc18" actions {}
+stateGraph arc insert "Sf_Wheat" "Fallow" "arc1"
+stateGraph arc lappend "arc1" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc1" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc1" actions {}
+stateGraph arc insert "Fallow" "Lf_earlySorghum" "arc20"
+stateGraph arc lappend "arc20" actions {sowCrop $paddock Lf_earlySorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc20" rules {[dayWithin 244 350]}
+stateGraph arc lappend "arc20" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc20" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc20" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc20" rules {[getEsw $paddock] >80}
+stateGraph arc lappend "arc20" rules {[areaPlanted sorghum] <0.8}
+stateGraph arc lappend "arc20" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc20" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc20" actions {}
+stateGraph arc insert "Lf_Wheat" "Fallow" "arc19"
+stateGraph arc lappend "arc19" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc19" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc19" actions {}
+stateGraph arc insert "Fallow" "Sf_earlySorghum" "arc2"
+stateGraph arc lappend "arc2" actions {sowCrop $paddock Sf_earlySorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc2" rules {[dayWithin 244 350]}
+stateGraph arc lappend "arc2" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc2" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc2" rules {$daysSinceLastHarvest($paddock) <200}
+stateGraph arc lappend "arc2" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc2" rules {[getEsw $paddock] >  80}
+stateGraph arc lappend "arc2" rules {[areaPlanted sorghum] <0.4}
+stateGraph arc lappend "arc2" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc2" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc2" actions {}
+stateGraph arc insert "Lf_earlySorghum" "Fallow" "arc21"
+stateGraph arc lappend "arc21" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc21" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc21" actions {}
+stateGraph arc insert "Sf_earlySorghum" "Fallow" "arc3"
+stateGraph arc lappend "arc3" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc3" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc3" actions {}
+stateGraph arc insert "Fallow" "Lf_Sorghum" "arc22"
+stateGraph arc lappend "arc22" actions {sowCrop $paddock Lf_Sorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc22" rules {[dayWithin 244  350] }
+stateGraph arc lappend "arc22" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc22" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc22" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc22" rules {[getEsw $paddock] >80}
+stateGraph arc lappend "arc22" rules {[areaPlanted sorghum] <0.8}
+stateGraph arc lappend "arc22" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc22" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc22" actions {}
+stateGraph arc insert "Fallow" "Sf_Sorghum" "arc4"
+stateGraph arc lappend "arc4" actions {sowCrop $paddock Sf_Sorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc4" rules {[dayWithin 244 350] }
+stateGraph arc lappend "arc4" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc4" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc4" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc4" rules {[getEsw $paddock] >80}
+stateGraph arc lappend "arc4" rules {[areaPlanted sorghum] <0.8}
+stateGraph arc lappend "arc4" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc4" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc4" actions {}
+stateGraph arc insert "Lf_Sorghum" "Fallow" "arc23"
+stateGraph arc lappend "arc23" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc23" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc23" actions {}
+stateGraph arc insert "Sf_Sorghum" "Fallow" "arc5"
+stateGraph arc lappend "arc5" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc5" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc5" actions {}
+stateGraph arc insert "Fallow" "lateWheat" "arc6"
+stateGraph arc lappend "arc6" actions {sowCrop $paddock lateWheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc6" rules {[dayWithin 153 160]}
+stateGraph arc lappend "arc6" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc6" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc6" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc6" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc6" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc6" rules {[areaPlanted wheat]  <0.8}
+stateGraph arc lappend "arc6" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc6" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc6" actions {}
+stateGraph arc insert "lateWheat" "Fallow" "arc7"
+stateGraph arc lappend "arc7" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc7" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc7" actions {}
+stateGraph arc insert "Fallow" "CoverCrop" "arc8"
+stateGraph arc lappend "arc8" actions {sowCrop $paddock weed; lappend history($paddock) weed}
+stateGraph arc lappend "arc8" rules {[dayWithin 245 274]}
+stateGraph arc lappend "arc8" rules {[expr [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc8" rules {[getCover $paddock] < 0.1}
+stateGraph arc lappend "arc8" rules {[getEsw $paddock] >60}
+stateGraph arc lappend "arc8" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc8" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc8" rules {$daysSinceLastHarvest($paddock) <14}
+stateGraph arc lappend "arc8" actions {}
+stateGraph arc insert "CoverCrop" "Fallow" "arc9"
+stateGraph arc lappend "arc9" actions {harvestAndEndCrop $paddock weed}
+stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}}
+stateGraph arc lappend "arc9" actions {}
+stateGraph arc insert "Fallow" "Sf_earlyWheat" "arc10"
+stateGraph arc lappend "arc10" actions {sowCrop $paddock Sf_earlyWheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc10" rules {[dayWithin 116 128]}
+stateGraph arc lappend "arc10" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc10" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc10" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc10" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc10" rules {[areaPlanted wheat] < 0.5}
+stateGraph arc lappend "arc10" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc10" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc10" actions {}
+]]></rule>
+      </tclui>
+    </tclmanager>
+    <tclmanager name="Economics">
+      <rule name="Initialisation logic">
+        <script name="init">
+          <text>
+source $apsuite/UserInterface/APSFarm/Cashbook.tcl
+source $apsuite/UserInterface/APSFarm/Machinery.tcl
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <tclui name="Initial Capital Assets">
+        <uiscript>source $apsuite/UserInterface/APSFarm/CapitalUI.tcl</uiscript>
+        <category>icapital</category>
+        <icapital>
+          <ivalue>1</ivalue>
+          <loanRate>6.0</loanRate>
+          <loanDuration>50</loanDuration>
+        </icapital>
+      </tclui>
+      <tclui name="Cash Journal">
+        <uiscript>source $apsuite/UserInterface/APSFarm/CashbookUI.tcl</uiscript>
+        <balance>42000</balance>
+        <outputfilename>
+        </outputfilename>
+        <summaryfilename>
+        </summaryfilename>
+      </tclui>
+      <tclui name="Machinery - 200kwFWA">
+        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
+        <category>tractor</category>
+        <tractor>
+          <fuelrate implement="SprayRig" units="lts/hour">25.0</fuelrate>
+          <fuelrate implement="DeepPlanter" units="lts/hour">60.0</fuelrate>
+          <workrate implement="DeepPlanter" units="ha/hour">100.0</workrate>
+          <workrate implement="SprayRig" units="ha/hour">500.0</workrate>
+          <workrate implement="PrecisionPlanter">20</workrate>
+          <fuelrate implement="PrecisionPlanter">15</fuelrate>
+          <hoursperday implement="PrecisionPlanter">8</hoursperday>
+          <workrate implement="p1">10</workrate>
+          <fuelrate implement="p1">10</fuelrate>
+          <hoursperday implement="p1">8</hoursperday>
+          <workrate implement="p2" />
+          <fuelrate implement="p2" />
+          <hoursperday implement="p2" />
+          <image>%apsuite/UserInterface/APSFarm/choofer.gif</image>
+          <name>tractor_1</name>
+          <newPrice>100000.0</newPrice>
+          <tradeInValue>15</tradeInValue>
+          <lifeOfEquipment>3000</lifeOfEquipment>
+          <insuranceRate>6.2</insuranceRate>
+          <repairs>30</repairs>
+          <oil>10</oil>
+          <loanInterestRate>7.0</loanInterestRate>
+          <loanDuration>50</loanDuration>
+          <age>2</age>
+          <workrate implement="planter">8.12</workrate>
+          <fuelrate implement="planter">40.0</fuelrate>
+          <hoursperday implement="planter">16</hoursperday>
+          <workrate implement="spray_rig">20.0</workrate>
+          <fuelrate implement="spray_rig">30.0</fuelrate>
+          <hoursperday implement="spray_rig">16</hoursperday>
+        </tractor>
+      </tclui>
+      <tclui name="Machinery - Precision Planter">
+        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
+        <category>implement</category>
+        <implement>
+          <image>%apsuite/UserInterface/APSFarm/precisionPlanter.gif</image>
+          <name>planter</name>
+          <newPrice>150000.0</newPrice>
+          <tradeInValue>20</tradeInValue>
+          <lifeOfEquipment>1500</lifeOfEquipment>
+          <insuranceRate>2.3</insuranceRate>
+          <repairs>30</repairs>
+          <oil>0</oil>
+          <loanInterestRate>4.5</loanInterestRate>
+          <loanDuration>50</loanDuration>
+          <age>200</age>
+        </implement>
+      </tclui>
+      <tclui name="Machinery - Plough">
+        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
+        <category>implement</category>
+        <implement>
+          <image>%apsuite/UserInterface/APSFarm/sprayRig.gif</image>
+          <name>spray_rig</name>
+          <newPrice>100000.0</newPrice>
+          <tradeInValue>20</tradeInValue>
+          <lifeOfEquipment>1500</lifeOfEquipment>
+          <insuranceRate>2.3</insuranceRate>
+          <repairs>30</repairs>
+          <oil>0</oil>
+          <loanInterestRate>4.5</loanInterestRate>
+          <loanDuration>50</loanDuration>
+          <age>200</age>
+        </implement>
+      </tclui>
+      <tclui name="Prices">
+        <uiscript>source $apsuite/UserInterface/APSFarm/PricesUI.tcl</uiscript>
+        <category>cropprice</category>
+        <cropprice>
+          <name>wheat</name>
+          <desc>
+          </desc>
+          <price>180</price>
+          <protein>12.0</protein>
+          <units>$/tonne</units>
+          <updated>24/11/2008</updated>
+        </cropprice>
+        <cropprice>
+          <name>sorghum</name>
+          <desc>
+          </desc>
+          <price>140</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>24/11/2008</updated>
+        </cropprice>
+        <cropprice>
+          <name>chickpea</name>
+          <desc>
+          </desc>
+          <price>350</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>24/11/2008</updated>
+        </cropprice>
+        <cropprice>
+          <name>weed</name>
+          <desc>
+          </desc>
+          <price>0.0</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>28/11/2006</updated>
+        </cropprice>
+        <cropprice>
+          <name>maize</name>
+          <desc>
+          </desc>
+          <price>0.0</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>28/11/2007</updated>
+        </cropprice>
+      </tclui>
+      <tclui name="Costs - Farm Overheads">
+        <uiscript>source $apsuite/UserInterface/APSFarm/OverheadsUI.tcl</uiscript>
+        <category>overhead</category>
+        <overhead>
+          <name>accountancy</name>
+          <value>5000.0</value>
+          <description>Accountant/Consultancy fees</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>administration</name>
+          <value>500.0</value>
+          <description>Administration</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>bankcharges</name>
+          <value>500.0</value>
+          <description>Bank Charges other than interest</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>electricity</name>
+          <value>2000.0</value>
+          <description>Electricity - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>freight</name>
+          <value>0.0</value>
+          <description>Freight &amp; Cartage (sundry)</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>fuels</name>
+          <value>10000.0</value>
+          <description>Fuel &amp; Oil (other than farming)</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>insurance</name>
+          <value>6000.0</value>
+          <description>Insurance - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>vehicleexpenses</name>
+          <value>5000.0</value>
+          <description>Motor Vehicle Expenses - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>rates</name>
+          <value>3500.0</value>
+          <description>Rates and Rents - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>repairs</name>
+          <value>20000.0</value>
+          <description>Repairs &amp; Maintenance (extra)</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>subs</name>
+          <value>1000.0</value>
+          <description>Subscriptions</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>telephone</name>
+          <value>2500.0</value>
+          <description>Telephone - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>wages</name>
+          <value>50000.0</value>
+          <description>Wages (other than casual included in activity budgets)</description>
+          <updated>28/11/2007</updated>
+        </overhead>
+        <overhead>
+          <name>other</name>
+          <value>0.0</value>
+          <description>Other Overhead Expenses</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>operator</name>
+          <value>30000.0</value>
+          <description>Operators labour and management</description>
+          <updated>28/11/2007</updated>
+        </overhead>
+      </tclui>
+      <tclui name="Costs - Fuel">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>fuelcosts</category>
+        <fuelcosts>
+          <desc>Cost of fuel (net)</desc>
+          <name>fuelcosts</name>
+          <price>1</price>
+          <units>$/litre</units>
+          <updated>23/01/2009</updated>
+        </fuelcosts>
+      </tclui>
+      <tclui name="Costs - Fertilisers">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>fertilisercost</category>
+        <fertilisercost>
+          <desc>MAP (starterphos - 10n;21.9p;1.5s)</desc>
+          <name>map</name>
+          <price>0.56</price>
+          <units>$/kg</units>
+          <updated>15/10/2007</updated>
+        </fertilisercost>
+        <fertilisercost>
+          <desc>starter z</desc>
+          <name>starter_z</name>
+          <price>0.62</price>
+          <units>$/kg</units>
+          <updated>30/03/2004</updated>
+        </fertilisercost>
+        <fertilisercost>
+          <desc>Urea</desc>
+          <name>urea</name>
+          <price>0.6</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </fertilisercost>
+      </tclui>
+      <tclui name="Costs - Herbicides">
+        <uiscript>source TreatmentsUI.tcl</uiscript>
+        <category>herbicide</category>
+        <herbicide>
+          <desc>Ally (metsulfuron)</desc>
+          <name>Ally</name>
+          <price>0.2</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Amicide 625</desc>
+          <name>Amicide625</name>
+          <price>5.5</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Gesagard 500SC (prometryn)</desc>
+          <name>Gesagard 500SC</name>
+          <price>14.23</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Gesaprim (atrazine)</desc>
+          <name>Gesaprim</name>
+          <price>6.23</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Glean (chlorsulfuron)</desc>
+          <name>Glean</name>
+          <price>0.18</price>
+          <units>
+          </units>
+          <updated>
+          </updated>
+        </herbicide>
+        <herbicide>
+          <desc>Glyphosate 450 CT (glyphosate IPA salt)</desc>
+          <name>Glyphosate 450 CT</name>
+          <price>4.64</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>MCPA LVE (MCPA ester)</desc>
+          <name>MCPA LVE</name>
+          <price>5.0</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Roundup POWERMAX (glyphosate MEA salt)</desc>
+          <name>Roundup</name>
+          <price>7.64</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Simazine 900DF</desc>
+          <name>simazine</name>
+          <price>5.50</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+      </tclui>
+      <tclui name="Costs - Insecticides">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>insecticide</category>
+        <insecticide>
+          <desc>Larvin LV</desc>
+          <name>Larvin LV</name>
+          <price>27.97</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </insecticide>
+        <insecticide>
+          <desc>Steward (indoxacarb)</desc>
+          <name>Steward</name>
+          <price>85.36</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </insecticide>
+      </tclui>
+      <tclui name="Costs - Seed">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>seedcost</category>
+        <seedcost>
+          <desc>Barley (Tallon)</desc>
+          <name>Barley</name>
+          <price>0.78</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Chickpea (Amethyst)</desc>
+          <name>Chickpea</name>
+          <price>1.1</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Cotton </desc>
+          <name>Cotton</name>
+          <price>5.6</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Forage Sorghum (Jumbo)</desc>
+          <name>Forage Sorghum</name>
+          <price>3.96</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Lucerne (sequel)</desc>
+          <name>Lucerne</name>
+          <price>5.45</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Maize</desc>
+          <name>Maize</name>
+          <price>8.4</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Millet (White frend)</desc>
+          <name>Millet</name>
+          <price>1</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Millet (weeds)</desc>
+          <name>weed</name>
+          <price>1</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Mungbean (Emerald)</desc>
+          <name>Mungbean</name>
+          <price>1.45</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Navy Bean (Spearfeld)</desc>
+          <name>NavyBean</name>
+          <price>1.49</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut Streeton (20-23 weeks)</desc>
+          <name>PeanutC</name>
+          <price>2.91</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut Conder (17-19 weeks)</desc>
+          <name>PeanutS</name>
+          <price>2.7</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut VB97 (20-23 weeks)</desc>
+          <name>PeanutVB</name>
+          <price>2.7</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut NC7 (20-23 weeks)</desc>
+          <name>PeanutNC7</name>
+          <price>2.7</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Sorghum (Buster)</desc>
+          <name>Sorghum</name>
+          <price>5.8</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Soybean (Soya791)</desc>
+          <name>Soybean</name>
+          <price>1.31</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Sunflower (Sunolei 04)</desc>
+          <name>Sunflower</name>
+          <price>11.82</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Wheat (Kennedy)</desc>
+          <name>Wheat</name>
+          <price>0.9</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+      </tclui>
+      <tclui name="Costs - Defoliants">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>defoliant</category>
+        <defoliant>
+          <desc>dropp (thidiazuron + diuron)</desc>
+          <name>dropp</name>
+          <price>147</price>
+          <units>kg</units>
+          <updated>
+          </updated>
+        </defoliant>
+        <defoliant>
+          <desc>Salt Defoliant</desc>
+          <name>salt defoliant</name>
+          <price>1.55</price>
+          <units>kg</units>
+          <updated>
+          </updated>
+        </defoliant>
+      </tclui>
+      <tclui name="Costs - Contractors">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>contract</category>
+        <contract>
+          <desc>aerial spraying-cotton ec</desc>
+          <name>aerial_spraying_cotton_ec</name>
+          <price>12.5</price>
+          <units>$/ha</units>
+          <updated>20/12/2002</updated>
+        </contract>
+        <contract>
+          <desc>Harvesting</desc>
+          <name>generic</name>
+          <price>250</price>
+          <units>$/ha</units>
+          <updated>15/10/2007</updated>
+        </contract>
+        <contract>
+          <desc>chickpea scouting</desc>
+          <name>chickpea_scouting</name>
+          <price>10</price>
+          <units>$/ha</units>
+          <updated>20/12/2002</updated>
+        </contract>
+      </tclui>
+    </tclmanager>
+    <area name="p1" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/low">
+        <InitWater shortcut="/Simulations/Shared/low/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/low/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p2" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+        
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/low">
+        <InitWater shortcut="/Simulations/Shared/low/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/low/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p3" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+        
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p4" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+        
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p5" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+        
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p6" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+        
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p7" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+        
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p8" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+        
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p9" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/high">
+        <InitWater shortcut="/Simulations/Shared/high/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/high/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p10" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+        
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+        
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/high">
+        <InitWater shortcut="/Simulations/Shared/high/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/high/InitNitrogen" />
+      </soil>
+    </area>
+  </simulation>
+  <simulation name="MCA rigid">
+    <clock shortcut="/Simulations/Shared/clock" />
+    <metfile name="met" shortcut="/Simulations/Shared/met" />
+    <summaryfile>
+      <filename name="filename">MCA plastic.sum</filename>
+    </summaryfile>
+    <tclmanager name="Farm Manager">
+      <rule name="Name">
+        <script name="init">
+          <text>
+set simName "MCA rigid"
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Farm Logic" shortcut="/Simulations/Shared/Farm Manager/Farm logic" />
+      <rule name="Financial year reporting" shortcut="/Simulations/Shared/Farm Manager/Financial year reporting" />
+      <rule name="Weeds" shortcut="/Simulations/Shared/Farm Manager/Weeds"/>
+      <rule name="Rugplot stuff" shortcut="/Simulations/Shared/Farm Manager/Rugplot stuff" />
+      <tclui name="MCA Rigid Rotation Management">
+        <uiscript><![CDATA[source $apsuite/UserInterface/APSFarm/RotationsUI.tcl]]></uiscript>
+        <canvas_height>557</canvas_height>
+        <rules_height>40</rules_height>
+        <graph_name>stateGraph</graph_name>
+        <node>
+          <x1>268.0</x1>
+          <name>Sf_earlySorghum</name>
+          <y1>182.0</y1>
+          <x2>368.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>282.0</y2>
+        </node>
+        <node>
+          <x1>274.0</x1>
+          <name>CoverCrop</name>
+          <y1>289.0</y1>
+          <x2>374.0</x2>
+          <desc>yyy</desc>
+          <fill>yellow</fill>
+          <y2>389.0</y2>
+        </node>
+        <node>
+          <x1>441.0</x1>
+          <name>Sf_Sorghum</name>
+          <y1>51.0</y1>
+          <x2>541.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>151.0</y2>
+        </node>
+        <node>
+          <x1>565.0</x1>
+          <name>Lf_Sorghum</name>
+          <y1>55.0</y1>
+          <x2>665.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>155.0</y2>
+        </node>
+        <node>
+          <x1>370.0</x1>
+          <name>Sf_earlyWheat</name>
+          <y1>360.0</y1>
+          <x2>470.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>460.0</y2>
+        </node>
+        <node>
+          <x1>782.0</x1>
+          <name>Spray</name>
+          <y1>69.0</y1>
+          <x2>882.0</x2>
+          <desc>Spray chickpeas</desc>
+          <fill>palegreen</fill>
+          <y2>169.0</y2>
+        </node>
+        <node>
+          <x1>778.0</x1>
+          <name>lateWheat</name>
+          <y1>194.0</y1>
+          <x2>878.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>294.0</y2>
+        </node>
+        <node>
+          <x1>661.0</x1>
+          <name>Chickpea</name>
+          <y1>136.0</y1>
+          <x2>761.0</x2>
+          <desc>New state</desc>
+          <fill>pink</fill>
+          <y2>236.0</y2>
+        </node>
+        <node>
+          <x1>606.0</x1>
+          <name>Sf_Wheat</name>
+          <y1>355.0</y1>
+          <x2>706.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>455.0</y2>
+        </node>
+        <node>
+          <x1>713.0</x1>
+          <name>Lf_Wheat</name>
+          <y1>286.0</y1>
+          <x2>813.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>386.0</y2>
+        </node>
+        <node>
+          <x1>342.0</x1>
+          <name>Lf_earlySorghum</name>
+          <y1>98.0</y1>
+          <x2>442.0</x2>
+          <desc>New state</desc>
+          <fill>lightblue</fill>
+          <y2>198.0</y2>
+        </node>
+        <node>
+          <x1>490.0</x1>
+          <name>Fallow</name>
+          <y1>238.0</y1>
+          <x2>590.0</x2>
+          <desc>yyy</desc>
+          <fill>white</fill>
+          <y2>338.0</y2>
+        </node>
+        <node>
+          <x1>490.0</x1>
+          <name>Lf_earlyWheat</name>
+          <y1>370.0</y1>
+          <x2>590.0</x2>
+          <desc>yyy</desc>
+          <fill>green</fill>
+          <y2>470.0</y2>
+        </node>
+        <arc>
+          <name>arc11</name>
+          <source>Sf_earlyWheat</source>
+          <target>Fallow</target>
+          <x>492.0</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>340.0</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc12</name>
+          <source>Fallow</source>
+          <target>Chickpea</target>
+          <x>589.0</x>
+          <actions>sowCrop $paddock chickpea</actions>
+          <actions>lappend history($paddock) chickpea</actions>
+          <actions>set chickPeaRain($paddock) 0.0</actions>
+          <actions>set numChickSprays($paddock) 0</actions>
+          <y>244.0</y>
+          <rules>[dayWithin 135 151]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>[areaPlanted Chickpea] &lt;0.2</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[chickpeaHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc13</name>
+          <source>Chickpea</source>
+          <target>Fallow</target>
+          <x>578.0</x>
+          <actions>harvestAndEndCrop $paddock chickpea</actions>
+          <y>228.0</y>
+          <rules>[canHarvestCrop $paddock chickpea]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc14</name>
+          <source>Fallow</source>
+          <target>Lf_earlyWheat</target>
+          <x>512.0</x>
+          <actions>sowCrop $paddock Lf_earlyWheat; lappend history($paddock) wheat</actions>
+          <y>348.5</y>
+          <rules>[dayWithin 116 128]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;300</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[areaPlanted wheat] &lt; 0.2</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc15</name>
+          <source>Lf_earlyWheat</source>
+          <target>Fallow</target>
+          <x>539.0</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>342.5</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc16</name>
+          <source>Chickpea</source>
+          <target>Spray</target>
+          <x>774.0</x>
+          <actions>sprayChickpeas $paddock</actions>
+          <actions>set numChickSprays($paddock) 1</actions>
+          <y>167.5</y>
+          <rules>[set chickPeaRain($paddock) [expr $chickPeaRain($paddock) + [apsimGet rain]]] &gt; 150</rules>
+          <rules>$numChickSprays($paddock) == 0</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc0</name>
+          <source>Fallow</source>
+          <target>Sf_Wheat</target>
+          <x>557.0</x>
+          <actions>sowCrop $paddock Sf_Wheat; lappend history($paddock) wheat</actions>
+          <y>319.5</y>
+          <rules>[dayWithin 129 152]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>$daysSinceLastHarvest($paddock)&lt;200</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[areaPlanted wheat]  &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc17</name>
+          <source>Spray</source>
+          <target>Chickpea</target>
+          <x>752.0</x>
+          <y>152.5</y>
+          <rules>1</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc18</name>
+          <source>Fallow</source>
+          <target>Lf_Wheat</target>
+          <x>582.5</x>
+          <actions>sowCrop $paddock Lf_Wheat; lappend history($paddock) wheat</actions>
+          <y>310.0</y>
+          <rules>[dayWithin 129 152]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;300</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[areaPlanted wheat]  &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc1</name>
+          <source>Sf_Wheat</source>
+          <target>Fallow</target>
+          <x>594.0</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>329.5</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc2</name>
+          <source>Fallow</source>
+          <target>Sf_earlySorghum</target>
+          <x>416.5</x>
+          <actions>sowCrop $paddock Sf_earlySorghum; lappend history($paddock) sorghum</actions>
+          <y>265.0</y>
+          <rules>[dayWithin 244 350]</rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>$daysSinceLastHarvest($paddock) &lt;200</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;100</rules>
+          <rules>[areaPlanted sorghum] &lt;0.2</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc19</name>
+          <source>Lf_Wheat</source>
+          <target>Fallow</target>
+          <x>596.5</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>295.0</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc20</name>
+          <source>Fallow</source>
+          <target>Lf_earlySorghum</target>
+          <x>466.5</x>
+          <actions>sowCrop $paddock Lf_earlySorghum; lappend history($paddock) sorghum</actions>
+          <y>243.0</y>
+          <rules>[dayWithin 244 350]</rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;300</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;100</rules>
+          <rules>[areaPlanted sorghum] &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc3</name>
+          <source>Sf_earlySorghum</source>
+          <target>Fallow</target>
+          <x>423.5</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>239.0</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc21</name>
+          <source>Lf_earlySorghum</source>
+          <target>Fallow</target>
+          <x>468.5</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>205.0</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc4</name>
+          <source>Fallow</source>
+          <target>Sf_Sorghum</target>
+          <x>498.0</x>
+          <actions>sowCrop $paddock Sf_Sorghum; lappend history($paddock) sorghum</actions>
+          <y>170.5</y>
+          <rules>[dayWithin 244 350] </rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>$daysSinceLastHarvest($paddock)&lt;200</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;100</rules>
+          <rules>[areaPlanted sorghum] &lt;0.2</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc22</name>
+          <source>Fallow</source>
+          <target>Lf_Sorghum</target>
+          <x>581.0</x>
+          <actions>sowCrop $paddock Lf_Sorghum; lappend history($paddock) sorghum</actions>
+          <y>186.0</y>
+          <rules>[dayWithin 244  350] </rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;300</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock] &gt;100</rules>
+          <rules>[areaPlanted sorghum] &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[sorghumHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc5</name>
+          <source>Sf_Sorghum</source>
+          <target>Fallow</target>
+          <x>506.0</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>131.5</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc23</name>
+          <source>Lf_Sorghum</source>
+          <target>Fallow</target>
+          <x>547.0</x>
+          <actions>harvestAndEndCrop $paddock sorghum</actions>
+          <y>196.0</y>
+          <rules>[canHarvestCrop $paddock sorghum]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc6</name>
+          <source>Fallow</source>
+          <target>lateWheat</target>
+          <x>629.5</x>
+          <actions>sowCrop $paddock lateWheat; lappend history($paddock) wheat</actions>
+          <y>285.0</y>
+          <rules>[dayWithin 153 160]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[areaPlanted wheat]  &lt;0.8</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc7</name>
+          <source>lateWheat</source>
+          <target>Fallow</target>
+          <x>609.5</x>
+          <actions>harvestAndEndCrop $paddock wheat</actions>
+          <y>256.0</y>
+          <rules>[canHarvestCrop $paddock wheat]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc8</name>
+          <source>Fallow</source>
+          <target>CoverCrop</target>
+          <x>423.5</x>
+          <actions>sowCrop $paddock weed; lappend history($paddock) weed</actions>
+          <y>318.5</y>
+          <rules>[dayWithin 245 274]</rules>
+          <rules>[expr [sumLastRain 1] == 0]</rules>
+          <rules>[getCover $paddock] &lt; 0.1</rules>
+          <rules>[getEsw $paddock] &gt;60</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>$daysSinceLastHarvest($paddock) &lt;14</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc10</name>
+          <source>Fallow</source>
+          <target>Sf_earlyWheat</target>
+          <x>453.5</x>
+          <actions>sowCrop $paddock Sf_earlyWheat; lappend history($paddock) wheat</actions>
+          <y>340.0</y>
+          <rules>[dayWithin 116 128]</rules>
+          <rules>[getEsw $paddock] &gt; 80</rules>
+          <rules>[sumLastRain 1] == 0</rules>
+          <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
+          <rules>$daysSinceLastHarvest($paddock)&lt;200</rules>
+          <rules>[mseek2 $paddock] &gt; 0.8</rules>
+          <rules>[areaPlanted wheat] &lt; 0.2</rules>
+          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[getEsw $paddock]</rules>
+          <rules>[wheatHistory $paddock]</rules>
+          <rules />
+          <actions />
+        </arc>
+        <arc>
+          <name>arc9</name>
+          <source>CoverCrop</source>
+          <target>Fallow</target>
+          <x>409.5</x>
+          <actions>harvestAndEndCrop $paddock weed</actions>
+          <y>291.5</y>
+          <rules>{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}</rules>
+          <rules />
+          <actions />
+        </arc>
+        <paddock>
+          <name>toplevel</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p1</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p2</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p3</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p4</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p5</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p6</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p7</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p8</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p9</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <paddock>
+          <name>p10</name>
+          <isManaged>0</isManaged>
+          <initialState>
+          </initialState>
+        </paddock>
+        <rule name="MCA Rigid Rotation Management Init rule" invisible="yes" condition="init"><![CDATA[package require struct
+::struct::graph stateGraph
+stateGraph node insert "Sf_earlySorghum"
+set colour(Sf_earlySorghum) "lightblue"
+stateGraph node insert "CoverCrop"
+set colour(CoverCrop) "yellow"
+stateGraph node insert "Sf_Sorghum"
+set colour(Sf_Sorghum) "lightblue"
+stateGraph node insert "Lf_Sorghum"
+set colour(Lf_Sorghum) "lightblue"
+stateGraph node insert "Sf_earlyWheat"
+set colour(Sf_earlyWheat) "green"
+stateGraph node insert "Spray"
+set colour(Spray) "palegreen"
+stateGraph node insert "lateWheat"
+set colour(lateWheat) "green"
+stateGraph node insert "Chickpea"
+set colour(Chickpea) "pink"
+stateGraph node insert "Sf_Wheat"
+set colour(Sf_Wheat) "green"
+stateGraph node insert "Lf_Wheat"
+set colour(Lf_Wheat) "green"
+stateGraph node insert "Lf_earlySorghum"
+set colour(Lf_earlySorghum) "lightblue"
+stateGraph node insert "Fallow"
+set colour(Fallow) "white"
+stateGraph node insert "Lf_earlyWheat"
+set colour(Lf_earlyWheat) "green"
+stateGraph arc insert "Sf_earlyWheat" "Fallow" "arc11"
+stateGraph arc lappend "arc11" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc11" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc11" actions {}
+stateGraph arc insert "Fallow" "Chickpea" "arc12"
+stateGraph arc lappend "arc12" actions {sowCrop $paddock chickpea}
+stateGraph arc lappend "arc12" actions {lappend history($paddock) chickpea}
+stateGraph arc lappend "arc12" actions {set chickPeaRain($paddock) 0.0}
+stateGraph arc lappend "arc12" actions {set numChickSprays($paddock) 0}
+stateGraph arc lappend "arc12" rules {[dayWithin 135 151]}
+stateGraph arc lappend "arc12" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc12" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc12" rules {[areaPlanted Chickpea] <0.2}
+stateGraph arc lappend "arc12" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc12" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc12" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc12" rules {[chickpeaHistory $paddock]}
+stateGraph arc lappend "arc12" actions {}
+stateGraph arc insert "Chickpea" "Fallow" "arc13"
+stateGraph arc lappend "arc13" actions {harvestAndEndCrop $paddock chickpea}
+stateGraph arc lappend "arc13" rules {[canHarvestCrop $paddock chickpea]}
+stateGraph arc lappend "arc13" actions {}
+stateGraph arc insert "Fallow" "Lf_earlyWheat" "arc14"
+stateGraph arc lappend "arc14" actions {sowCrop $paddock Lf_earlyWheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc14" rules {[dayWithin 116 128]}
+stateGraph arc lappend "arc14" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc14" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc14" rules {$daysSinceLastHarvest($paddock) >300}
+stateGraph arc lappend "arc14" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc14" rules {[areaPlanted wheat] < 0.2}
+stateGraph arc lappend "arc14" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc14" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc14" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc14" actions {}
+stateGraph arc insert "Lf_earlyWheat" "Fallow" "arc15"
+stateGraph arc lappend "arc15" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc15" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc15" actions {}
+stateGraph arc insert "Chickpea" "Spray" "arc16"
+stateGraph arc lappend "arc16" actions {sprayChickpeas $paddock}
+stateGraph arc lappend "arc16" actions {set numChickSprays($paddock) 1}
+stateGraph arc lappend "arc16" rules {[set chickPeaRain($paddock) [expr $chickPeaRain($paddock) + [apsimGet rain]]] > 150}
+stateGraph arc lappend "arc16" rules {$numChickSprays($paddock) == 0}
+stateGraph arc lappend "arc16" actions {}
+stateGraph arc insert "Fallow" "Sf_Wheat" "arc0"
+stateGraph arc lappend "arc0" actions {sowCrop $paddock Sf_Wheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc0" rules {[dayWithin 129 152]}
+stateGraph arc lappend "arc0" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc0" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc0" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc0" rules {$daysSinceLastHarvest($paddock)<200}
+stateGraph arc lappend "arc0" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc0" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc0" rules {[areaPlanted wheat]  <0.8}
+stateGraph arc lappend "arc0" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc0" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc0" actions {}
+stateGraph arc insert "Spray" "Chickpea" "arc17"
+stateGraph arc lappend "arc17" rules {1}
+stateGraph arc lappend "arc17" actions {}
+stateGraph arc insert "Fallow" "Lf_Wheat" "arc18"
+stateGraph arc lappend "arc18" actions {sowCrop $paddock Lf_Wheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc18" rules {[dayWithin 129 152]}
+stateGraph arc lappend "arc18" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc18" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc18" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc18" rules {$daysSinceLastHarvest($paddock) >300}
+stateGraph arc lappend "arc18" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc18" rules {[areaPlanted wheat]  <0.8}
+stateGraph arc lappend "arc18" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc18" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc18" actions {}
+stateGraph arc insert "Sf_Wheat" "Fallow" "arc1"
+stateGraph arc lappend "arc1" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc1" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc1" actions {}
+stateGraph arc insert "Fallow" "Sf_earlySorghum" "arc2"
+stateGraph arc lappend "arc2" actions {sowCrop $paddock Sf_earlySorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc2" rules {[dayWithin 244 350]}
+stateGraph arc lappend "arc2" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc2" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc2" rules {$daysSinceLastHarvest($paddock) <200}
+stateGraph arc lappend "arc2" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc2" rules {[getEsw $paddock] >100}
+stateGraph arc lappend "arc2" rules {[areaPlanted sorghum] <0.2}
+stateGraph arc lappend "arc2" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc2" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc2" actions {}
+stateGraph arc insert "Lf_Wheat" "Fallow" "arc19"
+stateGraph arc lappend "arc19" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc19" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc19" actions {}
+stateGraph arc insert "Fallow" "Lf_earlySorghum" "arc20"
+stateGraph arc lappend "arc20" actions {sowCrop $paddock Lf_earlySorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc20" rules {[dayWithin 244 350]}
+stateGraph arc lappend "arc20" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc20" rules {$daysSinceLastHarvest($paddock) >300}
+stateGraph arc lappend "arc20" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc20" rules {[getEsw $paddock] >100}
+stateGraph arc lappend "arc20" rules {[areaPlanted sorghum] <0.8}
+stateGraph arc lappend "arc20" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc20" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc20" actions {}
+stateGraph arc insert "Sf_earlySorghum" "Fallow" "arc3"
+stateGraph arc lappend "arc3" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc3" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc3" actions {}
+stateGraph arc insert "Lf_earlySorghum" "Fallow" "arc21"
+stateGraph arc lappend "arc21" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc21" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc21" actions {}
+stateGraph arc insert "Fallow" "Sf_Sorghum" "arc4"
+stateGraph arc lappend "arc4" actions {sowCrop $paddock Sf_Sorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc4" rules {[dayWithin 244 350] }
+stateGraph arc lappend "arc4" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc4" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc4" rules {$daysSinceLastHarvest($paddock)<200}
+stateGraph arc lappend "arc4" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc4" rules {[getEsw $paddock] >100}
+stateGraph arc lappend "arc4" rules {[areaPlanted sorghum] <0.2}
+stateGraph arc lappend "arc4" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc4" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc4" actions {}
+stateGraph arc insert "Fallow" "Lf_Sorghum" "arc22"
+stateGraph arc lappend "arc22" actions {sowCrop $paddock Lf_Sorghum; lappend history($paddock) sorghum}
+stateGraph arc lappend "arc22" rules {[dayWithin 244  350] }
+stateGraph arc lappend "arc22" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc22" rules {$daysSinceLastHarvest($paddock) >300}
+stateGraph arc lappend "arc22" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc22" rules {[getEsw $paddock] >100}
+stateGraph arc lappend "arc22" rules {[areaPlanted sorghum] <0.8}
+stateGraph arc lappend "arc22" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc22" rules {[sorghumHistory $paddock]}
+stateGraph arc lappend "arc22" actions {}
+stateGraph arc insert "Sf_Sorghum" "Fallow" "arc5"
+stateGraph arc lappend "arc5" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc5" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc5" actions {}
+stateGraph arc insert "Lf_Sorghum" "Fallow" "arc23"
+stateGraph arc lappend "arc23" actions {harvestAndEndCrop $paddock sorghum}
+stateGraph arc lappend "arc23" rules {[canHarvestCrop $paddock sorghum]}
+stateGraph arc lappend "arc23" actions {}
+stateGraph arc insert "Fallow" "lateWheat" "arc6"
+stateGraph arc lappend "arc6" actions {sowCrop $paddock lateWheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc6" rules {[dayWithin 153 160]}
+stateGraph arc lappend "arc6" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc6" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc6" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc6" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc6" rules {[areaPlanted wheat]  <0.8}
+stateGraph arc lappend "arc6" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc6" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc6" actions {}
+stateGraph arc insert "lateWheat" "Fallow" "arc7"
+stateGraph arc lappend "arc7" actions {harvestAndEndCrop $paddock wheat}
+stateGraph arc lappend "arc7" rules {[canHarvestCrop $paddock wheat]}
+stateGraph arc lappend "arc7" actions {}
+stateGraph arc insert "Fallow" "CoverCrop" "arc8"
+stateGraph arc lappend "arc8" actions {sowCrop $paddock weed; lappend history($paddock) weed}
+stateGraph arc lappend "arc8" rules {[dayWithin 245 274]}
+stateGraph arc lappend "arc8" rules {[expr [sumLastRain 1] == 0]}
+stateGraph arc lappend "arc8" rules {[getCover $paddock] < 0.1}
+stateGraph arc lappend "arc8" rules {[getEsw $paddock] >60}
+stateGraph arc lappend "arc8" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc8" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc8" rules {$daysSinceLastHarvest($paddock) <14}
+stateGraph arc lappend "arc8" actions {}
+stateGraph arc insert "Fallow" "Sf_earlyWheat" "arc10"
+stateGraph arc lappend "arc10" actions {sowCrop $paddock Sf_earlyWheat; lappend history($paddock) wheat}
+stateGraph arc lappend "arc10" rules {[dayWithin 116 128]}
+stateGraph arc lappend "arc10" rules {[getEsw $paddock] > 80}
+stateGraph arc lappend "arc10" rules {[sumLastRain 1] == 0}
+stateGraph arc lappend "arc10" rules {$daysSinceLastHarvest($paddock) >30}
+stateGraph arc lappend "arc10" rules {$daysSinceLastHarvest($paddock)<200}
+stateGraph arc lappend "arc10" rules {[mseek2 $paddock] > 0.8}
+stateGraph arc lappend "arc10" rules {[areaPlanted wheat] < 0.2}
+stateGraph arc lappend "arc10" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+stateGraph arc lappend "arc10" rules {[getEsw $paddock]}
+stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
+stateGraph arc lappend "arc10" actions {}
+stateGraph arc insert "CoverCrop" "Fallow" "arc9"
+stateGraph arc lappend "arc9" actions {harvestAndEndCrop $paddock weed}
+stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}}
+stateGraph arc lappend "arc9" actions {}
+]]></rule>
+      </tclui>
+    </tclmanager>
+    <tclmanager name="Economics">
+      <rule name="Initialisation logic">
+        <script name="init">
+          <text>
+source $apsuite/UserInterface/APSFarm/Cashbook.tcl
+source $apsuite/UserInterface/APSFarm/Machinery.tcl
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <tclui name="Initial Capital Assets">
+        <uiscript>source $apsuite/UserInterface/APSFarm/CapitalUI.tcl</uiscript>
+        <category>icapital</category>
+        <icapital>
+          <ivalue>1</ivalue>
+          <loanRate>6.0</loanRate>
+          <loanDuration>50</loanDuration>
+        </icapital>
+      </tclui>
+      <tclui name="Cash Journal">
+        <uiscript>source $apsuite/UserInterface/APSFarm/CashbookUI.tcl</uiscript>
+        <balance>42000</balance>
+        <outputfilename>
+        </outputfilename>
+        <summaryfilename>
+        </summaryfilename>
+      </tclui>
+      <tclui name="Machinery - 200kwFWA">
+        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
+        <category>tractor</category>
+        <tractor>
+          <fuelrate implement="SprayRig" units="lts/hour">25.0</fuelrate>
+          <fuelrate implement="DeepPlanter" units="lts/hour">60.0</fuelrate>
+          <workrate implement="DeepPlanter" units="ha/hour">100.0</workrate>
+          <workrate implement="SprayRig" units="ha/hour">500.0</workrate>
+          <workrate implement="PrecisionPlanter">20</workrate>
+          <fuelrate implement="PrecisionPlanter">15</fuelrate>
+          <hoursperday implement="PrecisionPlanter">8</hoursperday>
+          <workrate implement="p1">10</workrate>
+          <fuelrate implement="p1">10</fuelrate>
+          <hoursperday implement="p1">8</hoursperday>
+          <workrate implement="p2" />
+          <fuelrate implement="p2" />
+          <hoursperday implement="p2" />
+          <image>%apsuite/UserInterface/APSFarm/choofer.gif</image>
+          <name>tractor_1</name>
+          <newPrice>100000.0</newPrice>
+          <tradeInValue>15</tradeInValue>
+          <lifeOfEquipment>3000</lifeOfEquipment>
+          <insuranceRate>6.2</insuranceRate>
+          <repairs>30</repairs>
+          <oil>10</oil>
+          <loanInterestRate>7.0</loanInterestRate>
+          <loanDuration>50</loanDuration>
+          <age>2</age>
+          <workrate implement="planter">8.12</workrate>
+          <fuelrate implement="planter">40.0</fuelrate>
+          <hoursperday implement="planter">16</hoursperday>
+          <workrate implement="spray_rig">20.0</workrate>
+          <fuelrate implement="spray_rig">30.0</fuelrate>
+          <hoursperday implement="spray_rig">16</hoursperday>
+        </tractor>
+      </tclui>
+      <tclui name="Machinery - Precision Planter">
+        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
+        <category>implement</category>
+        <implement>
+          <image>%apsuite/UserInterface/APSFarm/precisionPlanter.gif</image>
+          <name>planter</name>
+          <newPrice>150000.0</newPrice>
+          <tradeInValue>20</tradeInValue>
+          <lifeOfEquipment>1500</lifeOfEquipment>
+          <insuranceRate>2.3</insuranceRate>
+          <repairs>30</repairs>
+          <oil>0</oil>
+          <loanInterestRate>4.5</loanInterestRate>
+          <loanDuration>50</loanDuration>
+          <age>200</age>
+        </implement>
+      </tclui>
+      <tclui name="Machinery - Plough">
+        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
+        <category>implement</category>
+        <implement>
+          <image>%apsuite/UserInterface/APSFarm/sprayRig.gif</image>
+          <name>spray_rig</name>
+          <newPrice>100000.0</newPrice>
+          <tradeInValue>20</tradeInValue>
+          <lifeOfEquipment>1500</lifeOfEquipment>
+          <insuranceRate>2.3</insuranceRate>
+          <repairs>30</repairs>
+          <oil>0</oil>
+          <loanInterestRate>4.5</loanInterestRate>
+          <loanDuration>50</loanDuration>
+          <age>200</age>
+        </implement>
+      </tclui>
+      <tclui name="Prices">
+        <uiscript>source $apsuite/UserInterface/APSFarm/PricesUI.tcl</uiscript>
+        <category>cropprice</category>
+        <cropprice>
+          <name>wheat</name>
+          <desc>
+          </desc>
+          <price>180</price>
+          <protein>12.0</protein>
+          <units>$/tonne</units>
+          <updated>24/11/2008</updated>
+        </cropprice>
+        <cropprice>
+          <name>sorghum</name>
+          <desc>
+          </desc>
+          <price>140</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>24/11/2008</updated>
+        </cropprice>
+        <cropprice>
+          <name>chickpea</name>
+          <desc>
+          </desc>
+          <price>350</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>24/11/2008</updated>
+        </cropprice>
+        <cropprice>
+          <name>weed</name>
+          <desc>
+          </desc>
+          <price>0.0</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>28/11/2006</updated>
+        </cropprice>
+        <cropprice>
+          <name>maize</name>
+          <desc>
+          </desc>
+          <price>0.0</price>
+          <protein>
+          </protein>
+          <units>$/tonne</units>
+          <updated>28/11/2007</updated>
+        </cropprice>
+      </tclui>
+      <tclui name="Costs - Farm Overheads">
+        <uiscript>source $apsuite/UserInterface/APSFarm/OverheadsUI.tcl</uiscript>
+        <category>overhead</category>
+        <overhead>
+          <name>accountancy</name>
+          <value>5000.0</value>
+          <description>Accountant/Consultancy fees</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>administration</name>
+          <value>500.0</value>
+          <description>Administration</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>bankcharges</name>
+          <value>500.0</value>
+          <description>Bank Charges other than interest</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>electricity</name>
+          <value>2000.0</value>
+          <description>Electricity - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>freight</name>
+          <value>0.0</value>
+          <description>Freight &amp; Cartage (sundry)</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>fuels</name>
+          <value>10000.0</value>
+          <description>Fuel &amp; Oil (other than farming)</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>insurance</name>
+          <value>6000.0</value>
+          <description>Insurance - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>vehicleexpenses</name>
+          <value>5000.0</value>
+          <description>Motor Vehicle Expenses - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>rates</name>
+          <value>3500.0</value>
+          <description>Rates and Rents - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>repairs</name>
+          <value>20000.0</value>
+          <description>Repairs &amp; Maintenance (extra)</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>subs</name>
+          <value>1000.0</value>
+          <description>Subscriptions</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>telephone</name>
+          <value>2500.0</value>
+          <description>Telephone - Farm</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>wages</name>
+          <value>50000.0</value>
+          <description>Wages (other than casual included in activity budgets)</description>
+          <updated>28/11/2007</updated>
+        </overhead>
+        <overhead>
+          <name>other</name>
+          <value>0.0</value>
+          <description>Other Overhead Expenses</description>
+          <updated>
+          </updated>
+        </overhead>
+        <overhead>
+          <name>operator</name>
+          <value>30000.0</value>
+          <description>Operators labour and management</description>
+          <updated>28/11/2007</updated>
+        </overhead>
+      </tclui>
+      <tclui name="Costs - Fuel">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>fuelcosts</category>
+        <fuelcosts>
+          <desc>Cost of fuel (net)</desc>
+          <name>fuelcosts</name>
+          <price>1</price>
+          <units>$/litre</units>
+          <updated>23/01/2009</updated>
+        </fuelcosts>
+      </tclui>
+      <tclui name="Costs - Fertilisers">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>fertilisercost</category>
+        <fertilisercost>
+          <desc>MAP (starterphos - 10n;21.9p;1.5s)</desc>
+          <name>map</name>
+          <price>0.56</price>
+          <units>$/kg</units>
+          <updated>15/10/2007</updated>
+        </fertilisercost>
+        <fertilisercost>
+          <desc>starter z</desc>
+          <name>starter_z</name>
+          <price>0.62</price>
+          <units>$/kg</units>
+          <updated>30/03/2004</updated>
+        </fertilisercost>
+        <fertilisercost>
+          <desc>Urea</desc>
+          <name>urea</name>
+          <price>0.6</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </fertilisercost>
+      </tclui>
+      <tclui name="Costs - Herbicides">
+        <uiscript>source TreatmentsUI.tcl</uiscript>
+        <category>herbicide</category>
+        <herbicide>
+          <desc>Ally (metsulfuron)</desc>
+          <name>Ally</name>
+          <price>0.2</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Amicide 625</desc>
+          <name>Amicide625</name>
+          <price>5.5</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Gesagard 500SC (prometryn)</desc>
+          <name>Gesagard 500SC</name>
+          <price>14.23</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Gesaprim (atrazine)</desc>
+          <name>Gesaprim</name>
+          <price>6.23</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Glean (chlorsulfuron)</desc>
+          <name>Glean</name>
+          <price>0.18</price>
+          <units>
+          </units>
+          <updated>
+          </updated>
+        </herbicide>
+        <herbicide>
+          <desc>Glyphosate 450 CT (glyphosate IPA salt)</desc>
+          <name>Glyphosate 450 CT</name>
+          <price>4.64</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>MCPA LVE (MCPA ester)</desc>
+          <name>MCPA LVE</name>
+          <price>5.0</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Roundup POWERMAX (glyphosate MEA salt)</desc>
+          <name>Roundup</name>
+          <price>7.64</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </herbicide>
+        <herbicide>
+          <desc>Simazine 900DF</desc>
+          <name>simazine</name>
+          <price>5.50</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </herbicide>
+      </tclui>
+      <tclui name="Costs - Insecticides">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>insecticide</category>
+        <insecticide>
+          <desc>Larvin LV</desc>
+          <name>Larvin LV</name>
+          <price>27.97</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </insecticide>
+        <insecticide>
+          <desc>Steward (indoxacarb)</desc>
+          <name>Steward</name>
+          <price>85.36</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </insecticide>
+      </tclui>
+      <tclui name="Costs - Seed">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>seedcost</category>
+        <seedcost>
+          <desc>Barley (Tallon)</desc>
+          <name>Barley</name>
+          <price>0.78</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Chickpea (Amethyst)</desc>
+          <name>Chickpea</name>
+          <price>1.1</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Cotton </desc>
+          <name>Cotton</name>
+          <price>5.6</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Forage Sorghum (Jumbo)</desc>
+          <name>Forage Sorghum</name>
+          <price>3.96</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Lucerne (sequel)</desc>
+          <name>Lucerne</name>
+          <price>5.45</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Maize</desc>
+          <name>Maize</name>
+          <price>8.4</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Millet (White frend)</desc>
+          <name>Millet</name>
+          <price>1</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Millet (weeds)</desc>
+          <name>weed</name>
+          <price>1</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Mungbean (Emerald)</desc>
+          <name>Mungbean</name>
+          <price>1.45</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Navy Bean (Spearfeld)</desc>
+          <name>NavyBean</name>
+          <price>1.49</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut Streeton (20-23 weeks)</desc>
+          <name>PeanutC</name>
+          <price>2.91</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut Conder (17-19 weeks)</desc>
+          <name>PeanutS</name>
+          <price>2.7</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut VB97 (20-23 weeks)</desc>
+          <name>PeanutVB</name>
+          <price>2.7</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Peanut NC7 (20-23 weeks)</desc>
+          <name>PeanutNC7</name>
+          <price>2.7</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Sorghum (Buster)</desc>
+          <name>Sorghum</name>
+          <price>5.8</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Soybean (Soya791)</desc>
+          <name>Soybean</name>
+          <price>1.31</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Sunflower (Sunolei 04)</desc>
+          <name>Sunflower</name>
+          <price>11.82</price>
+          <units>
+          </units>
+          <updated>30/03/2004</updated>
+        </seedcost>
+        <seedcost>
+          <desc>Wheat (Kennedy)</desc>
+          <name>Wheat</name>
+          <price>0.9</price>
+          <units>
+          </units>
+          <updated>15/10/2007</updated>
+        </seedcost>
+      </tclui>
+      <tclui name="Costs - Defoliants">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>defoliant</category>
+        <defoliant>
+          <desc>dropp (thidiazuron + diuron)</desc>
+          <name>dropp</name>
+          <price>147</price>
+          <units>kg</units>
+          <updated>
+          </updated>
+        </defoliant>
+        <defoliant>
+          <desc>Salt Defoliant</desc>
+          <name>salt defoliant</name>
+          <price>1.55</price>
+          <units>kg</units>
+          <updated>
+          </updated>
+        </defoliant>
+      </tclui>
+      <tclui name="Costs - Contractors">
+        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
+        <category>contract</category>
+        <contract>
+          <desc>aerial spraying-cotton ec</desc>
+          <name>aerial_spraying_cotton_ec</name>
+          <price>12.5</price>
+          <units>$/ha</units>
+          <updated>20/12/2002</updated>
+        </contract>
+        <contract>
+          <desc>Harvesting</desc>
+          <name>generic</name>
+          <price>250</price>
+          <units>$/ha</units>
+          <updated>15/10/2007</updated>
+        </contract>
+        <contract>
+          <desc>chickpea scouting</desc>
+          <name>chickpea_scouting</name>
+          <price>10</price>
+          <units>$/ha</units>
+          <updated>20/12/2002</updated>
+        </contract>
+      </tclui>
+    </tclmanager>
+    <area name="p1" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/low">
+        <InitWater shortcut="/Simulations/Shared/low/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/low/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p2" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/low">
+        <InitWater shortcut="/Simulations/Shared/low/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/low/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p3" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p4" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p5" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p6" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p7" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p8" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/medium">
+        <InitWater shortcut="/Simulations/Shared/medium/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/medium/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p9" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/high">
+        <InitWater shortcut="/Simulations/Shared/high/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/high/InitNitrogen" />
+      </soil>
+    </area>
+    <area name="p10" shortcut="/Simulations/Shared/p">
+      <wheat shortcut="/Simulations/Shared/p/wheat" />
+      <chickpea shortcut="/Simulations/Shared/p/chickpea">
+      </chickpea>
+      <sorghum shortcut="/Simulations/Shared/p/sorghum">
+      </sorghum>
+      <weed shortcut="/Simulations/Shared/p/weed">
+      </weed>
+      <surfaceom name="surface organic matter" shortcut="/Simulations/Shared/p/surface organic matter" />
+      <fertiliser shortcut="/Simulations/Shared/p/fertiliser" />
+      <erosion shortcut="/Simulations/Shared/p/Erosion" />
+      <soil name="Soil" shortcut="/Simulations/Shared/high">
+        <InitWater shortcut="/Simulations/Shared/high/InitWater" />
+        <InitNitrogen shortcut="/Simulations/Shared/high/InitNitrogen" />
+      </soil>
+    </area>
+  </simulation>
+</folder>
