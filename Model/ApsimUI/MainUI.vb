@@ -74,62 +74,67 @@ Public Class MainUI
     Public Sub New(ByVal cmdArgs() As String)
         MyBase.New()
 
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
+      Try
 
-        ' Get application name.
-        ApplicationName = ""
-        If Not IsNothing(cmdArgs) Then
+         'This call is required by the Windows Form Designer.
+         InitializeComponent()
+
+         ' Get application name.
+         ApplicationName = ""
+         If Not IsNothing(cmdArgs) Then
             For Each Arg As String In cmdArgs
-                If (ApplicationName = "" And Arg(0) = "/") Then
-                    ApplicationName = Arg.Substring(1)
-                Else
-                    Args.Add(Arg)
-                End If
+               If (ApplicationName = "" And Arg(0) = "/") Then
+                  ApplicationName = Arg.Substring(1)
+               Else
+                  Args.Add(Arg)
+               End If
             Next
-        End If
-        If ApplicationName = "" Then
+         End If
+         If ApplicationName = "" Then
             ApplicationName = "ApsimUI"
-        End If
+         End If
 
-        RunToolStrip.Visible = ApplicationName = "ApsimUI"
+         RunToolStrip.Visible = ApplicationName = "ApsimUI"
 
-        ' Create our controller
-        PlugIns.LoadAll()
-        SimulationController = New BaseController(Me, ApplicationName, True)
+         ' Create our controller
+         PlugIns.LoadAll()
+         SimulationController = New BaseController(Me, ApplicationName, True)
 
-        ' Display splash screen
-        If Configuration.Instance.Setting("SplashScreen") <> "" And Args.Count = 0 Then
+         ' Display splash screen
+         If Configuration.Instance.Setting("SplashScreen") <> "" And Args.Count = 0 Then
             Dim SplashForm As Form = BaseController.CreateClass(Configuration.Instance.Setting("SplashScreen"))
             If Configuration.Instance.Setting("SplashScreenButtonVisible").ToLower = "yes" Then
-                SplashForm.ShowDialog()
+               SplashForm.ShowDialog()
             Else
-                SplashForm.Show()
-                Application.DoEvents()
+               SplashForm.Show()
+               Application.DoEvents()
             End If
-        End If
+         End If
+      Catch ex As Exception
+         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+      End Try
 
-        ' Position window correctly.
-        Try
-            Dim inifile As New IniFile
-            WindowState = Convert.ToInt32(Configuration.Instance.Setting("windowstate"))
-            Top = Convert.ToInt32(Configuration.Instance.Setting("top"))
-            Left = Convert.ToInt32(Configuration.Instance.Setting("left"))
-            If (Left < 0 Or Left > Width) Then
-                Left = 1
-            End If
-            If (Top < 0 Or Top > Height) Then
-                Top = 1
-            End If
-            Height = Convert.ToInt32(Configuration.Instance.Setting("height"))
-            Width = Convert.ToInt32(Configuration.Instance.Setting("width"))
-            If (Height = 0 Or Width = 0) Then
-                Height = 600
-                Width = 400
-            End If
-        Catch ex As System.Exception
-            Me.WindowState = FormWindowState.Normal
-        End Try
+      ' Position window correctly.
+      Try
+         Dim inifile As New IniFile
+         WindowState = Convert.ToInt32(Configuration.Instance.Setting("windowstate"))
+         Top = Convert.ToInt32(Configuration.Instance.Setting("top"))
+         Left = Convert.ToInt32(Configuration.Instance.Setting("left"))
+         If (Left < 0 Or Left > Width) Then
+            Left = 1
+         End If
+         If (Top < 0 Or Top > Height) Then
+            Top = 1
+         End If
+         Height = Convert.ToInt32(Configuration.Instance.Setting("height"))
+         Width = Convert.ToInt32(Configuration.Instance.Setting("width"))
+         If (Height = 0 Or Width = 0) Then
+            Height = 600
+            Width = 400
+         End If
+      Catch ex As System.Exception
+         Me.WindowState = FormWindowState.Normal
+      End Try
 
     End Sub
     Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
@@ -439,93 +444,97 @@ Public Class MainUI
 #End Region
 
     Private Sub OnMainFormLoad(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
+      Try
 
-        AddHandler SimulationController.ApsimData.DirtyChanged, AddressOf OnDirtyChanged
-        AddHandler SimulationController.ApsimData.FileNameChanged, AddressOf OnFileNameChanged
+         AddHandler SimulationController.ApsimData.DirtyChanged, AddressOf OnDirtyChanged
+         AddHandler SimulationController.ApsimData.FileNameChanged, AddressOf OnFileNameChanged
 
-        ' Load some assemblies for later. The code for some actions are found in
-        ' these assemblies.
-        Assembly.Load("Actions")
-        Assembly.Load("CSUserInterface")
-        Assembly.Load("VBUserInterface")
-        Assembly.Load("GraphUserInterface")
-        Assembly.Load("GraphDataUserInterface")
-        'Assembly.Load("Soils")
+         ' Load some assemblies for later. The code for some actions are found in
+         ' these assemblies.
+         Assembly.Load("Actions")
+         Assembly.Load("CSUserInterface")
+         Assembly.Load("VBUserInterface")
+         Assembly.Load("GraphUserInterface")
+         Assembly.Load("GraphDataUserInterface")
+         'Assembly.Load("Soils")
 
-        'Try and load an icon from configuration. (Splash Screen?)
-        Dim IconFileName As String = Configuration.Instance.Setting("Icon")
-        If IconFileName <> "" AndAlso File.Exists(IconFileName) Then
+         'Try and load an icon from configuration. (Splash Screen?)
+         Dim IconFileName As String = Configuration.Instance.Setting("Icon")
+         If IconFileName <> "" AndAlso File.Exists(IconFileName) Then
             Icon = New System.Drawing.Icon(IconFileName)
-        End If
+         End If
 
-        'Create the MainToolBar
-        SimulationController.ProvideToolStrip(SimulationToolStrip, "MainToolBar")
-        If Configuration.Instance.Setting("HideMainMenu") = "Yes" Then
+         'Create the MainToolBar
+         SimulationController.ProvideToolStrip(SimulationToolStrip, "MainToolBar")
+         If Configuration.Instance.Setting("HideMainMenu") = "Yes" Then
             SimulationToolStrip.Visible = False
-        End If
+         End If
 
-        'Show the Simulation Explorer.
-        SimulationExplorer.OnLoad(SimulationController)
-        SimulationController.Explorer = SimulationExplorer    'give the explorer ui to the controller.
+         'Show the Simulation Explorer.
+         SimulationExplorer.OnLoad(SimulationController)
+         SimulationController.Explorer = SimulationExplorer    'give the explorer ui to the controller.
 
-        ' Process command line arguments.
-        ' Load a file if one was specified on the command line.
-        Dim ExportFileName As String = ""
-        If Control.ModifierKeys <> Keys.Control And Args.Count > 0 Then
+         ' Process command line arguments.
+         ' Load a file if one was specified on the command line.
+         Dim ExportFileName As String = ""
+         If Control.ModifierKeys <> Keys.Control And Args.Count > 0 Then
             For Each Arg As String In Args
-                If Arg.Contains("ExportTo:") Then
-                    ExportFileName = Arg.Substring(9)
-                Else
-                    Dim FileName As String = Arg.Replace("""", "")
-                    If FileName.Length() > 0 Then
-                        If Path.GetFileName(FileName).ToLower() = "response.file" Then
-                            Dim Wizard As New GraphWizardForm
-                            Wizard.Go(SimulationController, FileName)
-                            Wizard.ShowDialog()
-                        Else
-                            SimulationController.ApsimData.OpenFile(FileName)
-                        End If
-                    End If
-                End If
+               If Arg.Contains("ExportTo:") Then
+                  ExportFileName = Arg.Substring(9)
+               Else
+                  Dim FileName As String = Arg.Replace("""", "")
+                  If FileName.Length() > 0 Then
+                     If Path.GetFileName(FileName).ToLower() = "response.file" Then
+                        Dim Wizard As New GraphWizardForm
+                        Wizard.Go(SimulationController, FileName)
+                        Wizard.ShowDialog()
+                     Else
+                        SimulationController.ApsimData.OpenFile(FileName)
+                     End If
+                  End If
+               End If
 
             Next
-        End If
+         End If
 
-        ' If no file loaded then load previous one.
-        If Control.ModifierKeys <> Keys.Control And SimulationController.ApsimData.FileName = Nothing Then
+         ' If no file loaded then load previous one.
+         If Control.ModifierKeys <> Keys.Control And SimulationController.ApsimData.FileName = Nothing Then
             SimulationController.LoadPreviousFile()
-        End If
+         End If
 
-        ' If we have an export file name then do an export.
-        If ExportFileName <> "" Then
+         ' If we have an export file name then do an export.
+         If ExportFileName <> "" Then
             Actions.BaseActions.ExportAll(SimulationController, SimulationController.ApsimData.RootComponent, ExportFileName)
             Close()
-        Else
+         Else
             'Create the Toolbox Explorer
             Dim ToolboxesVisible As Boolean = Configuration.Instance.Setting("ToolboxesVisible").ToLower = "yes"
             If ToolboxesVisible Then
-                ' Setup but don't show the Toolbox Explorer.
-                ToolboxController = New BaseController(Nothing, ApplicationName, False)
-                
-				ToolboxExplorer = New ExplorerUI()
-				ToolboxExplorer.Name = "ToolboxExplorer"
-                ToolboxExplorer.Parent = ToolBoxPanel
-                ToolboxExplorer.Dock = DockStyle.Fill
-                ToolboxExplorer.BringToFront()
-            	ToolboxExplorer.OnLoad(ToolboxController)
+               ' Setup but don't show the Toolbox Explorer.
+               ToolboxController = New BaseController(Nothing, ApplicationName, False)
 
-                ToolboxController.Explorer = ToolboxExplorer    'give the toolbox ExplorerUI to the toolbox controller.
-                Try
-                    PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                End Try
+               ToolboxExplorer = New ExplorerUI()
+               ToolboxExplorer.Name = "ToolboxExplorer"
+               ToolboxExplorer.Parent = ToolBoxPanel
+               ToolboxExplorer.Dock = DockStyle.Fill
+               ToolboxExplorer.BringToFront()
+               ToolboxExplorer.OnLoad(ToolboxController)
+
+               ToolboxController.Explorer = ToolboxExplorer    'give the toolbox ExplorerUI to the toolbox controller.
+               Try
+                  PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
+               Catch ex As Exception
+                  MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+               End Try
 
             Else
-                ToolBoxesToolStrip.Visible = False
+               ToolBoxesToolStrip.Visible = False
             End If
-        End If
+         End If
 
+      Catch ex As Exception
+         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+      End Try
 
     End Sub
     Private Sub OnMainFormClosing(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
