@@ -7862,7 +7862,8 @@ cnh      end if
 
       ! Take intital guess at Cw
 
-      Cw = ddivide (Ctot, g%th(node), 0.d0)
+      Cw = (ddivide (Ctot, (g%th(node)+p%ex(solnum,node))
+     :     , 0.d0))**(1.0/p%fip(solnum,node))
 
       ! calculate value of isotherm function and the derivative.
 
