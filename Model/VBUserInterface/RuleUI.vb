@@ -226,6 +226,9 @@ Public Class RuleUI
         page.Controls.Add(ScriptBox)
         ScriptBox.Dock = DockStyle.Fill
         ScriptBox.BringToFront()
+        Dim TabStops() As Integer = {3}
+        ScriptBox.Lines.TabStops = TabStops
+        ScriptBox.Lines.UseSpaces = True
         TabControl.TabPages.Add(page)
     End Sub
 

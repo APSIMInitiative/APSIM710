@@ -243,7 +243,7 @@ Public Class GenericUI
                 If Grid.Cells(Row, 1).Text = "date" Then
                     Dim myDTFI As DateTimeFormatInfo = CultureInfo.CurrentCulture.DateTimeFormat
 
-                    Dim D As DateTime = DateTime.ParseExact(Prop.InnerText, "d/MM/yyyy", Nothing)
+                    Dim D As DateTime = DateTime.ParseExact(Prop.InnerText, "d/M/yyyy", Nothing)
                     Grid.Cells(Row, 3).Text = Grid.Cells(Row, 3).Text + " (" + myDTFI.ShortDatePattern + ")"
                     Grid.Cells(Row, 4).Text = D.ToShortDateString()
                 Else
@@ -374,7 +374,7 @@ Public Class GenericUI
                         NewNode.InnerText = Grid.Cells(Row, 4).Text
                         If DataType = "date" Then
                             Dim D As DateTime = DateTime.Parse(NewNode.InnerText)
-                            NewNode.InnerText = D.ToString("d/MM/yyyy")
+                            NewNode.InnerText = D.ToString("d/M/yyyy")
                         End If
                     End If
                 End If

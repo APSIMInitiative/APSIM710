@@ -22,6 +22,8 @@ Partial Class ScriptUI
         Me.components = New System.ComponentModel.Container
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ScriptUI))
         Me.TabControl = New System.Windows.Forms.TabControl
+        Me.PopupMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.PropertiesMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.Properties = New System.Windows.Forms.TabPage
         Me.GenericUI = New VBUserInterface.GenericUI
         Me.Script = New System.Windows.Forms.TabPage
@@ -30,13 +32,11 @@ Partial Class ScriptUI
         Me.FindReplaceButton = New System.Windows.Forms.ToolStripButton
         Me.CsParser = New QWhale.Syntax.Parsers.CsParser
         Me.VbParser = New QWhale.Syntax.Parsers.VbParser
-        Me.PopupMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.PropertiesMenuItem = New System.Windows.Forms.ToolStripMenuItem
         Me.TabControl.SuspendLayout()
+        Me.PopupMenu.SuspendLayout()
         Me.Properties.SuspendLayout()
         Me.Script.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
-        Me.PopupMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl
@@ -50,6 +50,20 @@ Partial Class ScriptUI
         Me.TabControl.SelectedIndex = 0
         Me.TabControl.Size = New System.Drawing.Size(655, 525)
         Me.TabControl.TabIndex = 2
+        '
+        'PopupMenu
+        '
+        Me.PopupMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PropertiesMenuItem})
+        Me.PopupMenu.Name = "ContextMenuStrip"
+        Me.PopupMenu.Size = New System.Drawing.Size(169, 26)
+        '
+        'PropertiesMenuItem
+        '
+        Me.PropertiesMenuItem.Checked = True
+        Me.PropertiesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.PropertiesMenuItem.Name = "PropertiesMenuItem"
+        Me.PropertiesMenuItem.Size = New System.Drawing.Size(168, 22)
+        Me.PropertiesMenuItem.Text = "Show &properties?"
         '
         'Properties
         '
@@ -96,6 +110,7 @@ Partial Class ScriptUI
                     Or QWhale.Editor.GutterOptions.PaintLineModificators), QWhale.Editor.GutterOptions)
         Me.TextBox.Location = New System.Drawing.Point(3, 28)
         Me.TextBox.Name = "TextBox"
+        Me.TextBox.Outlining.AllowOutlining = True
         Me.TextBox.Size = New System.Drawing.Size(641, 468)
         Me.TextBox.TabIndex = 0
         Me.TextBox.Text = ""
@@ -141,20 +156,6 @@ Partial Class ScriptUI
                     Or QWhale.Syntax.SyntaxOptions.CodeCompletionTabs), QWhale.Syntax.SyntaxOptions)
         Me.VbParser.XmlScheme = resources.GetString("VbParser.XmlScheme")
         '
-        'PopupMenu
-        '
-        Me.PopupMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PropertiesMenuItem})
-        Me.PopupMenu.Name = "ContextMenuStrip"
-        Me.PopupMenu.Size = New System.Drawing.Size(169, 26)
-        '
-        'PropertiesMenuItem
-        '
-        Me.PropertiesMenuItem.Checked = True
-        Me.PropertiesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.PropertiesMenuItem.Name = "PropertiesMenuItem"
-        Me.PropertiesMenuItem.Size = New System.Drawing.Size(168, 22)
-        Me.PropertiesMenuItem.Text = "Show &properties?"
-        '
         'ScriptUI
         '
         Me.Controls.Add(Me.TabControl)
@@ -162,12 +163,12 @@ Partial Class ScriptUI
         Me.Controls.SetChildIndex(Me.MyHelpLabel, 0)
         Me.Controls.SetChildIndex(Me.TabControl, 0)
         Me.TabControl.ResumeLayout(False)
+        Me.PopupMenu.ResumeLayout(False)
         Me.Properties.ResumeLayout(False)
         Me.Script.ResumeLayout(False)
         Me.Script.PerformLayout()
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
-        Me.PopupMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub

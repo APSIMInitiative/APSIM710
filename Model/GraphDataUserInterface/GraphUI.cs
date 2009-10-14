@@ -68,7 +68,7 @@ namespace GraphDataUserInterface
 
          // loop through all plots
          SeriesNumber = 0;
-         foreach (ApsimFile.Component Plot in Controller.Selection.ChildNodes)
+         foreach (ApsimFile.Component Plot in Controller.ApsimData.Find(NodePath).ChildNodes)
             {
             SeriesColourNumber = 0;
             DataProcessor Processor = new DataProcessor();

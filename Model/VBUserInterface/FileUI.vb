@@ -19,6 +19,8 @@ Public Class FileUI
     Friend WithEvents GotoErrorButton As System.Windows.Forms.ToolStripButton
     Friend WithEvents GotoWarningButton As System.Windows.Forms.ToolStripButton
     Dim FullFileName As String
+    Friend WithEvents Timer As System.Windows.Forms.Timer
+
 
 #Region " Windows Form Designer generated code "
 
@@ -64,6 +66,7 @@ Public Class FileUI
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip
         Me.GotoErrorButton = New System.Windows.Forms.ToolStripButton
         Me.GotoWarningButton = New System.Windows.Forms.ToolStripButton
+        Me.Timer = New System.Windows.Forms.Timer(Me.components)
         Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -152,6 +155,10 @@ Public Class FileUI
         Me.GotoWarningButton.Size = New System.Drawing.Size(116, 22)
         Me.GotoWarningButton.Text = "Goto next warning"
         '
+        'Timer
+        '
+        Me.Timer.Interval = 1000
+        '
         'FileUI
         '
         Me.Controls.Add(Me.FileContentsBox)
@@ -221,7 +228,6 @@ Public Class FileUI
         While Not IsNothing(C)
             If C.Name = "MainUI" Then
                 Dim F As Form = C
-                AddHandler F.Activated, AddressOf OnActivate
                 Exit While
             Else
                 C = C.Parent
@@ -235,10 +241,13 @@ Public Class FileUI
         If ErrorsFound Then
             SearchString("APSIM  Fatal  Error")
         End If
-
+        Timer.Enabled = True
     End Sub
 
-
+    Public Overrides Sub OnClose()
+        MyBase.OnClose()
+        Timer.Enabled = False
+    End Sub
     Private Sub OnBrowseClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BrowseButton.Click
         ' ----------------------------------------------
         ' User has clicked on browse button
@@ -258,12 +267,6 @@ Public Class FileUI
         End If
     End Sub
 
-
-    Private Sub OnActivate(ByVal sender As Object, ByVal e As EventArgs)
-        If File.Exists(FullFileName) AndAlso FileDateTime <> File.GetLastWriteTime(FullFileName) Then
-            OnRefresh()
-        End If
-    End Sub
 
     Public Overrides Sub OnSave()
         If (Not FileContentsBox.ReadOnly) And System.IO.File.Exists(FullFileName) Then
@@ -292,6 +295,8 @@ Public Class FileUI
     Private Sub FileContentsBox_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles FileContentsBox.KeyDown
         If e.KeyCode.Equals(Keys.F3) Then
             SearchString(SearchTextBox.Text)
+        ElseIf e.KeyCode.Equals(Keys.F) And Control.ModifierKeys = Keys.Control Then
+            SearchTextBox.Focus()
         End If
     End Sub
 
@@ -309,5 +314,11 @@ Public Class FileUI
 
     Private Sub OnGotoWarningClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GotoWarningButton.Click
         SearchString("APSIM Warning Error")
+    End Sub
+
+    Private Sub OnTimerTick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer.Tick
+        If FullFileName <> "" AndAlso File.Exists(FullFileName) AndAlso FileDateTime <> File.GetLastWriteTime(FullFileName) Then
+            OnRefresh()
+        End If
     End Sub
 End Class

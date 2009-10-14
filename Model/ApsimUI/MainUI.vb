@@ -621,6 +621,7 @@ Public Class MainUI
                 NewItem.TextImageRelation = TextImageRelation.ImageBeforeText
                 NewItem.ImageScaling = ToolStripItemImageScaling.None
                 NewItem.CheckOnClick = True
+                NewItem.ToolTipText = ""
                 NewItem.Tag = FileName
                 AddHandler NewItem.Click, AddressOf OnToolBoxClick
                 ToolBoxesToolStrip.Items.Add(NewItem)
@@ -717,4 +718,5 @@ Public Class MainUI
     Private Sub OnStopClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles StopButton.Click
         ApsimRunToolStrip.Instance.OnStop()
     End Sub
+
 End Class

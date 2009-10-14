@@ -1336,9 +1336,9 @@ Imports ModelFramework
 Public Class Script
    Inherits Instance
 
-   <Input()> Private A as Double = 0
-   <Param()> Private B as Double = 0
-   <Output()><Units("oC")> Public C as Double = 0
+   <Input()> Private A as Double
+   <Param()> Private B as Double
+   <Output()><Units("oC")> Public C as Double
 
    <EventHandler()> Public Sub OnPost()
 
@@ -1348,7 +1348,8 @@ End Class
     </manager2>
     <manager2 name="Script(C#)">
       <ui/>
-      <text><![CDATA[using System;
+      <text><![CDATA[
+using System;
 using ModelFramework;
 
 public class Script : Instance
