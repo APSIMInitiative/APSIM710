@@ -1,6 +1,7 @@
 #pragma once
 #include "ComponentType.h"
-#include "SoilType.h"
+#include "SoilWaterType.h"
+#include "SoilNitrogenType.h"
 #include "CropType.h"
 #include "FertiliserType.h"
 #include "IrrigationType.h"
@@ -98,9 +99,9 @@ public ref class PaddockType : public ComponentType
          return nullptr;
          }
             
-      property SoilType^ Soil
+      property SoilWaterType^ SoilWater
          {
-         SoilType^ get()
+         SoilWaterType^ get()
             {
             ComponentType^ SoilToReturn;
             SoilToReturn = Component("soilwat");
@@ -108,10 +109,21 @@ public ref class PaddockType : public ComponentType
                SoilToReturn = Component("swim2");
 
             if (SoilToReturn != nullptr)
-               return gcnew SoilType(SoilToReturn);
+               return gcnew SoilWaterType(SoilToReturn);
             return nullptr;            
             }
          }
+      property SoilNitrogenType^ SoilNitrogen
+         {
+         SoilNitrogenType^ get()
+            {
+            ComponentType^ SoilToReturn;
+            SoilToReturn = Component("soiln");
+            if (SoilToReturn != nullptr)
+               return gcnew SoilNitrogenType(SoilToReturn);
+            return nullptr;            
+            }
+         }         
       property List<CropType^>^ Crops
          {
          // --------------------------------------------------------------------

@@ -10,6 +10,16 @@ public ref class IrrigationType
    public:
       IrrigationType(ComponentType^ c) : Comp(c) { }
    
+      VariableType^ Variable(String^ VariableName)
+         {
+         return Comp->Variable(VariableName);
+         }
+         
+      void Publish(String^ EventName, ApsimType^ Data)
+         {
+         Comp->Publish(EventName, Data);
+         }   
+   
       property Single irrigation
          {
          Single get()
