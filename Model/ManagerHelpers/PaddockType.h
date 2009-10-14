@@ -25,10 +25,16 @@ public ref class PaddockType : public ComponentType
          : ComponentType(In->ParentComponent()->GetName()->Substring(0, In->ParentComponent()->GetName()->LastIndexOf('.')), 
                          In->ParentComponent())
          {
+         if (Types::Instance->TypeNames->Length == 0)
+            PlugIns::LoadAll();
          }
          
       PaddockType(String^ Nam, ModelFramework::ApsimComponent^ component)
-         : ComponentType(Nam, component) { }
+         : ComponentType(Nam, component) 
+         {
+         if (Types::Instance->TypeNames->Length == 0)
+            PlugIns::LoadAll();
+         }
 
 
       property String^ Name
