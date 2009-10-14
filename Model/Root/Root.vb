@@ -16,8 +16,8 @@ Public Class Root
     <Output()> Public ReadOnly Property SWSupply() As Double()
         Get
             Dim MyPaddock As New PaddockType(Root)
-            Dim dlayer As Single() = MyPaddock.Soil.dlayer
-            Dim sw_dep As Single() = MyPaddock.Soil.sw_dep
+         Dim dlayer As Single() = MyPaddock.SoilWater.dlayer
+         Dim sw_dep As Single() = MyPaddock.SoilWater.sw_dep
 
             Dim Supply(dlayer.Length - 1) As Double
             Dim layer As Integer
@@ -37,11 +37,11 @@ Public Class Root
 
             Dim layer As Integer
             Dim SWdep(Supply.Length) As Single
-            SWdep = MyPaddock.Soil.sw_dep
+         SWdep = MyPaddock.SoilWater.sw_dep
             For layer = 0 To Supply.Length - 1
                 SWdep(layer) = SWdep(layer) - Fraction * Supply(layer)
             Next
-            MyPaddock.Soil.sw_dep = SWdep
+         MyPaddock.SoilWater.sw_dep = SWdep
 
         End Set
         Get

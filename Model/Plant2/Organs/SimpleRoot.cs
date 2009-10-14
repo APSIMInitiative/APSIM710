@@ -42,7 +42,7 @@ public class SimpleRoot : Organ
          {
          PaddockType MyPaddock = new PaddockType(Root);
 
-         if (MyPaddock.Soil != null)
+         if (MyPaddock.SoilWater != null)
             {
             double[] SWSupply = MyPaddock.ComponentByName(Root.Name+"root").Variable("SWSupply").ToDoubleArray();
             return MathUtility.Sum(SWSupply);
@@ -67,7 +67,7 @@ public class SimpleRoot : Organ
       {
       PaddockType MyPaddock = new PaddockType(Root);
       Uptake = Amount;
-      if (MyPaddock.Soil != null)
+      if (MyPaddock.SoilWater != null)
          {
          MyPaddock.ComponentByName(Root.Name+"root").Variable("SWUptake").Set(Amount);
 
