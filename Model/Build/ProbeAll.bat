@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 pushd .
 
 cd ..\
@@ -25,6 +25,7 @@ ProbeDLL Navybean.xml
 ProbeDLL Oats.xml
 ProbeDLL Ozcot.xml
 ProbeDLL Peanut.xml
+ProbeDLL SoilP.xml
 ProbeDLL Pigeonpea.xml
 ProbeDLL Potato.xml
 ProbeDLL Slurp.xml

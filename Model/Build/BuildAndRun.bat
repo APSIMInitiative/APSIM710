@@ -22,31 +22,12 @@ svn revert -R APSIM
 svn update APSIM
 
 
-
 rem ----------------------------------------------
 rem Compile everything
 rem ----------------------------------------------
 cd %APSIM%\Model\Build
 call BuildAll.bat
 
-
-rem ----------------------------------------------
-rem Run Plant2Documentation on all PLANT 2
-rem model configurations
-rem ----------------------------------------------
-call DoPlant2Documentation.bat
-
-rem ----------------------------------------------
-rem Create documentation index.
-rem ----------------------------------------------
-pushd %APSIM%\Documentation
-call CreateIndex.bat
-popd
-
-rem ----------------------------------------------
-rem Probe all models for variables.
-rem ----------------------------------------------
-call ProbeAll
 
 rem ----------------------------------------------
 rem Create a release installation
@@ -60,7 +41,6 @@ rem ----------------------------------------------
 rem Run everything
 rem ----------------------------------------------
 call RunAll.bat
-
 
 
 rem ------------------------------------------------------------------------------

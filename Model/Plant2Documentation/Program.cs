@@ -46,7 +46,7 @@ namespace Plant2Doco
             OutputFile.WriteLine(Title(TitleText));
             OutputFile.WriteLine(Center(Header(TitleText,1)));
                
-            XmlNode PlantNode = XmlHelper.FindByType(XML.DocumentElement, "Plant");
+            XmlNode PlantNode = XmlHelper.FindByType(XML.DocumentElement, "Model/Plant");
             DocumentNodeAndChildren(OutputFile, PlantNode, 1);
 
             OutputFile.WriteLine("</html>");
