@@ -443,12 +443,16 @@ proc checkRules {thisPaddock} {
   return [list  $bestScore $bestGraph $bestTarget $bestArc]
 }
 
+# A place holder function to monitor state transitions
+proc logState {graph paddock state} {}
+
 # Change state to another
 proc changeState {paddock graph arc} {
    global state
    uplevel #0 set paddock $paddock
    foreach action [$graph arc get $arc actions] { uplevel #0 $action }
    set state($paddock) [$graph arc target $arc]
+   logState $graph $paddock $state($paddock)
 }
 
 # Do daily process at top level
