@@ -143,6 +143,13 @@ namespace GraphDataUserInterface
             Chart.Axes.Bottom.AutomaticMaximum = false;
             Chart.Axes.Bottom.Maximum = Chart.Series.Count + 1;
             }
+
+         // For all chart series that don't have any data, remove them from the legend.
+         foreach (Series S in Chart.Series)
+            {
+            if (S.Count == 0)
+               S.ShowInLegend = false;
+            }
          }
 
       private void FixAxisTitle(Steema.TeeChart.Axis _Axis, string Name)
@@ -515,9 +522,9 @@ namespace GraphDataUserInterface
          }
 
       private void AssignColourToSeries(Series NewSeries)
-         {
-         Color[] Colors = { Color.Blue, Color.Red, Color.Green, Color.Orange, Color.Magenta};
-         Color[] CheckpointedColors = { Color.LightBlue, Color.LightPink, Color.LightGreen, Color.FromArgb(255, 195, 155), Color.FromArgb(255, 201, 255) };
+         {                                                                                                                     // brown
+         Color[] Colors = { Color.Blue, Color.Red, Color.Green, Color.Orange, Color.Magenta, Color.Black, Color.Cyan, Color.FromArgb(255, 195, 155) };
+         Color[] CheckpointedColors = { Color.LightBlue, Color.LightPink, Color.LightGreen, Color.FromArgb(255, 195, 155), Color.FromArgb(255, 201, 255), Color.Gray, Color.FromArgb(157, 255, 255), Color.FromArgb(255, 209, 164) };
 
          if (NewSeries.Title.Contains("Checkpointed "))
             NewSeries.Color = CheckpointedColors[SeriesColourNumber];
