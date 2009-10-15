@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
          Path simFile(argv[1]);
          simFile.Change_directory();
          simulation.go(argv[1]);
+         cerr << "100%" << endl;
          }
       else
          {
