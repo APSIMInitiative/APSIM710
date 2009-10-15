@@ -120,11 +120,27 @@ namespace ApsimToSim
                // APSIM macro language.
                XmlDocument ChildValues = new XmlDocument();
                ChildValues.LoadXml(Child.Contents);
+
+               // Add in any child components that don't have anything in their <ApsimToSim>
+               foreach (Component SubChild in Child.ChildNodes)
+                  RecursivelyAddChildContent(SubChild, ChildValues.DocumentElement);
+
                Macro Macro = new Macro();
                return Macro.Go(ChildValues.DocumentElement, XmlHelper.FormattedXML(ApsimToSimContents));
                }
             }
          return "";
+         }
+      private void RecursivelyAddChildContent(Component C, XmlNode ContentNode)
+         {
+         // Recursively add in any child components that don't have anything in their <ApsimToSim>
+         XmlNode ApsimToSim = Types.Instance.ApsimToSim(C.Type);
+         if (ApsimToSim == null)
+            {
+            XmlNode NewNode = ContentNode.AppendChild(ContentNode.OwnerDocument.ImportNode(C.ContentsAsXML, true));
+            foreach (Component Child in C.ChildNodes)
+               RecursivelyAddChildContent(Child, NewNode);
+            }
          }
       private string ReplaceDllMacro(string ApsimToSimContents, Component ApsimComponent)
          {
@@ -290,10 +306,34 @@ namespace ApsimToSim
          }
       private string ReplaceChildrenMacro(string ApsimToSimContents, Component ApsimComponent)
          {
-         // Replace the [Children] macro will child sim script.
+         // Replace the [Children] macro with child sim script.
 
-         if (ApsimToSimContents.Contains("[Children]") || ApsimToSimContents.Contains("[HasChildren]"))
+         int PosStartMacro = ApsimToSimContents.IndexOf("[Children");
+         while (PosStartMacro != -1)
             {
+            int PosEndMacro = ApsimToSimContents.IndexOf(']', PosStartMacro);
+            if (PosEndMacro != -1)
+               {
+               string ChildType = "";
+               string[] MacroWords = ApsimToSimContents.Substring(PosStartMacro + 1, PosEndMacro - PosStartMacro - 1)
+                                     .Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+               if (MacroWords.Length == 2)
+                  ChildType = MacroWords[1];
+
+               string ChildSimContents = "";
+               foreach (Component Child in ApsimComponent.ChildNodes)
+                  {
+                  if (ChildType == "" || Child.Type.ToLower() == ChildType.ToLower())
+                     ChildSimContents += WriteSimScript(Child);
+                  }
+               ApsimToSimContents = ApsimToSimContents.Remove(PosStartMacro, PosEndMacro - PosStartMacro + 1);
+               ApsimToSimContents = ApsimToSimContents.Insert(PosStartMacro, ChildSimContents);
+               }
+            PosStartMacro = ApsimToSimContents.IndexOf("[Children", PosStartMacro+1);
+            }
+         if (ApsimToSimContents.Contains("[HasChildren"))
+            {
+            
             string ChildSimContents = "";
             foreach (Component Child in ApsimComponent.ChildNodes)
                ChildSimContents += WriteSimScript(Child);
