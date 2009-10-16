@@ -1,46 +1,46 @@
 <report version="5">
-  <Data>
-    <ApsimFileReader name="Predicted" Left="9" Top="12" Width="331" Height="148">
-      <FileName>2004\All.out</FileName>
-      <FileName>2005\All.out</FileName>
-      <FileName>2006\All.out</FileName>
-      <FileName>2007\All.out</FileName>
-      <FileName>2008\All.out</FileName>
-      <BySeries>no</BySeries>
-    </ApsimFileReader>
-    <DataGrid Left="169" Top="346" Width="731" Height="234">
-      <source>Predicted</source>
-    </DataGrid>
-    <ApsimFileReader name="Observed" Left="9" Top="178" Width="331" Height="148">
-      <FileName>Observed.csv</FileName>
-    </ApsimFileReader>
-    <PredObs name="PredictedObserved" Left="548" Top="9" Width="188" Height="168">
-      <source>Predicted</source>
-      <source>Filter</source>
-      <FieldName>FileName</FieldName>
-    </PredObs>
-    <Regression name="Regression" Left="781" Top="12" Width="135" Height="120">
-      <XFieldName>Obswetyield</XFieldName>
-      <YFieldName>Predwetyield</YFieldName>
-      <source>PredictedObserved</source>
-    </Regression>
-    <Filter name="Filter" Left="515" Top="256" Width="244" Height="70">
-      <FilterString>Crop='Wheat' and year=2004</FilterString>
-      <source>FilterUnwanted</source>
-    </Filter>
-    <Regression name="RegressionGrainN" Left="781" Top="142" Width="135" Height="141">
-      <source>PredictedObserved</source>
-      <XFieldName>Obsgrain_n</XFieldName>
-      <YFieldName>Predgrain_n</YFieldName>
-    </Regression>
-    <Filter name="FilterUnwanted" Left="362" Top="204" Width="134" Height="122">
-      <source>Observed</source>
-      <FilterString><![CDATA[SoilStatus <> 'Inappropriate' and sampling <> 'Deep N']]></FilterString>
-    </Filter>
-  </Data>
-  <page><![CDATA[
+<Data>
+<ApsimFileReader name="Predicted" Left="9" Top="12" Width="331" Height="148">
+  <FileName>2004\All.out</FileName>
+  <FileName>2005\All.out</FileName>
+  <FileName>2006\All.out</FileName>
+  <FileName>2007\All.out</FileName>
+  <FileName>2008\All.out</FileName>
+  <BySeries>no</BySeries>
+</ApsimFileReader>
+<DataGrid Left="169" Top="346" Width="731" Height="234">
+  <source>Predicted</source>
+</DataGrid>
+<ApsimFileReader name="Observed" Left="9" Top="178" Width="331" Height="148">
+  <FileName>Observed.csv</FileName>
+</ApsimFileReader>
+<PredObs name="PredictedObserved" Left="548" Top="9" Width="188" Height="168">
+  <source>Predicted</source>
+  <source>Filter</source>
+  <FieldName>FileName</FieldName>
+</PredObs>
+<Regression name="Regression" Left="781" Top="12" Width="135" Height="120">
+  <XFieldName>Obswetyield</XFieldName>
+  <YFieldName>Predwetyield</YFieldName>
+  <source>PredictedObserved</source>
+</Regression>
+<Filter name="Filter" Left="515" Top="256" Width="244" Height="70">
+  <FilterString>Crop='Wheat'</FilterString>
+  <source>FilterUnwanted</source>
+</Filter>
+<Regression name="RegressionGrainN" Left="781" Top="142" Width="135" Height="141">
+  <source>PredictedObserved</source>
+  <XFieldName>Obsgrain_n</XFieldName>
+  <YFieldName>Predgrain_n</YFieldName>
+</Regression>
+<Filter name="FilterUnwanted" Left="362" Top="204" Width="134" Height="122">
+  <source>Observed</source>
+  <FilterString><![CDATA[SoilStatus <> 'Inappropriate' and sampling <> 'Deep N' and [Exclude?] <> 'yes']]></FilterString>
+</Filter>
+</Data>
+   <page> <![CDATA[
 object Page1: TQuickRep
-  Left = 186
+  Left = 209
   Top = 0
   Width = 635
   Height = 898
@@ -234,7 +234,7 @@ object Page1: TQuickRep
     object Text3: TText
       Left = 260
       Top = 426
-      Width = 181
+      Width = 186
       Height = 16
       Frame.Color = clBlack
       Frame.DrawTop = False
@@ -245,7 +245,7 @@ object Page1: TQuickRep
         52.9166666666667
         859.895833333333
         1408.90625
-        598.619791666667)
+        615.15625)
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = True
@@ -257,7 +257,7 @@ object Page1: TQuickRep
       Font.Name = 'Arial'
       Font.Style = []
       Lines.Strings = (
-        ' y = 0.68 x + 0.35 (r2 = 0.51)(n = 44)   ')
+        ' y = 0.80 x + 0.52 (r2 = 0.69)(n = 411)   ')
       ParentFont = False
       Transparent = False
       WordWrap = True
@@ -323,11 +323,11 @@ object Page1: TQuickRep
       Font.Name = 'Arial'
       Font.Style = []
       Lines.Strings = (
-        'Apsim version=6.1, Crop='#39'Wheat'#39' and year=2007')
+        'Apsim version=7.1, Crop='#39'Wheat'#39)
       ParentFont = False
       Transparent = False
       WordWrap = True
-      text =
+      text = 
         'Apsim version=$property(predicted.apsimversion), $property(filte' +
         'r.filter)'#13#10
       FontSize = 12
@@ -464,7 +464,7 @@ object Page1: TQuickRep
     object Text2: TText
       Left = 246
       Top = 829
-      Width = 178
+      Width = 183
       Height = 16
       Frame.Color = clBlack
       Frame.DrawTop = False
@@ -475,7 +475,7 @@ object Page1: TQuickRep
         52.9166666666667
         813.59375
         2741.74479166667
-        588.697916666667)
+        605.234375)
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = True
@@ -487,16 +487,17 @@ object Page1: TQuickRep
       Font.Name = 'Arial'
       Font.Style = []
       Lines.Strings = (
-        ' y = 0.63 x + 1.38 (r2 = 0.26)(n = 36)  ')
+        ' y = 0.09 x + 1.09 (r2 = 0.59)(n = 273)  ')
       ParentFont = False
       Transparent = False
       WordWrap = True
-      text =
+      text = 
         '$property(regressiongrainn.equation)(n = $property(regressiongra' +
         'inn.n))  '#13#10
       FontSize = 10
     end
   end
 end
-]]></page>
+]]>
+   </page>
 </report>
