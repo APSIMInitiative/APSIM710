@@ -4995,51 +4995,6 @@ c dsg 070302 added runon
          endif
 
 
-      ! Oh boy isn't this messy
-      ! If variable name has _leach or _up as the last thing in its
-      ! name then see if we can supply some output.
-
-      else if  ((index(variable_name,'_leach').ne.0) .and.
-     :         (index(variable_name,'_leach').eq.
-     :         lastnb(variable_name)-len('_leach')+1)) then
-
-         solute_name = variable_name(:index(variable_name,'_leach')-1)
-         solnum = position_in_char_array (solute_name
-     :                                   ,g%solute_names
-     :                                   ,max_solute)
-
-         if (solnum.ne.0) then
-            num_layers = count_of_real_vals (p%dlayer, max_layer)
-            do 7000 layer = 1, num_layers
-               temp_array(layer) = g%solute_leach(solnum,layer)
- 7000       continue
-
-            call respond2get_real_array (variable_name, 'kg/ha'
-     :                               , temp_array, num_layers)
-         else
-            call Message_unused ()
-         endif
-
-      else if  ((index(variable_name,'_up').ne.0) .and.
-     :         (index(variable_name,'_up').eq.
-     :         lastnb(variable_name)-len('_up')+1)) then
-
-         solute_name = variable_name(:index(variable_name,'_up')-1)
-         solnum = position_in_char_array (solute_name
-     :                                   ,g%solute_names
-     :                                   ,max_solute)
-
-         if (solnum.ne.0) then
-            num_layers = count_of_real_vals (p%dlayer, max_layer)
-            do 8000 layer = 1, num_layers
-               temp_array(layer) = g%solute_up(solnum,layer)
- 8000       continue
-
-            call respond2get_real_array (variable_name, 'kg/ha'
-     :                               , temp_array, num_layers)
-         else
-            call Message_unused ()
-         endif
 
       else if (variable_name .eq. 'water_table') then
          call respond2get_real_var ('water_table','mm',g%water_table)
