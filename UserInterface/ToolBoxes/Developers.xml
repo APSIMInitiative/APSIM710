@@ -1,4 +1,7 @@
-<folder version="15" name="Developers">
+<folder version="19" name="Developers">
+  <Plant2>
+    <ini />
+  </Plant2>
   <ini>
     <filename>
     </filename>
@@ -6,8 +9,9 @@
   <broccoli />
   <lettuce />
   <potato />
-  <tclui name="Rotation Management">
-    <uiscript><![CDATA[
+  <RotPlot name="Rotation Management">
+    <rotnode name="Rotations">
+      <uiscript><![CDATA[
 package req struct
 package req tdom
 trace remove variable XMLDoc read setXML
@@ -614,10 +618,11 @@ proc setXML {name1 name2 op} {
    }
 }
 ]]></uiscript>
-    <rule name="Init rule" invisible="yes" condition="init"><![CDATA[package require struct
+      <rule name="Init rule" invisible="yes" condition="init"><![CDATA[package require struct
 ::struct::graph stateGraph
 ]]></rule>
-  </tclui>
+    </rotnode>
+  </RotPlot>
   <tclui name="Rotation Rug Plot">
     <uiscript>
 # Displays a rug plot of crop rotations
@@ -957,7 +962,4 @@ proc setXML {name1 name2 op} {
 trace add variable XMLDoc read setXML
 </uiscript>
   </tclui>
-  <Plant2>
-    <ini />
-  </Plant2>
 </folder>

@@ -10,6 +10,11 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Xml;
 
+using CSGeneral;
+using ApsimFile;
+
+
+
 namespace CSUserInterface
 {
     public partial class RotPlotUI : Controllers.BaseView
@@ -36,29 +41,124 @@ namespace CSUserInterface
         private int m_Height = 0;
         private double m_DayHeight = 0;
         private XmlDocument DocStates = null;
-
+        private string m_FileName  = "";
         private DateTime m_StartDate;
         private DateTime m_EndDate;
         private DateTime m_FirstYear;
         private DateTime m_LastYear;
         private DateTime m_SelectedDate;
+        int m_SelectedColumn = -1;
         private bool m_UpdatingSelectedDate = false;
-        private bool m_Dragging = false;
+        //private bool m_Dragging = false;
 
-        private int _ncid;
+        float[] daynum;
+        int[] positions;
+        float[] day;
+        short[] paddock;
+        short[] rule;
+        float[] value;
+        int[] coords = new int[1];
+        int[] size = new int[1];
+        int m_DataSize = 0;
+        int _ncid; 
 
         public RotPlotUI()
         {
             InitializeComponent();
         }
+        protected override void OnLoad()
+        {
+            //XmlNode scriptNode = XmlHelper.Find(Data, "RotScript");
+            //ruleUI1.OnLoad(Controller, NodePath, scriptNode.OuterXml);
+
+            XmlNode uiNode = XmlHelper.Find(Data, "Rotations");
+            tclUI1.OnLoad(Controller, NodePath, uiNode.OuterXml);
+
+            //temp component variable (set it to the parameter passed in [starting component]) 
+            m_FileName = "";
+            string simName = "";
+            string graphName = "";
+            string FullFileName = "";
+
+            ApsimFile.Component thisComp = Controller.ApsimData.Find(NodePath);
+            //loop back up the component datastructure until you get to the parent simulation. 
+            while ((thisComp.Parent != null))
+            {
+                thisComp = thisComp.Parent;
+                if (thisComp.Type.ToLower() == "simulation")
+                {
+                    simName = thisComp.Name;
+                    //store the paddock name for later 
+                }
+            }
+
+            XmlNode tmpNode = uiNode.SelectSingleNode("graph_name");
+            if (tmpNode != null)
+            {
+                m_FileName = simName + "." + tmpNode.InnerText + ".xml";
+                FullFileName = Configuration.RemoveMacros(m_FileName);
+                //' Add a path to filename if necessary.
+                if(Controller.ApsimData.FileName != "")
+                {
+                    FullFileName = Path.Combine(Path.GetDirectoryName(Controller.ApsimData.FileName), FullFileName);
+                }
+            }
+
+            try
+            {
+                if (File.Exists(FullFileName))
+                {
+                    ReadXMLFile(FullFileName);
+                    ReadNetCDFFile(FullFileName);
+                    lblFileName.Text = m_FileName;
+                }
+                else
+                {
+                    //clear
+                    lblFileName.Text = m_FileName + " - (not found)";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblFileName.Text = m_FileName;
+
+            }
+            panel2.Invalidate();
+        }
+        public override void OnSave()
+        {
+            //ruleUI1.OnSave();
+            //need to add the saved data into this component's xml 
+            //string savedData = ruleUI1.GetData();
+            //ReplaceNode("RotScript", savedData);
+            
+            tclUI1.OnSave();
+            //need to add the saved data into this component's xml 
+            string savedData = tclUI1.GetData();
+            ReplaceNode("Rotations", savedData);
+
+        }
+
+        private void ReplaceNode(string sName, string savedData)
+        {
+            XmlDocument tmpDoc = new XmlDocument();
+            tmpDoc.LoadXml(savedData);
+
+            XmlNode NodeToUpdate = XmlHelper.Find(Data, sName);
+            NodeToUpdate.InnerXml = tmpDoc.DocumentElement.InnerXml;
+        }
 
         public override void OnRefresh()
         {
             base.OnRefresh();
+            //ruleUI1.OnRefresh();
+            tclUI1.OnRefresh();
+
             //panel1.Visible = DocStates != null;
             //panel4.Visible = DocStates != null;
             split1.Visible = DocStates != null;
             panel5.Visible = DocStates != null;
+
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -355,41 +455,54 @@ namespace CSUserInterface
         }
         void UpdateSelectedDate(int UpdatedBy, DateTime newDate)
         {
-            //if cal changed, then update scrollbar
-            //if scrollbar changed then update cal
-            //if map clicked, then update cal, and scrollbar
-            //update scrollposition??
-            if (!m_UpdatingSelectedDate)
+            try
             {
-                if (newDate > m_StartDate && newDate < m_EndDate)
+                //if cal changed, then update scrollbar
+                //if scrollbar changed then update cal
+                //if map clicked, then update cal, and scrollbar
+                //update scrollposition??
+                if (!m_UpdatingSelectedDate)
                 {
-                    m_UpdatingSelectedDate = true;
-                    m_SelectedDate = newDate;
-                    switch (UpdatedBy)
+                    if (newDate > m_StartDate && newDate < m_EndDate)
                     {
-                        case 0: //updated by Calendar
-                            {
-                                TimeSpan tmpSpan = m_SelectedDate - m_StartDate;
-                                spnDate.Value = tmpSpan.Days;
-                            }
-                            break;
-                        case 1: //Scrollbar
-                            {
-                                calSelected.Value = m_SelectedDate;
-                            }
-                            break;
-                        case 2: //Mouse Click
-                            {
-                                calSelected.Value = m_SelectedDate;
-                                TimeSpan tmpSpan = m_SelectedDate - m_StartDate;
-                                spnDate.Value = tmpSpan.Days;
-                            }
-                            break;
+                        m_UpdatingSelectedDate = true;
+                        m_SelectedDate = newDate;
+                        lblDayOfYear.Text = m_SelectedDate.DayOfYear.ToString();
+                        switch (UpdatedBy)
+                        {
+                            case 0: //updated by Calendar
+                                {
+                                    TimeSpan tmpSpan = m_SelectedDate - m_StartDate;
+                                    spnDate.Value = tmpSpan.Days;
+                                }
+                                break;
+                            case 1: //Scrollbar
+                                {
+                                    calSelected.Value = m_SelectedDate;
+                                }
+                                break;
+                            case 2: //Mouse Click
+                                {
+                                    calSelected.Value = m_SelectedDate;
+                                    TimeSpan tmpSpan = m_SelectedDate - m_StartDate;
+                                    spnDate.Value = tmpSpan.Days;
+                                }
+                                break;
 
+                        }
                     }
-                    panel2.Invalidate();
+                    FillCurrentDateData(newDate);
+                    RefreshTree(newDate);
                 }
+            }
+            catch (Exception ex)
+            {
+                lblFileName.Text = "Error: " + ex.Message;
+            }
+            finally
+            {
                 m_UpdatingSelectedDate = false;
+                panel2.Invalidate();
             }
         }
 
@@ -506,7 +619,26 @@ namespace CSUserInterface
             {
                 return;
             }
-            //int res = NetCDF.nc_open(netcdf_file, NetCDF.cmode.NC_NOWRITE.GetHashCode(), ref _ncid);
+            int result = NetCDF.nc_open(netcdf_file, NetCDF.cmode.NC_NOWRITE.GetHashCode(), ref _ncid);
+            if (result == 0)
+            {
+                int dimlen = 0;
+                result = NetCDF.nc_inq_dimlen(_ncid, 0, ref dimlen);
+                if (result == 0)
+                {
+                    positions = new int[dimlen];
+                    result = NetCDF.nc_get_var_int(_ncid, 0, positions);
+                    daynum = new float[dimlen];
+                    result = NetCDF.nc_get_var_float(_ncid, 1, daynum);
+
+                    m_DataSize = 0;
+                    result = NetCDF.nc_inq_dimlen(_ncid, 1, ref m_DataSize);
+                }
+            }
+            if (result != 0)
+            {
+                positions = null;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -527,7 +659,8 @@ namespace CSUserInterface
 
         private void panel2_MouseDown(object sender, MouseEventArgs e)
         {
-            m_Dragging = true;
+            //m_Dragging = true;
+            m_SelectedColumn = ConvertPositionToCol(e.Location);
             if (e.Button == MouseButtons.Left)
             {
                 DateTime tmpDate = ConvertPositionToDate(e.Location);
@@ -537,11 +670,10 @@ namespace CSUserInterface
             {
                 //calculate selected col and rotation
                 DateTime tmpDate = ConvertPositionToDate(e.Location);
-                int iCol = ConvertPositionToCol(e.Location);
                 //find previous start date within selected col (paddock)
                 if (DocStates != null && DocStates.DocumentElement != null && paddocks != null)
                 {
-                    XmlNode xmlPaddock = DocStates.SelectSingleNode("/simulation/history[@id='" + iCol.ToString() + "']");
+                    XmlNode xmlPaddock = DocStates.SelectSingleNode("/simulation/history[@id='" + m_SelectedColumn.ToString() + "']");
                     if (xmlPaddock != null)
                     {
                         if (xmlPaddock.HasChildNodes)
@@ -588,5 +720,155 @@ namespace CSUserInterface
             panel2.Invalidate();
         }
 
+        private void FillCurrentDateData(DateTime tmpDate)
+        {
+            if (positions == null)
+            {
+                return;
+            }
+
+            TimeSpan tmpSpan = tmpDate - m_StartDate;
+            int index = tmpSpan.Days;
+            if (index >= 0 && index < positions.Length)
+            {
+                int pos = positions[index];
+                int daySize = m_DataSize - pos;
+                if (index < positions.Length - 1)
+                {
+                    daySize = positions[index + 1] - positions[index];
+                }
+
+                day = new float[daySize];
+                paddock = new short[daySize];
+                rule = new short[daySize];
+                value = new float[daySize];
+                coords[0] = pos;
+                size[0] = daySize;
+                int result = NetCDF.nc_get_vara_float(_ncid, 2, coords, size, day);
+                result += NetCDF.nc_get_vara_short(_ncid, 3, coords, size, paddock);
+                result += NetCDF.nc_get_vara_short(_ncid, 4, coords, size, rule);
+                result += NetCDF.nc_get_vara_float(_ncid, 5, coords, size, value);
+
+                float tmpDayNum = daynum[index];
+                for (int i = 0; i < day.Length; ++i)
+                {
+                    float tmpDay = day[i];
+                    if (tmpDay != tmpDayNum)
+                    {
+                        throw new Exception("invalid index into result data");
+                    }
+                }
+
+                if (result > 0)
+                {
+                    //error
+                    day = null;
+                    paddock = null;
+                    rule = null;
+                    value = null;
+                }
+            }
+        }
+        private void RefreshTree(DateTime tmpDate)
+        {
+            treeView1.Nodes.Clear();
+            if (paddock == null) return;
+            int iLastPaddock = -1;
+            TreeNode pPaddockNode = null;
+
+            for (int i = 0; i < paddock.Length; ++i)
+            {
+                int iPaddock = paddock[i];
+                if (iLastPaddock != iPaddock)
+                {
+                    pPaddockNode = GetPaddockNode(i);
+                    iLastPaddock = iPaddock;
+                }
+                if (pPaddockNode != null)
+                {
+                    AddRuleToPaddockNode(pPaddockNode, i);
+                }
+                if (iPaddock == m_SelectedColumn)
+                {
+                    pPaddockNode.ExpandAll();
+                }
+
+            }
+            //expand selected column
+        }
+        private void AddRuleToPaddockNode(TreeNode pPaddockNode, int index)
+        {
+            string sRule = LookupRule(index);
+            float result = value[index];
+            sRule = result.ToString() + " - " + sRule;
+            TreeNode pRuleNode = pPaddockNode.Nodes.Add(sRule);
+            if (result > 0)
+            {
+                pRuleNode.ImageIndex = 0;
+                pRuleNode.SelectedImageIndex = 0;
+            }
+            else
+            {
+                pRuleNode.ImageIndex = 1;
+                pRuleNode.SelectedImageIndex = 1;
+            }
+        }
+
+        private TreeNode GetPaddockNode(int index)
+        {
+            //check for existing node - of not found then create new
+            int iPaddock = paddock[index];
+            string sPaddock = FindPaddockName(iPaddock);
+            TreeNode pPaddockNode = FindPaddockNode(sPaddock);
+            if (pPaddockNode == null)
+            {
+                pPaddockNode = CreatePaddockNode(index, sPaddock);
+            }
+            return pPaddockNode;
+        }
+
+        private TreeNode CreatePaddockNode(int index, string sName)
+        {
+            TreeNode pNode = new TreeNode(sName);
+            treeView1.Nodes.Add(pNode);
+            return pNode;
+        }
+
+        private string FindPaddockName(int iPaddock)
+        {
+            //lookup xml file for paddock node
+            string sPaddock = iPaddock.ToString();
+            XmlNode PaddockNode = DocStates.SelectSingleNode("/simulation/paddock[@id='" + sPaddock + "']");
+            if (PaddockNode != null && PaddockNode.Attributes != null)
+            {
+
+                return PaddockNode.Attributes["name"].Value;
+            }
+            return "";
+        }
+
+        private string LookupRule(int index)
+        {
+            string sRule = rule[index].ToString();
+            XmlNode RuleNode = DocStates.SelectSingleNode("/simulation/rule[@id='" + sRule + "']");
+            if (RuleNode != null && RuleNode.Attributes != null)
+            {
+                return RuleNode.Attributes["name"].Value;
+            }
+            return "";
+        }
+
+        private TreeNode FindPaddockNode(string sPaddock)
+        {
+            for (int i = 0; i < treeView1.Nodes.Count; ++i)
+            {
+                TreeNode pNode = treeView1.Nodes[i];
+                if (pNode.Text == sPaddock)
+                {
+                    return pNode;
+                }
+            }
+            return null;
+        }
     }
 }
