@@ -81,7 +81,7 @@ public class Types
       XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
       foreach (XmlNode InfoNode in XmlHelper.ChildNodes(TypeNode, "info"))
          {
-         XmlNode VariableNode = XmlHelper.Find(InfoNode, "variables");
+         XmlNode VariableNode = XmlHelper.FindByType(InfoNode, "variables");
          if (VariableNode != null)
             {
             if (XmlHelper.Name(InfoNode) != "Info")
@@ -98,7 +98,7 @@ public class Types
       XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
       foreach (XmlNode InfoNode in XmlHelper.ChildNodes(TypeNode, "info"))
          {
-         XmlNode EventNode = XmlHelper.Find(InfoNode, "events");
+         XmlNode EventNode = XmlHelper.FindByType(InfoNode, "events");
          if (EventNode != null)
             {
             if (XmlHelper.Name(InfoNode) != "Info")
