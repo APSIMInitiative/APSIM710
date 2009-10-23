@@ -142,7 +142,10 @@ void ApsimComponent::messageToLogic (char* message)
    		   XmlDocument^ NewDoc = gcnew XmlDocument();
    		   XmlNode^ ScriptNode = NewDoc->AppendChild(NewDoc->CreateElement(ScriptClassName));
    		   for each (XmlNode^ Child in XmlHelper::Find(InitData, "ui"))
-               XmlHelper::SetValue(ScriptNode, Child->Name, Child->InnerText);   		      
+               {
+               if (XmlHelper::Attribute(Child, "type")->ToLower() != "category")
+                  XmlHelper::SetValue(ScriptNode, Child->Name, Child->InnerText);   		      
+               }
 
             // Build all necessary objects
             BuildObjects(ScriptNode);

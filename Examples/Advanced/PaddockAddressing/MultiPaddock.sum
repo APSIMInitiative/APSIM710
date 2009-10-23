@@ -14,39 +14,942 @@ Title                  = MultiPaddock
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
    Component                      "Manager" = %apsim%\Model\DotNetComponentInterface.dll
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     'Soil' is not a member of 'PaddockType'.. Line number: 12
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
 
-     'Soil' is not a member of 'PaddockType'.. Line number: 14
-     Component name:
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   = 31/01/1940
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        yield
+        grain_protein
+        grain_size
+        esw
+
+     Output file = MultiPaddock paddock1.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'wheat')) then
+              if (date_within('15-may, 10-jul') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('no' = 'yes' and today = date('10-jul'))) then
+        choosenextcrop = 'yes'
+        wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     endif
+     if today = date('10-jul') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     
+     SECTION:- init
+     nextcrop = 0
+     fallowin = 0
+     END of rules
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+     Manager creating a new local real variable : fallowin = 0.00000
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- wheat.sowing
+             fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+       wheat  harvest
+       wheat  end_crop
+                endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
      
      
-Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
-   Component                        "accum" = %apsim%\Model\Accum.dll
-   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
-   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
-   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
-   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
-   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                        "wheat" = %apsim%\Model\Plant.dll
-Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
-   Component                        "accum" = %apsim%\Model\Accum.dll
-   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
-   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
-   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
-   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
-   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                        "wheat" = %apsim%\Model\Plant.dll
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      66.00      66.00      15.00
+         1200.- 1500.      93.00      57.00      57.00      15.00
+         1500.- 1800.      96.00      54.00      54.00      15.00
+         1800.- 2100.      99.00      45.00      45.00      15.00
+         2100.- 2400.     102.00      39.00      39.00      15.00
+         2400.- 2700.     105.00      33.00      33.00      15.00
+         2700.- 3000.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     541.50     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.95    0.92    0.00
+             2     8.80  0.89    3.25    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.21    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               66.01    4.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        yield
+        grain_protein
+        grain_size
+        esw
+
+     Output file = MultiPaddock paddock2.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'wheat')) then
+              if (date_within('15-may, 10-jul') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('no' = 'yes' and today = date('10-jul'))) then
+        choosenextcrop = 'yes'
+        wheat sow plants =100, sowing_depth = 30, cultivar = hartog, row_spacing = 250, crop_class = plant
+     endif
+     if today = date('10-jul') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     
+     SECTION:- init
+     nextcrop = 0
+     fallowin = 0
+     END of rules
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+     Manager creating a new local real variable : fallowin = 0.00000
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- wheat.sowing
+             fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+       wheat  harvest
+       wheat  end_crop
+                endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.458  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.310  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.320  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.330  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.340  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.350  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.360  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      47.40      66.00      15.00
+         1200.- 1500.      93.00       0.00      57.00      15.00
+         1500.- 1800.      96.00       0.00      54.00      15.00
+         1800.- 2100.      99.00       0.00      45.00      15.00
+         2100.- 2400.     102.00       0.00      39.00      15.00
+         2400.- 2700.     105.00       0.00      33.00      15.00
+         2700.- 3000.     108.00       0.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     270.90     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.95    0.92    0.00
+             2     8.80  0.89    3.25    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.21    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               66.01    4.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
+.MasterPM.paddock1-0.5010195
+.MasterPM.paddock2-0.5010195
+wheat - 0
+wheat - 0
+fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.54
+.MasterPM.paddock2-0.54
+wheat - 0
+wheat - 0
+2 January 1940(Day of year=2), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+2 January 1940(Day of year=2), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5387143
+.MasterPM.paddock2-0.5387143
+wheat - 0
+wheat - 0
+3 January 1940(Day of year=3), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+3 January 1940(Day of year=3), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5389344
+.MasterPM.paddock2-0.5389344
+wheat - 0
+wheat - 0
+4 January 1940(Day of year=4), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+4 January 1940(Day of year=4), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5393803
+.MasterPM.paddock2-0.5393803
+wheat - 0
+wheat - 0
+5 January 1940(Day of year=5), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+5 January 1940(Day of year=5), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.54
+.MasterPM.paddock2-0.54
+wheat - 0
+wheat - 0
+6 January 1940(Day of year=6), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+6 January 1940(Day of year=6), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5374813
+.MasterPM.paddock2-0.5374813
+wheat - 0
+wheat - 0
+7 January 1940(Day of year=7), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+7 January 1940(Day of year=7), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5409645
+.MasterPM.paddock2-0.5409645
+wheat - 0
+wheat - 0
+8 January 1940(Day of year=8), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+8 January 1940(Day of year=8), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5371699
+.MasterPM.paddock2-0.5371699
+wheat - 0
+wheat - 0
+9 January 1940(Day of year=9), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+9 January 1940(Day of year=9), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.536754
+.MasterPM.paddock2-0.536754
+wheat - 0
+wheat - 0
+10 January 1940(Day of year=10), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+10 January 1940(Day of year=10), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5350779
+.MasterPM.paddock2-0.5350779
+wheat - 0
+wheat - 0
+11 January 1940(Day of year=11), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+11 January 1940(Day of year=11), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5312538
+.MasterPM.paddock2-0.5312538
+wheat - 0
+wheat - 0
+12 January 1940(Day of year=12), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+12 January 1940(Day of year=12), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5298991
+.MasterPM.paddock2-0.5298991
+wheat - 0
+wheat - 0
+13 January 1940(Day of year=13), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+13 January 1940(Day of year=13), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5359308
+.MasterPM.paddock2-0.5359308
+wheat - 0
+wheat - 0
+14 January 1940(Day of year=14), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+14 January 1940(Day of year=14), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5233885
+.MasterPM.paddock2-0.5233885
+wheat - 0
+wheat - 0
+15 January 1940(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+15 January 1940(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5258359
+.MasterPM.paddock2-0.5258359
+wheat - 0
+wheat - 0
+16 January 1940(Day of year=16), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+16 January 1940(Day of year=16), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5235267
+.MasterPM.paddock2-0.5235267
+wheat - 0
+wheat - 0
+17 January 1940(Day of year=17), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+17 January 1940(Day of year=17), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5242124
+.MasterPM.paddock2-0.5242124
+wheat - 0
+wheat - 0
+18 January 1940(Day of year=18), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+18 January 1940(Day of year=18), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5252672
+.MasterPM.paddock2-0.5252672
+wheat - 0
+wheat - 0
+19 January 1940(Day of year=19), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+19 January 1940(Day of year=19), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5321657
+.MasterPM.paddock2-0.5321657
+wheat - 0
+wheat - 0
+20 January 1940(Day of year=20), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+20 January 1940(Day of year=20), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5347641
+.MasterPM.paddock2-0.5347641
+wheat - 0
+wheat - 0
+21 January 1940(Day of year=21), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+21 January 1940(Day of year=21), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5378738
+.MasterPM.paddock2-0.5378738
+wheat - 0
+wheat - 0
+22 January 1940(Day of year=22), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+22 January 1940(Day of year=22), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5345003
+.MasterPM.paddock2-0.5345003
+wheat - 0
+wheat - 0
+23 January 1940(Day of year=23), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+23 January 1940(Day of year=23), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5311382
+.MasterPM.paddock2-0.5311382
+wheat - 0
+wheat - 0
+24 January 1940(Day of year=24), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+24 January 1940(Day of year=24), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.518037
+.MasterPM.paddock2-0.518037
+wheat - 0
+wheat - 0
+25 January 1940(Day of year=25), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+25 January 1940(Day of year=25), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5131526
+.MasterPM.paddock2-0.5131526
+wheat - 0
+wheat - 0
+26 January 1940(Day of year=26), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+26 January 1940(Day of year=26), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5175448
+.MasterPM.paddock2-0.5175448
+wheat - 0
+wheat - 0
+27 January 1940(Day of year=27), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+27 January 1940(Day of year=27), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5141537
+.MasterPM.paddock2-0.5141537
+wheat - 0
+wheat - 0
+28 January 1940(Day of year=28), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+28 January 1940(Day of year=28), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5239517
+.MasterPM.paddock2-0.5239517
+wheat - 0
+wheat - 0
+29 January 1940(Day of year=29), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+29 January 1940(Day of year=29), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5332438
+.MasterPM.paddock2-0.5332438
+wheat - 0
+wheat - 0
+30 January 1940(Day of year=30), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+30 January 1940(Day of year=30), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+.MasterPM.paddock1-0.5299147
+.MasterPM.paddock2-0.5299147
+wheat - 0
+wheat - 0
+31 January 1940(Day of year=31), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+31 January 1940(Day of year=31), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as nitrate (NO3_N)
+                                         added at depth   10.00 (layer   1)
+31 January 1940(Day of year=31), clock: 
+     Simulation is terminating due to end criteria being met.
