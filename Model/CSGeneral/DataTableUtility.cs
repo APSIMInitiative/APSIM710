@@ -230,9 +230,13 @@ namespace CSGeneral
 
          else if (Table.Columns.IndexOf("date") != -1)
             {
-            DateTime StartDate = new DateTime(StartYear, 1, 1);
-            DateTime EndDate = new DateTime(EndYear, 12, 31);
-            View.RowFilter = "Date >= #" + StartDate.ToShortDateString() + "# and Date <= #" + EndDate.ToShortDateString() + "#";
+            // This uses system locale to decode a date string, we should really
+            // be using the units attribute instead.
+            DateTime d1 = new DateTime(StartYear, 1, 1);
+            String filter = String.Format(System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat, "Date >= #{0}#", d1);
+            DateTime d2 = new DateTime(EndYear, 12, 31);
+            filter += String.Format(System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat, "AND Date <= #{0}#", d2);
+            View.RowFilter = filter;
             }
          else
             throw new Exception("Cannot find a date column in data");

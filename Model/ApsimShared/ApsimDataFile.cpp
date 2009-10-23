@@ -269,6 +269,7 @@ void ApsimDataFile::lookForDateField(void)
                           "   a date column\n"
                           "   a year and day column\n"
                           "   a year, month and dom column");
+   //haveFoundDate = true;
    }
 // ------------------------------------------------------------------
 // return the date on the current record.
@@ -279,7 +280,21 @@ gregorian::date ApsimDataFile::getDate(void)
       lookForDateField();
 
    if (dateI != temporalData.end())
+      {
+#ifdef NOTYET
+// when boost is upgraded
+      date_input_facet *f = new date_input_facet("%x");  // Default format is system locale
+      if (Str_i_Eq(dateI->units, "YYYYMMDD")) {
+          f->format("%Y%m%d");                           // ISO (yyyymmdd)
+      }
+      istringstream dStr(dateI->values[0]);
+      dStr.imbue(f);
+      date d;
+      dStr >> d;
+      return d;
+#endif
       return date(from_string(dateI->values[0]));
+      }
    else
       {
       int year = lexical_cast<int>(yearI->values[0]);
