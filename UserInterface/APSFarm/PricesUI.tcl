@@ -184,7 +184,7 @@ proc setXML {name1 name2 op} {
          if { ![string equal $check(price,$variable) $config(price,$variable)] } {
             set config(updated,$variable)  [clock format [clock seconds] -format %d/%m/%Y]
          }
-         foreach attr [list name price protein units updated] { 
+         foreach attr [list desc name price protein units updated] { 
             set new [$newDoc createElement $attr]
             $new appendChild [$newDoc createTextNode $config($attr,$variable)]
             $varNode appendChild $new

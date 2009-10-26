@@ -644,7 +644,7 @@ proc saveGraph {w} {
       append x "<$what>$cfg($what)</$what>\n"
    }
 
-   set rule "<rule name=\"[$cfg(docroot) getAttribute name] Init rule\" invisible=\"yes\" condition=\"init\">\n"
+   set rule "<rule name=\"$cfg(graph_name) Init rule\" invisible=\"yes\" condition=\"init\">\n"
    append rule "<!\[CDATA\[package require struct\n"
    append rule "::struct::graph $cfg(graph_name)\n"
    
