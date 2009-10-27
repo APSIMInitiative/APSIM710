@@ -1,397 +1,60 @@
-﻿<?xml version="1.0"?>
-<doc>
-<assembly>
-<name>
-SoilTemp2
-</name>
-</assembly>
-<members>
-<member name="P:My.Resources.Resources.ResourceManager">
-	<summary>
-  Returns the cached ResourceManager instance used by this class.
-</summary>
-</member><member name="P:My.Resources.Resources.Culture">
-	<summary>
-  Overrides the current thread's CurrentUICulture property for all
-  resource lookups using this strongly typed resource class.
-</summary>
-</member><member name="T:My.Resources.Resources">
-	<summary>
-  A strongly-typed resource class, for looking up localized strings, etc.
-</summary>
-</member><member name="M:SoilTempdotNET.OnInit2">
-	<summary>
- Initialise soiltemp module
- </summary>
-</member><member name="M:SoilTempdotNET.getIniVariables">
-	<summary>
- initialise global variables to initial values
- </summary>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.getMetVariables(NewMetType@)">
-	<summary>
- set maximum and minimum temperatures
- </summary>
-	<param name="Met"></param>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.getCanopyVariables(NewCanopyType@)">
-	<summary>
- Set canopy height
- </summary>
-	<param name="Canopy"></param>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.getProfileVariables(NewProfileType@)">
-	<summary>
- Set global variables to new soil profile state
- </summary>
-	<param name="Soil"></param>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.readParam">
-	<summary>
- Set global variables with module parameter values and check validity
- </summary>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.doThermalConductivityCoeffs">
-	<summary>
- Calculate the coefficients for thermal conductivity equation (Campbell 4.20) for a typical low-quartz, mineral soil.
- </summary>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.GetOtherVariables">
-	<summary>
- Update global variables with external states and check validity of values.
- </summary>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.doProcess">
-	<summary>
- Perform actions for current day
- </summary>
-</member><member name="M:SoilTempdotNET.doVolumetricSpecificHeat">
-	<summary>
-Calculate the volumetric specific heat (volumetric heat capicity Cv) of the soil layer
-to Campbell, G.S. (1985) "Soil physics with BASIC: Transport
-models for soil-plant systems" (Amsterdam, Elsevier)
- RETURNS gVolSpecHeatSoil()  [Joules*m-3*K-1]
- </summary>
-</member><member name="M:SoilTempdotNET.doThermConductivity">
-	<summary>
- Calculate the thermal conductivity of the soil layer following,
- to Campbell, G.S. (1985) "Soil physics with BASIC: Transport
- models for soil-plant systems" (Amsterdam, Elsevier)
- Equation 4.20 where Lambda = A + B*Theta - (A-D)*exp[-(C*theta)^E]
- Lambda is the thermal conductivity, theta is volumetric water content and A, B, C, D, E are coefficients.
- When theta = 0, lambda = D. At saturation, the last term becomes zero and Lambda = A + B*theta.
- ' The constant E can be assigned a value of 4. The constant C determines the water content where thermal
- conductivity begins to increase rapidly and is highly correlated with clay content.
- Here C1=A, C2=B, SW=theta, C3=C, C4=D, 4=E.
- RETURNS gThermConductivity_zb() (W/m2/K)
- </summary>
-</member><member name="M:SoilTempdotNET.doThomas(System.Double[]@)">
-	<summary>
- Numerical solution of the differential equations. Solves the
- tri_diagonal matrix using the Thomas algorithm, Thomas, L.H. (1946)
- "Elliptic problems in linear difference equations over a network"
- Watson Sci Comput. Lab. Report., (Columbia University, New York)"
- RETURNS gTNew_zb()
- </summary>
-	<remarks>John Hargreaves' version from Campbell Program 4.1</remarks>
-</member><member name="M:SoilTempdotNET.doThomas_VS(System.Double[]@)">
-	<summary>
-Numerical solution of the differential equations. Solves the
-tri_diagonal matrix using the Thomas algorithm, Thomas, L.H. (1946)
-"Elliptic problems in linear difference equations over a network"
-Watson Sci Comput. Lab. Report., (Columbia University, New York)"
- RETURNS TNew_zb()
- </summary>
-	<remarks>Val Snow's original version</remarks>
-</member><member name="M:SoilTempdotNET.InterpTemp(System.Double)">
-	<summary>
-  Interpolate air temperature
- </summary>
-	<param name="timeHours">time of day that air temperature is required</param>
-	<returns>Interpolated air temperature for specified time of day (oC)</returns>
-	<remarks>
- Notes:
-  Between midinight and MinT_time just a linear interpolation between
-  yesterday's midnight temperature and today's MinTg. For the rest of
-  the day use a sin function. 
- Note: This can result in the Midnight temperature being lower than the following minimum.
- </remarks>
-</member><member name="M:SoilTempdotNET.doUpdate(System.Int32)">
-	<summary>
- Determine min, max, and average soil temperature from the
- half-hourly iterations.
- RETURNS gAveTsoil(); gMaxTsoil(); gMinTsoil()
- </summary>
-	<param name="IterationsPerDay">number of times in a day the function is called</param>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.RhoA(System.Double,System.Double)">
-	<summary>
-     calculate the density of air (kg/m3) at a given temperature and pressure
- </summary>
-	<param name="temperature">temperature (oC)</param>
-	<param name="AirPressure">air pressure (hPa)</param>
-	<returns>density of air</returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.boundaryLayerConductance(System.Double[])">
-	<summary>
-     Calculate atmospheric boundary layer conductance.
-     From Program 12.2, p140, Campbell, Soil Physics with Basic.
- </summary>
-	<returns>thermal conductivity of surface layer (W/m2/K)</returns>
-	<remarks> During first stage drying, evaporation prevents the surface from becoming hot,
- so stability corrections are small. Once the surface dries and becomes hot, boundary layer
- resistance is relatively unimportant in determining evaporation rate.
- A dry soil surface reaches temperatures well above air temperatures during the day, and can be well
- below air temperature on a clear night. Thermal stratification on a clear night can be strong enough
- to reduce sensible heat exchange between the soil surface and the air to almost nothing. If stability
- corrections are not made, soil temperature profiles can have large errors.
- </remarks>
-</member><member name="M:SoilTempdotNET.boundaryLayerConductanceConst">
-	<summary>
-     Calculate boundary layer conductance.
-     From Program 12.2, p140, Campbell, Soil Physics with Basic.
- </summary>
-	<returns>thermal conductivity  (W/m2/K)</returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.kelvinT(System.Double)">
-	<summary>
- Convert deg Celcius to deg Kelvin
- </summary>
-	<param name="celciusT">(INPUT) Temperature in deg Celcius</param>
-	<returns>Temperature in deg Kelvin</returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.soiln2_soil_temp(System.Double[]@)">
-	<summary>
-  Purpose
-           Calculates average soil temperature at the centre of each layer
-           based on the soil temperature model of EPIC (Williams et al 1984)
- </summary>
-	<param name="soilTempIO">(OUTPUT) temperature of each layer in profile</param>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.soiln2_layer_temp(System.Double,System.Double,System.Double)">
-	<summary>
-	</summary>
-	<param name="depth_lag">(INPUT) lag factor for depth (radians)</param>
-	<param name="alx">(INPUT) time in radians of a g_year from hottest instance</param>
-	<param name="dlt_temp">(INPUT) change in surface soil temperature since hottest day (deg c)</param>
-	<returns></returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.soiln2_soiltemp_dt(System.Double)">
-	<summary>
-  Purpose
-           Calculates  the rate of change in soil surface temperature
-           with time.
- </summary>
-	<param name="alx">(INPUT) time of year in radians from warmest instance</param>
-	<returns>Change in temperature</returns>
-	<remarks>
-           jngh 24-12-91.  I think this is actually a correction to adjust
-           today's normal sinusoidal soil surface temperature to the
-           current temperature conditions.
- </remarks>
-</member><member name="M:SoilTempdotNET.SurfaceTemperatureInit">
-	<summary>
- Calculate initial soil surface temperature
- </summary>
-	<returns> initial soil surface temperature</returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.soiln2_soiltemp_dampdepth">
-	<summary>
- Purpose
-           Now get the temperature damping depth. This is a function of the
-             average bulk density of the soil and the amount of water above
-             the lower limit. I think the damping depth units are
-             mm depth/radian of a year
- </summary>
-	<returns>soil temperature damping depth (mm)</returns>
-	<remarks>
-      Notes
-       241091 consulted Brian Wall.  For soil temperature an estimate of
-       the water content of the total profile is required, not the plant
-       extractable soil water.  Hence the method used here - difference
-       total lower limit and total soil water instead of sum of differences
-       constrained to and above.  Here the use of lower limit is of no
-       significance - it is merely a reference point, just as 0.0 could
-       have been used.  jngh
- </remarks>
-</member><member name="M:SoilTempdotNET.doNetRadiation(System.Double[]@,System.Double@,System.Double@,System.Int32)">
-	<summary>
- Calculate initial variables for net radiation per timestep
- </summary>
-	<param name="solarRadn">(OUTPUT)</param>
-	<param name="cloudFr">(OUTPUT)</param>
-	<param name="cva">(OUTPUT)</param>
-	<param name="ITERATIONSperDAY"> (INPUT)</param>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.radnNetInterpolate(System.Double,System.Double,System.Double)">
-	<summary>
- Calculate the net radiation at the soil surface.
- </summary>
-	<param name="solarRadn"></param>
-	<param name="cloudFr"></param>
-	<param name="cva"></param>
-	<returns>Net radiation (SW and LW) for timestep (MJ)</returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.divide(System.Object,System.Object,System.Object)">
-	<summary>
-       Divides one number by another.  If the divisor is zero or overflow
-       would occur a specified default is returned.  If underflow would
-       occur, nought is returned.
- </summary>
-	<param name="dividend">dividend - quantity to be divided</param>
-	<param name="divisor">divisor</param>
-	<param name="defaultValue">default value if overflow, underflow or divide by zero</param>
-	<returns></returns>
-	<remarks>
-  Definition
-     Returns (dividend / divisor) if the division can be done
-     without overflow or underflow.  If divisor is zero or
-     overflow would have occurred, default is returned.  If
-     underflow would have occurred, zero is returned.
-
- Assumptions
-       largest/smallest real number is 1.0e+/-30
- </remarks>
-</member><member name="M:SoilTempdotNET.SumOfRange(System.Double[],System.Int32,System.Int32)">
-	<summary>
- Get the sum of all elements in an array between 'start' and 'end'
- </summary>
-	<param name="array"></param>
-	<param name="start"></param>
-	<param name="end"></param>
-	<returns></returns>
-</member><member name="M:SoilTempdotNET.dumpArray(System.Double[])">
-	<summary>
- Used for dbugging purposes
- </summary>
-	<param name="dlayer"></param>
-	<returns></returns>
-</member><member name="M:SoilTempdotNET.BoundCheck(System.Object,System.Object,System.Object,System.String)">
-	<summary>
-     checks if a variable lies outside lower and upper bounds.
-     Reports an err if it does.
- </summary>
-	<param name="VariableValue">value to be validated</param>
-	<param name="Lower">lower limit of value</param>
-	<param name="Upper">upper limit of value</param>
-	<param name="VariableName">variable name to be validated</param>
-	<remarks>
-  Definition
-     This subroutine will issue a warning message using the
-     name of "value", "vname", if "value" is greater than
-     ("upper" + 2 * error_margin("upper")) or if "value" is less than
-     ("lower" - 2 *error_margin("lower")).  If  "lower" is greater
-     than ("upper" + 2 * error_margin("upper")) , then a warning
-     message will be flagged to that effect.
-
- Notes
-     reports err if value GT upper or value LT lower or lower GT upper
- </remarks>
-</member><member name="M:SoilTempdotNET.BoundCheckArray(System.Double[],System.Double,System.Double,System.String)">
-	<summary>
- Check bounds of values in an array
- </summary>
-	<param name="array">array to be checked</param>
-	<param name="LowerBound">lower bound of values</param>
-	<param name="UpperBound">upper bound of values</param>
-	<param name="ArrayName">key string of array</param>
-	<remarks>
-  Definition
-     Each of the "size" elements of "array" should be greater than or equal to
-     ("lower" - 2 *error_margin("lower")) and less than or equal to
-     ("upper" + 2 * error_margin("upper")).  A warning error using
-     the name of "array", "name", will be flagged for each element
-     of "array" that fails the above test.  If  "lower" is greater
-     than ("upper" + 2 * error_margin("upper")) , then a warning
-     message will be flagged to that effect "size" times.
-
-  Assumptions
-     each element has same bounds.
- </remarks>
-</member><member name="M:SoilTempdotNET.RealsAreEqual(System.Double,System.Double)">
-	<summary>
- Tests if two real values are practically equal
- </summary>
-	<param name="double1"></param>
-	<param name="double2"></param>
-	<returns></returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.u_bound(System.Double,System.Double)">
-	<summary>
- constrains a variable to upper bound of upper
- </summary>
-	<param name="var">(INPUT) variable to be constrained</param>
-	<param name="upper">(INPUT) upper limit of variable</param>
-	<returns></returns>
-	<remarks>
- Returns "var" providing that it is less than or equal to the upper bound, "upper".  Otherwise returns "upper".
- </remarks>
-</member><member name="M:SoilTempdotNET.l_bound(System.Double,System.Double)">
-	<summary>
- constrains a variable to or above lower bound of lower
- </summary>
-	<param name="var">(INPUT) variable to be constrained</param>
-	<param name="lower">(INPUT) lower limit of variable</param>
-	<returns></returns>
-	<remarks>
- Returns "var" providing that it is greater than or equal to the lower bound, "lower".  Otherwise returns "lower".
- </remarks>
-</member><member name="M:SoilTempdotNET.bound(System.Double,System.Double,System.Double)">
-	<summary>
- constrains a variable within bounds of lower and upper
- </summary>
-	<param name="var">(INPUT) variable to be constrained</param>
-	<param name="lower">(INPUT) lower limit of variable</param>
-	<param name="upper">(INPUT) upper limit of variable</param>
-	<returns>Constrained value</returns>
-	<remarks>
- Returns "lower", if "var" is less than "lower".  Returns "upper" if "var" is greater than "upper".  Otherwise returns "var".  
- A warning error is flagged if "lower" is greater than "upper".
- If the lower bound is &gt; the upper bound, the variable remains unconstrained.
- </remarks>
-</member><member name="M:SoilTempdotNET.SetArray(System.Double[]@,System.Double)">
-	<summary>
-  sets real array var to value up to level limit
- </summary>
-	<param name="var">(OUTPUT) array to set</param>
-	<param name="value">(INPUT) value to set array</param>
-	<remarks> Sets all elements of "var" to "value".</remarks>
-</member><member name="M:SoilTempdotNET.sum_products_real_array(System.Double[],System.Double[])">
-	<summary>
- returns sum_of of products of arrays var1 and var2, up to level limit. 
- each level of one array is multiplied by the corresponding level of the other.
- </summary>
-	<param name="var1">(INPUT) first array for multiply</param>
-	<param name="var2">(INPUT) 2nd array for multiply</param>
-	<returns>Returns sum of  ("var1"(j) * "var2"(j))   for all j in  1 .. upperBound.</returns>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.multiplyArray(System.Double[],System.Double)">
-	<summary>
- Multiplies array by specified multiplier
- </summary>
-	<param name="array">(INPUT/OUTPUT)</param>
-	<param name="multiplier"></param>
-	<remarks></remarks>
-</member><member name="M:SoilTempdotNET.offset_day_of_year(System.Int32,System.Int32,System.Int32)">
-	<summary>
-  adds or subtracts specified days to/from day of year number
- </summary>
-	<param name="iyr">(INPUT) year</param>
-	<param name="doy">(INPUT) day of year number</param>
-	<param name="ndays">(INPUT) number of days to adjust by</param>
-	<returns>New day of year</returns>
-	<remarks> Returns the day of year for the day "ndays" after the day specified by the day of year, "doy", in the year, "iyr".
-  "ndays" may well be negative.
- </remarks>
-</member><member name="T:SoilTempdotNET">
-	<summary>
- Since temperature changes rapidly near the soil surface and very little at depth, the best simulation will
- be obtained with short elements (shallow layers) near the soil surface and longer ones deeper in the soil.
- The element lengths should go in a geometric progression. Ten to twelve nodes are probably sufficient for
- short term simulations (daily or weekly). Fifteen nodes would probably be sufficient for annual cycle simulation
- where a deeper grid is needed. 
- p36, Campbell, G.S. (1985) "Soil physics with BASIC: Transport models for soil-plant systems" (Amsterdam, Elsevier)
- </summary>
-</member>
-</members>
-</doc>
+<Type name="SoilTemp2">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <IsCrop>No</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/soiltemp/docs/soiltemp_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\thermometer32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\thermometer16.png</SmallIcon>
+      <dll>%apsim%\Model\SoilTemp2.dll</dll>
+      <drops>
+         <drop>toolbox</drop>
+         <drop>area</drop>
+         <drop>simulation</drop>
+         <drop>folder</drop>
+      </drops>
+      <ApsimToSim>
+         <component name="[InstanceName]" executable="[dll]">
+            <executable>[dll]</executable>
+            <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+            <initdata>
+               [Model]
+               [SoilTemp2.innerxml]
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <SoilTempdotNET>
+         <nu description="(-) control forward/backward differencing">0.6 </nu>
+         <vol_spec_heat_om description="(Joules*m-3*K-1)">5.00e6 </vol_spec_heat_om>
+         <vol_spec_heat_water description="(Joules*m-3*K-1)">4.18e6 </vol_spec_heat_water>
+         <vol_spec_heat_clay description="(Joules*m-3*K-1)">2.39e6 </vol_spec_heat_clay>
+         <maxt_time_default description="hours">14.0 </maxt_time_default>
+         <bound_layer_cond_source description="boundary layer conductance source (calc/constant)">constant</bound_layer_cond_source>
+         <boundary_layer_cond description="boundary layer conductance (W/m2/K)">20.0</boundary_layer_cond>
+         <boundary_layer_conductance_iterations description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+         <net_radn_source description="net radiation source (calc/eos)">eos</net_radn_source>
+         <clay description="proportion of clay">  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.2  0.3</clay>
+         <default_wind_speed description="m/s">3.0</default_wind_speed>
+         <default_altitude description="default altitude (m) 275m (700 ft) is approx 980 hPa">275.0</default_altitude>
+         <default_instrum_height description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+         <bare_soil_height description="height of bare soil (mm)">57.0</bare_soil_height>
+      </SoilTempdotNET>
+   </Model>
+   <Info>
+      <variables>
+         <variable name="final_soil_temp_surface" description="Soil surface temperature at the end of the final internal canopy timestep. (oC)"/>
+         <variable name="final_soil_temp" array="T" description="Soil temperature at the end of the final internal canopy timestep. oC"/>
+         <variable name="ave_soil_temp_surface" description="Average soil surface temperature during the Apsim timestep. (oC)"/>
+         <variable name="ave_soil_temp" array="T" description="Average soil surface temperature during the Apsim timestep. (oC)"/>
+         <variable name="mint_soil_surface" description="Minimum soil surface temperature found on surface during the Apsim timestep. (oC)"/>
+         <variable name="mint_soil" array="T" description="Minimum soil surface temperature found in each layer during the Apsim timestep. (oC)"/>
+         <variable name="maxt_soil_surface" description="Maximum soil surface temperature found on surface during the Apsim timestep. (oC)"/>
+         <variable name="maxt_soil" array="T" description="Maximum soil surface temperature found in each layer during the Apsim timestep. (oC)"/>
+         <variable name="therm_cond" description="Thermal conductivity for each layer. (J s-1 m-1 K-1)"/>
+         <variable name="heat_store" description="Volumetric specific heat for each layer. (J m-3 K-1)"/>
+      </variables>
+   </Info>
+</Type>
