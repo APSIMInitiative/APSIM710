@@ -89,6 +89,7 @@ call MakeProject SOI
 call MakeProject SoilN
 call MakeProject SoilP
 call MakeProject SoilTemp
+call MakeProject SoilTemp2
 call MakeProject SoilWat
 call MakeProject Solute
 call MakeProject Sorghum

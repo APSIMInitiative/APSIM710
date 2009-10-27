@@ -193,6 +193,18 @@
       <clay description="proportion of clay">0.1  0.1  0.1  0.1  0.1  0.2  0.3</clay>
       <soil_temp description="Initial soil temperature">15 15 15 15 15 15 15</soil_temp>
     </soiltemp>
+    <SoilTemp2 name="Soil Temperature (.NET)">
+      <clay type="text" description="proportion of clay">0.1  0.1  0.1  0.1  0.1  0.2  0.3</clay>
+      <maxt_time_default type="text" description="hours">14</maxt_time_default>
+      <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+      <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+      <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+      <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+      <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+      <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+      <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+      <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+    </SoilTemp2>
     <cl name="Cl">
       <d0 description="Cl diffusivity in water (mm2/d)">108</d0>
       <layers description="Cl in each layer (kg/ha)">491 62 1490 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000</layers>
@@ -2089,6 +2101,38 @@ public class Script : Instance
         </manager>
       </folder>
       <folder name="Intercropping, Rotations and Weeds">
+      <manager name="End crop on a fixed date for intercropping">
+        <script>
+          <text>
+
+        if (today = date('[date]') then
+            [crop] kill_crop
+            [crop] end_crop
+                  crop_in = crop_in - 1
+            [crop]_to_harvest = 0
+            fert_tot = 0
+            sow_year = 0
+            if (crop_current = '[crop]') then
+               crop_current = crop_current1
+               crop_current1 = crop_current2
+               crop_current2 = blank
+            elseif (crop_current1 = '[crop]') then
+               crop_current1 = crop_current2
+               crop_current2 = blank
+            elseif (crop_current2 = '[crop]') then
+               crop_current2 = blank
+            endif
+        endif
+
+            </text>
+          <event>end_of_day</event>
+        </script>
+        <ui>
+          <category name="Harvesting criteria" />
+          <crop type="crop" description="Enter name of crop to end : ">weed</crop>
+          <date type="text" description="Enter ending date (dd-mmm) : ">1-jan</date>
+        </ui>
+      </manager>
         <manager name="Harvesting rule for intercropping">
           <script>
             <text>
@@ -2220,7 +2264,7 @@ public class Script : Instance
           </script>
           <script>
             <text><![CDATA[
-
+         days_this_year = 364 + (date('1-mar') - date('28-feb'))
          if (next_crop = '[crop]' OR next_crop = blank OR '[rotation_exclude]' = 'yes') then
                !  Presowing  manure application
 
@@ -2562,7 +2606,8 @@ public class Script : Instance
           <script>
             <text><![CDATA[
 
-               days_after_weed_kill = days_after_weed_kill + 1
+              days_this_year = 364 + (date('1-mar') - date('28-feb'))
+              days_after_weed_kill = days_after_weed_kill + 1
 
                if (next_crop = '[crop]' OR next_crop = blank OR '[rotation_exclude]' = 'yes') then
                   !   Tillage - presowing seedbed preparation
@@ -4304,8 +4349,10 @@ dev.off()
       <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
       <receive_crop_runoff type="list" listvalues="no,yes" description="Dam collects runoff from simulated crop area">no</receive_crop_runoff>
       <init_salt_conc description="Initial chloride concentration (ppm)">704.0</init_salt_conc>
+      <receive_catchment_runoff type="list" listvalues="no,yes" description="Dam collects runoff from larger catchment area">no</receive_catchment_runoff>
       <catchment_area description="Catchment area (ha)">50.0</catchment_area>
       <catchment_runoff_factor description="soilwat2.runoff multiplier">0.5</catchment_runoff_factor>
+      <receive_crop_runoff type="list" listvalues="yes,no" description="Dam collects runoff from simulated crop area">yes</receive_crop_runoff>
       <runoff_salt_conc description="Runoff chloride concentration (ppm)">700.0</runoff_salt_conc>
       <rainfall_salt_conc description="Rainfall chloride concentration (ppm)">20.0</rainfall_salt_conc>
     </dam>
