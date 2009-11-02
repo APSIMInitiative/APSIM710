@@ -57,6 +57,10 @@
      .                       // TRIM(date_st)
      .                       //' to a valid date (dd/mm/yyyy)')
          endif
+         if (g%start_date .gt. g%end_date) then
+            call fatal_error (Err_User,
+     :       'The start date is greater than the end date')
+         endif
       endif
 
       ! Try start_day/month/year combo
@@ -115,10 +119,6 @@
       else
       endif
 
-      if (g%start_date .gt. g%end_date) then
-         call fatal_error (Err_User,
-     :       'The start date is greater than the end date')
-      endif
 
       if (mod(mins_in_day,g%timestep).ne.0) then
          call fatal_error (Err_User,
