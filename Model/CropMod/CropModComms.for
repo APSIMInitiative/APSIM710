@@ -1549,11 +1549,6 @@ c      end if
      :                               , sw_deficit
      :                               , num_layers)
 
-      elseif (variable_name .eq. 'vpd') then
-         call respond2get_real_var (variable_name
-     :                             , '(kpa)'
-     :                             , g%vpd)
-
       elseif (variable_name .eq. 'transp_eff') then
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'

@@ -243,8 +243,6 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'sw_deficit', floatarrayTypeDDML, 'mm')
       dummy = add_registration_with_units(respondToGetReg,
-     :                        'vpd', floatTypeDDML, 'kpa')
-      dummy = add_registration_with_units(respondToGetReg,
      :                        'transp_eff', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'sw_demand', floatTypeDDML, 'mm')
