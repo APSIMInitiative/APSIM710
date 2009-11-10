@@ -571,7 +571,7 @@ puts "creating $simName.$graph.nc"
          set pid($p) $id; incr id
       }   
 	  puts "writing rules"
-
+      catch {unset pos}
       set i 0
       foreach day $config(historyDays) {
          foreach paddock $config(paddocks) {
@@ -2942,13 +2942,13 @@ proc [state]IsPlanted {paddock} {
             <y2>347.0</y2>
           </node>
           <node>
-            <x1>263.0</x1>
-            <name>Wheat</name>
-            <y1>262.0</y1>
-            <x2>363.0</x2>
+            <x1>370.0</x1>
+            <name>Fallow</name>
+            <y1>169.0</y1>
+            <x2>470.0</x2>
             <desc>yyy</desc>
-            <fill>green</fill>
-            <y2>362.0</y2>
+            <fill>white</fill>
+            <y2>269.0</y2>
           </node>
           <node>
             <x1>458.0</x1>
@@ -2960,13 +2960,13 @@ proc [state]IsPlanted {paddock} {
             <y2>165.0</y2>
           </node>
           <node>
-            <x1>370.0</x1>
-            <name>Fallow</name>
-            <y1>169.0</y1>
-            <x2>470.0</x2>
+            <x1>263.0</x1>
+            <name>Wheat</name>
+            <y1>262.0</y1>
+            <x2>363.0</x2>
             <desc>yyy</desc>
-            <fill>white</fill>
-            <y2>269.0</y2>
+            <fill>green</fill>
+            <y2>362.0</y2>
           </node>
           <node>
             <x1>265.0</x1>
@@ -2977,17 +2977,6 @@ proc [state]IsPlanted {paddock} {
             <fill>lightblue</fill>
             <y2>173.0</y2>
           </node>
-          <arc>
-            <name>arc11</name>
-            <source>Wheat</source>
-            <target>Fallow</target>
-            <x>337.0</x>
-            <actions>harvestAndEndCrop $paddock Wheat</actions>
-            <y>240.0</y>
-            <rules>[canHarvestCrop $paddock Wheat]</rules>
-            <rules />
-            <actions />
-          </arc>
           <arc>
             <name>arc2</name>
             <source>Fallow</source>
@@ -3003,6 +2992,28 @@ proc [state]IsPlanted {paddock} {
             <rules>[areaPlanted sorghum] &lt;0.1</rules>
             <rules>[getEsw $paddock]</rules>
             <rules>[sorghumHistory $paddock]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc11</name>
+            <source>Wheat</source>
+            <target>Fallow</target>
+            <x>337.0</x>
+            <actions>harvestAndEndCrop $paddock Wheat</actions>
+            <y>240.0</y>
+            <rules>[canHarvestCrop $paddock Wheat]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc3</name>
+            <source>earlySorghum</source>
+            <target>Fallow</target>
+            <x>379.5</x>
+            <actions>harvestAndEndCrop $paddock earlySorghum</actions>
+            <y>156.0</y>
+            <rules>[canHarvestCrop $paddock earlySorghum]</rules>
             <rules />
             <actions />
           </arc>
@@ -3027,13 +3038,31 @@ proc [state]IsPlanted {paddock} {
             <actions />
           </arc>
           <arc>
-            <name>arc3</name>
-            <source>earlySorghum</source>
+            <name>arc4</name>
+            <source>Fallow</source>
+            <target>Sorghum</target>
+            <x>449.0</x>
+            <actions>sowCrop $paddock Sorghum; lappend history($paddock) sorghum</actions>
+            <y>183.5</y>
+            <rules>[dayWithin 1 46]</rules>
+            <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+            <rules>$daysSinceLastHarvest($paddock) &gt;60</rules>
+            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+            <rules>[getEsw $paddock] &gt;100</rules>
+            <rules>[areaPlanted sorghum] &lt;0.8</rules>
+            <rules>[getEsw $paddock]</rules>
+            <rules>[sorghumHistory $paddock]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc13</name>
+            <source>Chickpea</source>
             <target>Fallow</target>
-            <x>379.5</x>
-            <actions>harvestAndEndCrop $paddock earlySorghum</actions>
-            <y>156.0</y>
-            <rules>[canHarvestCrop $paddock earlySorghum]</rules>
+            <x>492.0</x>
+            <actions>harvestAndEndCrop $paddock Chickpea</actions>
+            <y>239.0</y>
+            <rules>[canHarvestCrop $paddock Chickpea]</rules>
             <rules />
             <actions />
           </arc>
@@ -3055,46 +3084,6 @@ proc [state]IsPlanted {paddock} {
             <actions />
           </arc>
           <arc>
-            <name>arc13</name>
-            <source>Chickpea</source>
-            <target>Fallow</target>
-            <x>492.0</x>
-            <actions>harvestAndEndCrop $paddock Chickpea</actions>
-            <y>239.0</y>
-            <rules>[canHarvestCrop $paddock Chickpea]</rules>
-            <rules />
-            <actions />
-          </arc>
-          <arc>
-            <name>arc4</name>
-            <source>Fallow</source>
-            <target>Sorghum</target>
-            <x>449.0</x>
-            <actions>sowCrop $paddock Sorghum; lappend history($paddock) sorghum</actions>
-            <y>183.5</y>
-            <rules>[dayWithin 1 46]</rules>
-            <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
-            <rules>$daysSinceLastHarvest($paddock) &gt;60</rules>
-            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
-            <rules>[getEsw $paddock] &gt;100</rules>
-            <rules>[areaPlanted sorghum] &lt;0.8</rules>
-            <rules>[getEsw $paddock]</rules>
-            <rules>[sorghumHistory $paddock]</rules>
-            <rules />
-            <actions />
-          </arc>
-          <arc>
-            <name>arc5</name>
-            <source>Sorghum</source>
-            <target>Fallow</target>
-            <x>480.0</x>
-            <actions>harvestAndEndCrop $paddock Sorghum</actions>
-            <y>184.5</y>
-            <rules>[canHarvestCrop $paddock Sorghum]</rules>
-            <rules />
-            <actions />
-          </arc>
-          <arc>
             <name>arc10</name>
             <source>Fallow</source>
             <target>Wheat</target>
@@ -3109,6 +3098,17 @@ proc [state]IsPlanted {paddock} {
             <rules>[areaPlanted wheat] &lt;0.8</rules>
             <rules>[getEsw $paddock]</rules>
             <rules>[wheatHistory $paddock]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc5</name>
+            <source>Sorghum</source>
+            <target>Fallow</target>
+            <x>480.0</x>
+            <actions>harvestAndEndCrop $paddock Sorghum</actions>
+            <y>184.5</y>
+            <rules>[canHarvestCrop $paddock Sorghum]</rules>
             <rules />
             <actions />
           </arc>
@@ -3233,18 +3233,14 @@ proc [state]IsPlanted {paddock} {
 ::struct::graph GrainCrops
 GrainCrops node insert "Chickpea"
 set colour(Chickpea) "pink"
-GrainCrops node insert "Wheat"
-set colour(Wheat) "green"
-GrainCrops node insert "Sorghum"
-set colour(Sorghum) "lightblue"
 GrainCrops node insert "Fallow"
 set colour(Fallow) "white"
+GrainCrops node insert "Sorghum"
+set colour(Sorghum) "lightblue"
+GrainCrops node insert "Wheat"
+set colour(Wheat) "green"
 GrainCrops node insert "earlySorghum"
 set colour(earlySorghum) "lightblue"
-GrainCrops arc insert "Wheat" "Fallow" "arc11"
-GrainCrops arc lappend "arc11" actions {harvestAndEndCrop $paddock Wheat}
-GrainCrops arc lappend "arc11" rules {[canHarvestCrop $paddock Wheat]}
-GrainCrops arc lappend "arc11" actions {}
 GrainCrops arc insert "Fallow" "earlySorghum" "arc2"
 GrainCrops arc lappend "arc2" actions {sowCrop $paddock earlySorghum; lappend history($paddock) sorghum}
 GrainCrops arc lappend "arc2" rules {[dayWithin 320 365]}
@@ -3256,6 +3252,14 @@ GrainCrops arc lappend "arc2" rules {[areaPlanted sorghum] <0.1}
 GrainCrops arc lappend "arc2" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc2" rules {[sorghumHistory $paddock]}
 GrainCrops arc lappend "arc2" actions {}
+GrainCrops arc insert "Wheat" "Fallow" "arc11"
+GrainCrops arc lappend "arc11" actions {harvestAndEndCrop $paddock Wheat}
+GrainCrops arc lappend "arc11" rules {[canHarvestCrop $paddock Wheat]}
+GrainCrops arc lappend "arc11" actions {}
+GrainCrops arc insert "earlySorghum" "Fallow" "arc3"
+GrainCrops arc lappend "arc3" actions {harvestAndEndCrop $paddock earlySorghum}
+GrainCrops arc lappend "arc3" rules {[canHarvestCrop $paddock earlySorghum]}
+GrainCrops arc lappend "arc3" actions {}
 GrainCrops arc insert "Fallow" "Chickpea" "arc12"
 GrainCrops arc lappend "arc12" actions {sowCrop $paddock Chickpea; lappend history($paddock) chickpea}
 GrainCrops arc lappend "arc12" rules {[dayWithin 105 189]}
@@ -3269,24 +3273,6 @@ GrainCrops arc lappend "arc12" rules {[getCover $paddock] > 0.3}
 GrainCrops arc lappend "arc12" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc12" rules {[chickpeaHistory $paddock]}
 GrainCrops arc lappend "arc12" actions {}
-GrainCrops arc insert "earlySorghum" "Fallow" "arc3"
-GrainCrops arc lappend "arc3" actions {harvestAndEndCrop $paddock earlySorghum}
-GrainCrops arc lappend "arc3" rules {[canHarvestCrop $paddock earlySorghum]}
-GrainCrops arc lappend "arc3" actions {}
-GrainCrops arc insert "Fallow" "earlySorghum" "arc0"
-GrainCrops arc lappend "arc0" actions {sowCrop $paddock earlySorghum; lappend history($paddock) sorghum}
-GrainCrops arc lappend "arc0" rules {[dayWithin 320 365]}
-GrainCrops arc lappend "arc0" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
-GrainCrops arc lappend "arc0" rules {$daysSinceLastHarvest($paddock) >60}
-GrainCrops arc lappend "arc0" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
-GrainCrops arc lappend "arc0" rules {[getEsw $paddock] >110}
-GrainCrops arc lappend "arc0" rules {[areaPlanted sorghum] <0.1}
-GrainCrops arc lappend "arc0" rules {[getEsw $paddock]}
-GrainCrops arc lappend "arc0" actions {}
-GrainCrops arc insert "Chickpea" "Fallow" "arc13"
-GrainCrops arc lappend "arc13" actions {harvestAndEndCrop $paddock Chickpea}
-GrainCrops arc lappend "arc13" rules {[canHarvestCrop $paddock Chickpea]}
-GrainCrops arc lappend "arc13" actions {}
 GrainCrops arc insert "Fallow" "Sorghum" "arc4"
 GrainCrops arc lappend "arc4" actions {sowCrop $paddock Sorghum; lappend history($paddock) sorghum}
 GrainCrops arc lappend "arc4" rules {[dayWithin 1 46]}
@@ -3298,10 +3284,20 @@ GrainCrops arc lappend "arc4" rules {[areaPlanted sorghum] <0.8}
 GrainCrops arc lappend "arc4" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc4" rules {[sorghumHistory $paddock]}
 GrainCrops arc lappend "arc4" actions {}
-GrainCrops arc insert "Sorghum" "Fallow" "arc5"
-GrainCrops arc lappend "arc5" actions {harvestAndEndCrop $paddock Sorghum}
-GrainCrops arc lappend "arc5" rules {[canHarvestCrop $paddock Sorghum]}
-GrainCrops arc lappend "arc5" actions {}
+GrainCrops arc insert "Chickpea" "Fallow" "arc13"
+GrainCrops arc lappend "arc13" actions {harvestAndEndCrop $paddock Chickpea}
+GrainCrops arc lappend "arc13" rules {[canHarvestCrop $paddock Chickpea]}
+GrainCrops arc lappend "arc13" actions {}
+GrainCrops arc insert "Fallow" "earlySorghum" "arc0"
+GrainCrops arc lappend "arc0" actions {sowCrop $paddock earlySorghum; lappend history($paddock) sorghum}
+GrainCrops arc lappend "arc0" rules {[dayWithin 320 365]}
+GrainCrops arc lappend "arc0" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+GrainCrops arc lappend "arc0" rules {$daysSinceLastHarvest($paddock) >60}
+GrainCrops arc lappend "arc0" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc0" rules {[getEsw $paddock] >110}
+GrainCrops arc lappend "arc0" rules {[areaPlanted sorghum] <0.1}
+GrainCrops arc lappend "arc0" rules {[getEsw $paddock]}
+GrainCrops arc lappend "arc0" actions {}
 GrainCrops arc insert "Fallow" "Wheat" "arc10"
 GrainCrops arc lappend "arc10" actions {sowCrop $paddock Wheat; lappend history($paddock) wheat}
 GrainCrops arc lappend "arc10" rules {[dayWithin 97 189]}
@@ -3313,6 +3309,10 @@ GrainCrops arc lappend "arc10" rules {[areaPlanted wheat] <0.8}
 GrainCrops arc lappend "arc10" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc10" rules {[wheatHistory $paddock]}
 GrainCrops arc lappend "arc10" actions {}
+GrainCrops arc insert "Sorghum" "Fallow" "arc5"
+GrainCrops arc lappend "arc5" actions {harvestAndEndCrop $paddock Sorghum}
+GrainCrops arc lappend "arc5" rules {[canHarvestCrop $paddock Sorghum]}
+GrainCrops arc lappend "arc5" actions {}
 if {[info exists config(p1,graphNames)]} {lappend config(p1,graphNames) GrainCrops} else {set config(p1,graphNames) GrainCrops}
 set config(p1,initialState) "Fallow"
 if {[info exists config(p2,graphNames)]} {lappend config(p2,graphNames) GrainCrops} else {set config(p2,graphNames) GrainCrops}
@@ -5814,13 +5814,13 @@ if SweetSorghum.height = 800  then
             <y2>347.0</y2>
           </node>
           <node>
-            <x1>370.0</x1>
-            <name>Fallow</name>
-            <y1>169.0</y1>
-            <x2>470.0</x2>
+            <x1>263.0</x1>
+            <name>Wheat</name>
+            <y1>262.0</y1>
+            <x2>363.0</x2>
             <desc>yyy</desc>
-            <fill>white</fill>
-            <y2>269.0</y2>
+            <fill>green</fill>
+            <y2>362.0</y2>
           </node>
           <node>
             <x1>458.0</x1>
@@ -5832,13 +5832,13 @@ if SweetSorghum.height = 800  then
             <y2>165.0</y2>
           </node>
           <node>
-            <x1>263.0</x1>
-            <name>Wheat</name>
-            <y1>262.0</y1>
-            <x2>363.0</x2>
+            <x1>370.0</x1>
+            <name>Fallow</name>
+            <y1>169.0</y1>
+            <x2>470.0</x2>
             <desc>yyy</desc>
-            <fill>green</fill>
-            <y2>362.0</y2>
+            <fill>white</fill>
+            <y2>269.0</y2>
           </node>
           <node>
             <x1>265.0</x1>
@@ -5849,6 +5849,17 @@ if SweetSorghum.height = 800  then
             <fill>lightblue</fill>
             <y2>173.0</y2>
           </node>
+          <arc>
+            <name>arc11</name>
+            <source>Wheat</source>
+            <target>Fallow</target>
+            <x>337.0</x>
+            <actions>harvestAndEndCrop $paddock Wheat</actions>
+            <y>240.0</y>
+            <rules>[canHarvestCrop $paddock Wheat]</rules>
+            <rules />
+            <actions />
+          </arc>
           <arc>
             <name>arc2</name>
             <source>Fallow</source>
@@ -5864,28 +5875,6 @@ if SweetSorghum.height = 800  then
             <rules>[areaPlanted sorghum] &lt;0.1</rules>
             <rules>[getEsw $paddock]</rules>
             <rules>[sorghumHistory $paddock]</rules>
-            <rules />
-            <actions />
-          </arc>
-          <arc>
-            <name>arc11</name>
-            <source>Wheat</source>
-            <target>Fallow</target>
-            <x>337.0</x>
-            <actions>harvestAndEndCrop $paddock Wheat</actions>
-            <y>240.0</y>
-            <rules>[canHarvestCrop $paddock Wheat]</rules>
-            <rules />
-            <actions />
-          </arc>
-          <arc>
-            <name>arc3</name>
-            <source>earlySorghum</source>
-            <target>Fallow</target>
-            <x>379.5</x>
-            <actions>harvestAndEndCrop $paddock earlySorghum</actions>
-            <y>156.0</y>
-            <rules>[canHarvestCrop $paddock earlySorghum]</rules>
             <rules />
             <actions />
           </arc>
@@ -5910,31 +5899,13 @@ if SweetSorghum.height = 800  then
             <actions />
           </arc>
           <arc>
-            <name>arc4</name>
-            <source>Fallow</source>
-            <target>Sorghum</target>
-            <x>448.0</x>
-            <actions>sowCrop $paddock Sorghum; lappend history($paddock) sorghum</actions>
-            <y>183.5</y>
-            <rules>[dayWithin 1 46]</rules>
-            <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
-            <rules>$daysSinceLastHarvest($paddock) &gt;60</rules>
-            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
-            <rules>[getEsw $paddock] &gt;100</rules>
-            <rules>[areaPlanted sorghum] &lt;0.8</rules>
-            <rules>[getEsw $paddock]</rules>
-            <rules>[sorghumHistory $paddock]</rules>
-            <rules />
-            <actions />
-          </arc>
-          <arc>
-            <name>arc13</name>
-            <source>Chickpea</source>
+            <name>arc3</name>
+            <source>earlySorghum</source>
             <target>Fallow</target>
-            <x>492.0</x>
-            <actions>harvestAndEndCrop $paddock Chickpea</actions>
-            <y>239.0</y>
-            <rules>[canHarvestCrop $paddock Chickpea]</rules>
+            <x>379.5</x>
+            <actions>harvestAndEndCrop $paddock earlySorghum</actions>
+            <y>156.0</y>
+            <rules>[canHarvestCrop $paddock earlySorghum]</rules>
             <rules />
             <actions />
           </arc>
@@ -5956,6 +5927,46 @@ if SweetSorghum.height = 800  then
             <actions />
           </arc>
           <arc>
+            <name>arc13</name>
+            <source>Chickpea</source>
+            <target>Fallow</target>
+            <x>492.0</x>
+            <actions>harvestAndEndCrop $paddock Chickpea</actions>
+            <y>239.0</y>
+            <rules>[canHarvestCrop $paddock Chickpea]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc4</name>
+            <source>Fallow</source>
+            <target>Sorghum</target>
+            <x>448.0</x>
+            <actions>sowCrop $paddock Sorghum; lappend history($paddock) sorghum</actions>
+            <y>183.5</y>
+            <rules>[dayWithin 1 46]</rules>
+            <rules>[expr [sumLastRain 4] &gt; 20 &amp;&amp; [sumLastRain 1] == 0]</rules>
+            <rules>$daysSinceLastHarvest($paddock) &gt;60</rules>
+            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+            <rules>[getEsw $paddock] &gt;100</rules>
+            <rules>[areaPlanted sorghum] &lt;0.8</rules>
+            <rules>[getEsw $paddock]</rules>
+            <rules>[sorghumHistory $paddock]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
+            <name>arc5</name>
+            <source>Sorghum</source>
+            <target>Fallow</target>
+            <x>481.0</x>
+            <actions>harvestAndEndCrop $paddock Sorghum</actions>
+            <y>184.5</y>
+            <rules>[canHarvestCrop $paddock Sorghum]</rules>
+            <rules />
+            <actions />
+          </arc>
+          <arc>
             <name>arc10</name>
             <source>Fallow</source>
             <target>Wheat</target>
@@ -5970,17 +5981,6 @@ if SweetSorghum.height = 800  then
             <rules>[areaPlanted wheat] &lt;0.8</rules>
             <rules>[getEsw $paddock]</rules>
             <rules>[wheatHistory $paddock]</rules>
-            <rules />
-            <actions />
-          </arc>
-          <arc>
-            <name>arc5</name>
-            <source>Sorghum</source>
-            <target>Fallow</target>
-            <x>481.0</x>
-            <actions>harvestAndEndCrop $paddock Sorghum</actions>
-            <y>184.5</y>
-            <rules>[canHarvestCrop $paddock Sorghum]</rules>
             <rules />
             <actions />
           </arc>
@@ -6105,14 +6105,18 @@ if SweetSorghum.height = 800  then
 ::struct::graph GrainCrops
 GrainCrops node insert "Chickpea"
 set colour(Chickpea) "pink"
-GrainCrops node insert "Fallow"
-set colour(Fallow) "white"
-GrainCrops node insert "Sorghum"
-set colour(Sorghum) "lightblue"
 GrainCrops node insert "Wheat"
 set colour(Wheat) "green"
+GrainCrops node insert "Sorghum"
+set colour(Sorghum) "lightblue"
+GrainCrops node insert "Fallow"
+set colour(Fallow) "white"
 GrainCrops node insert "earlySorghum"
 set colour(earlySorghum) "lightblue"
+GrainCrops arc insert "Wheat" "Fallow" "arc11"
+GrainCrops arc lappend "arc11" actions {harvestAndEndCrop $paddock Wheat}
+GrainCrops arc lappend "arc11" rules {[canHarvestCrop $paddock Wheat]}
+GrainCrops arc lappend "arc11" actions {}
 GrainCrops arc insert "Fallow" "earlySorghum" "arc2"
 GrainCrops arc lappend "arc2" actions {sowCrop $paddock earlySorghum; lappend history($paddock) sorghum}
 GrainCrops arc lappend "arc2" rules {[dayWithin 320 365]}
@@ -6124,14 +6128,6 @@ GrainCrops arc lappend "arc2" rules {[areaPlanted sorghum] <0.1}
 GrainCrops arc lappend "arc2" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc2" rules {[sorghumHistory $paddock]}
 GrainCrops arc lappend "arc2" actions {}
-GrainCrops arc insert "Wheat" "Fallow" "arc11"
-GrainCrops arc lappend "arc11" actions {harvestAndEndCrop $paddock Wheat}
-GrainCrops arc lappend "arc11" rules {[canHarvestCrop $paddock Wheat]}
-GrainCrops arc lappend "arc11" actions {}
-GrainCrops arc insert "earlySorghum" "Fallow" "arc3"
-GrainCrops arc lappend "arc3" actions {harvestAndEndCrop $paddock earlySorghum}
-GrainCrops arc lappend "arc3" rules {[canHarvestCrop $paddock earlySorghum]}
-GrainCrops arc lappend "arc3" actions {}
 GrainCrops arc insert "Fallow" "Chickpea" "arc12"
 GrainCrops arc lappend "arc12" actions {sowCrop $paddock Chickpea; lappend history($paddock) chickpea}
 GrainCrops arc lappend "arc12" rules {[dayWithin 105 189]}
@@ -6145,6 +6141,24 @@ GrainCrops arc lappend "arc12" rules {[getCover $paddock] > 0.3}
 GrainCrops arc lappend "arc12" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc12" rules {[chickpeaHistory $paddock]}
 GrainCrops arc lappend "arc12" actions {}
+GrainCrops arc insert "earlySorghum" "Fallow" "arc3"
+GrainCrops arc lappend "arc3" actions {harvestAndEndCrop $paddock earlySorghum}
+GrainCrops arc lappend "arc3" rules {[canHarvestCrop $paddock earlySorghum]}
+GrainCrops arc lappend "arc3" actions {}
+GrainCrops arc insert "Fallow" "earlySorghum" "arc0"
+GrainCrops arc lappend "arc0" actions {sowCrop $paddock earlySorghum; lappend history($paddock) sorghum}
+GrainCrops arc lappend "arc0" rules {[dayWithin 320 365]}
+GrainCrops arc lappend "arc0" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+GrainCrops arc lappend "arc0" rules {$daysSinceLastHarvest($paddock) >60}
+GrainCrops arc lappend "arc0" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc0" rules {[getEsw $paddock] >110}
+GrainCrops arc lappend "arc0" rules {[areaPlanted sorghum] <0.1}
+GrainCrops arc lappend "arc0" rules {[getEsw $paddock]}
+GrainCrops arc lappend "arc0" actions {}
+GrainCrops arc insert "Chickpea" "Fallow" "arc13"
+GrainCrops arc lappend "arc13" actions {harvestAndEndCrop $paddock Chickpea}
+GrainCrops arc lappend "arc13" rules {[canHarvestCrop $paddock Chickpea]}
+GrainCrops arc lappend "arc13" actions {}
 GrainCrops arc insert "Fallow" "Sorghum" "arc4"
 GrainCrops arc lappend "arc4" actions {sowCrop $paddock Sorghum; lappend history($paddock) sorghum}
 GrainCrops arc lappend "arc4" rules {[dayWithin 1 46]}
@@ -6156,20 +6170,10 @@ GrainCrops arc lappend "arc4" rules {[areaPlanted sorghum] <0.8}
 GrainCrops arc lappend "arc4" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc4" rules {[sorghumHistory $paddock]}
 GrainCrops arc lappend "arc4" actions {}
-GrainCrops arc insert "Chickpea" "Fallow" "arc13"
-GrainCrops arc lappend "arc13" actions {harvestAndEndCrop $paddock Chickpea}
-GrainCrops arc lappend "arc13" rules {[canHarvestCrop $paddock Chickpea]}
-GrainCrops arc lappend "arc13" actions {}
-GrainCrops arc insert "Fallow" "earlySorghum" "arc0"
-GrainCrops arc lappend "arc0" actions {sowCrop $paddock earlySorghum; lappend history($paddock) sorghum}
-GrainCrops arc lappend "arc0" rules {[dayWithin 320 365]}
-GrainCrops arc lappend "arc0" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
-GrainCrops arc lappend "arc0" rules {$daysSinceLastHarvest($paddock) >60}
-GrainCrops arc lappend "arc0" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
-GrainCrops arc lappend "arc0" rules {[getEsw $paddock] >110}
-GrainCrops arc lappend "arc0" rules {[areaPlanted sorghum] <0.1}
-GrainCrops arc lappend "arc0" rules {[getEsw $paddock]}
-GrainCrops arc lappend "arc0" actions {}
+GrainCrops arc insert "Sorghum" "Fallow" "arc5"
+GrainCrops arc lappend "arc5" actions {harvestAndEndCrop $paddock Sorghum}
+GrainCrops arc lappend "arc5" rules {[canHarvestCrop $paddock Sorghum]}
+GrainCrops arc lappend "arc5" actions {}
 GrainCrops arc insert "Fallow" "Wheat" "arc10"
 GrainCrops arc lappend "arc10" actions {sowCrop $paddock Wheat; lappend history($paddock) wheat}
 GrainCrops arc lappend "arc10" rules {[dayWithin 97 189]}
@@ -6181,10 +6185,6 @@ GrainCrops arc lappend "arc10" rules {[areaPlanted wheat] <0.8}
 GrainCrops arc lappend "arc10" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc10" rules {[wheatHistory $paddock]}
 GrainCrops arc lappend "arc10" actions {}
-GrainCrops arc insert "Sorghum" "Fallow" "arc5"
-GrainCrops arc lappend "arc5" actions {harvestAndEndCrop $paddock Sorghum}
-GrainCrops arc lappend "arc5" rules {[canHarvestCrop $paddock Sorghum]}
-GrainCrops arc lappend "arc5" actions {}
 if {[info exists config(p1,graphNames)]} {lappend config(p1,graphNames) GrainCrops} else {set config(p1,graphNames) GrainCrops}
 set config(p1,initialState) "Fallow"
 if {[info exists config(p2,graphNames)]} {lappend config(p2,graphNames) GrainCrops} else {set config(p2,graphNames) GrainCrops}

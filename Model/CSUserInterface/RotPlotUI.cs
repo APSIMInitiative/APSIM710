@@ -42,6 +42,7 @@ namespace CSUserInterface
         private double m_DayHeight = 0;
         private XmlDocument DocStates = null;
         private string m_FileName  = "";
+        private string FullFileName = "";
         private DateTime m_StartDate;
         private DateTime m_EndDate;
         private DateTime m_FirstYear;
@@ -78,7 +79,7 @@ namespace CSUserInterface
             m_FileName = "";
             string simName = "";
             string graphName = "";
-            string FullFileName = "";
+            FullFileName = "";
 
             ApsimFile.Component thisComp = Controller.ApsimData.Find(NodePath);
             //loop back up the component datastructure until you get to the parent simulation. 
@@ -108,6 +109,7 @@ namespace CSUserInterface
             {
                 if (File.Exists(FullFileName))
                 {
+                    panel2.Visible = true;
                     ReadXMLFile(FullFileName);
                     ReadNetCDFFile(FullFileName);
                     lblFileName.Text = m_FileName;
@@ -115,8 +117,13 @@ namespace CSUserInterface
                 else
                 {
                     //clear
+                    //reset values for drawing
+                    panel2.Visible = false;
                     lblFileName.Text = m_FileName + " - (not found)";
+                    pnlLegend.Invalidate();
                 }
+                FillCurrentDateData(m_SelectedDate);
+                RefreshTree();
             }
             catch (Exception ex)
             {
@@ -312,18 +319,30 @@ namespace CSUserInterface
                 tmpBox.Y = tmp.Y + (int)((m_LegendRowHeight - m_LegendBoxHeight) / 2.0) - 1;
                 tmpBox.Height = m_LegendBoxHeight; //1 years height
                 tmpBox.Width = m_LegendBoxWidth;
-
-                for (int i = 0; i < rotations.Count; ++i)
+                if (panel2.Visible)
                 {
-                    string rotation = rotations[i];
-                    e.Graphics.DrawString(rotation, drawFont, drawBrush, tmp, sf);
+                    for (int i = 0; i < rotations.Count; ++i)
+                    {
+                        string rotation = rotations[i];
+                        e.Graphics.DrawString(rotation, drawFont, drawBrush, tmp, sf);
 
-                    ColourBrush.Color = colours[i];
-                    e.Graphics.FillRectangle(ColourBrush, tmpBox);
-                    e.Graphics.DrawRectangle(System.Drawing.SystemPens.WindowText, tmpBox);
+                        ColourBrush.Color = colours[i];
+                        e.Graphics.FillRectangle(ColourBrush, tmpBox);
+                        e.Graphics.DrawRectangle(System.Drawing.SystemPens.WindowText, tmpBox);
 
-                    tmp.Y += m_LegendRowHeight;
-                    tmpBox.Y += m_LegendRowHeight;
+                        tmp.Y += m_LegendRowHeight;
+                        tmpBox.Y += m_LegendRowHeight;
+                    }
+                }
+                else
+                {
+                    tmp.X = pnlLegend.Top;
+                    tmp.Y = pnlLegend.Left;
+                    tmp.Height = pnlLegend.Height; //1 years height
+                    tmp.Width = pnlLegend.Width;
+                    ColourBrush.Color = pnlLegend.BackColor;
+                    e.Graphics.FillRectangle(ColourBrush, tmp);
+                    //e.Graphics.DrawRectangle(System.Drawing.SystemPens.WindowText, tmp);
                 }
             }
         }
@@ -492,7 +511,7 @@ namespace CSUserInterface
                         }
                     }
                     FillCurrentDateData(newDate);
-                    RefreshTree(newDate);
+                    RefreshTree();
                 }
             }
             catch (Exception ex)
@@ -614,12 +633,7 @@ namespace CSUserInterface
         }
         private void ReadNetCDFFile(string filename)
         {
-            string netcdf_file = Path.ChangeExtension(filename, ".nc");
-            if (!File.Exists(netcdf_file))
-            {
-                return;
-            }
-            int result = NetCDF.nc_open(netcdf_file, NetCDF.cmode.NC_NOWRITE.GetHashCode(), ref _ncid);
+            int result = OpenNetCDFFile(filename);
             if (result == 0)
             {
                 int dimlen = 0;
@@ -639,6 +653,17 @@ namespace CSUserInterface
             {
                 positions = null;
             }
+            int closeresult = NetCDF.nc_close(_ncid);
+        }
+        private int OpenNetCDFFile(string filename)
+        {
+            //should return 0 if successfull
+            string netcdf_file = Path.ChangeExtension(filename, ".nc");
+            if (!File.Exists(netcdf_file))
+            {
+                return -1;
+            }
+            return NetCDF.nc_open(netcdf_file, NetCDF.cmode.NC_NOWRITE.GetHashCode(), ref _ncid);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -724,55 +749,69 @@ namespace CSUserInterface
         {
             if (positions == null)
             {
-                return;
+                ReadNetCDFFile(FullFileName);
+                if (positions == null)
+                    return;
             }
-
-            TimeSpan tmpSpan = tmpDate - m_StartDate;
-            int index = tmpSpan.Days;
-            if (index >= 0 && index < positions.Length)
+            int cdfResult = OpenNetCDFFile(FullFileName);
+            if (cdfResult == 0)
             {
-                int pos = positions[index];
-                int daySize = m_DataSize - pos;
-                if (index < positions.Length - 1)
+                try
                 {
-                    daySize = positions[index + 1] - positions[index];
-                }
-
-                day = new float[daySize];
-                paddock = new short[daySize];
-                rule = new short[daySize];
-                value = new float[daySize];
-                coords[0] = pos;
-                size[0] = daySize;
-                int result = NetCDF.nc_get_vara_float(_ncid, 2, coords, size, day);
-                result += NetCDF.nc_get_vara_short(_ncid, 3, coords, size, paddock);
-                result += NetCDF.nc_get_vara_short(_ncid, 4, coords, size, rule);
-                result += NetCDF.nc_get_vara_float(_ncid, 5, coords, size, value);
-
-                float tmpDayNum = daynum[index];
-                for (int i = 0; i < day.Length; ++i)
-                {
-                    float tmpDay = day[i];
-                    if (tmpDay != tmpDayNum)
+                    TimeSpan tmpSpan = tmpDate - m_StartDate;
+                    int index = tmpSpan.Days;
+                    if (index >= 0 && index < positions.Length)
                     {
-                        throw new Exception("invalid index into result data");
+                        int pos = positions[index];
+                        int daySize = m_DataSize - pos;
+                        if (index < positions.Length - 1)
+                        {
+                            daySize = positions[index + 1] - positions[index];
+                        }
+
+                        day = new float[daySize];
+                        paddock = new short[daySize];
+                        rule = new short[daySize];
+                        value = new float[daySize];
+                        coords[0] = pos;
+                        size[0] = daySize;
+                        int result = NetCDF.nc_get_vara_float(_ncid, 2, coords, size, day);
+                        result += NetCDF.nc_get_vara_short(_ncid, 3, coords, size, paddock);
+                        result += NetCDF.nc_get_vara_short(_ncid, 4, coords, size, rule);
+                        result += NetCDF.nc_get_vara_float(_ncid, 5, coords, size, value);
+
+                        float tmpDayNum = daynum[index];
+                        for (int i = 0; i < day.Length; ++i)
+                        {
+                            float tmpDay = day[i];
+                            if (tmpDay != tmpDayNum)
+                            {
+                                throw new Exception("invalid index into result data");
+                            }
+                        }
+
+                        if (result > 0)
+                        {
+                            //error
+                            day = null;
+                            paddock = null;
+                            rule = null;
+                            value = null;
+                        }
                     }
                 }
-
-                if (result > 0)
+                catch (Exception ex)
                 {
-                    //error
-                    day = null;
-                    paddock = null;
-                    rule = null;
-                    value = null;
+                    int closeresult = NetCDF.nc_close(_ncid);
+                    throw new Exception(ex.Message);
                 }
             }
+            int close = NetCDF.nc_close(_ncid);
         }
-        private void RefreshTree(DateTime tmpDate)
+        private void RefreshTree()
         {
             treeView1.Nodes.Clear();
-            if (paddock == null) return;
+            if (paddock == null || panel2.Visible != true) return;
             int iLastPaddock = -1;
             TreeNode pPaddockNode = null;
 
