@@ -4,6 +4,7 @@
 
 #include <General\string_functions.h>
 #include <General\stristr.h>
+#include <General\Path.h>
 
 #include <ApsimShared\FStringExt.h>
 #include <ApsimShared\ApsimDirectories.h>
@@ -93,7 +94,7 @@ bool VensimComponent::findLibrary(void)
       dllName = getApsimDirectory() + "/Model/VenDLM32.dll";
       }
 
-   writeString(string("DLL filename: " + dllName).c_str());
+   writeString(string("DLL filename: " + fileTail(dllName)).c_str());
 
    vensimLibrary = LoadLibrary(dllName.c_str());
 

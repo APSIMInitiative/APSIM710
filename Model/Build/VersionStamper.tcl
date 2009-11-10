@@ -9,7 +9,7 @@ if {[catch {set msg [exec svn log -q -r HEAD ../..]} emsg] } {
 
 set buildTime [clock format [clock seconds] -format "%d-%b-%Y"]
 
-set fp [open ../../Apsim.xml r]; set text [read -nonewline $fp]; close $fp
+set fp [open ../../ApsimTemplate.xml r]; set text [read -nonewline $fp]; close $fp
 
 regsub -all -line "\<builddate\>.*\</builddate\>$" $text "\<builddate\>$buildTime\</builddate\>" text
 regsub -all -line "\<buildnumber\>.*\</buildnumber\>$" $text "\<buildnumber\>$releaseNumber\</buildnumber\>" text
