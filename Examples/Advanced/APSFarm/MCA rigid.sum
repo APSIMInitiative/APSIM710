@@ -916,6 +916,21 @@ Paddock:
      stateGraph arc lappend "arc1" actions {harvestAndEndCrop $paddock wheat}
      stateGraph arc lappend "arc1" rules {[canHarvestCrop $paddock wheat]}
      stateGraph arc lappend "arc1" actions {}
+     stateGraph arc insert "Fallow" "Lf_earlySorghum" "arc20"
+     stateGraph arc lappend "arc20" actions {sowCrop $paddock Lf_earlySorghum; lappend history($paddock) sorghum}
+     stateGraph arc lappend "arc20" rules {[dayWithin 244 350]}
+     stateGraph arc lappend "arc20" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+     stateGraph arc lappend "arc20" rules {$daysSinceLastHarvest($paddock) >300}
+     stateGraph arc lappend "arc20" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+     stateGraph arc lappend "arc20" rules {[getEsw $paddock] >100}
+     stateGraph arc lappend "arc20" rules {[areaPlanted sorghum] <0.8}
+     stateGraph arc lappend "arc20" rules {[getEsw $paddock]}
+     stateGraph arc lappend "arc20" rules {[sorghumHistory $paddock]}
+     stateGraph arc lappend "arc20" actions {}
+     stateGraph arc insert "Lf_Wheat" "Fallow" "arc19"
+     stateGraph arc lappend "arc19" actions {harvestAndEndCrop $paddock wheat}
+     stateGraph arc lappend "arc19" rules {[canHarvestCrop $paddock wheat]}
+     stateGraph arc lappend "arc19" actions {}
      stateGraph arc insert "Fallow" "Sf_earlySorghum" "arc2"
      stateGraph arc lappend "arc2" actions {sowCrop $paddock Sf_earlySorghum; lappend history($paddock) sorghum}
      stateGraph arc lappend "arc2" rules {[dayWithin 244 350]}
@@ -928,29 +943,25 @@ Paddock:
      stateGraph arc lappend "arc2" rules {[getEsw $paddock]}
      stateGraph arc lappend "arc2" rules {[sorghumHistory $paddock]}
      stateGraph arc lappend "arc2" actions {}
-     stateGraph arc insert "Lf_Wheat" "Fallow" "arc19"
-     stateGraph arc lappend "arc19" actions {harvestAndEndCrop $paddock wheat}
-     stateGraph arc lappend "arc19" rules {[canHarvestCrop $paddock wheat]}
-     stateGraph arc lappend "arc19" actions {}
-     stateGraph arc insert "Fallow" "Lf_earlySorghum" "arc20"
-     stateGraph arc lappend "arc20" actions {sowCrop $paddock Lf_earlySorghum; lappend history($paddock) sorghum}
-     stateGraph arc lappend "arc20" rules {[dayWithin 244 350]}
-     stateGraph arc lappend "arc20" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
-     stateGraph arc lappend "arc20" rules {$daysSinceLastHarvest($paddock) >300}
-     stateGraph arc lappend "arc20" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
-     stateGraph arc lappend "arc20" rules {[getEsw $paddock] >100}
-     stateGraph arc lappend "arc20" rules {[areaPlanted sorghum] <0.8}
-     stateGraph arc lappend "arc20" rules {[getEsw $paddock]}
-     stateGraph arc lappend "arc20" rules {[sorghumHistory $paddock]}
-     stateGraph arc lappend "arc20" actions {}
-     stateGraph arc insert "Sf_earlySorghum" "Fallow" "arc3"
-     stateGraph arc lappend "arc3" actions {harvestAndEndCrop $paddock sorghum}
-     stateGraph arc lappend "arc3" rules {[canHarvestCrop $paddock sorghum]}
-     stateGraph arc lappend "arc3" actions {}
      stateGraph arc insert "Lf_earlySorghum" "Fallow" "arc21"
      stateGraph arc lappend "arc21" actions {harvestAndEndCrop $paddock sorghum}
      stateGraph arc lappend "arc21" rules {[canHarvestCrop $paddock sorghum]}
      stateGraph arc lappend "arc21" actions {}
+     stateGraph arc insert "Sf_earlySorghum" "Fallow" "arc3"
+     stateGraph arc lappend "arc3" actions {harvestAndEndCrop $paddock sorghum}
+     stateGraph arc lappend "arc3" rules {[canHarvestCrop $paddock sorghum]}
+     stateGraph arc lappend "arc3" actions {}
+     stateGraph arc insert "Fallow" "Lf_Sorghum" "arc22"
+     stateGraph arc lappend "arc22" actions {sowCrop $paddock Lf_Sorghum; lappend history($paddock) sorghum}
+     stateGraph arc lappend "arc22" rules {[dayWithin 244  350] }
+     stateGraph arc lappend "arc22" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
+     stateGraph arc lappend "arc22" rules {$daysSinceLastHarvest($paddock) >300}
+     stateGraph arc lappend "arc22" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+     stateGraph arc lappend "arc22" rules {[getEsw $paddock] >100}
+     stateGraph arc lappend "arc22" rules {[areaPlanted sorghum] <0.8}
+     stateGraph arc lappend "arc22" rules {[getEsw $paddock]}
+     stateGraph arc lappend "arc22" rules {[sorghumHistory $paddock]}
+     stateGraph arc lappend "arc22" actions {}
      stateGraph arc insert "Fallow" "Sf_Sorghum" "arc4"
      stateGraph arc lappend "arc4" actions {sowCrop $paddock Sf_Sorghum; lappend history($paddock) sorghum}
      stateGraph arc lappend "arc4" rules {[dayWithin 244 350] }
@@ -963,25 +974,14 @@ Paddock:
      stateGraph arc lappend "arc4" rules {[getEsw $paddock]}
      stateGraph arc lappend "arc4" rules {[sorghumHistory $paddock]}
      stateGraph arc lappend "arc4" actions {}
-     stateGraph arc insert "Fallow" "Lf_Sorghum" "arc22"
-     stateGraph arc lappend "arc22" actions {sowCrop $paddock Lf_Sorghum; lappend history($paddock) sorghum}
-     stateGraph arc lappend "arc22" rules {[dayWithin 244  350] }
-     stateGraph arc lappend "arc22" rules {[expr [sumLastRain 4] > 20 && [sumLastRain 1] == 0]}
-     stateGraph arc lappend "arc22" rules {$daysSinceLastHarvest($paddock) >300}
-     stateGraph arc lappend "arc22" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
-     stateGraph arc lappend "arc22" rules {[getEsw $paddock] >100}
-     stateGraph arc lappend "arc22" rules {[areaPlanted sorghum] <0.8}
-     stateGraph arc lappend "arc22" rules {[getEsw $paddock]}
-     stateGraph arc lappend "arc22" rules {[sorghumHistory $paddock]}
-     stateGraph arc lappend "arc22" actions {}
-     stateGraph arc insert "Sf_Sorghum" "Fallow" "arc5"
-     stateGraph arc lappend "arc5" actions {harvestAndEndCrop $paddock sorghum}
-     stateGraph arc lappend "arc5" rules {[canHarvestCrop $paddock sorghum]}
-     stateGraph arc lappend "arc5" actions {}
      stateGraph arc insert "Lf_Sorghum" "Fallow" "arc23"
      stateGraph arc lappend "arc23" actions {harvestAndEndCrop $paddock sorghum}
      stateGraph arc lappend "arc23" rules {[canHarvestCrop $paddock sorghum]}
      stateGraph arc lappend "arc23" actions {}
+     stateGraph arc insert "Sf_Sorghum" "Fallow" "arc5"
+     stateGraph arc lappend "arc5" actions {harvestAndEndCrop $paddock sorghum}
+     stateGraph arc lappend "arc5" rules {[canHarvestCrop $paddock sorghum]}
+     stateGraph arc lappend "arc5" actions {}
      stateGraph arc insert "Fallow" "lateWheat" "arc6"
      stateGraph arc lappend "arc6" actions {sowCrop $paddock lateWheat; lappend history($paddock) wheat}
      stateGraph arc lappend "arc6" rules {[dayWithin 153 160]}
@@ -1007,6 +1007,10 @@ Paddock:
      stateGraph arc lappend "arc8" rules {[getEsw $paddock]}
      stateGraph arc lappend "arc8" rules {$daysSinceLastHarvest($paddock) <14}
      stateGraph arc lappend "arc8" actions {}
+     stateGraph arc insert "CoverCrop" "Fallow" "arc9"
+     stateGraph arc lappend "arc9" actions {harvestAndEndCrop $paddock weed}
+     stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}}
+     stateGraph arc lappend "arc9" actions {}
      stateGraph arc insert "Fallow" "Sf_earlyWheat" "arc10"
      stateGraph arc lappend "arc10" actions {sowCrop $paddock Sf_earlyWheat; lappend history($paddock) wheat}
      stateGraph arc lappend "arc10" rules {[dayWithin 116 128]}
@@ -1020,10 +1024,6 @@ Paddock:
      stateGraph arc lappend "arc10" rules {[getEsw $paddock]}
      stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
      stateGraph arc lappend "arc10" actions {}
-     stateGraph arc insert "CoverCrop" "Fallow" "arc9"
-     stateGraph arc lappend "arc9" actions {harvestAndEndCrop $paddock weed}
-     stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[apsimGet $paddock.weed.plant_status]" == "dead"}}
-     stateGraph arc lappend "arc9" actions {}
      
      --->Section: post
      
