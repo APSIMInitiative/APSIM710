@@ -1,0 +1,412 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = 12) Pongola 1986-87 N14 1R
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "Pongola" = %apsim%\Model\Manager.dll
+   Component         "Pongola 867 1R Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component      "Pongola 867 1R Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "sugar" = %apsim%\Model\Sugar.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 12/11/1986
+     Simulation end date   = 12/10/1987
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Pongola.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as date
+        site
+        season
+        treat
+        year
+        day
+        daysaftersowing as das
+        crop_status
+        ratoon_no
+        samp
+        fertiliser
+        irrigation
+        rain
+        canefw
+        cane_wt
+        sucrose_wt
+        scmstf
+        ccs
+        scmst
+        biomass
+        green_biomass
+        leafgreenwt as leaf_wt
+        cabbage_wt
+        senescedwt as trash_wt
+        lai
+        swdef_photo
+        nfact_photo
+        biomass_n
+        green_biomass_n
+        N_green(3) as cane_N
+        N_green(2) as leaf_N
+        N_green(4) as cab_N
+        senescedn as trash_N
+        n_conc_cane
+        n_conc_leaf
+        n_conc_cab
+        cane_dmf as cane_dmc
+        no3
+        flow_no3(6)
+        no3ppm
+        nh4
+        nh4ppm
+
+     Output file = 12) Pongola 1986-87 N14 1R.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     12/11/1986  Prepare      sugar sow plants=10, sowing_depth= 150, cultivar=N14 , ratoon= 1
+     12/11/1986  Prepare      fertiliser apply amount = 172 (kg/ha), depth = 50 (mm), type = no3_n ()
+     19/12/1986  Prepare      fertiliser apply amount = 23 (kg/ha), depth = 50 (mm), type = no3_n ()
+     12/10/1987  Post         sugar harvest
+     12/10/1987  Post         sugar end_crop
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.80
+           depth for calculating available soil water =    1000.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pongola Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     samp=0
+     
+     SECTION:- start_of_day
+     samp=0
+     if ((day = 20 or day = 75 or day = 135 or day = 170 or day = 201)
+        and year = 1987) then
+        samp = 1
+     endif
+     site='pongola'
+     season='1986-87'
+     treat=2
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : samp = 0.00000
+
+------- Pongola 867 1R Water Initialisation -----------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-   50.  0.050  0.101  0.261  0.368  0.261  1.390  0.376  0.800
+           50.-  170.  0.050  0.101  0.261  0.368  0.261  1.390  0.429  0.800
+          170.-  320.  0.050  0.101  0.261  0.368  0.261  1.390  0.158  0.800
+          320.-  470.  0.050  0.160  0.282  0.371  0.282  1.430  0.037  0.800
+          470.-  620.  0.050  0.160  0.282  0.371  0.282  1.430  0.000  0.800
+          620.-  920.  0.050  0.150  0.304  0.399  0.304  1.340  0.000  0.800
+          920.- 1220.  0.050  0.150  0.304  0.399  0.304  1.340  0.000  0.800
+         1220.- 1520.  0.050  0.150  0.304  0.399  0.304  1.340  0.000  0.800
+         1520.- 1820.  0.050  0.150  0.304  0.399  0.304  1.340  0.000  0.800
+         1820.- 2120.  0.050  0.150  0.304  0.399  0.304  1.340  0.000  0.800
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-   50.       5.05       8.00       8.00       5.35
+           50.-  170.      12.12      19.20      19.20      12.84
+          170.-  320.      15.15      24.00      24.00      16.05
+          320.-  470.      24.00      18.30      18.30      13.35
+          470.-  620.      24.00      18.30      18.30      13.35
+          620.-  920.      45.00      46.20      46.20      28.50
+          920.- 1220.      45.00      46.20      46.20      28.50
+         1220.- 1520.      45.00      46.20      46.20      28.50
+         1520.- 1820.      45.00      46.20      46.20      28.50
+         1820.- 2120.      45.00      46.20      46.20      28.50
+          ---------------------------------------------------------
+               Totals     305.32     318.80     318.80     203.44
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              46.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sugar_trassugar         1000.0   400.0     5.0     0.0   0.503     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.5
+     
+
+------- Pongola 867 1R Nitrogen Initialisation --------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.30    1.39    0.69    0.00
+             2     6.00  1.00    3.34    1.67    0.00
+             3     6.00  0.80    2.09    2.09    0.00
+             4     6.00  0.80    2.14    1.07    0.00
+             5     6.00  0.70    2.14    1.07    0.00
+             6     6.00  0.60    4.02    2.01    0.00
+             7     5.00  0.20    4.02    2.01    0.00
+             8     5.00  0.20    4.02    2.01    0.00
+             9     5.00  0.20    4.02    2.01    0.00
+            10     5.00  0.20    4.02    2.01    0.00
+          ------------------------------------------------
+           Totals               31.20   16.64    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       8826.5   679.0   208.5    26.1    93.7     1.3
+             2      16516.5  1270.5   163.5    20.4    79.1     1.1
+             3      16638.7  1279.9    41.3     5.2    64.0     0.9
+             4      17134.5  1318.0    25.5     3.2    51.7     0.7
+             5      15007.5  1154.4     7.5     0.9    41.8     0.6
+             6      24114.0  1854.9     6.0     0.8    27.4     0.4
+             7       8039.9   618.5     0.1     0.0    17.9     0.3
+             8       8039.9   618.5     0.1     0.0    11.7     0.2
+             9       8039.9   618.5     0.1     0.0     7.7     0.1
+            10       8039.9   618.5     0.1     0.0     5.0     0.1
+          ---------------------------------------------------------
+           Totals  130397.4 10030.6   452.6    56.6   400.0     5.7
+          ---------------------------------------------------------
+
+------- sugar Initialisation --------------------------------------------------
+      Initialising
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+      Sending sow message to sugar
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Cultivar
+         Day no   mm     m^2    Name
+         ------------------------------------------------
+            316  150.0   10.0 n14
+         ------------------------------------------------
+     
+         - Reading constants from ratoon_crop
+     
+         - Reading constants from n14_ratoon
+     
+        - Reading root profile parameters
+     
+     
+     
+     Sugar module is calculating its own soil uptakes
+     
+     
+     
+                         Root Profile
+       --------------------------------------------------
+         Layer depth  Kl factor   Lower limit Root Factor
+              (mm)         ()        (mm/mm)     (0-1)
+       --------------------------------------------------
+            50.000       0.100       0.101       1.000
+           120.000       0.100       0.101       1.000
+           150.000       0.100       0.101       1.000
+           150.000       0.100       0.160       1.000
+           150.000       0.100       0.160       1.000
+           300.000       0.080       0.150       1.000
+           300.000       0.080       0.150       1.000
+        -------------------------------------------------
+     
+     
+       Crop factor for bounding water use is set to 100.0 times Eo
+     
+     
+     
+      Sending apply message to fertiliser
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       172.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+     Manager creating a new local string variable : site = pongola
+     Manager creating a new local string variable : season = 1986-87
+     Manager creating a new local real variable : treat = 2.00000
+13 November 1986(Day of year=317), sugar: 
+      stage    2.0 sprouting
+23 November 1986(Day of year=327), sugar: 
+      stage    3.0 emergence
+                          biomass =           3.529999       lai =    0.1000000E-01
+                          stover N conc =    2.529743       extractable sw =    57.97674
+19 December 1986(Day of year=353), operations: 
+      Sending apply message to fertiliser
+19 December 1986(Day of year=353), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        23.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+19 March 1987(Day of year=78), sugar: 
+      stage    4.0 begin_cane
+                          biomass =           2018.610       lai =     5.910225
+                          stover N conc =   0.8893527       extractable sw =    225.3211
+12 October 1987(Day of year=285), operations: 
+      Sending harvest message to sugar
+12 October 1987(Day of year=285), sugar: 
+     
+     
+     
+      flowering day  =    0
+      maximum lai = 6.001
+      total above ground biomass (kg/ha) =   63849.3
+      live above ground biomass (kg/ha) =   63849.3
+      green above ground biomass (kg/ha) =   60537.0
+      senesced above ground biomass (kg/ha) =    3312.4
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  38.1
+      total N content (kg/ha) =    199.24    senesced N content (kg/ha) =     12.13
+      green N content (kg/ha) =    187.11    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.1567003E-02
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+                                               straw residue =13448.0 kg/ha
+                                               straw N =   90.1 kg/ha
+                                               root residue = 1810.6 kg/ha
+                                               root N =   10.4 kg/ha
+      Sending end_crop message to sugar
+                                               straw residue =    0.0 kg/ha
+                                               straw N =    0.0 kg/ha
+                                               root residue = 8737.4 kg/ha
+                                               root N =   50.4 kg/ha
+12 October 1987(Day of year=285), clock: 
+     Simulation is terminating due to end criteria being met.

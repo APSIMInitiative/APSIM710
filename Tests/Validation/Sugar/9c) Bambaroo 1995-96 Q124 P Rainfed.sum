@@ -1,0 +1,403 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = 9c) Bambaroo 1995-96 Q124 P Rainfed
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                     "Bambaroo" = %apsim%\Model\Manager.dll
+   Component                   "Pace Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Pace Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "sugar" = %apsim%\Model\Sugar.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  6/07/1995
+     Simulation end date   = 26/08/1996
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Bambaroo.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as date
+        site
+        season
+        treat
+        year
+        day
+        daysaftersowing as das
+        crop_status
+        ratoon_no
+        samp
+        fertiliser
+        irrigation
+        rain
+        canefw
+        cane_wt
+        sucrose_wt
+        scmstf
+        ccs
+        scmst
+        biomass
+        green_biomass
+        leafgreenwt as leaf_wt
+        cabbage_wt
+        senescedwt as trash_wt
+        lai
+        swdef_photo
+        nfact_photo
+        biomass_n
+        green_biomass_n
+        N_green(3) as cane_N
+        N_green(2) as leaf_N
+        N_green(4) as cab_N
+        senescedn as trash_N
+        n_conc_cane
+        n_conc_leaf
+        n_conc_cab
+        cane_dmf as cane_dmc
+        no3
+        flow_no3(6)
+        no3ppm
+        nh4
+        nh4ppm
+
+     Output file = 9c) Bambaroo 1995-96 Q124 P Rainfed.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      6/07/1995  Prepare      sugar sow plants = 10, sowing_depth = 100, cultivar = Q124, ratoon = 0
+      6/07/1995  Prepare      fertiliser apply amount = 44.5 (kg/ha), depth = 100 (mm), type = nh4_n ()
+     15/10/1995  Prepare      fertiliser apply amount = 24.7 (kg/ha), depth = 100 (mm), type = nh4_n ()
+     29/10/1995  Prepare       sugar hill_up canefr = 1.0 (), topsfr = 0.50 ()
+     26/08/1996  Post         sugar harvest
+     26/08/1996  Post         sugar end_crop
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Bambaroo Initialisation -----------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     samp=0
+     
+     SECTION:- start_of_day
+     samp=0
+     if (year = 1995 and (day = 317)) or
+        (year = 1996 and (day = 23 or day = 127 or day = 238)) then
+        samp = 1
+     endif
+     site='bambaroo'
+     season='1995-96'
+     treat=3
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : samp = 0.00000
+
+------- Pace Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.050  0.260  0.420  0.460  0.240  1.300  0.613  0.300
+          100.-  300.  0.100  0.260  0.420  0.460  0.340  1.300  0.340  0.300
+          300.-  600.  0.100  0.260  0.420  0.460  0.400  1.300  0.048  0.300
+          600.-  900.  0.100  0.260  0.420  0.460  0.400  1.300  0.000  0.300
+          900.- 1200.  0.100  0.260  0.420  0.460  0.400  1.300  0.000  0.300
+         1200.- 1800.  0.100  0.260  0.420  0.460  0.400  1.300  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      26.00       0.00      16.00       4.00
+          100.-  300.      52.00      16.00      32.00       8.00
+          300.-  600.      78.00      42.00      48.00      12.00
+          600.-  900.      78.00      42.00      48.00      12.00
+          900.- 1200.      78.00      42.00      48.00      12.00
+         1200.- 1800.     156.00      84.00      96.00      24.00
+          ---------------------------------------------------------
+               Totals     468.00     226.00     288.00      72.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.10       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              78.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sugar_trassugar          100.0    40.0     0.5     0.0   0.068     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.1
+     
+
+------- Pace Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.30    2.60    1.30    0.00
+             2     6.00  1.00    5.20    2.60    0.00
+             3     6.00  0.80    3.90    3.90    0.00
+             4     6.00  0.80    3.90    1.95    0.00
+             5     6.00  0.70    3.90    1.95    0.00
+             6     6.00  0.60    7.80    3.90    0.00
+          ------------------------------------------------
+           Totals               27.30   15.60    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      16604.7  1277.3   295.3    36.9     7.6     0.1
+             2      25807.9  1985.2   192.1    24.0     5.4     0.1
+             3      31122.8  2394.1    77.2     9.7     3.3     0.0
+             4      31153.7  2396.4    46.3     5.8     2.0     0.0
+             5      27286.4  2099.0    13.6     1.7     1.2     0.0
+             6      46788.4  3599.1    11.6     1.5     0.4     0.0
+          ---------------------------------------------------------
+           Totals  178763.8 13751.1   636.2    79.5    20.0     0.3
+          ---------------------------------------------------------
+
+------- sugar Initialisation --------------------------------------------------
+      Initialising
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+      Sending sow message to sugar
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Cultivar
+         Day no   mm     m^2    Name
+         ------------------------------------------------
+            187  100.0   10.0 q124
+         ------------------------------------------------
+     
+         - Reading constants from plant_crop
+     
+         - Reading constants from q124
+     
+        - Reading root profile parameters
+     
+     
+     
+     Sugar module is calculating its own soil uptakes
+     
+     
+     
+                         Root Profile
+       --------------------------------------------------
+         Layer depth  Kl factor   Lower limit Root Factor
+              (mm)         ()        (mm/mm)     (0-1)
+       --------------------------------------------------
+           100.000       0.100       0.260       1.000
+           200.000       0.100       0.260       1.000
+           300.000       0.100       0.260       1.000
+           300.000       0.080       0.260       1.000
+           300.000       0.080       0.260       1.000
+           600.000       0.040       0.260       1.000
+             0.000       0.000       0.000       0.000
+        -------------------------------------------------
+     
+     
+       Crop factor for bounding water use is set to 100.0 times Eo
+     
+     
+     
+      Sending apply message to fertiliser
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        44.50 of N as ammonium (nh4_n)
+                                         added at depth  100.00 (layer   1)
+     Manager creating a new local string variable : site = bambaroo
+     Manager creating a new local string variable : season = 1995-96
+     Manager creating a new local real variable : treat = 3.00000
+7 August 1995(Day of year=219), sugar: 
+      stage    2.0 sprouting
+11 October 1995(Day of year=284), sugar: 
+      stage    3.0 emergence
+                          biomass =           3.529968       lai =    0.1000000E-01
+                          stover N conc =    2.529772       extractable sw =    136.6065
+15 October 1995(Day of year=288), operations: 
+      Sending apply message to fertiliser
+15 October 1995(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        24.70 of N as ammonium (nh4_n)
+                                         added at depth  100.00 (layer   1)
+29 October 1995(Day of year=302), operations: 
+      Sending hill_up message to sugar
+30 January 1996(Day of year=30), sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1608.492       lai =     6.267229
+                          stover N conc =   0.8410734       extractable sw =    295.7646
+26 August 1996(Day of year=239), operations: 
+      Sending harvest message to sugar
+26 August 1996(Day of year=239), sugar: 
+     
+     
+     
+      flowering day  =    0
+      maximum lai = 6.920
+      total above ground biomass (kg/ha) =   46490.9
+      live above ground biomass (kg/ha) =   46490.9
+      green above ground biomass (kg/ha) =   42188.6
+      senesced above ground biomass (kg/ha) =    4302.3
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  43.3
+      total N content (kg/ha) =    126.52    senesced N content (kg/ha) =     15.76
+      green N content (kg/ha) =    110.76    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =   0.3599241E-02   nitrogen stress 1 =   0.7320482E-02
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =   0.2611415       nitrogen stress 1 =    0.000000
+      water stress 2 =   0.2517523
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+                                               straw residue = 9266.4 kg/ha
+                                               straw N =   69.2 kg/ha
+                                               root residue = 1721.4 kg/ha
+                                               root N =   11.3 kg/ha
+     
+         - Reading constants from ratoon_crop
+     
+         - Reading constants from q124_ratoon
+      Sending end_crop message to sugar
+                                               straw residue =    0.0 kg/ha
+                                               straw N =    0.0 kg/ha
+                                               root residue = 8306.5 kg/ha
+                                               root N =   54.8 kg/ha
+26 August 1996(Day of year=239), clock: 
+     Simulation is terminating due to end criteria being met.

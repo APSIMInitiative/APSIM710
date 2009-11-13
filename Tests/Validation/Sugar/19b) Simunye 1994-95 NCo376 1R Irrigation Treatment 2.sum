@@ -1,0 +1,480 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = 19b) Simunye 1994-95 NCo376 1R Irrigation Treatment 2
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "Simunye" = %apsim%\Model\Manager.dll
+   Component                "Simunye Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component             "Simunye Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "sugar" = %apsim%\Model\Sugar.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 10/08/1994
+     Simulation end date   = 26/07/1995
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Simunye.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as date
+        site
+        season
+        treat
+        year
+        day
+        daysaftersowing as das
+        crop_status
+        ratoon_no
+        samp
+        fertiliser
+        irrigation
+        rain
+        canefw
+        cane_wt
+        sucrose_wt
+        scmstf
+        ccs
+        scmst
+        biomass
+        green_biomass
+        leafgreenwt as leaf_wt
+        cabbage_wt
+        senescedwt as trash_wt
+        lai
+        swdef_photo
+        nfact_photo
+        biomass_n
+        green_biomass_n
+        N_green(3) as cane_N
+        N_green(2) as leaf_N
+        N_green(4) as cab_N
+        senescedn as trash_N
+        n_conc_cane
+        n_conc_leaf
+        n_conc_cab
+        cane_dmf as cane_dmc
+        no3
+        flow_no3(6)
+        no3ppm
+        nh4
+        nh4ppm
+
+     Output file = 19b) Simunye 1994-95 NCo376 1R Irrigation Treatment 2.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     10/08/1994  Prepare      sugar sow plants = 16, sowing_depth = 150, cultivar = NCo376, ratoon = 1
+     11/08/1994  Prepare      fertiliser apply amount = 140 (kg/ha), depth = 50 (mm), type = urea_n ()
+      7/09/1994  Prepare      irrigation apply amount =  83.6 (mm)
+     27/09/1994  Prepare      irrigation apply amount =  35.5 (mm)
+     29/09/1994  Prepare      irrigation apply amount =  24.5 (mm)
+      2/11/1994  Prepare      irrigation apply amount =  60.0 (mm)
+     18/11/1994  Prepare      irrigation apply amount =  50.2 (mm)
+     22/12/1994  Prepare      irrigation apply amount =  60.0 (mm)
+      4/01/1995  Prepare      irrigation apply amount =  60.0 (mm)
+     13/01/1995  Prepare      irrigation apply amount =  59.3 (mm)
+     26/01/1995  Prepare      irrigation apply amount =  59.5 (mm)
+      7/02/1995  Prepare      irrigation apply amount =  57.5 (mm)
+     13/02/1995  Prepare      irrigation apply amount =  49.0 (mm)
+     27/02/1995  Prepare      irrigation apply amount =  60.0 (mm)
+     13/01/1995  Prepare      irrigation apply amount =  59.3 (mm)
+      9/03/1995  Prepare      irrigation apply amount =  60.0 (mm)
+     15/03/1995  Prepare      irrigation apply amount =  34.0 (mm)
+     20/03/1995  Prepare      irrigation apply amount =  39.5 (mm)
+      5/04/1995  Prepare      irrigation apply amount =  57.4 (mm)
+     15/04/1995  Prepare      irrigation apply amount =  35.5 (mm)
+     26/04/1995  Prepare      irrigation apply amount =  47.2 (mm)
+     18/05/1995  Prepare      irrigation apply amount =  51.6 (mm)
+      1/06/1995  Prepare      irrigation apply amount =  50.4 (mm)
+     13/01/1995  Prepare      irrigation apply amount =  59.3 (mm)
+     15/06/1995  Prepare      irrigation apply amount =  21.0 (mm)
+     22/06/1995  Prepare      irrigation apply amount =  59.0 (mm)
+      5/07/1995  Prepare      irrigation apply amount =  45.5 (mm)
+     18/07/1995  Prepare      irrigation apply amount =  56.0 (mm)
+     26/07/1995  Post         sugar harvest
+     26/07/1995  Post         sugar end_crop
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Simunye Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     samp=0
+     
+     SECTION:- start_of_day
+     samp=0
+     if ((year = 1995) and (day = 207 or day = 223)) then
+        samp = 1
+     endif
+     site='simunye'
+     season='1994-95'
+     treat=2
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : samp = 0.00000
+
+------- Simunye Water Initialisation ------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-   50.  0.050  0.175  0.320  0.480  0.175  1.240  0.376  0.600
+           50.-  150.  0.050  0.175  0.320  0.480  0.175  1.240  0.386  0.600
+          150.-  300.  0.050  0.193  0.325  0.480  0.193  1.300  0.190  0.600
+          300.-  450.  0.050  0.221  0.341  0.480  0.221  1.260  0.048  0.600
+          450.-  600.  0.050  0.220  0.325  0.480  0.220  1.300  0.000  0.600
+          600.-  800.  0.050  0.245  0.324  0.480  0.245  1.250  0.000  0.600
+          800.- 1100.  0.050  0.246  0.309  0.480  0.246  1.250  0.000  0.600
+         1100.- 1550.  0.050  0.241  0.313  0.480  0.241  1.250  0.000  0.600
+         1550.- 2150.  0.050  0.241  0.300  0.480  0.241  1.250  0.000  0.600
+         2150.- 2750.  0.050  0.241  0.300  0.480  0.241  1.250  0.000  0.600
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-   50.       8.75       0.00       7.25       8.00
+           50.-  150.      17.50       0.00      14.50      16.00
+          150.-  300.      28.95       0.00      19.80      23.25
+          300.-  450.      33.15       0.00      18.00      20.85
+          450.-  600.      33.00       0.00      15.75      23.25
+          600.-  800.      49.00       0.00      15.80      31.20
+          800.- 1100.      73.80       0.00      18.90      51.30
+         1100.- 1550.     108.45       0.00      32.40      75.15
+         1550.- 2150.     144.60       0.00      35.40     108.00
+         2150.- 2750.     144.60       0.00      35.40     108.00
+          ---------------------------------------------------------
+               Totals     641.80       0.00     213.20     465.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.17       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              82.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sugar_trassugar         1000.0   400.0     5.0     0.0   0.503     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.5
+     
+
+------- Simunye Nitrogen Initialisation ---------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.30    1.24    0.62    0.00
+             2     6.00  1.00    2.48    1.24    0.00
+             3     6.00  0.80    1.95    1.95    0.00
+             4     6.00  0.80    1.89    0.94    0.00
+             5     6.00  0.70    1.95    0.97    0.00
+             6     6.00  0.60    2.50    1.25    0.00
+             7     5.00  0.20    3.75    1.87    0.00
+             8     5.00  0.20    5.63    2.81    0.00
+             9     5.00  0.20    7.50    3.75    0.00
+            10     5.00  0.20    7.50    3.75    0.00
+          ------------------------------------------------
+           Totals               36.38   19.17    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       7919.1   609.2   140.9    17.6    80.6     1.2
+             2      12308.4   946.8    91.6    11.5    72.3     1.0
+             3      15561.4  1197.0    38.6     4.8    61.4     0.9
+             4      15097.5  1161.3    22.5     2.8    52.1     0.7
+             5      13643.2  1049.5     6.8     0.8    44.3     0.6
+             6      14996.3  1153.6     3.7     0.5    35.6     0.5
+             7       7499.9   576.9     0.1     0.0    25.6     0.4
+             8      11249.9   865.4     0.1     0.0    15.7     0.2
+             9      14999.8  1153.8     0.1     0.0     8.2     0.1
+            10      14999.8  1153.8     0.1     0.0     4.2     0.1
+          ---------------------------------------------------------
+           Totals  128275.4  9867.3   304.6    38.1   400.0     5.7
+          ---------------------------------------------------------
+
+------- sugar Initialisation --------------------------------------------------
+      Initialising
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+      Sending sow message to sugar
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Cultivar
+         Day no   mm     m^2    Name
+         ------------------------------------------------
+            222  150.0   16.0 nco376
+         ------------------------------------------------
+     
+         - Reading constants from ratoon_crop
+     
+         - Reading constants from nco376_ratoon
+     
+        - Reading root profile parameters
+     
+     
+     
+     Sugar module is calculating its own soil uptakes
+     
+     
+     
+                         Root Profile
+       --------------------------------------------------
+         Layer depth  Kl factor   Lower limit Root Factor
+              (mm)         ()        (mm/mm)     (0-1)
+       --------------------------------------------------
+            50.000       0.160       0.175       1.000
+           100.000       0.140       0.175       1.000
+           150.000       0.100       0.193       1.000
+           150.000       0.070       0.221       1.000
+           150.000       0.060       0.220       1.000
+           200.000       0.050       0.245       1.000
+           300.000       0.040       0.246       1.000
+        -------------------------------------------------
+     
+     
+       Crop factor for bounding water use is set to 100.0 times Eo
+     
+     
+     
+     Manager creating a new local string variable : site = simunye
+     Manager creating a new local string variable : season = 1994-95
+     Manager creating a new local real variable : treat = 2.00000
+11 August 1994(Day of year=223), operations: 
+      Sending apply message to fertiliser
+11 August 1994(Day of year=223), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       140.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+7 September 1994(Day of year=250), operations: 
+      Sending apply message to irrigation
+7 September 1994(Day of year=250), sugar: 
+      stage    2.0 sprouting
+20 September 1994(Day of year=263), sugar: 
+      stage    3.0 emergence
+                          biomass =           5.648010       lai =    0.1600000E-01
+                          stover N conc =    2.529740       extractable sw =    49.24056
+27 September 1994(Day of year=270), operations: 
+      Sending apply message to irrigation
+29 September 1994(Day of year=272), operations: 
+      Sending apply message to irrigation
+2 November 1994(Day of year=306), operations: 
+      Sending apply message to irrigation
+18 November 1994(Day of year=322), operations: 
+      Sending apply message to irrigation
+22 December 1994(Day of year=356), operations: 
+      Sending apply message to irrigation
+4 January 1995(Day of year=4), operations: 
+      Sending apply message to irrigation
+13 January 1995(Day of year=13), operations: 
+      Sending apply message to irrigation
+      Sending apply message to irrigation
+      Sending apply message to irrigation
+24 January 1995(Day of year=24), sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1791.763       lai =     4.531751
+                          stover N conc =   0.8861677       extractable sw =    141.4564
+26 January 1995(Day of year=26), operations: 
+      Sending apply message to irrigation
+7 February 1995(Day of year=38), operations: 
+      Sending apply message to irrigation
+13 February 1995(Day of year=44), operations: 
+      Sending apply message to irrigation
+27 February 1995(Day of year=58), operations: 
+      Sending apply message to irrigation
+9 March 1995(Day of year=68), operations: 
+      Sending apply message to irrigation
+15 March 1995(Day of year=74), operations: 
+      Sending apply message to irrigation
+20 March 1995(Day of year=79), operations: 
+      Sending apply message to irrigation
+5 April 1995(Day of year=95), operations: 
+      Sending apply message to irrigation
+15 April 1995(Day of year=105), operations: 
+      Sending apply message to irrigation
+26 April 1995(Day of year=116), operations: 
+      Sending apply message to irrigation
+18 May 1995(Day of year=138), operations: 
+      Sending apply message to irrigation
+1 June 1995(Day of year=152), operations: 
+      Sending apply message to irrigation
+15 June 1995(Day of year=166), operations: 
+      Sending apply message to irrigation
+22 June 1995(Day of year=173), operations: 
+      Sending apply message to irrigation
+5 July 1995(Day of year=186), operations: 
+      Sending apply message to irrigation
+18 July 1995(Day of year=199), operations: 
+      Sending apply message to irrigation
+26 July 1995(Day of year=207), operations: 
+      Sending harvest message to sugar
+26 July 1995(Day of year=207), sugar: 
+     
+     
+     
+      flowering day  =    0
+      maximum lai = 4.581
+      total above ground biomass (kg/ha) =   48924.1
+      live above ground biomass (kg/ha) =   48924.1
+      green above ground biomass (kg/ha) =   45246.0
+      senesced above ground biomass (kg/ha) =    3678.1
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  38.5
+      total N content (kg/ha) =    144.50    senesced N content (kg/ha) =     13.47
+      green N content (kg/ha) =    131.03    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =   0.6925625E-01   nitrogen stress 1 =   0.8953208E-03
+      water stress 2 =   0.1828726E-01
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =   0.2485649E-01   nitrogen stress 1 =    0.000000
+      water stress 2 =   0.1035637E-02
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+                                               straw residue =10861.7 kg/ha
+                                               straw N =   62.6 kg/ha
+                                               root residue = 1535.9 kg/ha
+                                               root N =    9.1 kg/ha
+      Sending end_crop message to sugar
+                                               straw residue =    0.0 kg/ha
+                                               straw N =    0.0 kg/ha
+                                               root residue = 7411.8 kg/ha
+                                               root N =   44.1 kg/ha
+26 July 1995(Day of year=207), clock: 
+     Simulation is terminating due to end criteria being met.

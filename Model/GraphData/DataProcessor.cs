@@ -443,12 +443,15 @@ public class DataProcessor
                      Filter += FieldName + " = " + ObservedRow[FieldName].ToString();
                   }
                // Handle pred/obs for checkpointed series.
-               string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
-               CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
-               DataRow[] PredictedMatch = Predicted.Select(CheckPointedFilter);
-               if (PredictedMatch.Length > 0)
-                  WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed");
-
+               DataRow[] PredictedMatch;
+               if (Filter.ToLower().IndexOf("Title = ") != -1)
+                  {
+                  string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
+                  CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
+                  PredictedMatch = Predicted.Select(CheckPointedFilter);
+                  if (PredictedMatch.Length > 0)
+                     WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed");
+                  }
                // Handle pred/obs for noncheckpointed series.
                PredictedMatch = Predicted.Select(Filter);
                WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Predicted/Observed");

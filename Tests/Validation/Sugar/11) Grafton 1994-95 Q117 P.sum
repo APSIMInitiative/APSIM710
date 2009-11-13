@@ -1,0 +1,666 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = 11) Grafton 1994-95 Q117 P
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "Grafton" = %apsim%\Model\Manager.dll
+   Component                "Grafton Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component             "Grafton Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "sugar" = %apsim%\Model\Sugar.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 28/09/1994
+     Simulation end date   =  5/09/1995
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Grafton.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as date
+        site
+        season
+        treat
+        year
+        day
+        daysaftersowing as das
+        crop_status
+        ratoon_no
+        samp
+        fertiliser
+        irrigation
+        rain
+        canefw
+        cane_wt
+        sucrose_wt
+        scmstf
+        ccs
+        scmst
+        biomass
+        green_biomass
+        leafgreenwt as leaf_wt
+        cabbage_wt
+        senescedwt as trash_wt
+        lai
+        swdef_photo
+        nfact_photo
+        biomass_n
+        green_biomass_n
+        N_green(3) as cane_N
+        N_green(2) as leaf_N
+        N_green(4) as cab_N
+        senescedn as trash_N
+        n_conc_cane
+        n_conc_leaf
+        n_conc_cab
+        cane_dmf as cane_dmc
+        no3
+        flow_no3(6)
+        no3ppm
+        nh4
+        nh4ppm
+
+     Output file = 11) Grafton 1994-95 Q117 P.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     28/09/1994  Prepare      sugar sow plants=10, sowing_depth= 150, cultivar= Q117_fum, ratoon= 0
+     24/11/1994  Prepare      fertiliser apply amount = 200 (kg/ha), depth = 50 (mm), type = urea_n ()
+     11/12/1994  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+     20/12/1994  Prepare      irrigation apply amount = 7.5 (mm)
+     21/12/1994  Prepare      irrigation apply amount = 9.4 (mm)
+     22/12/1994  Prepare      irrigation apply amount = 9.8 (mm)
+      4/01/1995  Prepare      irrigation apply amount = 0.8 (mm)
+      7/01/1995  Prepare      irrigation apply amount = 0.9 (mm)
+      8/01/1995  Prepare      irrigation apply amount = 12.1 (mm)
+      9/01/1995  Prepare      irrigation apply amount = 12.2 (mm)
+     10/01/1995  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+     10/01/1995  Prepare      irrigation apply amount = 0.6 (mm)
+     11/01/1995  Prepare      irrigation apply amount = 7.7 (mm)
+     16/01/1995  Prepare      irrigation apply amount = 9.7 (mm)
+     17/01/1995  Prepare      irrigation apply amount = 9.7 (mm)
+     22/01/1995  Prepare      irrigation apply amount = 8.3 (mm)
+     25/01/1995  Prepare      irrigation apply amount = 7.7 (mm)
+     31/01/1995  Prepare      irrigation apply amount = 10.7 (mm)
+      2/02/1995  Prepare      irrigation apply amount = 8.9 (mm)
+      4/02/1995  Prepare      irrigation apply amount = 8.9 (mm)
+      7/02/1995  Prepare      irrigation apply amount = 9.8 (mm)
+      9/02/1995  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+      9/02/1995  Prepare      irrigation apply amount = 6.5 (mm)
+     22/02/1995  Prepare      irrigation apply amount = 2.8 (mm)
+     27/02/1995  Prepare      irrigation apply amount = 9.5 (mm)
+      5/03/1995  Prepare      irrigation apply amount = 10.9 (mm)
+     11/03/1995  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+     12/03/1995  Prepare      irrigation apply amount = 5.4 (mm)
+     13/03/1995  Prepare      irrigation apply amount = 1.8 (mm)
+     14/03/1995  Prepare      irrigation apply amount = 3.6 (mm)
+     16/03/1995  Prepare      irrigation apply amount = 3.8 (mm)
+     20/03/1995  Prepare      irrigation apply amount = 0.6 (mm)
+     21/03/1995  Prepare      irrigation apply amount = 2.5 (mm)
+     22/03/1995  Prepare      irrigation apply amount = 1.8 (mm)
+     23/03/1995  Prepare      irrigation apply amount = 1.8 (mm)
+     26/03/1995  Prepare      irrigation apply amount = 4.1 (mm)
+     28/03/1995  Prepare      irrigation apply amount = 0.1 (mm)
+     29/03/1995  Prepare      irrigation apply amount = 2.1 (mm)
+     30/03/1995  Prepare      irrigation apply amount = 1.9 (mm)
+      4/04/1995  Prepare      irrigation apply amount = 2.7 (mm)
+      5/04/1995  Prepare      irrigation apply amount = 3.4 (mm)
+      9/04/1995  Prepare      irrigation apply amount = 4.9 (mm)
+     10/04/1995  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+     11/04/1995  Prepare      irrigation apply amount = 3.5 (mm)
+     12/04/1995  Prepare      irrigation apply amount = 3.4 (mm)
+     13/04/1995  Prepare      irrigation apply amount = 0.9 (mm)
+     16/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     17/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     18/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     19/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     20/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     21/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     22/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     23/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     24/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     25/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     26/04/1995  Prepare      irrigation apply amount = 3.2 (mm)
+     27/04/1995  Prepare      irrigation apply amount = 3.3 (mm)
+     28/04/1995  Prepare      irrigation apply amount = 2.3 (mm)
+     29/04/1995  Prepare      irrigation apply amount = 2.3 (mm)
+     30/04/1995  Prepare      irrigation apply amount = 2.3 (mm)
+      1/05/1995  Prepare      irrigation apply amount = 2.1 (mm)
+      2/05/1995  Prepare      irrigation apply amount = 1.9 (mm)
+      3/05/1995  Prepare      irrigation apply amount = 1.9 (mm)
+      5/05/1995  Prepare      irrigation apply amount = 1.9 (mm)
+      6/05/1995  Prepare      irrigation apply amount = 1.9 (mm)
+      7/05/1995  Prepare      irrigation apply amount = 1.9 (mm)
+     10/05/1995  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+     11/05/1995  Prepare      irrigation apply amount = 2.6 (mm)
+      9/06/1995  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+     13/06/1995  Prepare      irrigation apply amount = 2.8 (mm)
+     29/06/1995  Prepare      irrigation apply amount = 5.1 (mm)
+      9/07/1995  Prepare      fertiliser apply amount = 30 (kg/ha), depth = 300 (mm), type = no3_n ()
+     16/07/1995  Prepare      irrigation apply amount = 5 (mm)
+     20/07/1995  Prepare      irrigation apply amount = 3.1 (mm)
+     29/07/1995  Prepare      irrigation apply amount = 2.9 (mm)
+      5/09/1995  Post         sugar harvest
+      5/09/1995  Post         sugar end_crop
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Grafton Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     samp=0
+     
+     SECTION:- start_of_day
+     if daysaftersowing=2 then
+        'grafton water' set irrigation_depth=300(mm)
+     endif
+     samp=0
+     if (year = 1994 and day = 336) or
+        (year = 1995 and (day = 18 or day = 52 or day = 87 or day = 129 or day = 157
+         or day = 206 or day = 248)) then
+         samp = 1
+     endif
+     site='grafton'
+     season='1994-95'
+     treat=1
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : samp = 0.00000
+
+------- Grafton Water Initialisation ------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.050  0.160  0.280  0.450  0.280  1.150  0.856  0.400
+          200.-  400.  0.050  0.180  0.300  0.450  0.300  1.350  0.135  0.400
+          400.-  600.  0.050  0.200  0.320  0.450  0.320  1.400  0.009  0.400
+          600.-  900.  0.050  0.210  0.330  0.450  0.330  1.450  0.000  0.400
+          900.- 1200.  0.050  0.240  0.360  0.450  0.360  1.450  0.000  0.400
+         1200.- 1500.  0.050  0.290  0.410  0.430  0.410  1.500  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      32.00      24.00      24.00      34.00
+          200.-  400.      36.00      24.00      24.00      30.00
+          400.-  600.      40.00      24.00      24.00      26.00
+          600.-  900.      63.00      36.00      36.00      36.00
+          900.- 1200.      72.00      36.00      36.00      27.00
+         1200.- 1500.      87.00      36.00      36.00       6.00
+          ---------------------------------------------------------
+               Totals     330.00     180.00     180.00     159.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.10       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              65.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sugar_trassugar          100.0    40.0     0.5     0.0   0.068     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.1
+     
+
+------- Grafton Nitrogen Initialisation ---------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.30    4.60    2.30    0.00
+             2     6.00  0.90    5.40    2.70    0.00
+             3     6.00  0.54    2.80    2.80    0.00
+             4     6.00  0.40    4.35    2.17    0.00
+             5     6.00  0.40    4.35    2.17    0.00
+             6     6.00  0.40    4.50    2.25    0.00
+          ------------------------------------------------
+           Totals               26.00   14.40    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      28884.5  2625.9  1015.5   126.9     7.8     0.1
+             2      23829.1  2166.3   470.9    58.9     5.2     0.1
+             3      15043.3  1367.6    76.7     9.6     3.5     0.0
+             4      17387.1  1580.6    12.9     1.6     1.9     0.0
+             5      17395.7  1581.4     4.3     0.5     1.1     0.0
+             6      17999.1  1636.3     0.9     0.1     0.6     0.0
+          ---------------------------------------------------------
+           Totals  120538.9 10958.1  1581.1   197.6    20.0     0.3
+          ---------------------------------------------------------
+
+------- sugar Initialisation --------------------------------------------------
+      Initialising
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+      Sending sow message to sugar
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Cultivar
+         Day no   mm     m^2    Name
+         ------------------------------------------------
+            271  150.0   10.0 q117_fum
+         ------------------------------------------------
+     
+         - Reading constants from plant_crop
+     
+         - Reading constants from q117_fum
+     
+        - Reading root profile parameters
+     
+     
+     
+     Sugar module is calculating its own soil uptakes
+     
+     
+     
+                         Root Profile
+       --------------------------------------------------
+         Layer depth  Kl factor   Lower limit Root Factor
+              (mm)         ()        (mm/mm)     (0-1)
+       --------------------------------------------------
+           200.000       0.100       0.160       1.000
+           200.000       0.100       0.180       1.000
+           200.000       0.100       0.200       1.000
+           300.000       0.080       0.210       1.000
+           300.000       0.080       0.240       1.000
+           300.000       0.040       0.290       1.000
+             0.000       0.000       0.000       0.000
+        -------------------------------------------------
+     
+     
+       Crop factor for bounding water use is set to 100.0 times Eo
+     
+     
+     
+     Manager creating a new local string variable : season = 1994-95
+     Manager creating a new local real variable : treat = 1.00000
+29 September 1994(Day of year=272), sugar: 
+      stage    2.0 sprouting
+30 September 1994(Day of year=273): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Cannot set value of the specified variable.
+     Variable name: irrigation_depth
+     Component name: Grafton
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 November 1994(Day of year=321), sugar: 
+      stage    3.0 emergence
+                          biomass =           3.529968       lai =    0.1000000E-01
+                          stover N conc =    2.529772       extractable sw =    99.86491
+24 November 1994(Day of year=328), operations: 
+      Sending apply message to fertiliser
+24 November 1994(Day of year=328), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       200.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+11 December 1994(Day of year=345), operations: 
+      Sending apply message to fertiliser
+11 December 1994(Day of year=345), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+20 December 1994(Day of year=354), operations: 
+      Sending apply message to irrigation
+21 December 1994(Day of year=355), operations: 
+      Sending apply message to irrigation
+22 December 1994(Day of year=356), operations: 
+      Sending apply message to irrigation
+4 January 1995(Day of year=4), operations: 
+      Sending apply message to irrigation
+7 January 1995(Day of year=7), operations: 
+      Sending apply message to irrigation
+8 January 1995(Day of year=8), operations: 
+      Sending apply message to irrigation
+9 January 1995(Day of year=9), operations: 
+      Sending apply message to irrigation
+10 January 1995(Day of year=10), operations: 
+      Sending apply message to fertiliser
+10 January 1995(Day of year=10), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+      Sending apply message to irrigation
+11 January 1995(Day of year=11), operations: 
+      Sending apply message to irrigation
+16 January 1995(Day of year=16), operations: 
+      Sending apply message to irrigation
+17 January 1995(Day of year=17), operations: 
+      Sending apply message to irrigation
+22 January 1995(Day of year=22), operations: 
+      Sending apply message to irrigation
+25 January 1995(Day of year=25), operations: 
+      Sending apply message to irrigation
+31 January 1995(Day of year=31), operations: 
+      Sending apply message to irrigation
+2 February 1995(Day of year=33), operations: 
+      Sending apply message to irrigation
+4 February 1995(Day of year=35), operations: 
+      Sending apply message to irrigation
+7 February 1995(Day of year=38), operations: 
+      Sending apply message to irrigation
+9 February 1995(Day of year=40), operations: 
+      Sending apply message to fertiliser
+9 February 1995(Day of year=40), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+      Sending apply message to irrigation
+22 February 1995(Day of year=53), operations: 
+      Sending apply message to irrigation
+27 February 1995(Day of year=58), operations: 
+      Sending apply message to irrigation
+5 March 1995(Day of year=64), operations: 
+      Sending apply message to irrigation
+11 March 1995(Day of year=70), operations: 
+      Sending apply message to fertiliser
+11 March 1995(Day of year=70), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+12 March 1995(Day of year=71), operations: 
+      Sending apply message to irrigation
+13 March 1995(Day of year=72), operations: 
+      Sending apply message to irrigation
+14 March 1995(Day of year=73), operations: 
+      Sending apply message to irrigation
+16 March 1995(Day of year=75), operations: 
+      Sending apply message to irrigation
+20 March 1995(Day of year=79), operations: 
+      Sending apply message to irrigation
+21 March 1995(Day of year=80), operations: 
+      Sending apply message to irrigation
+22 March 1995(Day of year=81), operations: 
+      Sending apply message to irrigation
+23 March 1995(Day of year=82), operations: 
+      Sending apply message to irrigation
+26 March 1995(Day of year=85), operations: 
+      Sending apply message to irrigation
+28 March 1995(Day of year=87), operations: 
+      Sending apply message to irrigation
+29 March 1995(Day of year=88), operations: 
+      Sending apply message to irrigation
+30 March 1995(Day of year=89), operations: 
+      Sending apply message to irrigation
+4 April 1995(Day of year=94), operations: 
+      Sending apply message to irrigation
+5 April 1995(Day of year=95), operations: 
+      Sending apply message to irrigation
+5 April 1995(Day of year=95), sugar: 
+      stage    4.0 begin_cane
+                          biomass =           2608.271       lai =     7.100602
+                          stover N conc =   0.8789704       extractable sw =    89.63699
+9 April 1995(Day of year=99), operations: 
+      Sending apply message to irrigation
+10 April 1995(Day of year=100), operations: 
+      Sending apply message to fertiliser
+10 April 1995(Day of year=100), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+11 April 1995(Day of year=101), operations: 
+      Sending apply message to irrigation
+12 April 1995(Day of year=102), operations: 
+      Sending apply message to irrigation
+13 April 1995(Day of year=103), operations: 
+      Sending apply message to irrigation
+16 April 1995(Day of year=106), operations: 
+      Sending apply message to irrigation
+17 April 1995(Day of year=107), operations: 
+      Sending apply message to irrigation
+18 April 1995(Day of year=108), operations: 
+      Sending apply message to irrigation
+19 April 1995(Day of year=109), operations: 
+      Sending apply message to irrigation
+20 April 1995(Day of year=110), operations: 
+      Sending apply message to irrigation
+21 April 1995(Day of year=111), operations: 
+      Sending apply message to irrigation
+22 April 1995(Day of year=112), operations: 
+      Sending apply message to irrigation
+23 April 1995(Day of year=113), operations: 
+      Sending apply message to irrigation
+24 April 1995(Day of year=114), operations: 
+      Sending apply message to irrigation
+25 April 1995(Day of year=115), operations: 
+      Sending apply message to irrigation
+26 April 1995(Day of year=116), operations: 
+      Sending apply message to irrigation
+27 April 1995(Day of year=117), operations: 
+      Sending apply message to irrigation
+28 April 1995(Day of year=118), operations: 
+      Sending apply message to irrigation
+29 April 1995(Day of year=119), operations: 
+      Sending apply message to irrigation
+30 April 1995(Day of year=120), operations: 
+      Sending apply message to irrigation
+1 May 1995(Day of year=121), operations: 
+      Sending apply message to irrigation
+2 May 1995(Day of year=122), operations: 
+      Sending apply message to irrigation
+3 May 1995(Day of year=123), operations: 
+      Sending apply message to irrigation
+5 May 1995(Day of year=125), operations: 
+      Sending apply message to irrigation
+6 May 1995(Day of year=126), operations: 
+      Sending apply message to irrigation
+7 May 1995(Day of year=127), operations: 
+      Sending apply message to irrigation
+10 May 1995(Day of year=130), operations: 
+      Sending apply message to fertiliser
+10 May 1995(Day of year=130), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+11 May 1995(Day of year=131), operations: 
+      Sending apply message to irrigation
+9 June 1995(Day of year=160), operations: 
+      Sending apply message to fertiliser
+9 June 1995(Day of year=160), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+13 June 1995(Day of year=164), operations: 
+      Sending apply message to irrigation
+29 June 1995(Day of year=180), operations: 
+      Sending apply message to irrigation
+9 July 1995(Day of year=190), operations: 
+      Sending apply message to fertiliser
+9 July 1995(Day of year=190), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        30.00 of N as nitrate (no3_n)
+                                         added at depth  300.00 (layer   2)
+16 July 1995(Day of year=197), operations: 
+      Sending apply message to irrigation
+20 July 1995(Day of year=201), operations: 
+      Sending apply message to irrigation
+29 July 1995(Day of year=210), operations: 
+      Sending apply message to irrigation
+5 September 1995(Day of year=248), operations: 
+      Sending harvest message to sugar
+5 September 1995(Day of year=248), sugar: 
+     
+     
+     
+      flowering day  =    0
+      maximum lai = 7.116
+      total above ground biomass (kg/ha) =   36945.3
+      live above ground biomass (kg/ha) =   36945.3
+      green above ground biomass (kg/ha) =   30433.7
+      senesced above ground biomass (kg/ha) =    6511.5
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  29.0
+      total N content (kg/ha) =    276.49    senesced N content (kg/ha) =     23.85
+      green N content (kg/ha) =    252.64    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =   0.1605486E-02   nitrogen stress 1 =   0.2733388E-02
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =   0.1966089       nitrogen stress 1 =   0.9146773E-01
+      water stress 2 =   0.1601679
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+                                               straw residue = 6514.1 kg/ha
+                                               straw N =  100.2 kg/ha
+                                               root residue = 1788.1 kg/ha
+                                               root N =   18.8 kg/ha
+     
+         - Reading constants from ratoon_crop
+     
+         - Reading constants from q117_fum_ratoon
+      Sending end_crop message to sugar
+                                               straw residue =    0.0 kg/ha
+                                               straw N =    0.0 kg/ha
+                                               root residue = 8628.2 kg/ha
+                                               root N =   91.2 kg/ha
+5 September 1995(Day of year=248), clock: 
+     Simulation is terminating due to end criteria being met.

@@ -1,0 +1,452 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = 6) Ayr 1993-94 Q117 1R
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                          "Ayr" = %apsim%\Model\Manager.dll
+   Component            "Zanetti 934 Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component         "Zanetti 934 Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "sugar" = %apsim%\Model\Sugar.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 31/07/1993
+     Simulation end date   =  9/08/1994
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Ayr.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as date
+        site
+        season
+        treat
+        year
+        day
+        daysaftersowing as das
+        crop_status
+        ratoon_no
+        samp
+        fertiliser
+        irrigation
+        rain
+        canefw
+        cane_wt
+        sucrose_wt
+        scmstf
+        ccs
+        scmst
+        biomass
+        green_biomass
+        leafgreenwt as leaf_wt
+        cabbage_wt
+        senescedwt as trash_wt
+        lai
+        swdef_photo
+        nfact_photo
+        biomass_n
+        green_biomass_n
+        N_green(3) as cane_N
+        N_green(2) as leaf_N
+        N_green(4) as cab_N
+        senescedn as trash_N
+        n_conc_cane
+        n_conc_leaf
+        n_conc_cab
+        cane_dmf as cane_dmc
+        no3
+        flow_no3(6)
+        no3ppm
+        nh4
+        nh4ppm
+
+     Output file = 6) Ayr 1993-94 Q117 1R.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     31/07/1993  Prepare      surface organic matter tillage type = hoe, f_incorp = 1 (), tillage_depth = 200 (mm)
+      1/08/1993  Prepare      sugar sow plants = 10, sowing_depth = 150, cultivar = Q117, ratoon = 1
+      7/09/1993  Prepare      fertiliser apply amount = 284 (kg/ha), depth = 100 (mm), type = urea_n ()
+      7/09/1993  Prepare      surface organic matter tillage type = rip, f_incorp = 0.3 (), tillage_depth = 80 (mm)
+      4/10/1993  Prepare      irrigation apply amount = 289 (mm)
+     29/10/1993  Prepare      irrigation apply amount = 289 (mm)
+     13/11/1993  Prepare      irrigation apply amount = 289 (mm)
+     23/11/1993  Prepare      irrigation apply amount = 289 (mm)
+      5/12/1993  Prepare      irrigation apply amount = 289 (mm)
+     24/12/1993  Prepare      irrigation apply amount = 289 (mm)
+      3/01/1994  Prepare      irrigation apply amount = 289 (mm)
+     15/01/1994  Prepare      irrigation apply amount = 289 (mm)
+     23/01/1994  Prepare      irrigation apply amount = 289 (mm)
+     23/02/1994  Prepare      irrigation apply amount = 289 (mm)
+     20/03/1994  Prepare      irrigation apply amount = 289 (mm)
+      3/04/1994  Prepare      irrigation apply amount = 289 (mm)
+     13/04/1994  Prepare      irrigation apply amount = 289 (mm)
+     19/04/1994  Prepare      sugar lodge
+      2/05/1994  Prepare      irrigation apply amount = 289 (mm)
+     13/05/1994  Prepare      irrigation apply amount = 289 (mm)
+     31/05/1994  Prepare      irrigation apply amount = 289 (mm)
+      3/07/1994  Prepare      irrigation apply amount = 289 (mm)
+      9/08/1994  Post         sugar harvest
+      9/08/1994  Post         sugar end_crop
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Ayr Initialisation ----------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     samp=0
+     
+     SECTION:- start_of_day
+     samp=0
+     if ((year = 1993) and (day = 223 or day = 266 or day = 287 or day = 313
+        or day = 343)) or   ((year = 1994) and (day = 11 or day = 47 or day = 74 or day = 109 or
+        day = 138 or day = 158 or day = 193 or day = 221)) then
+        samp = 1
+     endif
+     site='ayr'
+     season='1993-94'
+     treat=2
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : samp = 0.00000
+
+------- Zanetti 934 Water Initialisation --------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.050  0.180  0.330  0.450  0.210  1.200  0.856  0.400
+          200.-  400.  0.050  0.200  0.350  0.450  0.230  1.250  0.135  0.400
+          400.-  600.  0.050  0.210  0.370  0.450  0.242  1.300  0.009  0.400
+          600.-  900.  0.050  0.240  0.370  0.450  0.266  1.350  0.000  0.400
+          900.- 1200.  0.050  0.240  0.360  0.450  0.264  1.400  0.000  0.400
+         1200.- 1500.  0.050  0.220  0.320  0.450  0.240  1.450  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      36.00       6.00      30.00      24.00
+          200.-  400.      40.00       6.00      30.00      20.00
+          400.-  600.      42.00       6.40      32.00      16.00
+          600.-  900.      72.00       7.80      39.00      24.00
+          900.- 1200.      72.00       7.20      36.00      27.00
+         1200.- 1500.      66.00       6.00      30.00      39.00
+          ---------------------------------------------------------
+               Totals     328.00      39.40     197.00     150.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.10       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              65.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sugar_trassugar          100.0    40.0     0.5     0.0   0.068     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.1
+     
+
+------- Zanetti 934 Nitrogen Initialisation -----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.30    4.80    2.40    0.00
+             2     6.00  1.00    5.00    2.50    0.00
+             3     6.00  0.80    2.60    2.60    0.00
+             4     6.00  0.80    4.05    2.03    0.00
+             5     6.00  0.70    4.20    2.10    0.00
+             6     6.00  0.60    4.35    2.17    0.00
+          ------------------------------------------------
+           Totals               25.00   13.80    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      30480.0  2770.9   720.0    90.0   155.3     2.2
+             2      24635.9  2239.6   364.1    45.5   104.1     1.5
+             3      20698.0  1881.6   102.0    12.7    69.8     1.0
+             4      32328.2  2938.9    71.8     9.0    38.3     0.5
+             5      29385.4  2671.4    14.6     1.8    21.0     0.3
+             6      26093.5  2372.1     6.5     0.8    11.5     0.2
+          ---------------------------------------------------------
+           Totals  163621.0 14874.6  1279.0   159.9   400.0     5.7
+          ---------------------------------------------------------
+
+------- sugar Initialisation --------------------------------------------------
+      Initialising
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+      Sending organic message to surface
+     Manager creating a new local string variable : site = ayr
+     Manager creating a new local string variable : season = 1993-94
+     Manager creating a new local real variable : treat = 2.00000
+1 August 1993(Day of year=213), operations: 
+      Sending sow message to sugar
+1 August 1993(Day of year=213), sugar: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Cultivar
+         Day no   mm     m^2    Name
+         ------------------------------------------------
+            213  150.0   10.0 q117
+         ------------------------------------------------
+     
+         - Reading constants from ratoon_crop
+     
+         - Reading constants from q117_ratoon
+     
+        - Reading root profile parameters
+     
+     
+     
+     Sugar module is calculating its own soil uptakes
+     
+     
+     
+                         Root Profile
+       --------------------------------------------------
+         Layer depth  Kl factor   Lower limit Root Factor
+              (mm)         ()        (mm/mm)     (0-1)
+       --------------------------------------------------
+           200.000       0.100       0.180       1.000
+           200.000       0.100       0.200       1.000
+           200.000       0.100       0.210       1.000
+           300.000       0.080       0.240       1.000
+           300.000       0.080       0.240       1.000
+           300.000       0.040       0.220       1.000
+             0.000       0.000       0.000       0.000
+        -------------------------------------------------
+     
+     
+       Crop factor for bounding water use is set to 100.0 times Eo
+     
+     
+     
+30 August 1993(Day of year=242), sugar: 
+      stage    2.0 sprouting
+7 September 1993(Day of year=250), operations: 
+      Sending apply message to fertiliser
+7 September 1993(Day of year=250), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       284.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+      Sending organic message to surface
+14 September 1993(Day of year=257), sugar: 
+      stage    3.0 emergence
+                          biomass =           3.529968       lai =    0.1000000E-01
+                          stover N conc =    2.529772       extractable sw =    31.89153
+4 October 1993(Day of year=277), operations: 
+      Sending apply message to irrigation
+29 October 1993(Day of year=302), operations: 
+      Sending apply message to irrigation
+13 November 1993(Day of year=317), operations: 
+      Sending apply message to irrigation
+23 November 1993(Day of year=327), operations: 
+      Sending apply message to irrigation
+5 December 1993(Day of year=339), operations: 
+      Sending apply message to irrigation
+24 December 1993(Day of year=358), operations: 
+      Sending apply message to irrigation
+3 January 1994(Day of year=3), operations: 
+      Sending apply message to irrigation
+9 January 1994(Day of year=9), sugar: 
+      stage    4.0 begin_cane
+                          biomass =           2427.462       lai =     6.817080
+                          stover N conc =   0.6692383       extractable sw =    160.2096
+15 January 1994(Day of year=15), operations: 
+      Sending apply message to irrigation
+23 January 1994(Day of year=23), operations: 
+      Sending apply message to irrigation
+23 February 1994(Day of year=54), operations: 
+      Sending apply message to irrigation
+20 March 1994(Day of year=79), operations: 
+      Sending apply message to irrigation
+3 April 1994(Day of year=93), operations: 
+      Sending apply message to irrigation
+13 April 1994(Day of year=103), operations: 
+      Sending apply message to irrigation
+19 April 1994(Day of year=109), operations: 
+      Sending lodge message to sugar
+19 April 1994(Day of year=109), sugar: 
+     crop lodging
+2 May 1994(Day of year=122), operations: 
+      Sending apply message to irrigation
+13 May 1994(Day of year=133), operations: 
+      Sending apply message to irrigation
+31 May 1994(Day of year=151), operations: 
+      Sending apply message to irrigation
+3 July 1994(Day of year=184), operations: 
+      Sending apply message to irrigation
+9 August 1994(Day of year=221), operations: 
+      Sending harvest message to sugar
+9 August 1994(Day of year=221), sugar: 
+     
+     
+     
+      flowering day  =    0
+      maximum lai = 6.899
+      total above ground biomass (kg/ha) =   66799.6
+      live above ground biomass (kg/ha) =   64137.2
+      green above ground biomass (kg/ha) =   60071.4
+      senesced above ground biomass (kg/ha) =    4065.7
+      dead above ground biomass (kg/ha) =    2662.5
+      number of leaves =  44.1
+      total N content (kg/ha) =    211.70    senesced N content (kg/ha) =     14.89
+      green N content (kg/ha) =    193.31    dead N content (kg/ha) =      3.50
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =   0.5389472E-02   nitrogen stress 1 =   0.2141007E-02
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+                                               straw residue =14509.8 kg/ha
+                                               straw N =   70.0 kg/ha
+                                               root residue = 2330.3 kg/ha
+                                               root N =   17.1 kg/ha
+      Sending end_crop message to sugar
+                                               straw residue =    0.0 kg/ha
+                                               straw N =    0.0 kg/ha
+                                               root residue = ****** kg/ha
+                                               root N =   78.1 kg/ha
+9 August 1994(Day of year=221), clock: 
+     Simulation is terminating due to end criteria being met.
