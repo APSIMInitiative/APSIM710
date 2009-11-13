@@ -442,7 +442,7 @@ void SimplePart::removeBiomass(void)
    Senesced = Senesced - SenescedRemoved;
    }
 
-void SimplePart::doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, string &c_remove_biomass_report)
+void SimplePart::doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, bool c_remove_biomass_report)
 //=======================================================================================
 // deltas have been given from an external module; update states.
 {
@@ -473,7 +473,7 @@ void SimplePart::doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, string &c
        }
     }
 
-    if (c_remove_biomass_report == "on")
+    if (c_remove_biomass_report)
     {
        ostringstream msg1;
        msg1 << "Remove Crop Biomass 2:-" << endl;

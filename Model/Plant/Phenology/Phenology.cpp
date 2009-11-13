@@ -592,9 +592,11 @@ void Phenology::onRemoveBiomass(float removeBiomPheno)
          { // phase is empty - not interested in it
          }
       }
-   msg << "New Above ground TT = " << TTInPhase("above_ground") << endl << ends;
    if (plant.removeBiomassReport())
+      {
+      msg << "New Above ground TT = " << TTInPhase("above_ground") << endl << ends;
       scienceAPI.warning(msg.str());
+      }
    if (existingStage != stageName())
       publishStageEvent(existingStage, phases[(int)currentStage]->name(), true);
    }

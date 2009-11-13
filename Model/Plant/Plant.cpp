@@ -533,7 +533,7 @@ void Plant::onRemoveCropBiomass(protocol::RemoveCropDmType& dmRemoved)
 //=======================================================================================
 // Event Handler for a RemoveCropBiomass Event
    {
-   if (c.remove_biomass_report == "on")
+   if (c.remove_biomass_report)
       {
       ostringstream msg;
       msg << "Remove Crop Biomass:-" << endl;
@@ -590,7 +590,7 @@ void Plant::onDetachCropBiomass(float detachRate)
    dm.part.erase(dm.part.begin(), dm.part.end());
    dmParts.clear();
 
-   if (c.remove_biomass_report == "on")
+   if (c.remove_biomass_report)
       {
       ostringstream msg;
       msg << "Detach Crop Biomass:-" << endl;
@@ -1024,9 +1024,10 @@ void Plant::plant_remove_biomass_update (protocol::RemoveCropDmType dmRemoved)
 
    Tops().removeBiomass();
 
-   g.remove_biom_pheno = divide (dmRemovedGreenTops, biomassGreenTops, 0.0);
+   if (c.remove_biomass_affects_phenology)
+      g.remove_biom_pheno = divide (dmRemovedGreenTops, biomassGreenTops, 0.0);
 
-   if (c.remove_biomass_report == "on")
+   if (c.remove_biomass_report)
       {
       parent->writeString ("\nCrop biomass removed.");
       char  msgrmv[400];
@@ -1054,7 +1055,8 @@ void Plant::plant_remove_biomass_update (protocol::RemoveCropDmType dmRemoved)
     plant.doCover(plantSpatial);
     UpdateCanopy();
 
-    phenology().onRemoveBiomass(g.remove_biom_pheno);
+    if (c.remove_biomass_affects_phenology)
+      phenology().onRemoveBiomass(g.remove_biom_pheno);
 
     plant.doNConccentrationLimits(co2Modifier->n_conc() );
     }
@@ -1090,7 +1092,8 @@ void Plant::plant_zero_all_globals (void)
 
 
       c.crop_type = "";
-      c.remove_biomass_report = "off";
+      c.remove_biomass_report = false;
+      c.remove_biomass_affects_phenology = true;
 
       c.n_supply_preference = "";
 
@@ -1264,7 +1267,17 @@ void Plant::read(void)
 
    if (!scienceAPI.readOptional("eo_crop_factor", p.eo_crop_factor, 0.0f, 100.0f))
       p.eo_crop_factor = c.eo_crop_factor_default;
-   scienceAPI.readOptional("remove_biomass_report", c.remove_biomass_report);
+
+   string s;   
+   c.remove_biomass_report = false;
+   scienceAPI.readOptional("remove_biomass_report", s);
+   if (s == "on")
+      c.remove_biomass_report = true;
+
+   c.remove_biomass_affects_phenology = true;
+   scienceAPI.readOptional("remove_biomass_affects_phenology", s);
+   if (s == "off")
+      c.remove_biomass_affects_phenology = false;
 
    phenology().read();
    root().read();

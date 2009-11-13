@@ -270,7 +270,7 @@ public:
    //Phosporousy things:
    void doPInit();
    bool phosphorusAware(void)  {return pStress->isPhosphorusAware();};
-   bool removeBiomassReport(void)  {return c.remove_biomass_report == "on";};
+   bool removeBiomassReport(void)  {return c.remove_biomass_report;};
    void prepare_p(void);
    void summary_p (void);
 
@@ -345,7 +345,9 @@ private:
 
       float eo_crop_factor_default;                     // Default Crop factor for sw demand applied to Eo
 
-      string     remove_biomass_report;
+      bool remove_biomass_report;
+      bool remove_biomass_affects_phenology;
+      
    }  c;   // Constants
 
 };  // Plant

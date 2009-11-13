@@ -7,12 +7,6 @@
 #include "Leaf.h"
 #include "../Population.h"
 class GenericLeaf : public Leaf {
-  private:
-   void leaf_no_pot (int option, float, float);
-   void leaf_area_potential(void);
-   void leaf_area_actual(void);
-   void leaf_no_actual (void);
-   void initialiseAreas(void);
 
   public:
    GenericLeaf(ScienceAPI& scienceAPI, plantInterface *p, const string &name)
@@ -35,14 +29,6 @@ class GenericLeaf : public Leaf {
    void onTransplanting(void);
    void onKillStem(void);
 
-  private:
-   void get_tlai(protocol::Component *system, protocol::QueryValueData &qd);
-   void get_lai_sum(protocol::Component *system, protocol::QueryValueData &qd);
-   void get_leaf_no(protocol::Component *system, protocol::QueryValueData &qd);
-   void get_leaf_no_sen(protocol::Component *system, protocol::QueryValueData &qd);
-   void get_leaf_area(protocol::Component *system, protocol::QueryValueData &qd);
-   void get_leaf_area_tot(protocol::Component *system, protocol::QueryValueData &qd);
-
   public:
    float getLAI(void)  {return gLAI;};
    float getSLAI(void)  {return gSLAI;};
@@ -64,10 +50,24 @@ class GenericLeaf : public Leaf {
    void Detachment (void);
    void update (void) ;
 
-   void remove_detachment (float dlt_slai_detached, float dlt_lai_removed );
    void removeBiomass(void);
 
   private:
+   void get_tlai(protocol::Component *system, protocol::QueryValueData &qd);
+   void get_lai_sum(protocol::Component *system, protocol::QueryValueData &qd);
+   void get_leaf_no(protocol::Component *system, protocol::QueryValueData &qd);
+   void get_leaf_no_sen(protocol::Component *system, protocol::QueryValueData &qd);
+   void get_leaf_area(protocol::Component *system, protocol::QueryValueData &qd);
+   void get_leaf_area_tot(protocol::Component *system, protocol::QueryValueData &qd);
+
+   void leaf_no_pot (int option, float, float);
+   void leaf_area_potential(void);
+   void leaf_area_actual(void);
+   void leaf_no_actual (void);
+   void initialiseAreas(void);
+   void remove_detachment (float dlt_slai_detached, float dlt_lai_removed );
+
+  // State & rate variables
    float gLAI;                                        // area of leaf
    float gSLAI;                                       // area of leaf senesced from plant
    float gNodeNo;                                     // number of fully expanded nodes ()
@@ -117,7 +117,6 @@ class GenericLeaf : public Leaf {
    float dltNodeNo;                                // actual fraction of oldest node expanding ()
    float dltLeafNoPot;                            // potential fraction of oldest leaf expanding ()
    float dltNodeNoPot;                            // potential fraction of oldest leaf expanding ()
-
 
 };
 

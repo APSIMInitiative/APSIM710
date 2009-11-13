@@ -44,9 +44,7 @@ class CohortingLeaf : public Leaf {
    void leaf_area_sen (float);
    void Detachment (void);
    void update (void) ;
-
-   void remove_detachment (float dlt_slai_detached, float dlt_lai_removed );
-
+   void removeBiomass(void);
 
   private:
    void get_tlai(protocol::Component *system, protocol::QueryValueData &qd);

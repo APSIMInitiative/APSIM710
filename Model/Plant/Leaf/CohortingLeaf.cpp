@@ -390,10 +390,8 @@ void CohortingLeaf::initialiseAreas(void)
    gLeafNo.clear();
    dltSLA_age.clear();
 
-   float tpla = cInitialTPLA;
-
    // Fill cohorts until no more area available
-   for (unsigned int cohort = 0; cohort < cLeafNumberAtEmerg; cohort++)
+   for (int cohort = 0; cohort < cLeafNumberAtEmerg; cohort++)
       {
       gLeafArea.push_back(cAreaPot[cohort+1]);
       gLeafAreaMax.push_back(cAreaPot[cohort+1]);
@@ -740,10 +738,36 @@ void CohortingLeaf::update(void)
           }
 }
 
-// Remove detachment from leaf area record
-void CohortingLeaf::remove_detachment (float /* dlt_slai_detached*/, float /* dlt_lai_removed*/ )
-//=======================================================================================
+// Uniform removal from each cohort
+void CohortingLeaf::removeBiomass(void)
    {
+   unsigned int cohort;
+   float chop_fr_green = bound(divide(GreenRemoved.DM(), Green.DM(), 0.0), 0.0, 1.0);
+   if (chop_fr_green > 0.0)
+       for (cohort = 0; cohort != gLeafArea.size(); cohort++)
+          gLeafArea[cohort] *= chop_fr_green;
+
+   float chop_fr_sen   = divide(SenescedRemoved.DM(), Senesced.DM(), 0.0);
+   if (chop_fr_sen > 0.0)
+       for (cohort = 0; cohort != gLeafArea.size(); cohort++)
+          gLeafAreaSen[cohort] *= chop_fr_sen;
+
+   SimplePart::removeBiomass();
+
+   // keep dm above a minimum
+   float dm_init = c.dm_init * plant->population().Density();
+   float n_init = dm_init * c.n_init_conc;
+   if (Green.DM() < dm_init)
+      {
+      	// keep dm above a minimum
+      Green.SetStructuralDM(Green.StructuralDM()*dm_init/Green.DM());
+      Green.SetNonStructuralDM(Green.NonStructuralDM()*dm_init/Green.DM());
+      }
+   if (Green.N() < n_init)
+      {
+      	// keep N above a minimum
+      Green.SetN(n_init);
+      }
 
    }
 

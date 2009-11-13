@@ -48,7 +48,7 @@ class Leaf : public SimplePart {
    virtual void leaf_death (float nfact_expansion, float  dlt_tt) =0;//
    virtual void leaf_area_sen (float) =0;
    virtual void update (void) = 0;
-   virtual void remove_detachment (float dlt_slai_detached, float dlt_lai_removed ) =0;
+   virtual void removeBiomass(void) = 0;
 
    virtual float dmRetransSupply(void);
    virtual void  doNConccentrationLimits(float modifier);
