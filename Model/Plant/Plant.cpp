@@ -1443,7 +1443,15 @@ void Plant::plant_read_species_const (void)
 
     // Add the new class actions we're interested in
     for (unsigned i = 0; i != c.class_action.size(); i++)
-      scienceAPI.subscribe(c.class_action[i], NullFunctionWithName(&Plant::onAction));
+      {
+      if (find(actionsAlreadySubscribed.begin(),
+               actionsAlreadySubscribed.end(),
+               c.class_action[i]) == actionsAlreadySubscribed.end())
+         {
+         scienceAPI.subscribe(c.class_action[i], NullFunctionWithName(&Plant::onAction));
+         actionsAlreadySubscribed.push_back(c.class_action[i]);
+         }
+      }
 
     scienceAPI.read("class_change", scratch);
     Split_string(scratch, " ", c.class_change);

@@ -83,6 +83,8 @@ private:
    SWStress *swStress;
    TempStress *tempStress;
    Co2Modifier *co2Modifier;
+   vector<string> actionsAlreadySubscribed;
+
 
    void read(void);
 
