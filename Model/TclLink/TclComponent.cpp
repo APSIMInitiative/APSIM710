@@ -144,6 +144,7 @@ void TclComponent::doInit2(void)
    } 
 
    Tcl_SetVar(Interp, "apsuite", getApsimDirectory().c_str(), TCL_GLOBAL_ONLY);
+   Tcl_SetVar(Interp, "apsim", getApsimDirectory().c_str(), TCL_GLOBAL_ONLY);
    
    std::string initRule;
    std::vector<string> ruleNames;
@@ -251,6 +252,7 @@ void TclComponent::onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQueryD
    {
    if (Interp != NULL) 
       {
+// FIXME -- case of variable name?
       string varCmd = "info exists " + asString(apsimGetQueryData.name);
 
       int result = Tcl_Eval(Interp, varCmd.c_str());
@@ -273,9 +275,9 @@ bool TclComponent::respondToSet(unsigned int& fromID, protocol::QuerySetValueDat
    ApsimRegistration *reg = registry.find(::respondToSet, fromID, setValueData.ID);
    if (reg == NULL)
         {
-        string msg = "Invalid registration ID in TclComponent::respondToSet ";
+        string msg = "Invalid registration ID in TclComponent::respondToSet. from=";
                      msg += itoa(fromID);
-                     msg += ".";
+                     msg += ", id=";
                      msg += itoa(setValueData.ID);
         throw std::runtime_error(msg);
         }
@@ -291,7 +293,7 @@ bool TclComponent::respondToSet(unsigned int& fromID, protocol::QuerySetValueDat
 // (Called from TCL interpreter). Find component() and ask protoman for a variable
 int apsimGetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
-   if (objc >= 2)
+   if (objc == 2)
       {
       TclComponent *component = (TclComponent *) cd;
       string apsimName(Tcl_GetStringFromObj(objv[1], NULL));
@@ -303,7 +305,7 @@ int apsimGetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST ob
    
 int apsimGetOptionalProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
-   if (objc >= 2)
+   if (objc == 2)
       {
       TclComponent *component = (TclComponent *) cd;
       string apsimName(Tcl_GetStringFromObj(objv[1], NULL));
@@ -328,7 +330,7 @@ int TclComponent::apsimGet(Tcl_Interp *interp, const string &varname, bool optio
                        strStringArray);
 
    protocol::Variant* variant = NULL;
-   
+
    if (getVariable((unsigned int)regItem, &variant, optional)) 
       {
       Tcl_Obj *result = Tcl_GetObjResult(interp);

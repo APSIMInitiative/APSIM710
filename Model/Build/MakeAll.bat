@@ -17,9 +17,10 @@ rem ----------------------------------------------
 VersionStamper.tcl
 
 rem -------------------------------------------------------------
-rem Need to compile the GUI first so that the VBGeneral &
-rem CSGeneral exist for the DataTypes project.
+rem Make sure CSGeneral exists for the DataTypes project.
 rem -------------------------------------------------------------
+call MakeProject CSGeneral
+call MakeProject ApsimFile
 call MakeProject ApsimUI
 
 rem -------------------------------------------------------------
@@ -27,7 +28,6 @@ rem Need to process the datatypes.interface file and auto-
 rem generate the datatypes.cpp, .h etc.
 rem -------------------------------------------------------------
 call MakeProject DataTypes
-call %APSIM%\Model\DataTypes\DataTypes.bat
 
 rem -------------------------------------------------------------
 rem Need to compile all pre-requisite projects before the main

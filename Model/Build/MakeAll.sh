@@ -7,6 +7,9 @@ cd $APSIM/Model/Build
 ulimit -s unlimited
 rm -f $APSIM/Model/Build/Build.out
 
+./MakeProject.sh CSGeneral $1
+./MakeProject.sh ApsimFile $1
+./MakeProject.sh DataTypes $1
 ./MakeProject.sh General $1
 ./MakeProject.sh ApsimShared $1
 ./MakeProject.sh Protocol $1
@@ -29,4 +32,7 @@ rm -f $APSIM/Model/Build/Build.out
 ./MakeProject.sh Irrigation $1
 ./MakeProject.sh Plant $1
 ./MakeProject.sh Sorghum $1
+
+./MakeProject.sh ConToSim $1
+./MakeProject.sh ApsimToSim $1
 

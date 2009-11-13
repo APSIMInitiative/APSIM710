@@ -40,10 +40,10 @@ all: $(APSIM)/Model/$(PROJECT).a
 endif
 
 %.o: %.for
-	$(LF95) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+	$(LF95) -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
 %.o: %.f90
-	$(LF95) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+	$(LF95) -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
 $(APSIM)/Model/$(PROJECT).so: $(OBJS)
 	$(CC) -shared -o $(APSIM)/Model/$(PROJECT).so $(LDFLAGS) $(OBJS) $(STATICLIBS) $(LIBS)

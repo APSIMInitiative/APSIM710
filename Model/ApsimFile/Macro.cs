@@ -612,7 +612,7 @@ namespace ApsimFile
             string Filename = Contents.Substring(PosFile, PosEndFile - PosFile);
             Filename = Filename.Trim();
             if (OutputDirectory != "")
-               Filename = OutputDirectory + "\\" + Filename;
+               Filename = OutputDirectory + "/" + Filename;
 
             int PosStartFileBody = AdjustEndPos(Contents, PosFile);
             int PosEndFileBody = Contents.IndexOf("[endfile]", PosStartFileBody);
@@ -620,7 +620,7 @@ namespace ApsimFile
                throw new Exception("Cannot find a matching [endfile] keyword for file " + Filename);
 
             string FileContents = Contents.Substring(PosStartFileBody, PosEndFileBody - PosStartFileBody);
-
+					
             // Dump the file text into the given file name
             StreamWriter o = new StreamWriter(Filename, AppendToFile);
             o.Write(FileContents);
