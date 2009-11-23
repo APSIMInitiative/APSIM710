@@ -1,0 +1,425 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = WF_Millet
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                        "daily" = %apsim%\Model\Report.dll
+   Component                      "harvest" = %apsim%\Model\Report.dll
+   Component                        "water" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component "Reset water, nitrogen and surfaceOM on fixed date" = %apsim%\Model\Manager.dll
+   Component                        "Logic" = %apsim%\Model\Manager.dll
+   Component       "clearview 10104) Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component    "clearview 10104) Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "WF_Millet" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 22/09/2004
+     Simulation end date   = 30/07/2005
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\WFMillet\10104.met
+
+------- daily Initialisation --------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy
+        DaysAfterSowing
+        stage
+        green_biomass_wt
+        biomass
+        yield
+        Stage
+        esw
+        dlt_lai_pot
+        dlt_lai_carbon
+        lai
+        leafgreenwt
+        stemgreenwt
+        leaf_no
+
+     Output file = WF_Millet daily.out
+     Format = normal
+
+------- harvest Initialisation ------------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        yield
+        esw
+
+     Output file = WF_Millet harvest.out
+     Format = normal
+
+------- water Initialisation --------------------------------------------------
+     Output variables:
+        dd/mm/yyyy
+        esw
+        rain
+        drain
+        runoff
+
+     Output file = WF_Millet water.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('23/9/2004') then
+       wf_millet sow plants =22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if wf_millet.stagename = 'harvest_ripe' or wf_millet.plant_status = 'dead' then
+       wf_millet  harvest
+       wf_millet  end_crop
+                endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- wf_millet.sowing
+             fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Reset water, nitrogen and surfaceOM on fixed date Initialisation ------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('23/9/2004')) then
+     resetwater = 'yes'
+     resetnitrogen  = 'yes'
+     resetsurfaceom = 'no'
+     if (resetwater = 'yes') then
+         'clearview 10104) water' reset
+     endif
+     if (resetnitrogen = 'yes') then
+         'clearview 10104) nitrogen' reset
+     endif
+     if (resetsurfaceom = 'yes') then
+         'surface organic matter' reset
+     endif
+     act_mods reseting
+              endif
+     END of rules
+     
+
+------- Logic Initialisation --------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+      if today= date('18/11/2004') then
+     wf_millet  end_crop
+     endif
+     
+     SECTION:- end_of_day
+       if today= date('23/9/2004') then
+     water do_output
+     endif
+     if today= date('18/11/2004') then
+     water do_output
+     endif
+     if today= date('03/12/2004') then
+     water do_output
+     endif
+     if today= date('04/01/2005') then
+     water do_output
+     endif
+      if today= date('17/5/2005') then
+     water do_output
+     endif
+     END of rules
+     
+
+------- clearview 10104) Water Initialisation ---------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.125  0.180  0.310  0.360  0.272  1.590  0.762  0.300
+          150.-  300.  0.150  0.180  0.320  0.370  0.272  1.590  0.190  0.300
+          300.-  600.  0.150  0.180  0.330  0.380  0.340  1.560  0.048  0.300
+          600.-  900.  0.150  0.190  0.330  0.380  0.278  1.560  0.000  0.300
+          900.- 1200.  0.150  0.200  0.310  0.360  0.262  1.600  0.000  0.300
+         1200.- 1500.  0.150  0.300  0.300  0.350  0.266  1.640  0.000  0.300
+         1500.- 1800.  0.150  0.300  0.300  0.350  0.300  1.640  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      27.00      13.80      19.50       7.50
+          150.-  300.      27.00      13.80      21.00       7.50
+          300.-  600.      54.00      48.00      45.00      15.00
+          600.-  900.      57.00      26.40      42.00      15.00
+          900.- 1200.      60.00      18.60      33.00      15.00
+         1200.- 1500.      90.00       0.00       0.00      15.00
+         1500.- 1800.      90.00       0.00       0.00      15.00
+          ---------------------------------------------------------
+               Totals     405.00     120.60     160.50      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              72.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        4.00 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- clearview 10104) Nitrogen Initialisation ------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Red Chromosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.50  1.24   33.39    0.24    0.00
+             2     8.70  1.24   37.44    0.24    0.00
+             3     9.00  1.25   32.29    0.47    0.00
+             4     9.20  1.10  127.30    0.47    0.00
+             5     9.10  0.71  195.36    0.48    0.00
+             6     9.00  0.34  115.62    0.49    0.00
+             7     8.70  0.34  108.24    0.49    0.00
+          ------------------------------------------------
+           Totals              649.64    2.88    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      29515.4  2459.6    58.6     7.3   138.9     3.5
+             2      28891.5  2407.6   682.5    85.3   108.1     2.7
+             3      57926.5  4827.2   573.5    71.7    65.6     1.6
+             4      50975.3  4247.9   504.7    63.1    39.8     1.0
+             5      33812.7  2817.7   267.3    33.4    24.1     0.6
+             6      16661.8  1388.5    66.2     8.3    14.6     0.4
+             7      16678.3  1389.9    49.7     6.2     8.9     0.2
+          ---------------------------------------------------------
+           Totals  234461.5 19538.5  2202.5   275.3   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+23 September 2004(Day of year=267), Sow on a fixed date: 
+     Manager sending message :- wf_millet sow  plants = 22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
+23 September 2004(Day of year=267), WF_Millet: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wf_millet
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =       0 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              tt_emergence               =     400 (dd)
+           endjuv_to_fi
+              x_pp_endjuv_to_fi          =       1      24 (h)
+              y_tt_endjuv_to_fi          =     400     400 (dd)
+           fi_to_flag
+              Stage duration determined by leaf appearance rates
+           flag_to_flower
+              tt_flag_to_flower          =      50 (dd)
+           flowering
+              tt_flowering               =      60 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     380 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      25 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        grains_per_gram_stem           =       10.0 (/g)
+        potential_grain_filling_rate   =     0.0100 (g/grain/day)
+        potential_grain_growth_rate    =     0.0000 (g/grain/day)
+        max_grain_size                 =     0.5000 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.180       1.000
+         150.0     0.060          0.180       1.000
+         300.0     0.060          0.180       1.000
+         300.0     0.040          0.190       1.000
+         300.0     0.040          0.200       1.000
+         300.0     0.020          0.300       1.000
+         300.0     0.010          0.300       1.000
+         -----------------------------------------------
+         Extractable SW:   160mm in  1800mm total depth (  9%).
+         Crop factor for bounding water use is set to   1.1 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            267   20.0   22.0  330.0   0.0   0.0 wf_millet
+         ------------------------------------------------
+     
+23 September 2004(Day of year=267), Reset water, nitrogen and surfaceOM on fixed date: 
+     Manager creating a new local string variable : resetwater = yes
+     Manager creating a new local string variable : resetnitrogen = yes
+     Manager creating a new local string variable : resetsurfaceom = no
+23 September 2004(Day of year=267), clearview 10104) Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+23 September 2004(Day of year=267), clearview 10104) Nitrogen: 
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Red Chromosol
+      stage 2.0 germination
+28 September 2004(Day of year=272), WF_Millet: 
+      stage 3.0 emergence
+                     biomass =           0.10 (g/m^2)   lai          =   0.005 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   10.17 (mm)
+9 November 2004(Day of year=314), WF_Millet: 
+      stage 4.0 endjuv_to_fi
+                     biomass =         166.27 (g/m^2)   lai          =   1.140 (m^2/m^2)
+                     stover N conc =     4.62 (%)    extractable sw =   88.53 (mm)
+18 November 2004(Day of year=323), Logic: 
+     Manager sending message :- wf_millet end_crop
+18 November 2004(Day of year=323), WF_Millet: 
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2960.7                  2680.0
+                          N  (kg/ha) =                 111.38                   40.17
+     
+30 July 2005(Day of year=211), clock: 
+     Simulation is terminating due to end criteria being met.

@@ -1,0 +1,457 @@
+<folder version="19" name="simulations">
+  <simulation name="WF_Millet">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Tests\WFMillet\10104.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">22/09/2004</start_date>
+      <end_date type="date" description="Select the end date of the simulation">30/07/2005</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Continuous Wheat Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <WF_Millet />
+      <folder name="Manager folder">
+        <manager name="Sow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">23/9/2004</date>
+            <category description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">WF_Millet</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">22</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">20</depth>
+            <cultivar type="text" description="Enter cultivar : ">WF_Millet</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">330</row_spacing>
+          </ui>
+          <script name="start_of_day">
+            <text>
+        if (today = date('[date]') then
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+         endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">WF_Millet</crop>
+          </ui>
+          <script name="end_of_day">
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Sowing fertiliser">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">WF_Millet</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">0</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script name="[modulename].[eventname]">
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Reset water, nitrogen and surfaceOM on fixed date">
+          <ui>
+            <category description="When should a reset be done" />
+            <reset_date type="ddmmmdate" description="Enter date of reset (dd-mmm) : ">23/9/2004</reset_date>
+            <category description="Reset details" />
+            <soilmodule type="modulename" description="Name of your soil module : ">clearview 10104)</soilmodule>
+            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">surface organic matter</surfaceommodule>
+            <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
+            <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
+            <resetSurfaceOM type="yesno" description="Reset surface organic matter?">no</resetSurfaceOM>
+          </ui>
+          <script name="start_of_day">
+            <text>
+         if (today = date('[reset_date]')) then
+            resetWater = '[resetWater]'
+            resetNitrogen  = '[resetNitrogen]'
+            resetSurfaceOM = '[resetSurfaceOM]'
+            if (resetWater = 'yes') then
+                '[soilmodule] Water' reset
+            endif
+            if (resetNitrogen = 'yes') then
+                '[soilmodule] Nitrogen' reset
+            endif
+            if (resetSurfaceOM = 'yes') then
+                '[surfaceommodule]' reset
+            endif
+            act_mods reseting
+         endif
+      </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" listvalues="inert,manure,fym,bambatsi,barley,broccoli,camaldulensis,canola,chickpea,cowpea,danthonia,globulus,grandis,fababean,fieldpea,grass,lablab,lucerne,lupin,maize,millet,mucuna,mungbean,horsegram,navybean,cotton,orobanche,peanut,pigeonpea,rice,soybean,sorghum,stylo,sugar,sunflower,sweetcorn,sweetsorghum,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <outputfile name="daily">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy" array="No" description="Date (dd/mm/yyyy)" />
+          <variable name="DaysAfterSowing" array="No" description="Days after Sowing" />
+          <variable name="stage" array="No" description="Plant stage" />
+          <variable name="green_biomass_wt" array="No" description="Green Biomass weight" />
+          <variable name="biomass" array="No" description="Biomass" />
+          <variable name="yield" array="No" description="Yield" />
+          <variable name="Stage" array="No" description="Plant stage code" />
+          <variable name="esw" array="No" description="Extractable Soil Water (mm)" />
+          <variable name="dlt_lai_pot" array="No" description="Potential change in live plant lai" />
+          <variable name="dlt_lai_carbon" array="Potential change in live plant lai" />
+          <variable name="lai" />
+          <variable name="leafgreenwt" array="No" description="Green leaf dry matter" />
+          <variable name="stemgreenwt" array="No" description="Green Stem dry matter" />
+          <variable name="leaf_no" array="No" description="Number of leaves per plant" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" array="No" description="End of day" />
+        </events>
+      </outputfile>
+      <outputfile name="harvest">
+        <filename name="filename">sample.out</filename>
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="biomass" array="No" description="Biomass" />
+          <variable name="yield" array="No" description="Yield" />
+          <variable name="esw" array="No" description="Extractable Soil Water (mm)" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="harvesting" array="No" />
+        </events>
+      </outputfile>
+      <outputfile name="water">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy" description="Date (dd/mm/yyyy)" array="No" />
+          <variable name="esw" array="No" description="Extractable Soil Water (mm)" />
+          <variable name="rain" array="Rainfall (mm)" description="" />
+          <variable name="drain" array="" description="" />
+          <variable name="runoff" array="" description="" />
+        </variables>
+        <events name="Reporting Frequency" />
+      </outputfile>
+      <soil name="clearview 10104)">
+        <state>New South Wales</state>
+        <region>North West Slopes and Plains</region>
+        <nearesttown>North Star</nearesttown>
+        <site>North Star No10056</site>
+        <SoilType>Red Chromosol </SoilType>
+        <DataSource>Undertaken by Jeremy Whish, CSIRO Sustainable Ecosystems, Toowoomba in collaboration with MCA, Goondiwindi as part of GRDC Best Management Practice-Pulses project </DataSource>
+        <comment>OC from soil (Billa Billa No. 066)</comment>
+        <naturalvegetation>Brigalow scrub</naturalvegetation>
+        <SummerCona>4</SummerCona>
+        <WinterCona>2.5</WinterCona>
+        <SummerU>6</SummerU>
+        <WinterU>4</WinterU>
+        <SummerDate>1-nov</SummerDate>
+        <WinterDate>1-apr</WinterDate>
+        <Salb>0.13</Salb>
+        <DiffusConst>88</DiffusConst>
+        <DiffusSlope>35</DiffusSlope>
+        <CN2Bare>72</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.59</bd>
+            <ll15>0.18</ll15>
+            <airdry>0.125</airdry>
+            <dul>0.31</dul>
+            <sat>0.36</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>0.8</finert>
+            <oc>1.24</oc>
+            <ec>0.2</ec>
+            <ph>8.5</ph>
+            <cl>13.6</cl>
+            <ll name="wheat">0.18</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="weed">0.18</ll>
+            <kl name="weed">0.06</kl>
+            <xf name="weed">1</xf>
+            <ll name="WF_MIllet">0.18</ll>
+            <kl name="WF_MIllet">0.06</kl>
+            <xf name="WF_MIllet">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.59</bd>
+            <ll15>0.18</ll15>
+            <airdry>0.15</airdry>
+            <dul>0.32</dul>
+            <sat>0.37</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <oc>1.24</oc>
+            <ec>0.2</ec>
+            <ph>8.7</ph>
+            <cl>8.5</cl>
+            <ll name="wheat">0.18</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="weed">0.18</ll>
+            <kl name="weed">0.06</kl>
+            <xf name="weed">1</xf>
+            <ll name="WF_MIllet">0.18</ll>
+            <kl name="WF_MIllet">0.06</kl>
+            <xf name="WF_MIllet">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.56</bd>
+            <ll15>0.18</ll15>
+            <airdry>0.15</airdry>
+            <dul>0.33</dul>
+            <sat>0.38</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.5</finert>
+            <oc>1.25</oc>
+            <ec>0.3</ec>
+            <ph>9</ph>
+            <cl>9.5</cl>
+            <ll name="wheat">0.18</ll>
+            <kl name="wheat">0.06</kl>
+            <xf name="wheat">1</xf>
+            <ll name="weed">0.18</ll>
+            <kl name="weed">0.06</kl>
+            <xf name="weed">1</xf>
+            <ll name="WF_MIllet">0.18</ll>
+            <kl name="WF_MIllet">0.06</kl>
+            <xf name="WF_MIllet">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.56</bd>
+            <ll15>0.19</ll15>
+            <airdry>0.15</airdry>
+            <dul>0.33</dul>
+            <sat>0.38</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.5</finert>
+            <oc>1.1</oc>
+            <ec>0.5</ec>
+            <ph>9.2</ph>
+            <cl>14.7</cl>
+            <ll name="wheat">0.19</ll>
+            <kl name="wheat">0.04</kl>
+            <xf name="wheat">1</xf>
+            <ll name="weed">0.19</ll>
+            <kl name="weed">0.04</kl>
+            <xf name="weed">1</xf>
+            <ll name="WF_MIllet">0.19</ll>
+            <kl name="WF_MIllet">0.04</kl>
+            <xf name="WF_MIllet">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.6</bd>
+            <ll15>0.2</ll15>
+            <airdry>0.15</airdry>
+            <dul>0.31</dul>
+            <sat>0.36</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <oc>0.71</oc>
+            <ec>0.7</ec>
+            <ph>9.1</ph>
+            <cl>16.3</cl>
+            <ll name="wheat">0.2</ll>
+            <kl name="wheat">0.04</kl>
+            <xf name="wheat">1</xf>
+            <ll name="weed">0.2</ll>
+            <kl name="weed">0.04</kl>
+            <xf name="weed">1</xf>
+            <ll name="WF_MIllet">0.2</ll>
+            <kl name="WF_MIllet">0.04</kl>
+            <xf name="WF_MIllet">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.64</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.15</airdry>
+            <dul>0.3</dul>
+            <sat>0.35</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>0.6</finert>
+            <oc>0.34</oc>
+            <ec>0.8</ec>
+            <ph>9</ph>
+            <cl>16.7</cl>
+            <ll name="wheat">0.25</ll>
+            <kl name="wheat">0.02</kl>
+            <xf name="wheat">1</xf>
+            <ll name="weed">0.3</ll>
+            <kl name="weed">0.02</kl>
+            <xf name="weed">0</xf>
+            <ll name="WF_MIllet">0.3</ll>
+            <kl name="WF_MIllet">0.02</kl>
+            <xf name="WF_MIllet">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.64</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.15</airdry>
+            <dul>0.3</dul>
+            <sat>0.35</sat>
+            <swcon>0.3</swcon>
+            <fbiom>0.01</fbiom>
+            <finert>0.7</finert>
+            <oc>0.34</oc>
+            <ec>0.8</ec>
+            <ph>8.7</ph>
+            <cl>17.6</cl>
+            <ll name="wheat">0.28</ll>
+            <kl name="wheat">0.01</kl>
+            <xf name="wheat">1</xf>
+            <ll name="weed">0.3</ll>
+            <kl name="weed">0.01</kl>
+            <xf name="weed">0</xf>
+            <ll name="WF_MIllet">0.3</ll>
+            <kl name="WF_MIllet">0.01</kl>
+            <xf name="WF_MIllet">1</xf>
+          </layer>
+        </profile>
+        <InitWater>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.272</sw>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <sw>0.272</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.34</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.278</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.262</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.266</sw>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <sw>0.3</sw>
+            </layer>
+          </profile>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <no3>13.9999774076455</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <no3>15.6999790184383</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>6.89999370398335</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>27.1999837766546</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>40.699981650866</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>23.4999942839732</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>21.9999645351829</no3>
+              <nh4>0.1</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <manager name="Logic">
+        <script name="init">
+          <text>
+          </text>
+          <event>init</event>
+        </script>
+        <script name="start_of_day">
+          <text> if today= date('18/11/2004') then 
+WF_Millet  end_crop
+endif </text>
+          <event>start_of_day</event>
+        </script>
+        <script name="end_of_day">
+          <text>  if today= date('23/9/2004') then 
+water do_output
+endif 
+if today= date('18/11/2004') then 
+water do_output
+endif 
+if today= date('03/12/2004') then 
+water do_output
+endif 
+if today= date('04/01/2005') then 
+water do_output
+endif 
+ if today= date('17/5/2005') then 
+water do_output
+endif 
+ </text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+    </area>
+  </simulation>
+</folder>
