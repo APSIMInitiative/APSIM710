@@ -78,7 +78,6 @@ namespace CSUserInterface
             //temp component variable (set it to the parameter passed in [starting component]) 
             m_FileName = "";
             string simName = "";
-            string graphName = "";
             FullFileName = "";
 
             ApsimFile.Component thisComp = Controller.ApsimData.Find(NodePath);
@@ -128,7 +127,6 @@ namespace CSUserInterface
             catch (Exception ex)
             {
                 lblFileName.Text = m_FileName;
-
             }
             panel2.Invalidate();
         }

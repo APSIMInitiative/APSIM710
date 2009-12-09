@@ -110,6 +110,8 @@ namespace CSGeneral
          // '/' characters e.g. ChildNode/SubChildNode or /RootNode/ChildNode
          // Returns null if no child found. 
          // ----------------------------------------------------
+         if (Node == null)
+             return null;
          if (NamePath == "")
             throw new Exception("Cannot call FindByName with a blank path");
          if (NamePath[0] == Delimiter)
@@ -165,6 +167,8 @@ namespace CSGeneral
          // '/' characters e.g. ChildNode/SubChildNode or /RootNode/ChildNode
          // Returns null if no child found. 
          // ----------------------------------------------------
+         if (Node == null)
+             return null;
          if (TypePath == "")
             throw new Exception("Cannot call FindByType with a blank path");
          if (TypePath[0] == Delimiter)
