@@ -1,3 +1,5 @@
+
+#include <stdexcept>
 #include "../StdPlant.h"
 
 #include "ExternalFunction.h"
@@ -12,25 +14,28 @@ void interpolationFunction::read(ScienceAPI& scienceAPI,
    externalFunction::read(scienceAPI, xname, xunits, x0, x1, yname, yunits, y0, y1);
    x.clear();   y.clear();
 
-   scienceAPI.readOptional(xname, x, x0, x1);
-   scienceAPI.readOptional(yname, y, y0, y1);
+   scienceAPI.read(xname, x, x0, x1);
+   scienceAPI.read(yname, y, y0, y1);
    }
 
-void interpolationFunction::readOptional(ScienceAPI& scienceAPI,
+bool interpolationFunction::readOptional(ScienceAPI& scienceAPI,
                                    const string& xname, const string& xunits, float x0, float x1,
-                                   const string& yname, const string& yunits, float y0, float y1, float DefaultY)
+                                   const string& yname, const string& yunits, float y0, float y1)
    {
    externalFunction::read(scienceAPI, xname, xunits, x0, x1, yname, yunits, y0, y1);
    x.clear();   y.clear();
 
-   scienceAPI.readOptional(xname, x, x0, x1);
-   if(!scienceAPI.readOptional(yname, y, y0, y1))
-      {
-      x.push_back(0.0);
-      x.push_back(1.0);
-      y.push_back(DefaultY);
-      y.push_back(DefaultY);
-      }
+   if (scienceAPI.readOptional(xname, x, x0, x1))
+     return (scienceAPI.readOptional(yname, y, y0, y1));
+
+   return false;
+   }
+
+void interpolationFunction::setDefaultValue(float DefaultY)
+   {
+   x.clear();   y.clear();
+   x.push_back(0.0);
+   y.push_back(DefaultY);
    }
 
 std::string interpolationFunction::description(void)

@@ -10,7 +10,7 @@ void CWFixedPhase::read()
    string key = "tt_"+name();
    scienceAPI.read(key, target, 0.0f, 1000000.0f);
 
-   stressFunction.read(scienceAPI, "x_sw_avail_ratio_" + name(), "()", 0.0, 1.0,
+   stressFunction.readOptional(scienceAPI, "x_sw_avail_ratio_" + name(), "()", 0.0, 1.0,
                                    "y_swdef_pheno_" + name(), "()", 0.0, 5.0);
    }
 

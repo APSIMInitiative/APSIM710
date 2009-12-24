@@ -39,10 +39,10 @@ void RUEModel::Read(void)
               "x_stage_rue", "()", 0.0, 1000.0,
               "y_rue", "(g dm/mj)", 0.0, 1000.0);
 
-    DiffuseLightFactor.readOptional(scienceAPI,
+    if (!DiffuseLightFactor.readOptional(scienceAPI,
               "x_diffuse_fr", "(0-1)", 0.0, 1.0,
-              "y_rue_factor", "(0-1)", 0.0, 10.0, 1.0);  // Note this defaults to a value of 1 if not specified.
-
+              "y_rue_factor", "(0-1)", 0.0, 10.0))
+        DiffuseLightFactor.setDefaultValue(1.0);  // Note this defaults to a value of 1 if not specified.
    }
 
 float RUEModel::Q0(float lat, int day)

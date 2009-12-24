@@ -22,9 +22,9 @@ class interpolationFunction : public externalFunction
    void read(ScienceAPI& scienceAPI,
              const string& xName, const string&  xunits, float x0, float x1,
              const string& yName, const string& yunits, float y0, float y1);
-   void readOptional(ScienceAPI& scienceAPI,
+   bool readOptional(ScienceAPI& scienceAPI,
              const string& xName, const string&  xunits, float x0, float x1,
-             const string& yName, const string& yunits, float y0, float y1, float DefaultY);
+             const string& yName, const string& yunits, float y0, float y1);
 
    float value(float v);
    vector<float> xVal()  {
@@ -47,6 +47,7 @@ class interpolationFunction : public externalFunction
       x = xValues;
       y = yValues;
       }
+   void setDefaultValue(float DefaultY);
 };
 
 

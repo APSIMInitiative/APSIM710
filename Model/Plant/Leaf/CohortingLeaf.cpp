@@ -57,9 +57,10 @@ void CohortingLeaf::readSpeciesParameters (protocol::Component *system, vector<s
                        , "x_node_no_leaf",  "()", 0.0, 200.0
                        , "y_leaves_per_node", "()", 0.0, 50.0);
 
-   cTilleringCriticalCover.readOptional(scienceAPI
+   if (!cTilleringCriticalCover.readOptional(scienceAPI
                        , "CropCover",  "()", 0.0, 1.0
-                       , "RelativeTillerAppearance", "()", 0.0, 1.0, 1.0);   // If not there assume that cover has no effect on tillering
+                       , "RelativeTillerAppearance", "()", 0.0, 1.0))
+       cTilleringCriticalCover.setDefaultValue(1.0);   // If not there assume that cover has no effect on tillering
 
    cGrowthPeriod.read(scienceAPI,
                         "x_leaf_cohort", "(cohort)", 0, 50.0,

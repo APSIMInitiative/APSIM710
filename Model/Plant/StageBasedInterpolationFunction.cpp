@@ -8,9 +8,9 @@ StageBasedInterpolationFunction::StageBasedInterpolationFunction(plantInterface&
    : scienceAPI(API), plant(p)
    {
    this->Name = Name;
-   f.read(scienceAPI, "X"+Name+"StageCode" , "()", 1.0, 12.0
-                    , "Y"+Name, "()", 0.0, 1e6);
-   if (f.isInitialised())
+
+   if (f.readOptional(scienceAPI, "X"+Name+"StageCode" , "()", 1.0, 12.0
+                    , "Y"+Name, "()", 0.0, 1e6))
       scienceAPI.exposeFunction(Name, Units, Description, FloatGetter(&StageBasedInterpolationFunction::value));
    }
 
@@ -19,3 +19,8 @@ float StageBasedInterpolationFunction::value(void)
    {
    return plant.phenology().doInterpolation(f);
    }
+
+
+
+
+

@@ -17,7 +17,7 @@ void PhotoPhase::read()
                   key1.c_str(), "h", 0.0, 100.0,
                   key2.c_str(), "dd", 0.0, 1e6);
 
-   stressFunction.read(scienceAPI, "x_sw_avail_ratio_" + name(), "()", 0.0, 1.0,
+   stressFunction.readOptional(scienceAPI, "x_sw_avail_ratio_" + name(), "()", 0.0, 1.0,
                                    "y_swdef_pheno_" + name(), "()", 0.0, 5.0);
    scienceAPI.read("twilight", twilight, -90.0f, 90.0f);
    string key = name()+"_pp_inductive_cutoff";

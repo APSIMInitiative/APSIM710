@@ -44,11 +44,8 @@ void RootPart::zeroAllGlobals(void)
 
    fill_real_array (root_length , 0.0, max_layer);
    fill_real_array (root_length_senesced, 0.0, max_layer);
-   n_conc_min = n_conc_crit = n_conc_max = 0.0;
 
-      uptake_source = "";
-
-
+   uptake_source = "";
    }
 
 void RootPart::zeroDeltas(void)
@@ -139,10 +136,17 @@ void RootPart::read()
    // Read species-specific parameters
 
    scienceAPI.read("specific_root_length", specificRootLength,0.0f, 1000000.0f);
-   scienceAPI.read("n_conc_crit_root", n_conc_crit, 0.0f, 100.0f);
-   scienceAPI.read("n_conc_max_root", n_conc_max, 0.0f, 100.0f);
 
-   scienceAPI.read("n_conc_min_root", n_conc_min, 0.0f, 100.0f);
+   float n_conc = 0.0;
+   scienceAPI.read("n_conc_crit_root", n_conc, 0.0f, 100.0f);
+   SimplePart::c.n_conc_crit.setDefaultValue(n_conc);
+
+   scienceAPI.read("n_conc_max_root", n_conc, 0.0f, 100.0f);
+   SimplePart::c.n_conc_max.setDefaultValue(n_conc);
+
+   scienceAPI.read("n_conc_min_root", n_conc, 0.0f, 100.0f);
+   SimplePart::c.n_conc_min.setDefaultValue(n_conc);
+
    scienceAPI.read("initial_root_depth", initialRootDepth, 0.0f, 1000.0f);
    scienceAPI.read("specific_root_length", specificRootLength, 0.0f, 1000000.0f);
    scienceAPI.read("root_die_back_fr", rootDieBackFraction, 0.0f, 0.99f);
@@ -168,9 +172,11 @@ void RootPart::read()
                          "y_ws_root_fac", "()", 0.0, 1.0);
 
 // NIH This really should be inherited from simple part.
-    c.MaintenanceCoefficient.read(scienceAPI
+    c.MaintenanceCoefficient.readOptional(scienceAPI
                         , "MaintenanceCoefficientStage", "()", 0.0, 100.0
-                        , (myName+"MaintenanceCoefficient").c_str(), "()", 0.0, 1.0);   scienceAPI.readOptional("uptake_source", uptake_source);
+                        , (myName+"MaintenanceCoefficient").c_str(), "()", 0.0, 1.0);
+   
+   scienceAPI.readOptional("uptake_source", uptake_source);
 
    if (uptake_source == "")uptake_source = "calc";
 
@@ -532,18 +538,6 @@ void RootPart::root_incorp_dead (float  dlt_dm_root,                  // (INPUT)
       {
       // no roots to incorporate
       }
-   }
-
-
-
-
-void RootPart::doNConccentrationLimits(float)
-//==========================================================================
-// N targets are static - override SimplePart's implementation
-   {
-   SimplePart::g.n_conc_crit = RootPart::n_conc_crit;
-   SimplePart::g.n_conc_min =  RootPart::n_conc_min;
-   SimplePart::g.n_conc_max =  RootPart::n_conc_max;
    }
 
 void RootPart::redistribute(const vector<float> &dlayer_old,        //  old soil profile layers (mm)

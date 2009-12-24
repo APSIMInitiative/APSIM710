@@ -42,7 +42,6 @@ class RootBase : public SimplePart
                                           , vector<float> &dm_n
                                           , vector<float> &dm_p
                                           , vector<float> &fract){};
-      virtual void doNConccentrationLimits(float){};
       virtual void redistribute(const vector<float> &, const vector<float> &, float){};
 //      virtual int find_layer_no(float) {};
 //      virtual int find_layer_no(float,const vector<float>&){};

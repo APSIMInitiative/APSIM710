@@ -31,10 +31,10 @@ void SimplePart::Initialise()
    {
      zeroAllGlobals();
      c.dm_init = 0;
-     c.n_init_conc = 0;
+     c.n_init_conc = 0; 
      c.p_init_conc = 0;
      c.n_sen_conc = 0;
-     //c.trans_frac = 1;
+     
      c.trans_frac_option = 0;
      c.n_retrans_fraction = 1.0;
      c.sen_detach_frac = 0;
@@ -272,15 +272,15 @@ void SimplePart::readSpeciesParameters (protocol::Component *, vector<string> &)
     scienceAPI.read(myName + "_dm_init", c.dm_init, 0.0f, 1.0f);
     scienceAPI.read(myName + "_n_init_conc", c.n_init_conc, 0.0f, 1.0f);
 
-    c.n_conc_crit.read(scienceAPI
+    c.n_conc_crit.readOptional(scienceAPI
                         , "x_stage_code" , "()", 1.0, 100.0
                         , ("y_n_conc_crit_" + myName).c_str(), "()", 0.0, 100.0);
 
-    c.n_conc_min.read(scienceAPI
+    c.n_conc_min.readOptional(scienceAPI
                         , "x_stage_code" , "()", 1.0, 100.0
                         , ("y_n_conc_min_" + myName).c_str(), "()", 0.0, 100.0);
 
-    c.n_conc_max.read(scienceAPI
+    c.n_conc_max.readOptional(scienceAPI
                         , "x_stage_code" , "()", 1.0, 100.0
                         , ("y_n_conc_max_" + myName).c_str(), "()", 0.0, 100.0);
 
@@ -290,9 +290,9 @@ void SimplePart::readSpeciesParameters (protocol::Component *, vector<string> &)
 
     scienceAPI.read(myName + "_n_sen_conc", c.n_sen_conc, 0.0f, 1.0f);
 
-    c.fr_remain.read(scienceAPI
-                     , "fr_height_cut",  "(0-1)", 0.0, 1.0
-                     , ("fr_"+myName+"_remain").c_str(), "(0-1)", 0.0, 1.0);
+    c.fr_remain.readOptional(scienceAPI
+                           , "fr_height_cut",  "(0-1)", 0.0, 1.0
+                           , ("fr_"+myName+"_remain").c_str(), "(0-1)", 0.0, 1.0);
 
     if (!scienceAPI.readOptional(myName + "_n_retrans_fraction", c.n_retrans_fraction, 0.0f, 1.0f))
         c.n_retrans_fraction = 1.0;
@@ -300,13 +300,15 @@ void SimplePart::readSpeciesParameters (protocol::Component *, vector<string> &)
     if (!scienceAPI.readOptional("n_deficit_uptake_fraction", c.n_deficit_uptake_fraction, 0.0f, 1.0f))
         c.n_deficit_uptake_fraction = 0.0;
 
-    c.MaintenanceCoefficient.readOptional(scienceAPI
+    if (!c.MaintenanceCoefficient.readOptional(scienceAPI
                         , "MaintenanceCoefficientStage", "()", 0.0, 100.0
-                        , (myName+"MaintenanceCoefficient").c_str(), "()", 0.0, 1.0, 0.0);
+                        , (myName+"MaintenanceCoefficient").c_str(), "()", 0.0, 1.0))
+       c.MaintenanceCoefficient.setDefaultValue(0.0);
 
-    c.GrowthStructuralFraction.readOptional(scienceAPI
+    if (!c.GrowthStructuralFraction.readOptional(scienceAPI
                         , (myName+"GrowthStructuralFractionStage").c_str(), "()", 0.0, 100.0
-                        , (myName+"GrowthStructuralFraction").c_str(), "()", 0.0, 1.0, 1.0);
+                        , (myName+"GrowthStructuralFraction").c_str(), "()", 0.0, 1.0))
+       c.GrowthStructuralFraction.setDefaultValue(1.0);
 
 //    if (!scienceAPI.readOptional(myName+"MaintenanceCoefficient", c.MaintenanceCoefficient, 0.0f, 1.0f))
 //        c.MaintenanceCoefficient = 0.0;
@@ -318,10 +320,10 @@ void SimplePart::readSpeciesParameters (protocol::Component *, vector<string> &)
 void SimplePart::readCultivarParameters (protocol::Component*, const string&)
 //=======================================================================================
    {
-   c.height.read(scienceAPI
+   c.height.readOptional(scienceAPI
                 , ("x_" + myName + "_wt").c_str() , "(g/plant)", 0.0, 1000.0
                 , "y_height", "(mm)", 0.0, 5000.0);
-   c.width.read(scienceAPI
+   c.width.readOptional(scienceAPI
                 , ("x_" + myName + "_wt").c_str() , "(g/plant)", 0.0, 1000.0
                 , "y_width", "(mm)", 0.0, 5000.0);
    }

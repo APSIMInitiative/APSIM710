@@ -45,7 +45,6 @@ class RootPart : public RootBase
                                           , vector<float> &dm_n
                                           , vector<float> &dm_p
                                           , vector<float> &fract);
-      void doNConccentrationLimits(float);
       void redistribute(const vector<float> &, const vector<float> &, float);
 
       void doPlantWaterStress (float sw_demand, SWStress *swStress);
@@ -93,7 +92,6 @@ class RootPart : public RootBase
       vector<float> dltRootLengthDead;
       vector<float> dltRootLengthSenesced;
       float initialRootDepth;                         // initial depth of roots (mm)
-      float n_conc_min, n_conc_crit, n_conc_max;
       float rootDieBackFraction;                      // fraction of roots dying at harvest or kill_stem
 
       string crop_type;
