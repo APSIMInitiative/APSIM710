@@ -1,0 +1,370 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.1
+Title                  = Jimbour 1999-2000 Trifecta Grant-strip3a
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                        "Grant" = %apsim%\Model\Manager.dll
+   Component                  "Grant Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component               "Grant Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "lucerne" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 21/06/1999
+     Simulation end date   = 16/05/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: grant.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        site
+        season
+        treat
+        dd/mm/yyyy as Date
+        year
+        day
+        daysafteremergence
+        lai
+        biomass
+        leafgreenwt
+        leaftotalwt
+        stemgreenwt
+        stemtotalwt
+        n_uptake
+        rootgreenwt
+        roottotalwt
+        node_no
+        sw_dep() as total_sw
+        no3() as total_no3
+        n_conc_stover
+        height
+        swdef_photo
+        nfact_photo
+
+     Output file = Jimbour 1999-2000 Trifecta Grant-strip3a.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      6/08/1999  Prepare      'Surface Organic Matter' tillage type = planter
+      6/08/1999  Prepare      lucerne sow plants = 50, sowing_depth = 10, cultivar = trifecta
+      6/08/1999  Prepare      fertiliser apply amount = 4 (kg/ha), depth = 50 (mm), type = nh4_n
+
+------- Grant Initialisation --------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     reduce_status = 0
+     
+     SECTION:- start_of_day
+     if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
+           lucerne reduce
+           reduce_status = 1
+     endif
+     if (day = 150 and crop_class = 'reduced') then
+          lucerne spring
+          reduce_status = 0
+     endif
+     site='jimbour'
+     season='1999-2000'
+     treat=3
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : reduce_status = 0.00000
+
+------- Grant Water Initialisation --------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.270  0.540  0.580  0.462  1.020  0.762  0.200
+          150.-  300.  0.220  0.270  0.530  0.580  0.503  1.030  0.190  0.200
+          300.-  600.  0.220  0.280  0.540  0.590  0.457  1.020  0.048  0.200
+          600.-  900.  0.220  0.260  0.540  0.580  0.494  1.020  0.000  0.200
+          900.- 1200.  0.220  0.310  0.520  0.570  0.483  1.060  0.000  0.200
+         1200.- 1500.  0.220  0.320  0.500  0.550  0.496  1.110  0.000  0.200
+         1500.- 1800.  0.220  0.330  0.500  0.550  0.467  1.120  0.000  0.200
+         1800.- 2100.  0.220  0.330  0.480  0.530  0.449  1.150  0.000  0.200
+         2100.- 2400.  0.220  0.340  0.470  0.520  0.466  1.180  0.000  0.200
+         2400.- 2700.  0.220  0.330  0.460  0.510  0.469  1.200  0.000  0.200
+         2700.- 3000.  0.220  0.360  0.460  0.490  0.476  1.250  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      40.50      28.80      40.50       6.00
+          150.-  300.      40.50      34.95      39.00       7.50
+          300.-  600.      84.00      53.10      78.00      15.00
+          600.-  900.      78.00      70.20      84.00      12.00
+          900.- 1200.      93.00      51.90      63.00      15.00
+         1200.- 1500.      96.00      52.80      54.00      15.00
+         1500.- 1800.      99.00      41.10      51.00      15.00
+         1800.- 2100.      99.00      35.70      45.00      15.00
+         2100.- 2400.     102.00      37.80      39.00      15.00
+         2400.- 2700.      99.00      41.70      39.00      15.00
+         2700.- 3000.     108.00      34.80      30.00       9.00
+          ---------------------------------------------------------
+               Totals     939.00     482.85     562.50     139.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              70.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     4.00 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat          200.0    80.0     0.8     0.0   0.095     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.1
+     
+
+------- Grant Nitrogen Initialisation -----------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04   32.59    0.46    0.00
+             2     8.70  0.90   34.30    0.46    0.00
+             3     8.90  0.89   62.12    0.92    0.00
+             4     9.00  0.89   48.65    0.92    0.00
+             5     9.00  0.77   26.08    0.95    0.00
+             6     9.00  0.45    8.66    1.00    0.00
+             7     9.00  0.27    3.36    1.01    0.00
+             8     9.00  0.22    3.11    1.04    0.00
+             9     8.90  0.16    2.83    1.06    0.00
+            10     8.90  0.13    3.24    1.08    0.00
+            11     8.90  0.12    3.75    1.13    0.00
+          ------------------------------------------------
+           Totals              228.68   10.02    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15633.9  1116.7   278.1    34.8     9.6     0.2
+             2      13735.4   981.1   169.6    21.2     8.3     0.2
+             3      27133.4  1938.1   100.6    12.6     6.1     0.2
+             4      27207.0  1943.4    27.0     3.4     4.5     0.1
+             5      24473.9  1748.1    12.1     1.5     3.4     0.1
+             6      14983.5  1070.3     1.5     0.2     2.5     0.1
+             7       9071.1   647.9     0.9     0.1     1.8     0.0
+             8       7589.2   542.1     0.8     0.1     1.4     0.0
+             9       5663.4   404.5     0.6     0.1     1.0     0.0
+            10       4679.5   334.3     0.5     0.1     0.8     0.0
+            11       4499.6   321.4     0.4     0.1     0.6     0.0
+          ---------------------------------------------------------
+           Totals  154670.0 11047.9   592.0    74.0    40.0     1.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local string variable : season = 1999-2000
+     Manager creating a new local real variable : treat = 3.00000
+6 August 1999(Day of year=218), operations: 
+      Sending tillage message to surface organic matter
+6 August 1999(Day of year=218), Surface Organic Matter: 
+     
+         - Reading residue tillage info
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+      Sending sow message to lucerne
+6 August 1999(Day of year=218), lucerne: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = trifecta
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     700     700 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     300     300 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     200     200 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =    9400    9400 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     500 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0001     0.0001
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.270       1.000
+         150.0     0.080          0.270       1.000
+         300.0     0.080          0.280       1.000
+         300.0     0.080          0.260       1.000
+         300.0     0.080          0.310       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   562mm in  3000mm total depth ( 19%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            218   10.0   50.0  150.0   0.0   0.0 trifecta
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+7 August 1999(Day of year=219), lucerne: 
+      stage 2.0 germination
+11 August 1999(Day of year=223), lucerne: 
+      stage 3.0 emergence
+                     biomass =           0.25 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   27.32 (mm)
+11 October 1999(Day of year=284), lucerne: 
+      stage 4.0 end_of_juvenile
+                     biomass =          62.51 (g/m^2)   lai          =   0.408 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =  179.34 (mm)
+30 October 1999(Day of year=303), lucerne: 
+      stage 5.0 floral_initiation
+                     biomass =         150.32 (g/m^2)   lai          =   0.764 (m^2/m^2)
+                     stover N conc =     4.39 (%)    extractable sw =  160.21 (mm)
+13 November 1999(Day of year=317), lucerne: 
+      stage 6.0 flowering
+                     biomass =         211.78 (g/m^2)   lai          =   0.993 (m^2/m^2)
+                     stover N conc =     3.15 (%)    extractable sw =  211.31 (mm)
+20 November 1999(Day of year=324), lucerne: 
+      stage 7.0 start_grain_fill
+                     biomass =         228.70 (g/m^2)   lai          =   1.067 (m^2/m^2)
+                     stover N conc =     2.93 (%)    extractable sw =  189.55 (mm)
+16 May 2000(Day of year=137), clock: 
+     Simulation is terminating due to end criteria being met.
