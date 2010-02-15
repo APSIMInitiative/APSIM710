@@ -378,32 +378,8 @@ Public Class DataTree
 
     'Global variables for Drag/Drop methods
     Protected PathsBeingDragged As StringCollection     'used to store the paths for all the components that have been selected in the drag
-    Public WithEvents TimerDragHover As New Timer      'raises an event after an amount of time spent over a tree node during a drag 
     Private isRightBtnDrag As Boolean = False           'is the drag event a drag using the right mouse button
 
-
-    'Timer Event that occurs every 2 seconds (once you start a drag) and will expand any nodes that you hover over for more then 2 seconds. 
-
-    Private Sub TimerDragHover_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles TimerDragHover.Tick
-
-        'Extract the Destination Node from the sender's Tag Property
-        Dim timer As Timer = CType(sender, Timer)
-        Dim DestinationNode As TreeNode = CType(timer.Tag, TreeNode)
-
-        'Expand node that you are hoving over when the tick event occured (now).
-        If Me.Parent.Name = "SimulationExplorer" Then               'Only expand nodes in the Simulation ExplorerUI. Don't expand them in the Toolbox ExplorerUI.
-            'If the mouse was over a node when the tick event happened, then expand the node. If mouse is over a blank area (not over a tree node) then don't do anything.
-            If Not IsNothing(DestinationNode) Then
-                For Each Child As TreeNode In DestinationNode.Nodes     'DestinationNode.Expand() will expand nodes but it will not do the autoscrolling. So use EnsureVisible() instead.  DestinationNode.EnsureVisible() does not work because the destination node is already visible. How else did you drag over it.     
-                    Child.EnsureVisible()                                   'make sure the tree will do autoscrolling while dragging (scroll down and expand the nodes when you hover over the destination node).
-                Next             
-            End If
-        End If
-
-        'once you have done it once, stop the timer so it doesn't do it again.
-        timer.Enabled = False
-
-    End Sub
 
     Private Sub TreeView_ItemDrag(ByVal sender As Object, ByVal e As System.Windows.Forms.ItemDragEventArgs) Handles Me.ItemDrag
         ' -----------------------------------------------------------------
@@ -424,13 +400,6 @@ Public Class DataTree
         Next
         PathsBeingDragged = Controller.SelectedPaths                                'store the paths of ALL the nodes that are being dragged in a global variable, so it can be used by other drag events.
 
-        If Me.Parent.Name = "SimulationExplorer" Then
-            'Start the Timer.                                                           (when dragging, if you hover over a node for more then 2 seconds, you want that node you are over to expand and do autoscrolling) 
-            TimerDragHover.Interval = 2000                                              'in milliseconds. (2000 milliseconds is 2 seconds). Raise the Tick Event every 2 seconds.
-            TimerDragHover.Enabled = True                                               'start the timer to raise the tick event. You must do it before you raise the DoDragDrop event because otherwise it will have to wait for the whole drag and drop to finish before doing it's first tick event. It can not do the tick event during the drag and drop. By starting it before the drag and drop the tick event will fire DURING the drag and drop. 
-            'You could also use the Start() to start the timer but Start is more generic to the other types of timers that have an AutoReset property. When AutoReset is set to False, only 1 tick event is raised. The Start is then used to manually restart the timer to do another tick event. The System.Windows.Forms.Timer does NOT have an AutoReset property so it can NOT do just one tick, but it still has the Start and Stop properties. So for the Forms Timer the Start and Stop are just interchangable with the Enabled property.
-        End If
-
         'Raise the other DragDropEvents
         DoDragDrop(FullXML, DragDropEffects.Copy Or DragDropEffects.Move Or DragDropEffects.Link)
         'parameters: (Store xml of what you are dragging in "data" Drag Event Argument), (allowable types of left mouse drags [Drag Drop Effects are of type FlagsAttribute, which allow bitwise operators AND and OR]). 
@@ -449,12 +418,6 @@ Public Class DataTree
             Dim pt As Point = PointToClient(New Point(e.X, e.Y))    'get the drop location
             Dim DestinationNode As TreeNode = GetNodeAt(pt)         'find the node closest to the drop location
             If Not IsNothing(DestinationNode) Then
-
-                'Since we have dragged over a new node start the Timer so it raises an event in 2 seconds from NOW
-                If Me.Parent.Name = "SimulationExplorer" Then
-                    TimerDragHover.Tag = DestinationNode                    'use this as a dodgy way of passing the destination node to the Tick event. I can't set the event args like I can for the DoDragDrop because I am not using the OnTick to raise the event manually like I am with the DoDragDrop. The tick event is raised "automatically" and the event args are set to Empty when raised in this way. 
-                    TimerDragHover.Enabled = True                           'now we are over a new tree node (because the DragOver event has fired again), restart the timer
-                End If
 
                 'Work out the type of left drag this is (copy, move, create link/shortcut), and store it in the "Effect" Drag Event Argument
                 Dim FullXML As String = e.Data.GetData(DataFormats.Text)
@@ -480,16 +443,6 @@ Public Class DataTree
         End If
     End Sub
 
-    Private Sub TreeView_DragLeave(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DragLeave
-        ' --------------------------------------------------
-        ' User dragged the node outside the bounds of the datatree.  (usually because they are dragging to a toolbox)
-        ' --------------------------------------------------
-
-        If Me.Parent.Name = "SimulationExplorer" Then
-            TimerDragHover.Enabled = False      'stop the timer so that the timer does not go off on the last thing that was dragged over and expand it.
-        End If
-
-    End Sub
 
     Private Sub TreeView_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles Me.DragDrop
         ' --------------------------------------------------
