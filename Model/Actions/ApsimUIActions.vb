@@ -163,6 +163,20 @@ Public Class ApsimUIActions
     End Sub
 
 #End Region
+
+    Public Shared Sub ImportConFile(ByVal Controller As BaseController)
+        BaseActions.FileSave(Controller)
+        Dim F As New OpenFileDialog
+        F.Filter = "Con files (*.con)|*.con|All files (*.*)|*.*"
+        F.Title = "Select a .con file to import"
+        If F.ShowDialog() = DialogResult.OK Then
+            Dim NewXmlNode As XmlNode = ConToApsim.Converter.Go(F.FileName)
+            If Not IsNothing(NewXmlNode) Then
+                Controller.ApsimData.[New](NewXmlNode.OuterXml)
+            End If
+        End If
+    End Sub
+
 End Class
 
 

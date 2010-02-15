@@ -237,9 +237,6 @@ void SimCreator::GetMatchingParFileSections(const std::string& instanceName,
                                             PEqualToFileName<ParFile>(fileName));
       if (i == convertedParFiles.end())
          {
-         if (!fileExists(fileName))
-            throw runtime_error("Cannot find file: " + fileName);
-
          convertedParFiles.push_back(ConvertParFile(fileName));
          i = find_if(convertedParFiles.begin(), convertedParFiles.end(),
                      PEqualToFileName<ParFile>(fileName));
@@ -285,6 +282,9 @@ SimCreator::ParFile* SimCreator::ConvertParFile(const std::string& fileName)
    {
    ParFile* currentParFile = new ParFile(fileName);
    SimCreatorSection* currentSection = NULL;
+   if (!fileExists(fileName))
+      return currentParFile;
+
    try
       {
       ifstream in(fileName.c_str());
