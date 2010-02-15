@@ -5,7 +5,7 @@
 
 - In the two Warra sims, wheat harvest dates in the original manager have a note next to them saying that dates were guessed. In both cases they are later than when stage 10 is reached in the model, so produces a message in summary file saying that wheat also dies because of total leaf senescence. Wheat harvest dates have been changed to be the same date as when stage 10 is reached so that do not generate wheat crop failure message.
 
-- In the two Roseworthy sims, the observed data at the times when the lucerne was cut has two observed values for biomass height etc - assuming these are pre-cut sampling values and post-cut sampling values. The height value is always 50mm post cut. In operations the harvest height was set to 10mm so increased this to 50mm to reflect observed data. 
+- In the two Roseworthy sims, the observed data at the times when the lucerne was cut has two observed values for biomass height etc - assuming these are pre-cut sampling values and post-cut sampling values. The height value is always 50mm post cut. In operations the harvest height was set to 10mm so increased this to 50mm to reflect observed data.
 
 
 </memo>
@@ -23,7 +23,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -44,7 +44,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -64,7 +64,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -84,7 +84,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -104,7 +104,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -124,7 +124,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -144,7 +144,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -164,7 +164,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -184,7 +184,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -204,7 +204,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -224,7 +224,7 @@
         <FieldsToMatch>Treat</FieldsToMatch>
         <FieldsToMatch>Date</FieldsToMatch>
         <GDApsimFileReader name="Observed">
-          <FileName>Lucerne_All_Obs.out</FileName>
+          <FileName>Lucerne_All_Obs.obs</FileName>
         </GDApsimFileReader>
         <GDApsimFileReader name="Predicted" />
       </GDPredObs>
@@ -253,7 +253,7 @@
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -387,7 +387,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -411,7 +411,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -434,7 +434,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -457,7 +457,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -480,7 +480,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -503,7 +503,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -526,7 +526,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -549,7 +549,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -572,7 +572,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -595,7 +595,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -619,7 +619,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Gatton' and Season = '1994-95' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -987,7 +987,7 @@ treat=1
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -1199,7 +1199,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1223,7 +1223,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1246,7 +1246,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1269,7 +1269,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1292,7 +1292,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1315,7 +1315,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1338,7 +1338,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1361,7 +1361,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1384,7 +1384,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1407,7 +1407,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1431,7 +1431,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -1963,7 +1963,7 @@ treat=1
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -2351,7 +2351,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2375,7 +2375,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2398,7 +2398,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2421,7 +2421,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2444,7 +2444,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2467,7 +2467,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2490,7 +2490,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2513,7 +2513,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2536,7 +2536,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2559,7 +2559,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -2583,7 +2583,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Lincoln' and Season = '1996-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3115,7 +3115,7 @@ treat=2
             <text>if (lucerne.crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and lucerne.crop_class = 'reduced') then
      lucerne spring
@@ -3278,7 +3278,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3303,7 +3303,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3328,7 +3328,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3353,7 +3353,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3378,7 +3378,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3403,7 +3403,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3428,7 +3428,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3451,7 +3451,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3474,7 +3474,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3499,7 +3499,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3525,7 +3525,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1988-92' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3814,7 +3814,7 @@ treat=4
             <text>if (lucerne.crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and lucerne.crop_class = 'reduced') then
      lucerne spring
@@ -3969,7 +3969,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -3995,7 +3995,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4020,7 +4020,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4045,7 +4045,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4070,7 +4070,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4095,7 +4095,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4120,7 +4120,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4143,7 +4143,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4166,7 +4166,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4191,7 +4191,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4217,7 +4217,7 @@ treat=8
             <GDFilter name="Filter">
               <Filter>Site = 'Warra' and Season = '1989-93' and Treat = 8</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4506,7 +4506,7 @@ treat=8
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -4626,7 +4626,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4650,7 +4650,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4673,7 +4673,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4696,7 +4696,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4719,7 +4719,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4742,7 +4742,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4765,7 +4765,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4788,7 +4788,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4811,7 +4811,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4834,7 +4834,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -4858,7 +4858,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5151,7 +5151,7 @@ treat=1
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -5311,7 +5311,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5335,7 +5335,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5358,7 +5358,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Quairading' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5381,7 +5381,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5404,7 +5404,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5427,7 +5427,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5450,7 +5450,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5473,7 +5473,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5496,7 +5496,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5519,7 +5519,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5543,7 +5543,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Tamworth' and Season = '1979-83' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -5886,7 +5886,7 @@ treat=1
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -6005,7 +6005,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6029,7 +6029,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6052,7 +6052,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6075,7 +6075,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6098,7 +6098,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6121,7 +6121,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6144,7 +6144,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6167,7 +6167,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6190,7 +6190,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6213,7 +6213,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6237,7 +6237,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6580,7 +6580,7 @@ treat=1
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -6699,7 +6699,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6723,7 +6723,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6746,7 +6746,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6769,7 +6769,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6792,7 +6792,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6815,7 +6815,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6838,7 +6838,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6861,7 +6861,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6884,7 +6884,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6907,7 +6907,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -6931,7 +6931,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-2000' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7274,7 +7274,7 @@ treat=2
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -7341,7 +7341,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7365,7 +7365,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7388,7 +7388,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7411,7 +7411,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7434,7 +7434,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7457,7 +7457,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7480,7 +7480,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7503,7 +7503,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7526,7 +7526,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7549,7 +7549,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7573,7 +7573,7 @@ treat=3
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1999-2000' and Treat = 3</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -7916,7 +7916,7 @@ treat=3
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -8011,7 +8011,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8035,7 +8035,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8058,7 +8058,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8081,7 +8081,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8104,7 +8104,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8127,7 +8127,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8150,7 +8150,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8173,7 +8173,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8196,7 +8196,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8219,7 +8219,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8243,7 +8243,7 @@ treat=4
             <GDFilter name="Filter">
               <Filter>Site = 'Jimbour' and Season = '1997-99' and Treat = 4</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8586,7 +8586,7 @@ treat=4
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -8717,7 +8717,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8741,7 +8741,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8764,7 +8764,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8787,7 +8787,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8810,7 +8810,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8833,7 +8833,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8856,7 +8856,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8879,7 +8879,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8902,7 +8902,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8925,7 +8925,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -8949,7 +8949,7 @@ treat=1
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 1</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9267,7 +9267,7 @@ treat=1
             <text>if (crop_class = 'regrowth' and day = 120 and reduce_status = 0) then
       lucerne reduce
       reduce_status = 1
-endif  
+endif
 
 if (day = 150 and crop_class = 'reduced') then
      lucerne spring
@@ -9594,7 +9594,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9618,7 +9618,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9641,7 +9641,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9664,7 +9664,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9687,7 +9687,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9710,7 +9710,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9733,7 +9733,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9756,7 +9756,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9779,7 +9779,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9802,7 +9802,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
@@ -9826,7 +9826,7 @@ treat=2
             <GDFilter name="Filter">
               <Filter>Site = 'Roseworthy' and Season = '1998-2001' and Treat = 2</Filter>
               <GDApsimFileReader name="ApsimFileReader">
-                <FileName>Lucerne_All_Obs.out</FileName>
+                <FileName>Lucerne_All_Obs.obs</FileName>
               </GDApsimFileReader>
             </GDFilter>
           </Plot>
