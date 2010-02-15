@@ -91,9 +91,9 @@ namespace ApsimFile
       public static string ApsimDirectory()
          {
          string Directory = Path.GetDirectoryName(CSGeneral.Utility.ConvertURLToPath(Assembly.GetExecutingAssembly().CodeBase));
-         while (Directory != "" && !File.Exists(Directory + "\\Apsim.xml"))
+         while (Directory != Path.GetPathRoot(Directory) && !File.Exists(Directory + "\\Apsim.xml"))
             Directory = Path.GetFullPath(Directory + "\\..");
-         if (Directory == "")
+         if (Directory == Path.GetPathRoot(Directory))
             throw new Exception("Cannot find apsim.xml");
          return Directory;
          }
