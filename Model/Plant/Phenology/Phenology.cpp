@@ -583,8 +583,9 @@ void Phenology::onRemoveBiomass(float removeBiomPheno)
             // phenological phase (0-1)
             const Phase *current = phases[(int) currentStage];
             float frac = divide(current->getTT(), current->getTTTarget(), 0.0);
+            if (frac > 0.0 && frac < 1.0)  // Don't skip out of this stage - some have very low targets, eg 1.0 in "maturity"
+               currentStage = frac + floor(currentStage);
 
-            currentStage = frac + floor(currentStage);
             break;
             }
          }
