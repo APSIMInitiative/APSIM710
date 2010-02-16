@@ -255,6 +255,9 @@ namespace ApsimFile
 
       private bool GetNextLine(StreamReaderRandomAccess In, ref StringCollection Words)
          {
+         if (In.EndOfStream)
+            return false;
+
          string Line = In.ReadLine();
 
          if (Line == null || Line.Length == 0)
@@ -277,6 +280,9 @@ namespace ApsimFile
          }
       private string LookAheadForNonMissingValue(StreamReaderRandomAccess In, int w)
          {
+         if (In.EndOfStream)
+            return "?";
+
          int Pos = In.Position;
 
          StringCollection Words = new StringCollection();

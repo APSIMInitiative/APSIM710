@@ -1,1 +1,2 @@
-%APSIM%\Model\ApsimReport.exe validation.report %APSIM%\Graphs\Canola\Validation\Canola.gif
+@echo off
+%APSIM%\Model\apsimui.exe Validation.apsim Export ..\..\..\Graphs\Canola .gif

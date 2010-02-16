@@ -266,6 +266,10 @@ namespace ConToApsim
                   TransferParameter(Child, "InitData/root_wt", SoilNode, "RootWt");
                   TransferParameter(Child, "InitData/root_cn", SoilNode, "RootCn");
 
+                  string Value = XmlHelper.Value(Child, "InitData/soiltype");
+                  if (Value != "")
+                     XmlHelper.SetValue(SoilNode, "soiltype", Value);
+
                   XmlNode ProfileNode = XmlHelper.Find(SoilNode, "profile");
                   string[] Thickness = GetLayered(ProfileNode, "thickness");
                   TransferProfileParameter(Child, "InitData/oc", ProfileNode, "oc");

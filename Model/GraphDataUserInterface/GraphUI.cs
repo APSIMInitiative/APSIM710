@@ -150,6 +150,7 @@ namespace GraphDataUserInterface
             if (S.Count == 0)
                S.ShowInLegend = false;
             }
+
          }
 
       private void FixAxisTitle(Steema.TeeChart.Axis _Axis, string Name)
@@ -858,9 +859,7 @@ namespace GraphDataUserInterface
          this.Chart.Walls.Right.Shadow.Visible = false;
          this.Chart.Walls.Visible = false;
          }
-
-
-      
+    
 
 
          

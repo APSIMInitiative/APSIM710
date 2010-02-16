@@ -96,7 +96,14 @@ namespace GraphDataUserInterface
          OneToOneLine.Add(Minimum, Minimum);
          OneToOneLine.Add(Maximum, Maximum);
          OneToOneLine.Active = true;
+
+         // Add a mark tool so that if the user hovers over a point then it's XY value will be displayed.
+         Chart.Tools.Clear();
+         Steema.TeeChart.Tools.MarksTip MarkTip = new Steema.TeeChart.Tools.MarksTip(Chart.Chart);
+         MarkTip.Style = MarksStyles.XY;
+         Chart.Tools.Add(MarkTip);
          }
+
 
       private Series GetSeries(string Title)
          {

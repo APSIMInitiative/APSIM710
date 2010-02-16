@@ -476,23 +476,26 @@ Public Class MainUI
 
          ' Process command line arguments.
          ' Load a file if one was specified on the command line.
-         Dim ExportFileName As String = ""
+            Dim ExportDirectory As String = ""
+            Dim ExportExtension As String = ""
          If Control.ModifierKeys <> Keys.Control And Args.Count > 0 Then
             For Each Arg As String In Args
-               If Arg.Contains("ExportTo:") Then
-                  ExportFileName = Arg.Substring(9)
-               Else
-                  Dim FileName As String = Arg.Replace("""", "")
-                  If FileName.Length() > 0 Then
-                     If Path.GetFileName(FileName).ToLower() = "response.file" Then
-                        Dim Wizard As New GraphWizardForm
-                        Wizard.Go(SimulationController, FileName)
-                        Wizard.ShowDialog()
-                     Else
-                        SimulationController.ApsimData.OpenFile(FileName)
-                     End If
-                  End If
-               End If
+                    If Arg = "Export" And Args.Count = 4 Then
+                        ExportDirectory = Args(2)
+                        ExportExtension = Args(3)
+                        Exit For
+                    Else
+                        Dim FileName As String = Arg.Replace("""", "")
+                        If FileName.Length() > 0 Then
+                            If Path.GetFileName(FileName).ToLower() = "response.file" Then
+                                Dim Wizard As New GraphWizardForm
+                                Wizard.Go(SimulationController, FileName)
+                                Wizard.ShowDialog()
+                            Else
+                                SimulationController.ApsimData.OpenFile(FileName)
+                            End If
+                        End If
+                    End If
 
             Next
          End If
@@ -503,34 +506,34 @@ Public Class MainUI
          End If
 
          ' If we have an export file name then do an export.
-         If ExportFileName <> "" Then
-            Actions.BaseActions.ExportAll(SimulationController, SimulationController.ApsimData.RootComponent, ExportFileName)
-            Close()
-         Else
-            'Create the Toolbox Explorer
-            Dim ToolboxesVisible As Boolean = Configuration.Instance.Setting("ToolboxesVisible").ToLower = "yes"
-            If ToolboxesVisible Then
-               ' Setup but don't show the Toolbox Explorer.
-               ToolboxController = New BaseController(Nothing, ApplicationName, False)
-
-               ToolboxExplorer = New ExplorerUI()
-               ToolboxExplorer.Name = "ToolboxExplorer"
-               ToolboxExplorer.Parent = ToolBoxPanel
-               ToolboxExplorer.Dock = DockStyle.Fill
-               ToolboxExplorer.BringToFront()
-               ToolboxExplorer.OnLoad(ToolboxController)
-
-               ToolboxController.Explorer = ToolboxExplorer    'give the toolbox ExplorerUI to the toolbox controller.
-               Try
-                  PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
-               Catch ex As Exception
-                  MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-               End Try
-
+            If ExportDirectory <> "" Then
+                Actions.BaseActions.ExportAll(SimulationController, SimulationController.ApsimData.RootComponent, ExportDirectory, ExportExtension)
+                Close()
             Else
-               ToolBoxesToolStrip.Visible = False
+                'Create the Toolbox Explorer
+                Dim ToolboxesVisible As Boolean = Configuration.Instance.Setting("ToolboxesVisible").ToLower = "yes"
+                If ToolboxesVisible Then
+                    ' Setup but don't show the Toolbox Explorer.
+                    ToolboxController = New BaseController(Nothing, ApplicationName, False)
+
+                    ToolboxExplorer = New ExplorerUI()
+                    ToolboxExplorer.Name = "ToolboxExplorer"
+                    ToolboxExplorer.Parent = ToolBoxPanel
+                    ToolboxExplorer.Dock = DockStyle.Fill
+                    ToolboxExplorer.BringToFront()
+                    ToolboxExplorer.OnLoad(ToolboxController)
+
+                    ToolboxController.Explorer = ToolboxExplorer    'give the toolbox ExplorerUI to the toolbox controller.
+                    Try
+                        PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Try
+
+                Else
+                    ToolBoxesToolStrip.Visible = False
+                End If
             End If
-         End If
 
       Catch ex As Exception
          MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)

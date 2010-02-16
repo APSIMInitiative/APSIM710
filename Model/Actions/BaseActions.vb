@@ -153,26 +153,26 @@ Public Class BaseActions
         SaveDialog.DefaultExt = ".png"
         SaveDialog.Title = "Specify a filename to save the charts to"
         SaveDialog.OverwritePrompt = True
+        SaveDialog.RestoreDirectory = True
         If SaveDialog.ShowDialog() = DialogResult.OK Then
             ComponentsToPrint.Clear()
             Contr = Controller
 
-            ExportAll(Contr, Contr.Selection, SaveDialog.FileName)
+            ExportAll(Contr, Contr.Selection, Path.GetDirectoryName(SaveDialog.FileName), Path.GetExtension(SaveDialog.FileName))
 
         End If
         MessageBox.Show("All graphs have been exported", "Export completed", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
 
-    Public Shared Sub ExportAll(ByVal Controller As BaseController, ByVal Selection As Component, ByVal FileName As String)
+    Public Shared Sub ExportAll(ByVal Controller As BaseController, ByVal Selection As Component, _
+                                ByVal ExportDirectory As String, ByVal ExportExtension As String)
         Contr = Controller
         If ComponentsToPrint.Count = 0 Then
             GetListOfComponentsToPrint(Contr, Selection)
-         Directory.CreateDirectory(Path.GetDirectoryName(FileName))
+            Directory.CreateDirectory(ExportDirectory)
             ' cleanup all previous files.
-            Utility.DeleteFiles(Path.GetDirectoryName(FileName) + "\\" + _
-                                Path.GetFileNameWithoutExtension(FileName) + "*" + _
-                                Path.GetExtension(FileName))
+            Utility.DeleteFiles(ExportDirectory + "\\*" + ExportExtension)
 
             ComponentsToPrintIndex = 1
         End If
@@ -193,15 +193,9 @@ Public Class BaseActions
             PF.PrintControl(g, r, CurrentView, 1.0F)
 
             g.Dispose()
-            Dim NewFileName As String
-            If ComponentsToPrint.Count = 1 Then
-                NewFileName = FileName
-            Else
-                NewFileName = Path.GetDirectoryName(FileName) + "\\" + _
-                                  Path.GetFileNameWithoutExtension(FileName) + ComponentsToPrintIndex.ToString + _
-                                  Path.GetExtension(FileName)
-
-            End If
+            Dim NewFileName As String = ExportDirectory + "\\" _
+                                      + Controller.ApsimData.Find(SelectedPath).Name _
+                                      + ExportExtension
             If (Path.GetExtension(NewFileName) = ".bmp") Then
                 img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Bmp)
             ElseIf (Path.GetExtension(NewFileName) = ".gif") Then
@@ -211,7 +205,7 @@ Public Class BaseActions
             ElseIf (Path.GetExtension(NewFileName) = ".png") Then
                 img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Png)
             Else
-                Throw New Exception("Invalid format for exporting: " + FileName)
+                Throw New Exception("Invalid format for exporting: " + NewFileName)
                 img.Dispose()
             End If
             ComponentsToPrintIndex = ComponentsToPrintIndex + 1

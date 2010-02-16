@@ -344,7 +344,7 @@ namespace ApsimFile
 
             foreach (double Value in Values)
                 {
-                string StringValue = Value.ToString("f3");
+                string StringValue = MathUtility.Round(Value, 3).ToString("f3");
                 ReturnString += new string(' ', 10 - StringValue.Length) + StringValue;
                 }
             return ReturnString;

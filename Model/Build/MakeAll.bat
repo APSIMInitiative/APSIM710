@@ -56,6 +56,7 @@ call MakeProject ApsimRun
 call MakeProject ApsimToSim
 call MakeProject Canopy
 call MakeProject Clock
+call MakeProject ConToApsim
 call MakeProject ConToSim
 call MakeProject ConToApsim
 call MakeProject CropMod

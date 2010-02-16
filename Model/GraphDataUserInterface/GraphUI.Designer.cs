@@ -32,11 +32,11 @@ namespace GraphDataUserInterface
          this.Chart = new Steema.TeeChart.TChart();
          this.PopupMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
          this.CopyToClipboardMenu = new System.Windows.Forms.ToolStripMenuItem();
+         this.CopyDataMenu = new System.Windows.Forms.ToolStripMenuItem();
+         this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
          this.EditGraphMenu = new System.Windows.Forms.ToolStripMenuItem();
          this.RemoveAllFormattingMenu = new System.Windows.Forms.ToolStripMenuItem();
          this.PrintForm = new TMGDevelopment.Windows.Forms.PrintForm(this.components);
-         this.CopyDataMenu = new System.Windows.Forms.ToolStripMenuItem();
-         this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
          this.PopupMenu.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -555,8 +555,8 @@ namespace GraphDataUserInterface
          // 
          this.Chart.Zoom.Animated = true;
          this.Chart.Zoom.AnimatedSteps = 4;
-         this.Chart.UndoneZoom += new System.EventHandler(this.OnUndoZoom);
          this.Chart.Scroll += new System.EventHandler(this.OnScroll);
+         this.Chart.UndoneZoom += new System.EventHandler(this.OnUndoZoom);
          this.Chart.Zoomed += new System.EventHandler(this.OnZoomed);
          // 
          // PopupMenu
@@ -568,7 +568,7 @@ namespace GraphDataUserInterface
             this.EditGraphMenu,
             this.RemoveAllFormattingMenu});
          this.PopupMenu.Name = "ContextMenu";
-         this.PopupMenu.Size = new System.Drawing.Size(195, 120);
+         this.PopupMenu.Size = new System.Drawing.Size(195, 98);
          // 
          // CopyToClipboardMenu
          // 
@@ -576,6 +576,18 @@ namespace GraphDataUserInterface
          this.CopyToClipboardMenu.Size = new System.Drawing.Size(194, 22);
          this.CopyToClipboardMenu.Text = "Copy to clipboard";
          this.CopyToClipboardMenu.Click += new System.EventHandler(this.CopyToClipboardMenu_Click);
+         // 
+         // CopyDataMenu
+         // 
+         this.CopyDataMenu.Name = "CopyDataMenu";
+         this.CopyDataMenu.Size = new System.Drawing.Size(194, 22);
+         this.CopyDataMenu.Text = "Copy data to clipboard";
+         this.CopyDataMenu.Click += new System.EventHandler(this.OnCopyDataClick);
+         // 
+         // toolStripSeparator1
+         // 
+         this.toolStripSeparator1.Name = "toolStripSeparator1";
+         this.toolStripSeparator1.Size = new System.Drawing.Size(191, 6);
          // 
          // EditGraphMenu
          // 
@@ -595,18 +607,6 @@ namespace GraphDataUserInterface
          // 
          this.PrintForm.BodyContainer = this;
          this.PrintForm.IgnoreVisibilityErrors = true;
-         // 
-         // CopyDataMenu
-         // 
-         this.CopyDataMenu.Name = "CopyDataMenu";
-         this.CopyDataMenu.Size = new System.Drawing.Size(194, 22);
-         this.CopyDataMenu.Text = "Copy data to clipboard";
-         this.CopyDataMenu.Click += new System.EventHandler(this.OnCopyDataClick);
-         // 
-         // toolStripSeparator1
-         // 
-         this.toolStripSeparator1.Name = "toolStripSeparator1";
-         this.toolStripSeparator1.Size = new System.Drawing.Size(191, 6);
          // 
          // GraphUI
          // 
