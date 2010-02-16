@@ -34,5 +34,6 @@ rm -f $APSIM/Model/Build/Build.out
 ./MakeProject.sh Sorghum $1
 
 ./MakeProject.sh ConToSim $1
+./MakeProject.sh ConToApsim $1
 ./MakeProject.sh ApsimToSim $1
 

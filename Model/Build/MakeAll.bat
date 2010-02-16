@@ -57,6 +57,7 @@ call MakeProject ApsimToSim
 call MakeProject Canopy
 call MakeProject Clock
 call MakeProject ConToSim
+call MakeProject ConToApsim
 call MakeProject CropMod
 call MakeProject Eo
 call MakeProject Erosion
