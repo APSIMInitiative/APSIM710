@@ -345,6 +345,7 @@ Public Class DataTree
         ' ---------------------------------------------------
         'PopupMenu.Enabled = False
         Me.ContextMenuStrip.Enabled = False
+
     End Sub
     Private Sub OnAfterEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.NodeLabelEditEventArgs) Handles Me.AfterLabelEdit
         ' ---------------------------------------------------
@@ -353,15 +354,19 @@ Public Class DataTree
 
         If Not FirstTimeRename Then
             If Not IsNothing(e.Label) Then
-                ' Firstly empty the current selections.
-                Controller.SelectedPath = ""
+                If e.Label.Length > 0 Then 'Check user typed something in. So you are not trying to rename it to a blank.
+                    ' Firstly empty the current selections.
+                    Controller.SelectedPath = ""
 
-                ' Change the data
-                Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(e.Node))
-                Comp.Name = e.Label
+                    ' Change the data
+                    Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(e.Node))
+                    Comp.Name = e.Label
 
-                ' Now tell the base controller about the new selections.
-                Controller.SelectedPath = GetPathFromNode(e.Node.Parent) + "/" + e.Label
+                    ' Now tell the base controller about the new selections.
+                    Controller.SelectedPath = GetPathFromNode(e.Node.Parent) + "/" + e.Label
+                Else
+                    e.CancelEdit = True     'cancel the edit event.
+                End If
             End If
             LabelEdit = False
         End If
@@ -369,6 +374,7 @@ Public Class DataTree
         'PopupMenu.Enabled = True
         Me.ContextMenuStrip.Enabled = True
     End Sub
+
 #End Region
 
 
