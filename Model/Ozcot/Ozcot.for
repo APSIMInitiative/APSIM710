@@ -340,6 +340,7 @@
          real    PPM_ESTABLISH
          real    FAIL_EMRG
          real    F_DIE
+         real    height
 
          integer Last_Iday
 !         integer IMET
@@ -443,6 +444,10 @@
          real     x_co2_fert(20)
          real     y_co2_fert(20)
          integer  num_co2_fert
+
+         real     x_stem_wt(20)
+         real     y_height(20)
+         integer  num_height
 
          real     BckGndRetn
 
@@ -770,7 +775,7 @@
       g%ET       = 0.0
       g%HO       = 0.0
 !jh v2001       g%G        = 0.0
-      g%TR       = 0.0
+      g%TR       = 1.0
 !jh v2001       g%RRIG(:) = 0.0
       g%RTSW     = 0.0
 !jh v2001      g%DEFIRG   = 0.0
@@ -801,6 +806,7 @@
       g%ALAI                = 0.0
       g%ALAI_row            = 0.0
       g%f_intz              = 0.0
+      g%height              = 0.0
       g%RTDEP               = 0.0
       g%RTGROW              = 0.0
       g%CRSPCE              = 0.0
@@ -997,8 +1003,13 @@
       g%nsince = 0
       g%INITIAL = 0
       g%nskip   = 0.0
-
-
+      p%x_stem_wt(:) = 0.0
+      p%y_height(:) = 0.0
+      p%num_height = 0
+      p%x_co2_fert(:) = 0.0
+      p%y_co2_fert(:) = 0.0
+      p%num_co2_fert = 0
+      
       c%row_spacing_default           = 0.0
       c%elevation_default   = 0.0
 
@@ -1114,8 +1125,9 @@
       g%total_n       = 0.0
       g%alint         = 0.0
       g%alai          = 0.0
-      g%tr            = 0.0
+      g%tr            = 1.0
       g%f_intz        = 0.0
+      g%height        = 0.0
       g%availn        = 0.0
       g%uptakn        = 0.0
       g%tsno3         = 0.0
@@ -1871,11 +1883,9 @@
      :                             , cover)
 
       elseif (variable_name .eq. 'height') then
-!nh this is a simple fix only due to the limited future
-!nh for this module!!!!!
          call respond2get_real_var (variable_name
      :                             , '(mm)'
-     :                             , 900.0)
+     :                             , g%height)
 
       else if (Variable_name .eq. 'availn') then
          call respond2get_real_var (variable_name
@@ -5806,6 +5816,12 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       g%root_feedback = AMIN1(g%root_feedback,SD_ROOT) ! feedback of dw on depth
       IF(g%root_feedback.GT.0.) g%root_feedback=g%root_feedback**0.333 ! cubic to linear      !const
 
+      g%height = linear_interp_real (
+     :                divide(g%dw_stem, g%pp, 0.0),
+     :                               p%x_stem_wt,
+     :                               p%y_height,
+     :                               p%num_height)
+
 !------------------------------------------------------------------------------
 
       call pop_routine(myname)
@@ -6447,6 +6463,16 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
      :                     , 'days_since_fert_max', '(days)'
      :                     , c%days_since_fert_max, numvals
      :                     , 0, 100)
+
+      call read_real_array (section_name
+     :                     , 'x_stem_wt', 20, '(g/plant)'
+     :                     , p%x_stem_wt, p%num_height
+     :                     , 0.0, 1000.0)
+
+      call read_real_array (section_name
+     :                     , 'y_height', 20, '(mm)'
+     :                     , p%y_height, p%num_height
+     :                     , 0.0, 10000.0)
 
       call read_real_array_optional (section_name
      :                     , 'x_co2_fert', 20, '()'
