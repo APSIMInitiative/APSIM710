@@ -1,2 +1,2 @@
 @echo off
-%APSIM%\Model\apsimui.exe Centro.apsim "ExportTo:..\..\..\Graphs\Centro\Centro.gif"
+%APSIM%\Model\apsimui.exe Centro.apsim Export ..\..\..\Graphs\Centro .gif
