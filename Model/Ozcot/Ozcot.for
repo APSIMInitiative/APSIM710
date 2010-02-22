@@ -775,7 +775,7 @@
       g%ET       = 0.0
       g%HO       = 0.0
 !jh v2001       g%G        = 0.0
-      g%TR       = 1.0
+      g%TR       = 0.0
 !jh v2001       g%RRIG(:) = 0.0
       g%RTSW     = 0.0
 !jh v2001      g%DEFIRG   = 0.0
@@ -1125,7 +1125,7 @@
       g%total_n       = 0.0
       g%alint         = 0.0
       g%alai          = 0.0
-      g%tr            = 1.0
+      g%tr            = 0.0
       g%f_intz        = 0.0
       g%height        = 0.0
       g%availn        = 0.0
@@ -1869,15 +1869,21 @@
      :        , '(m^2/m^2)', g%alai)
 
       elseif (variable_name .eq. 'cover_green') then
-         cover = l_bound (1.0 - g%tr, 0.0)
-
+         if (g%plant_status .eq. status_alive) then
+            cover = l_bound (1.0 - g%tr, 0.0)
+         else 
+            cover = 0.0
+         endif   
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , cover)
 
       elseif (variable_name .eq. 'cover_tot') then
-         cover = g%f_intz
-
+         if (g%plant_status .eq. status_alive) then
+            cover = g%f_intz
+         else 
+            cover = 0.0
+         endif   
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , cover)
