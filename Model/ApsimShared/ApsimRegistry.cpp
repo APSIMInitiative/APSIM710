@@ -15,7 +15,7 @@ using namespace std;
 
 ApsimRegistry GlobalApsimRegistry;    // singleton registry.
 
-ApsimRegistry& EXPORT ApsimRegistry::getApsimRegistry(void)
+ApsimRegistry& ApsimRegistry::getApsimRegistry(void)
 // ------------------------------------------------------------------
 // Return the singleton global ApsimRegistry.
 // ------------------------------------------------------------------

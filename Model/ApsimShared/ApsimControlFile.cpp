@@ -1441,11 +1441,12 @@ bool ApsimControlFile::enumerateManagerActionLines
          // go find all occurrances of action lines and call callback for each.
          boost::regex e(actionValues[0] + "[[:space:]]+" + actionValues[1]);
          boost::match_results<std::string::const_iterator> what;
-         #ifdef __WIN32__
+#if BOOST_VERSION > 103000
+         boost::regex_constants::_match_flags flags = boost::match_default;
+#else 
          unsigned int flags = boost::match_default;
-         #else
-         regex_constants::_match_flags flags = boost::match_default;
-         #endif
+#endif
+
          string::const_iterator startPos = lowerContents.begin();
          string::const_iterator endPos = lowerContents.end();
          while(regex_search(startPos, endPos, what, e, flags))

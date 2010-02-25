@@ -1,11 +1,11 @@
 #include "io_functions.h"
 
 #ifdef __WIN32__
-	#include <windows.h>
-	#include <io.h>
-	#include <dir.h>
+    #include <windows.h>
+    #include <io.h>
+    #include <direct.h>
 #else
-	#include <sys/io.h>
+    #include <sys/io.h>
 #endif
 
 #include <stdlib.h>
@@ -63,6 +63,8 @@ std::string GetTempDir(void)
 // Return a list of files/directories to caller.
 // ------------------------------------------------------------------
 #ifdef __WIN32__
+#ifndef _MSC_VER
+// Only used by SEGReport/borland.
 void getDirectoryListing(const std::string& directoryName,
                          const std::string& extension,
                          std::vector<std::string>& dirList,
@@ -99,7 +101,7 @@ void getDirectoryListing(const std::string& directoryName,
    findclose(&ffblk);
    }
 #endif
-
+#endif
 // ------------------------------------------------------------------
 // Remove invalid file name characters from the specified string e.g. / \ | *
 // ------------------------------------------------------------------

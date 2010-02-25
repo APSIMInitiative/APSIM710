@@ -54,14 +54,14 @@ ApsimDataTypeData ApsimDataTypesFile::getDataType(const string& name)
 //---------------------------------------------------------------------------
 // return iterator to first data type.
 //---------------------------------------------------------------------------
-ApsimDataTypesFile::iterator ApsimDataTypesFile::begin() const
+ApsimDataTypesFile::iterator ApsimDataTypesFile::begin() 
    {
    return xmlDoc.documentElement().begin();
    }
 //---------------------------------------------------------------------------
 // return iterator to last data type.
 //---------------------------------------------------------------------------
-ApsimDataTypesFile::iterator ApsimDataTypesFile::end() const
+ApsimDataTypesFile::iterator ApsimDataTypesFile::end() 
    {
    return xmlDoc.documentElement().end();
    }

@@ -76,7 +76,7 @@ class EXPORT ApsimRegistry
       void clearForeignTaint(int);
 
       // How to get the singleton registry
-      static ApsimRegistry& EXPORT getApsimRegistry(void); // singleton.
+      static ApsimRegistry& getApsimRegistry(void); // singleton.
 
       // split open a qualified pathname (modulename.variablename)
       void unCrackPath(int sourceID, const std::string &fqName, int &id, std::string &name);

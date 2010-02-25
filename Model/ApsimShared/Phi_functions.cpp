@@ -1,7 +1,7 @@
 #include "Phi_functions.h"
 
 #ifdef __WIN32__
-   #include <dir.h>
+   #include <direct.h>
 #else
    #include <unistd.h>
 #endif

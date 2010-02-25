@@ -18,9 +18,9 @@ void SimCreatorSection::append(const SimCreatorSection* section)
    {
    xml += section->xml;
    // check to make sure variable can be added to this section
-   for (set<string>::iterator i = section->variableNames.begin();
-                              i != section->variableNames.end();
-                              i++)
+   for (set<string>::const_iterator i = section->variableNames.begin();
+        i != section->variableNames.end();
+        i++)
       if (variableNames.find(*i) != variableNames.end())
          {
          throw runtime_error("The variable '" + *i + "' exists in multiple sections:  "

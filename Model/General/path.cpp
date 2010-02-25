@@ -1,6 +1,5 @@
 #ifdef __WIN32__
 #include <windows.h>
-#include <dir.h>
 #include <io.h>
 #include <direct.h>
 #else
@@ -365,7 +364,9 @@ void Path::Change_directory(void)
 {
 #ifdef __WIN32__
    if (Directory.length() > 0)
+      {
       SetCurrentDirectory (Get_directory().c_str());
+      }
 #else
    if (Directory.length() > 0)
       chdir (Directory.c_str());
@@ -387,7 +388,7 @@ void Path::Append_path (const char* path)
    // get the current directory because we're going to change it.
 
    // crw added for Linux compatibility
-   char Saved_directory[500];
+   char Saved_directory[4096];
 #ifdef __WIN32__
    GetCurrentDirectory(sizeof Saved_directory, Saved_directory);
 #else
@@ -400,8 +401,9 @@ void Path::Append_path (const char* path)
    // properly converts any relative paths to full paths.
 
 #ifdef __WIN32__
-   char Full_path[500];
-   char* Ptr_to_name;
+   char Full_path[4096];
+   char *Ptr_to_name;
+
    GetFullPathName(path, sizeof Full_path, Full_path, &Ptr_to_name);
    // restore current directory.
    SetCurrentDirectory (Saved_directory);

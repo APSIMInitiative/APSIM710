@@ -337,8 +337,7 @@ void Calculate_freq_dist(vector<double>& Values,
       double End_of_interval = End_values[interval];
 
       range<double> Range(Start_of_interval, End_of_interval);
-      int count = 0;
-      count_if (Values.begin(), Values.end(), Range, count);
+      int count = count_if (Values.begin(), Values.end(), Range);
       Frequency_numbers.push_back (count);
 
       // create a label for this interval.

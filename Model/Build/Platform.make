@@ -3,11 +3,19 @@
 ###########################################
 
 ifdef windir
+ ifdef VSINSTALLDIR
+   PLATFORM=WIN32VS
+   DLL=dll
+   ECHO=echo
+   RM=del /f
+   MV=move /y
+ else
    PLATFORM=WIN32
    DLL=dll
    ECHO=echo
    RM=del /f
    MV=move /y
+ endif
 else
    PLATFORM=Linux
    DLL=so

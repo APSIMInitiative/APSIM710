@@ -19,8 +19,8 @@ class EXPORT ApsimDataTypesFile
       ApsimDataTypeData getDataType(const std::string& name);
 
       typedef TreeNodeAliasIterator< TreeNodeIterator<XMLNode>, ApsimDataTypeData> iterator;
-      iterator begin() const;
-      iterator end() const;
+      iterator begin() ;
+      iterator end() ;
 
    private:
       std::string fileName;

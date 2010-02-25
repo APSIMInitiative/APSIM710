@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #ifdef __WIN32__
-   #include <dir.h>
    #include <windows.h> // needed for CopyFile
+   #include <direct.h>
 #endif
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
@@ -500,6 +500,8 @@ void IniFile::doBackup()
       CopyFile(fileName.c_str(), bakFile.Get_path().c_str(), false);
       haveDoneBackup = true;
       }
+   #else
+      throw std::runtime_error("IniFile::doBackup() called");
    #endif
    }
 

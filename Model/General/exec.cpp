@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include <windows.h>
+#include <strsafe.h>
 // ------------------------------------------------------------------
 //  Short description:
 //    executes a program and optionally waits until it has finished.
@@ -35,8 +36,9 @@ bool Exec(const char* Command_line,
    StartupInfo.cb = sizeof(StartupInfo);
    StartupInfo.dwFlags = STARTF_USESHOWWINDOW;
    StartupInfo.wShowWindow = (WORD) Show_flag;
+
    if (!CreateProcess( NULL,
-                       (char*) Command_line,   // pointer to command line string
+                       (LPSTR) Command_line,         // pointer to command line string
                        NULL,                   // pointer to process security attributes
                        NULL,                   // pointer to thread security attributes
                        false,                  // handle inheritance flag
@@ -47,6 +49,8 @@ bool Exec(const char* Command_line,
                        &ProcessInfo) )         // pointer to PROCESS_INF
       {
       LPVOID lpMsgBuf;
+      LPVOID lpDisplayBuf;
+
       FormatMessage(
           FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
           NULL,
@@ -55,12 +59,21 @@ bool Exec(const char* Command_line,
           (LPTSTR) &lpMsgBuf,
           0,
           NULL);
+          
+      lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
+          (lstrlen((LPCTSTR)lpMsgBuf) + 60) * sizeof(TCHAR)); 
+      StringCchPrintf((LPTSTR)lpDisplayBuf, 
+        LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+        TEXT("CreateProcess failed with error %d: %s"), 
+        GetLastError(), lpMsgBuf); 
 
       // Display the string.
-      MessageBox(NULL, (char*) lpMsgBuf, "GetLastError", MB_OK|MB_ICONINFORMATION );
+      MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK|MB_ICONINFORMATION );
 
       // Free the buffer.
       LocalFree( lpMsgBuf );
+      LocalFree(lpDisplayBuf);
+
       }
    else
       {

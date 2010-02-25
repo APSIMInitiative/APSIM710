@@ -18,7 +18,7 @@ using namespace std;
    extern "C" void EXPORT dummyFnPtr(void) {;};
 #endif
 
-string EXPORT getExecutableFileName()
+std::string EXPORT getExecutableFileName(void)
    {
    // ------------------------------------------------------------------
    // This routine returns the filename with path to the
@@ -37,7 +37,7 @@ string EXPORT getExecutableFileName()
    #endif
    }
 
-string EXPORT getExecutableDirectory()
+std::string EXPORT getExecutableDirectory(void)
    {
    // ------------------------------------------------------------------
    // This routine returns the directory where the
@@ -46,7 +46,7 @@ string EXPORT getExecutableDirectory()
    return fileDirName(getExecutableFileName());
    }
 
-string EXPORT getApsimDirectory(void)
+std::string EXPORT getApsimDirectory(void)
    {
 // ------------------------------------------------------------------
 // This routine provides a way for APSIM applications to get the

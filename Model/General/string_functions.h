@@ -58,7 +58,7 @@ void Split_string (const std::string& text, const char* separators, container& w
 template <class container>
 void SplitStringHonouringQuotes(const std::string& text,
                                 const char* separators,
-                                container& words) throw(std::string)
+                                container& words) 
    {
    words.erase(words.begin(), words.end());
 

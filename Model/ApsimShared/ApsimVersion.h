@@ -4,5 +4,5 @@
 //---------------------------------------------------------------------------
 // Return the APSIM version number
 //---------------------------------------------------------------------------
-std::string getApsimVersion(void);
+std::string EXPORT getApsimVersion(void);
 #endif

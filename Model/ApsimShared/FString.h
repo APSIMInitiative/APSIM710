@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdexcept>
 #ifdef __WIN32__
-   #include <mem.h>
+   #include <memory.h>
 #endif
 enum StringType {CString, FORString};
 
@@ -92,13 +92,13 @@ class FString
          }
       bool operator== (const FString& rhs) const
          {
-	     #if __WIN32__
+#ifdef __WIN32__
          return (length() == rhs.length() &&
-                 strncmpi(f_str(), rhs.f_str(), length()) == 0);
-		 #else
+                 strnicmp(f_str(), rhs.f_str(), length()) == 0);
+#else
 		 return (length() == rhs.length() &&
                  strncasecmp(f_str(), rhs.f_str(), length()) == 0);
-         #endif
+#endif
          }
       bool operator!= (const FString& rhs) const
          {return !(*this == rhs);}

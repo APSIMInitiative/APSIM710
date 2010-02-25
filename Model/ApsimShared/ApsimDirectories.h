@@ -10,11 +10,14 @@
 // home directory.  Will throw a runtime error if the current
 // Application is not in the apsim directory structure.
 // ------------------------------------------------------------------
-std::string getApsimDirectory(void);
+std::string EXPORT getApsimDirectory(void);
 
 // ------------------------------------------------------------------
 // This routine returns the directory where the
 // current executable is located.
 // ------------------------------------------------------------------
-std::string EXPORT getExecutableDirectory();
+std::string EXPORT getExecutableDirectory(void);
+
+std::string EXPORT getExecutableFileName(void);
+
 #endif

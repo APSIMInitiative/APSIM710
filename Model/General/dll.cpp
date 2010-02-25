@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
 #include <stdexcept>
 
-#include "dll.h"
 #ifdef __WIN32__
    #include <windows.h>
-   #include <dir.h>
+   #include <direct.h>
+   
 #else
    #include <dlfcn.h>
    #ifndef RTLD_LOCAL
@@ -13,6 +13,8 @@
 #endif
 #include <General/path.h>
 
+#include "dll.h"
+
 using namespace std;
 void *loadDLL(const string& filename) throw (std::runtime_error)
    {
@@ -20,13 +22,15 @@ void *loadDLL(const string& filename) throw (std::runtime_error)
    // Loads a dll into memory and returns a handle to it.
    // ------------------------------------------------------------------
    void* result;
-   string errorMessage;
    #ifdef __WIN32__
-      char oldwd[MAX_PATH];
-      getcwd(oldwd, MAX_PATH);
-      chdir(fileDirName(filename).c_str());
+      char oldwd[4096];
+      GetCurrentDirectory(sizeof(oldwd), oldwd);
+
+      std::string newwd = fileDirName(filename);
+      SetCurrentDirectory(newwd.c_str());
+
       result = LoadLibrary(filename.c_str());
-      chdir(oldwd);
+      SetCurrentDirectory(oldwd);
 
       if (result == NULL )
          {
@@ -42,18 +46,19 @@ void *loadDLL(const string& filename) throw (std::runtime_error)
                        );
 
 
-         errorMessage = ("Cannot load DLL: " + filename + ".\n  " + (LPTSTR) lpMsgBuf);
+         ::string errorMessage = ("Cannot load DLL: " + filename + ".\n  " + (LPTSTR) lpMsgBuf);
          LocalFree( lpMsgBuf );
+         throw std::runtime_error(errorMessage);
          }
    #else
       result = dlopen(filename.c_str(), RTLD_NOW|RTLD_LOCAL);
       char *dllerr = dlerror();
       if (dllerr != NULL)
-         errorMessage = string("Cannot load DLL: ") + filename + ".\n" + dllerr;
+	     {
+             std::string errorMessage = string("Cannot load DLL: ") + filename + ".\n" + dllerr;
+             throw std::runtime_error(errorMessage);
+	     }
    #endif
-   if (errorMessage != "")
-      throw std::runtime_error(errorMessage);
-
    return result;
    }
 
