@@ -52,15 +52,15 @@ class EXPORT Computation : public IComputation
                           unsigned int parentId);
       virtual void deleteInstance(void) const;
 
-      void EXPORT STDCALL (*createInstanceProc)(const char* dllFileName,
+      void STDCALL (*createInstanceProc)(const char* dllFileName,
                                           const unsigned int* componentID,
                                           const unsigned int* parentID,
                                           const int* anInstanceNo,
                                           const int* callbackArg,
                                           CallbackType* callback);
 
-      void EXPORT STDCALL (*deleteInstanceProc)(const int* anInstanceNo);
-      void EXPORT STDCALL (*messageToLogicProc)(const int* anInstanceNo,
+      void STDCALL (*deleteInstanceProc)(const int* anInstanceNo);
+      void STDCALL (*messageToLogicProc)(const int* anInstanceNo,
                                           const Message* messageHeader,
                                           bool* bProcessed);
       bool loadComponent(const std::string& filename,

@@ -1,6 +1,6 @@
 #ifdef __WIN32__
    #include <windows.h>
-   #include <dir.h>
+   #include <direct.h>
 #else
    #include <dlfcn.h>
 #endif

@@ -367,7 +367,6 @@ void IniFile::write(const string& section, const string& key,
 void IniFile::deleteKey(const string& section, const string& key)
         {
    doBackup();
-   unsigned insertPos;
    string contents;
    readSection(section, contents);
    Indexes indexes;

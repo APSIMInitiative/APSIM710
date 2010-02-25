@@ -7,7 +7,7 @@
 #include <string.h>
 #include <string>
 #ifdef __WIN32__
-   #include <mem.h>
+   #include <memory.h>
 #endif
 class FString;
 class FStrings;

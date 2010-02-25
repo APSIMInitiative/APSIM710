@@ -55,21 +55,21 @@ int Cycle (int Current_number, int Max_number)
 void calcRegressionStats (const vector<double>& X, const vector<double>& Y,
                           Regr_stats& stats)
    {
-   float SumX = 0;
-   float SumY = 0;
-   float SumXY = 0;
-   float SumX2 = 0;
-   float SumY2 = 0;
+   double SumX = 0;
+   double SumY = 0;
+   double SumXY = 0;
+   double SumX2 = 0;
+   double SumY2 = 0;
 //   float SumXYdiff = 0;
-   float SumXYdiff2 = 0;
+   double SumXYdiff2 = 0;
 //   float XYdiff = 0;
 //   float SumXYDiffPer = 0;
-   float CSSX, CSSXY;
-   float Xbar, Ybar;
-   float TSS, TSSM;
-   float REGSS, REGSSM;
-   float RESIDSS, RESIDSSM;
-   float S2;
+   double CSSX, CSSXY;
+   double Xbar, Ybar;
+   double TSS, TSSM;
+   double REGSS, REGSSM;
+   double RESIDSS, RESIDSSM;
+   double S2;
 //   float MeanAbsError, MeanAbsPerError;
 
    stats.m = 0.0;
@@ -109,12 +109,12 @@ void calcRegressionStats (const vector<double>& X, const vector<double>& Y,
 
       CSSXY = SumXY - SumX * SumY / Num_points;     // Corrected SS for products
       CSSX = SumX2 - SumX * SumX / Num_points;      // Corrected SS for X
-      stats.m = CSSXY / CSSX;                             // Calculate slope
-      stats.c = Ybar - stats.m * Xbar;                          // Calculate intercept
+      stats.m = (float)( CSSXY / CSSX);                             // Calculate slope
+      stats.c = (float)(Ybar - (double)stats.m * Xbar);                          // Calculate intercept
 
       TSS = SumY2 - SumY * SumY / Num_points;       // Corrected SS for Y = Sum((y-ybar)^2)
       TSSM = TSS / (Num_points - 1);                // Total mean SS
-      REGSS = stats.m * CSSXY;                            // SS due to regression = Sum((yest-ybar)^2)
+      REGSS = stats.m * CSSXY;                      // SS due to regression = Sum((yest-ybar)^2)
       REGSSM = REGSS;                               // Regression mean SS
       RESIDSS = TSS - REGSS;                        // SS about the regression = Sum((y-yest)^2)
 
@@ -123,20 +123,20 @@ void calcRegressionStats (const vector<double>& X, const vector<double>& Y,
       else
          RESIDSSM = 0.0;
 
-      stats.RMSD = sqrt(RESIDSSM);                        // Root mean square deviation
-      stats.VarRatio= REGSSM / RESIDSSM;                  // Variance ratio - for F test (1,n-2)
-      stats.R2 = 1.0 - (RESIDSS / TSS);                   // Unadjusted R2 calculated from SS
-      stats.ADJR2 = 1.0 - (RESIDSSM / TSSM);              // Adjusted R2 calculated from mean SS
+      stats.RMSD = (float) sqrt(RESIDSSM);                        // Root mean square deviation
+      stats.VarRatio= (float) (REGSSM / RESIDSSM);                  // Variance ratio - for F test (1,n-2)
+      stats.R2 = (float) (1.0 - (RESIDSS / TSS));                   // Unadjusted R2 calculated from SS
+      stats.ADJR2 = (float) (1.0 - (RESIDSSM / TSSM));              // Adjusted R2 calculated from mean SS
       if (stats.ADJR2 < 0.0)
          stats.ADJR2 = 0.0;
       S2 = RESIDSSM;                                // Resid. MSS is estimate of variance
                                                     // about the regression
-      stats.SEslope = sqrt(S2) / sqrt(CSSX);              // Standard errors estimated from S2 & CSSX
-      stats.SEcoeff = sqrt(S2) * sqrt(SumX2 / (Num_points * CSSX));
+      stats.SEslope = (float) (sqrt(S2) / sqrt(CSSX));              // Standard errors estimated from S2 & CSSX
+      stats.SEcoeff = (float) (sqrt(S2) * sqrt(SumX2 / (Num_points * CSSX)));
 
       // Statistical parameters of Butler, Mayer and Silburn
 
-      stats.R2YX = 1.0 - (SumXYdiff2 / TSS);              // If you are on the 1:1 line then R2YX=1
+      stats.R2YX = (float) (1.0 - (SumXYdiff2 / TSS));              // If you are on the 1:1 line then R2YX=1
 
       // If R2YX is -ve then the 1:1 line is a worse fit than the line y=ybar
 

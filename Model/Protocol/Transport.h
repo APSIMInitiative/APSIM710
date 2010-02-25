@@ -23,7 +23,7 @@ class Message;
 //    dph 10/5/2001
 
 // ------------------------------------------------------------------
-class Transport : public ITransport
+class EXPORT Transport : public ITransport
    {
    public:
       Transport(void) : messageHook(NULL) {}
@@ -43,7 +43,7 @@ class Transport : public ITransport
 
    };
 
-void setMessageHook(IMessageHook* hook);
+void EXPORT setMessageHook(IMessageHook* hook);
 
 } // namespace protocol
 #endif

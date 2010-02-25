@@ -383,7 +383,7 @@ class EXPORT Component
       virtual void respondToGet(unsigned int& fromID, QueryValueData& queryData);
       virtual bool respondToSet(unsigned int& fromID, QuerySetValueData& setValueData);
       virtual void notifyTermination(void) { }
-      virtual void messageToLogic(const Message* message);
+      virtual void messageToLogic(/*const*/ Message* message);
 
       // Put here so that unit tests can call it.
       void setup(const char *dllname,

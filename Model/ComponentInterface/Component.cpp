@@ -127,7 +127,7 @@ void Component::setup(const char *dllname,
 //    DPH 7/6/2001
 
 // ------------------------------------------------------------------
-void Component::messageToLogic(const Message* message)
+void Component::messageToLogic(/*const*/ Message* message)
    {
    // We need to keep track of bits of the message because the FARMWI$E infrastructure
    // doesn't guarantee that a message is still valid at the end of this method.

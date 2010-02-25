@@ -163,7 +163,6 @@ string Macro::parseForEach(const string& originalContents,
          currentPos++;
          }
       while (count > 0);
-      unsigned posStartTag, posEndTag;
 
       // get the bit of text before the #for_each
       string preBody = contents.substr(0, getStartOfTag(contents, posForEach));

@@ -57,7 +57,7 @@ enum MessageType
 
 // ------------------------------------------------------------------
 struct Message
-   {
+{
    unsigned short int version;
    unsigned short int messageType;
    unsigned int from;
@@ -66,7 +66,7 @@ struct Message
    unsigned int toAcknowledge;
    unsigned int nDataBytes;
    char* dataPtr;
-   };
+};
 
 // ------------------------------------------------------------------
 //  Short description:

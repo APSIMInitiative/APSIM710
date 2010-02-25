@@ -10,7 +10,7 @@
 namespace protocol {
 
 class Message;
-class IMessageHook
+class EXPORT IMessageHook
    {
    public:
       virtual ~IMessageHook() {}
@@ -26,7 +26,7 @@ class IMessageHook
 //    dph 22/2/2000
 
 // ------------------------------------------------------------------
-class ISimulation
+class EXPORT ISimulation
    {
    public:
       virtual ~ISimulation(void) { };
@@ -52,7 +52,7 @@ class ISimulation
 //    dph 22/2/2000
 
 // ------------------------------------------------------------------
-class IComputation
+class EXPORT IComputation
    {
    public:
       virtual ~IComputation(void) { };
@@ -71,7 +71,7 @@ class IComputation
 //    dph 10/5/2001
 
 // ------------------------------------------------------------------
-class ITransport
+class EXPORT ITransport
    {
    public:
       virtual ~ITransport(void) { }
@@ -82,7 +82,7 @@ class ITransport
       virtual void setMessageHook(IMessageHook* hook) = 0;
    };
 
-class IData
+class EXPORT IData
    {
    // -----------------------------------------------------------
    // This interface describes the necessary methods for any data

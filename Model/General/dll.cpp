@@ -16,7 +16,7 @@
 #include "dll.h"
 
 using namespace std;
-void *loadDLL(const string& filename) throw (std::runtime_error)
+void *loadDLL(const string& filename)
    {
    // ------------------------------------------------------------------
    // Loads a dll into memory and returns a handle to it.

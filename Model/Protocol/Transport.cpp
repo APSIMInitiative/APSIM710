@@ -15,7 +15,7 @@ Transport transport;    // singleton global transport layer.
 // ------------------------------------------------------------------
 // Return the singleton global transport layer.
 // ------------------------------------------------------------------
-Transport& EXPORT Transport::getTransport(void)
+Transport & Transport::getTransport(void)
    {
    return transport;
    }
@@ -77,7 +77,7 @@ void Transport::deliverMessage(Message* message)
 
 // ------------------------------------------------------------------
 namespace protocol {
-void EXPORT setMessageHook(IMessageHook* hook)
+void EXPORT  setMessageHook(IMessageHook* hook)
    {
    transport.setMessageHook(hook);
    }

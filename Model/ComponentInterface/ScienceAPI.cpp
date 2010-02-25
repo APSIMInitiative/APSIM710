@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-
+#include <stdexcept>
 #include <General/string_functions.h>
 #include <ApsimShared/ApsimRegistry.h>
 #include "Component.h"
@@ -18,7 +18,7 @@ bool StringConverter(protocol::Component* component, const string& name,
                    typeid(T).name() + " type.\n"
                    "Parameter name = " + name + "\n"
                    "Value          = '" + from + "'";
-      throw runtime_error(msg);
+      throw std::runtime_error(msg);
       }
 
    // 2. Check bounds
@@ -53,7 +53,7 @@ bool StringConverter(protocol::Component* component, const string& name,
                      typeid(T).name() + "> type.\n"
                      "Parameter name = " + name + "\n"
                      "Value          = '" + strings[i] + "'";
-        throw runtime_error(msg);
+        throw std::runtime_error(msg);
         }
      to.push_back(value);
 
@@ -95,7 +95,7 @@ void ScienceAPI::warning(const std::string& msg)
 bool ScienceAPI::read(const std::string& name, int& data, int lower, int upper)
    {
    string valueAsString;
-   if (read(name, valueAsString))
+   if (ScienceAPI::read(name, valueAsString))
       return StringConverter(component, name, valueAsString, data, lower, upper);
    else
       return false;
@@ -104,7 +104,7 @@ bool ScienceAPI::read(const std::string& name, int& data, int lower, int upper)
 bool ScienceAPI::read(const std::string& name, float& data, float lower, float upper)
    {
    string valueAsString;
-   if (read(name, valueAsString))
+   if (ScienceAPI::read(name, valueAsString))
       return StringConverter(component, name, valueAsString, data, lower, upper);
    else
       return false;
@@ -113,7 +113,7 @@ bool ScienceAPI::read(const std::string& name, float& data, float lower, float u
 bool ScienceAPI::read(const std::string& name, double& data, double lower, double upper)
    {
    string valueAsString;
-   if (read(name, valueAsString))
+   if (ScienceAPI::read(name, valueAsString))
       return StringConverter(component, name, valueAsString, data, lower, upper);
    else
       return false;
@@ -122,7 +122,7 @@ bool ScienceAPI::read(const std::string& name, double& data, double lower, doubl
 bool ScienceAPI::read(const std::string& name, std::string& data)
    {
    if (!readOptional(name, data))
-      throw runtime_error("Cannot find a value for parameter: " + name);
+      throw std::runtime_error("Cannot find a value for parameter: " + name);
 
    return (data != "");
    }
@@ -141,7 +141,7 @@ string ScienceAPI::readFromSection(const std::string& section, const std::string
 bool ScienceAPI::read(const std::string& name, std::vector<int>& data, int lower, int upper)
    {
    string valueAsString;
-   if (read(name, valueAsString))
+   if (ScienceAPI::read(name, valueAsString))
       return StringConverter(component, name, valueAsString, data, lower, upper);
    else
       return false;
@@ -150,7 +150,7 @@ bool ScienceAPI::read(const std::string& name, std::vector<int>& data, int lower
 bool ScienceAPI::read(const std::string& name, std::vector<float>& data, float lower, float upper)
    {
    string valueAsString;
-   if (read(name, valueAsString))
+   if (ScienceAPI::read(name, valueAsString))
       return StringConverter(component, name, valueAsString, data, lower, upper);
    else
       return false;
@@ -158,7 +158,7 @@ bool ScienceAPI::read(const std::string& name, std::vector<float>& data, float l
 bool ScienceAPI::read(const std::string& name, float data[], int& numVals, float lower, float upper)
    {
    vector<float> values;
-   if (read(name, values, lower, upper))
+   if (ScienceAPI::read(name, values, lower, upper))
       {
       numVals = values.size();
       for (int i = 0; i != numVals; i++)
@@ -171,7 +171,7 @@ bool ScienceAPI::read(const std::string& name, float data[], int& numVals, float
 bool ScienceAPI::read(const std::string& name, std::vector<double>& data, float lower, float upper)
    {
    string valueAsString;
-   if (read(name, valueAsString))
+   if (ScienceAPI::read(name, valueAsString))
       return StringConverter(component, name, valueAsString, data, lower, upper);
    else
       return false;
@@ -180,7 +180,7 @@ bool ScienceAPI::read(const std::string& name, std::vector<double>& data, float 
 bool ScienceAPI::read(const std::string& name, std::vector<std::string>& data)
    {
    string valueAsString;
-   if (read(name, valueAsString))
+   if (ScienceAPI::read(name, valueAsString))
       {
       splitIntoValues (valueAsString, " ", data);
       return true;
@@ -342,7 +342,7 @@ bool ScienceAPI::get(const std::string& name, const std::string& units, float& d
       {
       string st = "The module " + string(component->getName()) + " has asked for the value of the variable " + name;
       st += ".\nIt received no responses.";
-      throw runtime_error(st);
+      throw std::runtime_error(st);
       }
      return true;
    }
@@ -352,7 +352,7 @@ bool ScienceAPI::get(const std::string& name, const std::string& units, std::vec
       {
       string st = "The module " + string(component->getName()) + " has asked for the value of the variable " + name;
       st += ".\nIt received no responses.";
-      throw runtime_error(st);
+      throw std::runtime_error(st);
       }
      return true;
    }
@@ -462,7 +462,7 @@ void ScienceAPI::set(const std::string& name, const std::string& units, std::vec
    unsigned id = component->addRegistration(::set, destID, regName, ddml);
    bool ok =  component->setVariable(id, data);
    if (!ok)
-      throw runtime_error("Cannot set the value of variable: " + name);
+      throw std::runtime_error("Cannot set the value of variable: " + name);
    }
 
 

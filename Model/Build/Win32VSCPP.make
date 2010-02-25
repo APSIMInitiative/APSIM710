@@ -37,14 +37,12 @@ LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib \
 LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib 
 
 #libboost_filesystem-vc90-mt-1_42.lib libboost_date_time-vc90-mt-1_42.lib 
-
-WARNINGS := /wd4996
+ 
+WARNINGS := /wd4996 /wd4068 /wd4290
 
 CFLAGS := /Od $(INCLUDES) $(DEFINES) /Gm /EHsc /RTC1 /MDd /W3 /nologo /c /ZI /TP
 
-# /Fo"Debug\\" /Fd"Debug\vc90.pdb" 
-
-LFLAGS := /INCREMENTAL /NOLOGO /SUBSYSTEM:WINDOWS /DYNAMICBASE /NXCOMPAT /MACHINE:X86
+LFLAGS := /NOLOGO /SUBSYSTEM:CONSOLE /DYNAMICBASE /NXCOMPAT /MACHINE:X86
 
 ## gdi32.lib winspool.lib comdlg32.lib odbc32.lib odbccp32.lib ole32.lib oleaut32.lib 
 
@@ -66,10 +64,12 @@ endif
 #	LIBS :=  import32.lib $(LIBS)
 #endif
 
+# /Fo"Debug\\" /Fd"Debug\vc90.pdb" 
+
    ifeq ($(PROJECTTYPE),exe)
       SYSOBJS := $(SYSOBJS) 
       CFLAGS := $(CFLAGS) 
-      LFLAGS := $(LFLAGS) 
+      LFLAGS := $(LFLAGS) /PDB:"$(APSIM)\Model\$(PROJECT).pdb" # /MANIFEST /MANIFESTFILE:"$(APSIM)\Model\$(PROJECT).exe.manifest"
    else
       CFLAGS := $(CFLAGS) 
       LFLAGS := $(LFLAGS) # /MANIFEST /MANIFESTFILE:"$(APSIM)\Model\$(PROJECT).dll.manifest"

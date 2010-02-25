@@ -9,7 +9,7 @@
 // ------------------------------------------------------------------
 // Loads a dll into memory and returns a handle to it.
 // ------------------------------------------------------------------
-void  EXPORT * loadDLL(const std::string& filename) throw (std::runtime_error);
+void  EXPORT * loadDLL(const std::string& filename);
 
 // ------------------------------------------------------------------
 // Close the specified dll handle.
