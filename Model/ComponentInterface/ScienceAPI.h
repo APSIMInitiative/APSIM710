@@ -167,7 +167,8 @@ class EXPORT ScienceAPI
       std::string readFromSection(const std::string& section, const std::string& name);
 
    };
-string addUnitsToDDML(const string& ddml, const string& units);
-string addDescToDDML(const string& ddml, const string& desc);
+
+std::string EXPORT addUnitsToDDML(const string& ddml, const string& units);
+std::string EXPORT addDescToDDML(const string& ddml, const string& desc);
 
 #endif

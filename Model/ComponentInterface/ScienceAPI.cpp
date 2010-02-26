@@ -317,7 +317,7 @@ bool ScienceAPI::readOptional(const std::string& name, std::vector<std::string>&
    }
 
 
-string EXPORT addUnitsToDDML(const string& ddml, const string& units)
+std::string EXPORT addUnitsToDDML(const string& ddml, const string& units)
    {
    string returnString = ddml;
    unsigned pos = returnString.find("/>");
@@ -325,7 +325,7 @@ string EXPORT addUnitsToDDML(const string& ddml, const string& units)
       returnString = returnString.substr(0, pos) + " unit=\"" + units + "\"/>";
    return returnString;
    }
-string EXPORT addDescToDDML(const string& ddml, const string& desc)
+std::string EXPORT addDescToDDML(const string& ddml, const string& desc)
    {
    string returnString = ddml;
    unsigned pos = returnString.find("/>");
@@ -617,7 +617,7 @@ class ApsimVariantWrapper : public DeletableThing
       void invoke(unsigned &, unsigned &, protocol::Variant& variant)
          {
          protocol::ApsimVariant ApsimVar(comp);
-         ApsimVar.aliasTo(variant.getMessageData());
+         ApsimVar.aliasTo(* variant.getMessageData());
          setter(ApsimVar);
          }
       const char* DDML()

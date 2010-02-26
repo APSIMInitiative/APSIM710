@@ -211,16 +211,27 @@ bool Computation::loadComponent(const std::string& filename,
       }
 
 #ifdef __WIN32__
+ #ifdef _MSC_VER
+   createInstanceProc = (void (*)(const char*,
+                                  const unsigned int*,
+                                  const unsigned int*,
+                                  const int*,
+                                  const int*,
+                                  void(*)(const unsigned int*, protocol::Message*))) GetProcAddress((HMODULE)handle, "createInstance");
+   deleteInstanceProc = (void (*)(const int*)) GetProcAddress((HMODULE)handle, "deleteInstance");
+   messageToLogicProc = (void (*)(const int*, const protocol::Message*, bool*)) GetProcAddress((HMODULE)handle, "messageToLogic");
+ #else
    (FARPROC) createInstanceProc = GetProcAddress(handle, "createInstance");
    (FARPROC) deleteInstanceProc = GetProcAddress(handle, "deleteInstance");
    (FARPROC) messageToLogicProc = GetProcAddress(handle, "messageToLogic");
+ #endif
 #else
-   createInstanceProc = (void (*)(const char*,
-              const unsigned int*,
-              const unsigned int*,
-              const int*,
-              const int*,
-              void(*)(const unsigned int*, protocol::Message*)))
+   createInstanceProc = (void (*)(const char*,
+                                  const unsigned int*,
+                                  const unsigned int*,
+                                  const int*,
+                                  const int*,
+                                  void(*)(const unsigned int*, protocol::Message*)))
               dlsym(handle, "createInstance");
    deleteInstanceProc = (void (*)(const int*))dlsym(handle, "deleteInstance");
    messageToLogicProc = (void (*)(const int*, const protocol::Message*, bool*))dlsym(handle, "messageToLogic");

@@ -20,17 +20,18 @@ const float ha2sm = 10000.0;              // conversion of hectares to sq metres
 const float sm2ha = 1.0/10000.0;          // constant to convert m^2 to hectares
 
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
+#define max(a, b)  (((a) > (b)) ? (a) : (b))
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 // Create an instance of the GRAZ module
 // ------------------------------------------------------------------
-extern "C" grazComponent* STDCALL EXPORT createComponent(ScienceAPI& scienceAPI)
+extern "C" grazComponent EXPORT * STDCALL createComponent(ScienceAPI& scienceAPI)
    {
    return new grazComponent(scienceAPI);
    }
-extern "C" void STDCALL EXPORT deleteComponent(grazComponent* component)
+extern "C" void EXPORT STDCALL deleteComponent(grazComponent* component)
    {
    delete component;
    }
@@ -269,7 +270,8 @@ void grazComponent::eat(void)
 // Calculate stock equivalent
 float grazComponent::graz_stock_equiv (void)
    {
-   return (stocking_rate * (pow(divide (alw, std_alw, 0.0), metabol_expon)));
+   float a = divide (alw, std_alw, 0.0);
+   return (stocking_rate * (pow(a, metabol_expon)));
    }
 
 // Calculate potential lwg.

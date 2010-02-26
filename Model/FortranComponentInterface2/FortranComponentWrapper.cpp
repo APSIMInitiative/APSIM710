@@ -42,7 +42,7 @@ void FortranComponentWrapper::onInit1()
    // -----------------------------------------------------------------------
    // get FORTRAN to create new memory blocks.
    #ifdef __WIN32__
-       allocDealloc = (BoolMethod*) GetProcAddress(dllHandle, "alloc_dealloc_instance");
+       allocDealloc = (BoolMethod*) GetProcAddress((HMODULE)dllHandle, "alloc_dealloc_instance");
    #else
        allocDealloc = (void (*)(const int* doAllocate))dlsym(dllHandle, "alloc_dealloc_instance");
    #endif
@@ -57,7 +57,7 @@ void FortranComponentWrapper::onInit1()
    typedef STDCALL CommonBlockPtr (GetInstanceMethod)();
 
    #ifdef __WIN32__
-      GetInstanceMethod* getInstance = (GetInstanceMethod*) GetProcAddress(dllHandle, "getInstance");
+      GetInstanceMethod* getInstance = (GetInstanceMethod*) GetProcAddress((HMODULE)dllHandle, "getInstance");
    #else
       GetInstanceMethod* getInstance = (CommonBlockPtr (*)()) dlsym(dllHandle, "getInstance");
    #endif
@@ -68,7 +68,7 @@ void FortranComponentWrapper::onInit1()
 
    // Call the FORTRAN OnInit1 routine.
    #ifdef __WIN32__
-      NullMethod* OnInit1 = (NullMethod*) GetProcAddress(dllHandle, "OnInit1");
+      NullMethod* OnInit1 = (NullMethod*) GetProcAddress((HMODULE)dllHandle, "OnInit1");
    #else
       NullMethod* OnInit1 = (void (*)())dlsym(dllHandle, "OnInit1");
    #endif

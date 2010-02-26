@@ -200,16 +200,6 @@ public:
     return date_formatter_dmy<boost::gregorian::date,european_format>::date_to_string(d);
   }
 
-#ifndef _NO_VCL
-boost::gregorian::date fromVCL(const TDateTime& d)
-   {
-   return boost::gregorian::date(1899, 12, 30) + boost::gregorian::date_duration((int)d);
-   }
-TDateTime toVCL(const boost::gregorian::date& d)
-   {
-   return TDateTime(d.year(), d.month(), d.day());
-   }
-#endif
 void addMonths(boost::gregorian::date& d, int numMonths)
    {
    int month = d.month();

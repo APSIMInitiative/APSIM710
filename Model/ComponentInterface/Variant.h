@@ -116,7 +116,7 @@ class Variant
          toMessageData.copyFrom(messageData.start(), messageData.totalBytes());
          }
       unsigned size(void) const {return memorySize(type) + messageData.totalBytes();}
-      const MessageData& getMessageData(void) const {return messageData;}
+      MessageData * getMessageData(void) {return &messageData;}
 
    private:
       char* newDataPtr;

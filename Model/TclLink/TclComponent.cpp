@@ -206,9 +206,9 @@ void TclComponent::respondToEvent(unsigned int& /*fromID*/, unsigned int& eventI
      if (!rule.empty())
         {
         // Set the global variable "incomingApsimVariant" to the variant's binary data
-        MessageData message = variant.getMessageData();
+        MessageData *message = variant.getMessageData();
         Tcl_ObjSetVar2(Interp, Tcl_NewStringObj("incomingApsimVariant",-1), NULL, 
-                       Tcl_NewByteArrayObj((const unsigned char *)message.start(), message.totalBytes()), TCL_GLOBAL_ONLY);
+                       Tcl_NewByteArrayObj((const unsigned char *)message->start(), message->totalBytes()), TCL_GLOBAL_ONLY);
 
         int result = Tcl_Eval(Interp, rule.c_str());
         if (result != TCL_OK)

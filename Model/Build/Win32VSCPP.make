@@ -38,7 +38,7 @@ LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib
 
 #libboost_filesystem-vc90-mt-1_42.lib libboost_date_time-vc90-mt-1_42.lib 
  
-WARNINGS := /wd4996 /wd4068 /wd4290
+WARNINGS := /wd4996 /wd4068 /wd4290 /wd4251 /wd4244
 
 CFLAGS := /Od $(INCLUDES) $(DEFINES) /Gm /EHsc /RTC1 /MDd /W3 /nologo /c /ZI /TP
 

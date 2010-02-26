@@ -13,7 +13,7 @@ using namespace std;
 namespace protocol {
 
 // FSTRING specialisations
-MessageData& EXPORT operator>>(MessageData& messageData, FString& value)
+MessageData EXPORT & operator>>(MessageData& messageData, FString& value)
    {
    int numChars;
    messageData >> numChars;
@@ -21,7 +21,7 @@ MessageData& EXPORT operator>>(MessageData& messageData, FString& value)
    messageData.movePtrBy(numChars);
    return messageData;
    };
-MessageData& EXPORT operator<<(MessageData& messageData, const FString& value)
+MessageData EXPORT & operator<<(MessageData& messageData, const FString& value)
    {
    messageData << (int)value.length();
    messageData.copyFrom(value.f_str(), value.length());
@@ -33,7 +33,7 @@ unsigned int EXPORT memorySize(const FString& value)
    }
 
 // FSTRINGS specialisations
-MessageData& EXPORT operator>> (MessageData& messageData, FStrings& strings)
+MessageData EXPORT & operator>> (MessageData& messageData, FStrings& strings)
    {
    unsigned numElements;
    messageData >> numElements;
@@ -45,7 +45,7 @@ MessageData& EXPORT operator>> (MessageData& messageData, FStrings& strings)
       }
    return messageData;
    }
-MessageData& EXPORT operator<< (MessageData& messageData, const FStrings& strings)
+MessageData EXPORT & operator<< (MessageData& messageData, const FStrings& strings)
    {
    messageData << strings.getNumElements();
    for (unsigned int i = 0; i < strings.getNumElements(); i++)

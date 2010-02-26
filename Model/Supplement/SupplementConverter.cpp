@@ -117,7 +117,7 @@ void SupplementConverter::dobuySupplement(unsigned int& fromID, unsigned int& ev
     msg << "Supplement buy:" << endl;
 
     protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(variant.getMessageData());
+    incomingApsimVariant.aliasTo(*variant.getMessageData());
 
     if (incomingApsimVariant.get("supplement", protocol::DTstring, false, valuestr) == true)
     {
@@ -155,7 +155,7 @@ void SupplementConverter::dofeedSupplement(unsigned int& fromID, unsigned int& e
     msg << "Supplement feed:" << endl;
 
     protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(variant.getMessageData());
+    incomingApsimVariant.aliasTo(*variant.getMessageData());
 
     if (incomingApsimVariant.get("supplement", protocol::DTstring, false, valuestr) == true)
     {
@@ -202,7 +202,7 @@ void SupplementConverter::domixSupplement(unsigned int& fromID, unsigned int& ev
     msg << "Supplement mix:" << endl;
 
     protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(variant.getMessageData());
+    incomingApsimVariant.aliasTo(*variant.getMessageData());
 
     if (incomingApsimVariant.get("src_store", protocol::DTstring, false, valuestr) == true)
     {

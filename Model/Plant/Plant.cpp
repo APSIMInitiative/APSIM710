@@ -818,7 +818,7 @@ void Plant::plant_dormancy (protocol::Variant &v/*(INPUT) incoming message varia
 
 
     protocol::ApsimVariant incomingApsimVariant(parent);
-    incomingApsimVariant.aliasTo(v.getMessageData());
+    incomingApsimVariant.aliasTo(* v.getMessageData());
 
 // crop harvested. Report status
     if (incomingApsimVariant.get("state", protocol::DTstring, false, dormancy_flag) == false)

@@ -136,7 +136,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     protocol::BuyStockType buystock;
 
     protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(v.getMessageData());
+    incomingApsimVariant.aliasTo( * v.getMessageData());
 
     if (incomingApsimVariant.get("number", protocol::DTint4, false, value4) == true)
     {
@@ -259,7 +259,7 @@ void NonHerbageConverter::stockSell (protocol::Variant &v/*(INPUT) message varia
     msg << "Sell stock :-" << endl;
 
     protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(v.getMessageData());
+    incomingApsimVariant.aliasTo(*v.getMessageData());
 
     if (incomingApsimVariant.get("number", protocol::DTint4, false, value4) == true)
     {
@@ -298,7 +298,7 @@ void NonHerbageConverter::stockMove (protocol::Variant &v/*(INPUT) message varia
     msg << "Name stock :-" << endl;
 
     protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(v.getMessageData());
+    incomingApsimVariant.aliasTo(*v.getMessageData());
 
     if (incomingApsimVariant.get("group", protocol::DTint4, false, value4) == true)
     {

@@ -2,6 +2,7 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include "vcl_functions.h"
 #include <General\string_functions.h>
 #include <General\stringTokenizer.h>
@@ -588,3 +589,11 @@ AnsiString resolveComponentPropertyMacro(TComponent* owner, AnsiString st, int r
    return value;
    }
 
+boost::gregorian::date fromVCL(const TDateTime& d)
+   {
+   return boost::gregorian::date(1899, 12, 30) + boost::gregorian::date_duration((int)d);
+   }
+TDateTime toVCL(const boost::gregorian::date& d)
+   {
+   return TDateTime(d.year(), d.month(), d.day());
+   }

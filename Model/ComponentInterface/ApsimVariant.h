@@ -25,8 +25,8 @@ class ApsimVariant
       ApsimVariant(Component* p)
          : messageData(buffer, sizeof(buffer)), parent(p)
          { }
-      ApsimVariant(Component* p, const Variant& variant)
-         : messageData(variant.getMessageData()), parent(p)
+      ApsimVariant(Component* p, Variant& variant)
+         : messageData(* variant.getMessageData()), parent(p)
          {
          }
 

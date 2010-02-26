@@ -239,7 +239,7 @@ void FortranWrapper::respondToEvent(unsigned int& fromID, unsigned int& eventID,
    FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
-   incomingApsimVariant.aliasTo(var.getMessageData());
+   incomingApsimVariant.aliasTo(* var.getMessageData());
    inRespondToSet = false;
    messageWasUsed = true;
 //   unsigned int sender = var.getFromId();

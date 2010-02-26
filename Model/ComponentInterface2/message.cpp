@@ -45,7 +45,7 @@ void EXPORT shutDownMessageFactory(void)
    }
 
 
-Message& EXPORT constructMessage(Message::Type messageType,
+Message EXPORT &constructMessage(Message::Type messageType,
                                   unsigned int fromID,
                                   unsigned int toID,
                                   bool acknowledgementRequired,
@@ -99,7 +99,7 @@ void EXPORT deleteMessage(Message& message)
 // to it. The caller should delete the memory when finished by
 // calling deleteClonedMessage below
 // ------------------------------------------------------------------
-Message* EXPORT cloneMessage(const Message& from)
+Message EXPORT * cloneMessage(const Message& from)
    {
    Message* message = (Message*) new char[sizeof(Message) + from.nDataBytes];
    memcpy(message, &from, sizeof(Message));

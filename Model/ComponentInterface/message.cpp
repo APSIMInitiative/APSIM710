@@ -1,9 +1,9 @@
 #pragma hdrstop
 
-#include "message.h"
 #include <stdio.h>
 #include <stdexcept>
-#include <General/platform.h>
+
+#include "message.h"
 
 using namespace std;
 namespace protocol {
@@ -68,7 +68,7 @@ void deleteMessages(void)
 //    dph 14/5/2001
 
 // ------------------------------------------------------------------
-Message* EXPORT constructMessage(MessageType messageType,
+Message EXPORT * constructMessage(MessageType messageType,
                                   unsigned int fromID,
                                   unsigned int toID,
                                   bool acknowledgementRequired,
@@ -114,24 +114,3 @@ void EXPORT deleteMessage(Message* message)
 
 } // namespace protocol
 
-// ------------------------------------------------------------------
-//  Short description:
-//     FORTRAN: Create a message and return
-
-//  Changes:
-//    DPH 7/6/2001
-
-// ------------------------------------------------------------------
-#ifdef __WIN32__
-extern "C" unsigned  STDCALL get_componentID(void);
-extern "C" unsigned  STDCALL construct_message
-   (protocol::MessageType* messageType, unsigned int* to, unsigned* ack, unsigned* dataSize)
-   {
-   return (unsigned) constructMessage(*messageType,
-                                      get_componentID(),
-                                      *to,
-                                      *ack,
-                                      *dataSize);
-   }
-
-#endif

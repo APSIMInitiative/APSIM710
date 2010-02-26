@@ -117,7 +117,7 @@ extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
    }
 
 
-extern "C" CMPComponentInterface* EXPORT STDCALL  CICreate
+extern "C" CMPComponentInterface EXPORT * STDCALL CICreate
    (unsigned* callbackarg, CallbackType* callback, unsigned componentid, unsigned parentid)
    {
    return new CMPComponentInterface(callbackarg, callback, componentid, parentid);
@@ -432,7 +432,7 @@ extern "C" unsigned EXPORT STDCALL  CIMemorySizeString(char* Data)
    return memorySize(string(Data));
    }
 
-extern "C" DOTNETWrapper* EXPORT STDCALL  CICreateMessageData(Message* message)
+extern "C" DOTNETWrapper EXPORT * STDCALL CICreateMessageData(Message* message)
    {
    DOTNETWrapper* wrapper = new DOTNETWrapper();
    wrapper->messageData = new MessageData(*message);

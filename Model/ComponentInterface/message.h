@@ -1,6 +1,9 @@
 //---------------------------------------------------------------------------
 #ifndef MessageH
 #define MessageH
+
+#include <General/platform.h>
+
 namespace protocol
    {
 
@@ -78,7 +81,7 @@ struct Message
 //    dph 14/5/2001
 
 // ------------------------------------------------------------------
-Message* constructMessage(MessageType messageType,
+Message EXPORT * constructMessage(MessageType messageType,
                           unsigned int fromID,
                           unsigned int toID,
                           bool acknowledgementRequired,
@@ -131,7 +134,7 @@ inline Message* newMessage(const Message* message, unsigned int messageID)
 //    dph 14/5/2001
 
 // ------------------------------------------------------------------
-void deleteMessage(Message* message);
+void EXPORT deleteMessage(Message* message);
 
 void initMessages(void);
 void deleteMessages(void);

@@ -2,13 +2,15 @@
 #ifndef MessageDataH
 #define MessageDataH
 
-#include "message.h"
 #include <General/platform.h>
 #include <string.h>
 #include <string>
 #ifdef __WIN32__
    #include <memory.h>
 #endif
+
+#include "message.h"
+
 class FString;
 class FStrings;
 
@@ -57,7 +59,7 @@ inline unsigned int memorySize(const WCHAR& value)
    return 2;
    }
 
-class MessageData
+class EXPORT MessageData
    {
    private:
       const char* startBuffer;
@@ -233,13 +235,13 @@ class MessageData
          }
    };
 
-   MessageData& operator>>(MessageData& messageData, FString& value);
-   MessageData& operator<<(MessageData& messageData, const FString& value);
-   unsigned int memorySize(const FString& value);
+   MessageData EXPORT & operator>>(MessageData& messageData, FString& value);
+   MessageData EXPORT & operator<<(MessageData& messageData, const FString& value);
+   unsigned int EXPORT  memorySize(const FString& value);
 
-   MessageData& operator>> (MessageData& messageData, FStrings& strings);
-   MessageData& operator<< (MessageData& messageData, const FStrings& strings);
-   unsigned int memorySize(const FStrings& strings);
+   MessageData EXPORT & operator>> (MessageData& messageData, FStrings& strings);
+   MessageData EXPORT & operator<< (MessageData& messageData, const FStrings& strings);
+   unsigned int EXPORT memorySize(const FStrings& strings);
 
    std::string EXPORT DDML(const FString& );
    std::string EXPORT DDML(const FStrings& );

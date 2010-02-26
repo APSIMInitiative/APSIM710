@@ -5,8 +5,8 @@
 namespace protocol {
 class Component;
 
-void tooManyError(unsigned int maxCount);
-void rangeError(unsigned int index, unsigned int maxCount);
+void EXPORT tooManyError(unsigned int maxCount);
+void EXPORT rangeError(unsigned int index, unsigned int maxCount);
 
 // turn of the warnings about "Functions containing for are not expanded inline.
 #pragma warn -inl

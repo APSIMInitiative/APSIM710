@@ -53,7 +53,7 @@ class EXPORT FortranString
          {
          #if __WIN32__
          return (length() == rhs.length() &&
-                 strncmpi(f_str(), rhs.f_str(), length()) == 0);
+                 strnicmp(f_str(), rhs.f_str(), length()) == 0);
          #else
          return (length() == rhs.length() &&
                  strncasecmp(f_str(), rhs.f_str(), length()) == 0);
@@ -74,8 +74,11 @@ class EXPORT FortranString
          {
          unsigned int rhsLength = rhs.length();
          if (len < rhsLength)
-            throw std::runtime_error(std::string("String truncation.  FORTRAN string not long enough\n") +
-                                     "to hold the string:\n" + rhs.toString());
+            {
+            std::string message = "String truncation.  FORTRAN string not long enough\nto hold the string:\n";
+            message += rhs.toString();
+            throw std::runtime_error(message);
+            }
          else
             {
             memcpy(text, rhs.f_str(), rhsLength);
@@ -88,8 +91,11 @@ class EXPORT FortranString
          {
          unsigned int rhsLength = rhs.length();
          if (len < rhsLength)
-            throw std::runtime_error(std::string("String truncation.  FORTRAN string not long enough\n") +
-                                     "to hold the string:\n" + rhs);
+            {
+            std::string message = "String truncation.  FORTRAN string not long enough\nto hold the string:\n";
+            message += rhs;
+            throw std::runtime_error(message);
+            }
          else
             {
             memcpy(text, rhs.c_str(), rhsLength);
@@ -111,7 +117,11 @@ class EXPORT FortranString
          if (nchar == npos)
             nchar = length() - pos;
          else if (pos+nchar > len)
-            throw std::runtime_error("Invalid index into string: " + toString());
+            {
+            std::string emsg = "Invalid index into string: ";
+            emsg += toString();
+            throw std::runtime_error(emsg);
+            }
          return FortranString(&text[pos], nchar);
          }
    private:
@@ -203,7 +213,7 @@ inline void Convert(const std::vector<std::string>& from, FortranString& to)
    st = "";
    for (unsigned i = 0; i != from.size(); i++)
       {
-      if (st != "")
+      if (st.length() > 0)
          st += " ";
       st += from[i];
       }

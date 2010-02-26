@@ -4,7 +4,7 @@ PROJECT = Apsim
 
 SRC = ApsimMain.cpp Simulation.cpp ../ComponentInterface/message.cpp
 
-LIBS = ApsimShared General Protocol
+LIBS = ApsimShared General Protocol ComponentInterface
 
 PROJECTTYPE = exe
 

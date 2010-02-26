@@ -4,7 +4,7 @@
 #include <string>
 #include <stdexcept>
 #ifdef __WIN32__
-   #include <stdlib>
+   #include <stdlib.h>
 #endif
 
 #include "ArraySpecifier.h"

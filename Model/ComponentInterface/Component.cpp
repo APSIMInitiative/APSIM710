@@ -11,6 +11,7 @@
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimRegistry.h>
+#include <ApsimShared/FApsimComponentData.h>
 #include <General/path.h>
 #include <General/date_class.h>
 #include "ScienceAPI.h"
@@ -156,7 +157,7 @@ try {
                                  if (eventData.ID == tickID)
                                     {
                                     eventData.params.unpack(NULL, NULL, tick);
-                                    eventData.params.getMessageData().reset();
+                                    eventData.params.getMessageData()->reset();
                                     haveWrittenToStdOutToday = false;
                                     if (sendTickToComponent)
                                       respondToEvent(eventData.publishedByID, eventData.ID, eventData.params);
@@ -401,7 +402,7 @@ void Component::respondToEvent(unsigned int& fromID, unsigned int& eventID, Vari
 
   for (unsigned i = 0; i != pfs.size(); i++)
      {
-     variant.getMessageData().reset();
+     variant.getMessageData()->reset();
      (pfs[i])(fromID, eventID, variant);
      }
   }

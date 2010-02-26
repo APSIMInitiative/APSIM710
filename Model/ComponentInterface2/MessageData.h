@@ -2,13 +2,11 @@
 #ifndef MessageDataH
 #define MessageDataH
 
-#include "message.h"
 #include <string.h>
 #include <vector>
 #include <General/string_functions.h>
-#ifdef __WIN32__
-   #include <mem.h>
-#endif
+
+#include "message.h"
 
 // ------------------------------------------------------------------
 // Provides a mechanism to read and write values to the data

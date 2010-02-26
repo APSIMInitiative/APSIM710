@@ -2,7 +2,6 @@
 #include <string.h>
 #include <General/platform.h>
 
-using namespace std;
 extern "C" void EXPORT STDCALL wrapperDLL(char* wrapperDll)
    {
    #ifdef __WIN32__

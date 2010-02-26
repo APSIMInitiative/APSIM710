@@ -79,9 +79,9 @@ inline void pack(MessageData& messageData, float value)
 inline std::string DDML(float value)
    {return "<type kind=\"single\"/>";}
 inline void Convert(bool source, float& dest)  {dest = source;}
-inline void Convert(int source, float& dest)   {dest = source;}
+inline void Convert(int source, float& dest)   {dest = (float) source;}
 inline void Convert(float source, float& dest) {dest = source;}
-inline void Convert(double source, float& dest){dest = source;}
+inline void Convert(double source, float& dest){dest = (float) source;}
 inline void Convert(const std::string& source, float& dest)
    {
    char *chk;
