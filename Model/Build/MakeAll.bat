@@ -121,6 +121,6 @@ call MakeProject ProbeDll
 call MakeProject Plant2Documentation
 call MakeProject RunMacro
 
-
+call MakeProject RunTime
 
 popd

@@ -25,14 +25,18 @@ CC=$(BCB)\Bin\bcc32.exe
 LD=$(BCB)\Bin\ilink32
 IMPDEF=$(BCB)\Bin\impdef.exe
 
+LIBXML = c:\progra~1\Borland\CBuilder6\Components\libxml2
+LIBXML_INCLUDE = $(LIBXML)\include
+LIBXML_LIB = $(LIBXML)\win32\bin.bcb
+
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),$(library).lib)
 
 
 DEFINES := NO_STRICT;_RTLDLL;BOOST_REGEX_STATIC_LINK;$(DEFINES)
-INCLUDEPATH := $(BCB)\include;$(APSIM)\Model;$(BCB)\Components\Boost;$(BCB)\Components\LibXML2\Include;$(INCLUDEPATH)
+INCLUDEPATH := $(BCB)\include;$(APSIM)\Model;$(BCB)\Components\Boost;$(LIBXML_INCLUDE);$(INCLUDEPATH)
 LIBPATH := $(BCB)\lib\obj;$(BCB)\lib;$(BCB)\components\Boost\libs\regex\build\bcb6;$(APSIM)\Model;$(LIBPATH)
-LIBS := $(BCB)\Components\LibXml2\win32\LibXml2.lib $(BCB)\Components\Boost\Libs\FileSystem\FileSystem.lib $(BCB)\Components\Boost\libs\date_time\date_time.lib $(LIBS)
+LIBS := $(LIBXML_LIB)\libxml2.lib $(BCB)\Components\Boost\Libs\FileSystem\FileSystem.lib $(BCB)\Components\Boost\libs\date_time\date_time.lib $(LIBS)
 
 WARNINGS := -w-par
 CFLAGS := -Vx -Ve -X- -a8 -b- -tWM -c
