@@ -719,12 +719,13 @@ IniFile* ApsimControlFile::getParFile(const std::string& parFileName, bool check
          iniToReturn = openedParFiles[i];
       }
    if (checkNonExistant && !fileExists(filePath))
-      throw runtime_error("The control file has referenced a non-existant file.\n"
-                          "File = " + filePath);
-
+      {
+      // file doesn't exist.
+      }
    if (iniToReturn == NULL &&
        !fileExtensionEquals(filePath, "met") &&
-       !fileExtensionEquals(filePath, "soi"))
+       !fileExtensionEquals(filePath, "soi") &&
+       fileExists(filePath))
       {
       IniFile* par = new IniFile(filePath, true);
       openedParFiles.push_back(par);
@@ -1212,19 +1213,22 @@ bool ApsimControlFile::renameModule(const std::string& section,
       if (paramFile->find(".ini") == string::npos && paramFile->find(".xml") == string::npos)
          {
          IniFile* par = getParFile(*paramFile);
-         vector<string> sectionNames;
-         par->readSectionNames(sectionNames);
-         for (unsigned s = 0; s != sectionNames.size(); s++)
+         if (par != NULL)
             {
-            StringTokenizer tokenizer(sectionNames[s], ".");
-            string firstBit = tokenizer.nextToken();
-            string secondBit = tokenizer.nextToken();
-            string thirdBit = tokenizer.nextToken();
-            if (Str_i_Eq(secondBit, oldModuleName))
+            vector<string> sectionNames;
+            par->readSectionNames(sectionNames);
+            for (unsigned s = 0; s != sectionNames.size(); s++)
                {
-               par->renameSection(sectionNames[s],
-                                  firstBit + "." + newModuleName + "." + thirdBit);
-               modsMade = true;
+               StringTokenizer tokenizer(sectionNames[s], ".");
+               string firstBit = tokenizer.nextToken();
+               string secondBit = tokenizer.nextToken();
+               string thirdBit = tokenizer.nextToken();
+               if (Str_i_Eq(secondBit, oldModuleName))
+                  {
+                  par->renameSection(sectionNames[s],
+                                     firstBit + "." + newModuleName + "." + thirdBit);
+                  modsMade = true;
+                  }
                }
             }
          }

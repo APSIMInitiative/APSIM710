@@ -278,7 +278,8 @@ void SimCreatorSectionNew::convertLine(const std::string& line)
                xml += "   ";
             xml += "         <" + key + ">" + value + "</" + key + ">\n";
 
-            if (!Str_i_Eq(key, "variable"))
+            if (!Str_i_Eq(key, "variable") && !Str_i_Eq(key, "module_names") &&
+                !Str_i_Eq(key, "variable_names"))
                {
                if (variableNames.find(key) != variableNames.end())
                   throw runtime_error("The variable '" + key + "' exists more than once in the section '" + name + "'");

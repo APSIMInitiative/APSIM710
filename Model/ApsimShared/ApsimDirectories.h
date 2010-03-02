@@ -1,6 +1,6 @@
 #include <string>
 #include <stdexcept>
-
+#include <general/platform.h>
 //---------------------------------------------------------------------------
 #ifndef ApsimDirectoriesH
 #define ApsimDirectoriesH
