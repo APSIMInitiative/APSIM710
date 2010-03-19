@@ -5,69 +5,36 @@ using System.Text;
 
 public class LeafDeathPhase : Phase
    {
-   #region Class Data Members
+   private double _CumulativeValue;
 
-   private DateTime _StartDate;
-   private double CumulativeTT=0;
+   [Output] public double CumulativeValue { get { return _CumulativeValue; } }
 
-   #endregion
+   /// <summary>
+   /// Initialise everything
+   /// </summary>
+   public override void Initialise()  { _CumulativeValue = 0.0; }
 
-   public LeafDeathPhase() {}
-
-   public LeafDeathPhase(String N, double Target)
+   /// <summary>
+   /// Do our timestep development
+   /// </summary>
+   public override double DoTimeStep(double PropOfDayToUse)
       {
-      Name = N;
-      }
+      Function F = Children["ThermalTime"] as Function;
+      _CumulativeValue += F.Value;
 
-   public override DateTime StartDate
-      {
-      get
-         {
-         return _StartDate;
-         }
-      }
-   [Output] public double TTInPhase {get{return CumulativeTT;}}
-   public override void DoDevelopment(DateTime Today, double TT,
-                             out double LeftOverTT, out double LeftOverDays)
-      {
-      // Progress through this phase, returning any left over TT not used in this
-      // phase. This left over TT can then be used to start off the next phase.
-
-      if (_StartDate.Year == 1)
-         {
-         _StartDate = Today;
-         }
-
-      double TTAfterStress = TT * Stress();
-
-      CumulativeTT += TTAfterStress;
-      LeftOverTT = 0.0;
-      LeftOverDays = 0.0;
-      }
-   public override bool MeetsTarget()
-      {
       Plant Plant = (Plant)Root;
       Leaf L = Plant.Organs["Leaf"] as Leaf;
-      return L.LAI == 0;
+      if (L.LAI == 0)
+         return 0.00001;
+      else
+         return 0; 
       }
-   public override void UseLeftOverTT(DateTime Today, double LeftOverTT)
-      {
-      _StartDate = Today;
-      CumulativeTT = LeftOverTT;
-      }
-   virtual protected double Stress(){return 1.0;}
-   public override double FractionComplete
-      {
-      get
-         {
-         return 0;
-         }
-      }
-   public override void Reset()
-      {
-      _StartDate = new DateTime();
-      CumulativeTT = 0;
-      }
+
+   /// <summary>
+   /// Return a fraction of phase complete.
+   /// </summary>
+   public override double FractionComplete { get { return 0.0; } }
+
    }
 
 

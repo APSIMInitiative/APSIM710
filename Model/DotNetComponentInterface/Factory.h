@@ -40,10 +40,11 @@ public ref class Factory
       List<FactoryEvent^>^ RegisteredEvents;
       Assembly^ CallingAssembly;
       
-      Instance^ CreateInstance(XmlNode^ Node, XmlNode^ Parent);
+      Instance^ CreateInstance(XmlNode^ Node, XmlNode^ Parent, Instance^ ParentInstance);
       void GetAllProperties(Instance^ Obj, XmlNode^ Parent);
       void GetAllEventHandlers(Instance^ Obj);
       void GetAllEvents(Instance^ Obj);
       void RemoveRegisteredOutput(String^ OuptutName);
       FactoryProperty^ FindProperty(XmlNode^ Node);
+      void RemoveShortCuts(XmlNode^ Node);
    };

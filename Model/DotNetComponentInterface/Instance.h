@@ -42,11 +42,11 @@ public ref class Instance : NamedItem
       ModelFramework::ApsimComponent^ Component;
    
    protected:
+      Instance^ Parent;
 
          
    public:
       NamedList<NamedItem^>^ Children;
-      Instance^ Parent;
       Instance();
 
       virtual void Add(Instance^ Child)
@@ -92,6 +92,17 @@ public ref class Instance : NamedItem
          {
          ComponentName = ComponentNam;
          Component = component;
+         Initialise();
+         }
+      void Initialise(String^ Nam, Instance^ Paren)
+         {
+         Name = Nam;
+         Parent = Paren;
+         Children->ParentName = MyFQN();
+         Initialise();
+         }
+      virtual void Initialise()
+         {
          }
       property Instance^ Root 
          { 

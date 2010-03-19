@@ -21,8 +21,22 @@ public class Plant : Instance
       // Public property to return our organs to caller. Used primarily for unit testing.
       get { return _Organs; }
       }
-   [Input]
-   public int day;
+   [Input] public int day;
+   [Input] public int year;
+
+   /// <summary>
+   /// Return today as a DateTime class.
+   /// </summary>
+   public DateTime Today
+      {
+      get
+         {
+         DateTime x = new DateTime(year, 1, 1);
+         x = x.AddDays(day - 1);
+         return x;
+         }
+      }   
+   
    // ---------------------------- Events we subscribe to ---------------------------
    [EventHandler] public void OnSow (SowType Sow)
       {
@@ -197,6 +211,8 @@ public class Plant : Instance
       }
 
    #endregion
+
+
 
    }
    

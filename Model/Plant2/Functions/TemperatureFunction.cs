@@ -18,58 +18,59 @@ public class TemperatureFunction : Function
          return Linint3hrlyTemp(MaxT, MinT, XYPairs);
          }
       }
-   private double Linint3hrlyTemp(double tmax, double tmin, LinearInterpolation ttFn)
+   static public double Linint3hrlyTemp(double tmax, double tmin, LinearInterpolation ttFn)
+      {
+      // --------------------------------------------------------------------------
+      // Eight interpolations of the air temperature are
+      // calculated using a three-hour correction factor.
+      // For each air three-hour air temperature, a value
+      // is calculated.  The eight three-hour estimates
+      // are then averaged to obtain the daily value.
+      // --------------------------------------------------------------------------
+
+      //Constants
+      int num3hr = 24 / 3;           // number of 3 hourly temperatures
+
+      // Local Variables
+      double tot = 0.0;            // sum_of of 3 hr interpolations
+
+      for (int period = 1; period <= num3hr; period++)
          {
-         // --------------------------------------------------------------------------
-         // Eight interpolations of the air temperature are
-         // calculated using a three-hour correction factor.
-         // For each air three-hour air temperature, a value
-         // is calculated.  The eight three-hour estimates
-         // are then averaged to obtain the daily value.
-         // --------------------------------------------------------------------------
-
-         //Constants
-         int num3hr = 24 / 3;           // number of 3 hourly temperatures
-
-         // Local Variables
-         double tot = 0.0;            // sum_of of 3 hr interpolations
-
-         for (int period = 1; period <= num3hr; period++)
-            {
-            // get mean temperature for 3 hr period (oC)
-            double tmean_3hour = temp_3hr(tmax, tmin, period);
-            tot = tot + ttFn.Value(tmean_3hour);
-            }
-         return tot / (double)num3hr;
+         // get mean temperature for 3 hr period (oC)
+         double tmean_3hour = temp_3hr(tmax, tmin, period);
+         tot = tot + ttFn.Value(tmean_3hour);
          }
-      private double temp_3hr(double tmax, double tmin, int period)
-         {
-         // --------------------------------------------------------------------------
-         //   returns the temperature for a 3 hour period.
-         //   a 3 hourly estimate of air temperature
-         // --------------------------------------------------------------------------
+      return tot / (double)num3hr;
+      }
 
-         if (period < 1)
-            throw new Exception("3 hr. period number is below 1");
-         else if (period > 8)
-            throw new Exception("3 hr. period number is above 8");
+   static private double temp_3hr(double tmax, double tmin, int period)
+      {
+      // --------------------------------------------------------------------------
+      //   returns the temperature for a 3 hour period.
+      //   a 3 hourly estimate of air temperature
+      // --------------------------------------------------------------------------
 
-         double period_no = period;
+      if (period < 1)
+         throw new Exception("3 hr. period number is below 1");
+      else if (period > 8)
+         throw new Exception("3 hr. period number is above 8");
 
-         // fraction_of of day's range_of for this 3 hr period
-         double t_range_fract = 0.92105
-                              + 0.1140 * period_no
-                              - 0.0703 * Math.Pow(period_no, 2)
-                              + 0.0053 * Math.Pow(period_no, 3);
+      double period_no = period;
 
-         // diurnal temperature range for the day (oC)
-         double diurnal_range = tmax - tmin;
+      // fraction_of of day's range_of for this 3 hr period
+      double t_range_fract = 0.92105
+                           + 0.1140 * period_no
+                           - 0.0703 * Math.Pow(period_no, 2)
+                           + 0.0053 * Math.Pow(period_no, 3);
 
-         // deviation from day's minimum for this 3 hr period
-         double t_deviation = t_range_fract * diurnal_range;
+      // diurnal temperature range for the day (oC)
+      double diurnal_range = tmax - tmin;
 
-         return tmin + t_deviation;
-         }
+      // deviation from day's minimum for this 3 hr period
+      double t_deviation = t_range_fract * diurnal_range;
+
+      return tmin + t_deviation;
+      }
 
       }
    

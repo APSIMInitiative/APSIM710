@@ -29,9 +29,9 @@
   </MetaData>
   <Model>
     <Cultivar name="simba">
-      <Construct>frenchbean</Construct>
+      <Construct>Plant</Construct>
     </Cultivar>
-    <Plant name="frenchbean">
+    <Plant>
       <CropType>frenchbean</CropType>
       <Population>
         <Value>4</Value>
@@ -48,28 +48,41 @@
           </XYPairs>
         </TemperatureFunction>
       <FixedPhase name="Emergent">
-         <TTTarget>80</TTTarget>
+         <Constant name="Target">
+           <Value>80</Value>
+         </Constant>
          <Start>Germination</Start>
          <End>Emergence</End>
+         <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
       </FixedPhase>
       <FixedPhase name="Vegetative">
-         <TTTarget>320</TTTarget>
+         <Constant name="Target">
+           <Value>320</Value>
+         </Constant>
          <Start>Emergence</Start>
          <End>Flowering</End>
+         <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
       </FixedPhase>
       <FixedPhase name="Flowering">
-         <TTTarget>50</TTTarget>
+         <Constant name="Target">
+           <Value>50</Value>
+         </Constant>
          <Start>Flowering</Start>
          <End>StartPodGrowth</End>
+         <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
       </FixedPhase>
       <FixedPhase name="PodFilling">
-         <TTTarget>250</TTTarget>
+         <Constant name="Target">
+           <Value>250</Value>
+         </Constant>
          <Start>StartPodGrowth</Start>
          <End>Maturity</End>
+         <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
       </FixedPhase>
       <EndPhase name="HarvestRipe">
          <Start>Maturity</Start>
          <End>Unused</End>
+         <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
       </EndPhase>
 
       </Phenology>

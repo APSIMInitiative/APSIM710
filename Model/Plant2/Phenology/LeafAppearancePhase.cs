@@ -2,91 +2,62 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 public class LeafAppearancePhase : Phase
    {
-   #region Class Data Members
+   private double CumulativeTT;
+   private double NodeNoAtStart;
+   private Leaf L;
+   [Param] private double RemainingLeaves = 0;
+   [Output] public double TTInPhase { get { return CumulativeTT; } }
 
-   private DateTime _StartDate;
-   private double CumulativeTT=0;
-   private double NodeNoAtStart = 0;
-   [Param] double RemainingLeaves = 0;
-   #endregion
 
-   public LeafAppearancePhase() {}
-
-   public LeafAppearancePhase(String N, double Target)
-      {
-      Name = N;
+   /// <summary>
+   /// Initialise everything
+   /// </summary>
+   public override void Initialise()
+      { 
+      CumulativeTT = 0;
+      NodeNoAtStart = 0;
+      L = null;
       }
 
-   public override DateTime StartDate
+   /// <summary>
+   /// Do our timestep development
+   /// </summary>
+   public override double DoTimeStep(double PropOfDayToUse)
       {
-      get
+      if (L == null)
          {
-         return _StartDate;
-         }
-      }
-   [Output] public double TTInPhase {get{return CumulativeTT;}}
-   public override void DoDevelopment(DateTime Today, double TT,
-                             out double LeftOverTT, out double LeftOverDays)
-      {
-      // Progress through this phase, returning any left over TT not used in this
-      // phase. This left over TT can then be used to start off the next phase.
-      Plant Plant = (Plant)Root;
-      Leaf L = Plant.Organs["Leaf"] as Leaf;
-
-      if (_StartDate.Year == 1)
-         {
-         _StartDate = Today;
+         Plant Plant = (Plant)Root;
+         L = Plant.Organs["Leaf"] as Leaf;
          NodeNoAtStart = L.CohortNo;
          }
-      double TTAfterStress = TT * Stress();
 
-      // This algorithm needs to be a bit more exact than this.
-      if (MeetsTarget())
-         {
-         CumulativeTT += TTAfterStress;
-         LeftOverTT = 0.0;
-         LeftOverDays = 0.0;
-         }
+      // Accumulate thermal time.
+      Function TT = Children["ThermalTime"] as Function;
+      CumulativeTT += TT.Value;
+
+      if (L.CohortNo >= (int)(L.FinalNodeNo - RemainingLeaves))
+         return 0.00001;
       else
-         {
-         CumulativeTT += TTAfterStress;
-         LeftOverTT = TT;
-         LeftOverDays = 1;
-         }
+         return 0;
       }
-   public override bool MeetsTarget()
-      {
-      Plant Plant = (Plant)Root;
-      Leaf L = Plant.Organs["Leaf"] as Leaf;
-      
-      return (L.CohortNo >= (int) (L.FinalNodeNo-RemainingLeaves));
-      }
-   public override void UseLeftOverTT(DateTime Today, double LeftOverTT)
-      {
-      _StartDate = Today;
-      CumulativeTT = LeftOverTT;
-      }
-   virtual protected double Stress(){return 1.0;}
+
+   /// <summary>
+   /// Return a fraction of phase complete.
+   /// </summary>
    public override double FractionComplete
       {
       get
          {
-         Plant Plant = (Plant)Root;
-         Leaf L = Plant.Organs["Leaf"] as Leaf;
          double F = (L.CohortNo - NodeNoAtStart) / (L.FinalNodeNo - NodeNoAtStart);
          if (F < 0) F = 0;
          if (F > 1) F = 1;
          return F;
          }
       }
-   public override void Reset()
-      {
-      _StartDate = new DateTime();
-      CumulativeTT = 0;
-      }
+
+
    }
 
 

@@ -21,7 +21,8 @@ void Factory::Create(String^ Xml, Assembly^ AssemblyWithTypes)
    CallingAssembly = AssemblyWithTypes;
    XmlDocument^ Doc = gcnew XmlDocument();
    Doc->LoadXml(Xml);
-   _Root = CreateInstance(Doc->DocumentElement, nullptr);
+   RemoveShortCuts(Doc->DocumentElement);
+   _Root = CreateInstance(Doc->DocumentElement, nullptr, nullptr);
    }
 void Factory::Create(XmlNode^ Node, Assembly^ AssemblyWithTypes)
    {
@@ -31,9 +32,9 @@ void Factory::Create(XmlNode^ Node, Assembly^ AssemblyWithTypes)
    // instance can be retrieved by the 'Root' property.
    // --------------------------------------------------------------------
    CallingAssembly = AssemblyWithTypes;
-   _Root = CreateInstance(Node, nullptr);
+   _Root = CreateInstance(Node, nullptr, nullptr);
    }
-Instance^ Factory::CreateInstance(XmlNode^ Node, XmlNode^ Parent)
+Instance^ Factory::CreateInstance(XmlNode^ Node, XmlNode^ Parent, Instance^ ParentInstance)
    {
    // --------------------------------------------------------------------
    // Create an instance of a the 'Instance' class based on the 
@@ -45,7 +46,7 @@ Instance^ Factory::CreateInstance(XmlNode^ Node, XmlNode^ Parent)
       throw gcnew Exception("Cannot find a class called: " + Node->Name);
    Instance^ CreatedInstance = dynamic_cast<Instance^> (Activator::CreateInstance(ClassType));
 
-   CreatedInstance->Name = XmlHelper::Name(Node);
+   CreatedInstance->Initialise(XmlHelper::Name(Node), ParentInstance);
    GetAllProperties(CreatedInstance, Parent);
    GetAllEventHandlers(CreatedInstance);
    GetAllEvents(CreatedInstance);
@@ -169,8 +170,7 @@ void Factory::GetAllEvents(Instance^ Obj)
             if (t != nullptr)
                {
                // Create a child instance - indirect recursion.
-               Instance^ ChildInstance = CreateInstance(Child, Child);
-               ChildInstance->Parent = Obj;
+               Instance^ ChildInstance = CreateInstance(Child, Child, Obj);
                Obj->Add(ChildInstance);   
                }
             else if (!Child->HasChildNodes && Child->InnerText == "")
@@ -227,4 +227,24 @@ void Factory::ThrowOnUnInitialisedParameters()
    if (Errors != "")
       throw gcnew Exception("The following parameters haven't been initialised: " + Errors);
 	}
+      
+void Factory::RemoveShortCuts(XmlNode^ Node)
+   {
+   // -----------------------------------------------
+   // Remove any shortcut nodes in the children of
+   // the specified node.
+	// -----------------------------------------------
+	
+   String^ ShortCutPath = XmlHelper::Attribute(Node, "shortcut");
+   if (ShortCutPath != "")
+      {
+      XmlNode^ ReferencedNode = XmlHelper::Find(Node->OwnerDocument->DocumentElement, ShortCutPath);
+      if (ReferencedNode == nullptr)
+         throw gcnew Exception("Cannot find short cut node: " + ShortCutPath);
+      Node->ParentNode->ReplaceChild(ReferencedNode->CloneNode(true), Node);	      
+      }
+	
+	for (int i = 0; i < Node->ChildNodes->Count; i++)
+	   RemoveShortCuts(Node->ChildNodes[i]);
+   }
       

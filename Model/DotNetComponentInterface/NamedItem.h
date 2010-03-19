@@ -41,6 +41,15 @@ public ref class NamedList : List<T>
             throw gcnew Exception("Cannot find object: " + ParentName + Name);
             }
          }
+      bool Contains(String^ NameToFInd)
+         {
+         for each (T Obj in this)
+            {
+            if (Obj->Name->ToLower() == NameToFInd->ToLower())
+               return true;
+            }
+         return false;
+         }         
    };
 
 

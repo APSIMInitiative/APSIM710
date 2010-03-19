@@ -7,8 +7,6 @@ using namespace System::Text;
 Instance::Instance()
    {
    Children = gcnew NamedList<NamedItem^>();
-   Children->ParentName = MyFQN();
-   
    Parent = nullptr;
    ComponentName = "";
    }

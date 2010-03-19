@@ -4,93 +4,81 @@ using System.Text;
 
 public class Phenology : Instance
    {
-   #region Class Data Members
-
    public delegate void PhaseChangedDelegate(string OldPhaseName, string NewPhaseName);
    public event PhaseChangedDelegate OnPhaseChanged;
-   [Event] public event NullTypeDelegate GrowthStage;   
-   private NamedList<Phase> OurPhases = new NamedList<Phase>();
+   private NamedList<Phase> Phases = new NamedList<Phase>();
    private int CurrentPhaseIndex;
-   [Input] public int Day=0;
-   [Input] public int Year = 0;
-
-   #endregion
-
+   private string CurrentlyOnFirstDayOfPhase = "";
+   private Plant Plant;
+   [Event] public event NullTypeDelegate GrowthStage;
+   [Output] private string CurrentPhaseName { get { return CurrentPhase.Name; } }
+   
+   /// <summary>
+   /// Constructor
+   /// </summary>
    public Phenology() { }
-   public NamedList<Phase> Phases
-      {
-      get
-         {
-         return OurPhases;
-         }
-      set
-         {
-         OurPhases = value;
-         CurrentPhaseIndex = 0;
-         }
-      }
-   public void TransitionTo(string PhaseName)
-      {
-      // --------------------------------------------------------------------------
-      // Transition to the specified phase name.
-      // --------------------------------------------------------------------------
-      string OldPhaseName = CurrentPhase.Name;
-      CurrentPhaseIndex = Phases.IndexOf(Phases[PhaseName]);
-      if (CurrentPhaseIndex == -1)
-         throw new Exception("Cannot transition to phase: " + PhaseName);
-
-      if (OnPhaseChanged != null)
-         OnPhaseChanged.Invoke(OldPhaseName, CurrentPhase.Name);
-
-      GrowthStage.Invoke();
-      }
-   private DateTime Today
-      {
-      get
-         {
-         DateTime x = new DateTime(Year, 1, 1);
-         x=x.AddDays(Day - 1);
-         return x;
-         }
-      }
 
 
+   /// <summary>
+   /// Perform our daily timestep function. Get the current phase to do its
+   /// development for the day. Any left over TT that it can't use is then
+   /// given to the next phase.
+   /// </summary>
    public void DoTimeStep()
       {
-      // Perform our daily timestep function. Get the current phase to do its
-      // development for the day. Any left over TT that it can't use is then
-      // given to the next phase.
-      
-      double LeftOverTT;
-      double LeftOverDays;
-      TemperatureFunction ThermalTime = (TemperatureFunction)Children["ThermalTime"];
-
-
-
-
-      CurrentPhase.DoDevelopment(Today, ThermalTime.Value, out LeftOverTT, out LeftOverDays);
-      if (CurrentPhase.MeetsTarget())
+      // If this is the first time through here then setup some variables.
+      CurrentlyOnFirstDayOfPhase = "";
+      if (Plant == null)
          {
-         // move to next phase giving the bit of TT left over from the previous phase
-         // to the new phase.
-         if (CurrentPhaseIndex + 1 >= Phases.Count)
+         Plant = (Plant)Root;
+         CurrentlyOnFirstDayOfPhase = Phases[0].Start;
+         }
+
+      double FractionOfDayToUse = CurrentPhase.DoTimeStep(1.0);
+      while (FractionOfDayToUse > 0)
+         {
+         string OldPhaseName = CurrentPhase.Name;
+
+         // Transition to the next phase.
+         CurrentPhaseIndex++;
+         if (CurrentPhaseIndex >= Phases.Count)
             throw new Exception("Cannot transition to the next phase. No more phases exist");
 
-         if (Phases[CurrentPhaseIndex + 1] is RewindPhase)
+         CurrentlyOnFirstDayOfPhase = CurrentPhase.Start;
+
+         // If the new phase is a rewind phase then reinitialise all phases and rewind back to the
+         // first phase.
+         if (Phases[CurrentPhaseIndex] is RewindPhase)
             {
             foreach (Phase P in Phases)
-               P.Reset();
-            TransitionTo(Phases[0].Name);
-            CurrentPhase.UseLeftOverTT(Today, LeftOverTT);
+               P.Initialise();
+            CurrentPhaseIndex = 0;
             }
-         else
-            {
-            TransitionTo(Phases[CurrentPhaseIndex + 1].Name);
-            CurrentPhase.UseLeftOverTT(Today, LeftOverTT);
 
-            }
+         // Send a PhaseChanged event.
+         if (OnPhaseChanged != null)
+            OnPhaseChanged.Invoke(OldPhaseName, CurrentPhase.Name);
+         GrowthStage.Invoke();
+
+         // Tell the new phase to use the fraction of day left.
+         FractionOfDayToUse = CurrentPhase.DoTimeStep(FractionOfDayToUse);
          }
       }
+
+   /// <summary>
+   /// Our parent will call this once for each child. If the child is a phase then
+   /// store it in our list of phases.
+   /// </summary>
+   public override void Add(Instance Child)
+      {
+      base.Add(Child);
+      if (Child is Phase)
+         Phases.Add((Phase)Child);
+      }
+
+   /// <summary>
+   /// A utility property to return the current phase.
+   /// </summary>
    public Phase CurrentPhase
       {
       get
@@ -98,27 +86,29 @@ public class Phenology : Instance
          return Phases[CurrentPhaseIndex];
          }
       }
-   [Output] private string CurrentPhaseName
-      {
-      get
-         {
-         return CurrentPhase.Name;
-         }
-      }
 
+   /// <summary>
+   /// A utility function to return true if the simulation is on the first day of the 
+   /// specified stage.
+   /// </summary>
    public bool OnDayOf(String StageName)
       {
-      // See if we're currently on the first day of the specified phase.
-      if (CurrentPhase.StartDate == Today && StageName == CurrentPhase.Start)
-         return true;
-      else
-         return false;
+      return (StageName == CurrentlyOnFirstDayOfPhase);
       }
+
+   /// <summary>
+   /// A utility function to return true if the simulation is currently in the 
+   /// specified phase.
+   /// </summary>
    public bool InPhase(String PhaseName)
       {
-      // See if we're currently in the specified phase.
       return CurrentPhase.Name.ToLower() == PhaseName.ToLower();
       }
+
+   /// <summary>
+   /// A utility function to return true if the simulation is currently between
+   /// the specified start and end stages.
+   /// </summary>
    public bool Between(String Start, String End)
       {
       int StartPhaseIndex = Phases.IndexOf(PhaseStartingWith(Start));
@@ -130,13 +120,11 @@ public class Phenology : Instance
 
       return CurrentPhaseIndex >= StartPhaseIndex && CurrentPhaseIndex<EndPhaseIndex;
       }
-   public override void Add(Instance Child)
-      {
-      base.Add(Child);
-      if (Child is Phase)
-         OurPhases.Add((Phase)Child);
-      }
 
+   /// <summary>
+   /// A utility function to return the phenological phase that starts with
+   /// the specified start stage name.
+   /// </summary>
    public Phase PhaseStartingWith(String Start)
       {
       foreach (Phase P in Phases)

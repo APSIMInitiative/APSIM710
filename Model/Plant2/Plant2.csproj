@@ -39,9 +39,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CSGeneral.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetComponentInterface, Version=3.0.0.0, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="ManagerHelpers, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -56,6 +54,10 @@
     <Compile Include="Biomass.cs" />
     <Compile Include="Functions\Constant.cs" />
     <Compile Include="AnnualPlantArbitrator.cs" />
+    <Compile Include="Functions\MinimumFunction.cs" />
+    <Compile Include="Phenology\EmergingPhase.cs" />
+    <Compile Include="Phenology\GerminatingPhase.cs" />
+    <Compile Include="Phenology\VernalisationCW.cs" />
     <Compile Include="Population.cs" />
     <Compile Include="SimpleArbitrator.cs" />
     <Compile Include="Organs\SimpleReproductiveOrgan.cs" />
@@ -63,7 +65,7 @@
     <Compile Include="Organs\SimpleRoot.cs" />
     <Compile Include="Phenology\LeafAppearancePhase.cs" />
     <Compile Include="Organs\ReserveOrgan.cs" />
-    <Compile Include="Phenology\ChillingPhase.cs" />
+    <Compile Include="Phenology\FixedPhase.cs" />
     <Compile Include="Phenology\LeafDeathPhase.cs" />
     <Compile Include="Phenology\RewindPhase.cs" />
     <Compile Include="Functions\StageLookup.cs" />
@@ -73,10 +75,9 @@
     <Compile Include="Organs\Organ.cs" />
     <Compile Include="Functions\PhaseLookupValue.cs" />
     <Compile Include="Functions\PhaseLookup.cs" />
-    <Compile Include="Phenology\VernalPhase.cs" />
+    <Compile Include="Phenology\Vernalisation.cs" />
     <Compile Include="Phenology\EndPhase.cs" />
     <Compile Include="Phenology\Function.cs" />
-    <Compile Include="Phenology\FixedPhase.cs" />
     <Compile Include="Phenology\Phase.cs" />
     <Compile Include="Phenology\Phenology.cs" />
     <Compile Include="Plant.cs" />
@@ -93,6 +94,12 @@
   <ItemGroup>
     <None Include="UMLBits.cd" />
     <None Include="UMLOrgans.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetComponentInterface\DOTNETComponentInterface.vcproj">
+      <Project>{29628A0A-C648-4696-BB7A-04AAE8433305}</Project>
+      <Name>DotNetComponentInterface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

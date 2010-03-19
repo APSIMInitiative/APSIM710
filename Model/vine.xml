@@ -46,11 +46,13 @@
             <XY>35 0.0</XY>
           </XYPairs>
         </TemperatureFunction>
-        <ChillingPhase name="Dormant">
-          <CDTarget>30</CDTarget>
+        <FixedPhase name="Dormant">
+          <Constant name="Target">
+            <Value>30</Value>
+          </Constant>
           <Start>StartDormancy</Start>
           <End>EndDormancy</End>
-          <TemperatureFunction name="ChillingDays">
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0.0</XY>
               <XY>1 1.0</XY>
@@ -58,35 +60,51 @@
               <XY>15 0.0</XY>
             </XYPairs>
           </TemperatureFunction>
-        </ChillingPhase>
+        </FixedPhase>
         <FixedPhase name="Budding">
-          <TTTarget>200</TTTarget>
+          <Constant name="Target">
+            <Value>200</Value>
+          </Constant>
           <Start>EndDormancy</Start>
           <End>BudBurst</End>
+          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
         </FixedPhase>
         <FixedPhase name="ShootGrowth">
-          <TTTarget>442</TTTarget>
+          <Constant name="Target">
+            <Value>442</Value>
+          </Constant>
           <Start>BudBurst</Start>
           <End>Flowering</End>
+          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
         </FixedPhase>
         <FixedPhase name="FlowerDevelopment">
-          <TTTarget>150</TTTarget>
+          <Constant name="Target">
+            <Value>150</Value>
+          </Constant>
           <Start>Flowering</Start>
           <End>Set</End>
+          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
         </FixedPhase>
         <FixedPhase name="BerryDevelopment">
-          <TTTarget>600</TTTarget>
+          <Constant name="Target">
+            <Value>600</Value>
+          </Constant>
           <Start>Set</Start>
           <End>Veraison</End>
+          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
         </FixedPhase>
         <FixedPhase name="Ripening">
-          <TTTarget>510</TTTarget>
+          <Constant name="Target">
+            <Value>510</Value>
+          </Constant>
           <Start>Veraison</Start>
           <End>Ripe</End>
+          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
         </FixedPhase>
         <LeafDeathPhase name="Senescent">
           <Start>Ripe</Start>
           <End>LeafFall</End>
+          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime"/>
         </LeafDeathPhase>
         <RewindPhase name="Rewind">
           <Start>LeafFall</Start>

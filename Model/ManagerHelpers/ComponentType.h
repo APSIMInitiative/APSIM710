@@ -47,7 +47,10 @@ public ref class ComponentType : public TypedItem
          int PosLastPeriod = CropName->LastIndexOf('.');
          if (PosLastPeriod != -1)
             CropName = CropName->Substring(PosLastPeriod+1);
-         return Types::Instance->IsCrop(CropName);
+         if (Types::Instance->IsCrop(CropName))
+            return true;
+         else
+            return Types::Instance->IsCrop(TypeName);         
          }               
    
    

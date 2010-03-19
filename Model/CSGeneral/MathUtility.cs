@@ -421,6 +421,111 @@ namespace CSGeneral
          return stats;
          }
 
+      /// <summary>
+      /// Return the time elasped in hours between the specified sun angle
+      ///  from 90 deg in am and pm. +ve above the horizon, -ve below the horizon.
+      /// </summary>
+      /// <param name="SunAngle">Angle to measure time between such as twilight (deg).
+      ///  angular distance between 90 deg and end of twilight - altitude of sun. +ve up, -ve down.</param>
+      static public double DayLength(double DayOfYear, double SunAngle, double Latitude)
+         {
+         //+ Constant Values
+         const double aeqnox = 82.25;   //  average day number of autumnal equinox
+         const double pi = 3.14159265359;
+         const double dg2rdn = (2.0 * pi) / 360.0; // convert degrees to radians
+         const double decsol = 23.45116 * dg2rdn; // amplitude of declination of sun
+         //   - declination of sun at solstices.
+         // cm says here that the maximum
+         // declination is 23.45116 or 23 degrees
+         // 27 minutes.
+         // I have seen else_where that it should
+         // be 23 degrees 26 minutes 30 seconds -
+         // 23.44167
+         const double dy2rdn = (2.0 * pi) / 365.25; // convert days to radians
+         const double rdn2hr = 24.0 / (2.0 * pi); // convert radians to hours
+
+         //+ Local Variables
+         double alt;// twilight altitude limited to max/min
+         //   sun altitudes end of twilight
+         //   - altitude of sun. (radians)
+         double altmn;// altitude of sun at midnight
+         double altmx;// altitude of sun at midday
+         double clcd;// cos of latitude * cos of declination
+         double coshra;// cos of hour angle - angle between the
+         //   sun and the meridian.
+         double dec;// declination of sun in radians - this
+         //   is the angular distance at solar
+         //   noon between the sun and the equator.
+         double hrangl;// hour angle - angle between the sun
+         //   and the meridian (radians).
+         double hrlt;// day_length in hours
+         double latrn;// latitude in radians
+         double slsd;// sin of latitude * sin of declination
+         double sun_alt;// angular distance between
+         // sunset and end of twilight - altitude
+         // of sun. (radians)
+         // Twilight is defined as the interval
+         // between sunrise or sunset and the
+         // time when the true centre of the sun
+         // is 6 degrees below the horizon.
+         // Sunrise or sunset is defined as when
+         // the true centre of the sun is 50'
+         // below the horizon.
+
+         sun_alt = SunAngle * dg2rdn;
+
+         // calculate daylangth in hours by getting the
+         // solar declination (radians) from the day of year, then using
+         // the sin and cos of the latitude.
+
+         // declination ranges from -.41 to .41 (summer and winter solstices)
+
+         dec = decsol * Math.Sin(dy2rdn * (DayOfYear - aeqnox));
+
+         // get the max and min altitude of sun for today and limit
+         // the twilight altitude between these.
+
+         if (MathUtility.FloatsAreEqual(Math.Abs(Latitude), 90.0))
+            {
+            coshra = Sign(1.0, -dec) * Sign(1.0, Latitude);
+            }
+         else
+            {
+            latrn = Latitude * dg2rdn;
+            slsd = Math.Sin(latrn) * Math.Sin(dec);
+            clcd = Math.Cos(latrn) * Math.Cos(dec);
+
+            altmn = Math.Asin(Math.Min(Math.Max(slsd - clcd, -1.0), 1.0));
+            altmx = Math.Asin(Math.Min(Math.Max(slsd + clcd, -1.0), 1.0));
+            alt = Math.Min(Math.Max(sun_alt, altmn), altmx);
+
+            // get cos of the hour angle
+            coshra = (Math.Sin(alt) - slsd) / clcd;
+            coshra = Math.Min(Math.Max(coshra, -1.0), 1.0);
+            }
+
+         // now get the hour angle and the hours of light
+         hrangl = Math.Acos(coshra);
+         hrlt = hrangl * rdn2hr * 2.0;
+         return hrlt;
+         }
+
+      // ------------------------------------------------------------------
+      // Transfer of sign - from FORTRAN.
+      // The result is of the same type and kind as a. Its value is the abs(a) of a,
+      // if b is greater than or equal positive zero; and -abs(a), if b is less than
+      // or equal to negative zero.
+      // Example a = sign (30,-2) ! a is assigned the value -30
+      // ------------------------------------------------------------------
+      static public double Sign(double a, double b)
+         {
+         if (b >= 0)
+            return Math.Abs(a);
+         else
+            return -Math.Abs(a);
+         }
+
+
 
       }
    }

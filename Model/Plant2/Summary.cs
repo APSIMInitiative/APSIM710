@@ -14,10 +14,12 @@ using System.Text;
          Today = Today.AddDays(Day - 1);
          Plant Plant = (Plant)Root;
          Console.WriteLine(Today.ToShortDateString() + " - " + Plant.Phenology.CurrentPhase.Start );
-         Leaf Leaf = Plant.Children["Leaf"] as Leaf;
-         Console.WriteLine("                            LAI = " + Leaf.LAI.ToString("f2")+" (m^2/m^2)");
-         Console.WriteLine("           Above Ground Biomass = " + Plant.AboveGroundDM.ToString("f2") + " (g/m^2)");
-
+         if (Plant.Children.Contains("Leaf"))
+            {
+            Leaf Leaf = Plant.Children["Leaf"] as Leaf;
+            Console.WriteLine("                            LAI = " + Leaf.LAI.ToString("f2") + " (m^2/m^2)");
+            Console.WriteLine("           Above Ground Biomass = " + Plant.AboveGroundDM.ToString("f2") + " (g/m^2)");
+            }
          }
       }
 
