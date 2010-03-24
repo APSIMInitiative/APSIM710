@@ -223,7 +223,9 @@ namespace ApsimFile
             double[] PAW = new double[Thickness.Length];
 
             // calculate depth increments.
-            if (Thickness.Length > 0)
+            if (SW.Length == Thickness.Length &&
+                LL.Length == Thickness.Length &&
+                Thickness.Length > 0)
                 {
                 for (int layer = 0; layer != SW.Length; layer++)
                     PAW[layer] = (SW[layer] - LL[layer]) * Thickness[layer];
