@@ -30,7 +30,11 @@ TKROOT=.\tk$(TCLVER)\$(TMPDIRNAME)
 SRC = TclStub.cpp 
 LIBS = 
 
+ifeq ($(PLATFORM),WIN32)
 INCLUDEPATH = .\tcl$(TCLVER)\generic;.\tk$(TCLVER)\generic;.\tk$(TCLVER)\xlib
+else
+INCLUDES = /I "./tcl$(TCLVER)/generic" /I "./tk$(TCLVER)/generic" /I "./tk$(TCLVER)/xlib"
+endif
 
  # This is built before tcllink.dll
 PREBUILD=dummy .\bin\TclComponent.dll 
@@ -40,17 +44,35 @@ include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 SRC2 = TclLink.cpp TclComponent.cpp TclXtras.cpp ..\ComponentInterface\EntryPoints.cpp
 LIBS2 = General ApsimShared ComponentInterface Protocol tcl$(VER) tk$(VER)
 SOURCEOBJS2:=	$(SRC2:.cpp=.obj) 
-ifdef DEBUG
+
+ifeq ($(PLATFORM),WIN32)
+ ifdef DEBUG
 	LIBS2 := cg32.lib import32.lib $(LIBS2)
-else
+ else
 	LIBS2 :=  import32.lib $(LIBS2)
+ endif
+LIBS2 := $(BCB)\Components\LibXml2\win32\LibXml2.lib $(BCB)\Components\Boost\Libs\FileSystem\FileSystem.lib $(BCB)\Components\Boost\libs\date_time\date_time.lib $(LIBS2) cw32mti.lib 
 endif
 
-LIBS2:= $(BCB)\Components\LibXml2\win32\LibXml2.lib $(BCB)\Components\Boost\Libs\FileSystem\FileSystem.lib $(BCB)\Components\Boost\libs\date_time\date_time.lib $(LIBS2) cw32mti.lib 
+ifeq ($(PLATFORM),WIN32VS)
+LIBS2 := $(foreach library,$(LIBS2),$(library).lib) libxml2.lib 
+endif
 
-
+ifeq ($(PLATFORM),WIN32)
 .\bin\TclComponent.dll: $(SOURCEOBJS2) tcl$(VER).lib tk$(VER).lib dummy
 	$(LD) $(LFLAGS) -L$(LIBPATH) $(SOURCEOBJS2) $(SYSOBJS), .\bin\TclComponent.dll,, $(LIBS2), , $(RES)
+endif
+
+ifeq ($(PLATFORM),WIN32VS)
+.\bin\TclComponent.dll: $(SOURCEOBJS2) tcl$(VER).lib tk$(VER).lib dummy
+	echo $(LFLAGS) $(SOURCEOBJS2) $(SYSOBJS) $(LIBPATH) $(LIBS2) > $(PROJECT).rsp
+	$(LD) /OUT:"./bin/TclComponent.dll" @$(PROJECT).rsp
+	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl ./bin/TclComponent.dll > .\bin\TclComponent.def
+	echo $(LFLAGS) $(SOURCEOBJS2) $(SYSOBJS) /DEF:./bin/TclComponent.def $(LIBPATH) $(LIBS2) > $(PROJECT).rsp
+	$(LD) /OUT:"./bin/TclComponent.dll" @$(PROJECT).rsp
+endif
+
+
 
 # ---------------------------------------------------------------------------
 # This bit sucks in external files into the build and install dirs
@@ -83,12 +105,22 @@ dummy:
 # Finally the tcl license
 	@if not exist $(APSIM)\Model\TclLink\Tcl$(TCLVER).license.terms copy $(DISTDIR)\ASTcl\licenses\License.tcl $(APSIM)\Model\TclLink\Tcl$(TCLVER).license.terms
 
+ifeq ($(PLATFORM),WIN32)
 # The distributed AS libs are in MS coff format. Convert them for borland tools.
 tcl$(VER).lib: $(DISTDIR)\ASTcl\lib\tcl$(VER).lib
 	$(BCB)\Bin\coff2omf $(DISTDIR)\ASTcl\lib\tcl$(VER).lib tcl$(VER).lib
 
 tk$(VER).lib: $(DISTDIR)\ASTcl\lib\tk$(VER).lib
 	$(BCB)\Bin\coff2omf $(DISTDIR)\ASTcl\lib\tk$(VER).lib tk$(VER).lib
+endif
+
+ifeq ($(PLATFORM),WIN32VS)
+tcl$(VER).lib: $(DISTDIR)\ASTcl\lib\tcl$(VER).lib
+	copy $(DISTDIR)\ASTcl\lib\tcl$(VER).lib tcl$(VER).lib
+
+tk$(VER).lib: $(DISTDIR)\ASTcl\lib\tk$(VER).lib
+	copy $(DISTDIR)\ASTcl\lib\tk$(VER).lib tk$(VER).lib
+endif
 
 clean:
 	@if exist $(APSIM)\Model\TclLink\tcl$(DOTVER)\nul  rmdir /s /q $(APSIM)\Model\TclLink\tcl$(DOTVER)

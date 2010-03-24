@@ -24,6 +24,10 @@ ifeq ($(PLATFORM),WIN32)
       SRC = $(SRC1) EntryPoints.for 
 endif
 
+ifeq ($(PLATFORM),WIN32VS)
+      SRC = $(SRC1) EntryPoints.for 
+endif
+
 ifeq ($(PLATFORM),Linux)
       SRC = $(SRC1) EntryPointsLinux.for
 endif

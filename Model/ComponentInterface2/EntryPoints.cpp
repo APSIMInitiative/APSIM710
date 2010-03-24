@@ -142,7 +142,7 @@ extern "C" void EXPORT STDCALL  CIMessageToLogic
 class DOTNETWrapper : public Packable
    {
    public:
-      typedef EXPORT STDCALL unsigned (ForeignHandlerType)(int foreignInstanceNumber, int foreignDataHandle, DOTNETWrapper& messageData, int OpCode);
+      typedef EXPORT unsigned (STDCALL ForeignHandlerType)(int foreignInstanceNumber, int foreignDataHandle, DOTNETWrapper& messageData, int OpCode);
 
    private:
       int foreignDataHandle;

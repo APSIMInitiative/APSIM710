@@ -413,7 +413,7 @@ std::string EXPORT DDML(const F[type.name]Type& value);
 #include <ComponentInterface2/StructureConverter.h>
 #include <ComponentInterface2/FortranString.h>
 
-extern "C" void EXPORT STDCALL publish_null(unsigned* id)
+extern "C" void EXPORT STDCALL publish_null( unsigned* id)
    {
    //FortranWrapper::currentInstance->publishNull(*id);
    }
@@ -505,7 +505,7 @@ std::string EXPORT DDML(const F[type.name]Type& value)
 extern FortranComponentWrapper* currentWrapper;
 
 // ------ NullType ------
-typedef STDCALL void (FNullTypeFunction)();
+typedef void (STDCALL FNullTypeFunction)();
 extern "C" void EXPORT STDCALL SubscribeNullType(const char* EventName,
                                                  FNullTypeFunction* F,
                                                  unsigned EventNameLength)
@@ -516,7 +516,7 @@ extern "C" void EXPORT STDCALL SubscribeNullType(const char* EventName,
 
 [foreach types.type]
 // ------ [type.name] ------
-typedef STDCALL void (F[type.name]TypeFunction)(F[type.name]Type* Data);
+typedef  void (STDCALL F[type.name]TypeFunction)(F[type.name]Type* Data);
 extern "C" void EXPORT STDCALL Subscribe[type.name]Type(const char* EventName,
                                                  F[type.name]TypeFunction* F,
                                                  unsigned EventNameLength)

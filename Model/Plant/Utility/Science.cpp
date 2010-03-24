@@ -45,7 +45,7 @@ void accumulate (float value,             //  (INPUT) value to add to array
          {
          // now we need to divvy
          new_index = (int) (p_index + min (1.0, dlt_index));
-         if (reals_are_equal(fmod(p_index,1.0),0.0))
+         if (reals_are_equal(fmod((double)p_index,(double)1.0),0.0))
             {
             fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
             portion_in_old = fract_in_old * (value + array[current_index])-

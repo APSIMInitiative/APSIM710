@@ -5,17 +5,9 @@
 #ifndef ResiduePool_H
 #define ResiduePool_H
 
-#ifndef __CSTRING_H
-#include <cstring.h>
-#endif
-
-#ifndef __IOSTREAM_H
-#include <iostream.h>
-#endif
 
 class ResiduePartType
 {
-   friend ostream &operator<<(ostream &, const ResiduePartType &);
    public:
       ResiduePartType(void);
       virtual ~ResiduePartType(void);							// destructor
@@ -24,6 +16,9 @@ class ResiduePartType
       ResiduePartType(const ResiduePartType &ResiduePartType);
       const ResiduePartType &operator=(const float value);
       const ResiduePartType &operator=(const ResiduePartType &other);
+
+      friend std::ostream &operator<<(std::ostream &, const ResiduePartType &);
+
       ResiduePartType operator+ (const float y) ;
       ResiduePartType operator+ (const ResiduePartType &y) const;
       ResiduePartType operator- (const float y) ;
@@ -38,7 +33,7 @@ class ResiduePartType
       ResiduePartType multiply (const ResiduePartType &y);
       void setValue(float carbohydrateValue, float celluloseValue, float ligninValue);
       float total(void) const;
-      virtual void display(ostream &os) const ;
+      virtual void display(std::ostream &os) const ;
 
 
       float carbohydrate;
@@ -50,7 +45,6 @@ class ResiduePartType
 
 class ResiduePool
 {
-   friend ostream &operator<<(ostream &, const ResiduePool &);
 	public:												// member functions
 		ResiduePool(void);			// default constructor
             ResiduePool(ResiduePartType standing, ResiduePartType lying);
@@ -60,6 +54,7 @@ class ResiduePool
 
             ResiduePool(float standingInit, float lyingInit);
             const ResiduePool &operator=(const float value);
+            friend std::ostream &operator<<(std::ostream &, const ResiduePool &);
 
             ResiduePool operator+ (const ResiduePool &y) const;
             ResiduePool operator- (const ResiduePool &y) const;
@@ -75,11 +70,11 @@ class ResiduePool
             void setValue(ResiduePartType standing, ResiduePartType lying);
 		float total(void) const;  	// Query
 
-		virtual void display(ostream &os = cout) const;	// display function
+         virtual void display(ostream& os = cout) const;	// display function
 
          ResiduePartType standing;
          ResiduePartType lying;
-         string name;
+         std::string name;
 
 	private:
 };

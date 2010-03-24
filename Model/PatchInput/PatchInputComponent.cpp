@@ -99,13 +99,14 @@ void PatchInputComponent::readPatchDates(void)
             {
             patchDates.insert(make_pair(data.getDate().julian_day(), currentRecord));
             currentRecord++;
-            maxYear = max(maxYear , data.getDate().year());
+            int year = data.getDate().year();
+            if (year > maxYear) {maxYear = year;}
             data.next();
             }
          data.first();
          currentRecord = 1;
          }
-      catch (const exception& err)
+      catch (const std::exception& err)
          {
          error(string(err.what()), true);
          }
@@ -203,7 +204,7 @@ date PatchInputComponent::advanceToTodaysPatchData(unsigned int fromID)
          else
             return date(pos_infin);
          }
-      catch (const exception& err) // probably caused by a leap year exception.
+      catch (const std::exception& err) // probably caused by a leap year exception. ?? WELL WHY NOT TEST FOR IT ??
          {
          }
       }

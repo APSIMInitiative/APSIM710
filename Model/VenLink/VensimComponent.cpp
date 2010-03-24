@@ -35,16 +35,16 @@ static const char* MES_Process = "process";
 //    DPH 7/6/2001
 
 // ------------------------------------------------------------------
-extern "C" _export void __stdcall wrapperDLL(char* wrapperDll)
+extern "C" EXPORT void STDCALL wrapperDLL(char* wrapperDll)
    {
    strcpy(wrapperDll, "");
    }
-extern "C" void __stdcall getDescriptionInternal(char* initScript,
+extern "C" void STDCALL getDescriptionInternal(char* initScript,
                                                  char* description);
 // ------------------------------------------------------------------
 // Return component description info.
 // ------------------------------------------------------------------
-extern "C" _export void __stdcall getDescription(char* initScript, char* description)
+extern "C" EXPORT void STDCALL getDescription(char* initScript, char* description)
    {
    getDescriptionInternal(initScript, description);
    }
@@ -282,7 +282,7 @@ int VensimComponent::vensim_command(string &command)
    {
    if (vensimLibrary != NULL)
       {
-      typedef int __stdcall (*PF) (const char *);
+      typedef int STDCALL (*PF) (const char *);
       PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_command");
       if (pf) return (*pf)(command.c_str());
       }
@@ -293,7 +293,7 @@ int VensimComponent::vensim_command(const char *command)
    {
    if (vensimLibrary != NULL)
       {
-      typedef int __stdcall (*PF) (const char *);
+      typedef int STDCALL (*PF) (const char *);
       PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_command");
       if (pf) return (*pf)(command);
       }
@@ -308,7 +308,7 @@ int VensimComponent::vensim_get_varnames(const char* filter,
    *buf = '\0';
    if (vensimLibrary != NULL)
       {
-      typedef int __stdcall (*PF) (const char*, int, char*, int);
+      typedef int STDCALL (*PF) (const char*, int, char*, int);
       PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_get_varnames");
       if (pf) return (*pf)(filter, vartype, buf, buflength);
       }
@@ -319,7 +319,7 @@ int VensimComponent::vensim_get_val(string &name, float* value)
    {
    if (vensimLibrary != NULL)
       {
-      typedef int __stdcall (*PF) (const char *, float *);
+      typedef int STDCALL (*PF) (const char *, float *);
       PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_get_val");
       if (pf) return (*pf)(name.c_str(), value);
       }

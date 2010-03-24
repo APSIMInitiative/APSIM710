@@ -7,7 +7,6 @@
 #include <string>
 #include <strstream>
 #include <vector>
-#include <iomanip.h>
 
 #include <boost/function.hpp>
 #include <General/string_functions.h>

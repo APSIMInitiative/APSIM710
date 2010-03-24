@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 
-#include <iomanip.h>
 #include <boost/function.hpp>
 
 #include <General/string_functions.h>
@@ -17,7 +16,6 @@
 #include <ApsimShared/FStringExt.h>
 #include <ComponentInterface/MessageDataExt.h>
 #include <ComponentInterface/ApsimVariant.h>
-
 #include <ComponentInterface/Component.h>
 #include <ComponentInterface/DataTypes.h>
 

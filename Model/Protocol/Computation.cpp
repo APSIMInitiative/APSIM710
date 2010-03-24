@@ -18,7 +18,7 @@
 using namespace std;
 using namespace protocol;
 
-typedef EXPORT STDCALL void (wrapperDll_t) (char* dllFileName);
+typedef EXPORT void ( STDCALL wrapperDll_t) (char* dllFileName);
 
 // ------------------------------------------------------------------
 //  Short description:
@@ -212,14 +212,9 @@ bool Computation::loadComponent(const std::string& filename,
 
 #ifdef __WIN32__
  #ifdef _MSC_VER
-   createInstanceProc = (void (*)(const char*,
-                                  const unsigned int*,
-                                  const unsigned int*,
-                                  const int*,
-                                  const int*,
-                                  void(*)(const unsigned int*, protocol::Message*))) GetProcAddress((HMODULE)handle, "createInstance");
-   deleteInstanceProc = (void (*)(const int*)) GetProcAddress((HMODULE)handle, "deleteInstance");
-   messageToLogicProc = (void (*)(const int*, const protocol::Message*, bool*)) GetProcAddress((HMODULE)handle, "messageToLogic");
+   createInstanceProc = (createInstanceProcType *) GetProcAddress((HMODULE)handle, "createInstance");
+   deleteInstanceProc = (deleteInstanceProcType *) GetProcAddress((HMODULE)handle, "deleteInstance");
+   messageToLogicProc = (messageToLogicProcType *) GetProcAddress((HMODULE)handle, "messageToLogic");
  #else
    (FARPROC) createInstanceProc = GetProcAddress(handle, "createInstance");
    (FARPROC) deleteInstanceProc = GetProcAddress(handle, "deleteInstance");

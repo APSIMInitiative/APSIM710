@@ -2,7 +2,7 @@
 #include "Plant.h"
 #include "Leaf.h"
 #ifdef __WIN32__
-   #include <stdio>
+   #include <stdio.h>
 #endif
 
 //------------------------------------------------------------------------------------------------

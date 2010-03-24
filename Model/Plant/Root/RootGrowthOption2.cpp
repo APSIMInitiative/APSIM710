@@ -41,7 +41,7 @@ void rootGrowthOption2::root_length_growth (void)
       {
       cum_depth +=  0.5 * (*soil[0]).dlayer[layer];
       rwf       = divide (cum_depth, cum_layer_depth, 0.0) ;
-      rwf       = pow((1.0 - rwf), rootDistributionPattern);
+      rwf       = pow((double)(1.0 - rwf), (double)rootDistributionPattern);
 
       rld       = divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
 

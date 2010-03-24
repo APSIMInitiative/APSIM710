@@ -54,7 +54,7 @@ void FortranComponentWrapper::onInit1()
 
    // Get the address of the common block and zero it's contents.
    typedef CommonBlock* CommonBlockPtr;
-   typedef STDCALL CommonBlockPtr (GetInstanceMethod)();
+   typedef CommonBlockPtr (STDCALL GetInstanceMethod)();
 
    #ifdef __WIN32__
       GetInstanceMethod* getInstance = (GetInstanceMethod*) GetProcAddress((HMODULE)dllHandle, "getInstance");

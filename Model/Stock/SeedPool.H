@@ -5,17 +5,8 @@
 #ifndef SeedPool_H
 #define SeedPool_H
 
-#ifndef __CSTRING_H
-#include <cstring.h>
-#endif
-
-#ifndef __IOSTREAM_H
-#include <iostream.h>
-#endif
-
 class SeedPartType
 {
-   friend ostream &operator<<(ostream &, const SeedPartType &);
    public:
       SeedPartType();
       virtual ~SeedPartType();                                         // destructor
@@ -23,6 +14,7 @@ class SeedPartType
       SeedPartType(const SeedPartType &SeedPartType);                                  // copy constructor
       const SeedPartType &operator=(const SeedPartType &other);       // Assigment operator
       const SeedPartType &operator=(const float &y);       // Assigment operator
+      friend std::ostream &operator<<(std::ostream &, const SeedPartType &);
 
       SeedPartType operator- (const SeedPartType &y) const;  // Command
       SeedPartType operator+ (const SeedPartType &y) const;  // Command

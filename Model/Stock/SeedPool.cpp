@@ -7,9 +7,10 @@
 #define TEST_SeedPool YES                            // build unit test?
 #include <math.h>
 
-#ifndef SeedPool_H
+#include <iostream>
+using namespace std;
+
 #include "SeedPool.h"
-#endif
 
       inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
 

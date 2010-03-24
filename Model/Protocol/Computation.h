@@ -7,7 +7,20 @@
 #include <General/platform.h>
 
 namespace protocol {
-typedef EXPORT STDCALL void (CallbackType)(const unsigned int *compInst, Message *message);
+
+typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message *message);
+typedef void (STDCALL createInstanceProcType)(const char* ,
+                                          const unsigned int* ,
+                                          const unsigned int* ,
+                                          const int* ,
+                                          const int* ,
+                                          CallbackType* );
+typedef void (STDCALL deleteInstanceProcType)(const int*);
+typedef void (STDCALL messageToLogicProcType)(const int* ,
+                                          const Message* ,
+                                          bool* );
+
+
 // ------------------------------------------------------------------
 //  Short description:
 //    Encapsulates a component "computation".  A computation is a
@@ -52,17 +65,10 @@ class EXPORT Computation : public IComputation
                           unsigned int parentId);
       virtual void deleteInstance(void) const;
 
-      void STDCALL (*createInstanceProc)(const char* dllFileName,
-                                          const unsigned int* componentID,
-                                          const unsigned int* parentID,
-                                          const int* anInstanceNo,
-                                          const int* callbackArg,
-                                          CallbackType* callback);
-
-      void STDCALL (*deleteInstanceProc)(const int* anInstanceNo);
-      void STDCALL (*messageToLogicProc)(const int* anInstanceNo,
-                                          const Message* messageHeader,
-                                          bool* bProcessed);
+      createInstanceProcType *createInstanceProc;
+      deleteInstanceProcType *deleteInstanceProc;
+      messageToLogicProcType *messageToLogicProc;
+      
       bool loadComponent(const std::string& filename,
                          std::string componentInterfaceExecutable) throw (std::runtime_error);
       void unloadComponent(void);

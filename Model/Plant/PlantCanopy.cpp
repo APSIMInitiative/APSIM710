@@ -193,7 +193,7 @@ void crop_leaf_area_sen_age1 (int emergence,                   //(INPUT)  emerge
    dying_leaf = int (leaf_no_dead);
 
    // get area senesced from highest leaf no.
-   area_sen_dying_leaf = (leaf_no_dead - fmod(leaf_no_dead, 1.0))
+   area_sen_dying_leaf = (leaf_no_dead - fmod((double)leaf_no_dead, (double)1.0))
                         * g_leaf_area[dying_leaf];
 
    slai_age = (sum_real_array (g_leaf_area, dying_leaf) + area_sen_dying_leaf)  //XXX maybe?? check
@@ -604,8 +604,8 @@ void cproc_tpla_max (float g_leaf_no_final,            //(INPUT)final leaf numbe
       }
    else
       {
-      *tpla_max = (pow(g_tiller_no_fertile + 1.0, c_tiller_coef) *
-                   pow(g_leaf_no_final, p_main_stem_coef)) * scm2smm;
+      *tpla_max = (pow((double)g_tiller_no_fertile + 1.0, (double)c_tiller_coef) *
+                   pow((double)g_leaf_no_final, (double)p_main_stem_coef)) * scm2smm;
       }
    }
 

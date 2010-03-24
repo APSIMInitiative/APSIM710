@@ -7,10 +7,9 @@
 #define TEST_PlantPool YES                            // build unit test?
 #include <windows.h>
 #include <math.h>
+#include <iostream>
 
-#ifndef PlantPool_H
 #include "PlantPool.h"
-#endif
 
       inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
 
@@ -38,11 +37,11 @@ PlantPartType::~PlantPartType(void)
 {
 }
 
-ostream &operator<<(ostream &output, const PlantPartType &part)
+std::ostream & operator <<(std::ostream &output, const PlantPartType &part)
 {
-      output << "         Leaf:     " << part.leaf << endl;
-      output << "         Stem:     " << part.stem << endl;
-      output << "         Pod:      " << part.pod << endl;
+      output << "         Leaf:     " << part.leaf << std::endl;
+      output << "         Stem:     " << part.stem << std::endl;
+      output << "         Pod:      " << part.pod << std::endl;
       return output;
 }
 
@@ -364,11 +363,11 @@ PlantPool::~PlantPool(void)
 {
 }
 
-ostream &operator<<(ostream &output, const PlantPool &pool)
+std::ostream & operator << (std::ostream &output, const PlantPool &pool)
 {
-      output << "PlantPool:" << endl;
-      output << "   Green :    " << endl << pool.green;
-      output << "   Senesced : " << endl << pool.senesced;
+      output << "PlantPool:" << std::endl;
+      output << "   Green :    " << std::endl << pool.green;
+      output << "   Senesced : " << std::endl << pool.senesced;
       return output;
 }
 
@@ -554,15 +553,15 @@ float PlantPool::total(void) const
       return (green.total() + senesced.total());
 }
 
-void PlantPool::display(ostream &os) const
+void PlantPool::display(std::ostream &os) const
 {
-      os << "PlantPool: " << endl;
-      os << "Green leaf: " << green.leaf << endl;
-      os << "Green stem: " << green.stem << endl;
-      os << "Green pod: " << green.pod << endl;
-      os << "Senesced leaf: " << senesced.leaf << endl;
-      os << "Senesced stem: " << senesced.stem << endl;
-      os << "Senesced pod: " << senesced.pod << endl;
+      os << "PlantPool: " << std::endl;
+      os << "Green leaf: " << green.leaf << std::endl;
+      os << "Green stem: " << green.stem << std::endl;
+      os << "Green pod: " << green.pod << std::endl;
+      os << "Senesced leaf: " << senesced.leaf << std::endl;
+      os << "Senesced stem: " << senesced.stem << std::endl;
+      os << "Senesced pod: " << senesced.pod << std::endl;
 }
 
 
@@ -584,13 +583,15 @@ void PlantPool::display(ostream &os) const
 #include "PlantPool.h"
 #endif
 
+using namespace std;
+
 int main(void)
 {
-      cout << "PlantPool test started" << endl;
+      std::cout << "PlantPool test started" << std::endl;
 
       PlantPool p; //, *aPtr = &p;
 
-      cout << endl << "Test set and get functions:" << endl;
+      std::cout << std::endl << "Test set and get functions:" << endl;
       p.setValue(10.0, 2.0, 1.0, 20.0, 3.0, 1.5);
       if (p.total() != 69.0)
             cout << "setValue(10.0, 2.0, 1.0, 20.0, 3.0, 1.5) / Total() test FAILED"

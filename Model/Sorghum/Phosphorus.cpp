@@ -3,7 +3,7 @@
 #include "Plant.h"
 #include "Phosphorus.h"
 #ifdef __WIN32__
-   #include <stdio>
+   #include <stdio.h>
 #endif
 //------------------------------------------------------------------------------------------------
 //------ Phosphorus Constructor

@@ -1,9 +1,11 @@
 //---------------------------------------------------------------------------
 #ifndef YPComponentH
 #define YPComponentH
-#include <ComponentInterface\Component.h>
+
 #include <string>
 #include <vector>
+#include <ComponentInterface/Component.h>
+
 // ------------------------------------------------------------------
 // Yield Prophet component.
 // ------------------------------------------------------------------
@@ -35,7 +37,7 @@ class YPComponent : public protocol::Component
       double interpFromArray(std::vector<double>& values, const std::string& variableName);
       void getStaticVariables();
       std::vector<double> Accum(std::vector<double>& values);
-      void ::getDoubles(unsigned id, std::vector<double>& values, bool optional);
+      void getDoubles(unsigned id, std::vector<double>& values, bool optional);
 
    };
 

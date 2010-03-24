@@ -5,20 +5,12 @@
 #ifndef PlantPool_H
 #define PlantPool_H
 
-#ifndef __CSTRING_H
-#include <cstring.h>
-#endif
-
-#ifndef __IOSTREAM_H
-#include <iostream.h>
-#endif
-
 class PlantPartType
 {
-   friend ostream &operator<<(ostream &, const PlantPartType &);
    public:
       PlantPartType(void);
       virtual ~PlantPartType(void);                                         // destructor
+      friend std::ostream &operator<<(std::ostream &, const PlantPartType &);
       PlantPartType(float leafInit, float stemInit, float podInit);
       PlantPartType(const PlantPartType &PlantPartType);                                  // copy constructor
       const PlantPartType &operator=(const PlantPartType &other);       // Assigment operator
@@ -46,7 +38,6 @@ class PlantPartType
 
 class PlantPool
 {
-   friend ostream &operator<<(ostream &, const PlantPool &);
       public:                                                                       // member functions
             PlantPool(void);                  // default constructor
             PlantPool(float greenLeaf, float greenStem, float greenPod, float senescedLeaf, float senescedStem, float senescedPod);
@@ -54,6 +45,7 @@ class PlantPool
             PlantPool(const PlantPool &PlantPool);                                  // copy constructor
             const PlantPool &operator=(const PlantPool &other);         // Assigment operator
             const PlantPool &operator=(const float &y);         // Assigment operator
+            friend std::ostream &operator<<(std::ostream &, const PlantPool &);
 
             PlantPool operator- (const PlantPool &y) const;  // Command
             PlantPool operator+ (const PlantPool &y) const;  // Command
@@ -66,9 +58,7 @@ class PlantPool
             void setValue(PlantPartType &green, PlantPartType &senesced);
             float total(void) const;    // Query
 
-            virtual void display(ostream &os = cout) const; // display function
-
-
+            virtual void display(std::ostream &os = std::cout) const; // display function
 
          PlantPartType green;
          PlantPartType senesced;

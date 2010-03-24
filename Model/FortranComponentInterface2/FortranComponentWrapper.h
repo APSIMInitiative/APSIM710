@@ -46,8 +46,8 @@ class FortranComponentWrapper
       ScienceAPI& scienceapi;
       CMPComponentInterface* componentinterface;
       void* dllHandle;
-      typedef STDCALL void (NullMethod)();
-      typedef STDCALL void (BoolMethod)(const int* doAllocate);
+      typedef void (STDCALL NullMethod)();
+      typedef void (STDCALL BoolMethod)(const int* doAllocate);
       BoolMethod* allocDealloc;
       CommonBlock& realCommonBlock;
       CommonBlock ourCommonBlock;

@@ -248,7 +248,7 @@ void GenericLeaf::initialiseAreas(void)
    fill_real_array (gLeafNoSen, 0.0, max_node);
 
    int   leaf_no_emerged = (int) cLeafNumberAtEmerg;
-   float leaf_emerging_fract = fmod(cLeafNumberAtEmerg, 1.0);
+   float leaf_emerging_fract = fmod((double)cLeafNumberAtEmerg, (double)1.0);
    for (int leaf = 0; leaf < leaf_no_emerged; leaf++)
       {
       gLeafNo[leaf] = 1.0;

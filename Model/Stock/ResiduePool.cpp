@@ -7,11 +7,12 @@
 #define TEST_ResiduePool YES					// build unit test?
 #include <math.h>
 
-#ifndef ResiduePool_H
-#include "ResiduePool.h"
-#endif
+#include <iostream>
+using namespace std;
 
-      inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
+#include "ResiduePool.h"
+
+inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
 
 // ----------------------------- ResiduePartType ---------------------------------
 
@@ -37,7 +38,7 @@ ResiduePartType::~ResiduePartType(void)
 {
 }
 
-ostream &operator<<(ostream &output, const ResiduePartType &part)
+std::ostream &operator<<(std::ostream &output, const ResiduePartType &part)
 {
 	output << "   Carbohydrate:     " << part.carbohydrate << endl;
 	output << "   Cellulose:        " << part.cellulose << endl << endl;

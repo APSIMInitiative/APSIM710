@@ -3,15 +3,16 @@
 #include "ScienceAPI.h"
 
 class CMPComponentInterface;
+typedef  unsigned (STDCALL createComponentType)(ScienceAPI* scienceAPI);
+typedef  void (STDCALL deleteComponentType)(unsigned component);
+
 unsigned CreateComponent(ScienceAPI* scienceAPI, CMPComponentInterface*, const char* dllFileName, void* dllHandle)
    {
-   unsigned STDCALL (*createComponent)(ScienceAPI* scienceAPI);
-   createComponent = (unsigned STDCALL(*)(ScienceAPI* scienceAPI)) dllProcAddress(dllHandle, "createComponent");
+   createComponentType *createComponent = (createComponentType *) dllProcAddress(dllHandle, "createComponent");
    return (unsigned) createComponent(scienceAPI);
    }
 void DeleteComponent(unsigned component, void* dllHandle)
    {
-   void STDCALL (*deleteComponent)(unsigned component);
-   deleteComponent = (void STDCALL(*)(unsigned component)) dllProcAddress(dllHandle, "deleteComponent");
+   deleteComponentType *deleteComponent = (deleteComponentType *) dllProcAddress(dllHandle, "deleteComponent");
    deleteComponent(component);
    }

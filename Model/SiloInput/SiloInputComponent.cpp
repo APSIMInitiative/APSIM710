@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <string>
 #ifdef __WIN32__
- #include <dir.h>
  #include <process.h>
  #define PATH_MAX 1024
 #else
@@ -14,6 +13,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 #include <General/string_functions.h>
+#include <General/path.h>
 #include <General/http.h>
 
 #include <ApsimShared/ApsimDataFile.h>
@@ -72,9 +72,7 @@ void SiloInputComponent::openInputFile(void)
    // Find a unique temporary name to hold our data
    unsigned int pid = getpid();
 
-   char wd[PATH_MAX];
-   getcwd(wd, PATH_MAX);
-   fileName = string(wd) + string("/temp") + itoa(pid) + string(".met");
+   fileName = getCurrentDirectory() + string("/temp") + itoa(pid) + string(".met");
 
    // Now the SILO station number 
    readParameter ("parameters", "station_number", stationNumber, 0, 100000);

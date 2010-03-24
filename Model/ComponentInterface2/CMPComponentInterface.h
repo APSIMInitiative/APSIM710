@@ -10,7 +10,7 @@
 
 class Message;
 
-typedef EXPORT STDCALL void (CallbackType)(const unsigned int *compInst, Message& message);
+typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message& message);
 
 class EXPORT CMPComponentInterface
    {

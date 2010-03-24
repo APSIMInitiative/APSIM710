@@ -451,7 +451,7 @@ float SUCROSModel::RelativeTemperatureResponse(float fTemp, float fMinTemp, floa
       vRelEff=0.0;
    else
       {
-       p =log(2)/log((vTmax-vTmin)/(vTopt-vTmin));
+       p =log(2.0)/log((vTmax-vTmin)/(vTopt-vTmin));
       vRelEff = (2*pow(vTemp-vTmin,p)*pow(vTopt-vTmin,p)-pow(vTemp-vTmin,2*p))/pow(vTopt-vTmin,2*p);
       }
 

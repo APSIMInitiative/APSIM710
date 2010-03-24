@@ -6,7 +6,7 @@ using namespace std;
 #include "PlantComponents.h"
 #include "Utilities.h"
 #ifdef __WIN32__
-   #include <stdio>
+   #include <stdio.h>
 #endif
 
 

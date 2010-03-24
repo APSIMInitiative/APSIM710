@@ -89,10 +89,12 @@ void Component::clearReturnInfos(void)
       delete returnInfos[i];
    returnInfos.empty();
 
+#ifdef NOTYET
    for (getVariableResponses::iterator v = myGetVariableResponses.begin();
         v != myGetVariableResponses.end();
         v++)
         myGetVariableResponses.erase(v);
+#endif
 
    }
 // -----------------------------------------------------------------
@@ -115,7 +117,7 @@ void Component::setup(const char *dllname,
    parentID = parentid;
    componentID = componentid;
    callbackArg = callbackarg;
-   messageCallback = (void STDCALL (*)(const unsigned int*, protocol::Message*))messagecallback;
+   messageCallback = (CallbackType *)messagecallback;
    }
 
 // ------------------------------------------------------------------

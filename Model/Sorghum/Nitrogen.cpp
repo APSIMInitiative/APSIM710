@@ -3,7 +3,7 @@
 #include "Plant.h"
 #include "Nitrogen.h"
 #ifdef __WIN32__
-   #include <stdio>
+   #include <stdio.h>
 #endif
 
 
@@ -87,7 +87,7 @@ void Nitrogen::initialize(void)
    dltNRetrans.assign  (nParts,0.0);
    nSenesced.assign    (nParts,0.0);
    dltNDetached.assign (nParts,0.0);
-   photoStressTotal.assign(nStages,0.0);
+   photoStressTotal.assign(nStages+1,0.0);
 
 
    massFlowSupply.clear();

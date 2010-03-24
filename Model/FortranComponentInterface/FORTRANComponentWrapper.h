@@ -10,15 +10,15 @@
 #pragma warn -inl
 
 
-typedef EXPORT STDCALL void (Main_t)(const char* action, const char* data, unsigned actionLength, unsigned dataLength);
-typedef EXPORT STDCALL void (alloc_dealloc_instance_t)(const unsigned int* doAllocate);
-typedef EXPORT STDCALL void (do_init1_t)();
+typedef EXPORT void (STDCALL Main_t)(const char* action, const char* data, unsigned actionLength, unsigned dataLength);
+typedef EXPORT void (STDCALL alloc_dealloc_instance_t)(const unsigned int* doAllocate);
+typedef EXPORT void (STDCALL do_init1_t)();
 //typedef EXPORT STDCALL void (do_init2_t)(void);
 //typedef EXPORT STDCALL void (do_commence_t)(void);
 //typedef EXPORT STDCALL void (notify_termination_t)(void);
 //typedef EXPORT STDCALL void (respondToGet_t)(unsigned int& fromID, protocol::QueryValueData* queryData);
 //typedef EXPORT STDCALL unsigned (respondToSet_t)(unsigned int& fromID, unsigned int& variableID, protocol::Variant** variant);
-typedef EXPORT STDCALL void (respondToEvent_t)(unsigned int& fromID, unsigned int& eventID, protocol::Variant* variant);
+typedef EXPORT void (STDCALL respondToEvent_t)(unsigned int& fromID, unsigned int& eventID, protocol::Variant* variant);
 //typedef EXPORT STDCALL void (respondToMethod_t)(unsigned int& fromID, unsigned int& methodID, protocol::Variant** variant);
 
 // Declarations from the FORTRAN side.
@@ -45,7 +45,7 @@ struct Instance
    };
 typedef Instance* InstancePtr;
 
-typedef EXPORT STDCALL InstancePtr (getInstance_t) ();
+typedef EXPORT InstancePtr (STDCALL getInstance_t) ();
 
 class FortranWrapper : public protocol::Component
    {

@@ -1,7 +1,8 @@
 #include "NonHerbageConverter.h"
 
+#include <iostream>
+#include <iomanip>
 
-#pragma package(smart_init)
 using namespace std;
 
 

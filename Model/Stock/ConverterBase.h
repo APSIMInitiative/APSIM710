@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <iomanip.h>
 
 #include <General/string_functions.h>
 #include <General/stl_functions.h>

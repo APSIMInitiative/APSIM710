@@ -263,11 +263,11 @@ void Field::writeValue(ostream& out)
 // ------------------------------------------------------------------
 // Create an instance of the REPORT module
 // ------------------------------------------------------------------
-extern "C" ReportComponent* STDCALL EXPORT createComponent(ScienceAPI& scienceAPI)
+extern "C" EXPORT ReportComponent* STDCALL createComponent(ScienceAPI& scienceAPI)
    {
    return new ReportComponent(scienceAPI);
    }
-extern "C" void STDCALL EXPORT deleteComponent(ReportComponent* component)
+extern "C" void  EXPORT STDCALL deleteComponent(ReportComponent* component)
    {
    delete component;
    }

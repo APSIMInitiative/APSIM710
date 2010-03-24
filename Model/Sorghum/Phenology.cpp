@@ -3,7 +3,7 @@
 #include "Plant.h"
 #include "Phenology.h"
 #ifdef __WIN32__
-   #include <stdio>
+   #include <stdio.h>
 #endif
 
 //------------------------------------------------------------------------------------------------
@@ -285,7 +285,7 @@ float Phenology::temp3Hr (float tMax, float tMin, float period)
 //-----------------------------------------------------------------------------------------------
 float Phenology::calcStressesTT(void)
    {
-   float Stress;
+   float Stress = 0.0;
    if(stage >= sowing && stage < flowering)
       {
       if(stage < endJuv)

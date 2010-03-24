@@ -2,7 +2,7 @@
 CPPDEBUGFLAGS=-g -Wall
 LDDEBUGFLAGS=-lg
 
-BOOST_INCLUDEDIR=-I$(APSIM)/../BuildLibraries/boost_1_42_0
+BOOST_INCLUDEDIR=-I$(APSIM)/../BuildLibraries/boost_1_42_0-linux
 XML2_INCLUDEDIR=-I/usr/include/libxml2
 XML2_LIBDIR= -L/usr/lib
 

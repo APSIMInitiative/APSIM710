@@ -40,7 +40,7 @@ class QueryValueData;
 extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
                                                   Message* message,
                                                   bool* processed);
-typedef EXPORT STDCALL void (CallbackType)(const unsigned int *compInst, Message *message);
+typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message *message);
 extern "C" void EXPORT STDCALL createInstance(const char* dllFileName,
                                          const unsigned int* compID,
                                          const unsigned int* parentID,

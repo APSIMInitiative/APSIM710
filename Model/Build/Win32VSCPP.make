@@ -1,100 +1,83 @@
 ###########################################
-# Compiler make file for MS VS2008
-#
-# The user make file can have the following
-# defines:
-#    DEFINES
-#    INCLUDEPATH
-#    LIBPATH
-#    LIBS
-#    OBJS
-#    PROJECTTYPE = exe, libdll or dll
-#    DEBUG
-#    PRECOMPILEDHEADERS
-#    PREBUILD  - a target built before dll (eg custom libs)
-#
-# NB: It is vital that paths passed to
-#     bcc and ilink use '\' character.
-#     Doesn't work with '/' characters.
+# make file for MS VS2008
 ###########################################
-#DEBUG=yes
+
+DEBUG=yes
+
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"
 
-BOOST = C:\BuildLibraries\boost_1_42_0
-LIBXML = C:\BuildLibraries\libxml2-2.7.6
+BOOST = $(APSIM)\..\BuildLibraries\boost_1_42_0-msvc
+LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.6.win32
+TCL = $(APSIM)\..\BuildLibraries\tcl\ASTcl\bin\tclsh84.exe
+
+DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BOOST_REGEX_STATIC_LINK"
+INCLUDES := /I $(APSIM)\Model /I $(BOOST) /I $(LIBXML)\include $(INCLUDES)
+LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib 
 
 # add .lib to all user libraries
-
-DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "GENERAL_EXPORTS" /D "BOOST_REGEX_STATIC_LINK"
-INCLUDES := /I $(APSIM)\Model /I $(BOOST) /I $(LIBXML)\include
-LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib \
-/LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi 
-
 LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib 
 
-#libboost_filesystem-vc90-mt-1_42.lib libboost_date_time-vc90-mt-1_42.lib 
- 
 WARNINGS := /wd4996 /wd4068 /wd4290 /wd4251 /wd4244
 
-CFLAGS := /Od $(INCLUDES) $(DEFINES) /Gm /EHsc /RTC1 /MDd /W3 /nologo /c /ZI /TP
+CFLAGS := $(INCLUDES) $(DEFINES) /EHsc /W3 /nologo /c /TP /Fd"$(APSIM)\Model\$(PROJECT).pdb"
 
 LFLAGS := /NOLOGO /SUBSYSTEM:CONSOLE /DYNAMICBASE /NXCOMPAT /MACHINE:X86
-
-## gdi32.lib winspool.lib comdlg32.lib odbc32.lib odbccp32.lib ole32.lib oleaut32.lib 
 
 SYSOBJS := kernel32.lib user32.lib advapi32.lib shell32.lib uuid.lib 
 
 ifeq ($(PROJECTTYPE),exe)
-   LFLAGS := $(LFLAGS) 
+	CFLAGS := $(CFLAGS) /LD
+	LFLAGS := $(LFLAGS) 
 else
-   LFLAGS := $(LFLAGS) /DLL
+	CFLAGS := $(CFLAGS) /D "$(PROJECT)_EXPORTS"
+	LFLAGS := $(LFLAGS) /DLL 
 endif
 
 # Optimisation and debug symbols.
-#ifdef DEBUG
-#	CFLAGS := $(CFLAGS) /D "_DEBUG" 
+ifdef DEBUG
+	CFLAGS := $(CFLAGS) /Od /RTCs /ZI /MDd /D "_DEBUG" 
 #	LIBS := cg32.lib import32.lib $(LIBS)
-#	LFLAGS := $(LFLAGS) -v
-#else
-#	CFLAGS := $(CFLAGS) -O2 -w-inl
+#	LFLAGS := $(LFLAGS) 
+	LIBPATH := $(LIBPATH) \
+/LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\debug\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\debug\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\debug\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi 
+else
+	CFLAGS := $(CFLAGS) /O2 /MD /GL
+#	LFLAGS := $(LFLAGS) 
 #	LIBS :=  import32.lib $(LIBS)
-#endif
-
-# /Fo"Debug\\" /Fd"Debug\vc90.pdb" 
-
-   ifeq ($(PROJECTTYPE),exe)
-      SYSOBJS := $(SYSOBJS) 
-      CFLAGS := $(CFLAGS) 
-      LFLAGS := $(LFLAGS) /PDB:"$(APSIM)\Model\$(PROJECT).pdb" # /MANIFEST /MANIFESTFILE:"$(APSIM)\Model\$(PROJECT).exe.manifest"
-   else
-      CFLAGS := $(CFLAGS) 
-      LFLAGS := $(LFLAGS) # /MANIFEST /MANIFESTFILE:"$(APSIM)\Model\$(PROJECT).dll.manifest"
-      SYSOBJS := $(SYSOBJS) 
-   endif
-   LIBS := $(LIBS)
+	LIBPATH := $(LIBPATH) \
+/LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\release\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\release\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\release\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\release\link-static\threading-multi 
+endif
 
 # The rules
 %.obj:	%.cpp
-	$(CC) $(CFLAGS) $(WARNINGS) $<
+	$(CC) $(CFLAGS) $(WARNINGS) /Fo"$(dir $<)" $<
 
-# Change forward slashes to back slashes.
-SRC :=	$(subst /,\,$(SRC))
-
-SOURCEOBJS:=	$(SRC:.cpp=.obj)
-
-# remove all paths on OBJ files.
-#OBJSNODIR := $(foreach obj,$(SOURCEOBJS),$(notdir $(obj)))
-
+SOURCEOBJS:= $(SRC:.cpp=.obj)
 
 ifeq ($(PROJECTTYPE),exe)
+
 $(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS)
-	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).exe" $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS)
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).exe" @$(PROJECT).rsp
+
 else
+
+# Ugh. By default, MS dlls export symbols with _@ adornments, eg function "xyz" appears as "_xyz@n"
+#   what we do here is build the dll once, generate an unadorned .def file, and build it again with 
+#   that def file so that the unadorned names are visible.
 $(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS)
-	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS)
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
+	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl $(APSIM)/Model/$(PROJECT).dll > $(PROJECT).def
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
+
 endif
 

@@ -1,5 +1,5 @@
-#include <General\math_functions.h>
-#include <General\stl_functions.h>
+#include <General/math_functions.h>
+#include <General/stl_functions.h>
 
 #include "YPComponent.h"
 #include <ComponentInterface/variant.h>
@@ -10,16 +10,16 @@ using namespace protocol;
 // Return a blank string when requested to indicate that we
 // don't need a wrapper DLL.
 // ------------------------------------------------------------------
-extern "C" _export void __stdcall wrapperDLL(char* wrapperDll)
+extern "C" EXPORT void STDCALL wrapperDLL(char* wrapperDll)
    {
    strcpy(wrapperDll, "");
    }
-extern "C" void __stdcall getDescriptionInternal(char* initScript,
+extern "C" void STDCALL getDescriptionInternal(char* initScript,
                                                  char* description);
 // ------------------------------------------------------------------
 // Return component description info.
 // ------------------------------------------------------------------
-extern "C" _export void __stdcall getDescription(char* initScript, char* description)
+extern "C" EXPORT void STDCALL getDescription(char* initScript, char* description)
    {
    getDescriptionInternal(initScript, description);
    }

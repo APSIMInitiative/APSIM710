@@ -203,7 +203,7 @@ void TclComponent::respondToEvent(unsigned int& /*fromID*/, unsigned int& eventI
    for (ip = ip1; ip != ip2; ip++)
      {
      string rule = ip->second;
-     if (!rule.empty())
+     if (rule != "")
         {
         // Set the global variable "incomingApsimVariant" to the variant's binary data
         MessageData *message = variant.getMessageData();
