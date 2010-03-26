@@ -20,6 +20,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                       "ETcalc" = %apsim%\Model\Manager.dll
    Component                    "Irrigator" = %apsim%\Model\Manager.dll
    Component                   "Fertilizer" = %apsim%\Model\Manager.dll
    Component             "Beverley92 Water" = %apsim%\Model\SoilWat.dll
@@ -79,6 +80,9 @@ Paddock:
         wheat.ep
         eo
         water_table
+        node_no
+        et
+        plants
 
      Output file = Wheat_Beverley92_Late(high).out
      Format = normal
@@ -93,8 +97,8 @@ Paddock:
                       Irrigation parameters
           -----------------------------------------------
            Automatic Irrigation Application (Disabled)
-           critical fraction of available soil water =  0.90
-           depth for calculating available soil water =     600.00
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
@@ -118,6 +122,20 @@ Paddock:
        endif
      END of rules
      
+
+------- ETcalc Initialisation -------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     et = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     et = es + wheat.ep
+     END of rules
+     
+     Manager creating a new local real variable : et = 0.00000
 
 ------- Irrigator Initialisation ----------------------------------------------
      Manager rules:

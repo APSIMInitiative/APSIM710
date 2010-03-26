@@ -1,0 +1,528 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = DamagePreHarv10
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component          "Fertilise at sowing" = %apsim%\Model\Manager.dll
+   Component                    "Irrigator" = %apsim%\Model\Manager.dll
+   Component                       "Damage" = %apsim%\Model\Manager.dll
+   Component            "Ginninderra Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component         "Ginninderra Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 10/07/2002
+     Simulation end date   = 31/12/2002
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: hall2002.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        day
+        year
+        wheat.zadok_stage
+        wheat.StageName
+        wheat.biomass
+        wheat.yield
+        wheat.grain_size
+        wheat.biomass_wt
+        wheat.biomass_n
+        wheat.lai
+        wheat.HeadTotalWt
+        wheat.grain_wt
+        wheat.LeafGreenWt
+        wheat.HeadTotalN
+        wheat.grain_n
+        wheat.LeafGreenN
+        wheat.StemGreenN
+        wheat.StemGreenWt
+        wheat.grain_no
+        sw_dep()
+        wheat.n_conc_grain
+        wheat.grain_protein
+        wheat.swdef_photo
+        wheat.swdef_expan
+        wheat.nfact_photo
+        wheat.nfact_expan
+        wheat.root_depth
+        wheat.ep
+        eo
+        water_table
+        node_no
+        et
+        plants
+
+     Output file = DamagePreHarv10.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+        if (paddock_is_fallow() = 1 and today = date('15/08/2002')) then
+          wheat sow plants =100, sowing_depth = 30, cultivar = h45, row_spacing = 250
+        endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+       wheat  harvest
+       wheat  end_crop
+                endif
+     END of rules
+     
+
+------- Fertilise at sowing Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- wheat.sowing
+                fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
+     END of rules
+     
+
+------- Irrigator Initialisation ----------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     if today = date('8-nov') or today = date('22-nov') then
+        irrigation apply amount = 35
+     endif
+     
+     SECTION:- end_of_day
+     END of rules
+     
+
+------- Damage Initialisation -------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if today = date('13-dec') then
+        wheat kill_crop plants_kill_fraction = 0.10
+     endif
+     END of rules
+     
+
+------- Ginninderra Water Initialisation --------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mwcon is being replaced with a saturated conductivity. See documentation for details.
+     Component name: Ginninderra Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.040  0.073  0.210  0.414  0.210  1.450  0.613  0.400
+          100.-  200.  0.040  0.075  0.234  0.394  0.234  1.500  0.243  0.400
+          200.-  300.  0.060  0.074  0.220  0.375  0.220  1.550  0.096  0.400
+          300.-  400.  0.100  0.120  0.290  0.394  0.290  1.500  0.038  0.400
+          400.-  500.  0.100  0.160  0.293  0.386  0.293  1.520  0.009  0.400
+          500.-  600.  0.100  0.250  0.370  0.375  0.370  1.550  0.000  0.400
+          600.-  700.  0.100  0.250  0.360  0.367  0.360  1.570  0.000  0.400
+          700.-  800.  0.100  0.240  0.350  0.355  0.350  1.600  0.000  0.400
+          800.-  900.  0.100  0.259  0.340  0.347  0.340  1.620  0.000  0.400
+          900.- 1000.  0.100  0.281  0.330  0.335  0.330  1.650  0.000  0.400
+         1000.- 1100.  0.100  0.295  0.340  0.347  0.340  1.620  0.000  0.400
+         1100.- 1200.  0.100  0.272  0.350  0.355  0.350  1.600  0.000  0.400
+         1200.- 1300.  0.100  0.269  0.360  0.363  0.360  1.580  0.000  0.400
+         1300.- 1400.  0.100  0.264  0.370  0.375  0.370  1.550  0.000  0.400
+         1400.- 1500.  0.100  0.256  0.370  0.375  0.370  1.550  0.000  0.400
+         1500.- 1600.  0.100  0.256  0.355  0.375  0.355  1.550  0.000  0.400
+         1600.- 1700.  0.100  0.256  0.350  0.375  0.350  1.550  0.000  0.400
+         1700.- 1800.  0.100  0.256  0.330  0.375  0.330  1.550  0.000  0.400
+         1800.- 1900.  0.100  0.256  0.330  0.375  0.330  1.550  0.000  0.400
+         1900.- 2000.  0.100  0.256  0.330  0.375  0.330  1.550  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.       7.30      13.70      13.70      20.40
+          100.-  200.       7.50      15.90      15.90      16.00
+          200.-  300.       7.40      14.60      14.60      15.50
+          300.-  400.      12.00      17.00      17.00      10.40
+          400.-  500.      16.00      13.30      13.30       9.30
+          500.-  600.      25.00      12.00      12.00       0.50
+          600.-  700.      25.00      11.00      11.00       0.70
+          700.-  800.      24.00      11.00      11.00       0.50
+          800.-  900.      25.90       8.10       8.10       0.70
+          900.- 1000.      28.10       4.90       4.90       0.50
+         1000.- 1100.      29.50       4.50       4.50       0.70
+         1100.- 1200.      27.20       7.80       7.80       0.50
+         1200.- 1300.      26.90       9.10       9.10       0.30
+         1300.- 1400.      26.40      10.60      10.60       0.50
+         1400.- 1500.      25.60      11.40      11.40       0.50
+         1500.- 1600.      25.60       9.90       9.90       2.00
+         1600.- 1700.      25.60       9.40       9.40       2.50
+         1700.- 1800.      25.60       7.40       7.40       4.50
+         1800.- 1900.      25.60       7.40       7.40       4.50
+         1900.- 2000.      25.60       7.40       7.40       4.50
+          ---------------------------------------------------------
+               Totals     441.80     206.40     206.40      95.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              72.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            2.00 (mm^0.5)
+            CONA:                     2.00 ()
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          canola    canola        1000.0   400.0    20.0     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- Ginninderra Nitrogen Initialisation -----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type unknown
+     
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.80  0.83   14.50    1.45    0.00
+             2     5.90  0.35   22.50    1.50    0.00
+             3     6.60  0.33   15.50    1.55    0.00
+             4     6.80  0.22   12.00    1.50    0.00
+             5     7.00  0.22    7.60    1.52    0.00
+             6     7.10  0.22    3.10    1.55    0.00
+             7     7.20  0.19    1.57    1.57    0.00
+             8     7.30  0.17    1.60    1.60    0.00
+             9     7.40  0.15    1.62    1.62    0.00
+            10     7.40  0.12    1.65    1.65    0.00
+            11     7.60  0.11    1.62    1.62    0.00
+            12     7.80  0.10    1.60    1.60    0.00
+            13     8.00  0.10    1.58    1.58    0.00
+            14     8.20  0.10    1.55    1.55    0.00
+            15     8.30  0.10    0.00    0.00    0.00
+            16     8.40  0.10    0.00    0.00    0.00
+            17     8.40  0.10    0.00    0.00    0.00
+            18     8.50  0.10    0.00    0.00    0.00
+            19     8.50  0.10    0.00    0.00    0.00
+            20     8.50  0.10    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals               87.99   21.86    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      11738.8   809.6   296.2    37.0   117.3     2.9
+             2       5150.6   355.2    99.4    12.4   100.9     2.5
+             3       5033.1   347.1    81.9    10.2    86.9     2.2
+             4       3264.4   225.1    35.6     4.4    74.8     1.9
+             5       3317.1   228.8    26.9     3.4    64.4     1.6
+             6       3383.3   233.3    26.7     3.3    55.4     1.4
+             7       2973.6   205.1     9.4     1.2    47.7     1.2
+             8       2709.3   186.9    10.7     1.3    41.0     1.0
+             9       2425.2   167.3     4.8     0.6    35.3     0.9
+            10       1979.8   136.5     0.2     0.0    30.4     0.8
+            11       1781.8   122.9     0.2     0.0    26.2     0.7
+            12       1599.8   110.3     0.2     0.0    22.5     0.6
+            13       1579.8   109.0     0.2     0.0    19.4     0.5
+            14       1549.8   106.9     0.2     0.0    16.7     0.4
+            15       1549.8   106.9     0.2     0.0    14.4     0.4
+            16       1549.8   106.9     0.2     0.0    12.4     0.3
+            17       1549.8   106.9     0.2     0.0    10.6     0.3
+            18       1549.8   106.9     0.2     0.0     9.2     0.2
+            19       1549.8   106.9     0.2     0.0     7.9     0.2
+            20       1549.8   106.9     0.2     0.0     6.8     0.2
+          ---------------------------------------------------------
+           Totals   57785.6  3985.2   593.4    74.2   800.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+15 August 2002(Day of year=227), Sow on a fixed date: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = h45, row_spacing = 250
+15 August 2002(Day of year=227), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = h45
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.080          0.073       1.000
+         100.0     0.080          0.075       1.000
+         100.0     0.080          0.074       1.000
+         100.0     0.080          0.120       1.000
+         100.0     0.080          0.160       1.000
+         100.0     0.080          0.250       1.000
+         100.0     0.080          0.250       1.000
+         100.0     0.080          0.240       1.000
+         100.0     0.080          0.259       1.000
+         100.0     0.070          0.281       1.000
+         100.0     0.070          0.295       1.000
+         100.0     0.060          0.272       1.000
+         100.0     0.060          0.269       1.000
+         100.0     0.050          0.264       1.000
+         100.0     0.050          0.256       1.000
+         100.0     0.040          0.256       1.000
+         100.0     0.040          0.256       1.000
+         100.0     0.030          0.256       1.000
+         100.0     0.020          0.256       0.000
+         100.0     0.010          0.256       0.000
+         -----------------------------------------------
+         Extractable SW:   206mm in  2000mm total depth ( 10%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            227   30.0  100.0  250.0   0.0   0.0 h45
+         ------------------------------------------------
+     
+15 August 2002(Day of year=227), Fertilise at sowing: 
+     Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
+15 August 2002(Day of year=227), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+16 August 2002(Day of year=228), wheat: 
+      stage 2.0 germination
+27 August 2002(Day of year=239), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   27.76 (mm)
+28 August 2002(Day of year=240), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.64 (g/m^2)   lai          =   0.023 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   27.76 (mm)
+14 October 2002(Day of year=287), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         378.35 (g/m^2)   lai          =   5.178 (m^2/m^2)
+                     stover N conc =     2.94 (%)    extractable sw =   57.76 (mm)
+8 November 2002(Day of year=312), Irrigator: 
+     Manager sending message :- irrigation apply  amount = 35
+18 November 2002(Day of year=322), wheat: 
+      stage 6.0 flowering
+                     biomass =         815.63 (g/m^2)   lai          =   1.277 (m^2/m^2)
+                     stover N conc =     1.55 (%)    extractable sw =   47.86 (mm)
+22 November 2002(Day of year=326), Irrigator: 
+     Manager sending message :- irrigation apply  amount = 35
+23 November 2002(Day of year=327), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         867.71 (g/m^2)   lai          =   1.218 (m^2/m^2)
+                     stover N conc =     1.36 (%)    extractable sw =   76.79 (mm)
+13 December 2002(Day of year=347), Damage: 
+     Manager sending message :- wheat kill_crop  plants_kill_fraction = 0.10
+13 December 2002(Day of year=347), wheat: 
+     Plant kill. 10.00% crop killed because of external action.
+21 December 2002(Day of year=355), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1123.51 (g/m^2)   lai          =   0.462 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   28.98 (mm)
+22 December 2002(Day of year=356), wheat: 
+      stage 9.0 maturity
+                     biomass =        1123.51 (g/m^2)   lai          =   0.424 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   28.40 (mm)
+23 December 2002(Day of year=357), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1123.51 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   27.89 (mm)
+23 December 2002(Day of year=357), Harvesting rule: 
+     Manager sending message :- wheat harvest
+     
+      flowering day          =  322                           stover (kg/ha)         =     7071.7
+      maturity day           =  356                           grain yield (kg/ha)    =     4163.4
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4758.2
+      grain wt (g)           =    0.042                       grains/m^2             =    10005.4
+      grains/plant           =  111.2                         maximum lai            =      5.384
+      total above ground biomass (kg/ha)    =    11235.1
+      live above ground biomass (kg/ha)     =    11235.1
+      green above ground biomass (kg/ha)    =     7793.2
+      senesced above ground biomass (kg/ha) =     3441.9
+      number of leaves       =     35.7
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.37
+      Stover C:N ratio       =   104.81                       Root C:N ratio         =      17.53
+      grain N percent        =     2.24                       total N content (kg/ha)=     120.21
+      grain N uptake (kg/ha) =    93.22                       senesced N content (kg/ha)=   14.65
+      green N content (kg/ha)=    12.34
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.002        0.004        0.000        0.019
+         floral_initiation    to flowering               0.163        0.198        0.000        0.024
+         flowering            to start_grain_fill        0.159        0.194        0.000        0.023
+         start_grain_fill     to end_grain_fill          0.145        0.180        0.046        0.113
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                7071.7                     0.0
+                          N  (kg/ha) =                  26.99                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4163.4                     0.0
+                          N  (kg/ha) =                  93.22                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.018 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   27.89 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1702.3
+                          N  (kg/ha) =                   0.00                   38.85
+     
+31 December 2002(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

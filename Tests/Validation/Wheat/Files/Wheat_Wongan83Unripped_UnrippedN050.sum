@@ -20,6 +20,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                       "ETcalc" = %apsim%\Model\Manager.dll
    Component                    "Irrigator" = %apsim%\Model\Manager.dll
    Component                   "Fertilizer" = %apsim%\Model\Manager.dll
    Component       "Wongan83UnRipped Water" = %apsim%\Model\SoilWat.dll
@@ -80,6 +81,9 @@ Paddock:
         wheat.ep
         eo
         water_table
+        node_no
+        et
+        plants
 
      Output file = Wheat_Wongan83Unripped_UnrippedN050.out
      Format = normal
@@ -94,8 +98,8 @@ Paddock:
                       Irrigation parameters
           -----------------------------------------------
            Automatic Irrigation Application (Disabled)
-           critical fraction of available soil water =  0.90
-           depth for calculating available soil water =     600.00
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
@@ -119,6 +123,20 @@ Paddock:
        endif
      END of rules
      
+
+------- ETcalc Initialisation -------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     et = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     et = es + wheat.ep
+     END of rules
+     
+     Manager creating a new local real variable : et = 0.00000
 
 ------- Irrigator Initialisation ----------------------------------------------
      Manager rules:
@@ -176,7 +194,7 @@ Paddock:
           800.- 1200.  0.050  0.100  0.160  0.350  0.100  1.500  0.000  0.350
          1200.- 1600.  0.050  0.110  0.170  0.350  0.110  1.500  0.000  0.350
          1600.- 2200.  0.050  0.130  0.170  0.350  0.120  1.500  0.000  0.350
-         2200.- 2800.  0.050  0.160  0.170  0.350  0.130  1.500  0.000  0.350
+         2200.- 2800.  0.050  0.130  0.170  0.350  0.130  1.500  0.000  0.350
         ---------------------------------------------------------------------
      
      
@@ -196,9 +214,9 @@ Paddock:
           800.- 1200.      40.00       0.00      24.00      76.00
          1200.- 1600.      44.00       0.00      24.00      72.00
          1600.- 2200.      78.00       0.00      24.00     108.00
-         2200.- 2800.      96.00       0.00       6.00     108.00
+         2200.- 2800.      78.00       0.00      24.00     108.00
           ---------------------------------------------------------
-               Totals     327.00      29.00     124.00     529.00
+               Totals     309.00      29.00     142.00     529.00
           ---------------------------------------------------------
      
      
@@ -271,13 +289,13 @@ Paddock:
              3     5.10  0.37    7.25    1.45    0.00
              4     6.00  0.26    8.88    2.96    0.00
              5     6.00  0.21    6.12    0.00    0.00
-             6     6.00  0.20    0.00    0.00    0.00
-             7     6.00  0.18    0.00    0.00    0.00
-             8     6.00  0.18    0.00    0.00    0.00
-             9     6.00  0.17    0.00    0.00    0.00
-            10     6.00  0.17    0.00    0.00    0.00
+             6     6.00  0.20    6.00    0.00    0.00
+             7     6.00  0.18   12.00    0.00    0.00
+             8     6.00  0.18    6.00    0.00    0.00
+             9     6.00  0.17    9.00    0.00    0.00
+            10     6.00  0.17    9.00    0.00    0.00
           ------------------------------------------------
-           Totals               31.42    7.03    0.00
+           Totals               73.42    7.03    0.00
           ------------------------------------------------
      
      
@@ -345,16 +363,16 @@ Paddock:
          -----------------------------------------------
           50.0     0.060          0.080       0.200
           50.0     0.060          0.080       0.100
-         100.0     0.060          0.090       0.300
+         100.0     0.060          0.090       0.200
          200.0     0.060          0.100       0.700
          200.0     0.060          0.110       1.000
          200.0     0.060          0.120       1.000
          400.0     0.060          0.120       1.000
          400.0     0.060          0.120       1.000
-         600.0     0.060          0.140       0.700
-         600.0     0.060          0.170       0.700
+         600.0     0.060          0.140       1.000
+         600.0     0.060          0.140       1.000
          -----------------------------------------------
-         Extractable SW:    86mm in  2800mm total depth (  3%).
+         Extractable SW:   104mm in  2800mm total depth (  4%).
          Crop factor for bounding water use is set to   1.5 times eo.
       stage 1.0 sowing
      
@@ -385,72 +403,81 @@ Paddock:
                      stover N conc =     5.84 (%)    extractable sw =   23.94 (mm)
 13 August 1983(Day of year=225), wheat: 
       stage 5.0 floral_initiation
-                     biomass =          97.60 (g/m^2)   lai          =   1.440 (m^2/m^2)
-                     stover N conc =     2.49 (%)    extractable sw =   23.01 (mm)
+                     biomass =          70.37 (g/m^2)   lai          =   1.018 (m^2/m^2)
+                     stover N conc =     2.41 (%)    extractable sw =   15.25 (mm)
 26 September 1983(Day of year=269), wheat: 
       stage 6.0 flowering
-                     biomass =         487.42 (g/m^2)   lai          =   1.130 (m^2/m^2)
-                     stover N conc =     1.20 (%)    extractable sw =   47.41 (mm)
+                     biomass =         381.34 (g/m^2)   lai          =   0.855 (m^2/m^2)
+                     stover N conc =     1.20 (%)    extractable sw =   29.34 (mm)
 4 October 1983(Day of year=277), wheat: 
       stage 7.0 start_grain_fill
-                     biomass =         544.93 (g/m^2)   lai          =   0.836 (m^2/m^2)
-                     stover N conc =     0.99 (%)    extractable sw =   33.99 (mm)
+                     biomass =         428.18 (g/m^2)   lai          =   0.637 (m^2/m^2)
+                     stover N conc =     1.12 (%)    extractable sw =   38.18 (mm)
+2 November 1983(Day of year=306): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Crop dlt_n_green mass balance is off: dlt_n_green_sum =0.019952 vs n_uptake_sum =0.019953
+     Component name: wheat
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 9 November 1983(Day of year=313), wheat: 
       stage 8.0 end_grain_fill
-                     biomass =         661.22 (g/m^2)   lai          =   0.144 (m^2/m^2)
-                     stover N conc =     0.31 (%)    extractable sw =   22.05 (mm)
+                     biomass =         575.27 (g/m^2)   lai          =   0.119 (m^2/m^2)
+                     stover N conc =     0.43 (%)    extractable sw =   20.56 (mm)
 10 November 1983(Day of year=314), wheat: 
       stage 9.0 maturity
-                     biomass =         661.22 (g/m^2)   lai          =   0.122 (m^2/m^2)
-                     stover N conc =     0.31 (%)    extractable sw =   21.64 (mm)
+                     biomass =         575.27 (g/m^2)   lai          =   0.099 (m^2/m^2)
+                     stover N conc =     0.43 (%)    extractable sw =   19.84 (mm)
 11 November 1983(Day of year=315), wheat: 
       stage 10.0 harvest_ripe
-                     biomass =         661.22 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.31 (%)    extractable sw =   21.03 (mm)
+                     biomass =         575.27 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.43 (%)    extractable sw =   19.03 (mm)
 11 November 1983(Day of year=315), Harvesting rule: 
      Manager sending message :- wheat harvest
      
-      flowering day          =  269                           stover (kg/ha)         =     3973.4
-      maturity day           =  314                           grain yield (kg/ha)    =     2638.8
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3015.7
-      grain wt (g)           =    0.036                       grains/m^2             =     7294.4
-      grains/plant           =   45.9                         maximum lai            =      1.786
-      total above ground biomass (kg/ha)    =     6612.2
-      live above ground biomass (kg/ha)     =     6612.2
-      green above ground biomass (kg/ha)    =     5828.7
-      senesced above ground biomass (kg/ha) =      783.4
-      number of leaves       =     29.6
-      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.40
-      Stover C:N ratio       =   115.79                       Root C:N ratio         =      22.10
-      grain N percent        =     2.09                       total N content (kg/ha)=      68.79
-      grain N uptake (kg/ha) =    55.06                       senesced N content (kg/ha)=    3.92
-      green N content (kg/ha)=     9.81
+      flowering day          =  269                           stover (kg/ha)         =     3399.5
+      maturity day           =  314                           grain yield (kg/ha)    =     2353.2
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2689.3
+      grain wt (g)           =    0.041                       grains/m^2             =     5739.4
+      grains/plant           =   36.1                         maximum lai            =      1.280
+      total above ground biomass (kg/ha)    =     5752.7
+      live above ground biomass (kg/ha)     =     5752.7
+      green above ground biomass (kg/ha)    =     5183.5
+      senesced above ground biomass (kg/ha) =      569.2
+      number of leaves       =     26.0
+      DM Root:Shoot ratio    =     0.13                       Harvest Index          =       0.41
+      Stover C:N ratio       =    91.35                       Root C:N ratio         =      19.42
+      grain N percent        =     2.69                       total N content (kg/ha)=      78.15
+      grain N uptake (kg/ha) =    63.27                       senesced N content (kg/ha)=    2.85
+      green N content (kg/ha)=    12.04
      
       Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
          emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.023        0.033        0.081        0.145
-         floral_initiation    to flowering               0.047        0.066        0.091        0.164
-         flowering            to start_grain_fill        0.069        0.094        0.084        0.153
-         start_grain_fill     to end_grain_fill          0.096        0.127        0.161        0.261
+         end_of_juvenile      to floral_initiation       0.035        0.050        0.138        0.204
+         floral_initiation    to flowering               0.053        0.075        0.126        0.189
+         flowering            to start_grain_fill        0.074        0.102        0.117        0.176
+         start_grain_fill     to end_grain_fill          0.107        0.144        0.091        0.178
      
      
      Crop harvested.
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                3973.4                     0.0
-                          N  (kg/ha) =                  13.73                    0.00
+                          DM (kg/ha) =                3399.5                     0.0
+                          N  (kg/ha) =                  14.89                    0.00
      
          Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                2638.8                     0.0
-                          N  (kg/ha) =                  55.06                    0.00
+                          DM (kg/ha) =                2353.2                     0.0
+                          N  (kg/ha) =                  63.27                    0.00
      
       stage 4.0 end_of_juvenile
                      biomass =           0.00 (g/m^2)   lai          =   0.032 (m^2/m^2)
-                     stover N conc =     6.30 (%)    extractable sw =   21.03 (mm)
+                     stover N conc =     6.30 (%)    extractable sw =   19.03 (mm)
      Manager sending message :- wheat end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                   932.0
-                          N  (kg/ha) =                   0.00                   16.87
+                          DM (kg/ha) =                   0.0                   726.5
+                          N  (kg/ha) =                   0.00                   14.97
      
 11 November 1983(Day of year=315), clock: 
      Simulation is terminating due to end criteria being met.
