@@ -76,9 +76,10 @@ void SiloInputComponent::openInputFile(void)
 
    // Now the SILO station number 
    readParameter ("parameters", "station_number", stationNumber, 0, 100000);
+   baseURL = getProperty("parameters", "url");
    string requestString =
-      string("http://192.168.0.60/cgi-bin/getData.tcl?format=apsim&station=") +
-      itoa(stationNumber) +
+      baseURL +
+      string("?format=apsim&station=") + itoa(stationNumber) +
       string("&ddStart=1&mmStart=1&yyyyStart=1800&ddFinish=31&mmFinish=12&yyyyFinish=2100");
 
    tHTTP http;
