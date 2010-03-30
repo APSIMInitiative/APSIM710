@@ -2,7 +2,7 @@
 # make file for MS VS2008
 ###########################################
 
-DEBUG=yes
+######uncomment for debug everything###DEBUG=yes
 
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"

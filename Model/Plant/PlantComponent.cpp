@@ -7,7 +7,7 @@ using namespace std;
 
 extern "C" EXPORT void STDCALL getDescriptionInternal(char* initScript, char* description);
 
-#ifdef WIN32
+#ifdef __WIN32__
 #include <windows.h>
 int WINAPI DllEntryPoint(HINSTANCE /*hinst*/, unsigned long /*reason*/, void*)
 //=======================================================================================

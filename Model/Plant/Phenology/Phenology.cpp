@@ -615,6 +615,9 @@ float Phenology::doLookup(const std::vector<float>& f)
    // --------------------------------------------------------------------------
    // Perform a stage based lookup of the specified array of values.
    // --------------------------------------------------------------------------
-   return f[int(currentStage)-1];
+   int idx = int(currentStage)-1;
+   if (idx < 0) idx = 0;
+   if (idx >= f.size()) idx = f.size() - 1;
+   return f[idx];
    }
 

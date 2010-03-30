@@ -4,7 +4,7 @@
 
 #define YES 1
 #define NO 0
-#define TEST_SeedPool YES                            // build unit test?
+#define TEST_SeedPool NO                            // build unit test?
 #include <math.h>
 
 #include <iostream>

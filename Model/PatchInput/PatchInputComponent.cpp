@@ -235,7 +235,11 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
    if (eventID == preNewmetID)
       {
       variant.unpack(newmet);
-      todaysDate = newmet.today;
+      GDate d;                        // There should be a better way for this - FIXME!!
+      int year, month, day; 
+      d.Set(newmet.today);
+      d.Get_dmy(day, month, year)
+      todaysDate = date(year, month, day);
 
       fileDate = advanceToTodaysPatchData(fromID);
       if (todaysDate == fileDate && todaysDate >= patchDate)

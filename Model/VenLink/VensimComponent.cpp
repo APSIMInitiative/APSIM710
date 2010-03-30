@@ -282,8 +282,8 @@ int VensimComponent::vensim_command(string &command)
    {
    if (vensimLibrary != NULL)
       {
-      typedef int STDCALL (*PF) (const char *);
-      PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_command");
+      typedef int  (STDCALL PF) (const char *);
+      PF *pf = (PF*) GetProcAddress(vensimLibrary, "vensim_command");
       if (pf) return (*pf)(command.c_str());
       }
    return 0;
@@ -293,8 +293,8 @@ int VensimComponent::vensim_command(const char *command)
    {
    if (vensimLibrary != NULL)
       {
-      typedef int STDCALL (*PF) (const char *);
-      PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_command");
+      typedef int  (STDCALL PF) (const char *);
+      PF *pf = (PF*) GetProcAddress(vensimLibrary, "vensim_command");
       if (pf) return (*pf)(command);
       }
    return 0;
@@ -308,8 +308,8 @@ int VensimComponent::vensim_get_varnames(const char* filter,
    *buf = '\0';
    if (vensimLibrary != NULL)
       {
-      typedef int STDCALL (*PF) (const char*, int, char*, int);
-      PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_get_varnames");
+      typedef int  (STDCALL PF) (const char*, int, char*, int);
+      PF *pf = (PF*) GetProcAddress(vensimLibrary, "vensim_get_varnames");
       if (pf) return (*pf)(filter, vartype, buf, buflength);
       }
    return 0;
@@ -319,8 +319,8 @@ int VensimComponent::vensim_get_val(string &name, float* value)
    {
    if (vensimLibrary != NULL)
       {
-      typedef int STDCALL (*PF) (const char *, float *);
-      PF pf = (PF) GetProcAddress(vensimLibrary, "vensim_get_val");
+      typedef int  (STDCALL PF) (const char *, float *);
+      PF *pf = (PF*) GetProcAddress(vensimLibrary, "vensim_get_val");
       if (pf) return (*pf)(name.c_str(), value);
       }
    return 0;
