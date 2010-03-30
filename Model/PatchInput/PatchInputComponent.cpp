@@ -99,7 +99,7 @@ void PatchInputComponent::readPatchDates(void)
             {
             patchDates.insert(make_pair(data.getDate().julian_day(), currentRecord));
             currentRecord++;
-            int year = data.getDate().year();
+            unsigned int year = data.getDate().year();
             if (year > maxYear) {maxYear = year;}
             data.next();
             }
@@ -236,9 +236,9 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
       {
       variant.unpack(newmet);
       GDate d;                        // There should be a better way for this - FIXME!!
-      int year, month, day; 
+      unsigned int year, month, day; 
       d.Set(newmet.today);
-      d.Get_dmy(day, month, year)
+      d.Get_dmy(day, month, year);
       todaysDate = date(year, month, day);
 
       fileDate = advanceToTodaysPatchData(fromID);

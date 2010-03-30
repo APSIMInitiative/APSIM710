@@ -15,21 +15,20 @@ void testGetFile(void)
    {
    tHTTP t;
    string filename = "test.txt";
-   string url ="http://192.168.0.60/test.txt";
+   string url ="http://apsrunet.apsim.info/test.txt";
 
    BOOST_CHECK(t.Get(filename, url) == true);
    }
 void testGetText(void)
    {
    tHTTP t;
-   string url ="http://192.168.0.60/test.txt";
-
+   string url ="http://apsrunet.apsim.info/test.txt";
    BOOST_CHECK(t.Get(url) == "This is a test\n");
    }
 void testGetError(void)
    {
    tHTTP t;
-   string url ="http://192.168.0.60/no file";
+   string url ="http://apsrunet.apsim.info/no file";
    string result = t.Get(url);
    //string text = t.responseText();
    int code = t.responseCode();
@@ -41,7 +40,7 @@ void testGetError2(void)
    tHTTP t;
    int stationNumber = 42;
    string url =
-      string("http://192.168.0.60/cgi-bin/silo/getQdb.cgi?format=APSIM&station=") +
+      string("http://apsrunet.apsim.info/cgi-bin/getData.tcl?format=APSIM&station=") +
       itoa(stationNumber) +
       string("&ddStart=1&mmStart=1&yyyyStart=1800&ddFinish=31&mmFinish=12&yyyyFinish=2100");
 
@@ -56,7 +55,7 @@ void testGetError3(void)
    tHTTP t;
    int stationNumber = 40042;
    string url =
-      string("http://192.168.0.60/cgi-bin/silo/getQdb.cgi?format=APSIM&station=") +
+      string("http://apsrunet.apsim.info/cgi-bin/getData.tcl?format=APSIM&station=") +
       itoa(stationNumber) +
       string("&ddStart=1&mmStart=1&yyyyStart=1800&ddFinish=31&mmFinish=12&yyyyFinish=2100");
 
