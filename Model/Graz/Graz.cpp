@@ -186,7 +186,7 @@ void grazComponent::eat(void)
    dead_prop_leaf = divide (dead_leaf, dead_pool, 0.0);
 
    mod_green_prop = (green_prop - 0.10) / 0.90;
-   mod_green_prop = max (mod_green_prop, 0.0);
+   mod_green_prop = max (mod_green_prop, (float)0.0);
 
    // If green is less than 10%, no active selection for green by stock
    if (mod_green_prop > 0.0) {
@@ -263,8 +263,8 @@ void grazComponent::eat(void)
 
    // Limit the trampling so that we don't trample more than is
    //  actually there.
-   dead_leaf_tramp = max(min(dead_leaf - dead_leaf_eaten, trampled_leaf), 0.0);
-   dead_stem_tramp = max(min(dead_stem - dead_stem_eaten, trampled_stem), 0.0);
+   dead_leaf_tramp = max(min(dead_leaf - dead_leaf_eaten, trampled_leaf), (float)0.0);
+   dead_stem_tramp = max(min(dead_stem - dead_stem_eaten, trampled_stem), (float)0.0);
    }
 
 // Calculate stock equivalent

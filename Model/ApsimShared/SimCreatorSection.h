@@ -26,7 +26,7 @@ class SimCreatorSection
 
       virtual ~SimCreatorSection() { }
       virtual SimCreatorSection* clone() = 0;
-      virtual void open(const std::string& firstBit, const std::string secondBit,
+      virtual void open(const std::string& firstBit, const std::string& secondBit,
                         const std::string& thirdBit) = 0;
       virtual void writeToOut(std::ostream& out) = 0;
       virtual void convertLine(const std::string& line) = 0;
@@ -59,7 +59,7 @@ class SimCreatorSectionOld : public SimCreatorSection
 
       virtual void writeToOut(std::ostream& out);
       virtual void convertLine(const std::string& line);
-      virtual void open(const std::string& firstBit, const std::string secondBit,
+      virtual void open(const std::string& firstBit, const std::string& secondBit,
                         const std::string& thirdBit);
 
    };
@@ -99,7 +99,7 @@ class SimCreatorSectionNew : public SimCreatorSection
          }
       virtual void writeToOut(std::ostream& out);
       virtual void convertLine(const std::string& line);
-      virtual void open(const std::string& firstBit, const std::string secondBit,
+	  virtual void open(const std::string& firstBit, const std::string& secondBit,
                         const std::string& thirdBit);
 
    };

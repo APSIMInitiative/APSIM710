@@ -1,7 +1,7 @@
 #ifndef FortranStringH
 #define FortranStringH
 
-#include <string.h>
+#include <string>
 #include <vector>
 #include <stdexcept>
 #include <General/platform.h>
@@ -81,8 +81,8 @@ class EXPORT FortranString
             }
          else
             {
-            memcpy(text, rhs.f_str(), rhsLength);
-            memset(&text[rhsLength], ' ', len - rhsLength);
+			std::memcpy(text, rhs.f_str(), rhsLength);
+			std::memset(&text[rhsLength], ' ', len - rhsLength);
             realLen = rhsLength;
             }
          return *this;
@@ -98,8 +98,8 @@ class EXPORT FortranString
             }
          else
             {
-            memcpy(text, rhs.c_str(), rhsLength);
-            memset(&text[rhsLength], ' ', len - rhsLength);
+			std::memcpy(text, rhs.c_str(), rhsLength);
+			std::memset(&text[rhsLength], ' ', len - rhsLength);
             realLen = rhsLength;
             }
          return *this;
@@ -213,7 +213,7 @@ inline void Convert(const std::vector<std::string>& from, FortranString& to)
    st = "";
    for (unsigned i = 0; i != from.size(); i++)
       {
-      if (st.length() > 0)
+	  if (st.length() > 0)
          st += " ";
       st += from[i];
       }

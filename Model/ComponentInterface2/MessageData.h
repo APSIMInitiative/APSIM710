@@ -53,7 +53,7 @@ class MessageData
          }
       void copyFrom(const char* from, unsigned int numBytes)
          {
-         memcpy(currentPtr, from, numBytes);
+         std::memcpy(currentPtr, from, numBytes);
          currentPtr += numBytes;
          }
 

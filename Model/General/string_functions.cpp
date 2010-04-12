@@ -159,16 +159,16 @@ void To_upper (string& St)
 bool Replace_all (string& St, const char* Sub_string, const char* Replacement_string)
    {
    if(*Sub_string=='\0')
-       throw std::runtime_error("Empty search string.");
+	   throw std::runtime_error("Empty search string.");
 
    bool replacementMade = false;
    size_t Pos = St.find(Sub_string);
    while (Pos != string::npos)
-      {
-      St.replace(Pos, strlen(Sub_string), Replacement_string);
-      replacementMade = true;
-      Pos = St.find(Sub_string);
-      }
+	  {
+	  St.replace(Pos, strlen(Sub_string), Replacement_string);
+	  replacementMade = true;
+	  Pos = St.find(Sub_string, Pos + strlen(Replacement_string));
+			}
    return replacementMade;
    }
 // ------------------------------------------------------------------
@@ -179,18 +179,18 @@ bool Replace_all (string& St, const char* Sub_string, const char* Replacement_st
 bool replaceAll(string& St, unsigned position, const string& subString, const string& replacementString)
    {
    if (subString=="")
-       throw std::runtime_error("Empty search string.");
+	   throw std::runtime_error("Empty search string.");
    bool replacementMade = false;
    char* pos = (char*)St.c_str();
    pos += position;
    pos = stristr(pos, subString.c_str());
    while (pos != NULL)
-      {
-      unsigned charPos = pos - St.c_str();
-      St.replace(charPos, subString.length(), replacementString);
-      replacementMade = true;
-      pos = stristr(pos, subString.c_str());
-      }
+	  {
+	  unsigned charPos = pos - St.c_str();
+	  St.replace(charPos, subString.length(), replacementString);
+	  replacementMade = true;
+	  pos = stristr(pos + replacementString.length(), subString.c_str());
+	  }
    return replacementMade;
    }
 
@@ -202,18 +202,19 @@ bool replaceAll(string& St, unsigned position, const string& subString, const st
 bool replaceAll(string& St, const string& subString, const string& replacementString)
    {
    if (subString=="")
-       throw std::runtime_error("Empty search string.");
+	   throw std::runtime_error("Empty search string.");
    bool replacementMade = false;
    char* pos = stristr(St.c_str(), subString.c_str());
    while (pos != NULL)
-      {
-      unsigned Pos = pos - St.c_str();
-      St.replace(Pos, subString.length(), replacementString);
-      replacementMade = true;
-      pos = stristr(St.c_str(), subString.c_str());
-      }
+	  {
+	  unsigned Pos = pos - St.c_str();
+	  St.replace(Pos, subString.length(), replacementString);
+	  replacementMade = true;
+	  pos = stristr(St.c_str() + Pos + replacementString.length(), subString.c_str());
+	  }
    return replacementMade;
    }
+
 // ------------------------------------------------------------------
 //  Short description:
 //     convert a double to a string.
@@ -240,7 +241,8 @@ string itoa(int intValue)
    {
    char buffer[100];
    sprintf(buffer, "%d", intValue);
-   return buffer;
+   string result(buffer);
+   return result;
    }
 
 // ------------------------------------------------------------------

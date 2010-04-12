@@ -310,23 +310,10 @@ XMLNode::iterator XMLNode::end() const
 //---------------------------------------------------------------------------
 string XMLNode::write() const
    {
-#ifdef __WIN32__
-   string tempFileName = GetTempDir();
-   unsigned int pid = getpid();
-   tempFileName += "\\temp" + itoa(pid) + ".xml";
-#else
-   string tempFileName = "/tmp/apsim." + itoa(random()) + ".xml";
-#endif
-
-   xmlOutputBuffer* buf = xmlOutputBufferCreateFilename(tempFileName.c_str(), NULL, false);
-   xmlNodeDumpOutput(buf, node->doc, node, 0, 1, NULL);
-   xmlOutputBufferClose(buf);
-   ifstream in(tempFileName.c_str());
-   ostringstream out;
-   out << in.rdbuf();
-   string returnString = out.str();
-   in.close();
-   unlink(tempFileName.c_str());
+   xmlBufferPtr buff = xmlBufferCreate();
+   xmlNodeDump(buff, node->doc, node, 0, 1);
+   string returnString = (const char*) xmlBufferContent(buff);
+   xmlBufferFree(buff);
    return returnString;
    }
 

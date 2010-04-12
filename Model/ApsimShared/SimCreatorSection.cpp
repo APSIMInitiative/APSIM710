@@ -19,8 +19,8 @@ void SimCreatorSection::append(const SimCreatorSection* section)
    xml += section->xml;
    // check to make sure variable can be added to this section
    for (set<string>::const_iterator i = section->variableNames.begin();
-        i != section->variableNames.end();
-        i++)
+                              i != section->variableNames.end();
+                              i++)
       if (variableNames.find(*i) != variableNames.end())
          {
          throw runtime_error("The variable '" + *i + "' exists in multiple sections:  "
@@ -43,7 +43,7 @@ void SimCreatorSectionOld::append(const SimCreatorSection* section)
 // Open the ParFile given the 1st, 2nd and 3rd bits of an APSIM
 // parameter file section e.g. sample.clock.parameters.
 // ------------------------------------------------------------------
-void SimCreatorSectionOld::open(const std::string& firstBit, const std::string secondBit,
+void SimCreatorSectionOld::open(const std::string& firstBit, const std::string& secondBit,
                                 const std::string& thirdBit)
    {
    name = firstBit + "." + secondBit;
@@ -91,7 +91,7 @@ void SimCreatorSectionOld::open(const std::string& firstBit, const std::string s
 void SimCreatorSectionOld::writeToOut(ostream& out)
    {
    if (isManagerSection)
-      {
+	  {
       out << "            <" + openTag + ">\n";
       out << "               <![CDATA[\n" << xml << "               ]]>\n            ";
       }
@@ -138,7 +138,7 @@ void SimCreatorSectionOld::convertLine(const std::string& line)
 // Open the ParFile given the 1st, 2nd and 3rd bits of an APSIM
 // parameter file section e.g. sample.clock.parameters.
 // ------------------------------------------------------------------
-void SimCreatorSectionNew::open(const std::string& firstBit, const std::string secondBit,
+void SimCreatorSectionNew::open(const std::string& firstBit, const std::string& secondBit,
                                 const std::string& thirdBit)
    {
    if (thirdBit != "")
@@ -185,7 +185,7 @@ void SimCreatorSectionNew::open(const std::string& firstBit, const std::string s
                           Str_i_Eq(secondBit, "operations") ||
                           Str_i_Eq(secondBit, "manager")||
                           Str_i_Eq(secondBit, "tcllink")
-                          ));
+						  ));
    if (isManagerSection)
       {
       string ruleName = firstBit + "." + thirdBit;
@@ -232,7 +232,7 @@ void SimCreatorSectionNew::convertLine(const std::string& line)
          throw runtime_error("Invalid start of table: " + line);
       tableName = "table " + tableWords[1];
       xml += "         <table name=\"" + tableWords[1] + "\">\n";
-      waitingForTableHeader = true;
+	  waitingForTableHeader = true;
       tableHeaders.erase(tableHeaders.begin(), tableHeaders.end());
       tableUnits.erase(tableUnits.begin(), tableUnits.end());
       }
@@ -280,7 +280,7 @@ void SimCreatorSectionNew::convertLine(const std::string& line)
 
             if (!Str_i_Eq(key, "variable") && !Str_i_Eq(key, "module_names") &&
                 !Str_i_Eq(key, "variable_names"))
-               {
+			   {
                if (variableNames.find(key) != variableNames.end())
                   throw runtime_error("The variable '" + key + "' exists more than once in the section '" + name + "'");
                variableNames.insert(key);

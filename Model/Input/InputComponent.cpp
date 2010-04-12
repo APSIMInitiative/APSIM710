@@ -108,42 +108,42 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
       static const char* stringDDML = "<type kind=\"string\"/>";
 
       // register a few things.
-      tickID = addRegistration(::respondToEvent, -1, "tick", DDML(protocol::TimeType()).c_str());
-      preNewmetID = addRegistration(::event, -1, "preNewmet", DDML(protocol::NewMetType()).c_str());
-      newmetID = addRegistration(::event, -1, "newmet", DDML(protocol::NewMetType()).c_str());
-      hasDataTodayID = addRegistration(::respondToGet, -1, "hasDataToday", hasDataTodayTypeDDML);
-      getDataMethodID = addRegistration(::respondToEvent, -1, "getData", getDataDDML);
-      haveReadTodaysDataID = addRegistration(::event, -1, "HaveReadTodaysData", nullTypeDDML);
+	  tickID = addRegistration(::respondToEvent, 0, "tick", DDML(protocol::TimeType()).c_str());
+	  preNewmetID = addRegistration(::event, 0, "preNewmet", DDML(protocol::NewMetType()).c_str());
+	  newmetID = addRegistration(::event, 0, "newmet", DDML(protocol::NewMetType()).c_str());
+	  hasDataTodayID = addRegistration(::respondToGet, 0, "hasDataToday", hasDataTodayTypeDDML);
+	  getDataMethodID = addRegistration(::respondToEvent, 0, "getData", getDataDDML);
+	  haveReadTodaysDataID = addRegistration(::event, 0, "HaveReadTodaysData", nullTypeDDML);
 
-      iAmMet = (Str_i_Cmp(getName(), "met") == 0);
-      if (iAmMet)
-         {
-         daylengthID = addRegistration(::respondToGet, -1, "day_length", dayLengthType);
-         vpID = addRegistration(::respondToGet, -1, "vp", vpType);
-         }
-      else
-         daylengthID = 0;
+	  iAmMet = (Str_i_Cmp(getName(), "met") == 0);
+	  if (iAmMet)
+		 {
+		 daylengthID = addRegistration(::respondToGet, 0, "day_length", dayLengthType);
+		 vpID = addRegistration(::respondToGet, 0, "vp", vpType);
+		 }
+	  else
+		 daylengthID = 0;
 
-      string dateName = getName();
-      dateName += "_start_date";
-      startDateID = addRegistration(::respondToGet, -1, dateName.c_str(), startDateType);
-      dateName = getName();
-      dateName += "_end_date";
-      endDateID = addRegistration(::respondToGet, -1, dateName.c_str(), endDateType);
+	  string dateName = getName();
+	  dateName += "_start_date";
+	  startDateID = addRegistration(::respondToGet, 0, dateName.c_str(), startDateType);
+	  dateName = getName();
+	  dateName += "_end_date";
+	  endDateID = addRegistration(::respondToGet, 0, dateName.c_str(), endDateType);
 
-      dateName = string(getName()) + "_start_date_string";
-      startDateStringID = addRegistration(::respondToGet, -1, dateName.c_str(), stringDDML);
-      dateName = string(getName()) + "_end_date_string";
-      endDateStringID = addRegistration(::respondToGet, -1, dateName.c_str(), stringDDML);
+	  dateName = string(getName()) + "_start_date_string";
+	  startDateStringID = addRegistration(::respondToGet, 0, dateName.c_str(), stringDDML);
+	  dateName = string(getName()) + "_end_date_string";
+	  endDateStringID = addRegistration(::respondToGet, 0, dateName.c_str(), stringDDML);
 
-      openInputFile();
-      registerAllVariables();
-      checkForSparseData();
-      }
+	  openInputFile();
+	  registerAllVariables();
+	  checkForSparseData();
+	  }
    catch (const runtime_error& err)
-      {
-      error(string(err.what()), true);
-      }
+	  {
+	  error(string(err.what()), true);
+	  }
    }
 // ------------------------------------------------------------------
 // Open the input file associtated with this module.
@@ -152,7 +152,7 @@ void InputComponent::openInputFile(void)
    {
    fileName = componentData->getProperty("parameters", "filename");
    if (fileName == "")
-      throw "Cannot find a filename parameter for module: " + string(getName());
+	  throw "Cannot find a filename parameter for module: " + string(getName());
 
    data.open(fileName);
    }
