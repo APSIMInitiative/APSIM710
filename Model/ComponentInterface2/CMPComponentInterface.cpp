@@ -49,7 +49,10 @@ CMPComponentInterface::~CMPComponentInterface()
    for (NameToRegMap::iterator i = regNames.begin();
                                i != regNames.end();
                                i++)
-      if (i->second != NULL) {delete i->second;}
+	  if (i->second != NULL) {
+		delete i->second->data;
+		delete i->second;
+	  }
 
    clearMessages();
    delete simScript;
@@ -744,11 +747,11 @@ std::string CMPComponentInterface::getDescription(const std::string& dllName)
 
       returnString += string("<executable>") + dllName + "</executable>\n";
       returnString += string("<class>") + name + "</class>\n";
-      returnString += "<version>1.0</version>\n";
+	  returnString += "<version>1.0</version>\n";
       returnString += "<author>APSRU</author>\n";
 
-      for (NameToRegMap::iterator reg = regNames.begin();
-                                  reg != regNames.end();
+	  for (NameToRegMap::iterator reg = regNames.begin();
+								  reg != regNames.end();
                                   reg++)
          {
          RegistrationKind Kind = reg->second->kind;
