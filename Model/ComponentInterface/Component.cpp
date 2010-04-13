@@ -96,7 +96,6 @@ void Component::clearReturnInfos(void)
 	 delete v->second;
 	 v = myGetVariableResponses.erase(v);
    }
-#endif
 
    for (UInt2InfoMap::iterator v = getVarMap.begin();
 		v != getVarMap.end();
@@ -111,6 +110,7 @@ void Component::clearReturnInfos(void)
 	 delete v->second;
 	 v = setVarMap.erase(v);
    }
+#endif
 
    }
 // -----------------------------------------------------------------
