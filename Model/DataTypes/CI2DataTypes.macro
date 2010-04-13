@@ -630,28 +630,34 @@ module ScienceAPI
    end interface
 
    interface Get
-      function GetInteger(Name, Units, OptionalFlag, Value)
+      function GetInteger(Name, Units, OptionalFlag, Value, Lower, Upper)
       ml_external GetInteger
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
       integer           :: Value
+      integer           :: Lower
+      integer           :: Upper
       logical           :: GetInteger
       end function
-      function GetReal(Name, Units, OptionalFlag, Value)
+      function GetReal(Name, Units, OptionalFlag, Value, Lower, Upper)
       ml_external GetReal
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
       real              :: Value
+      real              :: Lower
+      real              :: Upper
       logical           :: GetReal
       end function
-      function GetDouble(Name, Units, OptionalFlag, Value)
+      function GetDouble(Name, Units, OptionalFlag, Value, Lower, Upper)
       ml_external GetDouble
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
       double precision  :: Value
+      double precision  :: Lower
+      double precision  :: Upper
       logical           :: GetDouble
       end function
       function GetString(Name, Units, OptionalFlag, Value)
