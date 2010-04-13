@@ -415,7 +415,7 @@ class EXPORT Component
       virtual void onApsimGetQuery(unsigned int fromID, ApsimGetQueryData& apsimGetQueryData) { }
       virtual bool onApsimSetQuery(ApsimSetQueryData& apsimSetQueryData) {return false;}
       virtual void onApsimChangeOrderData(unsigned int fromID, protocol::MessageData& messageData) { }
-      virtual void onQuerySetValueMessage(unsigned fromID, QuerySetValueData& querySetData);
+      virtual void onQuerySetValueMessage(unsigned fromID, QuerySetValueData& querySetData, unsigned msgID);
       virtual void onReplyValueMessage(unsigned fromID, ReplyValueData replyValueData) { }
 
       // Send a message
@@ -524,7 +524,8 @@ class EXPORT Component
             bool ok = variant->unpack(typeConverter,
                                       arraySpec,
                                       value);
-            if (arraySpec) delete arraySpec;
+			if (arraySpec) delete arraySpec;
+			delete typeConverter;
             if (!ok)
                {
                string buffer= "Unpack failed.\n"
@@ -561,7 +562,7 @@ class EXPORT Component
          else
             {
             ApsimRegistration *regItem = (ApsimRegistration *)regId /*getRegistration(componentID, regId)*/;
-            TypeConverter* typeConverter;
+			TypeConverter* typeConverter;
             getTypeConverter(regItem->getName().c_str(),
                              variant->getType(),
                              regItem->getDDML().c_str(),
@@ -570,8 +571,9 @@ class EXPORT Component
             bool ok = variant->unpack(typeConverter,
                                       arraySpec,
                                       values);
-            if (arraySpec) delete arraySpec;
-            if (!ok)
+			if (arraySpec) delete arraySpec;
+			delete typeConverter;
+			if (!ok)
                {
                string buffer= "Unpack failed.\n"
                               "VariableName: ";

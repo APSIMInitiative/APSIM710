@@ -67,7 +67,7 @@ Component::~Component(void)
 
    // free the somcomponent
    if (componentData != NULL)
-      deleteApsimComponentData(componentData);
+	  deleteApsimComponentData(componentData);
 
    clearReturnInfos();
    delete api;
@@ -86,15 +86,31 @@ Component::~Component(void)
 void Component::clearReturnInfos(void)
    {
    for (unsigned int i = 0; i < returnInfos.size(); i++)
-      delete returnInfos[i];
+	  delete returnInfos[i];
    returnInfos.empty();
 
 #ifdef NOTYET
    for (getVariableResponses::iterator v = myGetVariableResponses.begin();
-        v != myGetVariableResponses.end();
-        v++)
-        myGetVariableResponses.erase(v);
+		v != myGetVariableResponses.end();
+		/*v++ */) {
+	 delete v->second;
+	 v = myGetVariableResponses.erase(v);
+   }
 #endif
+
+   for (UInt2InfoMap::iterator v = getVarMap.begin();
+		v != getVarMap.end();
+		/*v++ */) {
+	 delete v->second;
+	 v = getVarMap.erase(v);
+   }
+
+   for (UInt2SetInfoMap::iterator v = setVarMap.begin();
+		v != setVarMap.end();
+		/*v++ */) {
+	 delete v->second;
+	 v = setVarMap.erase(v);
+   }
 
    }
 // -----------------------------------------------------------------
@@ -108,10 +124,10 @@ void Component::clearReturnInfos(void)
 
 // ------------------------------------------------------------------
 void Component::setup(const char *dllname,
-                      const unsigned int componentid,
-                      const unsigned int parentid,
-                      const unsigned int* callbackarg,
-                      CallbackType messagecallback)
+					  const unsigned int componentid,
+					  const unsigned int parentid,
+					  const unsigned int* callbackarg,
+					  CallbackType messagecallback)
    {
    dllName = dllname;
    parentID = parentid;
@@ -143,121 +159,133 @@ void Component::messageToLogic(/*const*/ Message* message)
 try {
    MessageData messageData(message);
    switch (message->messageType)
-      {
-      case Init1:               {Init1Data init1Data;
-                                 messageData >> init1Data;
-                                 doInit1(init1Data);
-                                 break;}
-      case Init2:               {beforeInit2 = false;
-                                 doInit2();
-                                 beforeCommence = false;
-                                 break;}
-      case Commence:            {doCommence();
-                                 break;}
-      case Event:               {EventData eventData;
+	  {
+	  case Init1:               {Init1Data init1Data;
+								 messageData >> init1Data;
+//								 ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
+//								 registry.addRef();
+								 // Make a copy of the SDML string, since the
+								 // original version may not be valid when
+								 // we need it.
+								 int nBytes = init1Data.sdml.length();
+								 char* sdml = (char*)malloc(nBytes);
+								 memcpy(sdml, init1Data.sdml.f_str(), nBytes);
+								 init1Data.sdml.aliasTo(sdml, nBytes);
+								 doInit1(init1Data);
+								 free(sdml);
+								 break;}
+	  case Init2:               {beforeInit2 = false;
+								 doInit2();
+								 beforeCommence = false;
+								 break;}
+	  case Commence:            {doCommence();
+								 break;}
+	  case Event:               {EventData eventData;
                                  messageData >> eventData;
                                  if (eventData.ID == tickID)
                                     {
                                     eventData.params.unpack(NULL, NULL, tick);
                                     eventData.params.getMessageData()->reset();
                                     haveWrittenToStdOutToday = false;
-                                    if (sendTickToComponent)
-                                      respondToEvent(eventData.publishedByID, eventData.ID, eventData.params);
+									if (sendTickToComponent)
+									  respondToEvent(eventData.publishedByID, eventData.ID, eventData.params);
                                     }
-                                 else
-                                    respondToEvent(eventData.publishedByID, eventData.ID, eventData.params);
+								 else
+									respondToEvent(eventData.publishedByID, eventData.ID, eventData.params);
                                  break;}
       case QueryValue:          {QueryValueData queryData(fromID);
                                  messageData >> queryData;
                                  onQueryValueMessage(message->from, queryData);
-                                 break;}
-      case RequestSetValue:     {RequestSetValueData setValueData;
-                                 messageData >> setValueData;
-                                 onRequestSetValueMessage(message->from, setValueData);
-                                 break;}
-      case QuerySetValue:       {QuerySetValueData querySetData;
-                                 messageData >> querySetData;
-                                 onQuerySetValueMessage(message->from, querySetData);
-                                 break;}
-      case ReplySetValueSuccess:
-      case NotifySetValueSuccess:{NotifySetValueSuccessData notifySetValueSuccess;
+								 break;}
+	  case RequestSetValue:     {RequestSetValueData setValueData;
+								 messageData >> setValueData;
+								 onRequestSetValueMessage(message->from, setValueData);
+								 break;}
+	  case QuerySetValue:       {QuerySetValueData querySetData;
+								 messageData >> querySetData;
+								 onQuerySetValueMessage(message->from, querySetData, msgID);
+								 break;}
+	  case ReplySetValueSuccess:
+	  case NotifySetValueSuccess:{NotifySetValueSuccessData notifySetValueSuccess;
                                  messageData >> notifySetValueSuccess;
                                  setVariableSuccess = notifySetValueSuccess.success;
-                                 break;}
-      case QueryInfo:           {QueryInfoData queryInfo;
-                                 messageData >> queryInfo;
-                                 onQueryInfoMessage(message->from, message->messageID, queryInfo);
-                                 break;}
-      case ReturnValue:         {ReturnValueData returnData;
-                                 messageData >> returnData;
-                                 addReturnValueMessage(returnData);
-                                 break;}
-      case ReplyValue:          {ReplyValueData replyData;
-                                 messageData >> replyData;
-                                 onReplyValueMessage(message->from, replyData);
-                                 break;}
-      case NotifyTermination:   {notifyTermination();
-                                 break;}
-      case PublishEvent:        {PublishEventData publishEventData;
-                                 messageData >> publishEventData;
-                                 onPublishEventMessage(message->from, publishEventData);
-                                 break;}
-      case ReturnInfo:          {ReturnInfoData* returnInfo = new ReturnInfoData;
-                                 messageData >> *returnInfo;
-                                 returnInfos.push_back(returnInfo);
-                                 break;}
-      case RequestComponentID:  {RequestComponentIDData requestComponentIDData;
-                                 messageData >> requestComponentIDData;
-                                 onRequestComponentIDMessage(message->from, requestComponentIDData);
-                                 break;}
-      case ReturnComponentID:   {ReturnComponentIDData returnComponentIDData;
-                                 messageData >> returnComponentIDData;
-                                 onReturnComponentIDMessage(returnComponentIDData);
-                                 break;}
-      case Register:            {RegisterData registerData;
-                                 messageData >> registerData;
-                                 onRegisterMessage(message->from, registerData);
-                                 break;}
-      case TerminateSimulation: {onTerminateSimulationMessage();
-                                 break;}
+								 break;}
+	  case QueryInfo:           {QueryInfoData queryInfo;
+								 messageData >> queryInfo;
+								 onQueryInfoMessage(message->from, message->messageID, queryInfo);
+								 break;}
+	  case ReturnValue:         {ReturnValueData returnData;
+								 messageData >> returnData;
+								 addReturnValueMessage(returnData);
+								 break;}
+	  case ReplyValue:          {ReplyValueData replyData;
+								 messageData >> replyData;
+								 onReplyValueMessage(message->from, replyData);
+								 break;}
+	  case NotifyTermination:   {notifyTermination();
+//								 ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
+//								 registry.freeRef();
+								 break;}
+	  case PublishEvent:        {PublishEventData publishEventData;
+								 messageData >> publishEventData;
+								 onPublishEventMessage(message->from, publishEventData);
+								 break;}
+	  case ReturnInfo:          {ReturnInfoData* returnInfo = new ReturnInfoData;
+								 messageData >> *returnInfo;
+								 returnInfos.push_back(returnInfo);
+								 break;}
+	  case RequestComponentID:  {RequestComponentIDData requestComponentIDData;
+								 messageData >> requestComponentIDData;
+								 onRequestComponentIDMessage(message->from, requestComponentIDData);
+								 break;}
+	  case ReturnComponentID:   {ReturnComponentIDData returnComponentIDData;
+								 messageData >> returnComponentIDData;
+								 onReturnComponentIDMessage(returnComponentIDData);
+								 break;}
+	  case Register:            {RegisterData registerData;
+								 messageData >> registerData;
+								 onRegisterMessage(message->from, registerData);
+								 break;}
+	  case TerminateSimulation: {onTerminateSimulationMessage();
+								 break;}
       case GetValue:            {GetValueData getValueData;
                                  messageData >> getValueData;
                                  onGetValueMessage(message->from, getValueData);
-                                 break;}
-      case Deregister:          {DeregisterData deregisterData;
-                                 messageData >> deregisterData;
-                                 onDeregisterMessage(message->from, deregisterData);
-                                 break;}
-      case Complete:            {CompleteData completeData;
-                                 messageData >> completeData;
-                                 onCompleteMessage(completeData);
-                                 break;}
-      case ApsimGetQuery:       {ApsimGetQueryData apsimGetQueryData;
-                                 messageData >> apsimGetQueryData;
-                                 onApsimGetQuery(message->from, apsimGetQueryData);
-                                 break;}
-      case ApsimSetQuery:       {ApsimSetQueryData apsimSetQueryData;
-                                 messageData >> apsimSetQueryData;
-                                 bool ok = onApsimSetQuery(apsimSetQueryData);
-                                 if (ok)
-                                    {
-                                    sendMessage(newNotifySetValueSuccessMessage
-                                                   (componentID,
-                                                    apsimSetQueryData.replyToID,
-                                                    apsimSetQueryData.replyID,
-                                                    ok));
-                                    addRegistration(::respondToSet,
-                                                    0,
-                                                    apsimSetQueryData.name, "");
-                                    }
-                                 break;}
-      case ApsimChangeOrder:    {onApsimChangeOrderData(fromID, messageData);
-                                 break;}
-      }
+								 break;}
+	  case Deregister:          {DeregisterData deregisterData;
+								 messageData >> deregisterData;
+								 onDeregisterMessage(message->from, deregisterData);
+								 break;}
+	  case Complete:            {CompleteData completeData;
+								 messageData >> completeData;
+								 onCompleteMessage(completeData);
+								 break;}
+	  case ApsimGetQuery:       {ApsimGetQueryData apsimGetQueryData;
+								 messageData >> apsimGetQueryData;
+								 onApsimGetQuery(message->from, apsimGetQueryData);
+								 break;}
+	  case ApsimSetQuery:       {ApsimSetQueryData apsimSetQueryData;
+								 messageData >> apsimSetQueryData;
+								 bool ok = onApsimSetQuery(apsimSetQueryData);
+								 if (ok)
+									{
+									sendMessage(newNotifySetValueSuccessMessage
+												   (componentID,
+													apsimSetQueryData.replyToID,
+													apsimSetQueryData.replyID,
+													ok));
+									addRegistration(::respondToSet,
+													0,
+													apsimSetQueryData.name, "");
+									}
+								 break;}
+	  case ApsimChangeOrder:    {onApsimChangeOrderData(fromID, messageData);
+								 break;}
+	  }
 
    // if acknowledgement is required, then give it.
    if (ack)
-      sendMessage(newCompleteMessage(componentID, fromID, msgID));
+	  sendMessage(newCompleteMessage(componentID, fromID, msgID));
    }
 catch (const std::exception &e)
    {
@@ -286,14 +314,14 @@ void Component::doInit1(const Init1Data& init1Data)
    string fqn =  asString(init1Data.fqn);
    unsigned posPeriod = fqn.rfind('.');
    if (posPeriod == string::npos)
-      {
-      name = fqn;
-      pathName = ".";
-      }
+	  {
+	  name = fqn;
+	  pathName = ".";
+	  }
    else
       {
       name = fqn.substr(posPeriod+1);
-      pathName = fqn.substr(0, posPeriod);
+	  pathName = fqn.substr(0, posPeriod);
       }
    type = "?";
    version = "1";
@@ -344,7 +372,7 @@ unsigned Component::addRegistration(EventTypeCode kind,
       regID = registry.add(reg);
 
       sendMessage(newRegisterMessage(componentID,    // from
-                                     parentID,       // to
+									 parentID,       // to
                                      kind,           // kind
                                      regID,          // regID
                                      destinationComponentID, // destination ID
@@ -353,7 +381,7 @@ unsigned Component::addRegistration(EventTypeCode kind,
       }
 
    if (Str_i_Eq(regName, "tick"))
-      sendTickToComponent = true;
+	  sendTickToComponent = true;
 
    return regID;
    }
@@ -361,31 +389,31 @@ unsigned Component::addRegistration(EventTypeCode kind,
 // delete the specified registration.
 // ------------------------------------------------------------------
 void Component::deleteRegistration(EventTypeCode kind,
-                                   unsigned int regID)
+								   unsigned int regID)
    {
    sendMessage(newDeregisterMessage(componentID,
-                                    parentID,
-                                    kind,
-                                    regID));
+									parentID,
+									kind,
+									regID));
    }
 
 void Component::respondToGet(unsigned int& /*fromID*/, QueryValueData& queryData)
    {
    UInt2InfoMap::iterator i = getVarMap.find(queryData.ID);
    if (i != getVarMap.end())
-      {
-      baseInfo *v = i->second;
-      v->sendVariable(this, queryData);
-      }
+	  {
+	  baseInfo *v = i->second;
+	  v->sendVariable(this, queryData);
+	  }
    }
 
 bool Component::respondToSet(unsigned int& /*fromID*/, QuerySetValueData& setValueData)
    {
    UInt2SetInfoMap::iterator i = setVarMap.find(setValueData.ID);
    if (i != setVarMap.end())
-      {
-      fnSetInfo *v = i->second;
-      return v->callSetter(this, setValueData);
+	  {
+	  fnSetInfo *v = i->second;
+	  return v->callSetter(this, setValueData);
       }
    return false;
    }
@@ -400,7 +428,7 @@ void Component::respondToEvent(unsigned int& fromID, unsigned int& eventID, Vari
   ipf2 = eventMap.upper_bound(eventID);
 
   for (ipf = ipf1; ipf != ipf2; ipf++)
-     pfs.push_back(ipf->second);
+	 pfs.push_back(ipf->second);
 
   for (unsigned i = 0; i != pfs.size(); i++)
      {
@@ -445,7 +473,7 @@ bool Component::readParameter
    }
 
 void Component::getMultipleProperties(const std::string& sectionName,
-                                      const std::string& variableName,
+									  const std::string& variableName,
                                       std::vector<std::string>& returnValues)
     {
    // ------------------------------------------------------------------
@@ -517,14 +545,14 @@ void Component::terminateSimulation(void)
 
 // ------------------------------------------------------------------
 bool Component::getVariables(unsigned int registrationID,
-                             Variants **values)
+							 Variants **values)
    {
    getVariableResponses::iterator v =
-        myGetVariableResponses.find (registrationID);
+		myGetVariableResponses.find (registrationID);
 
    if (v == myGetVariableResponses.end())
       {
-      // add a new entry for this registration
+	  // add a new entry for this registration
       v = myGetVariableResponses.insert(
          v,
          getVariableResponses::value_type(
@@ -538,8 +566,8 @@ bool Component::getVariables(unsigned int registrationID,
    // send a GetValue message. Responses will be tucked away
    // in the map "v" created above
    sendMessage(newGetValueMessage(componentID,
-                                  parentID,
-                                  registrationID));
+								  parentID,
+								  registrationID));
 
    // return whatever came back
    *values = v->second;
@@ -557,53 +585,53 @@ bool Component::getVariables(unsigned int registrationID,
 
 // ------------------------------------------------------------------
 bool Component::getVariable(unsigned int registrationID,
-                            Variant **value,
-                            bool optional)
+							Variant **value,
+							bool optional)
    {
    Variants *variants = NULL;
    getVariables(registrationID, &variants);
    if (variants != NULL && variants->size() > 1)
-      {
-      ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-      ApsimRegistration* regItem = registry.find(::get, componentID, registrationID);
-      if (regItem == NULL) {throw std::runtime_error("Invalid registration ID in Component::getVariable 1");}
-      std::string st;
-      st = "The module " + std::string(name) + " has asked for the value of the variable ";
-      st += regItem->getName();
-      st += ".\nIt received multiple responses when only 1 was expected.\nIt received values from the following modules:\n";
-      for (unsigned v = 0; v != variants->size(); v++)
-         {
-         unsigned fromID = variants->getVariant(v)->getFromId();
-         st += "   " + registry.componentByID(fromID);
-         st += "\n";
-         }
+	  {
+	  ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
+	  ApsimRegistration* regItem = registry.find(::get, componentID, registrationID);
+	  if (regItem == NULL) {throw std::runtime_error("Invalid registration ID in Component::getVariable 1");}
+	  std::string st;
+	  st = "The module " + std::string(name) + " has asked for the value of the variable ";
+	  st += regItem->getName();
+	  st += ".\nIt received multiple responses when only 1 was expected.\nIt received values from the following modules:\n";
+	  for (unsigned v = 0; v != variants->size(); v++)
+		 {
+		 unsigned fromID = variants->getVariant(v)->getFromId();
+		 st += "   " + registry.componentByID(fromID);
+		 st += "\n";
+		 }
 
-      error(st, true);
-      return false;
-      }
+	  error(st, true);
+	  return false;
+	  }
    else if (!optional && variants != NULL && variants->size() == 0)
-      {
-      ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-      ApsimRegistration* regItem = registry.find(::get, componentID, registrationID);
-      if (regItem == NULL) {throw std::runtime_error("Invalid registration ID in Component::getVariable 2");}
-      std::string st;
-      st = "The module " + std::string(name) + " has asked for the value of the variable ";
-      if (regItem->getDestinationID() > 0) {
-         st += registry.componentByID(regItem->getDestinationID());
-         st += ".";
-      }
-      st += regItem->getName();
-      st += ".\nIt received no responses.";
-      error(st, true);
-      return false;
-      }
+	  {
+	  ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
+	  ApsimRegistration* regItem = registry.find(::get, componentID, registrationID);
+	  if (regItem == NULL) {throw std::runtime_error("Invalid registration ID in Component::getVariable 2");}
+	  std::string st;
+	  st = "The module " + std::string(name) + " has asked for the value of the variable ";
+	  if (regItem->getDestinationID() > 0) {
+		 st += registry.componentByID(regItem->getDestinationID());
+		 st += ".";
+	  }
+	  st += regItem->getName();
+	  st += ".\nIt received no responses.";
+	  error(st, true);
+	  return false;
+	  }
    else if (variants != NULL && variants->size() == 1)
-      {
-      (*value) = variants->getVariant(0);
-      return true;
-      }
+	  {
+	  (*value) = variants->getVariant(0);
+	  return true;
+	  }
    else
-      return false;
+	  return false;
    }
 // ------------------------------------------------------------------
 //  Short description:
@@ -616,7 +644,7 @@ bool Component::getVariable(unsigned int registrationID,
 
 // ------------------------------------------------------------------
 void Component::onQueryValueMessage(unsigned int fromID,
-                                    QueryValueData& queryData)
+									QueryValueData& queryData)
    {
    respondToGet(fromID, queryData);
    }
@@ -646,15 +674,15 @@ bool Component::componentIDToName(int compID, std::string& name)
 // ------------------------------------------------------------------
 // process the querySetValueMessage.
 // ------------------------------------------------------------------
-void Component::onQuerySetValueMessage(unsigned fromID, QuerySetValueData& querySetData)
+void Component::onQuerySetValueMessage(unsigned fromID, QuerySetValueData& querySetData, unsigned msgID)
    {
    bool ok = respondToSet(fromID, querySetData);
    unsigned int regID = querySetData.ID;
 //cout << "Component::onQuerySetValueMessage id="<<regID<<endl;
    sendMessage(newReplySetValueSuccessMessage
-                  (componentID,
-                   fromID,
-                   regID,
+				  (componentID,
+				   fromID,
+				   msgID,
                    ok));
    }
 // ------------------------------------------------------------------
@@ -681,7 +709,7 @@ namespace protocol {
       messageData << summaryData.componentName;
       messageData << summaryData.lines;
       return messageData;
-      }
+	  }
    unsigned int memorySize(const SummaryData& summaryData)
       {
       return memorySize(summaryData.componentName) + memorySize(summaryData.lines);
@@ -741,7 +769,7 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
    unsigned posEndText;
    unsigned posCR;
    do
-      {
+	  {
       posCR = lines.find("\n", posStart);
       posEndText = posCR;
       if (posEndText == string::npos)
@@ -861,7 +889,7 @@ void Component::waitForComplete(void)
    for (int iter = 0; iter != maxNumIterations && !completeFound; iter++);
    if (!completeFound)
       {
-      char buffer[200];
+	  char buffer[200];
       strcpy(buffer, "Timeout while waiting for a COMPLETE message");
 //      error(buffer, true);
       }
@@ -921,7 +949,7 @@ void varInfo::sendVariable(Component *systemInterface, QueryValueData& qd)
          else
            throw "Length = 0 in varInfo::sendVariable";
          break;
-      case DTstring :
+	  case DTstring :
          if (myLength == 1)
            {
            std::string s(*(char **)myPtr);
@@ -944,7 +972,7 @@ void varVectorFloatInfo::sendVariable(Component *systemInterface, QueryValueData
    }
 
 unsigned int Component::addEvent(const char *systemName,
-                                 boost::function3<void, unsigned &, unsigned &, protocol::Variant &> ptr,
+								 boost::function3<void, unsigned &, unsigned &, protocol::Variant &> ptr,
                                  const char* DDML)
    {
    unsigned int id = addRegistration(::respondToEvent, 0, string(systemName), DDML);
@@ -981,11 +1009,11 @@ unsigned int Component::getReg(const char *systemName,
    }
    buffer += "\"";
    if (strlen(units) > 0)
-      {
+	  {
       buffer += " unit=\"";
       buffer += units;
       buffer += "\"";
-      }
+	  }
    buffer += " description=\"";
    buffer += desc;
    buffer += "\"/>";
@@ -998,16 +1026,16 @@ unsigned int Component::getReg(const char *systemName,
 // Build the xml fragment that describes this variable and publish to system
 std::string Component::getDescription()
    {
-      string returnString = "<describecomp>\n";
-      returnString += string("<executable>") + dllName + "</executable>\n";
-      returnString += string("<class>") + name + "</class>\n";
-      returnString += "<version>1.0</version>\n";
-      returnString += "<author>APSRU</author>\n";
+	  string returnString = "<describecomp>\n";
+	  returnString += string("<executable>") + dllName + "</executable>\n";
+	  returnString += string("<class>") + name + "</class>\n";
+	  returnString += "<version>1.0</version>\n";
+	  returnString += "<author>APSRU</author>\n";
 
-      returnString += ApsimRegistry::getApsimRegistry().getDescription(componentID);
+	  returnString += ApsimRegistry::getApsimRegistry().getDescription(componentID);
 
-      returnString += "</describecomp>\n";
-      return returnString;
+	  returnString += "</describecomp>\n";
+	  return returnString;
    }
 
 void Component::removeGettableVar(const char *systemName)
@@ -1017,31 +1045,32 @@ void Component::removeGettableVar(const char *systemName)
    //getVarMap.erase(newend, getVarMap.end());
    bool found = 1;
    while (found)
-      {
-      found = 0;
-      UInt2InfoMap::iterator i;
-      for (i = getVarMap.begin();i != getVarMap.end();i++)
-         if ((*i).second->name() == systemName)
-            {
-            getVarMap.erase(i);  // and should probably deleteReg too..?? fixme
-            found = 1;
-            break;
-            }
-      }
+	  {
+	  found = 0;
+	  UInt2InfoMap::iterator i;
+	  for (i = getVarMap.begin();i != getVarMap.end();i++)
+		 if ((*i).second->name() == systemName)
+			{
+			delete i->second;
+			getVarMap.erase(i);  // and should probably deleteReg too..?? fixme
+			found = 1;
+			break;
+			}
+	  }
    }
 
 // A component has sent us a Variant. Pack it into a registration entry
 void Component::addReturnValueMessage(ReturnValueData &returnValueData)
    {
    getVariableResponses::iterator v =
-        myGetVariableResponses.find (returnValueData.ID);
+		myGetVariableResponses.find (returnValueData.ID);
 
    if (v == myGetVariableResponses.end())
-      {
-      string msg = name;
-      msg += " was sent a ReturnValue message without asking for it!!";
-      throw std::runtime_error(msg);
-      }
+	  {
+	  string msg = name;
+	  msg += " was sent a ReturnValue message without asking for it!!";
+	  throw std::runtime_error(msg);
+	  }
 
    // unnecessary!!
    returnValueData.variant.setFromId(returnValueData.fromID);
