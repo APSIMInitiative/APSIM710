@@ -89,28 +89,26 @@ void Component::clearReturnInfos(void)
 	  delete returnInfos[i];
    returnInfos.empty();
 
-#ifdef NOTYET
    for (getVariableResponses::iterator v = myGetVariableResponses.begin();
 		v != myGetVariableResponses.end();
-		/*v++ */) {
+		v = myGetVariableResponses.begin()) {
 	 delete v->second;
-	 v = myGetVariableResponses.erase(v);
+	 myGetVariableResponses.erase(v);
    }
 
    for (UInt2InfoMap::iterator v = getVarMap.begin();
 		v != getVarMap.end();
-		/*v++ */) {
+		v = getVarMap.begin()) {
 	 delete v->second;
-	 v = getVarMap.erase(v);
+	 getVarMap.erase(v);
    }
 
    for (UInt2SetInfoMap::iterator v = setVarMap.begin();
 		v != setVarMap.end();
-		/*v++ */) {
+		v = setVarMap.begin()) {
 	 delete v->second;
-	 v = setVarMap.erase(v);
+	 setVarMap.erase(v);
    }
-#endif
 
    }
 // -----------------------------------------------------------------
