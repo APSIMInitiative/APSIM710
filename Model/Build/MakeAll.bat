@@ -120,6 +120,7 @@ call MakeProject SetXMLValue
 call MakeProject ProbeDll
 call MakeProject Plant2Documentation
 call MakeProject RunMacro
+call MakeProject AgPasture
 
 call MakeProject RunTime
 

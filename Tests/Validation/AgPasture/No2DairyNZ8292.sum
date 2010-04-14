@@ -1,0 +1,3609 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = No2DairyNZ8292
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component "Harvest specified dates28 at No2Dairy3" = %apsim%\Model\Manager.dll
+   Component                        "trace" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component           "SoilNo2Dairy Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component        "SoilNo2Dairy Nitrogen" = %apsim%\Model\SoilN.dll
+   Component     "ryegrass_clover_paspalum" = %apsim%_Dev\Model\AgPasture\bin\AgPasture.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 30/06/1982
+     Simulation end date   = 30/06/1992
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Ruakura.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        year
+        month
+        day_of_month
+        trace.treat
+        AboveGroundDeadN
+        AboveGroundDeadWt
+        AboveGroundLiveN
+        AboveGroundLiveWt
+        AboveGroundN
+        AboveGroundNPct
+        AboveGroundWt
+        BelowGroundN
+        BelowGroundWt
+        Biomass
+        Cover_dead
+        Cover_green
+        Cover_tot
+        Crop_Type
+        GLFn
+        GLFnConcentration
+        GLFrgr
+        GLFtemp
+        GLFwater
+        HarvestN
+        HarvestWt
+        Height
+        HerbageDigestibility
+        HerbageME
+        radn
+        IntRadn
+        LAI_dead
+        LAI_green
+        LAI_total
+        LeafDeadWt
+        LeafLiveWt
+        LeafN
+        LeafWt
+        LitterDepositionN
+        LitterDepositionWt
+        HerbageGrowthWt
+        NitrogenDemand
+        NitrogenSupply
+        NitrogenSupplyLayers
+        NitrogenUptake
+        NitrogenUptakeLayers
+        PlantFixedN
+        PlantPotentialGrowthWt
+        PlantRemobilisedN
+        PlantStatus
+        RootSenescenceN
+        RootSenescenceWt
+        SpeciesHarvestPct
+        SpeciesLiveWt
+        SpeciesTotalLAI
+        SpeciesTotalWt
+        StemDeadWt
+        StemLiveWt
+        StemN
+        StemWt
+        StolonN
+        StolonWt
+        TotalPlantN
+        TotalPlantWt
+        WaterDemand
+        WaterSupply
+        WaterSupplyLayers
+        WaterUptake
+        WaterUptakeLayers
+        rain
+        eo
+        eos
+        es
+        runoff
+        drain
+        irrigation
+        sw()
+        sw(1)
+        biom_n()
+        hum_n()
+        fom_n()
+        dnit()
+        nh4()
+        no3()
+        urea()
+        surfaceom_n
+        surfaceom_wt
+        leach_no3
+        leach_nh4
+        leach_urea
+        n_removed
+        n_returned
+        n_som
+        n_urine
+
+     Output file = No2DairyNZ8292 No2DairyNZ.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Harvest specified dates28 at No2Dairy3 Initialisation -----------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     account = account + 1
+     dm_som = 0
+     dm_removed = 0
+     n_returned =0
+     n_removed =0
+     n_som = 0
+     n_urine = 0
+     n_urine1 = 0
+     n_urine2 = 0
+     if (today = date('20/07/1981')) or
+      (today = date('15/09/1981')) or
+      (today = date('30/09/1981')) or
+      (today = date('28/10/1981')) or
+      (today = date('24/11/1981')) or
+      (today = date('15/12/1981')) then
+        'ryegrass_clover_paspalum' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.75)
+       n_returned = harvestn * 0.75
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+       'surface organic matter' add_surfaceom name = 'ryegrass_clover_paspalum' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+     elseif (today = date('18/05/1982')) or
+      (today = date('17/06/1982')) or
+      (today = date('15/07/1982')) or
+      (today = date('12/08/1982')) or
+      (today = date('9/09/1982')) or
+      (today = date('7/10/1982')) or
+      (today = date('4/11/1982')) or
+      (today = date('2/12/1982')) or
+      (today = date('30/12/1982')) then
+       'ryegrass_clover_paspalum' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.75)
+       n_returned = harvestn * 0.75
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+       'surface organic matter' add_surfaceom name = 'ryegrass_clover_paspalum' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+     elseif (today = date('27/01/1983')) or
+      (today = date('24/02/1983')) or
+      (today = date('24/03/1983')) or
+      (today = date('21/04/1983')) or
+      (today = date('19/05/1983')) or
+      (today = date('16/06/1983')) or
+      (today = date('14/07/1983')) or
+      (today = date('11/08/1983')) or
+      (today = date('8/09/1983')) or
+      (today = date('6/10/1983')) or
+      (today = date('3/11/1983')) or
+      (today = date('30/11/1983')) or
+      (today = date('29/12/1983')) or
+      (today = date('26/01/1984')) or
+      (today = date('23/02/1984')) or
+      (today = date('22/03/1984')) or
+      (today = date('19/04/1984')) or
+      (today = date('17/05/1984')) or
+      (today = date('14/06/1984')) or
+      (today = date('12/07/1984')) or
+      (today = date('9/08/1984')) or
+      (today = date('6/09/1984')) or
+      (today = date('4/10/1984')) or
+      (today = date('1/11/1984')) or
+      (today = date('29/11/1984')) or
+      (today = date('28/12/1984')) then
+       'ryegrass_clover_paspalum' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.75)
+       n_returned = harvestn * 0.75
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+       'surface organic matter' add_surfaceom name = 'ryegrass_clover_paspalum' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+     elseif (today = date('24/01/1985')) or
+      (today = date('20/02/1985')) or
+      (today = date('21/03/1985')) or
+      (today = date('18/04/1985')) or
+      (today = date('16/05/1985')) or
+      (today = date('13/06/1985')) or
+      (today = date('11/07/1985')) or
+      (today = date('7/08/1985')) or
+      (today = date('5/09/1985')) or
+      (today = date('3/10/1985')) or
+      (today = date('31/10/1985')) or
+      (today = date('28/11/1985')) or
+      (today = date('27/12/1985')) or
+      (today = date('23/01/1986')) or
+      (today = date('20/02/1986')) or
+      (today = date('20/03/1986')) or
+      (today = date('17/04/1986')) or
+      (today = date('15/05/1986')) or
+      (today = date('12/06/1986')) or
+      (today = date('10/07/1986')) or
+      (today = date('8/08/1986')) or
+      (today = date('4/09/1986')) or
+      (today = date('2/10/1986')) or
+      (today = date('30/10/1986')) or
+      (today = date('27/11/1986')) or
+      (today = date('24/12/1986')) then
+       'ryegrass_clover_paspalum' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.75)
+       n_returned = harvestn * 0.75
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+       'surface organic matter' add_surfaceom name = 'ryegrass_clover_paspalum' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+     elseif (today = date('23/01/1987')) or
+      (today = date('20/02/1987')) or
+      (today = date('19/03/1987')) or
+      (today = date('16/04/1987')) or
+      (today = date('14/05/1987')) or
+      (today = date('11/06/1987')) or
+      (today = date('9/07/1987')) or
+      (today = date('5/08/1987')) or
+      (today = date('4/09/1987')) or
+      (today = date('1/10/1987')) or
+      (today = date('29/10/1987')) or
+      (today = date('26/11/1987')) or
+      (today = date('23/12/1987')) or
+      (today = date('21/01/1988')) or
+      (today = date('18/02/1988')) or
+      (today = date('17/03/1988')) or
+      (today = date('14/04/1988')) or
+      (today = date('12/05/1988')) or
+      (today = date('9/06/1988')) or
+      (today = date('7/07/1988')) or
+      (today = date('4/08/1988')) or
+      (today = date('31/08/1988')) or
+      (today = date('29/09/1988')) or
+      (today = date('27/10/1988')) or
+      (today = date('24/11/1988')) or
+      (today = date('22/12/1988')) then
+       'ryegrass_clover_paspalum' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.75)
+       n_returned = harvestn * 0.75
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+       'surface organic matter' add_surfaceom name = 'ryegrass_clover_paspalum' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+     elseif  (today = date('19/01/1989')) or
+      (today = date('16/02/1989')) or
+      (today = date('16/03/1989')) or
+      (today = date('13/04/1989')) or
+      (today = date('11/05/1989')) or
+      (today = date('8/06/1989')) or
+      (today = date('6/07/1989')) or
+      (today = date('3/08/1989')) or
+      (today = date('31/08/1989')) or
+      (today = date('28/09/1989')) or
+      (today = date('26/10/1989')) or
+      (today = date('23/11/1989')) or
+      (today = date('21/12/1989')) or
+      (today = date('18/01/1990')) or
+      (today = date('15/02/1990')) or
+      (today = date('19/03/1990')) or
+      (today = date('12/04/1990')) or
+      (today = date('9/05/1990')) or
+      (today = date('7/06/1990')) or
+      (today = date('5/07/1990')) or
+      (today = date('2/08/1990')) or
+      (today = date('30/08/1990')) or
+      (today = date('27/09/1990')) or
+      (today = date('25/10/1990')) or
+      (today = date('22/11/1990')) or
+      (today = date('20/12/1990')) then
+       'ryegrass_clover_paspalum' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.75)
+       n_returned = harvestn * 0.75
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+       'surface organic matter' add_surfaceom name = 'ryegrass_clover_paspalum' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+     elseif (today = date('17/01/1991')) or
+      (today = date('14/02/1991')) or
+      (today = date('13/03/1991')) or
+      (today = date('11/04/1991')) or
+      (today = date('9/05/1991')) or
+      (today = date('6/06/1991')) or
+      (today = date('4/07/1991')) or
+      (today = date('1/08/1991')) or
+      (today = date('29/08/1991')) or
+      (today = date('26/09/1991')) or
+      (today = date('24/10/1991')) or
+      (today = date('21/11/1991')) or
+      (today = date('19/12/1991')) or
+      (today = date('16/01/1992')) or
+      (today = date('13/02/1992')) or
+      (today = date('12/03/1992')) or
+      (today = date('9/04/1992')) or
+      (today = date('7/05/1992')) or
+      (today = date('4/06/1992')) or
+      (today = date('3/07/1992')) or
+      (today = date('30/07/1992')) or
+      (today = date('31/08/1992')) or
+      (today = date('25/09/1992')) or
+      (today = date('28/10/1992')) or
+      (today = date('26/11/1992')) or
+      (today = date('23/12/1992')) or
+      (today = date('21/01/1993')) or
+      (today = date('19/02/1993')) or
+      (today = date('18/03/1993')) or
+      (today = date('22/04/1993')) or
+      (today = date('28/05/1993')) or
+      (today = date('9/07/1993')) or
+      (today = date('2/09/1993')) or
+      (today = date('1/10/1993')) or
+      (today = date('29/10/1993')) then
+      'ryegrass_clover_paspalum' graze type = 'residue', amount = 1000 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.75)
+       n_returned = harvestn * 0.75
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+       'surface organic matter' add_surfaceom name = 'ryegrass_clover_paspalum' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+     endif
+     
+     SECTION:- init
+     account = 0
+     END of rules
+     
+     Manager creating a new local real variable : account = 0.00000
+
+------- trace Initialisation --------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     
+     SECTION:- init
+     treat = 4
+     END of rules
+     
+     Manager creating a new local real variable : treat = 4.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SoilNo2Dairy Water Initialisation -------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.100  0.140  0.350  0.480  0.350  1.250  0.613  0.300
+          100.-  300.  0.100  0.140  0.350  0.480  0.350  1.310  0.340  0.400
+          300.-  600.  0.100  0.140  0.350  0.480  0.350  1.230  0.048  0.400
+          600.-  900.  0.100  0.140  0.350  0.480  0.350  1.240  0.000  0.400
+          900.- 1200.  0.100  0.140  0.200  0.450  0.200  1.250  0.000  0.400
+         1200.- 1500.  0.100  0.140  0.200  0.450  0.200  1.260  0.000  0.400
+         1500.- 1800.  0.100  0.140  0.200  0.450  0.200  1.290  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      21.00      21.00      13.00
+          100.-  300.      28.00      42.00      42.00      26.00
+          300.-  600.      42.00      63.00      63.00      39.00
+          600.-  900.      42.00      63.00      63.00      39.00
+          900.- 1200.      42.00      18.00      18.00      75.00
+         1200.- 1500.      42.00      18.00      18.00      75.00
+         1500.- 1800.      42.00      18.00      18.00      75.00
+          ---------------------------------------------------------
+               Totals     252.00     243.00     243.00     342.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- SoilNo2Dairy Nitrogen Initialisation ----------------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: SoilNo2Dairy Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: SoilNo2Dairy Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: SoilNo2Dairy Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: SoilNo2Dairy Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.50    9.52    0.16    0.00
+             2     6.00  1.50   19.05    0.35    0.00
+             3     6.00  0.50   14.28    0.49    0.00
+             4     6.00  0.00   14.28    0.49    0.00
+             5     6.00  0.00   14.29    0.49    0.00
+             6     6.00  0.00   14.28    0.50    0.00
+             7     6.00  0.00   14.28    0.51    0.00
+          ------------------------------------------------
+           Totals              100.00    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      29761.9  2480.2  1488.1   186.0   146.5     3.7
+             2      37428.6  3119.0  1871.4   233.9   105.0     2.6
+             3      18088.2  1507.4   361.8    45.2    63.7     1.6
+             4          0.0     0.0     0.0     0.0    38.6     1.0
+             5          0.0     0.0     0.0     0.0    23.4     0.6
+             6          0.0     0.0     0.0     0.0    14.2     0.4
+             7          0.0     0.0     0.0     0.0     8.6     0.2
+          ---------------------------------------------------------
+           Totals   85278.7  7106.6  3721.3   465.2   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : dm_som = 0.00000
+     Manager creating a new local real variable : dm_removed = 0.00000
+     Manager creating a new local real variable : n_returned = 0.00000
+     Manager creating a new local real variable : n_removed = 0.00000
+     Manager creating a new local real variable : n_som = 0.00000
+     Manager creating a new local real variable : n_urine = 0.00000
+     Manager creating a new local real variable : n_urine1 = 0.00000
+     Manager creating a new local real variable : n_urine2 = 0.00000
+15 July 1982(Day of year=196), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager creating a new local real variable : digest = 0.61707
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 341.08337 (kg/ha), n = 8.04935 (kg/ha)
+15 July 1982(Day of year=196): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.24441 (kg/ha), depth = 50 (mm), type = urea_n
+15 July 1982(Day of year=196), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.24 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.82961 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.83 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+12 August 1982(Day of year=224), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 143.76059 (kg/ha), n = 5.00554 (kg/ha)
+12 August 1982(Day of year=224): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.50499 (kg/ha), depth = 50 (mm), type = urea_n
+12 August 1982(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.50 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.00333 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.00 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 September 1982(Day of year=252), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 276.63501 (kg/ha), n = 11.88635 (kg/ha)
+9 September 1982(Day of year=252): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.69771 (kg/ha), depth = 50 (mm), type = urea_n
+9 September 1982(Day of year=252), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.70 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.13181 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.13 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+7 October 1982(Day of year=280), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 501.90881 (kg/ha), n = 20.91141 (kg/ha)
+7 October 1982(Day of year=280): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 18.82027 (kg/ha), depth = 50 (mm), type = urea_n
+7 October 1982(Day of year=280), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        18.82 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 12.54685 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        12.55 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+4 November 1982(Day of year=308), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 564.47327 (kg/ha), n = 19.63272 (kg/ha)
+4 November 1982(Day of year=308): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 17.66945 (kg/ha), depth = 50 (mm), type = urea_n
+4 November 1982(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        17.67 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.77963 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.78 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+2 December 1982(Day of year=336), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 650.11945 (kg/ha), n = 21.12716 (kg/ha)
+2 December 1982(Day of year=336): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 19.01444 (kg/ha), depth = 50 (mm), type = urea_n
+2 December 1982(Day of year=336), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        19.01 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 12.67629 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        12.68 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 December 1982(Day of year=364), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 739.78864 (kg/ha), n = 22.39253 (kg/ha)
+30 December 1982(Day of year=364): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 20.15327 (kg/ha), depth = 50 (mm), type = urea_n
+30 December 1982(Day of year=364), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.15 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 13.43552 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        13.44 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+27 January 1983(Day of year=27), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 709.17114 (kg/ha), n = 21.42349 (kg/ha)
+27 January 1983(Day of year=27): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 19.28115 (kg/ha), depth = 50 (mm), type = urea_n
+27 January 1983(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        19.28 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 12.85410 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        12.85 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+24 February 1983(Day of year=55), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 698.64886 (kg/ha), n = 18.59538 (kg/ha)
+24 February 1983(Day of year=55): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.73584 (kg/ha), depth = 50 (mm), type = urea_n
+24 February 1983(Day of year=55), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.74 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.15723 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.16 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+24 March 1983(Day of year=83), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 447.91476 (kg/ha), n = 10.95434 (kg/ha)
+24 March 1983(Day of year=83): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.85891 (kg/ha), depth = 50 (mm), type = urea_n
+24 March 1983(Day of year=83), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.86 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.57261 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.57 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+21 April 1983(Day of year=111), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 260.68756 (kg/ha), n = 6.77255 (kg/ha)
+21 April 1983(Day of year=111): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.09529 (kg/ha), depth = 50 (mm), type = urea_n
+21 April 1983(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.10 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.06353 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.06 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+19 May 1983(Day of year=139), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 166.24449 (kg/ha), n = 4.63942 (kg/ha)
+19 May 1983(Day of year=139): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.17548 (kg/ha), depth = 50 (mm), type = urea_n
+19 May 1983(Day of year=139), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.18 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.78365 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.78 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+16 June 1983(Day of year=167), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 82.86110 (kg/ha), n = 2.53752 (kg/ha)
+16 June 1983(Day of year=167): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 2.28377 (kg/ha), depth = 50 (mm), type = urea_n
+16 June 1983(Day of year=167), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.28 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.52251 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.52 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+14 July 1983(Day of year=195), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 90.41668 (kg/ha), n = 3.46320 (kg/ha)
+14 July 1983(Day of year=195): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.11688 (kg/ha), depth = 50 (mm), type = urea_n
+14 July 1983(Day of year=195), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.12 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.07792 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.08 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+11 August 1983(Day of year=223), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 176.04375 (kg/ha), n = 7.38785 (kg/ha)
+11 August 1983(Day of year=223): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.64907 (kg/ha), depth = 50 (mm), type = urea_n
+11 August 1983(Day of year=223), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.65 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.43271 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.43 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+8 September 1983(Day of year=251), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 233.31664 (kg/ha), n = 8.53242 (kg/ha)
+8 September 1983(Day of year=251): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.67917 (kg/ha), depth = 50 (mm), type = urea_n
+8 September 1983(Day of year=251), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.68 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.11945 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.12 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+6 October 1983(Day of year=279), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 417.80627 (kg/ha), n = 11.95602 (kg/ha)
+6 October 1983(Day of year=279): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.76042 (kg/ha), depth = 50 (mm), type = urea_n
+6 October 1983(Day of year=279), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.76 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.17362 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.17 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+3 November 1983(Day of year=307), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 536.09509 (kg/ha), n = 14.15756 (kg/ha)
+3 November 1983(Day of year=307): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.74180 (kg/ha), depth = 50 (mm), type = urea_n
+3 November 1983(Day of year=307), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.74 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.49454 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.49 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 November 1983(Day of year=334), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 631.81207 (kg/ha), n = 16.66015 (kg/ha)
+30 November 1983(Day of year=334): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.99414 (kg/ha), depth = 50 (mm), type = urea_n
+30 November 1983(Day of year=334), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.99 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.99609 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+29 December 1983(Day of year=363), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 774.65552 (kg/ha), n = 19.60085 (kg/ha)
+29 December 1983(Day of year=363): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 17.64078 (kg/ha), depth = 50 (mm), type = urea_n
+29 December 1983(Day of year=363), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        17.64 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.76052 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.76 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+26 January 1984(Day of year=26), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 747.53284 (kg/ha), n = 18.72051 (kg/ha)
+26 January 1984(Day of year=26): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.84846 (kg/ha), depth = 50 (mm), type = urea_n
+26 January 1984(Day of year=26), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.85 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.23230 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.23 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+23 February 1984(Day of year=54), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 742.10583 (kg/ha), n = 18.91399 (kg/ha)
+23 February 1984(Day of year=54): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 17.02259 (kg/ha), depth = 50 (mm), type = urea_n
+23 February 1984(Day of year=54), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        17.02 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.34839 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.35 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+22 March 1984(Day of year=82), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 617.19165 (kg/ha), n = 15.62053 (kg/ha)
+22 March 1984(Day of year=82): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.05848 (kg/ha), depth = 50 (mm), type = urea_n
+22 March 1984(Day of year=82), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.37232 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.37 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+19 April 1984(Day of year=110), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 443.28165 (kg/ha), n = 11.87852 (kg/ha)
+19 April 1984(Day of year=110): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.69067 (kg/ha), depth = 50 (mm), type = urea_n
+19 April 1984(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.69 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.12712 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.13 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+17 May 1984(Day of year=138), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 237.48465 (kg/ha), n = 6.99479 (kg/ha)
+17 May 1984(Day of year=138): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.29531 (kg/ha), depth = 50 (mm), type = urea_n
+17 May 1984(Day of year=138), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.30 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.19688 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.20 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+14 June 1984(Day of year=166), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 105.48518 (kg/ha), n = 3.36471 (kg/ha)
+14 June 1984(Day of year=166): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.02824 (kg/ha), depth = 50 (mm), type = urea_n
+14 June 1984(Day of year=166), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.03 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.01882 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.02 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+12 July 1984(Day of year=194), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 65.71650 (kg/ha), n = 2.04795 (kg/ha)
+12 July 1984(Day of year=194): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 1.84316 (kg/ha), depth = 50 (mm), type = urea_n
+12 July 1984(Day of year=194), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.84 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.22877 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.23 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 August 1984(Day of year=222), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 111.08055 (kg/ha), n = 3.79722 (kg/ha)
+9 August 1984(Day of year=222): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.41749 (kg/ha), depth = 50 (mm), type = urea_n
+9 August 1984(Day of year=222), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.42 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.27833 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.28 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+6 September 1984(Day of year=250), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 205.81184 (kg/ha), n = 7.32108 (kg/ha)
+6 September 1984(Day of year=250): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.58897 (kg/ha), depth = 50 (mm), type = urea_n
+6 September 1984(Day of year=250), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.59 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.39265 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.39 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+4 October 1984(Day of year=278), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 331.32220 (kg/ha), n = 9.97653 (kg/ha)
+4 October 1984(Day of year=278): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 8.97887 (kg/ha), depth = 50 (mm), type = urea_n
+4 October 1984(Day of year=278), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.98 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.98592 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.99 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+1 November 1984(Day of year=306), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 523.14429 (kg/ha), n = 13.60175 (kg/ha)
+1 November 1984(Day of year=306): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.24157 (kg/ha), depth = 50 (mm), type = urea_n
+1 November 1984(Day of year=306), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.24 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.16105 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.16 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+29 November 1984(Day of year=334), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 602.35083 (kg/ha), n = 15.79050 (kg/ha)
+29 November 1984(Day of year=334): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.21146 (kg/ha), depth = 50 (mm), type = urea_n
+29 November 1984(Day of year=334), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.21 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.47430 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.47 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+28 December 1984(Day of year=363), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 754.93384 (kg/ha), n = 18.58127 (kg/ha)
+28 December 1984(Day of year=363): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.72314 (kg/ha), depth = 50 (mm), type = urea_n
+28 December 1984(Day of year=363), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.72 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.14876 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.15 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+24 January 1985(Day of year=24), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 705.97577 (kg/ha), n = 18.38607 (kg/ha)
+24 January 1985(Day of year=24): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.54747 (kg/ha), depth = 50 (mm), type = urea_n
+24 January 1985(Day of year=24), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.55 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.03164 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.03 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+20 February 1985(Day of year=51), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 646.11353 (kg/ha), n = 17.16598 (kg/ha)
+20 February 1985(Day of year=51): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 15.44939 (kg/ha), depth = 50 (mm), type = urea_n
+20 February 1985(Day of year=51), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.45 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.29959 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.30 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+21 March 1985(Day of year=80), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 759.27094 (kg/ha), n = 18.43772 (kg/ha)
+21 March 1985(Day of year=80): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.59395 (kg/ha), depth = 50 (mm), type = urea_n
+21 March 1985(Day of year=80), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.59 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.06264 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.06 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+18 April 1985(Day of year=108), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 526.70709 (kg/ha), n = 14.72168 (kg/ha)
+18 April 1985(Day of year=108): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.24952 (kg/ha), depth = 50 (mm), type = urea_n
+18 April 1985(Day of year=108), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.25 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.83301 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.83 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+16 May 1985(Day of year=136), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 356.35941 (kg/ha), n = 11.34424 (kg/ha)
+16 May 1985(Day of year=136): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.20982 (kg/ha), depth = 50 (mm), type = urea_n
+16 May 1985(Day of year=136), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.21 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.80654 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.81 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+13 June 1985(Day of year=164), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 236.92639 (kg/ha), n = 8.15199 (kg/ha)
+13 June 1985(Day of year=164): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.33679 (kg/ha), depth = 50 (mm), type = urea_n
+13 June 1985(Day of year=164), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.34 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.89119 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.89 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+11 July 1985(Day of year=192), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 199.73993 (kg/ha), n = 6.86598 (kg/ha)
+11 July 1985(Day of year=192): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.17938 (kg/ha), depth = 50 (mm), type = urea_n
+11 July 1985(Day of year=192), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.18 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.11958 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.12 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+7 August 1985(Day of year=219), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 212.93063 (kg/ha), n = 6.93932 (kg/ha)
+7 August 1985(Day of year=219): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.24539 (kg/ha), depth = 50 (mm), type = urea_n
+7 August 1985(Day of year=219), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.25 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.16360 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.16 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+5 September 1985(Day of year=248), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 238.50491 (kg/ha), n = 7.29258 (kg/ha)
+5 September 1985(Day of year=248): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.56333 (kg/ha), depth = 50 (mm), type = urea_n
+5 September 1985(Day of year=248), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.56 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.37555 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.38 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+3 October 1985(Day of year=276), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 397.68781 (kg/ha), n = 10.69993 (kg/ha)
+3 October 1985(Day of year=276): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.62994 (kg/ha), depth = 50 (mm), type = urea_n
+3 October 1985(Day of year=276), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.63 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.41996 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.42 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+31 October 1985(Day of year=304), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 442.50024 (kg/ha), n = 12.26594 (kg/ha)
+31 October 1985(Day of year=304): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.03934 (kg/ha), depth = 50 (mm), type = urea_n
+31 October 1985(Day of year=304), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.04 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.35956 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.36 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+28 November 1985(Day of year=332), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 533.36462 (kg/ha), n = 15.13851 (kg/ha)
+28 November 1985(Day of year=332): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.62466 (kg/ha), depth = 50 (mm), type = urea_n
+28 November 1985(Day of year=332), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.62 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.08311 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.08 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+27 December 1985(Day of year=361), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 639.18298 (kg/ha), n = 17.70169 (kg/ha)
+27 December 1985(Day of year=361): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 15.93152 (kg/ha), depth = 50 (mm), type = urea_n
+27 December 1985(Day of year=361), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.93 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.62102 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.62 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+23 January 1986(Day of year=23), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 532.76514 (kg/ha), n = 14.90329 (kg/ha)
+23 January 1986(Day of year=23): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.41296 (kg/ha), depth = 50 (mm), type = urea_n
+23 January 1986(Day of year=23), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.41 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.94198 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.94 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+20 February 1986(Day of year=51), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 749.94373 (kg/ha), n = 19.47246 (kg/ha)
+20 February 1986(Day of year=51): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 17.52521 (kg/ha), depth = 50 (mm), type = urea_n
+20 February 1986(Day of year=51), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        17.53 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.68347 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.68 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+20 March 1986(Day of year=79), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 700.67871 (kg/ha), n = 18.59722 (kg/ha)
+20 March 1986(Day of year=79): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.73750 (kg/ha), depth = 50 (mm), type = urea_n
+20 March 1986(Day of year=79), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.74 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.15833 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.16 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+17 April 1986(Day of year=107), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 483.68082 (kg/ha), n = 14.68220 (kg/ha)
+17 April 1986(Day of year=107): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.21398 (kg/ha), depth = 50 (mm), type = urea_n
+17 April 1986(Day of year=107), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.21 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.80932 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.81 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+15 May 1986(Day of year=135), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 366.72830 (kg/ha), n = 11.94291 (kg/ha)
+15 May 1986(Day of year=135): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.74863 (kg/ha), depth = 50 (mm), type = urea_n
+15 May 1986(Day of year=135), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.75 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.16575 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.17 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+12 June 1986(Day of year=163), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 244.02945 (kg/ha), n = 8.67637 (kg/ha)
+12 June 1986(Day of year=163): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.80874 (kg/ha), depth = 50 (mm), type = urea_n
+12 June 1986(Day of year=163), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.81 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.20582 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.21 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+10 July 1986(Day of year=191), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 125.36433 (kg/ha), n = 4.91528 (kg/ha)
+10 July 1986(Day of year=191): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.42375 (kg/ha), depth = 50 (mm), type = urea_n
+10 July 1986(Day of year=191), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.42 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.94916 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.95 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+8 August 1986(Day of year=220), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 114.97979 (kg/ha), n = 4.46514 (kg/ha)
+8 August 1986(Day of year=220): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.01863 (kg/ha), depth = 50 (mm), type = urea_n
+8 August 1986(Day of year=220), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.02 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.67908 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.68 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+4 September 1986(Day of year=247), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 176.86284 (kg/ha), n = 6.26931 (kg/ha)
+4 September 1986(Day of year=247): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 5.64238 (kg/ha), depth = 50 (mm), type = urea_n
+4 September 1986(Day of year=247), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.64 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.76159 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.76 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+2 October 1986(Day of year=275), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 345.83075 (kg/ha), n = 10.06360 (kg/ha)
+2 October 1986(Day of year=275): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.05724 (kg/ha), depth = 50 (mm), type = urea_n
+2 October 1986(Day of year=275), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.03816 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.04 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 October 1986(Day of year=303), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 497.35403 (kg/ha), n = 13.40730 (kg/ha)
+30 October 1986(Day of year=303): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.06657 (kg/ha), depth = 50 (mm), type = urea_n
+30 October 1986(Day of year=303), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.07 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.04438 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.04 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+27 November 1986(Day of year=331), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 611.35693 (kg/ha), n = 16.61870 (kg/ha)
+27 November 1986(Day of year=331): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.95684 (kg/ha), depth = 50 (mm), type = urea_n
+27 November 1986(Day of year=331), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.96 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.97122 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.97 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+24 December 1986(Day of year=358), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 686.68170 (kg/ha), n = 18.23733 (kg/ha)
+24 December 1986(Day of year=358): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.41360 (kg/ha), depth = 50 (mm), type = urea_n
+24 December 1986(Day of year=358), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.41 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.94240 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.94 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+23 January 1987(Day of year=23), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 644.51709 (kg/ha), n = 13.55818 (kg/ha)
+23 January 1987(Day of year=23): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.20236 (kg/ha), depth = 50 (mm), type = urea_n
+23 January 1987(Day of year=23), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.20 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.13491 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.13 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+20 February 1987(Day of year=51), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 593.85016 (kg/ha), n = 14.04269 (kg/ha)
+20 February 1987(Day of year=51): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.63842 (kg/ha), depth = 50 (mm), type = urea_n
+20 February 1987(Day of year=51), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.64 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.42561 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.43 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+19 March 1987(Day of year=78), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 540.56958 (kg/ha), n = 12.49230 (kg/ha)
+19 March 1987(Day of year=78): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.24307 (kg/ha), depth = 50 (mm), type = urea_n
+19 March 1987(Day of year=78), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.24 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.49538 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.50 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+16 April 1987(Day of year=106), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 413.50690 (kg/ha), n = 11.06432 (kg/ha)
+16 April 1987(Day of year=106): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.95789 (kg/ha), depth = 50 (mm), type = urea_n
+16 April 1987(Day of year=106), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.96 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.63859 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.64 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+14 May 1987(Day of year=134), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 267.87854 (kg/ha), n = 8.44810 (kg/ha)
+14 May 1987(Day of year=134): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.60328 (kg/ha), depth = 50 (mm), type = urea_n
+14 May 1987(Day of year=134), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.60 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.06886 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.07 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+11 June 1987(Day of year=162), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 148.24509 (kg/ha), n = 5.14457 (kg/ha)
+11 June 1987(Day of year=162): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.63012 (kg/ha), depth = 50 (mm), type = urea_n
+11 June 1987(Day of year=162), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.63 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.08674 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.09 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 July 1987(Day of year=190), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 99.55154 (kg/ha), n = 3.79023 (kg/ha)
+9 July 1987(Day of year=190): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.41120 (kg/ha), depth = 50 (mm), type = urea_n
+9 July 1987(Day of year=190), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.41 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.27414 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.27 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+5 August 1987(Day of year=217), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 134.64276 (kg/ha), n = 4.94281 (kg/ha)
+5 August 1987(Day of year=217): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.44853 (kg/ha), depth = 50 (mm), type = urea_n
+5 August 1987(Day of year=217), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.45 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.96568 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.97 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+4 September 1987(Day of year=247), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 223.50063 (kg/ha), n = 7.33869 (kg/ha)
+4 September 1987(Day of year=247): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.60482 (kg/ha), depth = 50 (mm), type = urea_n
+4 September 1987(Day of year=247), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.60 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.40321 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.40 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+1 October 1987(Day of year=274), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 350.51785 (kg/ha), n = 9.77383 (kg/ha)
+1 October 1987(Day of year=274): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 8.79644 (kg/ha), depth = 50 (mm), type = urea_n
+1 October 1987(Day of year=274), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.80 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.86430 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.86 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+29 October 1987(Day of year=302), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 476.63129 (kg/ha), n = 12.60295 (kg/ha)
+29 October 1987(Day of year=302): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.34266 (kg/ha), depth = 50 (mm), type = urea_n
+29 October 1987(Day of year=302), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.34 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.56177 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.56 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+26 November 1987(Day of year=330), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 614.64948 (kg/ha), n = 15.84672 (kg/ha)
+26 November 1987(Day of year=330): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.26205 (kg/ha), depth = 50 (mm), type = urea_n
+26 November 1987(Day of year=330), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.26 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.50803 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.51 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+23 December 1987(Day of year=357), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 601.53247 (kg/ha), n = 16.11206 (kg/ha)
+23 December 1987(Day of year=357): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.50086 (kg/ha), depth = 50 (mm), type = urea_n
+23 December 1987(Day of year=357), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.50 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.66724 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.67 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+21 January 1988(Day of year=21), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 763.25586 (kg/ha), n = 18.86926 (kg/ha)
+21 January 1988(Day of year=21): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.98233 (kg/ha), depth = 50 (mm), type = urea_n
+21 January 1988(Day of year=21), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.98 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.32156 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.32 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+18 February 1988(Day of year=49), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 536.02545 (kg/ha), n = 12.12235 (kg/ha)
+18 February 1988(Day of year=49): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.91012 (kg/ha), depth = 50 (mm), type = urea_n
+18 February 1988(Day of year=49), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.91 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.27341 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.27 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+17 March 1988(Day of year=77), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 633.45923 (kg/ha), n = 15.59324 (kg/ha)
+17 March 1988(Day of year=77): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.03392 (kg/ha), depth = 50 (mm), type = urea_n
+17 March 1988(Day of year=77), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.03 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.35594 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.36 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+14 April 1988(Day of year=105), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 450.50565 (kg/ha), n = 12.77033 (kg/ha)
+14 April 1988(Day of year=105): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.49330 (kg/ha), depth = 50 (mm), type = urea_n
+14 April 1988(Day of year=105), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.49 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.66220 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.66 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+12 May 1988(Day of year=133), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 265.24078 (kg/ha), n = 8.14359 (kg/ha)
+12 May 1988(Day of year=133): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.32923 (kg/ha), depth = 50 (mm), type = urea_n
+12 May 1988(Day of year=133), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.33 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.88615 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.89 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 June 1988(Day of year=161), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 111.98742 (kg/ha), n = 3.69988 (kg/ha)
+9 June 1988(Day of year=161): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.32989 (kg/ha), depth = 50 (mm), type = urea_n
+9 June 1988(Day of year=161), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.33 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.21993 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.22 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+7 July 1988(Day of year=189), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 120.66010 (kg/ha), n = 4.26744 (kg/ha)
+7 July 1988(Day of year=189): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.84069 (kg/ha), depth = 50 (mm), type = urea_n
+7 July 1988(Day of year=189), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.84 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.56046 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.56 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+4 August 1988(Day of year=217), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 140.30042 (kg/ha), n = 5.21050 (kg/ha)
+4 August 1988(Day of year=217): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.68944 (kg/ha), depth = 50 (mm), type = urea_n
+4 August 1988(Day of year=217), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.69 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.12630 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.13 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+31 August 1988(Day of year=244), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 159.92982 (kg/ha), n = 5.70806 (kg/ha)
+31 August 1988(Day of year=244): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 5.13725 (kg/ha), depth = 50 (mm), type = urea_n
+31 August 1988(Day of year=244), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.14 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.42483 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.42 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+29 September 1988(Day of year=273), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 335.50159 (kg/ha), n = 9.64110 (kg/ha)
+29 September 1988(Day of year=273): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 8.67700 (kg/ha), depth = 50 (mm), type = urea_n
+29 September 1988(Day of year=273), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.68 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.78466 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.78 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+27 October 1988(Day of year=301), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 494.06857 (kg/ha), n = 12.12630 (kg/ha)
+27 October 1988(Day of year=301): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.91368 (kg/ha), depth = 50 (mm), type = urea_n
+27 October 1988(Day of year=301), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.91 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.27578 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.28 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+24 November 1988(Day of year=329), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 627.90393 (kg/ha), n = 14.95641 (kg/ha)
+24 November 1988(Day of year=329): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.46077 (kg/ha), depth = 50 (mm), type = urea_n
+24 November 1988(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.46 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.97384 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.97 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+22 December 1988(Day of year=357), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 804.35797 (kg/ha), n = 18.15686 (kg/ha)
+22 December 1988(Day of year=357): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.34118 (kg/ha), depth = 50 (mm), type = urea_n
+22 December 1988(Day of year=357), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.34 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.89412 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.89 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+19 January 1989(Day of year=19), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 772.96283 (kg/ha), n = 18.11896 (kg/ha)
+19 January 1989(Day of year=19): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.30706 (kg/ha), depth = 50 (mm), type = urea_n
+19 January 1989(Day of year=19), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.31 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.87138 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.87 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+16 February 1989(Day of year=47), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 768.58887 (kg/ha), n = 17.83924 (kg/ha)
+16 February 1989(Day of year=47): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.05532 (kg/ha), depth = 50 (mm), type = urea_n
+16 February 1989(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.70355 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.70 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+16 March 1989(Day of year=75), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 769.03107 (kg/ha), n = 17.97226 (kg/ha)
+16 March 1989(Day of year=75): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.17503 (kg/ha), depth = 50 (mm), type = urea_n
+16 March 1989(Day of year=75), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.18 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.78336 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.78 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+13 April 1989(Day of year=103), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 518.22589 (kg/ha), n = 13.86552 (kg/ha)
+13 April 1989(Day of year=103): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.47896 (kg/ha), depth = 50 (mm), type = urea_n
+13 April 1989(Day of year=103), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.48 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.31931 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.32 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+11 May 1989(Day of year=131), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 250.89694 (kg/ha), n = 7.87376 (kg/ha)
+11 May 1989(Day of year=131): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.08638 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 1989(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.09 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.72426 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.72 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+8 June 1989(Day of year=159), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 141.14005 (kg/ha), n = 5.13899 (kg/ha)
+8 June 1989(Day of year=159): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.62509 (kg/ha), depth = 50 (mm), type = urea_n
+8 June 1989(Day of year=159), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.63 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.08340 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.08 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+6 July 1989(Day of year=187), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 75.60567 (kg/ha), n = 2.89771 (kg/ha)
+6 July 1989(Day of year=187): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 2.60794 (kg/ha), depth = 50 (mm), type = urea_n
+6 July 1989(Day of year=187), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.61 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.73863 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.74 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+3 August 1989(Day of year=215), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 119.80917 (kg/ha), n = 4.72361 (kg/ha)
+3 August 1989(Day of year=215): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.25125 (kg/ha), depth = 50 (mm), type = urea_n
+3 August 1989(Day of year=215), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.25 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.83417 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.83 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+31 August 1989(Day of year=243), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 182.64694 (kg/ha), n = 6.43315 (kg/ha)
+31 August 1989(Day of year=243): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 5.78983 (kg/ha), depth = 50 (mm), type = urea_n
+31 August 1989(Day of year=243), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.79 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.85989 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.86 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+28 September 1989(Day of year=271), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 355.63022 (kg/ha), n = 10.20898 (kg/ha)
+28 September 1989(Day of year=271): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.18808 (kg/ha), depth = 50 (mm), type = urea_n
+28 September 1989(Day of year=271), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.19 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.12538 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.13 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+26 October 1989(Day of year=299), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 485.95935 (kg/ha), n = 12.40558 (kg/ha)
+26 October 1989(Day of year=299): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.16503 (kg/ha), depth = 50 (mm), type = urea_n
+26 October 1989(Day of year=299), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.17 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.44335 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.44 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+23 November 1989(Day of year=327), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 712.51050 (kg/ha), n = 16.63205 (kg/ha)
+23 November 1989(Day of year=327): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.96884 (kg/ha), depth = 50 (mm), type = urea_n
+23 November 1989(Day of year=327), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.97 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.97923 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.98 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+21 December 1989(Day of year=355), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 783.79358 (kg/ha), n = 18.33393 (kg/ha)
+21 December 1989(Day of year=355): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.50054 (kg/ha), depth = 50 (mm), type = urea_n
+21 December 1989(Day of year=355), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.50 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.00036 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.00 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+18 January 1990(Day of year=18), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 838.03101 (kg/ha), n = 18.87045 (kg/ha)
+18 January 1990(Day of year=18): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.98340 (kg/ha), depth = 50 (mm), type = urea_n
+18 January 1990(Day of year=18), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.98 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 11.32227 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        11.32 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+15 February 1990(Day of year=46), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 587.79950 (kg/ha), n = 10.34326 (kg/ha)
+15 February 1990(Day of year=46): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.30893 (kg/ha), depth = 50 (mm), type = urea_n
+15 February 1990(Day of year=46), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.31 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.20596 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.21 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+19 March 1990(Day of year=78), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 116.86942 (kg/ha), n = 1.82009 (kg/ha)
+19 March 1990(Day of year=78): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 1.63808 (kg/ha), depth = 50 (mm), type = urea_n
+19 March 1990(Day of year=78), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.64 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.09205 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.09 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+12 April 1990(Day of year=102), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 323.82224 (kg/ha), n = 8.63720 (kg/ha)
+12 April 1990(Day of year=102): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.77349 (kg/ha), depth = 50 (mm), type = urea_n
+12 April 1990(Day of year=102), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.77 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.18232 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.18 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 May 1990(Day of year=129), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 286.47269 (kg/ha), n = 8.14408 (kg/ha)
+9 May 1990(Day of year=129): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.32968 (kg/ha), depth = 50 (mm), type = urea_n
+9 May 1990(Day of year=129), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.33 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.88645 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.89 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+7 June 1990(Day of year=158), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 142.22176 (kg/ha), n = 4.26360 (kg/ha)
+7 June 1990(Day of year=158): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.83723 (kg/ha), depth = 50 (mm), type = urea_n
+7 June 1990(Day of year=158), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.84 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.55816 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.56 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+5 July 1990(Day of year=186), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 93.92738 (kg/ha), n = 3.46888 (kg/ha)
+5 July 1990(Day of year=186): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.12199 (kg/ha), depth = 50 (mm), type = urea_n
+5 July 1990(Day of year=186), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.12 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.08132 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.08 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+2 August 1990(Day of year=214), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 134.15819 (kg/ha), n = 4.68630 (kg/ha)
+2 August 1990(Day of year=214): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.21768 (kg/ha), depth = 50 (mm), type = urea_n
+2 August 1990(Day of year=214), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.22 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.81178 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.81 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 August 1990(Day of year=242), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 182.43498 (kg/ha), n = 5.57852 (kg/ha)
+30 August 1990(Day of year=242): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 5.02067 (kg/ha), depth = 50 (mm), type = urea_n
+30 August 1990(Day of year=242), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.02 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.34711 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.35 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+27 September 1990(Day of year=270), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 341.88876 (kg/ha), n = 8.47650 (kg/ha)
+27 September 1990(Day of year=270): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 7.62886 (kg/ha), depth = 50 (mm), type = urea_n
+27 September 1990(Day of year=270), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.63 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.08590 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.09 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+25 October 1990(Day of year=298), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 480.68823 (kg/ha), n = 10.80313 (kg/ha)
+25 October 1990(Day of year=298): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.72282 (kg/ha), depth = 50 (mm), type = urea_n
+25 October 1990(Day of year=298), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.72 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.48188 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.48 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+22 November 1990(Day of year=326), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 607.69690 (kg/ha), n = 14.00205 (kg/ha)
+22 November 1990(Day of year=326): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.60185 (kg/ha), depth = 50 (mm), type = urea_n
+22 November 1990(Day of year=326), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.60 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.40123 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.40 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+20 December 1990(Day of year=354), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 753.44653 (kg/ha), n = 17.27242 (kg/ha)
+20 December 1990(Day of year=354): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 15.54518 (kg/ha), depth = 50 (mm), type = urea_n
+20 December 1990(Day of year=354), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.55 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.36345 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.36 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+17 January 1991(Day of year=17), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 700.65356 (kg/ha), n = 15.18393 (kg/ha)
+17 January 1991(Day of year=17): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.66553 (kg/ha), depth = 50 (mm), type = urea_n
+17 January 1991(Day of year=17), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.67 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.11036 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.11 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+14 February 1991(Day of year=45), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 548.94287 (kg/ha), n = 12.37485 (kg/ha)
+14 February 1991(Day of year=45): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 11.13737 (kg/ha), depth = 50 (mm), type = urea_n
+14 February 1991(Day of year=45), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.14 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.42491 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.42 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+13 March 1991(Day of year=72), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 483.37393 (kg/ha), n = 12.21230 (kg/ha)
+13 March 1991(Day of year=72): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.99107 (kg/ha), depth = 50 (mm), type = urea_n
+13 March 1991(Day of year=72), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.99 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.32738 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.33 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+11 April 1991(Day of year=101), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 423.38293 (kg/ha), n = 10.52247 (kg/ha)
+11 April 1991(Day of year=101): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.47023 (kg/ha), depth = 50 (mm), type = urea_n
+11 April 1991(Day of year=101), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.47 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.31348 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.31 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 May 1991(Day of year=129), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 187.09616 (kg/ha), n = 4.93612 (kg/ha)
+9 May 1991(Day of year=129): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 4.44251 (kg/ha), depth = 50 (mm), type = urea_n
+9 May 1991(Day of year=129), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.44 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.96168 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.96 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+6 June 1991(Day of year=157), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 107.77695 (kg/ha), n = 2.79464 (kg/ha)
+6 June 1991(Day of year=157): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 2.51518 (kg/ha), depth = 50 (mm), type = urea_n
+6 June 1991(Day of year=157), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.52 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.67679 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.68 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+4 July 1991(Day of year=185), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 64.67034 (kg/ha), n = 1.72983 (kg/ha)
+4 July 1991(Day of year=185): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 1.55684 (kg/ha), depth = 50 (mm), type = urea_n
+4 July 1991(Day of year=185), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.56 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.03790 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.04 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+1 August 1991(Day of year=213), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 62.50757 (kg/ha), n = 2.12256 (kg/ha)
+1 August 1991(Day of year=213): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 1.91031 (kg/ha), depth = 50 (mm), type = urea_n
+1 August 1991(Day of year=213), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.91 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.27354 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.27 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+29 August 1991(Day of year=241), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 201.96973 (kg/ha), n = 7.38862 (kg/ha)
+29 August 1991(Day of year=241): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.64976 (kg/ha), depth = 50 (mm), type = urea_n
+29 August 1991(Day of year=241), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.65 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.43317 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.43 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+26 September 1991(Day of year=269), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 323.29175 (kg/ha), n = 9.59081 (kg/ha)
+26 September 1991(Day of year=269): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 8.63173 (kg/ha), depth = 50 (mm), type = urea_n
+26 September 1991(Day of year=269), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.63 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.75448 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.75 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+24 October 1991(Day of year=297), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 483.91708 (kg/ha), n = 12.04222 (kg/ha)
+24 October 1991(Day of year=297): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 10.83800 (kg/ha), depth = 50 (mm), type = urea_n
+24 October 1991(Day of year=297), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.84 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.22533 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.23 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+21 November 1991(Day of year=325), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 561.31927 (kg/ha), n = 13.70854 (kg/ha)
+21 November 1991(Day of year=325): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 12.33769 (kg/ha), depth = 50 (mm), type = urea_n
+21 November 1991(Day of year=325), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.34 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.22512 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.23 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+19 December 1991(Day of year=353), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 683.08795 (kg/ha), n = 16.44498 (kg/ha)
+19 December 1991(Day of year=353): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 14.80048 (kg/ha), depth = 50 (mm), type = urea_n
+19 December 1991(Day of year=353), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.80 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.86699 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.87 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+16 January 1992(Day of year=16), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 706.92657 (kg/ha), n = 17.56361 (kg/ha)
+16 January 1992(Day of year=16): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 15.80725 (kg/ha), depth = 50 (mm), type = urea_n
+16 January 1992(Day of year=16), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.81 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.53816 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.54 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+13 February 1992(Day of year=44), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 721.62445 (kg/ha), n = 17.88148 (kg/ha)
+13 February 1992(Day of year=44): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 16.09333 (kg/ha), depth = 50 (mm), type = urea_n
+13 February 1992(Day of year=44), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.09 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.72889 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.73 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+12 March 1992(Day of year=72), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 602.12366 (kg/ha), n = 15.49336 (kg/ha)
+12 March 1992(Day of year=72): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 13.94403 (kg/ha), depth = 50 (mm), type = urea_n
+12 March 1992(Day of year=72), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.94 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.29602 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.30 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+9 April 1992(Day of year=100), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 361.52948 (kg/ha), n = 10.21411 (kg/ha)
+9 April 1992(Day of year=100): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 9.19270 (kg/ha), depth = 50 (mm), type = urea_n
+9 April 1992(Day of year=100), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.19 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.12847 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.13 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+7 May 1992(Day of year=128), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 244.18690 (kg/ha), n = 7.66194 (kg/ha)
+7 May 1992(Day of year=128): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 6.89575 (kg/ha), depth = 50 (mm), type = urea_n
+7 May 1992(Day of year=128), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.90 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.59717 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.60 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+4 June 1992(Day of year=156), Harvest specified dates28 at No2Dairy3: 
+     Manager sending message :- ryegrass_clover_paspalum graze  type = 'residue', amount = 1000 (kg/ha)
+     Manager sending message :- surface organic matter add_surfaceom  name = 'ryegrass_clover_paspalum', type = grass, mass = 111.53400 (kg/ha), n = 3.75972 (kg/ha)
+4 June 1992(Day of year=156): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.
+     Component name: Surface Organic Matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager sending message :- fertiliser apply  amount = 3.38375 (kg/ha), depth = 50 (mm), type = urea_n
+4 June 1992(Day of year=156), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.38 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.25584 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.26 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 June 1992(Day of year=182), clock: 
+     Simulation is terminating due to end criteria being met.
