@@ -659,7 +659,7 @@ void CMPComponentInterface::onQuerySetValue(const Message& message)
    // now send back a replySetValueSuccess message.
    //NBNBNB can't seem to build a ReplySetValueSuccessType structure, so use a similar one YUCK!!
    NotifySetValueSuccessType replySetValueSuccess;
-   replySetValueSuccess.ID = querySetValue.ID;
+   replySetValueSuccess.ID = message.messageID;
    replySetValueSuccess.success = true;
    sendMessage(newMessage(Message::ReplySetValueSuccess,
                           componentID, fromID, false,

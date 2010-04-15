@@ -351,7 +351,7 @@ class EXPORT Component
          {
          sendMessage(newReplyValueMessage(componentID,
                                           queryValueData.fromID,
-                                          currentMsgID,
+                                          queryValueData.queryID,
                                           DDML(value),
                                           value));
          }
@@ -362,7 +362,7 @@ class EXPORT Component
          {
          sendMessage(newReplyValueMessage(componentID,
                                           queryValueData.fromID,
-                                          currentMsgID,
+                                          queryValueData.queryID,
                                           DDML(values),
                                           values));
          }

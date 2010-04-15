@@ -191,7 +191,7 @@ try {
 								 else
 									respondToEvent(eventData.publishedByID, eventData.ID, eventData.params);
                                  break;}
-      case QueryValue:          {QueryValueData queryData(fromID);
+      case QueryValue:          {QueryValueData queryData(fromID, msgID);
                                  messageData >> queryData;
                                  onQueryValueMessage(message->from, queryData);
 								 break;}

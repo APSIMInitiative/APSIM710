@@ -31,7 +31,7 @@ FortranWrapper* FortranWrapper::currentInstance = NULL;
 // constructor
 // ------------------------------------------------------------------
 FortranWrapper::FortranWrapper(void)
-   : outgoingApsimVariant(this), incomingApsimVariant(this), queryData((unsigned)-1)
+   : outgoingApsimVariant(this), incomingApsimVariant(this), queryData((unsigned)-1, (unsigned)-1)
    {
    vars = NULL;
    }

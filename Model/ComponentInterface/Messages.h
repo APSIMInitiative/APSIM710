@@ -169,7 +169,7 @@ struct Init1Data
 inline MessageData& operator>> (MessageData& messageData, Init1Data& data)
    {
    messageData >> data.sdml >> data.fqn >> data.inStartup;
-   std::string a = asString(data.sdml);
+   // std::string a = asString(data.sdml);
    return messageData;
    }
 inline Message* newInit1Message(unsigned int from,
@@ -329,9 +329,10 @@ inline Message* newQuerySetValueMessage(unsigned int from,
 struct QueryValueData
    {
    unsigned fromID;
+   unsigned queryID;
    unsigned int ID;
    unsigned int requestedByID;
-   QueryValueData(unsigned from) : fromID(from) { }
+   QueryValueData(unsigned from, unsigned query) : fromID(from), queryID(query) { }
    };
 
 inline MessageData& operator>> (MessageData& messageData, QueryValueData& data)
@@ -392,12 +393,12 @@ inline MessageData& operator>> (MessageData& messageData, RequestComponentIDData
    return messageData;
    }
 inline Message* newRequestComponentIDMessage(unsigned int from,
-                                             unsigned int to,
-                                             unsigned int replytoID,
-                                             const FString& name)
+											 unsigned int to,
+											 unsigned int replytoID,
+											 const FString& name)
    {
    Message* msg = constructMessage(RequestComponentID, from, to, false,
-                             memorySize(replytoID) + memorySize(name));
+							 memorySize(replytoID) + memorySize(name));
    MessageData messageData(msg);
    messageData << replytoID << name;
    return msg;
