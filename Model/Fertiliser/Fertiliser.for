@@ -15,6 +15,7 @@
         integer    day                   ! day of year
 
         real       dlayer(max_layer)     ! depth of each profile layer (mm)
+        integer    numlayers
         real       fert_applied          ! amount of fertilizer applied today(kg/ha)
       end type FertilizGlobals
 
@@ -55,6 +56,7 @@ c     include    'fertiliz.inc'        ! fertiliz common block
       g%year = 0
       g%fert_applied = 0.0
       g%pond_active = 'no'
+      g%numlayers = 0
 
       call fill_real_array    (g%dlayer, 0.0, max_layer)
 
@@ -169,7 +171,8 @@ c     include   'fertiliz.inc'
      :   '   - Reading Fertiliser Type Parameters')
 
             ! find the layer that the fertilizer is to be added to.
-         layer = get_cumulative_index_real (depth, g%dlayer, max_layer)
+         layer = get_cumulative_index_real (depth, g%dlayer, 
+     :                                      g%numlayers)
 
          call SetSearchOrder(type);
 
@@ -397,6 +400,7 @@ c     include   'fertiliz.inc'
       type(NewProfileType) :: newProfile
       integer numvals
       g%dlayer = newProfile%dlayer
+      g%numlayers = newProfile%num_dlayer
       return
       end subroutine
 
