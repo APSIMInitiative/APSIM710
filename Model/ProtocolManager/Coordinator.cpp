@@ -761,7 +761,7 @@ void Coordinator::onRequestSetValueMessage(unsigned int fromID,
 // ------------------------------------------------------------------
 // process the querySetValueMessage.
 // ------------------------------------------------------------------
-void Coordinator::onQuerySetValueMessage(unsigned fromID, protocol::QuerySetValueData& querySetData)
+void Coordinator::onQuerySetValueMessage(unsigned fromID, protocol::QuerySetValueData& querySetData, unsigned msgID)
    {
    // nothing
 //   cout <<" Coordinator::onQuerySetValueMessage\n";
