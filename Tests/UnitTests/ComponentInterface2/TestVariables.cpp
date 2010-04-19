@@ -332,7 +332,6 @@ void ExposeSettableVariable()
    // check that the component gave us a notifySetValueSuccess
    NotifySetValueSuccessType notifySuccess;
    unpack(messagesSent[1], notifySuccess);
-   BOOST_ASSERT(notifySuccess.ID == registerData.ID);
    BOOST_ASSERT(notifySuccess.success);
    BOOST_ASSERT(rain == newRain);
 
@@ -386,7 +385,7 @@ void ExposeSettableVariableUsingFunction()
    // check that the component gave us a notifySetValueSuccess
    NotifySetValueSuccessType notifySuccess;
    unpack(messagesSent[1], notifySuccess);
-   BOOST_ASSERT(notifySuccess.ID == registerData.ID);
+   //BOOST_ASSERT(notifySuccess.ID == registerData.ID);
    BOOST_ASSERT(notifySuccess.success);
    BOOST_ASSERT(test.st == newValue);
 
