@@ -320,7 +320,7 @@ extern "C" int EXPORT STDCALL GetInteger
     unsigned NameLength, unsigned UnitsLength)
    {
    string variableName = FortranString(Name, NameLength).toString();
-   CMPBuiltInBounded<int, int>* variable = new CMPBuiltInBounded<int, int>(variableName, *Value, *Lower, *Upper);
+   CMPBuiltInBounded<int&, int>* variable = new CMPBuiltInBounded<int&, int>(variableName, *Value, *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
                                                    (bool)*Optional,
@@ -331,7 +331,7 @@ extern "C" int EXPORT STDCALL GetReal
     unsigned NameLength, unsigned UnitsLength)
    {
    string variableName = FortranString(Name, NameLength).toString();
-   CMPBuiltInBounded<float, float>* variable = new CMPBuiltInBounded<float, float>(variableName, *Value, *Lower, *Upper);
+   CMPBuiltInBounded<float&, float>* variable = new CMPBuiltInBounded<float&, float>(variableName, *Value, *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
                                                    (bool)*Optional,
@@ -342,7 +342,7 @@ extern "C" int EXPORT STDCALL GetDouble
     unsigned NameLength, unsigned UnitsLength)
    {
    string variableName = FortranString(Name, NameLength).toString();
-   CMPBuiltInBounded<double, double>* variable = new CMPBuiltInBounded<double, double>(variableName, *Value, *Lower, *Upper);
+   CMPBuiltInBounded<double&, double>* variable = new CMPBuiltInBounded<double&, double>(variableName, *Value, *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
                                                    (bool)*Optional,
