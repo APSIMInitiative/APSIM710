@@ -47,6 +47,7 @@ grazComponent::grazComponent(ScienceAPI& scienceapi)
    pasture_source = "";
    dlt_lwg = 0.0;
    acc_eaten = 0.0;
+   tsdm_eaten = 0.0;
    acc_growth = 0.0;
    intake_restr = 0.0;
    }
@@ -73,6 +74,7 @@ void grazComponent::onInit2(void)
    //expose..  (r)
    scienceAPI.expose("lwg",          "kg",     "Live weight gain", 0,        dlt_lwg);
    scienceAPI.expose("intake_restr", "",       "Intake of feed",   0,        intake_restr);
+   scienceAPI.expose("tsdm_eaten",   "kg/ha",  "Daily amount of feed eaten", 0, tsdm_eaten);
 
    // read ...
    scienceAPI.read("intake_util_intercept", "", 0, intake_util_intercept,(float)  0.0, (float)100.0);
@@ -136,6 +138,7 @@ void grazComponent::onPrepare(void)
    green_stem_eaten = 0.0;
    dead_leaf_eaten = 0.0;
    dead_stem_eaten = 0.0;
+   tsdm_eaten = 0.0;
    dlt_lwg = 0.0;
    dead_leaf_tramp = 0.0;
    dead_stem_tramp = 0.0;
@@ -168,7 +171,6 @@ void grazComponent::eat(void)
                                // growth over season (0-1)
    float intake_restr_tsdm;    // restriction of intake by low level of tsdm
    float anim_intake;          // intake of biomass (kg/beast)
-   float tsdm_eaten;           // biomass eaten     (kg/beast/day)
    float green_eaten, dead_eaten; // pool eaten     (kg/ha)
    float curve_factor;         // competition curve
    float trampled;             // trampled dead leaf + stem

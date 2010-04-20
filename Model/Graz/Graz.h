@@ -30,6 +30,7 @@ class grazComponent
       float green_stem;         // daily green stem from grasp (kg/ha)
       float dead_stem;          // daily dead stem from grasp (kg/ha)
       float grass_growth;       // daily grass growth (kg/ha)
+      float tsdm_eaten;         // daily biomass eaten (kg/ha)
       float acc_eaten;          // accumulated intake by animals
       float acc_growth;         // accumulated growth of sward from grasp
       float intake_restr;       // final intake restriction (0-1)
