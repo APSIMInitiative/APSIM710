@@ -134,7 +134,7 @@ public class AgPasture : Instance
     [Param]    private double[] CO2NMin;
     [Param]    private double[] CO2NCurvature;
     //[Input(true)] private double co2 = 380; //expected to be updated from ClimateControl 
-    [Input]    private double co2 = 385;
+    [Input(true)]    private double co2 = 385;
     [Param]    private LinearInterpolation FVPDFunction = null;    //Senescence rate is affected by min(gf-N, gf_water)
     [Param]    private LinearInterpolation HeightMassFN = null;
    
