@@ -33,7 +33,10 @@ FortranComponentWrapper::~FortranComponentWrapper()
    // -----------------------------------------------------------------------
    // Destructor
    // -----------------------------------------------------------------------
-
+   // get FORTRAN to release memory blocks.
+     const int doAllocate = false;
+     swapInstanceIn();
+     allocDealloc(&doAllocate);
    }
 void FortranComponentWrapper::onInit1()
    {

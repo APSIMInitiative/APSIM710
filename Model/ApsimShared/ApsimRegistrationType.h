@@ -11,7 +11,7 @@ enum EventTypeCode {get=1,         respondToGet=2,
                                    invalid=100};
 
 EventTypeCode EXPORT stringToTypeCode(const std::string&);
-std::string  EXPORT typeCodeToString (EventTypeCode type);
+const EXPORT std::string& typeCodeToString (EventTypeCode type);
 EventTypeCode  EXPORT opposite(EventTypeCode type);
 
 #endif

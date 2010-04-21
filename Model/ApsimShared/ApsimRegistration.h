@@ -57,8 +57,8 @@ class EXPORT  ApsimRegistration
                  isMatch(registrationName, rhs->registrationName) );
          }
 
-      virtual bool isMatch(EventTypeCode rhsType,
-                   const std::string& rhsName)
+	  virtual bool isMatch(EventTypeCode rhsType,
+				   const std::string& rhsName)
          {
          return (type == rhsType &&
                  isMatch(registrationName, rhsName) );
@@ -67,11 +67,11 @@ class EXPORT  ApsimRegistration
       // ------------------------------------------------------------------
       // Return the type string of the registration to caller.
       // ------------------------------------------------------------------
-      const std::string getType(void) const {return typeCodeToString(type);}
-      EventTypeCode getTypeCode(void) const {return type;}
-      const std::string getName(void) const {return registrationName;};
-      const std::string getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
-      const std::string getDDML(void) const {return ddml;};
+	  const std::string& getType(void) const {return typeCodeToString(type);}
+	  EventTypeCode getTypeCode(void) const {return type;}
+	  const std::string& getName(void) const {return registrationName;};
+	  const std::string& getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
+	  const std::string& getDDML(void) const {return ddml;};
       int getComponentID(void) const {return componentID;};
       int getDestinationID(void) const {return destinationID;};
 
@@ -114,7 +114,7 @@ class EXPORT  ForeignRegistration : public ApsimRegistration
    private:
      unsigned int foreignID;
    public:
-      ForeignRegistration(EventTypeCode _type,
+	  ForeignRegistration(EventTypeCode _type,
                               const std::string& _registrationName,
                               const std::string& _ddml,
                               int  _destinationID,
