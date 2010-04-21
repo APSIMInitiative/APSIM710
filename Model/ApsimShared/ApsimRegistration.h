@@ -66,13 +66,17 @@ class EXPORT  ApsimRegistration
       virtual bool matchSubscriberType(const ApsimRegistration *rhs);
       // ------------------------------------------------------------------
       // Return the type string of the registration to caller.
-      // ------------------------------------------------------------------
-	  const std::string& getType(void) const {return typeCodeToString(type);}
+	  // ------------------------------------------------------------------
+//	  const std::string& getType(void) const {return typeCodeToString(type);}
+	  const std::string getType(void) const {return typeCodeToString(type);}
 	  EventTypeCode getTypeCode(void) const {return type;}
-	  const std::string& getName(void) const {return registrationName;};
-	  const std::string& getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
-	  const std::string& getDDML(void) const {return ddml;};
-      int getComponentID(void) const {return componentID;};
+//	  const std::string& getName(void) const {return registrationName;};
+//	  const std::string& getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
+//	  const std::string& getDDML(void) const {return ddml;};
+	  const std::string getName(void) const {return registrationName;};
+	  const std::string getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
+	  const std::string getDDML(void) const {return ddml;};
+	  int getComponentID(void) const {return componentID;};
       int getDestinationID(void) const {return destinationID;};
 
       virtual unsigned int getRegID(void) const = 0;
