@@ -11,7 +11,11 @@ enum EventTypeCode {get=1,         respondToGet=2,
                                    invalid=100};
 
 EventTypeCode EXPORT stringToTypeCode(const std::string&);
-const EXPORT std::string& typeCodeToString (EventTypeCode type);
+#ifdef _MSC_VER
+  const EXPORT std::string& typeCodeToString (EventTypeCode type);
+#else
+  const std::string& EXPORT typeCodeToString (EventTypeCode type);
+#endif
 EventTypeCode  EXPORT opposite(EventTypeCode type);
 
 #endif
