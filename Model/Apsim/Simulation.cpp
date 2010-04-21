@@ -73,8 +73,6 @@ void Simulation::go(const string& simFilename)
    {
    if (!fileExists(simFilename))
          throw runtime_error("Cannot find simulation file: " + simFilename);
-
-   ifstream in(simFilename.c_str());
    init(simFilename);
    commence();
    term();

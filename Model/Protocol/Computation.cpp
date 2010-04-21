@@ -256,6 +256,9 @@ bool Computation::loadComponent(const std::string& filename,
 // ------------------------------------------------------------------
 void Computation::unloadComponent(void)
    {
-   if (handle) 
-     closeDLL(handle);
+   if (handle)
+	 {
+	   closeDLL(handle);
+	   handle = NULL;
+	 }
    }

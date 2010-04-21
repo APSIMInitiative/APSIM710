@@ -51,6 +51,15 @@ module Registrations
          id%dummy = add_reg(respondToGetReg, 'today', doubleTypeDDML, '', '')
          id%dummy = add_reg(respondToGetReg, 'day_of_year', intTypeDDML, '', '')
          id%dummy = add_reg(respondToGetReg, 'month_str', stringTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'time', TimeTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'dd/mm', stringTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'dd/mm/yyyy', stringTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'mm/dd/yyyy', stringTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'dd_mm_yyyy', stringTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'dd/mmm/yyyy', stringTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'mmm/dd/yyyy', stringTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'dd_mmm', stringTypeDDML, '', '')
+		 
 
       end subroutine
 end module Registrations
