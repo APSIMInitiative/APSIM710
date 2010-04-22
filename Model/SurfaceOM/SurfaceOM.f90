@@ -2682,11 +2682,6 @@ subroutine SurfOMOnBiomassRemoved (variant)
    real       surfom_N_added        ! amount of residue N added (kg/ha)
    real       surfom_P_added       ! amount of residue N added (kg/ha)
    type(BiomassRemovedType) :: BiomassRemoved
-   
-   BiomassRemoved%fraction_to_Residue(:) = 0.0
-   BiomassRemoved%dlt_crop_dm(:) = 0.0
-   BiomassRemoved%dlt_dm_N(:) = 0.0
-   BiomassRemoved%dlt_dm_P(:) = 0.0
 
    call unpack_BiomassRemoved(variant, BiomassRemoved)
 
