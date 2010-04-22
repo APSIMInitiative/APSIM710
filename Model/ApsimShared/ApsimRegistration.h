@@ -70,12 +70,9 @@ class EXPORT  ApsimRegistration
 //	  const std::string& getType(void) const {return typeCodeToString(type);}
 	  const std::string getType(void) const {return typeCodeToString(type);}
 	  EventTypeCode getTypeCode(void) const {return type;}
-//	  const std::string& getName(void) const {return registrationName;};
-//	  const std::string& getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
-//	  const std::string& getDDML(void) const {return ddml;};
-	  const std::string getName(void) const {return registrationName;};
-	  const std::string getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
-	  const std::string getDDML(void) const {return ddml;};
+	  const std::string& getName(void) const {return registrationName;};
+	  const std::string& getNameWithoutBrackets(void) const {return registrationNameWithoutBrackets;}
+	  const std::string& getDDML(void) const {return ddml;};
 	  int getComponentID(void) const {return componentID;};
       int getDestinationID(void) const {return destinationID;};
 
