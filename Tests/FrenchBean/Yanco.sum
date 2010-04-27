@@ -48,6 +48,9 @@ Paddock:
         end_step
      Output variables:
         dd/mm/yyyy as Date
+        es
+        runoff
+        interception
         esw
         LeafLAI
         LeafNodeNo
@@ -59,12 +62,28 @@ Paddock:
         LeafWaterDemand
         LeafTranspiration
         LeafFW
+        LeafFn
         LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
         LeafLiveWt2
         StemLiveWt
         cover_green
         PodLiveWt
         LeafLiveWt
+        StageCodeValue
+        sw_dep(1) as sw10
+        sw_dep(2) as sw20
+        sw_dep(3) as sw30
+        RootDepth
+        RootWaterSupply
+        PodSize
+        PodNumber
+        eo
+        pan
+        no3()
+        nh4()
+        urea()
+        AboveGroundN
 
      Output file = Yanco.out
      Format = normal
@@ -75,11 +94,37 @@ Paddock:
 ------- operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-         12-feb  Prepare      fertiliser apply amount = 49, type = urea, depth = 50
+         12-feb  Prepare      fertiliser apply amount = 49, type = urea_n, depth = 50
          16-feb  Prepare        frenchbean sow population =25, depth = 50, cultivar = simba, MaxCover = 1.0, BudNumber = 1, row_spacing = 750, crop_class = frenchbean
-         27-mar  Prepare      fertiliser apply amount = 49, type = urea, depth = 180
+         27-mar  Prepare      fertiliser apply amount = 180, type = urea_n, depth = 50
          28-apr  Prepare      frenchbean harvest
          28-apr  Prepare      frenchbean EndCrop
+     16/02/2009  Prepare      Irrigation apply amount = 25.56
+     17/02/2009  Prepare      Irrigation apply amount = 25.56
+     23/02/2009  Prepare      Irrigation apply amount = 19.17
+     24/02/2009  Prepare      Irrigation apply amount = 12.78
+     26/02/2009  Prepare      Irrigation apply amount = 12.78
+     27/02/2009  Prepare      Irrigation apply amount = 25.56
+      2/03/2009  Prepare      Irrigation apply amount = 25.56
+      9/03/2009  Prepare      Irrigation apply amount = 12.78
+     11/03/2009  Prepare      Irrigation apply amount = 19.17
+     13/03/2009  Prepare      Irrigation apply amount = 38.34
+     19/03/2009  Prepare      Irrigation apply amount = 25.56
+     20/03/2009  Prepare      Irrigation apply amount = 25.56
+     24/03/2009  Prepare      Irrigation apply amount = 25.56
+     27/03/2009  Prepare      Irrigation apply amount = 38.34
+     29/03/2009  Prepare      Irrigation apply amount = 12.78
+     30/03/2009  Prepare      Irrigation apply amount = 12.78
+      1/04/2009  Prepare      Irrigation apply amount = 25.56
+      3/04/2009  Prepare      Irrigation apply amount = 25.56
+      7/04/2009  Prepare      Irrigation apply amount = 19.17
+     10/04/2009  Prepare      Irrigation apply amount = 19.17
+     13/04/2009  Prepare      Irrigation apply amount = 19.17
+     16/04/2009  Prepare      Irrigation apply amount = 19.17
+     19/04/2009  Prepare      Irrigation apply amount = 19.17
+     22/04/2009  Prepare      Irrigation apply amount = 19.17
+     24/04/2009  Prepare      Irrigation apply amount = 19.17
+     27/04/2009  Prepare      Irrigation apply amount = 19.17
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -87,8 +132,8 @@ Paddock:
         - Reading Parameters
                       Irrigation parameters
           -----------------------------------------------
-           Automatic Irrigation Application (Enabled)
-           critical fraction of available soil water =  0.90
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.95
            depth for calculating available soil water =     600.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
@@ -116,17 +161,13 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
-          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
-          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
-          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
-          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
-         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
-         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
-         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
-         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
-         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
-         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+            0.-  100.  0.068  0.120  0.260  0.335  0.070  1.682  0.613  0.300
+          100.-  200.  0.090  0.120  0.280  0.365  0.090  1.600  0.243  0.300
+          200.-  300.  0.108  0.120  0.299  0.395  0.120  1.524  0.096  0.300
+          300.-  600.  0.148  0.200  0.354  0.434  0.200  1.422  0.048  0.300
+          600.-  900.  0.148  0.310  0.314  0.395  0.310  1.523  0.000  0.300
+          900.- 1200.  0.148  0.320  0.327  0.383  0.320  1.555  0.000  0.300
+         1200.- 1500.  0.148  0.320  0.328  0.419  0.320  1.461  0.000  0.300
         ---------------------------------------------------------------------
      
      
@@ -137,19 +178,15 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  150.      43.50      37.50      37.50       7.50
-          150.-  300.      43.50      36.00      36.00       7.50
-          300.-  600.      87.00      75.00      75.00      15.00
-          600.-  900.      87.00      75.00      75.00      12.00
-          900.- 1200.      90.00      66.00      66.00      15.00
-         1200.- 1500.      93.00      57.00      57.00      15.00
-         1500.- 1800.      96.00      54.00      54.00      15.00
-         1800.- 2100.      99.00      45.00      45.00      15.00
-         2100.- 2400.     102.00      39.00      39.00      15.00
-         2400.- 2700.     105.00      33.00      33.00      15.00
-         2700.- 3000.     108.00      24.00      24.00      15.00
+            0.-  100.      12.00       0.00      14.00       7.50
+          100.-  200.      12.00       0.00      16.00       8.50
+          200.-  300.      12.00       0.00      17.90       9.60
+          300.-  600.      60.00       0.00      46.20      24.00
+          600.-  900.      93.00       0.00       1.20      24.30
+          900.- 1200.      96.00       0.00       2.10      16.80
+         1200.- 1500.      96.00       0.00       2.40      27.30
           ---------------------------------------------------------
-               Totals     954.00     541.50     541.50     147.00
+               Totals     381.00       0.00      99.80     118.00
           ---------------------------------------------------------
      
      
@@ -161,7 +198,7 @@ Paddock:
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   0.00        0.13       40.00       16.00
+                   0.00        0.13       80.00       35.00
           ---------------------------------------------------------
      
      
@@ -170,13 +207,13 @@ Paddock:
                 Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
                                            mm
           ---------------------------------------------------------
-              73.00   20.00    0.80  450.00
+              78.00   20.00    0.80  450.00
           ---------------------------------------------------------
      
      
      
            Using Ritchie evaporation model
-            Cuml evap (U):            6.00 (mm^0.5)
+            Cuml evap (U):           10.00 (mm^0.5)
             CONA:                     3.50 ()
             Eo from priestly-taylor
 
@@ -193,10 +230,10 @@ Paddock:
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+          wheat     wheat           10.0     4.0     0.1     0.0   0.005     0.0
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   0.4
+                      Effective Cover from Surface Materials =   0.0
      
 
 ------- Soil Nitrogen Initialisation ------------------------------------------
@@ -204,7 +241,6 @@ Paddock:
         - Reading Parameters
      
         - Reading Constants
-     Using standard soil mineralisation for soil type Black Vertosol
      
      
      
@@ -217,19 +253,15 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     8.40  1.04    9.95    0.92    0.00
-             2     8.80  0.89    3.25    0.15    0.00
-             3     9.00  0.89    6.43    0.31    0.00
-             4     9.20  0.89    5.21    0.31    0.00
-             5     9.20  0.77    5.41    0.32    0.00
-             6     9.10  0.45    5.66    0.33    0.00
-             7     9.00  0.27    5.72    0.34    0.00
-             8     9.00  0.22    5.87    0.35    0.00
-             9     8.90  0.16    6.02    0.35    0.00
-            10     8.90  0.13    6.12    0.36    0.00
-            11     8.90  0.12    6.38    0.38    0.00
+             1     8.40  1.04   10.94    1.01    0.00
+             2     8.80  0.89    3.36    0.16    0.00
+             3     9.00  0.89    3.20    0.15    0.00
+             4     9.20  0.89    7.26    0.43    0.00
+             5     9.20  0.77    7.77    0.46    0.00
+             6     9.10  0.45    7.94    0.47    0.00
+             7     9.10  0.45    7.46    0.44    0.00
           ------------------------------------------------
-           Totals               66.01    4.10    0.00
+           Totals               47.92    3.11    0.00
           ------------------------------------------------
      
      
@@ -242,19 +274,15 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      15679.1  1254.3   232.9    29.1    19.3     0.5
-             2      13642.7  1091.4   107.8    13.5    16.6     0.4
-             3      27153.5  2172.3    80.5    10.1    12.3     0.3
-             4      27207.0  2176.6    27.0     3.4     9.1     0.2
-             5      24473.9  1957.9    12.1     1.5     6.7     0.2
-             6      14977.6  1198.2     7.4     0.9     5.0     0.1
-             7       9067.5   725.4     4.5     0.6     3.7     0.1
-             8       7586.2   606.9     3.8     0.5     2.7     0.1
-             9       5661.2   452.9     2.8     0.4     2.0     0.1
-            10       4677.7   374.2     2.3     0.3     1.5     0.0
-            11       4497.8   359.8     2.2     0.3     1.1     0.0
+             1      17236.8  1378.9   256.0    32.0    24.8     0.6
+             2      14128.3  1130.3   111.7    14.0    20.3     0.5
+             3      13523.5  1081.9    40.1     5.0    16.6     0.4
+             4      37929.8  3034.4    37.6     4.7     9.1     0.2
+             5      35163.9  2813.1    17.4     2.2     5.0     0.1
+             6      20982.1  1678.6    10.4     1.3     2.7     0.1
+             7      19713.7  1577.1     9.8     1.2     1.5     0.0
           ---------------------------------------------------------
-           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+           Totals  158678.2 12694.3   482.9    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 12 February 2009(Day of year=43), operations: 
@@ -262,32 +290,84 @@ Paddock:
 12 February 2009(Day of year=43), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        49.00 of Urea ferilizer (urea)
+        49.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
 16 February 2009(Day of year=47), operations: 
       Sending sow message to frenchbean
-23/02/2009 - Emergence
+      Sending apply message to irrigation
+17 February 2009(Day of year=48), operations: 
+      Sending apply message to irrigation
+21/02/2009 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
+23 February 2009(Day of year=54), operations: 
+      Sending apply message to irrigation
+24 February 2009(Day of year=55), operations: 
+      Sending apply message to irrigation
+26 February 2009(Day of year=57), operations: 
+      Sending apply message to irrigation
+27 February 2009(Day of year=58), operations: 
+      Sending apply message to irrigation
+2 March 2009(Day of year=61), operations: 
+      Sending apply message to irrigation
+9 March 2009(Day of year=68), operations: 
+      Sending apply message to irrigation
+11 March 2009(Day of year=70), operations: 
+      Sending apply message to irrigation
+13 March 2009(Day of year=72), operations: 
+      Sending apply message to irrigation
+19 March 2009(Day of year=78), operations: 
+      Sending apply message to irrigation
+20 March 2009(Day of year=79), operations: 
+      Sending apply message to irrigation
+24 March 2009(Day of year=83), operations: 
+      Sending apply message to irrigation
+26/03/2009 - Flowering
+                            LAI = 3.46 (m^2/m^2)
+           Above Ground Biomass = 178.82 (g/m^2)
 27 March 2009(Day of year=86), operations: 
       Sending apply message to fertiliser
 27 March 2009(Day of year=86), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        49.00 of Urea ferilizer (urea)
-                                         added at depth  180.00 (layer   2)
-28/03/2009 - Flowering
-                            LAI = 3.21 (m^2/m^2)
-           Above Ground Biomass = 165.84 (g/m^2)
-1/04/2009 - StartPodGrowth
-                            LAI = 3.68 (m^2/m^2)
-           Above Ground Biomass = 232.72 (g/m^2)
+       180.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+      Sending apply message to irrigation
+29 March 2009(Day of year=88), operations: 
+      Sending apply message to irrigation
+30 March 2009(Day of year=89), operations: 
+      Sending apply message to irrigation
+1 April 2009(Day of year=91), operations: 
+      Sending apply message to irrigation
+3 April 2009(Day of year=93), operations: 
+      Sending apply message to irrigation
+7 April 2009(Day of year=97), operations: 
+      Sending apply message to irrigation
+7/04/2009 - StartPodGrowth
+                            LAI = 4.51 (m^2/m^2)
+           Above Ground Biomass = 353.76 (g/m^2)
+10 April 2009(Day of year=100), operations: 
+      Sending apply message to irrigation
+13 April 2009(Day of year=103), operations: 
+      Sending apply message to irrigation
+16 April 2009(Day of year=106), operations: 
+      Sending apply message to irrigation
+19 April 2009(Day of year=109), operations: 
+      Sending apply message to irrigation
+22 April 2009(Day of year=112), operations: 
+      Sending apply message to irrigation
+24 April 2009(Day of year=114), operations: 
+      Sending apply message to irrigation
+27 April 2009(Day of year=117), operations: 
+      Sending apply message to irrigation
 28 April 2009(Day of year=118), operations: 
       Sending harvest message to frenchbean
 
      28/04/2009  - Harvesting Pod from frenchbean
      -------------------------------------------------
-     Pod Yield DWt: 129.41 (g/m^2)
+     Pod Yield DWt: 149.02 (g/m^2)
+     Pod Size: 0.51 (g)
+     Pod Number: 292.76 (/m^2)
 
       Sending endcrop message to frenchbean
 30 April 2009(Day of year=120), clock: 

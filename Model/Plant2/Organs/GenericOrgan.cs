@@ -40,6 +40,40 @@ class GenericOrgan : BaseOrgan, AboveGround
          }
       }
 
+   public override double NDemand
+   {
+   get
+      {
+      Function CriticalNConc = Children["CriticalNConc"] as Function;
+      double NDeficit = Math.Max(0.0, CriticalNConc.Value * Live.Wt - Live.N);
+      return NDeficit;
+      }
+   }
+   public override double NAllocation
+   {
+       set
+       {
+       Function StructuralFraction = Children["NStructuralFraction"] as Function;
+       Live.StructuralN += value * StructuralFraction.Value;
+       Live.NonStructuralN += value * (1 - StructuralFraction.Value);
+        }
+   }
+   public override double NRetranslocationSupply
+      {
+      get
+         {
+         return Live.NonStructuralN;
+         }
+      }
+   public override double NRetranslocation
+      {
+      set
+         {
+         if (value > Live.NonStructuralN)
+            throw new Exception("N Retranslocation exceeds nonstructural nitrogen in organ: " + Name);
+         Live.NonStructuralN -= value;
+         }
+      }
    [EventHandler] private void OnPrune(ManagerEventType keys)
       {
       Live.Clear();

@@ -12,11 +12,25 @@ public class SimpleArbitrator :  Arbitrator
    private double TotalAllocated = 0;
    private double TotalDMRetranslocationSupply = 0;
 
+   [Param] private string NSink = null;
+   private double TotalNDemand = 0;
+   private double TotalNSupply = 0;
+   //private double TotalAllocated = 0;
+   private double TotalNRetranslocationSupply = 0;
+
    [Output] public override double DMSupply
       {
       get
          {
          return TotalDMSupply;
+         }
+      }
+   [Output]
+   public override double NDemand
+      {
+      get
+         {
+         return TotalNDemand;
          }
       }
    public override void DoDM(NamedList<Organ> Organs)
@@ -120,6 +134,105 @@ public class SimpleArbitrator :  Arbitrator
 
 
       }
+   public override void DoN(NamedList<Organ> Organs)
+      {
+      double[] NRetranslocationSupply = new double[Organs.Count];
+      double[] NDemand = new double[Organs.Count];
+      double[] NSupply = new double[Organs.Count];
+      double[] NAllocation = new double[Organs.Count];
+      double[] NRetranslocation = new double[Organs.Count];
+
+      TotalNDemand = 0;
+      TotalNSupply = 0;
+      TotalAllocated = 0;
+      TotalNRetranslocationSupply = 0;
+
+      // Grab some state data for mass balance checking at end
+      Plant Plant = (Plant)Root;
+      double StartingN = Plant.AboveGroundN + Plant.BelowGroundN + Plant.ReserveN;
+
+      // Get required data from all organs and prepare for arbirtration
+
+      for (int i = 0; i < Organs.Count; i++)
+         NDemand[i] = Organs[i].NDemand;
+      TotalNDemand = MathUtility.Sum(NDemand);
+
+      for (int i = 0; i < Organs.Count; i++)
+         NSupply[i] = Organs[i].NUptakeSupply;
+      TotalNSupply = MathUtility.Sum(NSupply);
+      for (int i = 0; i < Organs.Count; i++)
+         NAllocation[i] = 0;
+
+      for (int i = 0; i < Organs.Count; i++)
+         NRetranslocationSupply[i] = Organs[i].NRetranslocationSupply;
+      TotalNRetranslocationSupply = MathUtility.Sum(NRetranslocationSupply);
+
+      double fraction = 0;
+      if (TotalNDemand > 0)
+         fraction = Math.Min(1, TotalNSupply / TotalNDemand);
+      double Excess = Math.Max(0, TotalNSupply - TotalNDemand);
+
+
+      // Allocate Daily Photosyntheis to organs according to demand
+
+      for (int i = 0; i < Organs.Count; i++)
+         {
+         NAllocation[i] = fraction * NDemand[i];
+         if (Organs[i].Name == NSink)
+            NAllocation[i] += Excess;
+         TotalAllocated += NAllocation[i];
+         }
+      double BalanceError = Math.Abs(TotalAllocated - TotalNSupply);
+
+      if (BalanceError > 0.00001)
+         {
+         throw new Exception("Mass Balance Error in N Allocation");
+         }
+
+      // Determine unmet demand of reproductive organs and retranslocate from
+      // other organs as required/allowed.
+
+      double TotalUnmetDemand = 0;
+      for (int i = 0; i < Organs.Count; i++)
+         TotalUnmetDemand += NDemand[i] - NAllocation[i];
+
+      double RetransDemandFraction = 0;
+      if (TotalUnmetDemand > 0)
+         RetransDemandFraction = Math.Min(1, TotalNRetranslocationSupply / TotalUnmetDemand);
+
+      double RetransSupplyFraction = 0;
+      if (TotalNRetranslocationSupply > 0)
+         RetransSupplyFraction = Math.Min(1, TotalUnmetDemand * RetransDemandFraction / TotalNRetranslocationSupply);
+
+      // Allocate Daily Retranslocation to organs according to demand and Supply
+
+      for (int i = 0; i < Organs.Count; i++)
+         {
+         NAllocation[i] += RetransDemandFraction * (NDemand[i] - NAllocation[i]);
+         NRetranslocation[i] = NRetranslocationSupply[i] * RetransSupplyFraction;
+         TotalAllocated += NAllocation[i];
+         }
+
+      // Now Send Arbitration Results to all Plant Organs
+      for (int i = 0; i < Organs.Count; i++)
+         {
+         Organs[i].NAllocation = NAllocation[i];
+         Organs[i].NRetranslocation = NRetranslocation[i];
+         }
+
+
+      /// Now check that everything still adds up!!!!
+      double EndN = Plant.AboveGroundN + Plant.BelowGroundN + Plant.ReserveN;
+      BalanceError = Math.Abs(EndN - StartingN - TotalNSupply);
+
+      if (BalanceError > 0.01)
+         {
+         throw new Exception("Mass Balance Error in N Allocation");
+         }
+
+
+      }
+
    public void DoDMold(NamedList<Organ> Organs)
       {
       double[] DMRetranslocationSupply = new double[Organs.Count];

@@ -6,19 +6,29 @@ using CSGeneral;
 public class Root : BaseOrgan, BelowGround
    {
    #region Class Data Members
+   const double kgha2gsm = 0.1;
+
    private double[] SWSupply = null;
    private double[] Uptake = null;
    public Biomass[] LayerLive;
    public Biomass[] LayerDead;
 
    [Event] public event ApsimTypeDelegate WaterChanged;
+   [Event] public event ApsimTypeDelegate NitrogenChanged;
    [Input] public double[] sw_dep = null;
    [Input] public double[] dlayer = null;
+   [Input] public double[] bd = null;
+   [Input] public double[] no3 = null;
+   [Input] public double[] nh4 = null;
+   [Input] public double[] dul_dep = null;
+   [Input] public double[] ll15_dep = null;
    [Param] public double[] ll = null;
    [Param] public double[] kl = null;
    [Param] public double[] xf = null;
    [Param] private double InitialDM = 0;
    [Param] private double SpecificRootLength = 0;
+   [Param] private double KNO3 = 0;
+   [Param] private double KNH4 = 0;
 
    [Output][Units("mm")] public double Depth = 0;
    #endregion
@@ -83,6 +93,9 @@ public class Root : BaseOrgan, BelowGround
             {
             Total.StructuralWt += Layer.StructuralWt;
             Total.NonStructuralWt += Layer.NonStructuralWt;
+            Total.StructuralN += Layer.StructuralN;
+            Total.NonStructuralN += Layer.NonStructuralN;
+
             }
          return Total;
          }
@@ -96,7 +109,10 @@ public class Root : BaseOrgan, BelowGround
             {
             Total.StructuralWt += Layer.StructuralWt;
             Total.NonStructuralWt += Layer.NonStructuralWt;
-            }
+            Total.StructuralN += Layer.StructuralN;
+            Total.NonStructuralN += Layer.NonStructuralN;
+
+         }
          return Total;
          }
       }
@@ -210,6 +226,130 @@ public class Root : BaseOrgan, BelowGround
       return depth_of_root_in_layer / dlayer[layer];
       }
 
+   [Output]
+   public double LiveN
+   {
+       get
+       {
+           return Live.N;
+       }
+   }
+   [Output]
+   public double DeadN
+   {
+       get
+       {
+           return Dead.N;
+       }
+   }
 
+   private void SoilNSupply(double[] NO3Supply, double[] NH4Supply)
+      {
+      double[] no3ppm = new double[dlayer.Length];
+      double[] nh4ppm = new double[dlayer.Length];
+
+      for (int layer = 0; layer < dlayer.Length; layer++)
+         {
+         if (LayerLive[layer].Wt > 0)
+            {
+            double swaf = 0;
+            swaf = (sw_dep[layer] - ll15_dep[layer]) / (dul_dep[layer] - ll15_dep[layer]);
+            swaf = Math.Max(0.0,Math.Min(swaf, 1.0));
+            no3ppm[layer] = no3[layer] * (100.0 / (bd[layer] * dlayer[layer]));
+            NO3Supply[layer] = no3[layer] * KNO3 * no3ppm[layer] * swaf;
+            nh4ppm[layer] = nh4[layer] * (100.0 / (bd[layer] * dlayer[layer]));
+            NH4Supply[layer] = nh4[layer] * KNH4 * nh4ppm[layer] * swaf;
+            }
+         else
+            {
+            NO3Supply[layer] = 0;
+            NH4Supply[layer] = 0;
+            }
+         }
+      }
+   [Output] public override double NUptakeSupply
+      {
+      get
+         {
+         double[] no3supply = new double[dlayer.Length];
+         double[] nh4supply = new double[dlayer.Length];
+         SoilNSupply(no3supply, nh4supply);
+
+         Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
+
+         Function MaxDailyNUptake = Children["MaxDailyNUptake"] as Function;
+
+         double NSupply = (Math.Min(MathUtility.Sum(no3supply),MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply),MaxDailyNUptake.Value)) * kgha2gsm;
+         return Math.Min( A.NDemand, NSupply);
+
+         }
+      }
+   public override double NUptake
+      {
+      set
+         {
+         double Uptake = value / kgha2gsm;
+         NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
+         NitrogenUptake.DeltaNO3 = new double[dlayer.Length];
+         NitrogenUptake.DeltaNH4 = new double[dlayer.Length];
+
+         double[] no3supply = new double[dlayer.Length];
+         double[] nh4supply = new double[dlayer.Length];
+         SoilNSupply(no3supply, nh4supply);
+         double NSupply = MathUtility.Sum(no3supply) + MathUtility.Sum(nh4supply);
+         if (Uptake > 0)
+            {
+            if (Uptake > NSupply+0.001)
+               throw new Exception("Request for N uptake exceeds soil N supply");
+            double fraction = 0;
+            if (NSupply > 0) fraction = Uptake / NSupply;
+
+            for (int layer = 0; layer <= dlayer.Length - 1; layer++)
+               {
+               NitrogenUptake.DeltaNO3[layer] = -no3supply[layer] * fraction;
+               NitrogenUptake.DeltaNH4[layer] = -nh4supply[layer] * fraction;
+               }
+            if (NitrogenChanged != null)
+               NitrogenChanged.Invoke(NitrogenUptake);
+
+            }
+         }
+      }
+   public override double NDemand
+   {
+       get
+       {
+           double Total = 0.0;
+           Function CriticalNConc = Children["CriticalNConc"] as Function;
+           foreach (Biomass Layer in LayerLive)
+           {
+               double NDeficit = Math.Max(0.0, CriticalNConc.Value * Layer.Wt - Layer.N);
+               Total += NDeficit;
+           }
+           return Total;
+       }
+   }
+
+   [Output]
+   public override double NAllocation
+   {
+       set
+       {
+           double Demand = NDemand;
+           double Supply = value;
+           Function CriticalNConc = Children["CriticalNConc"] as Function;
+
+           if (Demand == 0 && Supply > 0) { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
+           if (Demand > 0)
+           {
+               foreach (Biomass Layer in LayerLive)
+               {
+                   double NDeficit = Math.Max(0.0, CriticalNConc.Value * Layer.Wt - Layer.N);
+                   double fraction = NDeficit / Demand;
+                   Layer.StructuralN += fraction * Supply;
+               }
+           }
+       }
+   }
    }
 

@@ -567,7 +567,7 @@
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
             <category description="Sowing parameters" />
             <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">150</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
             <class type="classes" description="Enter crop growth class : ">plant</class>
@@ -630,7 +630,7 @@
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
             <category description="Sowing parameters" />
             <crop type="crop" description="Enter name of crop to sow : ">wheat2</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">150</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
             <class type="classes" description="Enter crop growth class : " />
@@ -639,7 +639,7 @@
           <script name="start_of_day">
             <text>
         if (today = date('[date]') then
-              [crop] sow population =[density], depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+              [crop] sow population =[density], depth = [depth], cultivar = [cultivar], MaxCover = 1.0, BudNumber = 1, row_spacing = [row_spacing], crop_class = [class]
          endif
                </text>
             <event>start_of_day</event>
@@ -656,6 +656,13 @@
         <events name="Reporting Frequency" shortcut="/simulations/ReleasedWheat/paddock/outputfile/Reporting Frequency" />
       </outputfile>
       <wheat2 />
+      <micromet name="Micromet">
+        <soilalbedo name="soilalbedo">0.23</soilalbedo>
+        <a_interception name="a_interception">0.0</a_interception>
+        <b_interception name="b_interception">0.0</b_interception>
+        <c_interception name="c_interception">0.0</c_interception>
+        <d_interception name="d_interception">0.0</d_interception>
+      </micromet>
     </area>
   </simulation>
 </folder>

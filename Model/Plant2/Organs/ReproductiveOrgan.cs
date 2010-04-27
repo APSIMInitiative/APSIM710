@@ -9,6 +9,8 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
    [Input]  private int Year = 0;
    [Param]  private double MaximumSize = 0;
    [Param]  private string RipeStage = "";
+   private double DailyGrowth = 0;
+
    [Output] [Units("/m^2")]  public double Number = 0;
    [Output] [Units("g/m^2")] public double LiveFWt
       {
@@ -110,6 +112,25 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
          }
 
       }
-   public override double DMAllocation { set { Live.StructuralWt += value; } }
+   public override double DMAllocation 
+      { set { Live.StructuralWt += value; DailyGrowth = value; } }
+   public override double NDemand
+      {
+      get
+         {
+         Function NFillingRate = Children["NFillingRate"] as Function;
+         Function MaxNConcDailyGrowth = Children["MaxNConcDailyGrowth"] as Function;
+         double demand = Number * NFillingRate.Value;
+         return Math.Min(demand, MaxNConcDailyGrowth.Value*DailyGrowth);
+         }
+
+      }
+   public override double NAllocation
+      {
+      set
+         {
+         Live.StructuralN += value;
+         }
+      }
    }
 

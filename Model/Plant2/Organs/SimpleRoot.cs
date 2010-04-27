@@ -11,14 +11,23 @@ public class SimpleRoot : Organ
    
    [Event] public event ApsimTypeDelegate WaterChanged;
 
-   public override double DMDemand { get { return 0; } }
-   public override double DMSupply { get { return 0; } }
    public override Biomass Live { get { return new Biomass(); } }
    public override Biomass Dead { get { return new Biomass(); } }
+
+   public override double DMDemand { get { return 0; } }
+   public override double DMSupply { get { return 0; } }
    public override double DMRetranslocationSupply { get { return 0; } }
    public override double DMRetranslocation { set { } }
    public override double DMAllocation {set{}}
-   public override double WaterDemand { get { return 0; } }
+
+   public override double NDemand { get { return 0; } }
+   public override double NUptakeSupply { get { return 0; } }
+   public override double NRetranslocationSupply { get { return 0; } }
+   public override double NRetranslocation { set { } }
+   public override double NAllocation { set { } }
+   public override double NUptake { set { } }
+
+    public override double WaterDemand { get { return 0; } }
    [Output]  [Units("mm")] public double WaterUptake
       {
       get

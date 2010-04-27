@@ -1,0 +1,325 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = GattonMar09
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component               "IrrigationData" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                   "frenchbean" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/10/2008
+     Simulation end date   = 30/05/2009
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Gatton0809.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_step
+     Output variables:
+        dd/mm/yyyy as Date
+        esw
+        LeafLAI
+        LeafNodeNo
+        LeafTotalNo
+        LeafGreenNo
+        LeafFullyExpandedNodeNo
+        LeafDeadNodeNo
+        AboveGroundDM
+        LeafWaterDemand
+        LeafTranspiration
+        LeafFW
+        LeafPhotosynthesisFt
+        LeafLiveWt2
+        StemLiveWt
+        cover_green
+        PodLiveWt
+        LeafLiveWt
+        PhenologyThermalTimeValue
+        StageCodeValue
+        sw_dep()
+        sw
+        RootDepth
+        Height
+        eo
+        dul_dep()
+        ll15_dep()
+        rain
+        irrigation
+        LeafFn
+        NO3()
+        NH4()
+        Urea()
+
+     Output file = GattonMar09.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- IrrigationData Initialisation -----------------------------------------
+     Operations Schedule
+     ===================
+         11-mar  Prepare      Irrigation apply amount = 15.3
+         25-mar  Prepare      Irrigation apply amount = 28.3
+         31-mar  Prepare      Irrigation apply amount = 23.3
+          4-apr  Prepare      Irrigation apply amount = 6.66
+         25-apr  Prepare      Irrigation apply amount = 22.66
+          2-may  Prepare      Irrigation apply amount = 31.6
+         14-may  Prepare      Irrigation apply amount = 20
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.95
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (today = date('9-mar') then
+             frenchbean sow population =27, depth = 50, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
+             endif
+     END of rules
+     
+
+------- Sowing fertiliser Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- frenchbean.sowing
+             fertiliser apply amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if frenchbean.phenologycurrentphasename = 'harvestripe' then
+       frenchbean  harvest
+       frenchbean  endcrop
+                endif
+     
+     SECTION:- process
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.250  0.260  0.400  0.430  0.310  1.380  0.762  0.300
+          150.-  300.  0.250  0.250  0.460  0.500  0.448  1.280  0.190  0.300
+          300.-  600.  0.250  0.250  0.460  0.500  0.448  1.280  0.048  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      39.00       7.50      21.00       4.50
+          150.-  300.      37.50      29.70      31.50       6.00
+          300.-  600.      75.00      59.40      63.00      12.00
+          ---------------------------------------------------------
+               Totals     151.50      96.60     115.50      22.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13        1.00        1.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04   13.46    1.24    0.00
+             2     8.80  0.89    4.03    0.19    0.00
+             3     9.00  0.89    8.07    0.38    0.00
+          ------------------------------------------------
+           Totals               25.56    1.82    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      21213.0  1697.0   315.0    39.4    50.7     1.3
+             2      16954.0  1356.3   134.0    16.8    24.0     0.6
+             3      34075.0  2726.0   101.0    12.6     5.3     0.1
+          ---------------------------------------------------------
+           Totals   72241.9  5779.4   550.1    68.8    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+9 March 2009(Day of year=68), Sow on a fixed date: 
+     Manager sending message :- frenchbean sow  population = 27, depth = 50, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
+9 March 2009(Day of year=68), Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
+9 March 2009(Day of year=68), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       200.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+11 March 2009(Day of year=70), IrrigationData: 
+      Sending apply message to irrigation
+14/03/2009 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+25 March 2009(Day of year=84), IrrigationData: 
+      Sending apply message to irrigation
+31 March 2009(Day of year=90), IrrigationData: 
+      Sending apply message to irrigation
+4 April 2009(Day of year=94), IrrigationData: 
+      Sending apply message to irrigation
+15/04/2009 - Flowering
+                            LAI = 2.18 (m^2/m^2)
+           Above Ground Biomass = 115.02 (g/m^2)
+25 April 2009(Day of year=115), IrrigationData: 
+      Sending apply message to irrigation
+27/04/2009 - StartPodGrowth
+                            LAI = 3.05 (m^2/m^2)
+           Above Ground Biomass = 270.03 (g/m^2)
+2 May 2009(Day of year=122), IrrigationData: 
+      Sending apply message to irrigation
+14 May 2009(Day of year=134), IrrigationData: 
+      Sending apply message to irrigation
+20/05/2009 - Maturity
+                            LAI = 2.81 (m^2/m^2)
+           Above Ground Biomass = 551.18 (g/m^2)
+20 May 2009(Day of year=140), Harvesting rule: 
+     Manager sending message :- frenchbean harvest
+
+     20/05/2009  - Harvesting Pod from frenchbean
+     -------------------------------------------------
+     Pod Yield DWt: 101.95 (g/m^2)
+     Pod Size: 0.54 (g)
+     Pod Number: 187.30 (/m^2)
+
+     Manager sending message :- frenchbean endcrop
+30 May 2009(Day of year=150), clock: 
+     Simulation is terminating due to end criteria being met.

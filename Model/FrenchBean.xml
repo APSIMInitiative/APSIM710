@@ -18,7 +18,7 @@
     <variables link="%apsim%\Documentation\ModelInfo\frenchbean.xml" />
     <events link="%apsim%\Documentation\ModelInfo\frenchbean.xml" />
     <ApsimToSim>
-      <component name="[frenchbean.name]" executable="[dll]">
+      <component name="[InstanceName]" executable="[dll]">
         <executable>[dll]</executable>
         <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
         <initdata>
@@ -38,18 +38,20 @@
       </Population>
       <AnnualPlantArbitrator name="Arbitrator">
         <DMSink>Stem</DMSink>
+        <NSink>Stem</NSink>
       </AnnualPlantArbitrator>
       <Phenology>
         <TemperatureFunction name="ThermalTime">
           <XYPairs>
-            <XY> 9 0.0</XY>
-            <XY>25 16.0</XY>
-            <XY>37 0.0</XY>
+            <XY> 5 0.0</XY>
+            <XY>25 20.0</XY>
+            <XY>35 20.0</XY>
+            <XY>40 0.0</XY>
           </XYPairs>
         </TemperatureFunction>
       <FixedPhase name="Emergent">
          <Constant name="Target">
-           <Value>80</Value>
+           <Value>100</Value>
          </Constant>
          <Start>Germination</Start>
          <End>Emergence</End>
@@ -57,7 +59,7 @@
       </FixedPhase>
       <FixedPhase name="Vegetative">
          <Constant name="Target">
-           <Value>320</Value>
+           <Value>529</Value>
          </Constant>
          <Start>Emergence</Start>
          <End>Flowering</End>
@@ -65,7 +67,7 @@
       </FixedPhase>
       <FixedPhase name="Flowering">
          <Constant name="Target">
-           <Value>50</Value>
+           <Value>185</Value>
          </Constant>
          <Start>Flowering</Start>
          <End>StartPodGrowth</End>
@@ -73,7 +75,7 @@
       </FixedPhase>
       <FixedPhase name="PodFilling">
          <Constant name="Target">
-           <Value>250</Value>
+           <Value>265</Value>
          </Constant>
          <Start>StartPodGrowth</Start>
          <End>Maturity</End>
@@ -87,6 +89,8 @@
 
       </Phenology>
       <Leaf>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
         <Frgr>1</Frgr>
         <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>1.0</MaxCover>
@@ -111,10 +115,10 @@
         </FrostFraction>
         <RUEModel name="Photosynthesis">
          <FT>
-            <XY>12 0.0</XY>
-            <XY>20 1.0</XY>
+            <XY>5 0.0</XY>
+            <XY>15 1.0</XY>
             <XY>28 1.0</XY>
-            <XY>35 0.5</XY>
+            <XY>35 1.0</XY>
             <XY>40 0.0</XY>
          </FT>
          <FVPD>
@@ -122,7 +126,7 @@
             <XY>10 1.0</XY>
             <XY>50 1.0</XY>
          </FVPD>
-         <RUE>1.25</RUE>
+         <RUE>1.2</RUE>
         </RUEModel>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Early">
@@ -239,6 +243,13 @@
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
+        <Constant name="CriticalNConc">
+          <Value>0.01</Value>
+        </Constant>        
+        <Constant name="MinimumNConc">
+          <Value>0.0</Value>
+        </Constant>        
+
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -262,6 +273,13 @@
         <Constant name="StructuralFraction">
           <Value>1.0</Value>
         </Constant>
+        <Constant name="CriticalNConc">
+          <Value>0.01</Value>
+        </Constant>        
+        <Constant name="NStructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+
       </GenericOrgan>
       <Root>
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -272,48 +290,102 @@
         <GenericFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
-            <XY> 0.0 0.1</XY>
+            <XY> 0.0 1.0</XY>
             <XY> 3.0 1.0</XY>
           </XYPairs>
         </GenericFunction>
-      <Constant name="RootFrontVelocity">
-         <Value>10.0</Value>
-      </Constant>
+        <PhaseLookup name="RootFrontVelocity">
+          <PhaseLookupValue name="PreEmergence">
+            <Start>Germination</Start>
+            <End>Emergence</End>
+            <Constant name="Function">
+              <Value>10</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="PostEmergence">
+            <Start>Emergence</Start>
+            <End>StartPodGrowth</End>
+            <Constant name="Function">
+              <Value>30</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="PodFilling">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value>0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+
         <Constant name="PartitionFraction">
           <Value>0.2</Value>
         </Constant>
         <TemperatureFunction name="TemperatureEffect">
           <XYPairs>
-            <XY> 0 0.0</XY>
+            <XY> 0 1.0</XY>
             <XY>26 1.0</XY>
-            <XY>35 0.0</XY>
+            <XY>35 1.0</XY>
           </XYPairs>
         </TemperatureFunction>
+        <Constant name="CriticalNConc">
+          <Value>0.01</Value>
+        </Constant>        
+            <KNO3>0.02</KNO3>
+            <KNH4>0.0</KNH4>       
+        <Constant name="MaxDailyNUptake">
+          <Value>6.0</Value>
+        </Constant> 
       </Root>
-      <SimpleReproductiveOrgan name="Pod">
+      <ReproductiveOrgan name="Pod">
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start>Emergence</Start>
+        <MaximumSize>0.68</MaximumSize>
+        <RipeStage>Ripe</RipeStage>
+        <GenericFunction name="NumberFunction">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>200 1100</XY>
+          </XYPairs>
+        </GenericFunction>
+        <PhaseLookup name="FillingRate">
+          <PhaseLookupValue name="EarlyPodGrowth">
+            <Start>Flowering</Start>
             <End>StartPodGrowth</End>
-            <Constant name="Function">
-              <Value>0.0</Value>
-            </Constant>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>5 0.0</XY>
+                <XY>25 0.001</XY>
+                <XY>30 0.001</XY>
+                <XY>35 0.0</XY>
+              </XYPairs>
+            </TemperatureFunction>
           </PhaseLookupValue>
-          <PhaseLookupValue name="HeadGrowth">
+          <PhaseLookupValue name="LatePodGrowth">
             <Start>StartPodGrowth</Start>
             <End>Maturity</End>
-            <Constant name="Function">
-              <Value>0.3</Value>
-            </Constant>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>5 0.0</XY>
+                <XY>25 0.04</XY>
+                <XY>30 0.04</XY>
+                <XY>35 0.0</XY>
+              </XYPairs>
+            </TemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
-        <Constant name="StructuralFraction">
-          <Value>1.0</Value>
-        </Constant>
-        <RipeStage>Maturity</RipeStage>
-      </SimpleReproductiveOrgan>
+        <Constant name="NFillingRate">
+          <Value>0.00012</Value>
+        </Constant>  
+        <Constant name="MaxNConcDailyGrowth">
+          <Value>0.03</Value>
+        </Constant>                
+        <StageBasedInterpolation name="WaterContent">
+          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Codes>  0.93         0.93      0.93    0.93            0.90</Codes>
+        </StageBasedInterpolation>
+      </ReproductiveOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages>Germination Emergence Flowering StartPodGrowth Maturity</Stages>
         <Codes>   1               2          3            4           5      </Codes>

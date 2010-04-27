@@ -19,6 +19,27 @@ public class BaseOrgan : Organ
             throw new Exception(Name + " cannot supply retranslocation");
          }
       }
+   public override double NDemand { get { return 0; } }
+   public override double NUptakeSupply { get { return 0; } }
+   public override double NRetranslocationSupply { get { return 0; } }
+   public override double NAllocation { set { } }
+   public override double NRetranslocation
+   {
+       set
+       {
+           if (value > 0)
+               throw new Exception(Name + " cannot supply N retranslocation");
+       }
+   }
+   public override double NUptake
+      {
+      set
+         {
+         if (value > 0)
+            throw new Exception(Name + " cannot supply N Uptake");
+         }
+      }
+
    public override double WaterDemand { get { return 0; } }
    public override double WaterSupply { get { return 0; } }
    public override double WaterAllocation

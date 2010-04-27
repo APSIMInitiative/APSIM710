@@ -16,6 +16,8 @@ public class Plant : Instance
    // ---------------------------- Events we will send ------------------------------
    //[Event] public event OnNewCrop NewCropEvent;
    [Event] public event ApsimTypeDelegate NewCrop;
+   [Event] public event ApsimTypeDelegate Sowing;
+
    public NamedList<Organ> Organs
       {
       // Public property to return our organs to caller. Used primarily for unit testing.
@@ -48,6 +50,7 @@ public class Plant : Instance
          }
 
       PublishNewCropEvent();
+      PublishSowingEvent();
       }
 
 
@@ -64,7 +67,6 @@ public class Plant : Instance
 
       DoWater();
       DoArbitrator();
-      DoN();
       DoActualGrowth();
       }
 
@@ -74,6 +76,7 @@ public class Plant : Instance
          {
          Arbitrator A = (Arbitrator)Children["Arbitrator"];
          A.DoDM(Organs);
+         A.DoN(Organs);
          }
       // DPH: Commentted out the exception throw as Slurp doesn't have an arbitrator.
       //else
@@ -129,7 +132,6 @@ public class Plant : Instance
       foreach (Organ o in Organs)
          o.DoWaterUptake(FractionUsed*Supply);
       }
-   private void DoN() { }
    [Output][Units("mm")]
    private double WaterDemand
       {
@@ -142,6 +144,7 @@ public class Plant : Instance
          }
       }
    [Output]
+   [Units("(g/m^2)")]
    public double AboveGroundDM
       {
       get
@@ -154,6 +157,18 @@ public class Plant : Instance
          }
       }
    [Output]
+   public double AboveGroundN
+   {
+       get
+       {
+           double Total = 0;
+           foreach (Organ o in Organs)
+               if (o is AboveGround)
+                   Total += o.Live.N + o.Dead.N;
+           return Total;
+       }
+   }
+    [Output]
    public double BelowGroundDM
       {
       get
@@ -165,7 +180,20 @@ public class Plant : Instance
          return Total;
          }
       }
-   [Output]
+    [Output]
+    public double BelowGroundN
+    {
+        get
+        {
+            double Total = 0;
+            foreach (Organ o in Organs)
+                if (o is BelowGround)
+                    Total += o.Live.N + o.Dead.N;
+            return Total;
+        }
+    }
+
+    [Output]
    public double TotalDM
       {
       get
@@ -176,6 +204,16 @@ public class Plant : Instance
          return Total;
          }
       }
+   [Output] public double TotalN
+       {
+       get
+          {
+          double Total = 0;
+          foreach (Organ o in Organs)
+             Total += o.Live.N + o.Dead.N;
+          return Total;
+          }
+       }
    [Output]
    public double ReserveDM
       {
@@ -188,7 +226,18 @@ public class Plant : Instance
          return Total;
          }
       }
-
+   [Output]
+   public double ReserveN
+   {
+       get
+       {
+           double Total = 0;
+           foreach (Organ o in Organs)
+               if (o is ReserveOrgan)
+                   Total += o.Live.N + o.Dead.N;
+           return Total;
+       }
+   }
    public Phenology Phenology
       {
       get
@@ -209,7 +258,15 @@ public class Plant : Instance
          NewCrop.Invoke(Crop);
          }
       }
-
+   private void PublishSowingEvent()
+      {
+      // Send out New Crop Event to tell other modules who I am and what I am
+      if (Sowing != null)
+         {
+         NullType S = new NullType();
+         Sowing.Invoke(S);
+         }
+      }
    #endregion
 
 

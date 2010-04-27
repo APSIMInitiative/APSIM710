@@ -36,6 +36,7 @@
       </Population>
       <SimpleArbitrator name="Arbitrator">
         <DMSink>Reserve</DMSink>
+        <NSink>Stem</NSink>
       </SimpleArbitrator>
       <Phenology>
         <TemperatureFunction name="ThermalTime">
@@ -233,6 +234,12 @@
             <XY> 1.0 1</XY>
           </XYPairs>
         </GenericFunction>
+        <Constant name="CriticalNConc">
+          <Value>0.0001</Value>
+        </Constant>        
+        <Constant name="MinimumNConc">
+          <Value>0.000</Value>
+        </Constant>             
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -262,6 +269,13 @@
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
+        <Constant name="CriticalNConc">
+          <Value>0.0001</Value>
+        </Constant>  
+        <Constant name="NStructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+                
       </GenericOrgan>
       <Root>
         <ll>0.29 0.29 0.29 0.29 0.3 0.31 0.32 0.33 0.34 0.35
@@ -273,6 +287,12 @@
         <Constant name="KLModifier">
           <Value>1.0</Value>
         </Constant>
+        <Constant name="MaxDailyNUptake">
+          <Value>6.0</Value>
+        </Constant> 
+            <Constant name="CriticalNConc">
+              <Value>0.0001</Value>
+            </Constant>        
         <InitialDM>0.01</InitialDM>
         <SpecificRootLength>105000</SpecificRootLength>
         <Constant name="RootFrontVelocity">
@@ -288,6 +308,12 @@
             <XY>35 0.0</XY>
           </XYPairs>
         </TemperatureFunction>
+        <KNO3>0.02</KNO3>
+        <KNH4>0.0</KNH4>       
+        <Constant name="NStructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+        
       </Root>
       <ReproductiveOrgan name="Berry">
         <Biomass name="Live" />
@@ -327,10 +353,15 @@
             </TemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
+        <Constant name="NFillingRate">
+          <Value>0.00</Value>
+        </Constant>  
+        <Constant name="MaxNConcDailyGrowth">
+          <Value>0.03</Value>
+        </Constant>         
         <StageBasedInterpolation name="WaterContent">
-          <Stages>StartDormancy EndDormancy BudBurst Flowering Set
-               Veraison Ripe LeafFall</Stages>
-          <Codes>0.93 0.93 0.93 0.93 0.93 0.85 0.7 0.7</Codes>
+          <Stages>StartDormancy EndDormancy BudBurst Flowering Set Veraison Ripe LeafFall</Stages>
+          <Codes>  0.93           0.93        0.93       0.93  0.93   0.85   0.7 0.7</Codes>
         </StageBasedInterpolation>
       </ReproductiveOrgan>
       <ReserveOrgan name="Reserve">

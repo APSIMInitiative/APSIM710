@@ -1,4 +1,4 @@
-<folder version="16" name="simulations">
+<folder version="19" name="simulations">
   <simulation name="Merbein SpurPruned">
     <metfile name="met">
       <filename name="filename">Mildura.met</filename>
@@ -11,7 +11,6 @@
       <filename name="filename">Continuous Wheat Simulation.sum</filename>
     </summaryfile>
     <area name="Paddock">
-      <registrations name="global" />
       <micromet name="Micromet">
         <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
         <a_interception type="text" description="a_interception">0</a_interception>
@@ -229,7 +228,50 @@
             <Distributed>Evenly distributed</Distributed>
           </PercentMethod>
         </InitWater>
-        <InitNitrogen />
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+            <layer>
+              <thickness>200</thickness>
+              <no3>0.1</no3>
+              <nh4>0.1</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
       </soil>
       <surfaceom name="surface organic matter">
         <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
@@ -887,6 +929,7 @@
       <Y>LeafLAI</Y>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
+      <colour>-65536</colour>
       <GDApsimFileReader name="PredictedMinimal">
         <FileName>C:\apsim\Tests\Vine\Merbein MinimalPruned.out</FileName>
       </GDApsimFileReader>
@@ -896,6 +939,7 @@
       <Y>LAID</Y>
       <SeriesType>No line</SeriesType>
       <PointType>Circle</PointType>
+      <colour>-65536</colour>
       <GDApsimFileReader name="ObservedSpur">
         <FileName>C:\apsim\Tests\Vine\ObservedMerbeinSpurBiomass.txt</FileName>
       </GDApsimFileReader>
@@ -1436,6 +1480,8 @@
       <Y>LeafFw</Y>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
+      <colour>
+      </colour>
       <GDApsimFileReader name="PredictedMinimal">
         <FileName>C:\apsim\Tests\Vine\Merbein MinimalPruned.out</FileName>
       </GDApsimFileReader>
@@ -1446,6 +1492,8 @@
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
       <YRight>LeafLiveWt</YRight>
+      <colour>
+      </colour>
       <GDApsimFileReader name="PredictedSpur">
         <FileName>C:\apsim\Tests\Vine\Merbein SpurPruned.out</FileName>
       </GDApsimFileReader>
@@ -1488,6 +1536,48 @@
       <Y>ReserveLiveWt</Y>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
+      <GDApsimFileReader name="PredictedSpur">
+        <FileName>C:\apsim\Tests\Vine\Merbein SpurPruned.out</FileName>
+      </GDApsimFileReader>
+    </Plot>
+    <Plot name="ObservedSpurXY">
+      <X>Date</X>
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <GDApsimFileReader name="ObservedMinimal">
+        <FileName>C:\apsim\Tests\Vine\ObservedMerbeinMinimalBiomass.txt</FileName>
+      </GDApsimFileReader>
+    </Plot>
+  </Graph>
+  <Graph name="Berry FW Report">
+    <Plot name="PreMinimalXY">
+      <X>Date</X>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <Y>BerryLiveFWt</Y>
+      <GDApsimFileReader name="PredictedMinimal">
+        <FileName>C:\apsim\Tests\Vine\Merbein MinimalPruned.out</FileName>
+      </GDApsimFileReader>
+    </Plot>
+    <Plot name="ObservedMinimalXY">
+      <X>Date</X>
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <GDApsimFileReader name="ObservedSpur">
+        <FileName>C:\apsim\Tests\Vine\ObservedMerbeinSpurBiomass.txt</FileName>
+      </GDApsimFileReader>
+    </Plot>
+    <Plot name="PreSpurXY">
+      <X>Date</X>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <Y>BerryLiveFWt</Y>
       <GDApsimFileReader name="PredictedSpur">
         <FileName>C:\apsim\Tests\Vine\Merbein SpurPruned.out</FileName>
       </GDApsimFileReader>
