@@ -26,7 +26,7 @@ EventTypeCode stringToTypeCode(const std::string& st)
 //---------------------------------------------------------------------------
 // Return a string representation of the specified registration type.
 //---------------------------------------------------------------------------
-std::string typeCodeToString (EventTypeCode type) 
+const std::string typeCodeToString (EventTypeCode type)
    {
    switch (type)
       {
