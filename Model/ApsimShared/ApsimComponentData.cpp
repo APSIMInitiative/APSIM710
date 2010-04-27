@@ -94,8 +94,12 @@ string ApsimComponentData::getExecutableFileName(void) const
       XMLNode::iterator execNode = find_if(node.begin(),
                                            node.end(),
                                            EqualToName<XMLNode>("executable"));
-      if (execNode != node.end())
-         executable = execNode->getValue();
+      if (execNode != node.end()) 
+        {
+           executable = execNode->getValue();
+	       if (executable == "")
+              executable = execNode->getAttribute("name");
+        }
       }
    return executable;
    }
