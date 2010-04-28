@@ -31,20 +31,19 @@
     </Cultivar>
     <Cultivar name="Aurora">
       <Construct>Plant</Construct>
-      <Override name = "Phenology.Shock.Target">
-            <Value>120</Value>
+      <Override name="Phenology.Shock.Target">
+        <Value>120</Value>
       </Override>
-      <Override name = "Phenology.Juvenile.Target">
-            <XYPairs>
-              <XY> 0 190</XY>
-              <XY> 30  0</XY>
-            </XYPairs>
+      <Override name="Phenology.Juvenile.Target">
+        <XYPairs>
+          <XY> 0 190</XY>
+          <XY> 30  0</XY>
+        </XYPairs>
       </Override>
-      <Override name = "Phenology.Heading.Target">
-            <Value>280</Value>
+      <Override name="Phenology.Heading.Target">
+        <Value>280</Value>
       </Override>
     </Cultivar>
-
     <Plant>
       <CropType>broccoli</CropType>
       <Population>
@@ -296,11 +295,10 @@
         </PhaseLookup>
         <Constant name="CriticalNConc">
           <Value>0.01</Value>
-        </Constant>        
+        </Constant>
         <Constant name="MinimumNConc">
           <Value>0.005</Value>
-        </Constant>        
-
+        </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -336,8 +334,7 @@
         </Constant>
         <Constant name="CriticalNConc">
           <Value>0.01</Value>
-        </Constant>        
-        
+        </Constant>
       </GenericOrgan>
       <Root>
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -346,7 +343,7 @@
         <InitialDM>0.2</InitialDM>
         <SpecificRootLength>40000</SpecificRootLength>
         <KNO3>0.02</KNO3>
-        <KNH4>0.0</KNH4>               
+        <KNH4>0.0</KNH4>
         <GenericFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -382,11 +379,10 @@
         </TemperatureFunction>
         <Constant name="CriticalNConc">
           <Value>0.01</Value>
-        </Constant>        
+        </Constant>
         <Constant name="MaxDailyNUptake">
           <Value>6.0</Value>
-        </Constant> 
-        
+        </Constant>
       </Root>
       <SimpleReproductiveOrgan name="Floret">
         <Biomass name="Live" />
@@ -425,12 +421,17 @@
       <variable name="WaterSupplyDemandRatio" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="PlantStatus" description="" read="T" write="F" kind="string" array="" units="" />
       <variable name="WaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
-      <variable name="AboveGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="AboveGroundDM" description="" read="T" write="F" kind="double" array="" units="(g/m^2)" />
+      <variable name="AboveGroundN" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="BelowGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="BelowGroundN" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="TotalDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="TotalN" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="ReserveDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="ReserveN" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="Population" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="ArbitratorDMSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="ArbitratorNDemand" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="PhenologyCurrentPhaseName" description="" read="T" write="F" kind="string" array="" units="" />
       <variable name="PhenologyVernalisationCumulativeVD" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="PhenologyVernalisationVDModelValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
@@ -472,11 +473,18 @@
       <variable name="LeafTranspiration" description="" read="T" write="F" kind="double" array="" units="mm" />
       <variable name="LeafFrgr" description="" read="T" write="T" kind="double" array="" units="" />
       <variable name="LeafFw" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafFn" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafLAI" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
       <variable name="LeafLAIDead" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
       <variable name="Cover_green" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="Cover_tot" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="Cover_dead" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafLiveN2" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafLiveWt2" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDeadWt2" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDeadN" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafNDemand" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafNAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="LeafExtinctionCoeffValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafHeightValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPhotosynthesisFt" description="" read="T" write="F" kind="double" array="" units="" />
@@ -494,16 +502,28 @@
       <variable name="LeafPartitionFractionMaxValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="StemLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="RootDepth" description="" read="T" write="F" kind="double" array="" units="mm" />
       <variable name="RootLengthDensity" description="" read="T" write="F" kind="double" array="T" units="" />
       <variable name="RootDMAllocation" description="" read="T" write="T" kind="double" array="" units="" />
       <variable name="RootWaterSupply" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="RootWaterUptake" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="RootLiveN" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootDeadN" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootNUptakeSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootNAllocation" description="" read="T" write="T" kind="double" array="" units="" />
       <variable name="RootKLModifierValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="RootRootFrontVelocityValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="RootTemperatureEffectValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
@@ -511,19 +531,29 @@
       <variable name="ReadyForHarvest" description="" read="T" write="F" kind="integer4" array="" units="" />
       <variable name="FloretLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="StageCodeValue" description="" read="T" write="F" kind="double" array="" units="" />
     </variables>
     <events>
       <event name="NewCrop" description="" />
+      <event name="Sowing" description="" />
       <event name="GrowthStage" description="" />
       <event name="NewPotentialGrowth" description="" />
       <event name="New_Canopy" description="" />
       <event name="WaterChanged" description="" />
+      <event name="NitrogenChanged" description="" />
       <event name="Harvesting" description="" />
     </events>
   </Info>

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using CSGeneral;
 
 class LeafCohort
    {
@@ -82,7 +82,7 @@ class LeafCohort
       {
       get
          {
-         return (LiveArea == 0);
+         return MathUtility.FloatsAreEqual(LiveArea,0.0);
          }
       }
    public bool IsFullyExpanded
