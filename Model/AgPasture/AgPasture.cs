@@ -133,8 +133,8 @@ public class AgPasture : Instance
     [Param]    private double[] CO2NScale;
     [Param]    private double[] CO2NMin;
     [Param]    private double[] CO2NCurvature;
-    //[Input(true)] private double co2 = 380; //expected to be updated from ClimateControl 
-    [Input(true)]    private double co2 = 385;
+    [Input(true)] private double co2 = 380; //expected to be updated from ClimateControl 
+
     [Param]    private LinearInterpolation FVPDFunction = null;    //Senescence rate is affected by min(gf-N, gf_water)
     [Param]    private LinearInterpolation HeightMassFN = null;
    
@@ -758,7 +758,7 @@ public class AgPasture : Instance
 
     //==============================
    
-    #region "EventSenders"
+    # region "EventSenders"
     
     //--------------------------------------------------------------------------------------------
     /// <summary>
@@ -1015,43 +1015,49 @@ public class AgPasture : Instance
   //----------------------------------------------------------------------
     [EventHandler]
     public void Onremove_crop_biomass(RemoveCropDmType rm)
-    {
-        //not tested in Oct 09
-        double dmRemove = 0.0;   //tracking dm to be removed
-        double NRemove = 0.0;    //tracking N to be removed
-
-        double dmRemoveGreen = 0.0;
-        double dmRemoveDead = 0.0;
-
+    {   
+        //Note: It is resposibility of the calling module to check the
+        // amount of herbage in each pools of AbovegroundBiomassWt and set the
+        // the correct amount in 'rm'. 
+        // No checking if the removing amount passed in are too much here
+        
+        const double gm2ha = 10;   // constant for conversion of g/m^2 to kg/ha, 
+                                   // rm.dm.dlt should be in g/m^2
+           
         double dm_leaf_green = LeafLiveWt;
         double dm_stem_green = StemLiveWt;
         double dm_leaf_dead  = LeafDeadWt;
         double dm_stem_dead  = StemDeadWt;
 
+        for (int s = 0; s< Nsp; s++)     // for accumulating the total DM & N removal of species from verious pools
+        {
+            SP[s].dmdefoliated = 0.0;
+            SP[s].Ndefoliated = 0.0;
+        }
+
         for (int i = 0; i < rm.dm.Length; i++)              //for each pool
-        {   
-            for (int j = 0; j< rm.dm[i].dlt.Length; j++)    //for each part
+        {
+            for (int j = 0; j < rm.dm[i].dlt.Length; j++)   //for each part
             {
-                if ( rm.dm[i].pool == "green" && rm.dm[i].part[j] == "leaf" )
+                if (rm.dm[i].pool == "green" && rm.dm[i].part[j] == "leaf")
                 {
                     for (int s = 0; s < Nsp; s++)           //for each species
                     {
-                        if (dm_leaf_green != 0)              //resposibility of other modules to check the amount
-                        {                                    //dlt is negative for remove
-                            double rm_leaf = rm.dm[i].dlt[j] * SP[s].dmleaf_green / dm_leaf_green;
+                        if (dm_leaf_green != 0)             //resposibility of other modules to check the amount
+                        {                                  
+                            double rm_leaf = gm2ha * rm.dm[i].dlt[j] * SP[s].dmleaf_green / dm_leaf_green;
                             double rm_leaf1 = rm_leaf * SP[s].dmleaf1 / SP[s].dmleaf_green;
                             double rm_leaf2 = rm_leaf * SP[s].dmleaf2 / SP[s].dmleaf_green;
-                            double rm_leaf3 = rm_leaf * SP[s].dmleaf3 / SP[s].dmleaf_green;                            
-                            SP[s].dmleaf1 += rm_leaf1;
-                            SP[s].dmleaf2 += rm_leaf2;
-                            SP[s].dmleaf3 += rm_leaf3;
-                            dmRemove += rm_leaf1 + rm_leaf2 + rm_leaf3;
-                            dmRemoveGreen += rm_leaf1 + rm_leaf2 + rm_leaf3;
-
-                            SP[s].Nleaf1 += SP[s].Ncleaf1 * rm_leaf1;
-                            SP[s].Nleaf2 += SP[s].Ncleaf2 * rm_leaf2;
-                            SP[s].Nleaf3 += SP[s].Ncleaf3 * rm_leaf3;
-                            NRemove += SP[s].Ncleaf1 * rm_leaf1 + SP[s].Ncleaf2 * rm_leaf2 + SP[s].Ncleaf3 * rm_leaf3;
+                            double rm_leaf3 = rm_leaf * SP[s].dmleaf3 / SP[s].dmleaf_green;
+                            SP[s].dmleaf1 -= rm_leaf1;
+                            SP[s].dmleaf2 -= rm_leaf2;
+                            SP[s].dmleaf3 -= rm_leaf3;
+                            SP[s].dmdefoliated += rm_leaf1 + rm_leaf2 + rm_leaf3;
+                                                       
+                            SP[s].Nleaf1 -= SP[s].Ncleaf1 * rm_leaf1;
+                            SP[s].Nleaf2 -= SP[s].Ncleaf2 * rm_leaf2;
+                            SP[s].Nleaf3 -= SP[s].Ncleaf3 * rm_leaf3;
+                            SP[s].Ndefoliated += SP[s].Ncleaf1 * rm_leaf1 + SP[s].Ncleaf2 * rm_leaf2 + SP[s].Ncleaf3 * rm_leaf3;                      
                         }
                     }
                 }
@@ -1061,20 +1067,19 @@ public class AgPasture : Instance
                     {
                         if (dm_stem_green != 0)  //resposibility of other modules to check the amount
                         {
-                            double rm_stem = rm.dm[i].dlt[j] * SP[s].dmstem_green / dm_stem_green;
+                            double rm_stem = gm2ha * rm.dm[i].dlt[j] * SP[s].dmstem_green / dm_stem_green;
                             double rm_stem1 = rm_stem * SP[s].dmstem1 / SP[s].dmstem_green;
                             double rm_stem2 = rm_stem * SP[s].dmstem2 / SP[s].dmstem_green;
-                            double rm_stem3 = rm_stem * SP[s].dmstem3 / SP[s].dmstem_green;                            
-                            SP[s].dmstem1 += rm_stem1;
-                            SP[s].dmstem2 += rm_stem2;
-                            SP[s].dmstem3 += rm_stem3;
-                            dmRemove += rm_stem1 + rm_stem2 + rm_stem3;
-                            dmRemoveGreen += rm_stem1 + rm_stem2 + rm_stem3;
+                            double rm_stem3 = rm_stem * SP[s].dmstem3 / SP[s].dmstem_green;
+                            SP[s].dmstem1 -= rm_stem1;
+                            SP[s].dmstem2 -= rm_stem2;
+                            SP[s].dmstem3 -= rm_stem3;
+                            SP[s].dmdefoliated += rm_stem1 + rm_stem2 + rm_stem3;
 
-                            SP[s].Nstem1 += SP[s].Ncstem1 * rm_stem1;
-                            SP[s].Nstem2 += SP[s].Ncstem2 * rm_stem2;
-                            SP[s].Nstem3 += SP[s].Ncstem3 * rm_stem3;
-                            NRemove += SP[s].Ncstem1 * rm_stem1 + SP[s].Ncstem2* rm_stem2 + SP[s].Ncstem3* rm_stem3;
+                            SP[s].Nstem1 -= SP[s].Ncstem1 * rm_stem1;
+                            SP[s].Nstem2 -= SP[s].Ncstem2 * rm_stem2;
+                            SP[s].Nstem3 -= SP[s].Ncstem3 * rm_stem3;
+                            SP[s].Ndefoliated += SP[s].Ncstem1 * rm_stem1 + SP[s].Ncstem2 * rm_stem2 + SP[s].Ncstem3 * rm_stem3;                                                 
                         }
                     }
                 }
@@ -1084,13 +1089,12 @@ public class AgPasture : Instance
                     {
                         if (dm_leaf_dead != 0)  //resposibility of other modules to check the amount
                         {
-                            double rm_leaf4 = rm.dm[i].dlt[j] * SP[s].dmleaf4 / dm_leaf_dead;
-                            SP[s].dmleaf4 += rm_leaf4;
-                            dmRemove += rm_leaf4;
-                            dmRemoveDead += rm_leaf4;
-
-                            SP[s].Nleaf4 += SP[s].Ncleaf4 * rm_leaf4;
-                            NRemove += SP[s].Ncleaf4 * rm_leaf4;
+                            double rm_leaf4 = gm2ha * rm.dm[i].dlt[j] * SP[s].dmleaf4 / dm_leaf_dead;
+                            SP[s].dmleaf4 -= rm_leaf4;
+                            SP[s].dmdefoliated += rm_leaf4;
+                           
+                            SP[s].Ndefoliated += SP[s].Ncleaf4 * rm_leaf4;
+                            SP[s].Nleaf4 -= SP[s].Ncleaf4 * rm_leaf4;                           
                         }
                     }
                 }
@@ -1100,33 +1104,33 @@ public class AgPasture : Instance
                     {
                         if (dm_stem_dead != 0)  //resposibility of other modules to check the amount
                         {
-                            double rm_stem4 = rm.dm[i].dlt[j] * SP[s].dmstem4 / dm_stem_dead;
-                            SP[s].dmstem4 += rm_stem4;
-                            dmRemove += rm_stem4;
-                            dmRemoveDead += rm_stem4;
+                            double rm_stem4 = gm2ha * rm.dm[i].dlt[j] * SP[s].dmstem4 / dm_stem_dead;
+                            SP[s].dmstem4 -= rm_stem4;
+                            SP[s].dmdefoliated += rm_stem4;
 
-                            SP[s].Nstem4  += SP[s].Ncstem4 * rm_stem4;
-                            NRemove += SP[s].Ncstem4 * rm_stem4;
+                            SP[s].Nstem4 -= SP[s].Ncstem4 * rm_stem4;
+                            SP[s].Ndefoliated += SP[s].Ncstem4 * rm_stem4;                           
                         }
                     }
                 }
             }
-
-            p_harvestDM = -dmRemove;
-            p_harvestN = -NRemove;
-            
-            //In this routine of no selection among species, the removed tissue from different species 
-            //will be in proportion with exisisting mass of each species.
-            //The digetibility below is an approxiation (= that of pasture swards). 
-            //It is more reasonaable to calculate it organ-by-organ for each species, then put them together (TO DO).            
-            p_harvestDigest = HerbageDigestibility;
-
-            //then uptdate the species-organ pools
-            for (int s = 0; s < Nsp; s++)
-            {
-                SP[s].updateAggregated();
-            }              
         }
+        
+        p_harvestDM = 0; 
+        p_harvestN = 0; 
+        for (int s = 0; s < Nsp; s++)
+        {
+            p_harvestDM += SP[s].dmdefoliated;
+            p_harvestN  += SP[s].Ndefoliated;
+            SP[s].updateAggregated();
+        }
+        
+        //In this routine of no selection among species, the removed tissue from different species 
+        //will be in proportion with exisisting mass of each species.
+        //The digetibility below is an approximation (= that of pasture swards). 
+        //It is more reasonable to calculate it organ-by-organ for each species, then put them together.            
+        p_harvestDigest = HerbageDigestibility;
+        
     }
 
     //----------------------------------------------------------------------
@@ -1144,7 +1148,7 @@ public class AgPasture : Instance
     {
         if ( (!p_Live) || p_totalDM == 0)
             return;
-
+                         
         double herbage_mass = StemWt + LeafWt;  // dm_stem + dm_leaf;
         double min_residue = 200;               // kg/ha assumed
         double residue_amt = min_residue;
@@ -1609,7 +1613,7 @@ public class AgPasture : Instance
             return dmstol;
         }
     }
-    //for coporating with old plant variable names
+    //for consistantly passing varibles in Onremove_crop_biomass()with other plant modules 
     [Output][Units("g/m^2")] public double leafgreenwt { get { return LeafLiveWt / 10; } }
     [Output][Units("g/m^2")] public double stemgreenwt { get { return StemLiveWt / 10; } }
     [Output][Units("g/m^2")] public double leafsenescedwt { get { return LeafDeadWt / 10; } }
