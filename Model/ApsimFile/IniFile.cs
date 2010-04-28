@@ -126,21 +126,21 @@ namespace ApsimFile
       // to the key name.
       // --------------------------------------------------
       public static void INIWriteMultiple(string INIPath, string SectionName, string KeyName, string[] Values)
-    {
-        int KeyNumber = 1;
-        string Value = INIRead(INIPath, SectionName, KeyName + KeyNumber.ToString());
-        while (Value != "") {
-            INIDeleteKey(INIPath, SectionName, KeyName + KeyNumber.ToString());
-            KeyNumber = KeyNumber + 1;
-            Value = INIRead(INIPath, SectionName, KeyName + KeyNumber.ToString());
-        }
-        
-        KeyNumber = 1;
-        foreach ( string ValueString in Values) {
+    {
+        int KeyNumber = 1;
+        string Value = INIRead(INIPath, SectionName, KeyName + KeyNumber.ToString());
+        while (Value != "") {
+            INIDeleteKey(INIPath, SectionName, KeyName + KeyNumber.ToString());
+            KeyNumber = KeyNumber + 1;
+            Value = INIRead(INIPath, SectionName, KeyName + KeyNumber.ToString());
+        }
+        
+        KeyNumber = 1;
+        foreach ( string ValueString in Values) {
         INIWrite(INIPath, SectionName, KeyName + KeyNumber.ToString(), ValueString);
-            KeyNumber = KeyNumber + 1;
-        }
-    }
+            KeyNumber = KeyNumber + 1;
+        }
+    }
 
 
       public static void INIDeleteKey(string INIPath, string SectionName, string KeyName)
