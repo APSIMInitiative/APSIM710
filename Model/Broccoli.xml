@@ -29,6 +29,22 @@
     <Cultivar name="greenbelt">
       <Construct>Plant</Construct>
     </Cultivar>
+    <Cultivar name="Aurora">
+      <Construct>Plant</Construct>
+      <Override name = "Phenology.Shock.Target">
+            <Value>120</Value>
+      </Override>
+      <Override name = "Phenology.Juvenile.Target">
+            <XYPairs>
+              <XY> 0 190</XY>
+              <XY> 30  0</XY>
+            </XYPairs>
+      </Override>
+      <Override name = "Phenology.Heading.Target">
+            <Value>280</Value>
+      </Override>
+    </Cultivar>
+
     <Plant>
       <CropType>broccoli</CropType>
       <Population>
@@ -36,6 +52,7 @@
       </Population>
       <AnnualPlantArbitrator name="Arbitrator">
         <DMSink>Stem</DMSink>
+        <NSink>Stem</NSink>
       </AnnualPlantArbitrator>
       <Phenology>
         <Vernalisation>
@@ -277,6 +294,13 @@
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
+        <Constant name="CriticalNConc">
+          <Value>0.01</Value>
+        </Constant>        
+        <Constant name="MinimumNConc">
+          <Value>0.005</Value>
+        </Constant>        
+
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -307,6 +331,13 @@
         <Constant name="StructuralFraction">
           <Value>1.0</Value>
         </Constant>
+        <Constant name="NStructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+        <Constant name="CriticalNConc">
+          <Value>0.01</Value>
+        </Constant>        
+        
       </GenericOrgan>
       <Root>
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -314,6 +345,8 @@
         <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
         <InitialDM>0.2</InitialDM>
         <SpecificRootLength>40000</SpecificRootLength>
+        <KNO3>0.02</KNO3>
+        <KNH4>0.0</KNH4>               
         <GenericFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -347,6 +380,13 @@
             <XY>32 0.0</XY>
           </XYPairs>
         </TemperatureFunction>
+        <Constant name="CriticalNConc">
+          <Value>0.01</Value>
+        </Constant>        
+        <Constant name="MaxDailyNUptake">
+          <Value>6.0</Value>
+        </Constant> 
+        
       </Root>
       <SimpleReproductiveOrgan name="Floret">
         <Biomass name="Live" />
