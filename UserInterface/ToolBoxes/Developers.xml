@@ -3,6 +3,108 @@
     <ini />
   </Plant2>
   <wheat2 />
+  <factorial />
+  <cropui>
+    <ui>
+      <state>Wheat</state>
+      <crop>wheat</crop>
+      <date1>15-may</date1>
+      <date2>10-jul</date2>
+      <raincrit>25</raincrit>
+      <rainnumdays>3</rainnumdays>
+      <esw_amount>50</esw_amount>
+      <must_sow>no</must_sow>
+      <wait_machinery>no</wait_machinery>
+      <cultivar>hartog</cultivar>
+      <plants>100</plants>
+      <sowing_depth>30</sowing_depth>
+      <row_spacing>250</row_spacing>
+      <sowing_costs>
+      </sowing_costs>
+      <sow_tractor>Machinery - 200kwFWA</sow_tractor>
+      <sow_implement>Machinery - Precision Planter</sow_implement>
+      <fert_type>urea_N</fert_type>
+      <fert_cost>???</fert_cost>
+      <target_n>
+      </target_n>
+      <harvest_costs>100</harvest_costs>
+      <price>200</price>
+      <moisture>12</moisture>
+      <harv_tractor>Machinery - 200kwFWA</harv_tractor>
+      <harv_implement>Machinery - Plough</harv_implement>
+      <criteria type="text" description="criteria">variable</criteria>
+      <skipplant type="text" description="skipplant">0</skipplant>
+      <skiprow type="text" description="skiprow">0</skiprow>
+      <class type="text" description="class">plant</class>
+      <module type="text" description="module">plant</module>
+    </ui>
+    <CustomUI>
+      <criteria type="text" description="criteria">variable</criteria>
+      <skipplant type="text" description="skipplant">0</skipplant>
+      <skiprow type="text" description="skiprow">0</skiprow>
+      <class type="text" description="class">plant</class>
+      <module type="text" description="module">plant</module>
+    </CustomUI>
+    <script name="Init">
+      <text><![CDATA[
+# Support procedures test
+# Can we plant a crop today?
+proc canPlant_[crop] {} {
+if {"[criteria]" == "variable"} {
+set year [apsimGet year]; set day [apsimGet day]
+set d1 [clock format [clock scan "[date1]-$year"] -format %j]
+set d2 [clock format [clock scan "[date2]-$year"] -format %j]
+
+if {"[must_sow]" == "yes" && $day == $d2} {return 1}
+
+if {$d1 > $d2} {
+set dateOK [expr $day >= $d1 || $day <= $d2]
+} else {
+set dateOK [expr $day >= $d1 && $day <= $d2]
+}
+set rainOK [expr [apsimGet rain\[[rainnumdays]\]] >= [raincrit]]
+set eswOK [expr [apsimGet esw] >= [esw_amount]]
+return [expr $dateOK && $rainOK && $eswOK]
+} elseif {"[criteria]" == "fixed"} {
+set year [apsimGet year]; set day [apsimGet day]
+set d1 [clock format [clock scan "[date1]-$year"] -format %j]
+return [expr $day == $d1]
+} else {
+error "Unknown sowing criteria \"[criteria]\"."
+}
+return "notreached"
+}
+
+# Plant a crop now
+proc sow_[crop] {} {
+if {"[module]" == "plant"} {
+apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+{cultivar [cultivar]} {row_spacing [row_spacing]} \
+{skipplant [skipplant]} {skiprow [skiprow]} {crop_class [class]}
+} elseif {"[module]" == "cropmod"} {
+apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} \
+{cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]}
+} elseif {"[module]" == "growth"} {
+apsimSendMessage [crop] ???
+} elseif {"[module]" == "ozcot"} {
+apsimSendMessage [crop] sow {plants_pm [plants_pm]} {sowing_depth [sowing_depth]} \
+{row_spacing [row_spacing]} {skiprow [skiprow]} {cultivar [cultivar]}
+} elseif {"[module]" == "oryza"} {
+apsimSendMessage [crop] sow {cultivar [cultivar]}
+} elseif {"[module]" == "sorghum"} {
+apsimSendMessage [crop] sow {plants [plants]} {sowing_depth [sowing_depth]} \
+{cultivar [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]} \
+{tiller_no_fertile [tiller_no_fertile]}
+} elseif {"[module]" == "sugar"} {
+apsimSendMessage [crop] sow {plants [plants]} {cultivar [cultivar]} {sowing_depth [sowing_depth]}
+} else {
+error "Unknown crop module \"[module]\"."
+}
+}
+        ]]></text>
+      <event>init</event>
+    </script>
+  </cropui>
   <ini>
     <filename>
     </filename>

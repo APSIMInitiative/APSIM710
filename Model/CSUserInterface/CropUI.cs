@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using QWhale;
 using CSGeneral;
 
 
@@ -22,6 +23,8 @@ namespace CSUserInterface
             InitializeComponent();
         }
         protected override void OnLoad()
+        { }
+        public override void OnRefresh()
         {
             Simulation = findCurrentSimulation();
             string stmp = MyNodePath;
@@ -49,13 +52,44 @@ namespace CSUserInterface
             txtRows.Text = ReadUIVariable("row_spacing");
             txtSowingcost.Text = ReadUIVariable("sowing_costs");
             //  machinery
-            UpdateTractorsList();
-            //cboImplement
-            //  fertiliser
+            UpdateMachineryList(cboTractor, lblTractorWarning, "tractor", "sow_tractor");
+            UpdateMachineryList(cboImplement, lblImplementWarning, "implement", "sow_implement");
+            //UpdateTractorsList();
+            //UpdateImplementsList();
 
+            //  fertiliser
+            UpdateFertiliserList();
+            txtFertiliserCost.Text = ReadUIVariable("fert_cost");
+            txtNitrogen.Text = ReadUIVariable("target_n");
+
+            //Harvesting
+            txtHarvestCost.Text = ReadUIVariable("harvest_costs");
+            txtCropPrice.Text = ReadUIVariable("price");
+            txtMoisture.Text = ReadUIVariable("moisture");
+            UpdateMachineryList(cboHarvestTractor, lblHarvestTractorWarning, "tractor", "harv_tractor");
+            UpdateMachineryList(cboHarvestImplement, lblHarvestImplementWarning, "implement", "harv_implement");
+
+            LoadCustom();
+
+            XmlNode ScriptNode = Data.SelectSingleNode("//script/text");
+            string sScript = "";
+            if(ScriptNode != null)
+                sScript = XmlHelper.Value(ScriptNode, "");
+            syntaxEdit1.Text = sScript;
+        }
+        private void LoadCustom()
+        {
+            XmlNode UINode = XmlHelper.Find(Data, "CustomUI");
+            if(UINode != null)
+            {
+                GenericUI.OnLoad(Controller, NodePath, UINode.OuterXml);
+                GenericUI.OnRefresh();
+            }
         }
         public override void OnSave()
         {
+            Data.RemoveAll();
+
             UpdateUIVariable("state", cboState.Text);
             UpdateUIVariable("crop", cboCrops.Text);
             UpdateUIVariable("date1", txtStart.Text);
@@ -73,8 +107,64 @@ namespace CSUserInterface
                 sText = "yes";
             UpdateUIVariable("wait_machinery", sText);
 
+            //Establishment
             UpdateUIVariable("cultivar", cboCultivar.Text);
+            UpdateUIVariable("plants", txtDensity.Text);
+            UpdateUIVariable("sowing_depth", txtDepth.Text);
+            UpdateUIVariable("row_spacing", txtRows.Text);
+            UpdateUIVariable("sowing_costs", txtSowingcost.Text);
+
+            //Machinery
             UpdateUIVariable("sow_tractor", cboTractor.Text);
+            UpdateUIVariable("sow_implement", cboImplement.Text);
+
+            //Fertiliser
+            UpdateUIVariable("fert_type", cboFertiliser.Text);
+            UpdateUIVariable("fert_cost", txtFertiliserCost.Text);
+            UpdateUIVariable("target_n", txtNitrogen.Text);
+
+            //Harvest
+            UpdateUIVariable("harvest_costs", txtHarvestCost.Text);
+            UpdateUIVariable("price", txtCropPrice.Text);
+            UpdateUIVariable("moisture", txtMoisture.Text);
+            UpdateUIVariable("harv_tractor", cboHarvestTractor.Text);
+            UpdateUIVariable("harv_implement", cboHarvestImplement.Text);
+
+            //Custom
+            GenericUI.OnSave();
+            //need to add the saved data into this component's xml 
+            string savedData = GenericUI.GetData();
+            ReplaceNode("CustomUI", savedData);
+
+            XmlNode ScriptNode = Data.AppendChild(Data.OwnerDocument.CreateElement("script"));
+            XmlHelper.SetName(ScriptNode, "Init");
+            XmlHelper.SetValue(ScriptNode, "text", syntaxEdit1.Text);
+            XmlHelper.SetValue(ScriptNode, "event", "init");
+
+        }
+        private void ReplaceNode(string sName, string savedData)
+        {
+            if (savedData != "")
+            {
+                //this overwrites the fields within the CustomUI node
+                //these values need to becopied into the ui node to allow the ui to access it fully
+                //ie: ui node values are used to find & replace
+                //in order to separate the custom nodes from the rest, they must be stored in another node
+                XmlDocument tmpDoc = new XmlDocument();
+                tmpDoc.LoadXml(savedData);
+
+                XmlNode NodeToUpdate = XmlHelper.Find(Data, sName);
+                if (NodeToUpdate == null)
+                    NodeToUpdate = Data.AppendChild(Data.OwnerDocument.CreateElement(sName));
+
+                NodeToUpdate.InnerXml = tmpDoc.DocumentElement.InnerXml;
+
+                //append nodes to ui node
+                XmlNode uiNode = Data.SelectSingleNode("//ui");
+                if (uiNode == null)
+                    uiNode = Data.AppendChild(Data.OwnerDocument.CreateElement("ui"));
+                uiNode.InnerXml = uiNode.InnerXml + tmpDoc.DocumentElement.InnerXml;
+            }
         }
         public string ReadUIVariable(string sVar)
         {
@@ -87,11 +177,14 @@ namespace CSUserInterface
         }
         public void UpdateUIVariable(string sVar, string sVal)
         {
-            XmlNode varNode = Data.SelectSingleNode("//ui/" + sVar);
-            if (varNode != null)
-            {
-                varNode.InnerText = sVal;
-            }
+            XmlNode uiNode = Data.SelectSingleNode("//ui");
+            if (uiNode == null)
+                uiNode = Data.AppendChild(Data.OwnerDocument.CreateElement("ui"));
+
+            XmlNode varNode = uiNode.SelectSingleNode("//" + sVar);
+            if (varNode == null)
+                varNode = uiNode.AppendChild(Data.OwnerDocument.CreateElement(sVar));
+            varNode.InnerText = sVal;
         }
         public void UpdateStatesList()
         {
@@ -160,11 +253,33 @@ namespace CSUserInterface
                 }
             }
         }
+        public void UpdateMachineryList(ComboBox combo, Label lblWarning, string type, string variable)
+        {
+            combo.Items.Clear();
+            combo.Items.Add("none");
+            List<string> machinery = findMachinery(type);
+            foreach (string machine in machinery)
+            {
+                combo.Items.Add(machine);
+            }
+            //read ui variable value
+            string vMachine = ReadUIVariable(variable);
+            combo.Text = vMachine;
+            if (vMachine != "")
+            {
+                int idx = combo.Items.IndexOf(vMachine);
+                lblWarning.Visible = idx == -1;
+            }
+            else
+            {
+                lblWarning.Visible = false;
+            }
+        }
         public void UpdateTractorsList()
         {
             cboTractor.Items.Clear();
             cboTractor.Items.Add("none");
-            List<string> tractors = findTractors();
+            List<string> tractors = findMachinery("tractor");
             foreach (string tractor in tractors)
             {
                 cboTractor.Items.Add(tractor);
@@ -180,6 +295,50 @@ namespace CSUserInterface
             else
             {
                 lblTractorWarning.Visible = false;
+            }
+        }
+        public void UpdateImplementsList()
+        {
+            cboImplement.Items.Clear();
+            cboImplement.Items.Add("none");
+            List<string> implements = findMachinery("implement");
+            foreach (string implement in implements)
+            {
+                cboImplement.Items.Add(implement);
+            }
+            //read ui variable value
+            string vImplement = ReadUIVariable("sow_implement");
+            cboImplement.Text = vImplement;
+            if (vImplement != "")
+            {
+                int idx = cboImplement.Items.IndexOf(vImplement);
+                lblImplementWarning.Visible = idx == -1;
+            }
+            else
+            {
+                lblImplementWarning.Visible = false;
+            }
+        }
+        public void UpdateFertiliserList()
+        {
+            cboFertiliser.Items.Clear();
+            cboFertiliser.Items.Add("none");
+            List<string> fertilisers = findFertilisers();
+            foreach (string fertiliser in fertilisers)
+            {
+                cboFertiliser.Items.Add(fertiliser);
+            }
+            //read ui variable value
+            string vFert = ReadUIVariable("fert_type");
+            cboFertiliser.Text = vFert;
+            if (vFert != "")
+            {
+                int idx = cboFertiliser.Items.IndexOf(vFert);
+                lblFertiliserWarning.Visible = idx == -1;
+            }
+            else
+            {
+                lblFertiliserWarning.Visible = false;
             }
         }
         private List<string> findStates()
@@ -272,9 +431,9 @@ namespace CSUserInterface
             }
             return lstCultivars;
         }
-        private List<string> findTractors()
+        private List<string> findMachinery(string id)
         {
-            List<string> lstTractors = new List<string>();
+            List<string> lstImplements = new List<string>();
             //this node could be a shortcut 
                 //shortcut to a root node (not in a simulation)
                 //shortcut to another simulation
@@ -296,15 +455,15 @@ namespace CSUserInterface
                 //rootnode/folder or toolbox
                 sXML = Controller.ApsimData.RootComponent.Contents;
             }
-            AddUniqueTractorNames(lstTractors, sXML);
-            return lstTractors;
+            AddUniqueMachineryNames(lstImplements, sXML, id);
+            return lstImplements;
         }
-        public void AddUniqueTractorNames(List<string> lstTractors, string sXML)
+        private void AddUniqueMachineryNames(List<string> lstMachinery, string sXML, string id)
         {
             XmlDocument tmpDoc = new XmlDocument();
             tmpDoc.LoadXml(sXML);
 
-            XmlNodeList nodes = tmpDoc.SelectNodes("//tractor");
+            XmlNodeList nodes = tmpDoc.SelectNodes("//" + id);
             foreach (XmlNode tmpNode in nodes)
             {
                 //name is in the parent node - name attribute
@@ -314,14 +473,34 @@ namespace CSUserInterface
                     XmlAttribute nameAtt = parentNode.Attributes["name"];
                     if (nameAtt != null)
                     {
-                        string tractorName = nameAtt.Value;
-                        if (tractorName != null && lstTractors.IndexOf(tractorName) < 0) //not found
+                        string machineName = nameAtt.Value;
+                        if (machineName != null && lstMachinery.IndexOf(machineName) < 0) //not found
                         {
-                            lstTractors.Add(tractorName);
+                            lstMachinery.Add(machineName);
                         }
                     }
                 }
             }
+        }
+        private List<string> findFertilisers()
+        {
+            List<string> lstFertilisers = new List<string>();
+            string sPath = System.Environment.GetEnvironmentVariable("Apsim");
+            if (sPath != "" && sPath != null)
+            {
+                XmlDocument tmpDoc = new XmlDocument();
+                tmpDoc.Load(sPath + "//Model///Fertiliser.xml");
+
+                XmlNode node = tmpDoc.SelectSingleNode("//Model");
+                if (node != null)
+                {
+                    foreach (XmlNode childNode in node.ChildNodes)
+                    {
+                        lstFertilisers.Add(childNode.Name);
+                    }
+                }
+            }
+            return lstFertilisers;
         }
 
         private void cboTractor_TextChanged(object sender, EventArgs e)
@@ -425,6 +604,21 @@ namespace CSUserInterface
                 }
             }
             return lstComponents;
+        }
+
+        private void scriptUI1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GenericUI_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
