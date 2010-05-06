@@ -4,10 +4,6 @@ rem This batch file runs everything
 rem -------------------------------------------------------------
 pushd ..\..
 set APSIM=%CD%
-
-del /S %APSIM%\Tests\*.out 2>nul >nul
-del /S %APSIM%\Tests\*.sum 2>nul >nul
-del /S %APSIM%\Tests\*.conversions 2>nul >nul
 	
 start /WAIT %APSIM%\Model\ApsimRun /auto /autoclose %APSIM%\Tests
 

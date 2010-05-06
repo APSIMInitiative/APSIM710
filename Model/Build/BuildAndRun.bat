@@ -14,12 +14,11 @@ echo Build and run start time: %DATE% (%TIME%) > %APSIM%\Model\Build\Build.log
 
 
 rem ----------------------------------------------
-rem Get stuff out of version control
+rem Clean out everything
 rem ----------------------------------------------
-
-cd \
-svn revert -R APSIM
-svn update APSIM
+del /S %APSIM%\*.out 2>nul >nul
+del /S %APSIM%\*.sum 2>nul >nul
+del /S %APSIM%\*.conversions 2>nul >nul
 
 
 rem ----------------------------------------------
@@ -28,17 +27,18 @@ rem ----------------------------------------------
 cd %APSIM%\Model\Build
 call BuildAll.bat
 
-
 rem ----------------------------------------------
 rem Run Plant2Documentation on all PLANT 2
 rem model configurations
 rem ----------------------------------------------
+cd %APSIM%\Build\
 call DoPlant2Documentation.bat
 
 
 rem ----------------------------------------------
 rem Probe all models for variables.
 rem ----------------------------------------------
+cd %APSIM%\Build\
 call ProbeAll
 
 
@@ -52,16 +52,14 @@ call CreateIndex.bat
 rem ----------------------------------------------
 rem Create a release installation
 rem ----------------------------------------------
-pushd %APSIM%\Release\
+cd %APSIM%\Release\
 call Release.bat
-popd
-
 
 rem ----------------------------------------------
 rem Run everything
 rem ----------------------------------------------
+cd %APSIM%\Build\
 call RunAll.bat
-
 
 rem ------------------------------------------------------------------------------
 rem Finish creating a simple HTML file that will go on the desktop
@@ -74,7 +72,6 @@ copy /Y Build.log+Build.out Build.tmp >nul
 del /Q Build.out 2> nul
 del /Q Build.log 2> nul
 ren Build.tmp Build.out
-explorer Build.out
 
 set APSIM=
 popd
