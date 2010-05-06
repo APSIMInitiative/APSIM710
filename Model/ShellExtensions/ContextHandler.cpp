@@ -227,7 +227,6 @@ void CContextMenuHandler::createMenus(string& subMenuName,
           strcmpi(extension.c_str(), ".con") == 0 ||
           strcmpi(extension.c_str(), ".run") == 0 ||
           strcmpi(extension.c_str(), ".sim") == 0 ||
-          strcmpi(extension.c_str(), ".report") == 0 ||
           strcmpi(extension.c_str(), ".graph") == 0 ||
           strcmpi(extension.c_str(), ".apsim") == 0 ||
           strcmpi(extension.c_str(), ".xml") == 0)
@@ -251,11 +250,6 @@ void CContextMenuHandler::createMenus(string& subMenuName,
                                "graph",
                                &apsimuigraph));
 
-            menuDescriptions.push_back(
-               MenuDescription("&Graph using ApsVis",
-                               "Graph the selected files using ApsVis",
-                               "apsvis",
-                               &apsvisFiles));
             }
          else if (strcmpi(extension.c_str(), ".run") == 0)
             {
@@ -285,14 +279,6 @@ void CContextMenuHandler::createMenus(string& subMenuName,
                                "Convert the specified control file to a SIM file",
                                "sim",
                                &createSimFiles));
-            }
-         else if (strcmpi(extension.c_str(), ".report") == 0)
-            {
-            menuDescriptions.push_back(
-               MenuDescription("&ApsimReport",
-                               "Send report to ApsimReport",
-                               "apsimreport",
-                               &apsimReportFiles));
             }
          else if (strcmpi(extension.c_str(), ".graph") == 0)
             {

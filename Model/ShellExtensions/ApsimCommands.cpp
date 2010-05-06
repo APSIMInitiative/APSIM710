@@ -52,26 +52,6 @@ extern "C" _export void __stdcall excelFiles(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Send all files to APSVis.  Files is a CSV list of filenames.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall apsvisFiles(const char* csvFiles)
-   {
-   vector<string> fileNames;
-   Split_string(csvFiles, ",", fileNames);
-
-   // write response file.
-   string responseFile = Path::getTempFolder().Get_path() + "\\response.file";
-   ofstream out(responseFile.c_str());
-   for (unsigned i = 0; i != fileNames.size(); ++i)
-      out << fileNames[i] << endl;
-   out.close();
-
-
-   // pass response file to apsimoutlook.
-   string command = "\"" + getApsimDirectory() + "\\Model\\apsvis.exe\" " + responseFile;
-   WinExec(command.c_str(), SW_SHOW);
-   }
-//---------------------------------------------------------------------------
-// Send all files to APSVis.  Files is a CSV list of filenames.
-//---------------------------------------------------------------------------
 extern "C" _export void __stdcall apsimuigraph(const char* csvFiles)
    {
    vector<string> fileNames;
@@ -152,21 +132,6 @@ extern "C" _export void __stdcall viewFiles(const char* csvFiles)
       else
          command = "notepad ";
       command += " \"" + fileNames[f] + "\"";
-      WinExec(command.c_str(), SW_SHOW);
-      }
-   }
-//---------------------------------------------------------------------------
-// Send all files to ApsimReport
-//---------------------------------------------------------------------------
-extern "C" _export void __stdcall apsimReportFiles(const char* csvFiles)
-   {
-   vector<string> fileNames;
-   Split_string(csvFiles, ",", fileNames);
-
-   for (unsigned f = 0; f != fileNames.size(); f++)
-      {
-      // pass response file to apsimoutlook.
-      string command = "\"" + getApsimDirectory() + "\\Model\\ApsimReport.exe\" \"" + fileNames[f] + "\"";
       WinExec(command.c_str(), SW_SHOW);
       }
    }

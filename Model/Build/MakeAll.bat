@@ -110,10 +110,6 @@ call MakeProject VenLink
 call MakeProject WaterSupply
 call MakeProject YieldProphet
 
-call MakeProject ApsVis
-call MakeProject SEGReport
-call MakeProject CallManagedDll
-call MakeProject ApsimReport
 call MakeProject MergeOutputFiles
 call MakeProject ShellExtensions
 call MakeProject SetXMLValue
@@ -123,5 +119,6 @@ call MakeProject RunMacro
 
 call MakeProject RunTime
 call MakeProject AgPasture
+call MakeProject RunEditor
 
 popd

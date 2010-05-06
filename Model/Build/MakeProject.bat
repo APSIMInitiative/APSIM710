@@ -12,7 +12,7 @@ if EXIST makefile (
 )
 
 popd
-if ERRORLEVEL 1 echo ERRORS FOUND >> Build.out
+if ERRORLEVEL 1 echo ERRORS FOUND >> Build.ou
 if ERRORLEVEL 1 echo ERRORS FOUND in %1 >> Build.log
 echo. >> Build.out
 echo. >> Build.out
