@@ -9,7 +9,6 @@
 #include <General\inifile.h>
 #include <General\stream_functions.h>
 #include <ApsimShared\ApsimVersion.h>
-#include <forms.hpp>
 
 HINSTANCE hInst;
 extern ULONG g_DllRefCount;
@@ -20,7 +19,9 @@ using namespace std;
 //---------------------------------------------------------------------------
 const char *szCLSID = "{5637FAA5-A5A4-42DD-A9F2-AE08F204B5";
 
-__declspec(dllexport) HRESULT STDMETHODCALLTYPE DllCanUnloadNow(void)
+//typedef HRESULT (STDAPICALLTYPE * LPFNGETCLASSOBJECT) (REFCLSID, REFIID, LPVOID *);
+
+EXPORT HRESULT STDAPICALLTYPE DllCanUnloadNow(REFCLSID, REFIID, LPVOID *)
    {
    return (g_DllRefCount > 0 ? S_FALSE : S_OK);
    }
@@ -41,7 +42,7 @@ string getClsid(void)
 //---------------------------------------------------------------------------
 // create a CClassFactory object
 //---------------------------------------------------------------------------
-__declspec(dllexport) HRESULT STDMETHODCALLTYPE DllGetClassObject
+  STDAPI DllGetClassObject
    (REFCLSID rclsid, REFIID riid, LPVOID *ppReturn)
    {
    *ppReturn = NULL;
@@ -67,7 +68,7 @@ __declspec(dllexport) HRESULT STDMETHODCALLTYPE DllGetClassObject
 // Register this DLL by setting up our registry entries to point to
 // our shell extension class.
 //---------------------------------------------------------------------------
-__declspec(dllexport) HRESULT STDMETHODCALLTYPE DllRegisterServer(void)
+ STDAPI DllRegisterServer(void)
    {
    string key = getKey();
    HKEY hKey;
@@ -143,7 +144,7 @@ __declspec(dllexport) HRESULT STDMETHODCALLTYPE DllRegisterServer(void)
 //---------------------------------------------------------------------------
 // UnRegister this DLL by cleaning up our registry entries
 //---------------------------------------------------------------------------
-__declspec(dllexport) HRESULT STDMETHODCALLTYPE DllUnregisterServer(void)
+ STDAPI DllUnregisterServer(void)
    {
    string key = getKey();
 
@@ -219,6 +220,7 @@ __declspec(dllexport) HRESULT STDMETHODCALLTYPE DllUnregisterServer(void)
       return SELFREG_E_CLASS;
    }
 
+#if 0
 extern HINSTANCE hInstance;
 //---------------------------------------------------------------------------
 // Main entry point into the DLL - called by Windows.
@@ -226,7 +228,7 @@ extern HINSTANCE hInstance;
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
    {
    hInstance = hinst;
-   Application->Initialize();
+   //Application->Initialize();
    switch(reason)
       {
       case DLL_PROCESS_ATTACH: hInst = hinst;
@@ -236,8 +238,9 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
 
    const unsigned _MCW_EW = 0x037f;
    const unsigned _EM_INVALID = 0xffff;
-   _controlfp(_MCW_EW, _EM_INVALID);
+   //_controlfp(_MCW_EW, _EM_INVALID);
 
    return TRUE;
    }
 
+#endif

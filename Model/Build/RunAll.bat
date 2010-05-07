@@ -1,9 +1,7 @@
-@echo off
+
 rem -------------------------------------------------------------
 rem This batch file runs everything
 rem -------------------------------------------------------------
-pushd ..\..
-set APSIM=%CD%
 	
 start /WAIT %APSIM%\Model\ApsimRun /auto /autoclose %APSIM%\Tests
 

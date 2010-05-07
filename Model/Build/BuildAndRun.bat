@@ -38,7 +38,7 @@ call DoPlant2Documentation.bat
 rem ----------------------------------------------
 rem Probe all models for variables.
 rem ----------------------------------------------
-cd %APSIM%\Build\
+cd %APSIM%\Model\Build\
 call ProbeAll
 
 
@@ -58,7 +58,7 @@ call Release.bat
 rem ----------------------------------------------
 rem Run everything
 rem ----------------------------------------------
-cd %APSIM%\Build\
+cd %APSIM%\Model\Build\
 call RunAll.bat
 
 rem ------------------------------------------------------------------------------

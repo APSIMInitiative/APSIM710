@@ -20,7 +20,7 @@ SRC = ContextHandler.cpp \
 RES = Icons.res
 PROJECTTYPE = dll
 VCL = yes
-LIBS =
+LIBS = ole32
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 

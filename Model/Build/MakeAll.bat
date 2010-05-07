@@ -17,6 +17,11 @@ rem ----------------------------------------------
 VersionStamper.tcl
 
 rem -------------------------------------------------------------
+rem Copy runtime dlls for bootstrap progs
+rem -------------------------------------------------------------
+call MakeProject RunTime
+
+rem -------------------------------------------------------------
 rem Make sure CSGeneral exists for the DataTypes project.
 rem -------------------------------------------------------------
 call MakeProject CSGeneral
@@ -36,7 +41,6 @@ rem bulk of projects
 rem -------------------------------------------------------------
 call MakeProject General
 call MakeProject Build\def2imp
-call MakeProject GeneralVCL
 call MakeProject ApsimShared
 call MakeProject Protocol
 call MakeProject ComponentInterface
@@ -117,7 +121,6 @@ call MakeProject ProbeDll
 call MakeProject Plant2Documentation
 call MakeProject RunMacro
 
-call MakeProject RunTime
 call MakeProject AgPasture
 call MakeProject RunEditor
 

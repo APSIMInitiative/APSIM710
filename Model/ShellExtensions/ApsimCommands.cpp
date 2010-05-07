@@ -1,22 +1,24 @@
 //---------------------------------------------------------------------------
+
+#include <string>
+#include <vector>
+#include <windows.h>
 #include <General\pch.h>
-#include <vcl.h>
-#pragma hdrstop
+#include <General\platform.h>
 
 #include "ApsimCommands.h"
 #include <General\string_functions.h>
 #include <General\path.h>
 #include <General\stream_functions.h>
 #include <apsimshared\apsimdirectories.h>
-#pragma package(smart_init)
 
 //nb. windows does not care to much if you don't add the .exe suffix to a file (as you can see from some of the paths below)
-
+using namespace std;
 
 //---------------------------------------------------------------------------
 // Send all files to EXCEL.  Files is a CSV list of filenames.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall excelFiles(const char* csvFiles)
+extern "C" void EXPORT STDCALL excelFiles(const char* csvFiles)
    {
    vector<string> fileNames;
    Split_string(csvFiles, ",", fileNames);
@@ -52,7 +54,7 @@ extern "C" _export void __stdcall excelFiles(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Send all files to APSVis.  Files is a CSV list of filenames.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall apsimuigraph(const char* csvFiles)
+extern "C" void EXPORT STDCALL apsimuigraph(const char* csvFiles)
    {
    vector<string> fileNames;
    Split_string(csvFiles, ",", fileNames);
@@ -72,7 +74,7 @@ extern "C" _export void __stdcall apsimuigraph(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Send all files to APSVis.  Files is a CSV list of filenames.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall runapsimgraph(const char* csvFiles)
+extern "C" void EXPORT STDCALL runapsimgraph(const char* csvFiles)
    {
    // pass response file to apsimoutlook.
    string command = "\"" + getApsimDirectory() + "\\Model\\apsimui.exe\" /ApsimGraph \"" + csvFiles + "\"";
@@ -82,7 +84,7 @@ extern "C" _export void __stdcall runapsimgraph(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Send all files to Apsim.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall runFiles(const char* csvFiles)
+extern "C" void EXPORT STDCALL runFiles(const char* csvFiles)
    {
    vector<string> fileNames;
    Split_string(csvFiles, ",", fileNames);
@@ -98,7 +100,7 @@ extern "C" _export void __stdcall runFiles(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Convert all files to SIM format.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall createSimFiles(const char* files)
+extern "C" void EXPORT STDCALL createSimFiles(const char* files)
    {
    vector<string> fileNames;
    Split_string(files, ",", fileNames);
@@ -119,7 +121,7 @@ extern "C" _export void __stdcall createSimFiles(const char* files)
 //---------------------------------------------------------------------------
 // View a .out file.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall viewFiles(const char* csvFiles)
+extern "C" void EXPORT STDCALL viewFiles(const char* csvFiles)
    {
    vector<string> fileNames;
    Split_string(csvFiles, ",", fileNames);
@@ -138,7 +140,7 @@ extern "C" _export void __stdcall viewFiles(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Open an interface file.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall interfaceFiles(const char* csvFiles)
+extern "C" void EXPORT STDCALL interfaceFiles(const char* csvFiles)
    {
    vector<string> fileNames;
    Split_string(csvFiles, ",", fileNames);
@@ -153,7 +155,7 @@ extern "C" _export void __stdcall interfaceFiles(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Open an .apsim file.
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall apsimFiles(const char* csvFiles)
+extern "C" void EXPORT STDCALL apsimFiles(const char* csvFiles)
    {
    vector<string> fileNames;
    Split_string(csvFiles, ",", fileNames);
@@ -168,7 +170,7 @@ extern "C" _export void __stdcall apsimFiles(const char* csvFiles)
 //---------------------------------------------------------------------------
 // Probe a types file or plugin file
 //---------------------------------------------------------------------------
-extern "C" _export void __stdcall probeFile(const char* csvFiles)
+extern "C" void EXPORT STDCALL probeFile(const char* csvFiles)
    {
    vector<string> fileNames;
    Split_string(csvFiles, ",", fileNames);

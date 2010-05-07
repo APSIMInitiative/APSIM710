@@ -5,7 +5,7 @@ LFLM=lm.exe
 LF95=lf95.exe
 
 # add .lib to all user libraries
-LIBS := $(foreach library,$(LIBS),..\$(library)\$(library).imp)
+LIBS := $(foreach library,$(LIBS),..\$(library).lib)
 STATICLIBS := $(foreach library,$(STATICLIBS),..\$(library).lib)
 
 F90FLAGS = -dll -tpp -nco -o0 -pca -libpath $(APSIM)\Model -ml bc -staticlink

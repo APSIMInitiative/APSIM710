@@ -7,8 +7,9 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <General\platform.h>
 
-typedef void __stdcall (*EventHandler)(const char* files);
+typedef void (STDCALL * EventHandler)(const char* files);
 
 struct MenuDescription
    {
