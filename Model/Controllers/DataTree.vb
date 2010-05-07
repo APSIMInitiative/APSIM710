@@ -22,6 +22,7 @@ Public Class DataTree
     Private Controller As BaseController
     Private FirstTimeRename As Boolean = False
     Private EnableNodeSelection As Boolean = True
+    Private DisplayNodeTypeInTree As Boolean = False
 
 
     Public Sub OnLoad(ByVal Controller As BaseController)
@@ -52,7 +53,7 @@ Public Class DataTree
         PopupMenuRightDrag.Items.Add(New ToolStripSeparator)
         PopupMenuRightDrag.Items.Add("Cancel")
 
-
+        DisplayNodeTypeInTree = Configuration.Instance.Setting("DisplayNodeTypeInTree") = "Yes"
     End Sub
     Private Function GetNodeFromPath(ByVal ChildPath As String) As TreeNode
         ' --------------------------------------------------
@@ -213,7 +214,11 @@ Public Class DataTree
         Node.ImageIndex = Controller.ImageIndex(Comp.Type, "SmallIcon")
         Node.SelectedImageIndex = Node.ImageIndex
         Node.Tag = Comp.Type
-        Node.ToolTipText = Comp.Description
+        If DisplayNodeTypeInTree Then
+            Node.ToolTipText = Comp.Type
+        Else
+            Node.ToolTipText = Comp.Description
+        End If
         If Not IsNothing(Comp.ShortCutTo) Then
             Node.ToolTipText = "Linked to " + Comp.ShortCutTo.FullPath
             If Not Comp.Enabled Then

@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+
+<Folder>
+   <Actions>
+      <FileNew>
+         <Text>New...</Text>
+         <Description>Create a new file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\document_new16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\document_new24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>FileNew</method>
+            </call>
+         </OnInvoke>
+      </FileNew>
+      <Open>
+         <Text>Open...</Text>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_document16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\folder_document24.png</MediumIcon>
+      </Open>
+      <FileOpen>
+         <Text>Open...</Text>
+         <Description>Open an existing file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_document16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\folder_document24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileOpen</method>
+            </call>
+         </OnInvoke>
+      </FileOpen>
+      <FileSave>
+         <Text>Save</Text>
+         <Description>Save all simulations to disk</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\disk_blue16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\disk_blue24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileSave</method>
+            </call>
+         </OnInvoke>
+      </FileSave>
+      <FileSaveAs>
+         <Text>Save as...</Text>
+         <Description>Save all simulations under a different file name</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\disk_blue_window16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\disk_blue_window24.png</MediumIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>FileSaveAs</method>
+            </call>
+         </OnInvoke>
+      </FileSaveAs>
+
+      <Delete>
+         <text>Delete</text>
+         <Location>AllNodes</Location>
+         <Description>Delete the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\delete216.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <ShortCut>Delete</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Delete</method>
+            </call>
+         </OnInvoke>
+      </Delete>
+      <Rename>
+         <text>Rename</text>
+         <Location>AllNodes</Location>
+         <Description>Rename the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\pen_blue16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <ShortCut>F2</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Rename</method>
+            </call>
+         </OnInvoke>
+      </Rename>
+      <Cut>
+         <text>Cut</text>
+         <Location>AllNodes</Location>
+         <Description>Cut the selected node to the clipboard</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\cut16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <ShortCut>X, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Cut</method>
+            </call>
+         </OnInvoke>
+      </Cut>
+      <Copy>
+         <text>Copy</text>
+         <Location>AllNodes</Location>
+         <Description>Copy the selected node to the clipboard</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\copy16.png</SmallIcon>
+         <ShortCut>C, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Copy</method>
+            </call>
+         </OnInvoke>
+      </Copy>
+      <Paste>
+         <text>Paste</text>
+         <Location>AllNodes</Location>
+         <Description>Paste the clipboard contents below the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\paste16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <ShortCut>V, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>Paste</method>
+            </call>
+         </OnInvoke>
+      </Paste>
+      <MoveUp>
+         <text>Move up</text>
+         <Location>AllNodes</Location>
+         <Description>Move the selected nodes up</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\nav_up_green16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <ShortCut>Up, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>MoveUp</method>
+            </call>
+         </OnInvoke>
+      </MoveUp>
+      <MoveDown>
+         <text>Move down</text>
+         <Location>AllNodes</Location>
+         <Description>Move the selected nodes down</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\nav_down_green16.png</SmallIcon>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <ShortCut>Down, Control</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>MoveDown</method>
+            </call>
+         </OnInvoke>
+      </MoveDown>
+      <ExpandAll>
+         <text>Expand all</text>
+         <Location>AllNodes</Location>
+         <Description>Expand all nodes</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\down_plus16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>ExpandAll</method>
+            </call>
+         </OnInvoke>
+      </ExpandAll>
+      <CollapseAll>
+         <text>Collapse all</text>
+         <Location>AllNodes</Location>
+         <Description>Collapse all nodes</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\up_minus16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>CollapseAll</method>
+            </call>
+         </OnInvoke>
+      </CollapseAll>
+   </Actions>
+
+
+   <MainToolBar ImageAboveText="yes">
+      <ImageSize>MediumIcon</ImageSize>
+      <Item>FileNew</Item>
+      <DropDownItem action="Open">
+         <Item>FileOpen</Item>
+         <Separator/>
+         <RecentFileList/>
+      </DropDownItem>
+      <Item>FileSave</Item>
+      <Item>FileSaveAs</Item>
+   </MainToolBar>
+
+   <ContextMenu>
+      <ImageSize>SmallIcon</ImageSize>
+      <Item>FileNew</Item>
+      <DropDownItem action="Open">
+         <Item>FileOpen</Item>
+         <Separator/>
+         <RecentFileList/>
+      </DropDownItem>
+      <Item>FileSave</Item>
+      <Item>FileSaveAs</Item>
+      <Separator/>
+      <Item>Delete</Item>
+      <Item>Rename</Item>
+      <Item>Cut</Item>
+      <Item>Copy</Item>
+      <Item>Paste</Item>
+      <Item>MoveUp</Item>
+      <Item>MoveDown</Item>
+      <Separator/>
+      <Item>CollapseAll</Item>
+      <Item>ExpandAll</Item>
+   </ContextMenu>
+</Folder>

@@ -238,6 +238,15 @@ void Factory::RemoveShortCuts(XmlNode^ Node)
    String^ ShortCutPath = XmlHelper::Attribute(Node, "shortcut");
    if (ShortCutPath != "")
       {
+      // Shortcut strings will be a full path e.g. /FrenchBean/Model/Plant/Phenology/ThermalTime
+      // But our Node->OwnerDocument->DocumentElemen is <Plant> 
+      // So we need to find /Plant/ and remove everything on the path before that. This way
+      // we'll end up with a relative path e.g. Plant/Phenology/ThermalTime
+      int PosPlant = ShortCutPath->IndexOf("/Plant/");
+      if (PosPlant == -1)
+         throw gcnew Exception("Invalid shortcut path: " + ShortCutPath);
+      ShortCutPath = ShortCutPath->Remove(0, PosPlant+7); // Get rid of the /Plant/ string.
+         
       XmlNode^ ReferencedNode = XmlHelper::Find(Node->OwnerDocument->DocumentElement, ShortCutPath);
       if (ReferencedNode == nullptr)
          throw gcnew Exception("Cannot find short cut node: " + ShortCutPath);

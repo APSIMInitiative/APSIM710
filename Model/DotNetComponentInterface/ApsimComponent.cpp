@@ -153,7 +153,8 @@ void ApsimComponent::messageToLogic (char* message)
    		else if (IsPlant)
 		      {
 		      ManagerEventType^ dummy = gcnew ManagerEventType();
-            CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, DDML(dummy));
+            SowType^ sowDummy = gcnew SowType();
+            CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, sowDummy->DDML());
             CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
             CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
 		      }
@@ -459,7 +460,8 @@ void ApsimComponent::OnPost(char* messageData)
       CIDeRegister(ComponentI);
       Model = nullptr;
       ManagerEventType^ dummy = gcnew ManagerEventType();
-      CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, DDML(dummy));
+      SowType^ sowDummy = gcnew SowType();
+      CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, sowDummy->DDML());
       CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
       CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
       }

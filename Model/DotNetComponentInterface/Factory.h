@@ -2,6 +2,7 @@
 #using <CSGeneral.dll>
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::Collections::Specialized;
 using namespace System::Text;
 using namespace System::Xml;
 using namespace System::Reflection;

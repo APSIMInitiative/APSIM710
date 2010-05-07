@@ -96,9 +96,10 @@ Public Class MainUI
 
          RunToolStrip.Visible = ApplicationName = "ApsimUI"
 
-         ' Create our controller
-         PlugIns.LoadAll()
-         SimulationController = New BaseController(Me, ApplicationName, True)
+            ' Create our controller
+            Configuration.Instance.ApplicationName = ApplicationName
+            PlugIns.LoadAll()
+            SimulationController = New BaseController(Me, ApplicationName, True)
 
          ' Display splash screen
          If Configuration.Instance.Setting("SplashScreen") <> "" And Args.Count = 0 Then

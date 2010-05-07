@@ -213,7 +213,7 @@ Public Class GenericUI
         Grid.RowCount = 1000
         Dim Row As Integer = 0
         PopulateGrid(Data, Row)
-        Grid.RowCount = Math.Max(Row, 1)
+        Grid.RowCount = Row
 
         'InRefresh = False
     End Sub
@@ -229,7 +229,8 @@ Public Class GenericUI
                 If Grid.Cells(Row, 3).Text = "" Then                        'if the property does not have a description specified (because there was no value specified for the description in the xml that was passed in [properties between ui tags])
                     Grid.Cells(Row, 3).Text = XmlHelper.Name(Prop)              'use the name of the property as the description (in this case "description")
                 End If
-            ElseIf Prop.Name <> "condition" Then
+                Row = Row + 1
+            ElseIf Prop.Name.ToLower <> "xy" And Prop.Name <> "condition" Then
                 Grid.Cells(Row, 0).Text = Prop.Name
                 Grid.Cells(Row, 1).Text = XmlHelper.Attribute(Prop, "type")
                 If Grid.Cells(Row, 1).Text = "" Then                        'if the property does not have a type specified (because there was no value specified for the type in the xml that was passed in [properties between ui tags])
@@ -249,9 +250,8 @@ Public Class GenericUI
                 Else
                     Grid.Cells(Row, 4).Text = Prop.InnerText                        'assign the value column to the inner text of the property. 
                 End If
-
+                Row = Row + 1
             End If
-            Row = Row + 1
         Next
     End Sub
 
@@ -570,4 +570,7 @@ Public Class GenericUI
             Grid.RowCount = UIUtility.GridUtility.FindFirstBlankCell(Grid, 1)   'else grid has just the number or rows it needs to display all the properties.
         End If
     End Sub
+    Public Function IsEmpty() As Boolean
+        Return Grid.RowCount = 0
+    End Function
 End Class

@@ -5,7 +5,7 @@
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\broccoli.jpg</Image>
     <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
-    <Documentation name="Generic plant">../apsim/plant/docs/plant_science.htm</Documentation>
+    <Documentation name="Generic plant">../apsim/broccoli/Model/Plant/docs/plant_science.htm</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
     <dll>%apsim%\Model\Plant2.dll</dll>
@@ -78,7 +78,7 @@
           </Constant>
           <Start>Transplanting</Start>
           <End>EndShock</End>
-          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
         </FixedPhase>
         <FixedPhase name="Juvenile">
           <GenericFunction name="Target">
@@ -90,13 +90,13 @@
           </GenericFunction>
           <Start>EndShock</Start>
           <End>FloralInitiation</End>
-          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
         </FixedPhase>
         <LeafAppearancePhase name="Vegetative">
           <Start>FloralInitiation</Start>
           <End>StartBudding</End>
           <RemainingLeaves>10.</RemainingLeaves>
-          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
         </LeafAppearancePhase>
         <FixedPhase name="Budding">
           <Constant name="Target">
@@ -104,7 +104,7 @@
           </Constant>
           <Start>StartBudding</Start>
           <End>Buttoning</End>
-          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
         </FixedPhase>
         <FixedPhase name="Heading">
           <Constant name="Target">
@@ -112,12 +112,12 @@
           </Constant>
           <Start>Buttoning</Start>
           <End>Maturity</End>
-          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
         </FixedPhase>
         <EndPhase name="Mature">
           <Start>Maturity</Start>
           <End>Unused</End>
-          <TemperatureFunction shortcut="/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
       <Leaf>
