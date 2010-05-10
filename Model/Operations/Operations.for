@@ -204,6 +204,7 @@
       g%op_date(1:max_ops) = ' '
       g%op_text(1:max_ops) = ' '
       g%op_phase(1:max_ops) = 0
+      g%last_record = 0
 
       g%phase_name(prepare_phase) = 'Prepare'
       g%phase_name(process_phase) = 'Process'
@@ -529,7 +530,7 @@
      :       // ' message to '
      :       // trim(Destination))
 
-            if (Line <> ' ' .and.
+            if (Line .ne. ' ' .and.
      :         index(Line, '=') .eq. 0) then
                write (msg, '(50a)' )
      :         'Operations message has data in a action line that does',
