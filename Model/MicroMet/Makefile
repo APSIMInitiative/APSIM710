@@ -6,6 +6,7 @@ SRC = Registrations.f90 MicroMet.for
 
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
+DEF = MicroMet.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

@@ -2420,17 +2420,17 @@
       call push_routine (myname)
 
 
-      LightProfile.num_Interception = g%NumComponents
+      LightProfile%num_Interception = g%NumComponents
 
       do 100 j=1,g%NumComponents
 
-         LightProfile.Interception(j).name =g%ComponentName(j)
-         LightProfile.Interception(j).croptype =g%ComponentType(j)
-         LightProfile.Interception(j).Num_layer = g%NumLayers
+         LightProfile%Interception(j)%name =g%ComponentName(j)
+         LightProfile%Interception(j)%croptype =g%ComponentType(j)
+         LightProfile%Interception(j)%Num_layer = g%NumLayers
          do 50 i=1,g%NumLayers
-            LightProfile.Interception(j).Layer(i).thickness
+            LightProfile%Interception(j)%Layer(i)%thickness
      :              = g%DeltaZ(i)
-            LightProfile.Interception(j).Layer(i).amount
+            LightProfile%Interception(j)%Layer(i)%amount
      :              = g%Rs(i,j)*Micromet_radn_green_fraction(j)
    50    continue
 
