@@ -67,4 +67,4 @@ rem -----------------------------------------------
 rem -----------------------------------------------
 rem Restore original YieldProphet.report
 rem -----------------------------------------------
-svn revert YieldProphet.report
+"C:\Program Files\Subversion\bin\svn" revert YieldProphet.report
