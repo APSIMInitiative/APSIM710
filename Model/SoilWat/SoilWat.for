@@ -2985,6 +2985,9 @@ cjh
      :           //'must be specified.')
 
             endif
+            if (p%summeru .eq. p%winteru) then
+               p%u = p%summeru
+            endif
          else
             p%summeru = p%u
             p%winteru = p%u
@@ -3011,6 +3014,10 @@ cjh
      :           //'must be specified.')
 
             endif
+            if (p%summercona .eq. p%wintercona) then
+               p%cona = p%summercona
+            endif
+
          else
             p%summercona = p%cona
             p%wintercona = p%cona

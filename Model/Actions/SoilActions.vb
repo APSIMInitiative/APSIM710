@@ -64,7 +64,9 @@ Public Class SoilActions
         Dialog.RestoreDirectory = True
         If Dialog.ShowDialog() = DialogResult.OK Then
             For Each FileName As String In Dialog.FileNames
-                ParFileImporter.ImportParFile(FileName, Controller)
+                Cursor.Current = Cursors.WaitCursor
+                Controller.Selection.Add(SoilParFileImporter.Import(FileName))
+                Cursor.Current = Cursors.Default
             Next
         End If
     End Sub
@@ -74,17 +76,12 @@ Public Class SoilActions
         Dialog.Title = "Select a spreadsheet to import from"
         Dialog.RestoreDirectory = True
         If Dialog.ShowDialog() = DialogResult.OK Then
-            SoilSpreadsheet.ImportFromFile(Dialog.FileName, Controller)
+            Cursor.Current = Cursors.WaitCursor
+            Controller.Selection.Add(SoilSpreadsheet.Import(Dialog.FileName), False)
+            Cursor.Current = Cursors.Default
         End If
     End Sub
 
-    Public Shared Sub ImportFromW2N2(ByVal Controller As BaseController)
-        Dim Dialog As New FolderBrowserDialog()
-        If Dialog.ShowDialog() = DialogResult.OK Then
-            Dim Files As String() = Directory.GetFiles(Dialog.SelectedPath, "*.w2")
-            ParFileImporter.ImportW2N2P2(Files, Controller)
-        End If
-    End Sub
 #End Region
 
 
@@ -134,10 +131,8 @@ Public Class SoilActions
                 ExportToPar(Child, FileName, Controller)
             Next
         Else
-            Dim Doc As New XmlDocument()
-            Doc.LoadXml(Data.FullXML())
-            Dim SoilToExport As New Soil(Doc.DocumentElement)
-            SoilToExport.ExportToPar(FileName, SoilToExport.Name, True)
+            Dim SoilToExport As Soil = Soil.CreateFromXML(Data.FullXML())
+            'SoilToExport.ExportToPar(FileName, SoilToExport.Name, True)
         End If
     End Sub
     Public Shared Sub ExportToSpreadsheet(ByVal Controller As BaseController)
@@ -146,7 +141,9 @@ Public Class SoilActions
         Dialog.Title = "Enter a spreadsheet file to export to"
         Dialog.DefaultExt = "xls"
         If Dialog.ShowDialog() = DialogResult.OK Then
-            SoilSpreadsheet.ExportSelectedToFile(Dialog.FileName, Controller)
+            Dim Doc As New XmlDocument
+            Doc.LoadXml(Controller.ApsimData.RootComponent.FullXML())
+            SoilSpreadsheet.Export(Dialog.FileName, Doc.DocumentElement, Controller.SelectedPaths)
             MessageBox.Show("Soils have been successfully exported to '" + Dialog.FileName + "'. It is suggested that you rename soils within the new file to avoid confusion.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
     End Sub
@@ -173,10 +170,7 @@ Public Class SoilActions
     End Sub
     Private Shared Sub CheckSoils(ByVal Data As ApsimFile.Component, ByRef ErrorMessage As String)
         If Data.Type.ToLower() = "soil" Then
-            Dim Doc As New XmlDocument()
-            Doc.LoadXml(Data.Contents)
-
-            Dim ThisSoil As New Soil(Doc.DocumentElement)
+            Dim ThisSoil As Soil = Soil.CreateFromXML(Data.Contents)
             Dim Errors As String = ThisSoil.CheckForErrors()
             If Errors <> "" Then
                 ErrorMessage += vbCr + vbLf + ThisSoil.Name + vbCr + vbLf + StringManip.IndentText(Errors, 6)
@@ -201,45 +195,6 @@ Public Class SoilActions
     Public Shared Function VersionString() As String
         Return "Version " + Configuration.Instance.ApsimVersion()
     End Function
-    Public Shared Sub SoilCropManagement(ByVal Controller As BaseController)
-        Dim Doc As New XmlDocument()
-        Doc.LoadXml(Controller.Selection.Contents)
-        Dim MySoil As New Soil(Doc.DocumentElement)
-
-        Dim Form As New UIBits.ReorderForm()
-        Form.Text = "Soil / Crop Management"
-        Form.TextForAddPrompt = "Enter the name of a new crop"
-        Form.SetItems(MySoil.CropsMeasured)
-        If Form.ShowDialog() = DialogResult.OK Then
-            For Each CropName As String In Form.GetItems()
-                If Not MySoil.CropExists(CropName) Then
-                    MySoil.AddCrop(CropName)
-                End If
-            Next
-            Dim Crops As String() = MySoil.CropsMeasured
-            For Each CropName As String In Crops
-                If CSGeneral.StringManip.IndexOfCaseInsensitive(Form.GetItems(), CropName) = -1 Then
-                    MySoil.DeleteCrop(CropName)
-                End If
-            Next
-            MySoil.SetCropOrder(Form.GetItems())
-            Controller.Selection.Contents = Doc.DocumentElement.OuterXml
-            Controller.Explorer.RefreshCurrentView()
-        End If
-    End Sub
-    Public Shared Sub ChangePHUnits(ByVal Controller As BaseController)
-        Dim Doc As New XmlDocument()
-        Doc.LoadXml(Controller.Selection.Contents)
-        Dim SelectedData As XmlNode = Doc.DocumentElement
-        Dim MySoil As New Soil(SelectedData)
-        If MySoil.PHStoredAsWater() Then
-            MySoil.PHCaCl = MySoil.PH
-        Else
-            MySoil.PH = MySoil.PHCaCl
-        End If
-        Controller.Selection.Contents = SelectedData.OuterXml
-        Controller.Explorer.RefreshCurrentView()
-    End Sub
     Public Shared Sub CheckWebForDataUpdate(ByVal Controller As BaseController)
         Cursor.Current = Cursors.WaitCursor
         Dim request As WebRequest = WebRequest.Create("http://www.apsim.info/apsim/downloads/APSRU-Australia-Soils.soils")
@@ -272,19 +227,19 @@ Public Class SoilActions
 
 #Region "PrintSoil"
     Public Shared Sub PrintSoil(ByVal Controller As BaseController)
-        Dim SoilUI As CSUserInterface.SoilUI = DirectCast(Controller.Explorer.CurrentView, CSUserInterface.SoilUI)
+        'Dim SoilUI As CSUserInterface.SoilUI = DirectCast(Controller.Explorer.CurrentView, CSUserInterface.SoilUI)
 
-        Dim PrintDocument As New System.Drawing.Printing.PrintDocument()
-        AddHandler PrintDocument.BeginPrint, AddressOf SoilUI.OnBeginPrint
-        AddHandler PrintDocument.PrintPage, AddressOf SoilUI.OnPrintPage
-        AddHandler PrintDocument.QueryPageSettings, AddressOf OnQueryPageSettings
+        'Dim PrintDocument As New System.Drawing.Printing.PrintDocument()
+        'AddHandler PrintDocument.BeginPrint, AddressOf SoilUI.OnBeginPrint
+        'AddHandler PrintDocument.PrintPage, AddressOf SoilUI.OnPrintPage
+        'AddHandler PrintDocument.QueryPageSettings, AddressOf OnQueryPageSettings
 
-        Dim PrintDialog As New PrintDialog()
-        PrintDialog.Document = PrintDocument
+        'Dim PrintDialog As New PrintDialog()
+        'PrintDialog.Document = PrintDocument
 
-        Dim PreviewDialog As New System.Windows.Forms.PrintPreviewDialog()
-        PreviewDialog.Document = PrintDocument
-        PreviewDialog.ShowDialog()
+        'Dim PreviewDialog As New System.Windows.Forms.PrintPreviewDialog()
+        'PreviewDialog.Document = PrintDocument
+        'PreviewDialog.ShowDialog()
     End Sub
     Private Shared Sub OnQueryPageSettings(ByVal sender As Object, ByVal e As System.Drawing.Printing.QueryPageSettingsEventArgs)
         e.PageSettings.Margins.Left = 50

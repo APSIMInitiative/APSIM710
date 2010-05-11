@@ -340,7 +340,7 @@ Public Class MainUI
         Me.RunToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RunButton, Me.PauseButton, Me.StopButton, Me.RunProgress, Me.PercentLabel, Me.ErrorsButton})
         Me.RunToolStrip.Location = New System.Drawing.Point(105, 0)
         Me.RunToolStrip.Name = "RunToolStrip"
-        Me.RunToolStrip.Size = New System.Drawing.Size(319, 44)
+        Me.RunToolStrip.Size = New System.Drawing.Size(217, 44)
         Me.RunToolStrip.TabIndex = 2
         '
         'RunButton

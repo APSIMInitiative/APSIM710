@@ -547,6 +547,8 @@ namespace ApsimFile
 
          if (s.Count == 0)
             return false;
+         if (s.Count == 1 && s[0] == "\"\"")
+            return false;
          if (s.Count == 1)
             return (s[0].IndexOf('[') == -1 || s[0].IndexOf(']') == -1);
 

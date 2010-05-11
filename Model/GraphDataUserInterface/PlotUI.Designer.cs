@@ -68,11 +68,11 @@ namespace GraphDataUserInterface
          this.MainPanel.Controls.Add(this.YLabel);
          this.MainPanel.Controls.Add(this.XLabel);
          this.MainPanel.Location = new System.Drawing.Point(0, 16);
-         this.MainPanel.Size = new System.Drawing.Size(617, 185);
+         this.MainPanel.Size = new System.Drawing.Size(620, 185);
          // 
          // MyHelpLabel
          // 
-         this.MyHelpLabel.Size = new System.Drawing.Size(617, 16);
+         this.MyHelpLabel.Size = new System.Drawing.Size(620, 16);
          this.MyHelpLabel.Text = "   dd";
          // 
          // YMenuStrip
@@ -121,33 +121,33 @@ namespace GraphDataUserInterface
             this.DeleteXMenu,
             this.DeleteAllXMenu});
          this.XMenuStrip.Name = "YMenuStrip";
-         this.XMenuStrip.Size = new System.Drawing.Size(153, 114);
+         this.XMenuStrip.Size = new System.Drawing.Size(139, 92);
          // 
          // TopAxisMenu
          // 
          this.TopAxisMenu.Name = "TopAxisMenu";
-         this.TopAxisMenu.Size = new System.Drawing.Size(152, 22);
+         this.TopAxisMenu.Size = new System.Drawing.Size(138, 22);
          this.TopAxisMenu.Text = "Top Axis";
          this.TopAxisMenu.Click += new System.EventHandler(this.OnTopAxisMenuClick);
          // 
          // CumulativeX
          // 
          this.CumulativeX.Name = "CumulativeX";
-         this.CumulativeX.Size = new System.Drawing.Size(152, 22);
+         this.CumulativeX.Size = new System.Drawing.Size(138, 22);
          this.CumulativeX.Text = "Cumulative";
          this.CumulativeX.Click += new System.EventHandler(this.OnCumulativeXClick);
          // 
          // DeleteXMenu
          // 
          this.DeleteXMenu.Name = "DeleteXMenu";
-         this.DeleteXMenu.Size = new System.Drawing.Size(152, 22);
+         this.DeleteXMenu.Size = new System.Drawing.Size(138, 22);
          this.DeleteXMenu.Text = "Delete";
          this.DeleteXMenu.Click += new System.EventHandler(this.OnDeleteXMenuClick);
          // 
          // DeleteAllXMenu
          // 
          this.DeleteAllXMenu.Name = "DeleteAllXMenu";
-         this.DeleteAllXMenu.Size = new System.Drawing.Size(152, 22);
+         this.DeleteAllXMenu.Size = new System.Drawing.Size(138, 22);
          this.DeleteAllXMenu.Text = "Delete All";
          this.DeleteAllXMenu.Click += new System.EventHandler(this.OnDeleteAllXMenuClick);
          // 
@@ -280,7 +280,7 @@ namespace GraphDataUserInterface
          // 
          this.HelpText = "   dd";
          this.Name = "PlotUI";
-         this.Size = new System.Drawing.Size(617, 439);
+         this.Size = new System.Drawing.Size(620, 400);
          this.Controls.SetChildIndex(this.MyHelpLabel, 0);
          this.Controls.SetChildIndex(this.MainPanel, 0);
          this.MainPanel.ResumeLayout(false);

@@ -28,116 +28,172 @@ namespace CSUserInterface
         /// </summary>
         private void InitializeComponent()
             {
-            FarPoint.Win.Spread.TipAppearance tipAppearance1 = new FarPoint.Win.Spread.TipAppearance();
-            this.Grid = new FarPoint.Win.Spread.FpSpread();
-            this.SoilProfile = new FarPoint.Win.Spread.SheetView();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.TopPanel = new System.Windows.Forms.Panel();
+            this.Grid = new System.Windows.Forms.DataGridView();
+            this.TotalPanel = new System.Windows.Forms.Panel();
+            this.TotalGrid = new System.Windows.Forms.DataGridView();
+            this.DummyScrollBar = new System.Windows.Forms.VScrollBar();
+            this.Splitter = new System.Windows.Forms.Splitter();
+            this.Properties = new VBUserInterface.GenericUI();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SoilProfile)).BeginInit();
+            this.TotalPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalGrid)).BeginInit();
             this.SuspendLayout();
+            // 
+            // TopPanel
+            // 
+            this.TopPanel.Controls.Add(this.Grid);
+            this.TopPanel.Controls.Add(this.TotalPanel);
+            this.TopPanel.Controls.Add(this.Splitter);
+            this.TopPanel.Controls.Add(this.Properties);
+            this.TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.TopPanel.Location = new System.Drawing.Point(0, 16);
+            this.TopPanel.Name = "TopPanel";
+            this.TopPanel.Size = new System.Drawing.Size(655, 298);
+            this.TopPanel.TabIndex = 16;
             // 
             // Grid
             // 
-            this.Grid.AccessibleDescription = "Grid, Soil profile, Row 0, Column 0, ";
-            this.Grid.AllowDragDrop = true;
+            this.Grid.AllowUserToResizeRows = false;
+            this.Grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.Grid.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.Grid.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.Grid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.Grid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.Format = "N3";
+            dataGridViewCellStyle2.NullValue = null;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.Grid.DefaultCellStyle = dataGridViewCellStyle2;
             this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Grid.EditModeReplace = true;
-            this.Grid.HorizontalScrollBarPolicy = FarPoint.Win.Spread.ScrollBarPolicy.AsNeeded;
-            this.Grid.Location = new System.Drawing.Point(0, 40);
+            this.Grid.Location = new System.Drawing.Point(270, 0);
             this.Grid.Name = "Grid";
-            this.Grid.SelectionBlockOptions = ((FarPoint.Win.Spread.SelectionBlockOptions)(((FarPoint.Win.Spread.SelectionBlockOptions.Cells | FarPoint.Win.Spread.SelectionBlockOptions.Rows)
-                        | FarPoint.Win.Spread.SelectionBlockOptions.Sheet)));
-            this.Grid.Sheets.AddRange(new FarPoint.Win.Spread.SheetView[] {
-            this.SoilProfile});
-            this.Grid.Size = new System.Drawing.Size(655, 501);
-            this.Grid.TabIndex = 13;
-            this.Grid.TabStrip.ButtonPolicy = FarPoint.Win.Spread.TabStripButtonPolicy.AsNeeded;
-            this.Grid.TabStripPolicy = FarPoint.Win.Spread.TabStripPolicy.Never;
-            this.Grid.TabStripRatio = 0.512295081967213;
-            tipAppearance1.BackColor = System.Drawing.SystemColors.Info;
-            tipAppearance1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            tipAppearance1.ForeColor = System.Drawing.SystemColors.InfoText;
-            this.Grid.TextTipAppearance = tipAppearance1;
-            this.Grid.TextTipPolicy = FarPoint.Win.Spread.TextTipPolicy.Floating;
+            this.Grid.RowHeadersVisible = false;
+            this.Grid.Size = new System.Drawing.Size(385, 274);
+            this.Grid.TabIndex = 20;
+            this.Grid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.OnGridScroll);
+            this.Grid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
             // 
-            // SoilProfile
+            // TotalPanel
             // 
-            this.SoilProfile.Reset();
-            // Formulas and custom names must be loaded with R1C1 reference style
-            this.SoilProfile.ReferenceStyle = FarPoint.Win.Spread.Model.ReferenceStyle.R1C1;
-            this.SoilProfile.ColumnCount = 21;
-            this.SoilProfile.ColumnHeader.RowCount = 2;
-            this.SoilProfile.RowCount = 100;
-            this.SoilProfile.AutoUpdateNotes = true;
-            this.SoilProfile.ColumnHeader.AutoText = FarPoint.Win.Spread.HeaderAutoText.Blank;
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 0).Value = "Depth";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 1).Value = "Texture";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 2).Value = "SWCon";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 3).Value = "MWCon";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 4).Value = "FBiom";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 5).Value = "Finert";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 6).Value = "KS";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 7).Value = "OC";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 8).Value = "EC";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 9).Value = "pH";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 10).Value = "Cl";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 11).Value = "Boron";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 12).Value = "CEC";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 13).Value = "Ca";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 14).Value = "Mg";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 15).Value = "Na";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 16).Value = "K";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 17).Value = "ESP";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 18).Value = "Particle size";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 19).Value = "Particle size";
-            this.SoilProfile.ColumnHeader.Cells.Get(0, 20).Value = "Particle size";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 0).Value = "(cm)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 2).Value = "(0-1)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 3).Value = "(0-1)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 4).Value = "(0-1)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 5).Value = "(0-1)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 6).Value = "(mm/day)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 7).Value = "(%)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 8).Value = "(mS/cm)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 9).Locked = false;
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 9).Value = "(water)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 10).Value = "(mg/kg)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 11).Value = "(mg/kg)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 12).Value = "(cmol+/kg)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 13).Value = "(cmol+/kg)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 14).Value = "(cmol+/kg)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 15).Value = "(cmol+/kg)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 16).Value = "(cmol+/kg)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 17).Value = "(%)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 18).Value = "sand (%)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 19).Value = "silt (%)";
-            this.SoilProfile.ColumnHeader.Cells.Get(1, 20).Value = "clay (%)";
-            this.SoilProfile.Columns.Get(0).Label = "(cm)";
-            this.SoilProfile.Columns.Get(0).Locked = true;
-            this.SoilProfile.Columns.Get(18).Label = "sand (%)";
-            this.SoilProfile.Columns.Get(18).Width = 79F;
-            this.SoilProfile.Columns.Get(19).Label = "silt (%)";
-            this.SoilProfile.Columns.Get(19).Width = 79F;
-            this.SoilProfile.Columns.Get(20).Label = "clay (%)";
-            this.SoilProfile.Columns.Get(20).Width = 79F;
-            this.SoilProfile.Protect = false;
-            this.SoilProfile.RowHeader.Columns.Default.Resizable = false;
-            this.SoilProfile.SheetName = "Soil profile";
-            this.SoilProfile.ReferenceStyle = FarPoint.Win.Spread.Model.ReferenceStyle.A1;
+            this.TotalPanel.Controls.Add(this.TotalGrid);
+            this.TotalPanel.Controls.Add(this.DummyScrollBar);
+            this.TotalPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.TotalPanel.Location = new System.Drawing.Point(270, 274);
+            this.TotalPanel.Name = "TotalPanel";
+            this.TotalPanel.Size = new System.Drawing.Size(385, 24);
+            this.TotalPanel.TabIndex = 23;
+            // 
+            // TotalGrid
+            // 
+            this.TotalGrid.AllowUserToResizeColumns = false;
+            this.TotalGrid.AllowUserToResizeRows = false;
+            this.TotalGrid.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.TotalGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TotalGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.TotalGrid.ColumnHeadersVisible = false;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.Format = "N3";
+            dataGridViewCellStyle3.NullValue = null;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.TotalGrid.DefaultCellStyle = dataGridViewCellStyle3;
+            this.TotalGrid.Location = new System.Drawing.Point(0, 0);
+            this.TotalGrid.Name = "TotalGrid";
+            this.TotalGrid.RowHeadersVisible = false;
+            this.TotalGrid.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TotalGrid.Size = new System.Drawing.Size(368, 24);
+            this.TotalGrid.TabIndex = 23;
+            // 
+            // DummyScrollBar
+            // 
+            this.DummyScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.DummyScrollBar.Location = new System.Drawing.Point(368, 0);
+            this.DummyScrollBar.Name = "DummyScrollBar";
+            this.DummyScrollBar.Size = new System.Drawing.Size(17, 24);
+            this.DummyScrollBar.TabIndex = 24;
+            this.DummyScrollBar.Visible = false;
+            // 
+            // Splitter
+            // 
+            this.Splitter.Location = new System.Drawing.Point(267, 0);
+            this.Splitter.Name = "Splitter";
+            this.Splitter.Size = new System.Drawing.Size(3, 298);
+            this.Splitter.TabIndex = 18;
+            this.Splitter.TabStop = false;
+            // 
+            // Properties
+            // 
+            this.Properties.AutoScroll = true;
+            this.Properties.BackColor = System.Drawing.SystemColors.Window;
+            this.Properties.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Properties.HelpText = "";
+            this.Properties.Location = new System.Drawing.Point(0, 0);
+            this.Properties.Name = "Properties";
+            this.Properties.Size = new System.Drawing.Size(267, 298);
+            this.Properties.TabIndex = 19;
+            // 
+            // splitter1
+            // 
+            this.splitter1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.splitter1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitter1.Location = new System.Drawing.Point(0, 314);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(655, 3);
+            this.splitter1.TabIndex = 17;
+            this.splitter1.TabStop = false;
+            this.splitter1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.OnSplitterMoved);
             // 
             // ProfileUI
             // 
-            this.Controls.Add(this.Grid);
+            this.Controls.Add(this.splitter1);
+            this.Controls.Add(this.TopPanel);
             this.Name = "ProfileUI";
-            this.Controls.SetChildIndex(this.Grid, 0);
+            this.Size = new System.Drawing.Size(655, 677);
+            this.Controls.SetChildIndex(this.MyHelpLabel, 0);
+            this.Controls.SetChildIndex(this.TopPanel, 0);
+            this.Controls.SetChildIndex(this.splitter1, 0);
+            this.TopPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SoilProfile)).EndInit();
+            this.TotalPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.TotalGrid)).EndInit();
             this.ResumeLayout(false);
 
             }
 
         #endregion
 
-        private FarPoint.Win.Spread.FpSpread Grid;
-        private FarPoint.Win.Spread.SheetView SoilProfile;
+        private System.Windows.Forms.Panel TopPanel;
+        private System.Windows.Forms.Splitter Splitter;
+        private System.Windows.Forms.Splitter splitter1;
+        private VBUserInterface.GenericUI Properties;
+        private System.Windows.Forms.DataGridView Grid;
+        private System.Windows.Forms.Panel TotalPanel;
+        private System.Windows.Forms.DataGridView TotalGrid;
+        private System.Windows.Forms.VScrollBar DummyScrollBar;
+
         }
     }

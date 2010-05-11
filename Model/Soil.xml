@@ -1,14 +1,16 @@
 <Type name="soil">
   <MetaData>
-    <UItype>CSUserInterface.SoilUI</UItype>
+    <UItype>VBUserInterface.GenericUI</UItype>
     <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Image>%apsim%\UserInterface\Images\soil_banner.png</Image>
     <Documentation name="Water science documentation">../apsim/soilwat2/docs/soilwat2_science.htm</Documentation>
     <Documentation name="Nitrogen science documentation">../apsim/soiln2/docs/soiln2_science.htm</Documentation>
+    <Documentation name="Phosphorus documentation">../apsim/soilp/docs/soilp_science.htm</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\shovel32.bmp</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\shovel16.bmp</SmallIcon>
     <dll>%apsim%\Model\SoilWat.dll</dll>
     <dll>%apsim%\Model\SoilN.dll</dll>
+    <dll>%apsim%\Model\SoilP.dll</dll>
     <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
@@ -17,7 +19,7 @@
       <drop>factorial</drop>
     </drops>
     <ApsimToSim>
-      <component name="[soil.name] Water" executable="%apsim%\Model\SoilWat.dll">
+      <component name="[soil.Name] Water" executable="%apsim%\Model\SoilWat.dll">
         <executable>%apsim%\Model\SoilWat.dll</executable>
         <initdata>
                [Model SoilWat]
@@ -27,28 +29,61 @@
                [else]
                <cona>[soil.Cona]</cona><u>[soil.U]</u>
                [endif]
-               <dlayer>[soil.Thickness]</dlayer><sat>[soil.Sat]</sat><dul>[soil.Dul]</dul><ll15>[soil.LL15]</ll15><air_dry>[soil.AirDry]</air_dry><swcon>[soil.SWCon]</swcon><bd>[soil.BD]</bd><sw>[soil.SW]</sw>
-               [if [soil.MWCon]]
-               <mwcon>[soil.MWCon]</mwcon>
+               <dlayer>[soil.Thickness(mm)]</dlayer>
+               <sat>[soil.Sat(mm/mm)]</sat>
+               <dul>[soil.Dul(mm/mm)]</dul>
+               <ll15>[soil.LL15(mm/mm)]</ll15>
+               <air_dry>[soil.AirDry(mm/mm)]</air_dry>
+               <swcon>[soil.SWCon(0-1)]</swcon>
+               <bd>[soil.BD(g/cc)]</bd>
+               <sw>[soil.SW(mm/mm)]</sw>
+               [if [soil.MWCon(0-1)]]
+               <mwcon>[soil.MWCon(0-1)]</mwcon>
                [endif]
-               [if [soil.KS]]
-               <ks>[soil.KS]</ks>
+               [if [soil.KS(mm/day)]]
+               <ks>[soil.KS(mm/day)]</ks>
                [endif]
-            </initdata>
+         </initdata>
       </component>
-      <component name="[soil.name] Nitrogen" executable="%apsim%\Model\SoilN.dll">
+      <component name="[soil.Name] Nitrogen" executable="%apsim%\Model\SoilN.dll">
         <executable>%apsim%\Model\SoilN.dll</executable>
         <initdata>
                [Model SoilN]
                [if "[soil.SoilType]"]
                <soiltype>[soil.SoilType]</soiltype>
                [endif]
-               <root_cn>[soil.RootCN]</root_cn><root_wt>[soil.RootWT]</root_wt><soil_cn>[soil.SoilCN]</soil_cn><enr_a_coeff>[soil.EnrACoeff]</enr_a_coeff><enr_b_coeff>[soil.EnrBCoeff]</enr_b_coeff><profile_reduction>off</profile_reduction><oc>[soil.OC]</oc><ph>[soil.PH]</ph><fbiom>[soil.FBIOM]</fbiom><finert>[soil.FINERT]</finert><no3ppm>[soil.NO3]</no3ppm><nh4ppm>[soil.NH4]</nh4ppm>
-               [if [soil.Rocks]]
-               <rocks>[soil.Rocks]</rocks>
+               <root_cn>[soil.RootCN]</root_cn>
+               <root_wt>[soil.RootWT]</root_wt>
+               <soil_cn>[soil.SoilCN]</soil_cn>
+               <enr_a_coeff>[soil.EnrACoeff]</enr_a_coeff>
+               <enr_b_coeff>[soil.EnrBCoeff]</enr_b_coeff>
+               <profile_reduction>off</profile_reduction>
+               <oc>[soil.OC(Total %)]</oc>
+               <ph>[soil.PH(1:5 water)]</ph>
+               <fbiom>[soil.FBIOM(0-1)]</fbiom>
+               <finert>[soil.FINERT(0-1)]</finert>
+               <no3ppm>[soil.NO3(ppm)]</no3ppm>
+               <nh4ppm>[soil.NH4(ppm)]</nh4ppm>
+               [if [soil.Rocks(%)]]
+               <rocks>[soil.Rocks(%)]</rocks>
                [endif]
-            </initdata>
+         </initdata>
       </component>
+      [if "[soil.RootCP]"]
+      <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll">
+        <executable>%apsim%\Model\SoilP.dll</executable>
+        <initdata>
+               [Model SoilP]
+               <root_cp>[soil.RootCP]</root_cp>
+               <rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P>
+               <rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P>
+               <labile_p>[soil.LabileP(mg/kg)]</labile_p>
+               <banded_p>[soil.BandedP(kg/ha)]</banded_p>
+               <rock_p>[soil.RockP(kg/ha)]</rock_p>
+               <sorption>[soil.Sorption(-)]</sorption>
+         </initdata>
+      </component>
+      [endif]
     </ApsimToSim>
   </MetaData>
   <Model name="SoilWat">
@@ -439,6 +474,74 @@
       <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P">1        </dnit_wf_power>
     </soiln3>
   </Model>
+  <Model name="SoilP">
+    <!--  CHANGES by MEP
+      -->
+    <!-- rate_loss_avail_P =   0.7 !0.5 !0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC
+      moved to parameter as changes with soil types
+      -->
+    <rate_decr_placement description="0.5 ()   ! (, 1) Fractional loss of placement effect per yr">0.8   </rate_decr_placement>
+    <act_energy_loss_avail_P units="kJ/mole" description="Effect of soil temperature on P availability">90</act_energy_loss_avail_P>
+    <availP_ratio description="Ratio of available P : unavailable P at steady state">0.1</availP_ratio>
+    <eff_band description="3.0 ()   ! Relative effectiveness of banded_p compared with broadcast_p">2.0 </eff_band>
+    <biom_cp description="80 !40.0 ()   ! c:p ratio of biom pool">60.0 </biom_cp>
+    <hum_cp description="c:p ratio of hum pool">100.0</hum_cp>
+    <!-- ______________________________________________________________________-
+      Specifying the water factor for the loss of available Phosphorus is
+      by referring to water content via an indexing system and linear interpolation
+      between specified coordinates.
+      (see example)
+      __________
+      1 |    /    .    .
+      |  / .    .    .          In this example
+      .5 |/   .    .    .          wf_loss_index = 0.0 0.5 1.0 2.0
+      |    .    .    .          wf_loss_values= 0.5 1.0 1.0 1.0
+      |    .    .    .
+      0 ______________________-
+      LL       DUL   SAT
+      =0       =1    =2
+
+      -->
+    <wf_loss_index description="index specifying water content">0.0 0.5  1.0  2.0   </wf_loss_index>
+    <!--  for water factor for loss of
+      availability
+      -->
+    <wf_loss_values description="value of water factor function">0.6 1.0  1.0  1.0   </wf_loss_values>
+    <!--  at given index values
+      PHOSPHORUS UPTAKE
+      Potential P uptake from a layer is assumed to be related to the notional P concentration in solution
+      which is non-linearly related to effective P
+      -->
+    <sorption_coeff description="0.5 !0.4  ! exponent of Freundlich isotherm">0.7  </sorption_coeff>
+    <!--  Note that sorption_coeff and p_supply_factor will need to be varied together
+      provision for other crops, but only maize has been tested against measured data
+      -->
+    <crop_name description="name of crop">maize   wheat  navybean  cowpea  pigeonpea  soybean  peanut  mungbean weed sorghum butterflypea centro lablab</crop_name>
+    <!--  **************************************************
+      -->
+    <p_supply_factor units="??" description="used with sorpt_coeff = 0.7">0.45   0.4    0.4       0.4     0.6        0.4      0.4          0.4      0.4   0.4</p_supply_factor>
+    <!-- ! FIXME - navybean reduced because of correction to P demand in Plant - switched off in code
+      !p_supply_factor =   0.45   0.4    0.24       0.4     0.6        0.4      0.4          0.4      0.4   0.4   (??)        ! used with sorpt_coeff = 0.7
+      p_supply_factor =   0.1    0.1                                      (??)   ! used with sorpt_coeff = 1
+      p_supply_factor =   4      4.0                                         (??)   ! used with sorpt_coeff = 0.5
+      **************************************************
+      -->
+    <crit_p_rlv units="mm/mm^3" description="critical P rlv">0.00001  0.00001  0.00001  0.00001  0.00001  0.00001  0.00001</crit_p_rlv>
+    <!-- upper and lower bounds for soil P pools
+      -->
+    <lb_labile_p_ppm>0</lb_labile_p_ppm>
+    <ub_labile_p_ppm>1000</ub_labile_p_ppm>
+    <lb_unavail_p>0</lb_unavail_p>
+    <ub_unavail_p>10000</ub_unavail_p>
+    <lb_banded_p>0</lb_banded_p>
+    <ub_banded_p>1000</ub_banded_p>
+    <lb_rock_p>0</lb_rock_p>
+    <ub_rock_p>1000</ub_rock_p>
+    <lb_fom_p>0.0</lb_fom_p>
+    <ub_fom_p>1000</ub_fom_p>
+    <lb_fom_cp>0.0</lb_fom_cp>
+    <ub_fom_cp>3000.0</ub_fom_cp>
+  </Model>
   <Info name="SoilWat">
     <variables>
       <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
@@ -585,6 +688,19 @@
       <event name="externalmassflow" description="" />
       <event name="n_balance" description="" />
       <event name="new_solute" description="" />
+    </events>
+  </Info>
+  <Info name="SoilP">
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+    </variables>
+    <events>
+      <event name="externalmassflow" description="" />
     </events>
   </Info>
 </Type>

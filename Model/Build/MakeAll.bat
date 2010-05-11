@@ -25,6 +25,7 @@ rem -------------------------------------------------------------
 rem Make sure CSGeneral exists for the DataTypes project.
 rem -------------------------------------------------------------
 call MakeProject CSGeneral
+call MakeProject Excel
 call MakeProject ApsimFile
 call MakeProject ConToApsim
 call MakeProject ApsimUI

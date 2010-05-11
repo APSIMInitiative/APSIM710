@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 19;
+      public static int CurrentVersion = 21;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -51,7 +51,9 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion16),
                                           new UpgraderDelegate(ToVersion17),
                                           new UpgraderDelegate(ToVersion18),
-                                          new UpgraderDelegate(ToVersion19)
+                                          new UpgraderDelegate(ToVersion19),
+                                          new UpgraderDelegate(ToVersion20),
+                                          new UpgraderDelegate(ToVersion21)
                                        };
          if (Data != null)
             {
@@ -1113,6 +1115,309 @@ namespace ApsimFile
             {
             XmlHelper.ChangeType(Node, "soilp");
             }
+         }
+      private static void ToVersion20(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // Rework the soil <profile> node into separate child nodes.
+         //  ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "soil")
+            {
+            // If there is a <Phosphorus> node then get rid of it. It is old and not used.
+            XmlNode OldPhosphorusNode = XmlHelper.FindByType(Node, "Phosphorus");
+            if (OldPhosphorusNode != null)
+               Node.RemoveChild(OldPhosphorusNode);
+
+            XmlNode ProfileNode = XmlHelper.Find(Node, "profile");
+            if (ProfileNode != null)
+               {
+               XmlNode WaterNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Water"));
+               XmlNode SoilWatNode = Node.AppendChild(Node.OwnerDocument.CreateElement("SoilWat"));
+               XmlNode SOMNode = Node.AppendChild(Node.OwnerDocument.CreateElement("SoilOrganicMatter"));
+               XmlNode LABNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Lab"));
+
+               XmlNode CountryNode = AnnotateNode(Node, "Country", "", "");
+               Node.InsertBefore(CountryNode, Node.FirstChild);
+
+               AnnotateNode(Node, "State", "", "");
+               AnnotateNode(Node, "Region", "", "");
+               AnnotateNode(Node, "NearestTown", "", "Nearest town");
+               AnnotateNode(Node, "Site", "", "");
+               AnnotateNode(Node, "ApsoilNumber", "", "Apsoil number");
+               AnnotateNode(Node, "SoilType", "", "Classification");
+               AnnotateNode(Node, "Latitude", "", "Latitude (WGS84)");
+               AnnotateNode(Node, "Langitude", "", "Longitude (WGS84)");
+               AnnotateNode(Node, "LocationAccuracy", "", "Location accuracy");
+               AnnotateNode(Node, "NaturalVegetation", "", "Natural vegetation");
+               AnnotateNode(Node, "DataSource", "multiedit", "Data source");
+               AnnotateNode(Node, "Comment", "multiedit", "Comments");
+
+               XmlNode ConaNode = XmlHelper.Find(Node, "CONA");
+               if (ConaNode != null)
+                  {
+                  XmlHelper.SetValue(SoilWatNode, "SummerCona", ConaNode.InnerText);
+                  XmlHelper.SetValue(SoilWatNode, "WinterCona", ConaNode.InnerText);
+                  Node.RemoveChild(ConaNode);
+                  XmlNode UNode = XmlHelper.Find(Node, "U");
+                  if (UNode != null)
+                     {
+                     XmlHelper.SetValue(SoilWatNode, "SummerU", UNode.InnerText);
+                     XmlHelper.SetValue(SoilWatNode, "WinterU", UNode.InnerText);
+                     Node.RemoveChild(UNode);
+                     }
+                  XmlHelper.SetValue(SoilWatNode, "SummerDate", "1-Nov");
+                  XmlHelper.SetValue(SoilWatNode, "WinterDate", "1-Apr");
+                  }
+               else
+                  {
+                  MoveSoilNode(Node, "SummerCona", SoilWatNode);
+                  MoveSoilNode(Node, "SummerU", SoilWatNode);
+                  MoveSoilNode(Node, "SummerDate", SoilWatNode);
+                  MoveSoilNode(Node, "WinterCona", SoilWatNode);
+                  MoveSoilNode(Node, "WinterU", SoilWatNode);
+                  MoveSoilNode(Node, "WinterDate", SoilWatNode);
+                  }
+               MoveSoilNode(Node, "DiffusConst", SoilWatNode);
+               MoveSoilNode(Node, "DiffusSlope", SoilWatNode);
+               MoveSoilNode(Node, "SALB", SoilWatNode);
+               MoveSoilNode(Node, "CN2Bare", SoilWatNode);
+               MoveSoilNode(Node, "CNRed", SoilWatNode);
+               MoveSoilNode(Node, "CNCov", SoilWatNode);
+               MoveSoilNode(Node, "CNCanopyFact", SoilWatNode);
+               MoveSoilNode(Node, "DiffusConst", SoilWatNode);
+               MoveSoilNode(Node, "RootCN", SoilWatNode);
+               MoveSoilNode(Node, "RootWT", SoilWatNode);
+               MoveSoilNode(Node, "SoilCN", SoilWatNode);
+               MoveSoilNode(Node, "EnrACoeff", SoilWatNode);
+               MoveSoilNode(Node, "EnrBCoeff", SoilWatNode);
+               foreach (XmlNode LayerNode in ProfileNode)
+                  {
+                  XmlNode WaterLayerNode = WaterNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                  XmlNode SoilWatLayerNode = SoilWatNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                  XmlNode SOMLayerNode = SOMNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                  XmlNode LABLayerNode = LABNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+
+                  SetValue(WaterLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                  SetValue(SoilWatLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                  SetValue(SOMLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                  SetValue(LABLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+
+                  SetValue(WaterLayerNode, "BD", XmlHelper.Value(LayerNode, "BD"), "g/cc");
+                  SetValue(WaterLayerNode, "AirDry", XmlHelper.Value(LayerNode, "AirDry"), "mm/mm");
+                  SetValue(WaterLayerNode, "LL15", XmlHelper.Value(LayerNode, "LL15"), "mm/mm");
+                  SetValue(WaterLayerNode, "DUL", XmlHelper.Value(LayerNode, "DUL"), "mm/mm");
+                  SetValue(WaterLayerNode, "SAT", XmlHelper.Value(LayerNode, "SAT"), "mm/mm");
+                  SetValue(WaterLayerNode, "KS", XmlHelper.Value(LayerNode, "KS"), "mm/day");
+                  foreach (XmlNode LLNode in XmlHelper.ChildNodes(LayerNode, "ll"))
+                     {
+                     string CropName = XmlHelper.Name(LLNode);
+                     XmlNode CropNode = XmlHelper.Find(WaterNode, CropName);
+                     if (CropNode == null)
+                        {
+                        CropNode = WaterNode.AppendChild(Node.OwnerDocument.CreateElement("SoilCrop"));
+                        XmlHelper.SetName(CropNode, CropName);
+                        }
+                     XmlNode CropLayerNode = CropNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                     SetValue(CropLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                     SetValue(CropLayerNode, "LL", LLNode.InnerText, "mm/mm");
+                     SetValue(CropLayerNode, "KL", XmlHelper.ChildByNameAndType(LayerNode, CropName, "KL").InnerText, "/day");
+                     SetValue(CropLayerNode, "XF", XmlHelper.ChildByNameAndType(LayerNode, CropName, "XF").InnerText, "0-1");
+                     }
+
+                  SetValue(SoilWatLayerNode, "SWCON", XmlHelper.Value(LayerNode, "SWCON"), "0-1");
+                  SetValue(SoilWatLayerNode, "MWCON", XmlHelper.Value(LayerNode, "MWCON"), "0-1");
+
+                  SetValue(SOMLayerNode, "OC", XmlHelper.Value(LayerNode, "OC"), "Total %");
+                  SetValue(SOMLayerNode, "FBiom", XmlHelper.Value(LayerNode, "FBiom"), "0-1");
+                  SetValue(SOMLayerNode, "FInert", XmlHelper.Value(LayerNode, "FInert"), "0-1");
+
+                  SetValue(LABLayerNode, "Rocks", XmlHelper.Value(LayerNode, "Rocks"), "%");
+                  SetValue(LABLayerNode, "Texture", XmlHelper.Value(LayerNode, "Texture"), "");
+                  SetValue(LABLayerNode, "EC", XmlHelper.Value(LayerNode, "EC"), "1:5 dS/m");
+                  SetValue(LABLayerNode, "PH", XmlHelper.Value(LayerNode, "PH"), "1:5 water");
+                  SetValue(LABLayerNode, "CL", XmlHelper.Value(LayerNode, "CL"), "mg/kg");
+                  SetValue(LABLayerNode, "Boron", XmlHelper.Value(LayerNode, "Boron"), "mg/kg");
+                  SetValue(LABLayerNode, "CEC", XmlHelper.Value(LayerNode, "CEC"), "cmol+/kg");
+                  SetValue(LABLayerNode, "Ca", XmlHelper.Value(LayerNode, "Ca"), "cmol+/kg");
+                  SetValue(LABLayerNode, "Mg", XmlHelper.Value(LayerNode, "Mg"), "cmol+/kg");
+                  SetValue(LABLayerNode, "Na", XmlHelper.Value(LayerNode, "Na"), "cmol+/kg");
+                  SetValue(LABLayerNode, "K", XmlHelper.Value(LayerNode, "K"), "cmol+/kg");
+                  SetValue(LABLayerNode, "ESP", XmlHelper.Value(LayerNode, "ESP"), "%");
+                  SetValue(LABLayerNode, "Mn", XmlHelper.Value(LayerNode, "Mn"), "mg/kg");
+                  SetValue(LABLayerNode, "Al", XmlHelper.Value(LayerNode, "Al"), "meq/100g");
+                  SetValue(LABLayerNode, "ParticleSizeSand", XmlHelper.Value(LayerNode, "ParticleSizeSand"), "%");
+                  SetValue(LABLayerNode, "ParticleSizeSilt", XmlHelper.Value(LayerNode, "ParticleSizeSilt"), "%");
+                  SetValue(LABLayerNode, "ParticleSizeClay", XmlHelper.Value(LayerNode, "ParticleSizeClay"), "%");
+                  }
+
+               // Move phosphorus stuff if necessary.
+               if (XmlHelper.Value(Node, "RootCP") != "" && ProfileNode != null)
+                  {
+                  XmlNode PhosphorusNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Phosphorus"));
+                  MoveSoilNode(Node, "RootCP", PhosphorusNode);
+                  MoveSoilNode(Node, "RateDissolRock", PhosphorusNode);
+                  MoveSoilNode(Node, "RateLossAvail", PhosphorusNode);
+                  foreach (XmlNode LayerNode in ProfileNode)
+                     {
+                     XmlNode PhosphorusLayerNode = PhosphorusNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                     SetValue(PhosphorusLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                     SetValue(PhosphorusLayerNode, "LabileP", XmlHelper.Value(LayerNode, "LabileP"), "mg/kg");
+                     SetValue(PhosphorusLayerNode, "BandedP", XmlHelper.Value(LayerNode, "BandedP"), "kg/ha");
+                     SetValue(PhosphorusLayerNode, "RockP", XmlHelper.Value(LayerNode, "RockP"), "kg/ha");
+                     SetValue(PhosphorusLayerNode, "Sorption", XmlHelper.Value(LayerNode, "Sorption"), "-");
+                     }
+                  }
+
+               Node.RemoveChild(ProfileNode);
+               }
+
+            // Turn the <InitNitrogen> element into a sample node.  
+            XmlNode InitNitrogenNode = XmlHelper.Find(Node, "InitNitrogen");
+            if (InitNitrogenNode != null)
+               {
+               ProfileNode = XmlHelper.Find(InitNitrogenNode, "Profile");
+               XmlNode SampleNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Sample"));
+               XmlHelper.SetName(SampleNode, "Initial nitrogen");
+               AnnotateNode(SampleNode, "Date", "date", "Sample date:");
+
+               if (ProfileNode == null)
+                  {
+                  // There are some simulations that have an empty <InitNitrogen> node.
+                  // Give them a default 1ppm value for no3 and nh4
+                  XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                  SetValue(NewLayerNode, "Thickness", "3000", "mm");
+                  SetValue(NewLayerNode, "NO3", "0.1", "ppm");
+                  SetValue(NewLayerNode, "NH4", "0.1", "ppm");
+                  }
+               else
+                  {
+                  foreach (XmlNode LayerNode in ProfileNode.ChildNodes)
+                     {
+                     XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                     SetValue(NewLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                     SetValue(NewLayerNode, "NO3", XmlHelper.Value(LayerNode, "no3"), "ppm");
+                     SetValue(NewLayerNode, "NH4", XmlHelper.Value(LayerNode, "nh4"), "ppm");
+                     }
+                  }
+               // Remove old <InitNitrogen> node.
+               Node.RemoveChild(InitNitrogenNode);
+               }
+
+            // Turn the <InitWater> element into a sample node IF it has layered values.
+            XmlNode InitWaterNode = XmlHelper.Find(Node, "InitWater");
+            if (InitWaterNode != null)
+               {
+               ProfileNode = XmlHelper.Find(InitWaterNode, "Profile");
+               if (ProfileNode == null)
+                  {
+                  XmlHelper.SetName(InitWaterNode, "Initial water");
+                  if (!InitWaterNode.HasChildNodes)
+                     XmlHelper.SetValue(InitWaterNode, "PercentMethod/Percent", "0");
+                  }
+               else
+                  {
+                  XmlNode SampleNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Sample"));
+                  XmlHelper.SetName(SampleNode, "Initial water");
+                  AnnotateNode(SampleNode, "Date", "date", "Sample date:");
+
+                  foreach (XmlNode LayerNode in ProfileNode.ChildNodes)
+                     {
+                     XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                     SetValue(NewLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                     SetValue(NewLayerNode, "SW", XmlHelper.Value(LayerNode, "sw"), "mm/mm");
+                     }
+
+                  // Remove old <InitWater> node.
+                  Node.RemoveChild(InitWaterNode);
+                  }
+               }
+            }
+         else if (Node.Name.ToLower() == "soilp")
+            Node.ParentNode.RemoveChild(Node);
+         }
+
+
+      private static void ToVersion21(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // Rework the soil nodes that have shortcuts.
+         // ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "soil" && XmlHelper.Attribute(Node, "shortcut") != "")
+            {
+            string ShortCutPath = XmlHelper.Attribute(Node, "shortcut");
+            CreateChildWithShortcut(Node, ShortCutPath, "Water", "Water");
+            CreateChildWithShortcut(Node, ShortCutPath, "SoilWat", "SoilWat");
+            CreateChildWithShortcut(Node, ShortCutPath, "SoilOrganicMatter", "SoilOrganicMatter");
+            CreateChildWithShortcut(Node, ShortCutPath, "Lab", "Lab");
+            CreateChildWithShortcut(Node, ShortCutPath, "Initial water", "InitWater");
+            CreateChildWithShortcut(Node, ShortCutPath, "Initial water", "Sample");
+            CreateChildWithShortcut(Node, ShortCutPath, "Initial nitrogen", "Sample");
+            CreateChildWithShortcut(Node, ShortCutPath, "Phosphorus", "Phosphorus");
+
+            // Now shortcut all crop nodes.
+            XmlNode ShortcutSourceWaterNode = XmlHelper.Find(Node.OwnerDocument.DocumentElement, ShortCutPath + "/Water");
+            XmlNode WaterNode = XmlHelper.Find(Node, "Water");
+            if (ShortcutSourceWaterNode != null && WaterNode != null)
+               {
+               foreach (string CropName in XmlHelper.ChildNames(ShortcutSourceWaterNode, "SoilCrop"))
+                  CreateChildWithShortcut(WaterNode, ShortCutPath + "/Water", CropName, "SoilCrop");
+               }
+            }
+         }
+
+      /// <summary>
+      /// Create a child node with a shortcut attribute if the child doesn't already exist
+      /// and the shortcut source code does have the child.
+      /// </summary>
+      private static void CreateChildWithShortcut(XmlNode Node, string ShortCutPath, string ChildName, string ChildType)
+         {
+         XmlNode ShortcutSourceNode = XmlHelper.Find(Node.OwnerDocument.DocumentElement, ShortCutPath);
+         if (ShortcutSourceNode != null && XmlHelper.Find(Node, ChildName) == null)
+            {
+            XmlNode ShortcutSourceNodeChild = XmlHelper.Find(ShortcutSourceNode, ShortCutPath + "/" + ChildName);
+            if (ShortcutSourceNodeChild != null && XmlHelper.Type(ShortcutSourceNodeChild) == ChildType)
+               {
+               XmlNode Child = Node.AppendChild(Node.OwnerDocument.CreateElement(ChildType));
+               if (ChildName != ChildType)
+                  XmlHelper.SetName(Child, ChildName);
+               XmlHelper.SetAttribute(Child, "shortcut", ShortCutPath + "/" + ChildName);
+               }
+            }
+         }
+
+      private static void SetValue(XmlNode Node, string NodeName, string Value, string Units)
+         {
+         XmlHelper.SetValue(Node, NodeName, Value);
+         // Only put the units on the first layer.
+         XmlNode FirstChild = XmlHelper.ChildNodes(Node.ParentNode, "Layer")[0];
+         if (Node == FirstChild)
+            XmlHelper.SetAttribute(XmlHelper.Find(Node, NodeName), "units", Units);
+         }
+
+      private static XmlNode AnnotateNode(XmlNode Node, string NodeName, string Type, string Description)
+         {
+         XmlNode NodeToAnnotate = XmlHelper.EnsureNodeExists(Node, NodeName);
+         if (NodeToAnnotate.Name != NodeName)
+            {
+            // Must be different case - fix.
+            NodeToAnnotate = XmlHelper.ChangeType(NodeToAnnotate, NodeName);
+            }
+
+         if (Type != "")
+            XmlHelper.SetAttribute(NodeToAnnotate, "type", Type);
+         if (Description != "")
+            XmlHelper.SetAttribute(NodeToAnnotate, "description", Description);
+
+         return NodeToAnnotate;
+         }
+
+      private static void MoveSoilNode(XmlNode Node, string NodeName, XmlNode NodeToMoveTo)
+         {
+         XmlNode NodeToMove = XmlHelper.Find(Node, NodeName);
+         if (NodeToMove != null)
+            NodeToMoveTo.AppendChild(NodeToMove);
          }
 
       }

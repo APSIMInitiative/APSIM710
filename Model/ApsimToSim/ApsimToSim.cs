@@ -110,11 +110,11 @@ namespace ApsimToSim
                //      [Dll] is replaced by the name of the model dll.
                //      [Children] is replaced by the sim script for all children of this component.
                //      [InstanceName] is replaced by the instance name.
+               ApsimToSimContents = ApsimToSimContents.Replace("[InstanceName]", Child.Name);
                ApsimToSimContents = ReplaceSoilMacros(ApsimToSimContents, Child);
                ApsimToSimContents = ReplaceModelMacro(ApsimToSimContents, Child);
                ApsimToSimContents = ReplaceDllMacro(ApsimToSimContents, Child);
                ApsimToSimContents = ReplaceChildrenMacro(ApsimToSimContents, Child);
-               ApsimToSimContents = ApsimToSimContents.Replace("[InstanceName]", Child.Name);
 
                // Any other macros in the <ApsimToSim> will be removed by using the 
                // APSIM macro language.
@@ -211,7 +211,7 @@ namespace ApsimToSim
          }
       private string ReplaceSoilMacros(string ApsimToSimContents, Component ApsimComponent)
          {
-         // Replace the [Soil.] macros will values.         
+         // Replace the [soil.] macros will values.         
          if (ApsimToSimContents.Contains("[soil."))
             {
             // Firstly we need to locate the nearest soil.
@@ -230,79 +230,11 @@ namespace ApsimToSim
             // Create an instance of the soil class so that we can ask it for the values we need.
             if (SoilComponent != null)
                {
-               Soil SoilInPaddock = new Soil(SoilComponent.ContentsAsXML);
-
-               // Soil / Crop variables
-               string CropName = ApsimComponent.Name;
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.ll]", WriteLayeredSoilValues(SoilInPaddock.LL(CropName)));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.kl]", WriteLayeredSoilValues(SoilInPaddock.KL(CropName)));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.xf]", WriteLayeredSoilValues(SoilInPaddock.XF(CropName)));
-
-               // Soil water variables.
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.Thickness]", WriteLayeredSoilValues(SoilInPaddock.Thickness));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.Sat]", WriteLayeredSoilValues(SoilInPaddock.SAT));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.Dul]", WriteLayeredSoilValues(SoilInPaddock.DUL));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.LL15]", WriteLayeredSoilValues(SoilInPaddock.LL15));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.AirDry]", WriteLayeredSoilValues(SoilInPaddock.Airdry));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.SWCon]", WriteLayeredSoilValues(SoilInPaddock.SWCON));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.BD]", WriteLayeredSoilValues(SoilInPaddock.BD));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.MWCon]", WriteLayeredSoilValues(SoilInPaddock.MWCON));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.KS]", WriteLayeredSoilValues(SoilInPaddock.KS));
-
-               // Initial water and nitrogen variables.
-               foreach (Component SoilChild in ApsimComponent.ChildNodes)
-                  {
-                  if (SoilChild.Type == "InitWater")
-                     {
-                     InitWater Water = new InitWater(SoilChild.ContentsAsXML, SoilInPaddock);
-                     ApsimToSimContents = ApsimToSimContents.Replace("[soil.SW]", SoilComponentUtility.LayeredToString(Water.SWMapedToSoil));
-                     }
-                  else if (SoilChild.Type.ToLower() == "soilsample")
-                     {
-                     SoilSample Sample = new SoilSample(SoilChild.ContentsAsXML, SoilInPaddock);
-                     if (MathUtility.ValuesInArray(Sample.SW))
-                        ApsimToSimContents = ApsimToSimContents.Replace("[soil.SW]", SoilComponentUtility.LayeredToString(Sample.SWMapedToSoil));
-                     if (MathUtility.ValuesInArray(Sample.NO3))
-                        {
-                        ApsimToSimContents = ApsimToSimContents.Replace("[soil.NO3]", SoilComponentUtility.LayeredToString(Sample.NO3MapedToSoil));
-                        ApsimToSimContents = ApsimToSimContents.Replace("[soil.NH4]", SoilComponentUtility.LayeredToString(Sample.NH4MapedToSoil));
-                        }
-                     }
-                  else if (SoilChild.Type == "InitNitrogen")
-                     {
-                     InitNitrogen Nitrogen = new InitNitrogen(SoilChild.ContentsAsXML, SoilInPaddock);
-                     ApsimToSimContents = ApsimToSimContents.Replace("[soil.NO3]", SoilComponentUtility.LayeredToString(Nitrogen.NO3MapedToSoil));
-                     ApsimToSimContents = ApsimToSimContents.Replace("[soil.NH4]", SoilComponentUtility.LayeredToString(Nitrogen.NH4MapedToSoil));
-                     }
-                  }
-
-               // Soil nitrogen variables.
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.OC]", WriteLayeredSoilValues(SoilInPaddock.OC));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.PH]", WriteLayeredSoilValues(SoilInPaddock.PH));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.FBIOM]", WriteLayeredSoilValues(SoilInPaddock.FBIOM));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.FINERT]", WriteLayeredSoilValues(SoilInPaddock.FINERT));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.Rocks]", WriteLayeredSoilValues(SoilInPaddock.Rocks));
-
-               // Soil phosphorus variables.
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.LabileP]", WriteLayeredSoilValues(SoilInPaddock.LabileP));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.BandedP]", WriteLayeredSoilValues(SoilInPaddock.BandedP));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.RockP]", WriteLayeredSoilValues(SoilInPaddock.RockP));
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.Sorption]", WriteLayeredSoilValues(SoilInPaddock.Sorption));
-
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.RootCP]", SoilInPaddock.RootCP.ToString());
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.RateDissolRock]", SoilInPaddock.RateDissolRock.ToString());
-               ApsimToSimContents = ApsimToSimContents.Replace("[soil.RateLossAvail]", SoilInPaddock.RateLossAvail.ToString());
-
+               Soil SoilInPaddock = Soil.CreateFromXML(SoilComponent.FullXML());
+               ApsimToSimContents = SoilInPaddock.ReplaceSoilMacros(ApsimToSimContents);
                }
             }
          return ApsimToSimContents;
-         }
-      private string WriteLayeredSoilValues(double[] Values)
-         {
-         if (MathUtility.ValuesInArray(Values))
-            return SoilComponentUtility.LayeredToString(Values);
-         else
-            return "";
          }
       private string ReplaceChildrenMacro(string ApsimToSimContents, Component ApsimComponent)
          {

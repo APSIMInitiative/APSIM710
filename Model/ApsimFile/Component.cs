@@ -6,6 +6,7 @@ using CSGeneral;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
+using System.Data;
 
 namespace ApsimFile
    {
@@ -292,6 +293,10 @@ namespace ApsimFile
          }
       public Component Add(string Xml)
          {
+         return Add(Xml, true);
+         }
+      public Component Add(string Xml, bool AddInitWaterIfNecessary)
+         {
          // ---------------------------------------------------------------------
          // Add the specified xml as children. The xml might be multiple children
          // i.e. have multiple root nodes and so not valid XML. Add a dummy
@@ -304,7 +309,8 @@ namespace ApsimFile
             {
             Doc = new XmlDocument();
             Doc.LoadXml("<dummy>" + Xml + "</dummy>");
-            if (Doc.DocumentElement.ChildNodes.Count == 1 &&
+            if (AddInitWaterIfNecessary && 
+                Doc.DocumentElement.ChildNodes.Count == 1 &&
                 Doc.DocumentElement.ChildNodes[0].Name.ToLower() == "soil")
                {
                // A special test for when the user drops a soil on a component node or when
@@ -604,5 +610,26 @@ namespace ApsimFile
             }
          return null;
          }
+
+      public List<DataTable> DataSources(List<string> DefaultFileNames)
+         {
+         List<DataTable> DataSources = new List<DataTable>();
+
+         DataProcessor Processor = new DataProcessor();
+         Processor.DefaultOutputFileNames = DefaultFileNames;
+
+         foreach (Component Child in ChildNodes)
+            {
+            XmlDocument Doc = new XmlDocument();
+            Doc.LoadXml(Child.FullXMLNoShortCuts());
+            DataTable Table = Processor.Go(Doc.DocumentElement, "");
+            if (Table != null)
+               DataSources.Add(Table);
+            }
+         return DataSources;
+         }
+
+
+
       }
    }

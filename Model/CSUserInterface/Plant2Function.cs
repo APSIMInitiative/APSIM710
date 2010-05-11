@@ -32,7 +32,7 @@ namespace CSUserInterface
          this.Grid.CellValueChanged -= new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
 
          Properties.OnRefresh();
-         Properties.Visible = !Properties.IsEmpty();
+         Properties.Visible = !Properties.IsEmpty;
 
          // Fill a datatable
          Table = new DataTable();

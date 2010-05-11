@@ -264,6 +264,21 @@ namespace CSGeneral
          return Values;
          }
 
+      static public bool AreEqual(double[] Values1, double[] Values2)
+         {
+         // Return true if the 2 arrays of numbers are equal.
+         if (Values1.Length == Values2.Length)
+            {
+            for (int i = 0; i < Values1.Length; i++)
+               {
+               if (!MathUtility.FloatsAreEqual(Values1[i], Values2[i]))
+                  return false;
+               }
+            }
+         else
+            return false;
+         return true;
+         }
 
       // ---------------------------------------------
       // Reverse the contents of the specified array.
@@ -293,7 +308,18 @@ namespace CSGeneral
             }
          return false;
          }
-
+      static public bool ValuesInArray(string[] Values)
+         {
+         if (Values != null)
+            {
+            foreach (string Value in Values)
+               {
+               if (Value != "")
+                  return true;
+               }
+            }
+         return false;
+         }
       // --------------------------------------------------
       // Convert an array of strings to an array of doubles
       // --------------------------------------------------
@@ -302,7 +328,12 @@ namespace CSGeneral
          double[] ReturnValues = new double[Values.Length];
 
          for (int Index = 0; Index != Values.Length; Index++)
-            ReturnValues[Index] = Convert.ToDouble(Values[Index]);
+            {
+            if (Values[Index] == "")
+               ReturnValues[Index] = MathUtility.MissingValue;
+            else
+               ReturnValues[Index] = Convert.ToDouble(Values[Index]);
+            }
          return ReturnValues;
          }
 
@@ -525,7 +556,20 @@ namespace CSGeneral
             return -Math.Abs(a);
          }
 
+      public static double Min(IEnumerable Values)
+         {
+         double Minimum = 9999999;
+         foreach (double Value in Values)
+            Minimum = Math.Min(Value, Minimum);
+         return Minimum;
+         }
 
-
+      public static double Max(IEnumerable Values)
+         {
+         double Maximum = -9999999;
+         foreach (double Value in Values)
+            Maximum = Math.Max(Value, Maximum);
+         return Maximum;
+         }
       }
    }

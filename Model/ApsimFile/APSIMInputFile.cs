@@ -138,7 +138,7 @@ namespace ApsimFile
             {
             if (Data.Columns.IndexOf(Constant.Name) == -1)
                {
-               Type ColumnType = DetermineType(Constant.Value);
+               Type ColumnType = StringManip.DetermineType(Constant.Value);
                Data.Columns.Add(new DataColumn(Constant.Name, ColumnType));
                }
             for (int Row = StartRow; Row < Data.Rows.Count; Row++)
@@ -241,9 +241,9 @@ namespace ApsimFile
                   {
                   Type ColumnType;
                   if (Words[w] == "?" || Words[w] == "*" || Words[w] == "")
-                     ColumnType = DetermineType(LookAheadForNonMissingValue(In, w));
+                     ColumnType = StringManip.DetermineType(LookAheadForNonMissingValue(In, w));
                   else
-                     ColumnType = DetermineType(Words[w]);
+                     ColumnType = StringManip.DetermineType(Words[w]);
                   Data.Columns.Add(new DataColumn(Headings[w], ColumnType));
                   }
                }
@@ -295,22 +295,6 @@ namespace ApsimFile
          else
             return "?";
          }
-      private Type DetermineType(string Value)
-         {
-         Type ColumnType;
-         if (Value == "?")
-            ColumnType = Type.GetType("System.Byte");
 
-         else if (StringManip.IsNumeric(Value))
-            ColumnType = Type.GetType("System.Single");
-
-         else if (StringManip.IsDateTime(Value))
-            ColumnType = Type.GetType("System.DateTime");
-
-         else
-            ColumnType = Type.GetType("System.String");
-
-         return ColumnType;
-         }
       }
    }

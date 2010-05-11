@@ -205,6 +205,31 @@ namespace CSGeneral
             }
          return null;
          }
+      public static XmlNode FindRecursively(XmlNode Node, string Name)
+         {
+         if (XmlHelper.Name(Node).ToLower() == Name.ToLower())
+            return Node;
+         foreach (XmlNode Child in Node.ChildNodes)
+            {
+            XmlNode Result = FindRecursively(Child, Name);
+            if (Result != null)
+               return Result;
+            }
+         return null;
+         }
+      public static XmlNode ChildByNameAndType(XmlNode Node, string NameFilter, string TypeFilter)
+         {
+         // ----------------------------------------------------
+         // Find a child with the specified name and type
+         // Returns null if no child found. 
+         // ----------------------------------------------------
+         foreach (XmlNode Child in Node.ChildNodes)
+            {
+            if (Name(Child).ToLower() == NameFilter.ToLower() && Type(Child).ToLower() == TypeFilter.ToLower())
+               return Child;
+            }
+         return null;
+         }
       public static XmlNode ChildByTypeAndValue(XmlNode Node, string TypeFilter, string ValueFilter)
          {
          // ----------------------------------------------------

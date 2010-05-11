@@ -6,7 +6,7 @@ using NUnit.Framework;
 using System.Data;
 
 [TestFixture]
-public class TestGraphData
+public class TestApsimFileReader
    {
    [SetUp] public void Setup()
       {
@@ -46,7 +46,7 @@ public class TestGraphData
       File.Delete("test3.out");
       }
 
-   [Test] public void TestApsimFileReader()
+   [Test] public void TestFileReader()
       {
       // --------------------------------------------------------------------
       // Make sure we can read in 2 output files where the output files
