@@ -29,14 +29,7 @@
                [else]
                <cona>[soil.Cona]</cona><u>[soil.U]</u>
                [endif]
-               <dlayer>[soil.Thickness(mm)]</dlayer>
-               <sat>[soil.Sat(mm/mm)]</sat>
-               <dul>[soil.Dul(mm/mm)]</dul>
-               <ll15>[soil.LL15(mm/mm)]</ll15>
-               <air_dry>[soil.AirDry(mm/mm)]</air_dry>
-               <swcon>[soil.SWCon(0-1)]</swcon>
-               <bd>[soil.BD(g/cc)]</bd>
-               <sw>[soil.SW(mm/mm)]</sw>
+               <dlayer>[soil.Thickness(mm)]</dlayer><sat>[soil.Sat(mm/mm)]</sat><dul>[soil.Dul(mm/mm)]</dul><ll15>[soil.LL15(mm/mm)]</ll15><air_dry>[soil.AirDry(mm/mm)]</air_dry><swcon>[soil.SWCon(0-1)]</swcon><bd>[soil.BD(g/cc)]</bd><sw>[soil.SW(mm/mm)]</sw>
                [if [soil.MWCon(0-1)]]
                <mwcon>[soil.MWCon(0-1)]</mwcon>
                [endif]
@@ -52,37 +45,16 @@
                [if "[soil.SoilType]"]
                <soiltype>[soil.SoilType]</soiltype>
                [endif]
-               <root_cn>[soil.RootCN]</root_cn>
-               <root_wt>[soil.RootWT]</root_wt>
-               <soil_cn>[soil.SoilCN]</soil_cn>
-               <enr_a_coeff>[soil.EnrACoeff]</enr_a_coeff>
-               <enr_b_coeff>[soil.EnrBCoeff]</enr_b_coeff>
-               <profile_reduction>off</profile_reduction>
-               <oc>[soil.OC(Total %)]</oc>
-               <ph>[soil.PH(1:5 water)]</ph>
-               <fbiom>[soil.FBIOM(0-1)]</fbiom>
-               <finert>[soil.FINERT(0-1)]</finert>
-               <no3ppm>[soil.NO3(ppm)]</no3ppm>
-               <nh4ppm>[soil.NH4(ppm)]</nh4ppm>
+               <root_cn>[soil.RootCN]</root_cn><root_wt>[soil.RootWT]</root_wt><soil_cn>[soil.SoilCN]</soil_cn><enr_a_coeff>[soil.EnrACoeff]</enr_a_coeff><enr_b_coeff>[soil.EnrBCoeff]</enr_b_coeff><profile_reduction>off</profile_reduction><oc>[soil.OC(Total %)]</oc><ph>[soil.PH(1:5 water)]</ph><fbiom>[soil.FBIOM(0-1)]</fbiom><finert>[soil.FINERT(0-1)]</finert><no3ppm>[soil.NO3(ppm)]</no3ppm><nh4ppm>[soil.NH4(ppm)]</nh4ppm>
                [if [soil.Rocks(%)]]
                <rocks>[soil.Rocks(%)]</rocks>
                [endif]
          </initdata>
       </component>
       [if "[soil.RootCP]"]
-      <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll">
-        <executable>%apsim%\Model\SoilP.dll</executable>
-        <initdata>
+      <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll"><executable>%apsim%\Model\SoilP.dll</executable><initdata>
                [Model SoilP]
-               <root_cp>[soil.RootCP]</root_cp>
-               <rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P>
-               <rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P>
-               <labile_p>[soil.LabileP(mg/kg)]</labile_p>
-               <banded_p>[soil.BandedP(kg/ha)]</banded_p>
-               <rock_p>[soil.RockP(kg/ha)]</rock_p>
-               <sorption>[soil.Sorption(-)]</sorption>
-         </initdata>
-      </component>
+               <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption></initdata></component>
       [endif]
     </ApsimToSim>
   </MetaData>

@@ -131,7 +131,11 @@ namespace ApsimFile
                      {
                      foreach (double Value in DoubleValues)
                         {
-                        string StringValue = Value.ToString("f3");
+                        string StringValue;
+                        if (Value == MathUtility.MissingValue)
+                           StringValue = "0.000";
+                        else
+                           StringValue = Value.ToString("f3");
                         MacroValue += new string(' ', 10 - StringValue.Length) + StringValue;
                         }
                      }
@@ -1007,8 +1011,8 @@ namespace ApsimFile
                }
             else
                {
-               ll = Variable(RelativeTo + ".ll (mm)");
-               pawc = Variable("PAWC " + RelativeTo + " (mm)");
+               ll = Variable(RelativeTo + " ll (mm)");
+               pawc = Variable(RelativeTo + " PAWC (mm)");
                }
 
             double[] dul = Variable("DUL (mm)");

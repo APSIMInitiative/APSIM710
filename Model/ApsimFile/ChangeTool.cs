@@ -1191,7 +1191,7 @@ namespace ApsimFile
                MoveSoilNode(Node, "SoilCN", SoilWatNode);
                MoveSoilNode(Node, "EnrACoeff", SoilWatNode);
                MoveSoilNode(Node, "EnrBCoeff", SoilWatNode);
-               foreach (XmlNode LayerNode in ProfileNode)
+               foreach (XmlNode LayerNode in XmlHelper.ChildNodes(ProfileNode, "Layer"))
                   {
                   XmlNode WaterLayerNode = WaterNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
                   XmlNode SoilWatLayerNode = SoilWatNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
@@ -1276,60 +1276,76 @@ namespace ApsimFile
             XmlNode InitNitrogenNode = XmlHelper.Find(Node, "InitNitrogen");
             if (InitNitrogenNode != null)
                {
-               ProfileNode = XmlHelper.Find(InitNitrogenNode, "Profile");
-               XmlNode SampleNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Sample"));
-               XmlHelper.SetName(SampleNode, "Initial nitrogen");
-               AnnotateNode(SampleNode, "Date", "date", "Sample date:");
-
-               if (ProfileNode == null)
+               if (XmlHelper.Attribute(InitNitrogenNode, "shortcut") != "")
                   {
-                  // There are some simulations that have an empty <InitNitrogen> node.
-                  // Give them a default 1ppm value for no3 and nh4
-                  XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
-                  SetValue(NewLayerNode, "Thickness", "3000", "mm");
-                  SetValue(NewLayerNode, "NO3", "0.1", "ppm");
-                  SetValue(NewLayerNode, "NH4", "0.1", "ppm");
+                  // Remove the <InitNitrogen> node as it's a shortcut that will be readded later.
+                  InitNitrogenNode.ParentNode.RemoveChild(InitNitrogenNode);
                   }
                else
                   {
-                  foreach (XmlNode LayerNode in ProfileNode.ChildNodes)
+                  ProfileNode = XmlHelper.Find(InitNitrogenNode, "Profile");
+                  XmlNode SampleNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Sample"));
+                  XmlHelper.SetName(SampleNode, "Initial nitrogen");
+                  AnnotateNode(SampleNode, "Date", "date", "Sample date:");
+
+                  if (ProfileNode == null)
                      {
+                     // There are some simulations that have an empty <InitNitrogen> node.
+                     // Give them a default 1ppm value for no3 and nh4
                      XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
-                     SetValue(NewLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
-                     SetValue(NewLayerNode, "NO3", XmlHelper.Value(LayerNode, "no3"), "ppm");
-                     SetValue(NewLayerNode, "NH4", XmlHelper.Value(LayerNode, "nh4"), "ppm");
+                     SetValue(NewLayerNode, "Thickness", "3000", "mm");
+                     SetValue(NewLayerNode, "NO3", "0.1", "ppm");
+                     SetValue(NewLayerNode, "NH4", "0.1", "ppm");
                      }
+                  else
+                     {
+                     foreach (XmlNode LayerNode in ProfileNode.ChildNodes)
+                        {
+                        XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                        SetValue(NewLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                        SetValue(NewLayerNode, "NO3", XmlHelper.Value(LayerNode, "no3"), "ppm");
+                        SetValue(NewLayerNode, "NH4", XmlHelper.Value(LayerNode, "nh4"), "ppm");
+                        }
+                     }
+                  // Remove old <InitNitrogen> node.
+                  Node.RemoveChild(InitNitrogenNode);
                   }
-               // Remove old <InitNitrogen> node.
-               Node.RemoveChild(InitNitrogenNode);
                }
 
             // Turn the <InitWater> element into a sample node IF it has layered values.
             XmlNode InitWaterNode = XmlHelper.Find(Node, "InitWater");
             if (InitWaterNode != null)
                {
-               ProfileNode = XmlHelper.Find(InitWaterNode, "Profile");
-               if (ProfileNode == null)
+               if (XmlHelper.Attribute(InitWaterNode, "shortcut") != "")
                   {
-                  XmlHelper.SetName(InitWaterNode, "Initial water");
-                  if (!InitWaterNode.HasChildNodes)
-                     XmlHelper.SetValue(InitWaterNode, "PercentMethod/Percent", "0");
+                  // Remove the <InitWater> node as it's a shortcut that will be readded later.
+                  InitWaterNode.ParentNode.RemoveChild(InitWaterNode);
                   }
                else
                   {
-                  XmlNode SampleNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Sample"));
-                  XmlHelper.SetName(SampleNode, "Initial water");
-                  AnnotateNode(SampleNode, "Date", "date", "Sample date:");
-
-                  foreach (XmlNode LayerNode in ProfileNode.ChildNodes)
+                  ProfileNode = XmlHelper.Find(InitWaterNode, "Profile");
+                  if (ProfileNode == null)
                      {
-                     XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
-                     SetValue(NewLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
-                     SetValue(NewLayerNode, "SW", XmlHelper.Value(LayerNode, "sw"), "mm/mm");
+                     XmlHelper.SetName(InitWaterNode, "Initial water");
+                     if (!InitWaterNode.HasChildNodes)
+                        XmlHelper.SetValue(InitWaterNode, "PercentMethod/Percent", "0");
                      }
+                  else
+                     {
+                     XmlNode SampleNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Sample"));
+                     XmlHelper.SetName(SampleNode, "Initial water");
+                     AnnotateNode(SampleNode, "Date", "date", "Sample date:");
 
-                  // Remove old <InitWater> node.
-                  Node.RemoveChild(InitWaterNode);
+                     foreach (XmlNode LayerNode in ProfileNode.ChildNodes)
+                        {
+                        XmlNode NewLayerNode = SampleNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
+                        SetValue(NewLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
+                        SetValue(NewLayerNode, "SW", XmlHelper.Value(LayerNode, "sw"), "mm/mm");
+                        }
+
+                     // Remove old <InitWater> node.
+                     Node.RemoveChild(InitWaterNode);
+                     }
                   }
                }
             }
@@ -1347,13 +1363,16 @@ namespace ApsimFile
          if (Node.Name.ToLower() == "soil" && XmlHelper.Attribute(Node, "shortcut") != "")
             {
             string ShortCutPath = XmlHelper.Attribute(Node, "shortcut");
+            XmlNode ShortcutSourceNode = XmlHelper.Find(Node.OwnerDocument.DocumentElement, ShortCutPath);
+            if (ShortcutSourceNode != null)
+               ToVersion21(ShortcutSourceNode);  // recursion
             CreateChildWithShortcut(Node, ShortCutPath, "Water", "Water");
             CreateChildWithShortcut(Node, ShortCutPath, "SoilWat", "SoilWat");
             CreateChildWithShortcut(Node, ShortCutPath, "SoilOrganicMatter", "SoilOrganicMatter");
             CreateChildWithShortcut(Node, ShortCutPath, "Lab", "Lab");
-            CreateChildWithShortcut(Node, ShortCutPath, "Initial water", "InitWater");
-            CreateChildWithShortcut(Node, ShortCutPath, "Initial water", "Sample");
-            CreateChildWithShortcut(Node, ShortCutPath, "Initial nitrogen", "Sample");
+            CreateChildWithShortcut(Node, ShortCutPath, "Initial Water", "InitWater");
+            CreateChildWithShortcut(Node, ShortCutPath, "Initial Water", "Sample");
+            CreateChildWithShortcut(Node, ShortCutPath, "Initial Nitrogen", "Sample");
             CreateChildWithShortcut(Node, ShortCutPath, "Phosphorus", "Phosphorus");
 
             // Now shortcut all crop nodes.
@@ -1389,11 +1408,14 @@ namespace ApsimFile
 
       private static void SetValue(XmlNode Node, string NodeName, string Value, string Units)
          {
-         XmlHelper.SetValue(Node, NodeName, Value);
-         // Only put the units on the first layer.
-         XmlNode FirstChild = XmlHelper.ChildNodes(Node.ParentNode, "Layer")[0];
-         if (Node == FirstChild)
-            XmlHelper.SetAttribute(XmlHelper.Find(Node, NodeName), "units", Units);
+         if (Value != "")
+            {
+            XmlHelper.SetValue(Node, NodeName, Value);
+            // Only put the units on the first layer.
+            XmlNode FirstChild = XmlHelper.ChildNodes(Node.ParentNode, "Layer")[0];
+            if (Node == FirstChild)
+               XmlHelper.SetAttribute(XmlHelper.Find(Node, NodeName), "units", Units);
+            }
          }
 
       private static XmlNode AnnotateNode(XmlNode Node, string NodeName, string Type, string Description)

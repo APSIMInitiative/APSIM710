@@ -230,7 +230,7 @@ namespace ApsimToSim
             // Create an instance of the soil class so that we can ask it for the values we need.
             if (SoilComponent != null)
                {
-               Soil SoilInPaddock = Soil.CreateFromXML(SoilComponent.FullXML());
+               Soil SoilInPaddock = Soil.CreateFromXML(SoilComponent.FullXMLNoShortCuts());
                ApsimToSimContents = SoilInPaddock.ReplaceSoilMacros(ApsimToSimContents);
                }
             }

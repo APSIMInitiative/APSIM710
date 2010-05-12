@@ -586,7 +586,7 @@ namespace ApsimFile
          if (!Enabled && ShortCutTo == null)
             XmlHelper.SetAttribute(Node, "enabled", "no");
          if (ShortCutTo != null)
-            Node.InnerXml = ShortCutTo.MyContents;
+            Node.InnerXml = ShortCutTo.ContentsAsXML.InnerXml;
          else
             Node.InnerXml = MyContents;
          foreach (Component Child in ChildNodes)
