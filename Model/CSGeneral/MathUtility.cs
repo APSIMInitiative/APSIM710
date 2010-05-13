@@ -571,5 +571,13 @@ namespace CSGeneral
             Maximum = Math.Max(Value, Maximum);
          return Maximum;
          }
+
+      public static double[] CreateArrayOfValues(double Value, int NumValues)
+         {
+         double[] Values = new double[NumValues];
+         for (int i = 0; i < NumValues; i++)
+            Values[i] = Value;
+         return Values;
+         }
       }
    }

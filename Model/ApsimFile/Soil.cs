@@ -438,7 +438,7 @@ namespace ApsimFile
             if (LocationName == "Sample")
                LocationName = FindFirstMatchingLocation(RawVariableName);
             if (LocationName == "")
-               throw new Exception("Invalid soil variable: " + RawVariableName);
+               return DefaultValues(RawVariableName);
             }
 
          XmlNode LocationNode = FindProfileNode(LocationName);
@@ -456,6 +456,23 @@ namespace ApsimFile
          if (ToUnits != "")
             ConvertUnits(Value, ToUnits);
          return Value;
+         }
+
+      /// <summary>
+      /// Return a default value for the specified variable.
+      /// </summary>
+      private VariableValue DefaultValues(string RawVariableName)
+         {
+         if (RawVariableName.ToLower() == "no3" || RawVariableName.ToLower() == "nh4")
+            {
+            VariableValue Value = new VariableValue();
+            Value.Name = RawVariableName;
+            Value.Units = "ppm";
+            Value.ThicknessMM = TargetThickness;
+            Value.Doubles = MathUtility.CreateArrayOfValues(0.1, Value.ThicknessMM.Length);
+            return Value;
+            }
+         throw new Exception("No values found for: " + RawVariableName);
          }
 
       /// <summary>
