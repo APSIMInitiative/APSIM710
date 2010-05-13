@@ -1,8 +1,8 @@
 <folder version="19" name="Plant2">
+  <Construct />
   <MetaData />
   <Model />
   <Cultivar />
-  <Construct />
   <Plant />
   <folder name="Organs">
     <Population />
@@ -20,27 +20,115 @@
     <SimpleRoot />
   </folder>
   <folder name="Phenology">
+    <VernalisationCW>
+      <VernSens type="text" description="VernSens">
+      </VernSens>
+      <PhotopSens type="text" description="PhotopSens">
+      </PhotopSens>
+      <Twilight type="text" description="Twilight">
+      </Twilight>
+      <StartStageForEffects type="text" description="StartStageForEffects">
+      </StartStageForEffects>
+      <EndStageForEffects type="text" description="EndStageForEffects">
+      </EndStageForEffects>
+      <StartStageForCumulativeVD type="text" description="StartStageForCumulativeVD">
+      </StartStageForCumulativeVD>
+      <EndStageForCumulativeVD type="text" description="EndStageForCumulativeVD">
+      </EndStageForCumulativeVD>
+    </VernalisationCW>
     <Phenology />
-    <EmergingPhase />
-    <FixedPhase />
-    <EndPhase />
+    <EmergingPhase name="Emerging">
+      <Start type="text" description="Start">Germination</Start>
+      <End type="text" description="End">Emergence</End>
+      <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
+      <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
+      <GenericFunction name="ThermalTime">
+        <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+        <XYPairs>
+          <XY> 0 0</XY>
+          <XY> 26  26</XY>
+          <XY> 34  0</XY>
+        </XYPairs>
+      </GenericFunction>
+    </EmergingPhase>
+    <FixedPhase>
+      <Start type="text" description="Start">Germination</Start>
+      <End type="text" description="End">Emergence</End>
+      <Constant name="Target">
+        <Value type="text" description="Value">100</Value>
+      </Constant>
+      <TemperatureFunction />
+    </FixedPhase>
+    <EndPhase>
+      <Start>Maturity</Start>
+      <End>Unused</End>
+      <TemperatureFunction />
+    </EndPhase>
     <GerminatingPhase />
-    <LeafAppearancePhase />
+    <LeafAppearancePhase>
+      <RemainingLeaves />
+    </LeafAppearancePhase>
     <LeafDeathPhase />
     <RewindPhase />
-    <VernalisationPhase />
-    <VernalisationCWPhase />
+    <Vernalisation>
+      <StartStage type="text" description="StartStage">Germination</StartStage>
+      <EndStage type="text" description="EndStage">EndJuvenile</EndStage>
+      <TemperatureFunction name="VDModel">
+        <XYPairs>
+          <XY>0 1</XY>
+          <XY>2 1</XY>
+          <XY>8 1</XY>
+          <XY>15 1</XY>
+        </XYPairs>
+      </TemperatureFunction>
+    </Vernalisation>
+    <FixedPhase name="Inductive">
+      <Start type="text" description="Start">Emergence</Start>
+      <End type="text" description="End">EndJuvenile</End>
+      <Constant name="Target">
+        <Value type="text" description="Value">401</Value>
+      </Constant>
+      <MinimumFunction name="Stress">
+        <Property type="text" description="Property">Phenology.Vernalisation.VernEff Phenology.Vernalisation.PhotopEff</Property>
+      </MinimumFunction>
+      <GenericFunction name="Thermal Time">
+        <XProperty type="text" description="XProperty">Phenology.Vernalisation.CumulativeVD</XProperty>
+        <XYPairs>
+          <XY>0 515</XY>
+          <XY>100 515</XY>
+        </XYPairs>
+      </GenericFunction>
+    </FixedPhase>
   </folder>
   <folder name="Functions">
-    <Constant />
-    <GenericFunction />
+    <PhotoperiodFunction>
+      <Twilight type="text" description="Twilight">
+      </Twilight>
+    </PhotoperiodFunction>
     <MinimumFunction />
     <PhaseLookup />
     <PhaseLookupValue />
     <StageLookup />
-    <TemperatureFunction />
     <XYPairs />
     <RUEModel />
     <Summary />
+    <TemperatureFunction>
+      <XYPairs>
+        <XY>5 0</XY>
+        <XY>30 30</XY>
+        <XY>40 0</XY>
+      </XYPairs>
+    </TemperatureFunction>
+    <GenericFunction>
+      <XProperty type="text" description="XProperty">Phenology.Vernalisation.CrownTemperature</XProperty>
+      <XYPairs>
+        <XY> 0 0</XY>
+        <XY> 26  26</XY>
+        <XY> 34  0</XY>
+      </XYPairs>
+    </GenericFunction>
+    <Constant>
+      <Value type="text" description="Value">401</Value>
+    </Constant>
   </folder>
 </folder>

@@ -4,9 +4,9 @@
 # These are stored in $(DISTDIR) and copied here the 1st time
 # this makefile is called.
 
-DISTDIR=c:\BuildLibraries\Tcl
+DISTDIR=$(APSIM)\..\BuildLibraries\Tcl
 
-# An ActiveX control (TclControl.dll) is also registered for ApsimUI. 
+# An ActiveX control (TclControl.dll) is also registered for ApsimUI.
 # Visual studio needs this to build the UI; ie you must build this before the UI.
 
 # The dll in the apsim "Model" dir is a stub that loads a secondary dll in Model/TclLink
@@ -27,8 +27,8 @@ TCLVER=$(DOTVER).$(PATCH)
 TCLROOT=.\tcl$(TCLVER)\$(TMPDIRNAME)
 TKROOT=.\tk$(TCLVER)\$(TMPDIRNAME)
 
-SRC = TclStub.cpp 
-LIBS = 
+SRC = TclStub.cpp
+LIBS =
 
 ifeq ($(PLATFORM),WIN32)
 INCLUDEPATH = .\tcl$(TCLVER)\generic;.\tk$(TCLVER)\generic;.\tk$(TCLVER)\xlib
@@ -37,13 +37,13 @@ INCLUDES = /I "./tcl$(TCLVER)/generic" /I "./tk$(TCLVER)/generic" /I "./tk$(TCLV
 endif
 
  # This is built before tcllink.dll
-PREBUILD=dummy .\bin\TclComponent.dll 
+PREBUILD=dummy .\bin\TclComponent.dll
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 
 SRC2 = TclLink.cpp TclComponent.cpp TclXtras.cpp ..\ComponentInterface\EntryPoints.cpp
 LIBS2 = General ApsimShared ComponentInterface Protocol tcl$(VER) tk$(VER)
-SOURCEOBJS2:=	$(SRC2:.cpp=.obj) 
+SOURCEOBJS2:=	$(SRC2:.cpp=.obj)
 
 ifeq ($(PLATFORM),WIN32)
  ifdef DEBUG
@@ -51,11 +51,11 @@ ifeq ($(PLATFORM),WIN32)
  else
 	LIBS2 :=  import32.lib $(LIBS2)
  endif
-LIBS2 := $(BCB)\Components\LibXml2\win32\LibXml2.lib $(BCB)\Components\Boost\Libs\FileSystem\FileSystem.lib $(BCB)\Components\Boost\libs\date_time\date_time.lib $(LIBS2) cw32mti.lib 
+LIBS2 := $(BCB)\Components\LibXml2\win32\LibXml2.lib $(BCB)\Components\Boost\Libs\FileSystem\FileSystem.lib $(BCB)\Components\Boost\libs\date_time\date_time.lib $(LIBS2) cw32mti.lib
 endif
 
 ifeq ($(PLATFORM),WIN32VS)
-LIBS2 := $(foreach library,$(LIBS2),$(library).lib) libxml2.lib 
+LIBS2 := $(foreach library,$(LIBS2),$(library).lib) libxml2.lib
 endif
 
 ifeq ($(PLATFORM),WIN32)
@@ -84,7 +84,7 @@ dummy:
 # Binaries
 	@if not exist $(APSIM)\Model\TclLink\bin\nul              mkdir $(APSIM)\Model\TclLink\bin
 	@if not exist $(APSIM)\Model\TclLink\bin\tcl$(VER).dll    copy $(DISTDIR)\ASTcl\bin\tcl$(VER).dll    $(APSIM)\Model\TclLink\bin\tcl$(VER).dll
-	@if not exist $(APSIM)\Model\TclLink\bin\zlib.dll         copy $(DISTDIR)\ASTcl\bin\zlib.dll         $(APSIM)\Model\TclLink\bin\zlib.dll 
+	@if not exist $(APSIM)\Model\TclLink\bin\zlib.dll         copy $(DISTDIR)\ASTcl\bin\zlib.dll         $(APSIM)\Model\TclLink\bin\zlib.dll
 	@if not exist $(APSIM)\Model\TclLink\bin\iconv.dll        copy $(DISTDIR)\ASTcl\bin\iconv.dll        $(APSIM)\Model\TclLink\bin\iconv.dll
 	@if not exist $(APSIM)\Model\TclLink\bin\tclpip$(VER).dll copy $(DISTDIR)\ASTcl\bin\tclpip$(VER).dll $(APSIM)\Model\TclLink\bin\tclpip$(VER).dll
 	@if not exist $(APSIM)\Model\TclLink\bin\tk$(VER).dll     copy $(DISTDIR)\ASTcl\bin\tk$(VER).dll     $(APSIM)\Model\TclLink\bin\tk$(VER).dll

@@ -71,7 +71,7 @@ public class RunExternalJob : Job
       {
       lock (this)
          {
-         _StdOut += e.Text;
+         _StdOut += e.Text + "\n";
          }
       }
    protected virtual void OnStdError(object sender, CSGeneral.DataReceivedEventArgs e)

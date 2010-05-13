@@ -13,7 +13,6 @@ public class RunConJob : RunApsimJob
    private string _SimulationName;
    ProcessCaller _ConToSimProcess;
 
-
    public RunConJob(string ConFileName, string SimulationName, JobRunner JobRunner)
       : base(SimulationName + " (" + Path.GetFileName(ConFileName) +")", JobRunner)
       {

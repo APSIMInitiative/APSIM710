@@ -19,8 +19,6 @@ public class VernalisationCW : Instance
    [Param] private string StartStageForCumulativeVD = "";
    [Param] private string EndStageForCumulativeVD = "";
    [Output] private double CumulativeVD = 0;
-   [Input] public double Latitude;
-   [Input] public double Day;
 
    /// <summary>
    /// Trap the NewMet event.
@@ -54,8 +52,8 @@ public class VernalisationCW : Instance
       double MaxVernalisationRequirement = 50; //maximum vernalisation requirement is 50 days
       VernEff = VernalisationEffect(VernSens, CumulativeVD, DeltaCumulativeVD, MaxVernalisationRequirement);
 
-      double Photoperiod = MathUtility.DayLength(Day, Twilight, Latitude);
-      PhotopEff = PhotoperiodEffect(Photoperiod, PhotopSens);
+      Function Photoperiod = (Function)Children["Photoperiod"];
+      PhotopEff = PhotoperiodEffect(Photoperiod.Value, PhotopSens);
 
       CumulativeVD += DeltaCumulativeVD;
       }

@@ -61,6 +61,18 @@ Public Class ApsimUIActions
                                                 Controller.SelectedPaths)
         End If
     End Sub
+    Public Shared Sub CreateSIM(ByVal Controller As BaseController)
+        ' ------------------------------------------------
+        ' Create a .sim file.
+        ' ------------------------------------------------
+        BaseActions.FileSave(Controller)
+        Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
+        If RunPanels.Length = 1 Then
+            ApsimRunToolStrip.Instance.CreateSIM(RunPanels(0), _
+                                                Controller.ApsimData, _
+                                                Controller.SelectedPaths)
+        End If
+    End Sub
 
     Public Shared Sub Enable(ByVal Controller As BaseController)
         For Each NodePath As String In Controller.SelectedPaths

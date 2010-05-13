@@ -80,6 +80,7 @@ public class ApsimRunToolStrip
          }
       return "";
       }
+
    public void RunApsim(ToolStrip Strip, ApsimFile.ApsimFile F, StringCollection SelectedPaths)
       {
       // ----------------------------------------------------------
@@ -113,11 +114,39 @@ public class ApsimRunToolStrip
       foreach (string SimulationPath in SelectedPaths)
          ApsimFile.ApsimFile.ExpandSimsToRun(F.Find(SimulationPath), ref SimsToRun);
 
-      // Add them to the job runner queue.
       foreach (string SimulationPath in SimsToRun)
-         _JobRunner.Add(new RunApsimFileJob(F.FileName, SimulationPath, _JobRunner));
+         {
+         Component Simulation = F.Find(SimulationPath);
+         string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+         RunApsimJob NewJob = new RunApsimJob(Simulation.Name, _JobRunner);
+         NewJob.SimFileName = SimFileName;
+         _JobRunner.Add(NewJob);
+         }
+         
       Timer.Enabled = true;
       }
+   public void CreateSIM(ToolStrip Strip, ApsimFile.ApsimFile F, StringCollection SelectedPaths)
+      {
+      // ----------------------------------------------------------
+      // Run APSIM for the specified file and simulation paths.
+      // This method will also locate and look after the various
+      // run button states.
+      // ----------------------------------------------------------
+      _F = F;
+      _SelectedPaths = SelectedPaths;
+
+      // Get a list of simulations to run.
+      List<string> SimsToRun = new List<string>();
+      foreach (string SimulationPath in SelectedPaths)
+         ApsimFile.ApsimFile.ExpandSimsToRun(F.Find(SimulationPath), ref SimsToRun);
+
+      foreach (string SimulationPath in SimsToRun)
+         {
+         Component Simulation = F.Find(SimulationPath);
+         string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+         }
+      }
+
    private void OnTick(object sender, EventArgs e)
       {
       // ----------------------------------------------------------
