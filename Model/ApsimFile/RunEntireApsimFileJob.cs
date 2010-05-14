@@ -20,7 +20,7 @@ public class RunEntireApsimFileJob : RunExternalJob
       {
       if (_StdOut != "")
          {
-         StreamWriter Out = new StreamWriter(Path.ChangeExtension(_ApsimFileName, ".sum"));
+         StreamWriter Out = new StreamWriter(Path.ChangeExtension(_ApsimFileName, ".log"));
          Out.WriteLine(_StdOut);
          Out.Close();
          _HasErrors = true;
