@@ -47,7 +47,10 @@ public class RunApsimDirectory : Job
                _JobRunner.Add(new RunConJob(FileName, SimulationName, _JobRunner));
             }
          else if (Extension == ".apsim")
-            _JobRunner.Add(new RunEntireApsimFileJob(FileName, _JobRunner));
+            {
+            foreach (string SimulationName in ApsimFile.ApsimFile.GetSimsInApsimFile(FileName))
+               _JobRunner.Add(new RunApsimFileJob(FileName, SimulationName, _JobRunner));
+            }
          }
       foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
          {

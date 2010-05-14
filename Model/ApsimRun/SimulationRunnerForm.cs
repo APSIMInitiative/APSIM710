@@ -107,7 +107,7 @@ namespace ApsimRun
 
          if (Path.GetExtension(FileName).ToLower() == ".con")
             SimulationsToRun = ConFile.GetSimsInConFile(FileName);
-         else if (Path.GetExtension(FileName).ToLower() == ".apsim" && !JustDoIt)
+         else if (Path.GetExtension(FileName).ToLower() == ".apsim")
             SimulationsToRun = ApsimFile.ApsimFile.GetSimsInApsimFile(FileName);
          else
             throw new Exception("Unknown simulation file type: " + FileName);
@@ -122,18 +122,13 @@ namespace ApsimRun
                return;
             }
 
-         if (SimulationsToRun != null)
+         foreach (string SimulationName in SimulationsToRun)
             {
-            foreach (string SimulationName in SimulationsToRun)
-               {
-               if (Path.GetExtension(FileName).ToLower() == ".con")
-                  _JobRunner.Add(new RunConJob(FileName, SimulationName, _JobRunner));
-               else
-                  _JobRunner.Add(new RunApsimFileJob(FileName, SimulationName, _JobRunner));
-               }
+            if (Path.GetExtension(FileName).ToLower() == ".con")
+               _JobRunner.Add(new RunConJob(FileName, SimulationName, _JobRunner));
+            else
+               _JobRunner.Add(new RunApsimFileJob(FileName, SimulationName, _JobRunner));
             }
-         else
-            _JobRunner.Add(new RunEntireApsimFileJob(FileName, _JobRunner));
          }
 
       private void OnNumCPUsChanged(object sender, EventArgs e)
