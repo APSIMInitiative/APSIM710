@@ -19,7 +19,7 @@ public class ApsimToSim
       SimXML.LoadXml(WriteSimScript(Child));
       SortSimContents(SimXML.DocumentElement);
       SimXML.Save(SimFileName);
-      return SimFileName;
+      return Path.GetFullPath(SimFileName);
       }
    private static string WriteSimScript(Component Child)
       {

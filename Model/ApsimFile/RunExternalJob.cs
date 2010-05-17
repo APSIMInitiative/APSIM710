@@ -10,7 +10,7 @@ public class RunExternalJob : Job
    {
    protected string      _Executable = "";
    protected string      _Arguments = "";
-   private ProcessCaller _P = null;
+   protected ProcessCaller _P = null;
 
    public RunExternalJob(string Name, JobRunner JobRunner)
       : base(Name, JobRunner)

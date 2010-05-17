@@ -18,7 +18,7 @@ public class RunEntireApsimFileJob : RunExternalJob
       }
    protected override void OnExited(object sender)
       {
-      if (_StdOut != "")
+      if (_P.process.ExitCode != 0)
          {
          StreamWriter Out = new StreamWriter(Path.ChangeExtension(_ApsimFileName, ".log"));
          Out.WriteLine(_StdOut);
@@ -27,12 +27,21 @@ public class RunEntireApsimFileJob : RunExternalJob
          }
       else
          {
-         foreach (string SimFileName in Directory.GetFiles(Path.GetDirectoryName(_ApsimFileName), "*.sim"))
+         StringReader In = new StringReader(_StdOut);
+
+         string Line = In.ReadLine();
+         while (Line != null && Line != "")
             {
-            RunApsimJob NewJob = new RunApsimJob(SimFileName, _JobRunner);
-            NewJob.SimFileName = SimFileName;
-            _JobRunner.Add(NewJob);
+            if (Line.Substring(0, 8) == "Written ")
+               {
+               string SimFileName = Line.Substring(8);
+               RunApsimJob NewJob = new RunApsimJob(SimFileName, _JobRunner);
+               NewJob.SimFileName = SimFileName;
+               _JobRunner.Add(NewJob);
+               }
+            Line = In.ReadLine();
             }
+         In.Close();
          }
       base.OnExited(sender);
       }
