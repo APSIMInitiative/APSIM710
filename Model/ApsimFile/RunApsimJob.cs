@@ -68,6 +68,10 @@ public class RunApsimJob : RunExternalJob
             }
          else
             _SumFile.WriteLine(e.Text);
+         if (e.Text.Contains("APSIM  Fatal  Error"))
+            _HasErrors = true;
+         else if (e.Text.Contains("APSIM Warning Error"))
+            _HasWarnings = true;
          }
       }
 
@@ -83,13 +87,7 @@ public class RunApsimJob : RunExternalJob
                _PercentComplete = Convert.ToInt32(e.Text.Substring(1));
 
             else
-               {
-               if (e.Text.Contains("APSIM  Fatal  Error"))
-                  _HasErrors = true;
-               else if (e.Text.Contains("APSIM Warning Error"))
-                  _HasWarnings = true;
                _StdErr += e.Text;
-               }
             }
          }
       }

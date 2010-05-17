@@ -91,7 +91,7 @@ namespace CSGeneral
 
       private bool StdErrFinished = false;
       private bool StdOutFinished = false;
-
+      public string StdOut = "";
       private enum ThreadAccess : int
          {
          TERMINATE = (0x0001),
@@ -215,11 +215,9 @@ namespace CSGeneral
       /// </summary>
       protected virtual void ReadStdOut()
          {
-         string str;
-         while ((str = process.StandardOutput.ReadLine()) != null)
-            {
-            FireAsync(StdOutReceived, this, new DataReceivedEventArgs(str));
-            }
+         StdOut = process.StandardOutput.ReadToEnd();
+         process.WaitForExit();
+         FireAsync(StdOutReceived, this, new DataReceivedEventArgs(StdOut));
          StdOutFinished = true;
          }
 
