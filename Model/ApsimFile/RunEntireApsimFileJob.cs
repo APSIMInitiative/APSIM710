@@ -25,24 +25,21 @@ public class RunEntireApsimFileJob : RunExternalJob
          Out.Close();
          _HasErrors = true;
          }
-      else
-         {
-         StringReader In = new StringReader(_StdOut);
+      StringReader In = new StringReader(_StdOut);
 
-         string Line = In.ReadLine();
-         while (Line != null && Line != "")
+      string Line = In.ReadLine();
+      while (Line != null && Line != "")
+         {
+         if (Line.Substring(0, 8) == "Written ")
             {
-            if (Line.Substring(0, 8) == "Written ")
-               {
-               string SimFileName = Line.Substring(8);
-               RunApsimJob NewJob = new RunApsimJob(SimFileName, _JobRunner);
-               NewJob.SimFileName = SimFileName;
-               _JobRunner.Add(NewJob);
-               }
-            Line = In.ReadLine();
+            string SimFileName = Line.Substring(8);
+            RunApsimJob NewJob = new RunApsimJob(SimFileName, _JobRunner);
+            NewJob.SimFileName = SimFileName;
+            _JobRunner.Add(NewJob);
             }
-         In.Close();
+         Line = In.ReadLine();
          }
+      In.Close();
       base.OnExited(sender);
       }
    

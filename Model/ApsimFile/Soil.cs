@@ -373,6 +373,20 @@ namespace ApsimFile
          // Mapping.
          SoilLayerMap.Map(Value, TargetThickness, VariableUnMapped("BD (g/cc)"), VariableUnMapped("LL15 (mm/mm)"));
 
+         // HACK ALERT: If the variable is SW and it has been mapped then do bound check on sw
+         if (VariableName == "SW(mm/mm)")
+            {
+            double[] AirDry = Variable("AirDry (mm/mm)");
+            double[] DUL = Variable("DUL (mm/mm)");
+            for (int i = 0; i < Value.Doubles.Length; i++)
+               {
+               if (Value.Doubles[i] < AirDry[i])
+                  Value.Doubles[i] = AirDry[i];
+               if (Value.Doubles[i] > DUL[i])
+                  Value.Doubles[i] = DUL[i];
+               }
+            }
+
          return Value;
          }
 

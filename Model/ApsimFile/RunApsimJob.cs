@@ -63,11 +63,11 @@ public class RunApsimJob : RunExternalJob
             // we're still being passed stdout stuff.
 
             _SumFile = new StreamWriter(_SumFileName, true);
-            _SumFile.WriteLine(e.Text);
+            _SumFile.Write(e.Text);
             _SumFile.Close();
             }
-         else
-            _SumFile.WriteLine(e.Text);
+         else if (e.Text != "")
+            _SumFile.Write(e.Text);
          if (e.Text.Contains("APSIM  Fatal  Error"))
             _HasErrors = true;
          else if (e.Text.Contains("APSIM Warning Error"))
@@ -98,6 +98,7 @@ public class RunApsimJob : RunExternalJob
       lock (this)
          {
          _SumFile.Close();
+         _SumFile = null;
          _PercentComplete = 100;
          _IsRunning = false;
          }

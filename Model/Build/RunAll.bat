@@ -3,9 +3,7 @@ rem -------------------------------------------------------------
 rem This batch file runs everything
 rem -------------------------------------------------------------
 	
-start /WAIT %APSIM%\Model\ApsimRun /auto /autoclose %APSIM%\Tests
-
-start /WAIT %APSIM%\Model\ApsimRun /auto /autoclose %APSIM%\Examples
+start /WAIT %APSIM%\Model\ApsimRun /auto /autoclose %APSIM%
 
 rem -------------------------------------------------------------
 rem Go find all PostRunAll.bat files and execute them.

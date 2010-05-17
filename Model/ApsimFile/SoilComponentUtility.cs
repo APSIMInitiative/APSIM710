@@ -549,11 +549,15 @@ namespace ApsimFile
          {
          if (Value.Name == "Thickness" || Value.Doubles == null)
             return;
-         Value.Doubles = MapToTarget(Value.Name + "(" + Value.Units + ")", Value.Doubles, Value.ThicknessMM, ToThickness, ToBD, LL15);
-         Value.ThicknessMM = ToThickness;
-         Value.Codes = new string[ToThickness.Length];
-         for (int i = 0; i < Value.Codes.Length; i++)
-            Value.Codes[i] = "Mapped";
+         double[] Values = MapToTarget(Value.Name + "(" + Value.Units + ")", Value.Doubles, Value.ThicknessMM, ToThickness, ToBD, LL15);
+         if (Values != null)
+            {
+            Value.Doubles = Values;
+            Value.ThicknessMM = ToThickness;
+            Value.Codes = new string[ToThickness.Length];
+            for (int i = 0; i < Value.Codes.Length; i++)
+               Value.Codes[i] = "Mapped";
+            }
          }
 
       /// <summary>
@@ -571,7 +575,7 @@ namespace ApsimFile
 
          string Units = StringManip.SplitOffBracketedValue(ref VariableName, '(', ')');
          if (MathUtility.AreEqual(Thickness, ToThickness))
-            return Values;
+            return null;
 
          string DefaultValueString = SoilMetaData.Instance.MetaData(VariableName, "DefaultValue");
          if (SoilMetaData.Instance.MetaData(VariableName, "MapMethod") == "Spatial" || Units == "ppm")
