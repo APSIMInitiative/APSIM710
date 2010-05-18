@@ -382,8 +382,6 @@ namespace ApsimFile
                {
                if (Value.Doubles[i] < AirDry[i])
                   Value.Doubles[i] = AirDry[i];
-               if (Value.Doubles[i] > DUL[i])
-                  Value.Doubles[i] = DUL[i];
                }
             }
 
