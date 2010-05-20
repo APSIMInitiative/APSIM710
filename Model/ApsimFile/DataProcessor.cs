@@ -185,7 +185,11 @@ public class DataProcessor
       foreach (string FileSpec in FileNames)
          {
          string FileSpecNoMacros = Configuration.RemoveMacros(FileSpec);
-         foreach (string FileName in Directory.GetFiles(Path.GetDirectoryName(FileSpecNoMacros), 
+         string Dir = Path.GetDirectoryName(FileSpecNoMacros);
+         if (Dir == "")
+            Dir = Directory.GetCurrentDirectory();
+
+         foreach (string FileName in Directory.GetFiles(Dir, 
                                                         Path.GetFileName(FileSpecNoMacros)))
             {
             if (FileName != "" && File.Exists(FileName))
