@@ -100,11 +100,27 @@ namespace GraphDataUserInterface
          // Add a mark tool so that if the user hovers over a point then it's XY value will be displayed.
          Chart.Tools.Clear();
          Steema.TeeChart.Tools.MarksTip MarkTip = new Steema.TeeChart.Tools.MarksTip(Chart.Chart);
-         MarkTip.Style = MarksStyles.XY;
+         MarkTip.Series = Chart.Series[0];
+         MarkTip.GetText += new Steema.TeeChart.Tools.MarksTipGetTextEventHandler(MarkTip_GetText);
          Chart.Tools.Add(MarkTip);
          }
 
+      void MarkTip_GetText(Steema.TeeChart.Tools.MarksTip sender, Steema.TeeChart.Tools.MarksTipGetTextEventArgs e)
+         {
+         e.Text = GetMarkText(Chart.Series[0]);
+         }
+      string GetMarkText(Series S)
+         {
+         Point p = Chart.PointToClient(Control.MousePosition);
 
+         // Find the point and series.
+         int PointNumber = S.Clicked(p);
+         if (PointNumber != -1 && S.Count == PointLabels.Count)
+            return PointLabels[PointNumber];
+         else
+            return "";
+         }
+      
       private Series GetSeries(string Title)
          {
          foreach (Series S in Chart.Series)

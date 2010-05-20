@@ -24,6 +24,8 @@ namespace GraphDataUserInterface
       private bool GenerateRightAxisTitle;
       private bool GenerateTopAxisTitle;
       private bool GenerateBottomAxisTitle;
+      protected DataTable PlotData;
+      protected List<string> PointLabels = new List<string>();
       
       public GraphUI()
          {
@@ -65,6 +67,7 @@ namespace GraphDataUserInterface
          GenerateBottomAxisTitle = Chart.Axes.Bottom.Title.Text == "";
 
          Chart.Series.Clear();
+         PointLabels.Clear();
 
          // loop through all plots
          SeriesNumber = 0;
@@ -77,7 +80,7 @@ namespace GraphDataUserInterface
             Processor.DefaultOutputFileNames = DefaultFileNames;
             XmlDocument Doc = new XmlDocument();
             Doc.LoadXml(Plot.FullXMLNoShortCuts());
-            DataTable PlotData = Processor.Go(Doc.DocumentElement, "");
+            PlotData = Processor.Go(Doc.DocumentElement, "");
 
             DrawSeries(Doc.DocumentElement, PlotData);
             }
@@ -341,14 +344,19 @@ namespace GraphDataUserInterface
                if (!Convert.IsDBNull(View[Row][YColumnName]))
                   {
                   NewSeries.XValues.Name = XFieldName;
+                  string PointName = "";
+                  if (DataSource.Columns.Contains("PointName"))
+                     PointName = View[Row]["PointName"].ToString();
                   if (ErrorBarSeries != null)
                      AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
                                    View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
-                                   ErrorBarSeries, View[Row][YColumnName+"Error"]);
+                                   ErrorBarSeries, View[Row][YColumnName+"Error"],
+                                   PointName);
                   else
                      AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
                                    View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
-                                   ErrorBarSeries, null);
+                                   ErrorBarSeries, null,
+                                   PointName);
 
                   }
                }
@@ -365,7 +373,8 @@ namespace GraphDataUserInterface
       private void AddXYToSeries(Steema.TeeChart.Styles.Series NewSeries,
                                  Type XDataType, object XValue, double YValue,
                                  bool CumulativeX, ref double CumulativeXSoFar,
-                                 Error ErrorBarSeries, object ErrorBarValue)
+                                 Error ErrorBarSeries, object ErrorBarValue,
+                                 string PointName)
          {
          if (ErrorBarSeries != null && !Convert.IsDBNull(ErrorBarValue))
             {
@@ -415,6 +424,7 @@ namespace GraphDataUserInterface
                XValueAsDouble = CumulativeXSoFar;
                }
             NewSeries.Add(XValueAsDouble, YValue);
+            PointLabels.Add(PointName + "(" + XValueAsDouble.ToString("f2") + ", " + YValue.ToString("f2") + ")");
             }
 
          }

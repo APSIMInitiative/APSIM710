@@ -182,25 +182,30 @@ public class DataProcessor
 
       DataTable Data = new DataTable();
       Data.TableName = "Data";
-      foreach (string FileName in FileNames)
+      foreach (string FileSpec in FileNames)
          {
-         if (FileName != "")
+         string FileSpecNoMacros = Configuration.RemoveMacros(FileSpec);
+         foreach (string FileName in Directory.GetFiles(Path.GetDirectoryName(FileSpecNoMacros), 
+                                                        Path.GetFileName(FileSpecNoMacros)))
             {
-            string CheckPointFile = Path.GetDirectoryName(Path.GetFullPath(FileName)) + "\\CheckPoint\\" + Path.GetFileName(FileName);
-            if (File.Exists(CheckPointFile))
+            if (FileName != "" && File.Exists(FileName))
                {
-               int StartRow = Data.Rows.Count;
-               APSIMInputFile InFile = new APSIMInputFile();
-               InFile.ReadFromFile(CheckPointFile, Data);
-               InFile.SetConstant("title", "Checkpointed " + InFile.Constant("title").Value);
-               InFile.AddConstantsToData(Data, StartRow);
-               }
-            if (File.Exists(FileName))
-               {
-               int StartRow = Data.Rows.Count;
-               APSIMInputFile InFile = new APSIMInputFile();
-               InFile.ReadFromFile(FileName, Data);
-               InFile.AddConstantsToData(Data, StartRow);
+               string CheckPointFile = Path.GetDirectoryName(Path.GetFullPath(FileName)) + "\\CheckPoint\\" + Path.GetFileName(FileName);
+               if (File.Exists(CheckPointFile))
+                  {
+                  int StartRow = Data.Rows.Count;
+                  APSIMInputFile InFile = new APSIMInputFile();
+                  InFile.ReadFromFile(CheckPointFile, Data);
+                  InFile.SetConstant("title", "Checkpointed " + InFile.Constant("title").Value);
+                  InFile.AddConstantsToData(Data, StartRow);
+                  }
+               if (File.Exists(FileName))
+                  {
+                  int StartRow = Data.Rows.Count;
+                  APSIMInputFile InFile = new APSIMInputFile();
+                  InFile.ReadFromFile(FileName, Data);
+                  InFile.AddConstantsToData(Data, StartRow);
+                  }
                }
             }
          }
@@ -414,6 +419,7 @@ public class DataProcessor
             DataTable NewData = new DataTable();
             NewData.Columns.Add("Title", Type.GetType("System.String"));
             NewData.Columns.Add("SeriesName", Type.GetType("System.String"));
+            NewData.Columns.Add("PointName", Type.GetType("System.String"));
 
             // Add the necessary columns to our new dataset.
             foreach (DataColumn Column in Predicted.Columns)
@@ -443,15 +449,18 @@ public class DataProcessor
                      Filter += FieldName + " = " + ObservedRow[FieldName].ToString();
                   }
                // Handle pred/obs for checkpointed series.
-               string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
-               CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
-               DataRow[] PredictedMatch = Predicted.Select(CheckPointedFilter);
-               if (PredictedMatch.Length > 0)
-                  WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed");
-
+               DataRow[] PredictedMatch;
+               if (Filter.ToLower().Contains("Title"))
+                  {
+                  string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
+                  CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
+                  PredictedMatch = Predicted.Select(CheckPointedFilter);
+                  if (PredictedMatch.Length > 0)
+                     WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed", FieldsToMatch);
+                  }
                // Handle pred/obs for noncheckpointed series.
                PredictedMatch = Predicted.Select(Filter);
-               WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Predicted/Observed");
+               WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Predicted/Observed", FieldsToMatch);
                }
             return NewData;
             }
@@ -460,7 +469,7 @@ public class DataProcessor
       return null;
       }
 
-   private void WritePredictObservedRow(DataRow[] PredictedMatch, DataRow ObservedRow, DataTable NewData, string Title)
+   private void WritePredictObservedRow(DataRow[] PredictedMatch, DataRow ObservedRow, DataTable NewData, string Title, List<string> FieldsToMatch)
       {
       // find the corresponding row in predicted.
 
@@ -478,6 +487,23 @@ public class DataProcessor
                NewRow["Observed " + Column.ColumnName] = ObservedRow[Column.ColumnName];
                }
             }
+         // Create a point name
+         string PointName = "";
+         if (Title.Contains("Checkpointed "))
+            PointName = "Checkpointed ";
+         foreach (string FieldName in FieldsToMatch)
+            {
+            if (PointName != "")
+               PointName += ", ";
+            if (ObservedRow.Table.Columns[FieldName].DataType == Type.GetType("System.DateTime"))
+               {
+               DateTime D = Convert.ToDateTime(ObservedRow[FieldName]);
+               PointName += D.ToShortDateString();
+               }
+            else
+               PointName += ObservedRow[FieldName].ToString();
+            }
+         NewRow["PointName"] = PointName;
          }
       NewData.Rows.Add(NewRow);
       }

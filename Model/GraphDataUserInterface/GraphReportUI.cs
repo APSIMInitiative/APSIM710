@@ -30,12 +30,22 @@ namespace GraphDataUserInterface
          AllData = Doc.DocumentElement;
 
          Controls.Clear();
-         foreach (XmlNode GraphNode in XmlHelper.ChildNodes(AllData, "Graph"))
+         foreach (XmlNode GraphNode in XmlHelper.ChildNodes(AllData, ""))
             {
-            GraphUI Graph = new GraphUI();
-            Graph.OnLoad(Controller, NodePath + "/" + XmlHelper.Name(GraphNode), GraphNode.OuterXml);
-            Graph.OnRefresh();
-            Graph.Parent = this;
+            if (GraphNode.Name == "Graph")
+               {
+               GraphUI Graph = new GraphUI();
+               Graph.OnLoad(Controller, NodePath + "/" + XmlHelper.Name(GraphNode), GraphNode.OuterXml);
+               Graph.OnRefresh();
+               Graph.Parent = this;
+               }
+            if (GraphNode.Name == "RegressionGraph")
+               {
+               RegressionGraphUI Graph = new RegressionGraphUI();
+               Graph.OnLoad(Controller, NodePath + "/" + XmlHelper.Name(GraphNode), GraphNode.OuterXml);
+               Graph.OnRefresh();
+               Graph.Parent = this;
+               }
             }
 
          PositionGraphs();
@@ -45,7 +55,7 @@ namespace GraphDataUserInterface
       private void PositionGraphs()
          {
          this.Resize -= OnResize;
-         int NumGraphs = XmlHelper.ChildNodes(AllData, "Graph").Count;
+         int NumGraphs = Controls.Count;
          if (NumGraphs > 0)
             {
 

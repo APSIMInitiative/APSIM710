@@ -208,6 +208,10 @@ namespace ApsimFile
                Units = new StringCollection();
                Headings.AddRange(HeadingLines[0].Split(",".ToCharArray()));
                Units.AddRange(HeadingLines[1].Split(",".ToCharArray()));
+               for (int i = 0; i < Headings.Count; i++)
+                  Headings[i] = Headings[i].Trim();
+               for (int i = 0; i < Units.Count; i++)
+                  Units[i] = Units[i].Trim();
                }
             else
                {
@@ -247,6 +251,7 @@ namespace ApsimFile
                   Data.Columns.Add(new DataColumn(Headings[w], ColumnType));
                   }
                }
+            Words[w] = Words[w].Trim();
             if (Words[w] != "?" && Words[w] != "*" && Words[w] != "")
                NewMetRow[Headings[w]] = Words[w];
             }
@@ -276,6 +281,10 @@ namespace ApsimFile
             Words = StringManip.SplitStringHonouringQuotes(Line, " \t");
          if (Words.Count != Headings.Count)
             throw new Exception("Invalid number of values on line: " + Line + "\r\nin file: " + _FileName);
+
+         // Remove leading / trailing double quote chars.
+         for (int i = 0; i < Words.Count; i++)
+            Words[i] = Words[i].Trim("\"".ToCharArray());
          return true;
          }
       private string LookAheadForNonMissingValue(StreamReaderRandomAccess In, int w)
