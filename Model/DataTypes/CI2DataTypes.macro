@@ -107,8 +107,9 @@ class EXPORT ScienceAPI
       virtual ~ScienceAPI() {};
 
       virtual void write(const std::string& msg) = 0;
-      virtual std::string name() = 0;
-      virtual std::string FQName() = 0;
+      virtual std::string name(void) = 0;
+      virtual std::string FQName(void) = 0;
+      virtual std::string getExecutableFileName(void) = 0;
       virtual void notifyFutureEvent(const std::string& name) = 0;
 
       // -----------------------------------------------------------------------
@@ -185,14 +186,14 @@ class EXPORT ScienceAPIImpl : public ScienceAPI
    {
    private:
       CMPComponentInterface& componentInterface;
-
    public:
       ScienceAPIImpl(CMPComponentInterface& componentinterface);
       virtual ~ScienceAPIImpl() {};
 
       virtual void write(const std::string& msg);
-      virtual std::string name();
-      virtual std::string FQName();
+      virtual std::string name(void);
+      virtual std::string FQName(void);
+      virtual std::string getExecutableFileName(void);
 
       virtual void setSearchOrder(const std::vector<std::string> &list);
       virtual void getSearchOrder(std::vector<std::string> &list);
@@ -255,12 +256,14 @@ class EXPORT ScienceAPIImpl : public ScienceAPI
 
 using namespace std;
 ScienceAPIImpl::ScienceAPIImpl(CMPComponentInterface& componentinterface)
-   : componentInterface(componentinterface){}
+   : componentInterface(componentinterface)  {}
 
-string ScienceAPIImpl::name()
+string ScienceAPIImpl::name(void)
    {return componentInterface.getName();}
-string ScienceAPIImpl::FQName()
+string ScienceAPIImpl::FQName(void)
    {return componentInterface.getFQName();}
+string ScienceAPIImpl::getExecutableFileName(void)
+   {return componentInterface.getExecutableFileName();}
 void ScienceAPIImpl::write(const string& msg)
    {
    componentInterface.write(msg);
@@ -413,10 +416,6 @@ std::string EXPORT DDML(const F[type.name]Type& value);
 #include <ComponentInterface2/StructureConverter.h>
 #include <ComponentInterface2/FortranString.h>
 
-extern "C" void EXPORT STDCALL publish_null( unsigned* id)
-   {
-   //FortranWrapper::currentInstance->publishNull(*id);
-   }
 [foreach types.type]
 // ------ [type.name] ------
 void pack(MessageData& messageData, const F[type.name]Type& data)
@@ -512,6 +511,11 @@ extern "C" void EXPORT STDCALL SubscribeNullType(const char* EventName,
    {
    currentWrapper->componentInterface().subscribe(FortranString(EventName, EventNameLength).toString(),
                                                   new FortranNullMethod<FNullTypeFunction > (currentWrapper, F));
+   }
+
+extern "C" void EXPORT STDCALL PublishNull(const char* EventName, unsigned EventNameLength)
+   {
+   currentWrapper->componentInterface().publish(FortranString(EventName, EventNameLength).toString(), NULL);
    }
 
 [foreach types.type]

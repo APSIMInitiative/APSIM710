@@ -4,7 +4,7 @@ PROJECT= FortranComponentInterface2
 
 SRC = 	 FortranComponentInterface.cpp     \
           EntryPoints.cpp                   \
-	       DataTypes.cpp	                    \
+          DataTypes.cpp	                    \
           FortranComponentWrapper.cpp       \
           ScienceAPI.cpp
 

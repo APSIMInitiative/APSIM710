@@ -1,9 +1,10 @@
-#include <string>
-#include <stdexcept>
-#include <general/platform.h>
 //---------------------------------------------------------------------------
 #ifndef ApsimDirectoriesH
 #define ApsimDirectoriesH
+
+#include <string>
+#include <stdexcept>
+#include <General/platform.h>
 
 // ------------------------------------------------------------------
 // This routine provides a way for APSIM applications to get the

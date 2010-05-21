@@ -14,18 +14,16 @@
 
 using namespace std;
 
-FortranComponentWrapper* currentWrapper;
+FortranComponentWrapper* currentWrapper = NULL;
 
 FortranComponentWrapper::FortranComponentWrapper(ScienceAPI* api, CMPComponentInterface* ci, void* handle)
-   : scienceapi(*api), dllHandle(handle), realCommonBlock(ourCommonBlock),
-     componentinterface(ci)
+   : scienceapi(*api), dllHandle(handle), componentinterface(ci)
    {
    // -----------------------------------------------------------------------
    // Constructor
    // -----------------------------------------------------------------------
-
+   realCommonBlock = NULL;
    scienceAPI().subscribe("init1", nullFunction(&FortranComponentWrapper::onInit1));
-   currentWrapper = NULL;
    }
 
 FortranComponentWrapper::~FortranComponentWrapper()
@@ -33,7 +31,6 @@ FortranComponentWrapper::~FortranComponentWrapper()
    // -----------------------------------------------------------------------
    // Destructor
    // -----------------------------------------------------------------------
-
    }
 void FortranComponentWrapper::onInit1()
    {
@@ -63,8 +60,8 @@ void FortranComponentWrapper::onInit1()
    #endif
    if (getInstance == NULL)
       throw runtime_error("Cannot find getInstance routine in FORTRAN model");
-   realCommonBlock = *getInstance();
-   ourCommonBlock = realCommonBlock; //copies byte for byte
+   realCommonBlock = getInstance();
+   memcpy(&ourCommonBlock, realCommonBlock, sizeof(CommonBlock));
 
    // Call the FORTRAN OnInit1 routine.
    #ifdef __WIN32__
@@ -84,19 +81,13 @@ void FortranComponentWrapper::swapInstanceIn()
    // Swap an instance of the FORTRAN model into the appropriate address
    // space. i.e. move the contents of our stored common block into the
    // real common block space that is used by the FORTRAN code.
-   // We also keep track of whether we did actually do the swap so that
-   // later we can decide whether to swap back or not. Rather than use a
-   // scalar bool at class level to remember whether we did a swap, I use
-   // a stack. This is potentially necessary when one instance of a FORTRAN
-   // model calls into another instance of the same FORTRAN model.
+   // We also keep track of the previous wrappers, necessary when one instance of a FORTRAN
+   // model calls into another instance of the same FORTRAN component interface.
    // -----------------------------------------------------------------------
-   bool doSwap = (currentWrapper != this);
-   if (doSwap)
-      {
-      currentWrapper = this;
-      realCommonBlock = ourCommonBlock;
-      }
-   DidSwap.push(doSwap);
+   callStack.push(currentWrapper);
+
+   currentWrapper = this;
+   memcpy(realCommonBlock, &ourCommonBlock, sizeof(CommonBlock));
    }
 void FortranComponentWrapper::swapInstanceOut()
    {
@@ -104,12 +95,11 @@ void FortranComponentWrapper::swapInstanceOut()
    // Save the contents of the real FORTRAN common block back into our
    // stored common block.
    // -----------------------------------------------------------------------
-   if (DidSwap.top())
+   if ((currentWrapper = callStack.top()) != NULL)
       {
-      DidSwap.pop();
-      ourCommonBlock = realCommonBlock;
-      currentWrapper = NULL;
+      memcpy(currentWrapper->realCommonBlock, &(currentWrapper->ourCommonBlock), sizeof(CommonBlock));
       }
+   callStack.pop();
    }
 
 // -----------------------------------------------------------------------
@@ -126,9 +116,15 @@ extern "C" void EXPORT STDCALL Fatal(const char* msg, unsigned int msgLength)
    {
    currentWrapper->componentInterface().error(FortranString(msg, msgLength).toString(), true);
    }
+
 extern "C" void EXPORT STDCALL Warning(const char* msg, unsigned int msgLength)
    {
    currentWrapper->componentInterface().error(FortranString(msg, msgLength).toString(), false);
+   }
+
+extern "C" void EXPORT STDCALL publish_null(const char* msg, unsigned int msgLength)
+   {
+   currentWrapper->componentInterface().publish(FortranString(msg, msgLength).toString(), NULL);
    }
 
 // -----------------------------------------------------------------------
@@ -183,9 +179,6 @@ extern "C" int EXPORT STDCALL ReadString
    return currentWrapper->componentInterface().read(FortranString(name, nameLength).toString(),
                                                     &variable,
                                                     (bool)*optional);
-   //string st;
-   //buildString(values, " ");
-   //FortranString(value, valueLength) = st.c_str();
    }
 extern "C" int EXPORT STDCALL ReadIntegerArray
    (const char* name, const char* units, int* optional, int* value, int* numValues, int* maxValues, int* lower, int* upper,
@@ -490,4 +483,3 @@ extern "C" void EXPORT STDCALL SetStringArray
                                             FortranString(Units, UnitsLength).toString(),
                                             wrapper);
    }
-

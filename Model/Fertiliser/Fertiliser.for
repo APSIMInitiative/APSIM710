@@ -1,6 +1,4 @@
       module FertilizModule
-      use ComponentInterfaceModule
-      use Registrations
  
       integer    max_layer
       parameter (max_layer = 100)
@@ -21,10 +19,9 @@
 
 
       ! instance variables.
-      common /InstancePointers/ ID,g,p,c
+      common /InstancePointers/ g,p,c
       save InstancePointers
       type (FertilizGlobals),pointer :: g
-      type (IDsType),pointer :: id
 
 
       contains
@@ -296,6 +293,9 @@ c     include   'fertiliz.inc'
   100    continue
 
          g%fert_applied = g%fert_applied + amount
+         write (string,*) 'fert_appl=',g%fert_applied
+         call WriteLine(string)
+
          write (string, '(1x, f7.2, 6a, 41x, a, f7.2, a, i3, a)')
      :             amount,
      :             ' of ',
@@ -311,7 +311,6 @@ c     include   'fertiliz.inc'
      :             ')'
 
         call WriteLine(string)
-
       else
             ! we have no fertiliser applied
       endif
@@ -338,10 +337,8 @@ c     include   'fertiliz.inc'
 
       if (doAllocate) then
          allocate(g)
-         allocate(id)
       else
          deallocate(g)
-         deallocate(id)
       end if
       return
       end subroutine

@@ -54,7 +54,7 @@ extern "C" void EXPORT STDCALL createInstance
 
    // create a component interface and a science api that the component
    // will talk to.
-   bit->componentInterface = new CMPComponentInterface(callbackArg, callback, *componentID, *parentID);
+   bit->componentInterface = new CMPComponentInterface(callbackArg, callback, *componentID, *parentID, dllFileName);
    bit->scienceAPI = new ScienceAPIImpl(*bit->componentInterface);
 
    // go create an instance of our component by loading the correct dll

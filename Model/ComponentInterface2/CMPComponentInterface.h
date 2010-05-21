@@ -15,7 +15,7 @@ typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message
 class EXPORT CMPComponentInterface
    {
    public:
-      CMPComponentInterface(unsigned* callbackarg, CallbackType* callback, unsigned componentID, unsigned parentID);
+      CMPComponentInterface(unsigned* callbackarg, CallbackType* callback, unsigned componentID, unsigned parentID, const std::string &dllName);
       ~CMPComponentInterface();
 
       bool get(const std::string& name, const std::string& units, bool optional, Packable* data);
@@ -43,9 +43,10 @@ class EXPORT CMPComponentInterface
 
       void write(const std::string& msg);
 
-      std::string getName();
-      std::string getFQName();
-
+      std::string getName(void);
+      std::string getFQName(void);
+      std::string getExecutableFileName(void);
+      
       // internal stuff.
       void messageToLogic(const Message& message);
 
@@ -63,6 +64,7 @@ class EXPORT CMPComponentInterface
       unsigned parentID;
       std::string name;
       std::string pathName;
+      std::string dllName;
       CallbackType* messageCallback;
       bool errorHasOccurred;
       XMLDocument* simScript;

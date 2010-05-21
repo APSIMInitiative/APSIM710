@@ -23,7 +23,8 @@ string state = "";
 // =============================================================================
 // =============================================================================
 CMPComponentInterface::CMPComponentInterface(unsigned* callbackarg, CallbackType* callback,
-                                             unsigned componentid, unsigned parentid)
+                                             unsigned componentid, unsigned parentid, 
+                                             const std::string &_dllName)
    // -----------------------------------------------------------------------
    // constructor
    // -----------------------------------------------------------------------
@@ -32,6 +33,7 @@ CMPComponentInterface::CMPComponentInterface(unsigned* callbackarg, CallbackType
    messageCallback = callback;
    componentID = componentid;
    parentID = parentid;
+   dllName = _dllName;
    initMessageFactory();
    errorHasOccurred = false;
    simScript = NULL;
@@ -696,8 +698,9 @@ void CMPComponentInterface::terminate(void)
    sendMessage(newMessage(Message::TerminateSimulation, componentID, parentID, false, n));
    }
 
-std::string CMPComponentInterface::getName() {return name;}
-std::string CMPComponentInterface::getFQName() {return (pathName + "." + name);}
+std::string CMPComponentInterface::getName(void) {return name;}
+std::string CMPComponentInterface::getFQName(void) {return (pathName + "." + name);}
+std::string CMPComponentInterface::getExecutableFileName(void) {return dllName; }
 
 // Fake a system registration (that we will publish an event later) so that
 // the variable name probing works

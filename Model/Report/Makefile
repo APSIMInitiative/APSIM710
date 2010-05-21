@@ -3,7 +3,7 @@ include $(APSIM)/Model/Build/Platform.make
 PROJECT = Report
 
 SRC = Report.cpp ReportComponent.cpp ../ComponentInterface2/CMPComponentEntryPoints.cpp
-LIBS = General ApsimShared ComponentInterface2
+LIBS = ComponentInterface2 ApsimShared General 
 
 PROJECTTYPE = dll
 

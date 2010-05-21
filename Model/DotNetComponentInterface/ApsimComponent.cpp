@@ -11,7 +11,7 @@ using namespace CSGeneral;
 
 extern "C" {
 	[DllImport("ComponentInterface2.dll", EntryPoint = "CICreate", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
-	int CICreate(const unsigned* callbackarg, CallbackType callback, unsigned componentid, unsigned parentid);
+	int CICreate(const unsigned* callbackarg, CallbackType callback, unsigned componentid, unsigned parentid, String^ dllName);
 
 	[DllImport("ComponentInterface2.dll", EntryPoint = "CIDelete", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
 	int CIDelete(int ComponentInterface);
@@ -85,11 +85,12 @@ void ApsimComponent::createInstance(const char* dllFileName,
 	// Called by APSIM to create ourselves
 	// -----------------------------------
 	Contents = gcnew StringBuilder(100000);
-   ComponentID = compID;
-	ComponentI = CICreate(callbackArg, callback, compID, parentID);
+        ComponentID = compID;
 
-   // Load in the reflectiion dll in case our host component want's to use it.
-   DllFileName = gcnew String(dllFileName);
+        // Load in the reflectiion dll in case our host component want's to use it.
+        DllFileName = gcnew String(dllFileName);
+
+	ComponentI = CICreate(callbackArg, callback, compID, parentID, DllFileName);
 	}
 
 void ApsimComponent::deleteInstance()

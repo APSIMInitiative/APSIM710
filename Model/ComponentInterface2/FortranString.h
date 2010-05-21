@@ -4,8 +4,19 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <string.h>
+#ifndef __WIN32__
+#include <strings.h>
+#else
+ #ifndef strncasecmp
+ #define strncasecmp strnicmp
+ #endif
+#endif
+
 #include <General/platform.h>
+
 class MessageData;
+
 
 // ------------------------------------------------------------------
 // Encapsulates a case insensitive FORTRAN string.
@@ -51,13 +62,8 @@ class EXPORT FortranString
 
       bool operator== (const FortranString& rhs) const
          {
-         #if __WIN32__
-         return (length() == rhs.length() &&
-                 strnicmp(f_str(), rhs.f_str(), length()) == 0);
-         #else
          return (length() == rhs.length() &&
                  strncasecmp(f_str(), rhs.f_str(), length()) == 0);
-         #endif
          }
       bool operator!= (const FortranString& rhs) const
          {return !(*this == rhs);}
@@ -81,8 +87,8 @@ class EXPORT FortranString
             }
          else
             {
-			std::memcpy(text, rhs.f_str(), rhsLength);
-			std::memset(&text[rhsLength], ' ', len - rhsLength);
+            memcpy(text, rhs.f_str(), rhsLength);
+            memset(&text[rhsLength], ' ', len - rhsLength);
             realLen = rhsLength;
             }
          return *this;
@@ -98,8 +104,8 @@ class EXPORT FortranString
             }
          else
             {
-			std::memcpy(text, rhs.c_str(), rhsLength);
-			std::memset(&text[rhsLength], ' ', len - rhsLength);
+            memcpy(text, rhs.c_str(), rhsLength);
+            memset(&text[rhsLength], ' ', len - rhsLength);
             realLen = rhsLength;
             }
          return *this;

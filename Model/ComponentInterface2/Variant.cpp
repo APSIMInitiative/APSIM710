@@ -24,7 +24,7 @@ EXPORT STDCALL Variant::~Variant() { if (bufStart) {free(bufStart); bufLen = 0;}
        if (data.bufStart) {free( data.bufStart);}
        data.bufStart = (char*) malloc (messageData.bytesUnRead());
        data.bufLen = messageData.bytesUnRead();
-       std::memcpy(data.bufStart, messageData.ptr(), messageData.bytesUnRead()); 
+       memcpy(data.bufStart, messageData.ptr(), messageData.bytesUnRead()); 
        }
    unsigned memorySize(Variant& data) 
        {

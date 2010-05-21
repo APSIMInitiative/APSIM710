@@ -48,7 +48,7 @@ extern "C" void EXPORT STDCALL createInstance
 
    // create a component interface and a science api that the component
    // will talk to.
-   bit->componentInterface = new CMPComponentInterface(callbackArg, callback, *componentID, *parentID);
+   bit->componentInterface = new CMPComponentInterface(callbackArg, callback, *componentID, *parentID, dllFileName);
    bit->scienceAPI = new ScienceAPIImpl(*bit->componentInterface);
 
    // go create an instance of our component by loading the correct dll
@@ -118,9 +118,9 @@ extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
 
 
 extern "C" CMPComponentInterface EXPORT * STDCALL CICreate
-   (unsigned* callbackarg, CallbackType* callback, unsigned componentid, unsigned parentid)
+   (unsigned* callbackarg, CallbackType* callback, unsigned componentid, unsigned parentid, const char *dllName)
    {
-   return new CMPComponentInterface(callbackarg, callback, componentid, parentid);
+   return new CMPComponentInterface(callbackarg, callback, componentid, parentid, dllName);
    }
 
 extern "C" void EXPORT STDCALL  CIDelete

@@ -20,7 +20,6 @@ class FortranComponentWrapper
       void swapInstanceOut();
 
    private:
-      std::stack<bool> DidSwap;
       struct CommonBlock
          {
          const char* id;
@@ -43,13 +42,14 @@ class FortranComponentWrapper
          unsigned int dummy10;
          };
 
+      std::stack<FortranComponentWrapper *> callStack;
       ScienceAPI& scienceapi;
       CMPComponentInterface* componentinterface;
       void* dllHandle;
       typedef void (STDCALL NullMethod)();
       typedef void (STDCALL BoolMethod)(const int* doAllocate);
       BoolMethod* allocDealloc;
-      CommonBlock& realCommonBlock;
+      CommonBlock *realCommonBlock;
       CommonBlock ourCommonBlock;
 
       void onInit1();
