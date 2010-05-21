@@ -117,20 +117,19 @@ cnh         g%wp=wpf(p%n,p%dx,g%th)
          g%wp = apswim_wpf()
 
          balerr=g%ron-g%roff-g%q(p%n+1)-g%rex-g%res+g%rssf-
-     1          (g%h-g%hold+g%wp-wpold+(g%hbp-g%hbpold)*p%sbp)/g%dt
+     1          (g%h-g%hold+g%wp-wpold)/g%dt
          err=0.
          do 20 i=i1,i2
             aerr=abs(rhs(i))
             if(err.lt.aerr)err=aerr
 20       continue
 *        switch off iteration for root extraction if err small enough
-         if(err.lt.p%errex*g%rex.and.iroots.eq.0)iroots=1
-         if(abs(balerr).lt.p%ersoil.and.err.lt.p%ernode)then
+         if(err.lt.c%errex*g%rex.and.iroots.eq.0)iroots=1
+         if(abs(balerr).lt.c%ersoil.and.err.lt.c%ernode)then
             fail=.FALSE.
          else
             neq=i2-i1+1
-            ibpf=p%ibp-i1+1
-            call apswim_thomas(neq,ibpf,a(i1),b(i1),c_(i1),rhs(i1)
+            call apswim_thomas(neq,a(i1),b(i1),c_(i1),rhs(i1)
      :                        ,g%qbpd,d(i1),dp(i1),vbp,fail)
             g%work=g%work+neq
 cnh            if(fail)go to 90
@@ -146,8 +145,8 @@ cnh     :            'swim will reduce timestep to solve water movement')
 *           limit step size_of for soil nodes
             i0=max(i1,0)
             do 30 i=i0,i2
-               if(dp(i).gt.p%dppl)dp(i)=p%dppl
-               if(dp(i).lt.-p%dpnl)dp(i)=-p%dpnl
+               if(dp(i).gt.c%dppl)dp(i)=c%dppl
+               if(dp(i).lt.-c%dpnl)dp(i)=-c%dpnl
 30          continue
 *           update solution
             j=i0
@@ -422,10 +421,10 @@ cnh - end subroutine
          ifirst=0
          ilast=p%n
          if(p%itbc.eq.2.and.g%hold.gt.0.)ifirst=-1
-         if (p%ibbc.eq.0)gr = p%constant_gradient
+         if (p%ibbc.eq.0)gr = p%bbc_value
 
          if(p%ibbc.eq.1)then
-            g%psi(p%n) = p%constant_potential
+            g%psi(p%n) = p%bbc_value
             g%p(p%n)=apswim_pf(g%psi(p%n))
          end if
 
@@ -443,9 +442,9 @@ cnh - end subroutine
          call apswim_watvar(0,g%p(0),v1,psip(0),psipp(0),g%th(0),thp(0),
      1               g%hk(0),hkp(0))
       end if
-      if(p%ibbc.eq.3.and.g%psi(p%n).gt.p%constant_potential)then
+      if(p%ibbc.eq.3.and.g%psi(p%n).gt.p%bbc_value)then
 *        seepage at bottom boundary
-         g%psi(p%n)=p%constant_potential
+         g%psi(p%n)=p%bbc_value
          g%p(p%n)=apswim_pf(g%psi(p%n))
          call apswim_watvar(p%n,g%p(p%n),v1,psip(p%n),psipp(p%n)
      :                     ,g%th(p%n),thp(p%n),g%hk(p%n),hkp(p%n))
@@ -537,7 +536,7 @@ c                     value=min(1d0,value)
 **       infinite conductance
          ifirst=0
          if(g%psi(0).lt.0.)then
-            hsoil=exp(hcon*g%psi(0))
+            hsoil=max(hair,exp(hcon*g%psi(0)))
             g%res=g%resp*(hsoil-hair)/(1.-hair)
             respsi=g%resp*hcon*hsoil/(1.-hair)
          else
@@ -656,35 +655,9 @@ c                     value=min(1d0,value)
       g%qbp=0.
       g%qbpd=0.
       qbpp=0.
-      g%hbp=0.
       qbps=0.
       qbpsp=0.
-      if(p%ibp.ne.0)then
-         if(g%psi(p%ibp).gt.0.)then
-*           allow for change in storage
-            g%hbp=g%psi(p%ibp)
-            qbps=(g%hbp-g%hbpold)*p%sbp/g%dt
-            qbpsp=psip(p%ibp)*p%sbp/g%dt
-         else
-            qbps=-g%hbpold*p%sbp/g%dt
-         end if
-         if(g%roff.gt.0..or.g%psi(p%ibp).gt.g%gf*(p%x(p%ibp)-p%x(0)))
-     :   then
-*           get bypass flow
-            if(g%psi(p%ibp).gt.0.)then
-               g%qbp=p%gbp*(g%gf*(p%x(p%ibp)-p%x(0))-g%psi(p%ibp))
-               qbpp=-p%gbp*psip(p%ibp)
-            else
-               g%qbp=p%gbp*g%gf*(p%x(p%ibp)-p%x(0))
-            end if
-            if(g%roff.lt.g%qbp)then
-               g%qbp=g%roff
-               qbpp=0.
-               g%qbpd=roffd
-            end if
-            g%roff=g%roff-g%qbp
-         end if
-      end if
+
 ***   bottom boundary condition
       if(p%ibbc.eq.0)then
 **       zero matric potl gradient
@@ -695,10 +668,7 @@ c                     value=min(1d0,value)
          ilast=p%n-1
          g%q(p%n+1)=g%q(p%n)-g%qs(p%n)-g%qex(p%n)+g%qssif(p%n)
      :             -g%qssof(p%n)
-         if(p%ibp.eq.p%n)then
-            g%q(p%n+1)=g%q(p%n+1)+g%qbp-qbps
-            g%qbpd=0.
-         end if
+
       else if(p%ibbc.eq.2)then
 **       zero flux
          g%q(p%n+1)=0.
@@ -706,10 +676,9 @@ c                     value=min(1d0,value)
       else if(p%ibbc.eq.3)then
 **       seepage
 cnh added to allow seepage to user potential at bbc
-         if(g%psi(p%n).ge.p%constant_potential) then
+         if(g%psi(p%n).ge.p%bbc_value) then
             g%q(p%n+1)=g%q(p%n)-g%qs(p%n)-g%qex(p%n)+g%qssif(p%n)
      :                -g%qssof(p%n)
-            if(p%ibp.eq.p%n)g%q(p%n+1)=g%q(p%n+1)+g%qbp
             if(g%q(p%n+1).ge.0.)then
                ilast=p%n-1
                g%qbpd=0.
@@ -723,7 +692,7 @@ cnh added to allow seepage to user potential at bbc
          end if
       else if(p%ibbc.eq.4)then
 **       flux calculated according to head difference from water table
-         headdiff = g%psi(p%n) - p%x(p%n) + p%water_table_depth/10d0   ! cm
+         headdiff = g%psi(p%n) - p%x(p%n) + p%bbc_value/10d0   ! cm
      :
          g%q(p%n+1)= headdiff*p%water_table_conductance
          qp1(p%n+1)=psip(p%n)*p%water_table_conductance
@@ -754,12 +723,7 @@ cnh added to allow seepage to user potential at bbc
          end if
          rhs(k)=rhs(k)+g%qs(i)+g%qex(i)-g%qssif(i)+g%qssof(i)
          b(k)=b(k)-qsp(i)-qssofp(i)
-*        bypass flow?
-         if(p%ibp.ne.0.and.i.eq.p%ibp)then
-            rhs(k)=rhs(k)-g%qbp+qbps
-            b(k)=b(k)+qbpp-qbpsp
-         end if
-*        ggg
+
          if(iroots.eq.0)then
 *            a(k)=a(k)-qexp(1,i)
             b(k)=b(k)-qexp(2,i)
@@ -889,7 +853,7 @@ cnh added to allow seepage to user potential at bbc
 *     surface solute balance - assume evap. (g%res) comes from x0 store
       rovr=g%roff+g%qbp
       rinf=g%q(0)+g%res
-      if(rinf.gt.min(p%ersoil,p%ernode))then
+      if(rinf.gt.min(c%ersoil,c%ernode))then
          g%cslsur(solnum)=(g%rslon(solnum)+g%hold*g%cslsur(solnum)/g%dt)
      :                     /(rovr+rinf+g%h/g%dt)
          g%qsl(solnum,0)=rinf*g%cslsur(solnum)
@@ -1026,16 +990,7 @@ cnh     :            +p%dis(solnum,indxsl(solnum,i)))*(aq/thav)**p%disp(solnum)
 50    continue
 *     allow for bypass flow
       g%qslbp(solnum)=0.
-      if(p%ibp.ne.0)then
-         if(g%qbp.ge.0.)then
-            g%qslbp(solnum)=g%qbp*g%cslsur(solnum)
-            rhs(p%ibp)=rhs(p%ibp)-g%qslbp(solnum)
-*           note that if rinf were -ve, old g%cslsur would be used, except
-*           that then g%qbp would probably be -ve
-         else
-            b(p%ibp)=b(p%ibp)-g%qbp
-         end if
-      end if
+
 *     impose boundary conditions
       if(p%itbc.eq.1)then
 *        constant concentration
@@ -1043,7 +998,7 @@ cnh     :            +p%dis(solnum,indxsl(solnum,i)))*(aq/thav)**p%disp(solnum)
       else
          k=0
          rhs(0)=rhs(0)-g%qsl(solnum,0)
-         if(rinf.lt.-min(p%ersoil,p%ernode))then
+         if(rinf.lt.-min(c%ersoil,c%ernode))then
             b(0)=b(0)+.5*rinf
             rhs(0)=rhs(0)-.5*rinf*g%csl(solnum,0)
          end if
@@ -1089,7 +1044,7 @@ cnh     :            dum,fail)
         csltemp(i) = g%csl(solnum,i)
    63 continue
       call apswim_thomas
-     :   (neq,0,a(k),b(k),c_(k),rhs(k),dum1,d(k),csltemp(k),dum2,fail)
+     :   (neq,a(k),b(k),c_(k),rhs(k),dum1,d(k),csltemp(k),dum2,fail)
       do 64 i=0,p%n
         g%csl(solnum,i) = csltemp(i)
    64 continue
@@ -1118,7 +1073,7 @@ cnh end subroutine
             dabs=abs(g%csl(solnum,i)-c1(i))
             if(dmax.lt.dabs)dmax=dabs
 66       continue
-         if(dmax.gt.p%slcerr)then
+         if(dmax.gt.c%slcerr)then
             if(itcnt.eq.itmax)then
                fail=.TRUE.
                go to 90
@@ -1156,7 +1111,7 @@ cnh               kk=indxsl(solnum,i)
          end if
       end if
 *     get surface solute balance?
-      if(rinf.lt.-min(p%ersoil,p%ernode))then
+      if(rinf.lt.-min(c%ersoil,c%ernode))then
 *        flow out of surface
 *CHANGES 6/11/98 to remove/restore Crank-Nicolson time weighting for convection
 *-----
@@ -1186,9 +1141,7 @@ cnh               kk=indxsl(solnum,i)
      :                   /(rovr+g%h/g%dt)
          rslovr=rovr*g%cslsur(solnum)
       end if
-*     allow for bypass flow
-      if(p%ibp.ne.0.and.g%qbp.lt.0.)g%qslbp(solnum)=g%qbp
-     :                                             *g%csl(solnum,p%ibp)
+
       g%rsloff(solnum)=rslovr-g%qslbp(solnum)
 *     get solute fluxes
       do 70 i=1,p%n
@@ -1266,11 +1219,10 @@ cnh     :              -g%qex(p%n)*g%csl(solnum,p%n)*apswim_slupf(1,solnum)
 90    continue
       end subroutine
 * =====================================================================
-      subroutine apswim_thomas(n,ib,a,b,c,rhs,rb,d,v,vb,fail)
+      subroutine apswim_thomas(n,a,b,c,rhs,rb,d,v,vb,fail)
 * =====================================================================
 *     Short description:
 *     Thomas algorithm for solving tridiagonal system of eqns
-*     Allow for bypass flow if ib from 1 to N and rb nonzero
 *
       Use infrastructure
       implicit none
@@ -1286,7 +1238,6 @@ cnh     :              -g%qex(p%n)*g%csl(solnum,p%n)*apswim_slupf(1,solnum)
       double precision c(N)
       double precision d(N)
       logical          fail
-      integer          ib
       double precision rb
       double precision rhs(N)
       double precision v(N)
@@ -1314,24 +1265,6 @@ cnh     :              -g%qex(p%n)*g%csl(solnum,p%n)*apswim_slupf(1,solnum)
       do 20 i=N-1,1,-1
       v(i)=v(i)-d(i+1)*v(i+1)
 20    continue
-      if(ib.ge.1.and.ib.le.N.and.rb.ne.0.)then
-         vb(1)=0.
-         if(ib.eq.1)vb(1)=rb/b(1)
-         do 30 i=2,N
-            if(i.lt.ib)then
-               vb(i)=0.
-            else
-               piv=b(i)-a(i)*d(i)
-               if(i.eq.ib)vb(i)=rb/piv
-               if(i.gt.ib)vb(i)=-a(i)*vb(i-1)/piv
-            end if
-30       continue
-         do 40 i=N-1,1,-1
-40       vb(i)=vb(i)-d(i+1)*vb(i+1)
-         fac=v(1)/(1d0+vb(1))
-         do 50 i=1,N
-50       v(i)=v(i)-fac*vb(i)
-      end if
       fail=.FALSE.
       go to 70
 60    fail=.true.
@@ -1802,7 +1735,7 @@ cnh added following declarations
 *
       qdrain(0:M) = 0d0
       qdrainpsi(0:M) = 0d0
-      dlayer(0:M) = g%dlayer(0:M)
+      dlayer(0:M) = p%dlayer(0:M)
 
       if (p%subsurface_drain.eq.'on') then
          drain_node = find_layer_no(real(p%drain_depth)

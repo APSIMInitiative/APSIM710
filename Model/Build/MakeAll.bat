@@ -107,6 +107,7 @@ call MakeProject Surface
 call MakeProject SurfaceOM
 call MakeProject SurfaceTemp
 call MakeProject SWIM2
+call MakeProject SWIM3
 call MakeProject SysBal
 call MakeProject TclLink
 call MakeProject Tracker

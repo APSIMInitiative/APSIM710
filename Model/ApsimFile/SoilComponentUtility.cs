@@ -141,7 +141,28 @@ namespace ApsimFile
             }
          throw new Exception("Invalid property name: " + PropertyName);
          }
+      /// <summary>
+      /// Use metadata to get the path for a property. Returns it's path if found or blank otherwise.
+      /// </summary>
+      internal List<string> GetPropertyPaths(string PropertyName)
+         {
+         ReadMetaData();
 
+         List<string> Paths = new List<string>();
+         List<XmlNode> Nodes = new List<XmlNode>();
+         XmlHelper.FindAllRecursively(MetaDataNode, PropertyName, ref Nodes);
+         foreach (XmlNode Property in Nodes)
+            {
+            string Path = XmlHelper.FullPath(Property);
+            if (Path.Contains("Properties"))
+               {
+               Path = Path.Replace("/Soil/", "");
+               Path = Path.Replace("Properties/", "");
+               Paths.Add(Path);
+               }
+            }
+         return Paths;
+         }
       /// <summary>
       /// Use metadata to get the path for a variable profile node. 
       /// Returns it's path if found or blank otherwise.
@@ -159,6 +180,23 @@ namespace ApsimFile
          }
 
       /// <summary>
+      /// Return a list of variable paths for the specified variable name.
+      /// </summary>
+      internal List<string> GetVariablePaths(string RawVariableName)
+         {
+         ReadMetaData();
+         List<string> ReturnPaths = new List<string>();
+         List<XmlNode> Nodes = new List<XmlNode>();
+         XmlHelper.FindAllRecursively(MetaDataNode, RawVariableName, ref Nodes);
+         foreach (XmlNode Node in Nodes)
+            {
+            string Path = XmlHelper.FullPath(Node.ParentNode.ParentNode);
+            ReturnPaths.Add(Path.Replace("/Soil/", ""));
+            }
+         return ReturnPaths;
+         }
+
+      /// <summary>
       /// Return a list of valid units for the specified variable.
       /// </summary>
       internal List<string> ValidUnits(string RawVariableName)
@@ -170,6 +208,7 @@ namespace ApsimFile
          else
             return XmlHelper.Values(Variable, "units");
          }
+
       }
 
    public class SoilUtility
@@ -545,19 +584,19 @@ namespace ApsimFile
       /// <summary>
       /// Map the specified variable value to the target thickness.
       /// </summary>
-      internal static void Map(VariableValue Value, double[] ToThickness, double[] ToBD, double[] LL15)
+      internal static void Map(VariableValue Value, double[] ToThickness, Soil S)
          {
-         if (Value.Name == "Thickness" || Value.Doubles == null)
+         if (Value.Doubles == null)
             return;
-         double[] Values = MapToTarget(Value.Name + "(" + Value.Units + ")", Value.Doubles, Value.ThicknessMM, ToThickness, ToBD, LL15);
-         if (Values != null)
-            {
-            Value.Doubles = Values;
-            Value.ThicknessMM = ToThickness;
-            Value.Codes = new string[ToThickness.Length];
-            for (int i = 0; i < Value.Codes.Length; i++)
-               Value.Codes[i] = "Mapped";
-            }
+         if (Value.Name == "Thickness")
+            Value.Doubles = ToThickness;
+         else
+            Value.Doubles = MapToTarget(Value.Name + "(" + Value.Units + ")", Value.Doubles, Value.ThicknessMM, ToThickness, S);
+
+         Value.ThicknessMM = ToThickness;
+         Value.Codes = new string[ToThickness.Length];
+         for (int i = 0; i < Value.Codes.Length; i++)
+            Value.Codes[i] = "Mapped";
          }
 
       /// <summary>
@@ -565,7 +604,7 @@ namespace ApsimFile
       /// thicknesses. Uses the variable name to determine the method.
       /// </summary>
       private static double[] MapToTarget(string VariableName, double[] Values, double[] Thickness,
-                                          double[] ToThickness, double[] ToBD, double[] ToLL15)
+                                          double[] ToThickness, Soil S)
          {
          // If the variable has a space in it then it means that there is a crop name. 
          // Assume the second word is the variable name.
@@ -575,21 +614,26 @@ namespace ApsimFile
 
          string Units = StringManip.SplitOffBracketedValue(ref VariableName, '(', ')');
          if (MathUtility.AreEqual(Thickness, ToThickness))
-            return null;
+            return Values;
 
          string DefaultValueString = SoilMetaData.Instance.MetaData(VariableName, "DefaultValue");
          if (SoilMetaData.Instance.MetaData(VariableName, "MapMethod") == "Spatial" || Units == "ppm")
             {
+            if (Units == "mm")
+               Values = MathUtility.Divide(Values, Thickness);
             if (DefaultValueString == "")
-               return MapToTargetUsingSpatial(Values, Thickness, ToThickness);
+               Values = MapToTargetUsingSpatial(Values, Thickness, ToThickness);
             else if (DefaultValueString == "LL15")
-               return MapToTargetUsingSpatial(Values, Thickness, ToLL15, ToThickness);
+               Values = MapToTargetUsingSpatial(Values, Thickness, S.Variable("LL15(mm/mm)"), ToThickness);
             else
-               return MapToTargetUsingSpatial(Values, Thickness, Convert.ToDouble(DefaultValueString), ToThickness);
+               Values = MapToTargetUsingSpatial(Values, Thickness, Convert.ToDouble(DefaultValueString), ToThickness);
+            if (Units == "mm")
+               Values = MathUtility.Multiply(Values, ToThickness);
+            return Values;
             }
          else if (SoilMetaData.Instance.MetaData(VariableName, "MapMethod") == "Mass")
             {
-            return MapToTargetUsingMass(Values, Thickness, Convert.ToDouble(DefaultValueString), ToThickness, ToBD);
+            return MapToTargetUsingMass(Values, Thickness, Convert.ToDouble(DefaultValueString), ToThickness, S.Variable("BD(g/cc)"));
             }
          else
             {

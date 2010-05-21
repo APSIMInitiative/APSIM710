@@ -456,8 +456,7 @@ bool Component::readParameter
       {
       if (!optional)
          {
-         string msg= "Cannot find a parameter in any of the files/sections\n"
-                     "specified in the control file.\n"
+         string msg= "Cannot find a parameter.\n"
                      "Parameter name = ";
          msg += string(variableName.f_str(), variableName.length());
          msg += "\n";

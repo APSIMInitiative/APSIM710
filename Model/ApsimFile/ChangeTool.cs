@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 21;
+      public static int CurrentVersion = 22;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -53,7 +53,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion18),
                                           new UpgraderDelegate(ToVersion19),
                                           new UpgraderDelegate(ToVersion20),
-                                          new UpgraderDelegate(ToVersion21)
+                                          new UpgraderDelegate(ToVersion21),
+                                          new UpgraderDelegate(ToVersion22)
                                        };
          if (Data != null)
             {
@@ -1418,6 +1419,33 @@ namespace ApsimFile
          XmlNode NodeToMove = XmlHelper.Find(Node, NodeName);
          if (NodeToMove != null)
             NodeToMoveTo.AppendChild(NodeToMove);
+         }
+
+      private static void ToVersion22(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // Rework the soil nodes that have shortcuts.
+         // ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "soil" && XmlHelper.Attribute(Node, "shortcut") == "")
+            {
+            XmlNode SoilWatNode = XmlHelper.Find(Node, "SoilWat");
+            if (SoilWatNode != null)
+               {
+               XmlHelper.SetValue(SoilWatNode, "Slope", "");
+               XmlHelper.SetValue(SoilWatNode, "DischargeWidth", "");
+               XmlHelper.SetValue(SoilWatNode, "CatchmentArea", "");
+               }
+            XmlNode SoilOrganicMatterNode = XmlHelper.Find(Node, "SoilOrganicMatter");
+            if (SoilOrganicMatterNode != null)
+               {
+               MoveSoilNode(Node, "SoilWat/RootCN", SoilOrganicMatterNode);
+               MoveSoilNode(Node, "SoilWat/RootWT", SoilOrganicMatterNode);
+               MoveSoilNode(Node, "SoilWat/SoilCN", SoilOrganicMatterNode);
+               MoveSoilNode(Node, "SoilWat/EnrACoeff", SoilOrganicMatterNode);
+               MoveSoilNode(Node, "SoilWat/EnrBCoeff", SoilOrganicMatterNode);
+               }
+            }
          }
 
       }

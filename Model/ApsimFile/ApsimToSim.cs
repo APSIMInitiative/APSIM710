@@ -159,6 +159,9 @@ public class ApsimToSim
          if (SoilComponent != null)
             {
             Soil SoilInPaddock = Soil.CreateFromXML(SoilComponent.FullXMLNoShortCuts());
+
+            // Optionally set a targetthickess.
+            SoilInPaddock.UseThicknessIfPresent();
             ApsimToSimContents = SoilInPaddock.ReplaceSoilMacros(ApsimToSimContents);
             }
          }

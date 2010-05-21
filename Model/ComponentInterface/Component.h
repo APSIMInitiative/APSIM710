@@ -646,8 +646,7 @@ class EXPORT Component
          {
          if (!optional)
              {
-             string msg = string("Cannot find a parameter in any of the files/sections\n"
-                                 "specified in the control file.\n"
+             string msg = string("Cannot find a parameter.\n"
                                  "Parameter name = ") + variableName;
              msg += "\nSection name = " + sectionName;
              error(msg, true);
@@ -697,8 +696,7 @@ class EXPORT Component
          {
          if (!optional)
              {
-             string msg = string("Cannot find a parameter in any of the files/sections\n"
-                                 "specified in the control file.\n"
+             string msg = string("Cannot find a parameter.\n"
                                  "Parameter name = ") + variableName;
              msg += "\nSection name = " + sectionName;
              error(msg, true);
@@ -767,8 +765,7 @@ class EXPORT Component
 
          if (!optional)
             {
-            std::string msg = string("Cannot find a parameter in any of the files/sections\n"
-                                     "specified in the control file.\n"
+            std::string msg = string("Cannot find a parameter.\n"
                                      "Parameter name = ") + variableName;
             for (unsigned i = 0; i != sections.size(); i++)
                 msg += "\nSection name = " + sections[i];
@@ -790,8 +787,7 @@ class EXPORT Component
 
          if (!isOptional)
             {
-            std::string msg = string("Cannot find a parameter in any of the files/sections\n"
-                                 "specified in the control file.\n"
+            std::string msg = string("Cannot find a parameter.\n"
                                  "Parameter name = ") + name;
             for (unsigned i = 0; i != sects.size(); i++)
                 msg += "\nSection name = " + sects[i];

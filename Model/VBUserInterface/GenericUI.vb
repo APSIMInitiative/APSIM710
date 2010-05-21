@@ -183,7 +183,26 @@ Public Class GenericUI
         ' Save all our changes back to Data
         ' --------------------------------------------------------------
         If IsDirty Then
-            Editor.OnDataChanged(GridUtility.GridToDataTable(Grid))
+
+            Dim NumValues As Integer = Grid.RowCount
+
+            Dim Table As DataTable = New DataTable("Data")
+            Table.Columns.Add(Grid.Columns(0).HeaderText, GetType(String))
+            Table.Columns.Add(Grid.Columns(1).HeaderText, GetType(String))
+            Table.Columns.Add(Grid.Columns(2).HeaderText, GetType(String))
+            Table.Columns.Add(Grid.Columns(3).HeaderText, GetType(String))
+            Table.Columns.Add(Grid.Columns(4).HeaderText, GetType(String))
+
+            For Row As Integer = 0 To NumValues - 1
+                Dim NewRow As DataRow = Table.NewRow()
+                Table.Rows.Add(NewRow)
+                For Col As Integer = 0 To Grid.Columns.Count - 1
+                    If Not IsNothing(Grid.Rows(Row).Cells(Col).Value) Then
+                        NewRow(Col) = Grid.Rows(Row).Cells(Col).Value.ToString()
+                    End If
+                Next
+            Next
+            Editor.OnDataChanged(Table)
         End If
     End Sub
 

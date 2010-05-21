@@ -17,6 +17,7 @@
     <canola />
     <centro />
     <chickpea />
+    <chickpea2 />
     <cotton />
     <cowpea />
     <egrandis />
@@ -165,7 +166,26 @@
           <Date type="date" description="Sample date:" />
         </Sample>
       </soil>
-    <surfaceom name="Surface Organic Matter">
+        <folder name="SWIM3">
+       <Swim name="Swim">
+       	   <x>   0      10   50    100   200   300   400    500   600    700    800    900   1000   1100   1200   1300   1400   1500   1600   1700 </x>
+          <Salb>0.13</Salb>
+          <Cn2Bare>73</Cn2Bare>
+          <CnRed>20</CnRed>
+          <CnCov>0.8</CnCov>
+          <Kd>0.0126</Kd>
+          <VC type="list" listvalues="on,off">on</VC>
+          <dtmin>0.0</dtmin>
+          <dtmax>1440.</dtmax>
+          <MaxWaterIncrement>1.0</MaxWaterIncrement>
+          <SpaceWeightingFactor>0.0</SpaceWeightingFactor>
+          <SoluteSpaceWeightingFactor>0.0</SoluteSpaceWeightingFactor>
+          <BottomBoundaryCondition type="list" listvalues="gradient,watertable,zeroflux,seepage" description="BottomBoundaryCondition">gradient</BottomBoundaryCondition>
+          <BottomBoundaryValue type="text" description="BottomBoundaryValue">0.0</BottomBoundaryValue>
+          <WaterTableConductance type="text" description="WaterTableConductance">0.0</WaterTableConductance>
+        </Swim>
+        </folder>
+      <surfaceom name="Surface Organic Matter">
       <PoolName description="Organic Matter pool name">wheat_stubble</PoolName>
       <type type="list" description="Organic Matter type" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,WF_Millet,wheat">wheat</type>
       <mass description="Initial surface residue (kg/ha)">1000.</mass>
@@ -208,6 +228,9 @@
       <profile_layer_merge description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
       <minimum_depth description="If the profile erodes to this depth, the simulation is stopped (mm)">100.0</minimum_depth>
     </erosion>
+    <Thickness>
+      <Values description="Enter soil profile thickness values for APSIM (mm)">100 100 100 300 300 300</Values>
+    </Thickness>
   </folder>
   <clock name="Clock">
     <start_date name="start_date" description="Select the start date of the simulation" type="date">1/01/1988</start_date>

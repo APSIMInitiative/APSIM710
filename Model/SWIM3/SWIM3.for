@@ -7,14 +7,8 @@
       character calc_section*(*)
       parameter (calc_section = 'calc')
 
-      character crop_section*(*)
-      parameter (crop_section = 'crop')
-
-      character climate_section*(*)
-      parameter (climate_section = 'climate')
-
-      character init_section*(*)
-      parameter (init_section = 'initialisation')
+      character parameters_section*(*)
+      parameter (parameters_section = 'parameters')
 
       character runoff_section*(*)
       parameter (runoff_section = 'runoff')
@@ -28,17 +22,11 @@
       character bottom_boundary_section*(*)
       parameter (bottom_boundary_section = 'bottom_boundary')
 
-      character bypass_flow_section*(*)
-      parameter (bypass_flow_section = 'bypass_flow')
-
       character drain_section*(*)
       parameter (drain_section = 'drain')
 
       integer M
       parameter (M=100)
-
-      integer MP
-      parameter (MP=25) ! originally = 100
 
       integer MV
       parameter (MV=10)
@@ -101,8 +89,6 @@
          double precision TD_slssof(nsol)
          double precision TD_wflow(0:M)
          double precision TD_sflow(nsol,0:M)
-
-         double precision dlayer(0:M)
 
          double precision t
          double precision dt
@@ -183,13 +169,13 @@
          double precision root_conductance(MV)
          double precision pep(MV)
          double precision solute_demand (MV,nsol)
+         real             canopy_height(MV),cover_tot(MV)
 
          double precision crop_cover
          double precision residue_cover
          double precision cover_green_sum
-
-         double precision hbp
-         double precision hbpold
+         real             cover_surface_runoff
+         
          double precision qbp
          double precision qbpd
 !cnh      double precision slbp0
@@ -208,7 +194,9 @@
 
          logical crops_found
          double precision psix(MV)
-
+         
+         double precision CN_runoff
+         
       End Type APSwimGlobals
 ! =====================================================================
 !     APSWIM Parameters
@@ -219,10 +207,12 @@
          character        echo_directives*5
          real             salb
 
-         character        soil_type(0:M)*10
-
+         double precision dlayer(0:M)
          double precision ll15(0:M),DUL(0:M),SAT(0:M),Ks(0:M)
+         
+         double precision Kd
          double precision a(0:M), b(0:M), c(0:M), psii(0:M), psie(0:M)
+         double precision psid(0:M)
 
          integer          ivap
          integer          isbc
@@ -230,29 +220,14 @@
          integer          ibbc
 
          character        solute_names (nsol)*(strsize)
-         character        extra_solute_supply_flag*(strsize)
-         character        solute_exclusion_flag*(strsize)
          integer          num_solutes
 
          double precision dw
          double precision dtmin
          double precision dtmax
 
-         double precision ersoil
-         double precision ernode
-         double precision errex
-         double precision dppl
-         double precision dpnl
-         double precision slcerr
-
          double precision swt
          double precision slswt
-
-!cnh added xbp 19-9-1994
-         double precision gbp
-         double precision sbp
-         double precision xbp
-         integer ibp
 
          double precision hm0
          double precision hm1
@@ -276,15 +251,12 @@
          double precision disp (nsol)
          double precision fip(nsol)
 
-         double precision constant_gradient
-         double precision constant_potential
+         double precision bbc_value
+         double precision water_table_conductance
+
          double precision init_psi  (0:M)
          double precision rhob(0:M)
          double precision exco(nsol)
-         character        crop_table_name (MV)*(strsize)
-         double precision crop_table_psimin(MV)
-         double precision crop_table_root_radius(MV)
-         double precision crop_table_root_con(MV)
 
          integer          n
          double precision x(0:M)
@@ -297,8 +269,10 @@
          double precision drain_radius
          double precision imperm_depth
 
-         double precision water_table_depth
-         double precision water_table_conductance
+
+         real   cn2_bare
+         real   cn_red
+         real   cn_cov
 
       End Type APSwimParameters
 ! =====================================================================
@@ -313,23 +287,41 @@
          real             max_albedo
          real             residue_albedo
 
-         double precision max_bitesize
-         double precision supply_fraction
          double precision a_to_evap_fact
          double precision canopy_eos_coef
 
          character        cover_effects*5
 
+         real    canopy_fact(max_table)              ! canopy factors for cover runoff effect ()
+         real    canopy_fact_height(max_table)       ! heights for canopy factors (mm)
+         real    canopy_fact_default                  ! default canopy factor in absence of height ()
+         integer   num_canopy_fact                    ! number of canopy factors read ()
+
          double precision negative_conc_warn
          double precision negative_conc_fatal
 
          integer          max_iterations
+         double precision ersoil
+         double precision ernode
+         double precision errex
+         double precision dppl
+         double precision dpnl
+         double precision slcerr
+
 
          double precision min_total_root_length
+         character        crop_table_name (MV)*(strsize)
+         double precision crop_table_psimin(MV)
+         double precision crop_table_root_radius(MV)
+         double precision crop_table_root_con(MV)
+
+
          character default_rain_time*6   ! default time of rainfall (hh:mm)
          double precision default_rain_duration        ! default duration of rainfall (min)
          character default_evap_time*6   ! default time of evaporation (hh:mm)
          double precision default_evap_duration        ! default duration of evaporation (min)
+
+         double precision  hydrol_effective_depth
 
       End Type APSwimConstants
 
@@ -354,44 +346,28 @@
 *+  Purpose
 *      Initialise apswim module
 
-*+  Changes
-*     <insert here>
-
-*+  Constant Values
-      character myname*(*)
-      parameter (myname = 'apswim_reset')
-
 *+  Local Variables
        character Event_string*40       ! String to output
        integer   iost                  ! IOSTAT variable
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
-
 
       call apswim_zero_variables ()
 
       call apswim_get_other_variables ()
 
-      ! Notify system that we have initialised
-
-      Event_string = 'Initialising '
-      call Write_string (Event_string)
-
       ! Get all constants from constants file
       call apswim_read_constants ()
 
+      ! set swim defaults - params that are not to be set by user
+      call apswim_init_defaults ()
+      
       ! Get all parameters from parameter file
-
       call apswim_read_param ()
 
       call apswim_read_solute_params()
-      call apswim_read_crop_params()
 
       call apswim_register_solute_outputs()
-
-      ! set swim defaults - params that are not to be set by user
-      call apswim_init_defaults ()
 
       ! calculate anything swim needs from input parameters
       call apswim_init_calc ()
@@ -404,7 +380,6 @@
 
       call apswim_New_Profile_Event()
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -413,22 +388,13 @@
 * ====================================================================
        subroutine apswim_read_param ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *      Read in all parameters from parameter file.
 
-*+  Changes
-*     <insert here>
-
-*+  Constant Values
-       character myname*(*)
-       parameter (myname = 'apswim_read_param')
-
 *+  Local Variables
-       character bypass_flag*5         ! flag for bypass flow (yes/no)
        character ivap_switch*5         ! flag for vapour flow (yes/no)
        integer node                    ! node counter variable
        integer num_nodes               ! number of specified nodes
@@ -437,37 +403,17 @@
        integer num_psi
        integer num_theta
        integer point
-       double precision temp_sl  (MP)
-       double precision temp_hkl (MP)
-       double precision temp_hkld (MP)
-       double precision temp_wc (MP)
-       double precision temp_wcd(MP)
+       character bbc_switch*10
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
          ! ------------- Initial Soil Profile Info ---------------
-
-
-         ! Read in node depths from parameter file
-
-      call Read_double_array (
-     :              init_section,
-     :              'x',
-     :              M+1,
-     :              '(mm)',
-     :              p%x(0),
-     :              num_nodes,  ! get number of nodes from here
-     :              0.0d0,
-     :              1.0d4)      ! 1.0d4mm = 10m
-
-      p%n = num_nodes - 1
 
          ! Read in water content as either volumetric content or
          !                matric potential.
 
       call Read_double_array_optional (
-     :              init_section,
+     :              parameters_section,
      :              'theta',
      :              M+1,
      :              '(cc/cc)',
@@ -477,7 +423,7 @@
      :              1.0d0)
 
       call Read_double_array_optional (
-     :              init_section,
+     :              parameters_section,
      :              'psi',
      :              M+1,
      :              '(??)',
@@ -488,75 +434,64 @@
 
       if ((num_theta.gt.0).and.(num_psi.gt.0))then
          call fatal_error (Err_User,
-     :      'Both g%psi and Theta have been supplied by user.')
+     :      'Both psi and Theta have been supplied by user.')
 
       else if ((num_theta.eq.0).and.(num_psi.eq.0)) then
          call fatal_error (Err_User,
-     :      ' Neither g%psi or Theta have been supplied by user.')
+     :      ' Neither psi or Theta have been supplied by user.')
       else
          ! one of the two has been supplied - OK
       endif
 
 
-         ! Read in soil type water from parameter file
-
-      call Read_char_array (
-     :              init_section,
-     :              'soil_type',
-     :              M+1,
-     :              '(?)',
-     :              p%soil_type(0),
-     :              numvals)
-
          ! ---------------- Configuration Information --------------
-
-         ! Read in bypass flow flag from parameter file
-
-      call Read_char_var (
-     :              init_section,
-     :              'bypass_flow',
-     :              '(??)',
-     :              bypass_flag,
-     :              numvals)
-
-         ! Read in runoff flag from parameter file
-         ! ---------------------------------------
-
-      call Read_integer_var (
-     :              init_section,
-     :              'runoff',
-     :              '(??)',
-     :              p%isbc,
-     :              numvals,
-     :              0,
-     :              2)
-
-         ! Read in surface boundary conditions flag from parameter file
-         ! ------------------------------------------------------------
-         call Read_integer_var (
-     :              init_section,
-     :              'top_boundary_condition',
-     :              '(??)',
-     :              p%itbc,
-     :              numvals,
-     :              0,
-     :              2)
 
          ! Read in bottom boundary conditions flag from parameter file
          ! -----------------------------------------------------------
-      call Read_integer_var (
-     :              init_section,
+      call Read_char_var (
+     :              parameters_section,
      :              'bottom_boundary_condition',
-     :              '(??)',
-     :              p%ibbc,
+     :              '()',
+     :              bbc_switch,
+     :              numvals)
+      if (bbc_switch.eq.'gradient') then
+         p%ibbc = 0
+      elseif (bbc_switch.eq.'watertable') then
+         p%ibbc = 1
+      elseif (bbc_switch.eq.'zeroflux') then
+         p%ibbc = 2
+      elseif (bbc_switch.eq.'seepage') then
+         p%ibbc = 3
+      else
+         call fatal_error (ERR_User,
+     :         'Bad Bottom boundary condition switch.')
+      endif
+      
+         call Read_double_var (
+     :              parameters_section,
+     :              'bottom_boundary_value',
+     :              '()',
+     :              p%bbc_value,
      :              numvals,
-     :              0,
-     :              4)
+     :              -10d6,
+     :               10d6)
+
+         call Read_double_var (
+     :              parameters_section,
+     :              'water_table_conductance',
+     :              '(/h)',
+     :              p%water_table_conductance,
+     :              numvals,
+     :             0d0,
+     :              1d0)
+
+      
+      
 
          ! Read in vapour conductivity flag from parameter file
          ! ----------------------------------------------------
       call Read_char_var (
-     :              init_section,
+     :              parameters_section,
      :              'vapour_conductivity',
      :              '(??)',
      :              ivap_switch,
@@ -568,7 +503,7 @@
       endif
 
       call Read_char_array (
-     :           init_section,
+     :           parameters_section,
      :           'run_solutes',
      :           nsol,
      :           '()',
@@ -581,25 +516,10 @@
          p%solute_names(1) = ' '
       endif
 
-      ! Read in flag for extra_solute_supply
-      call Read_char_var_optional (
-     :              init_section,
-     :              'extra_solute_supply',
-     :              '(??)',
-     :              p%extra_solute_supply_flag,
-     :              numvals)
-
-      ! Read in flag for extra_solute_supply
-      call Read_char_var_optional (
-     :              init_section,
-     :              'solute_exclusion',
-     :              '(??)',
-     :              p%solute_exclusion_flag,
-     :              numvals)
 
       ! Read in flag for echoing incoming messages
       call Read_char_var_optional (
-     :              init_section,
+     :              parameters_section,
      :              'echo_directives',
      :              '(??)',
      :              p%echo_directives,
@@ -607,7 +527,7 @@
 
       ! Read in flag for subsurface drainage
       call Read_char_var_optional (
-     :              init_section,
+     :              parameters_section,
      :              'subsurface_drain',
      :              '()',
      :              p%subsurface_drain,
@@ -618,7 +538,18 @@
 
 
             call Read_double_array (
-     :              init_section,
+     :              parameters_section,
+     :              'dlayer',
+     :              M+1,
+     :              '(mm)',
+     :              p%dlayer(0),
+     :              numvals,
+     :              0.0d0,
+     :              1.0d3)
+            p%n = numvals - 1
+
+            call Read_double_array (
+     :              parameters_section,
      :              'll15',
      :              M+1,
      :              '(mm/mm)',
@@ -627,7 +558,7 @@
      :              0.0d0,
      :              1.0d0)
             call Read_double_array (
-     :              init_section,
+     :              parameters_section,
      :              'dul',
      :              M+1,
      :              '(mm/mm)',
@@ -636,7 +567,7 @@
      :              0.0d0,
      :              1.0d0)
             call Read_double_array (
-     :              init_section,
+     :              parameters_section,
      :              'sat',
      :              M+1,
      :              '(mm/mm)',
@@ -645,17 +576,27 @@
      :              0.0d0,
      :              1.0d0)
             call Read_double_array (
-     :              init_section,
+     :              parameters_section,
      :              'ks',
      :              M+1,
-     :              '(cm/h)',
+     :              '(mm/h)',
      :              p%ks(0),
      :              numvals,  ! get number of nodes from here
      :              0.0d0,
      :              1.0d2)
 
+            call Read_double_var (
+     :              parameters_section,
+     :              'kd',
+     :              '(mm/h)',
+     :              p%Kd,
+     :              numvals,
+     :              0.0d0,
+     :              1.d0)  
+     
+     
             call Read_double_array (
-     :              init_section,
+     :              parameters_section,
      :              'bd',
      :              M+1,
      :              '(g/cc)',
@@ -669,7 +610,7 @@
          ! Read in p%dtmin from parameter file
 
       call Read_double_var (
-     :              calc_section,
+     :              parameters_section,
      :              'dtmin',
      :              '(min)',
      :              p%dtmin,
@@ -680,7 +621,7 @@
          ! Read in p%dtmax from parameter file
 
       call Read_double_var (
-     :              calc_section,
+     :              parameters_section,
      :              'dtmax',
      :              '(min)',
      :              p%dtmax,
@@ -689,65 +630,12 @@
      :              1440.d0)  ! 1440 min = 1 g%day
 
 
-         ! Read in p%ersoil from parameter file
 
-      call Read_double_var (
-     :              calc_section,
-     :              'ersoil',
-     :              '(??)',
-     :              p%ersoil,
-     :              numvals,
-     :              1.0d-10,
-     :              1.0d0)
-
-         ! Read in p%ernode from parameter file
-
-      call Read_double_var (
-     :              calc_section,
-     :              'ernode',
-     :              '(??)',
-     :              p%ernode,
-     :              numvals,
-     :              1.0d-10,
-     :              1.0d0)
-
-         ! Read in p%errex from parameter file
-
-      call Read_double_var (
-     :              calc_section,
-     :              'errex',
-     :              '(??)',
-     :              p%errex,
-     :              numvals,
-     :              1.0d-10,
-     :              1.0d0)
-
-         ! Read in p%dppl from parameter file
-
-      call Read_double_var (
-     :              calc_section,
-     :              'dppl',
-     :              '(??)',
-     :              p%dppl,
-     :              numvals,
-     :              0.0d0,
-     :              1.0d1)
-
-         ! Read in p%dpnl from parameter file
-
-      call Read_double_var (
-     :              calc_section,
-     :              'dpnl',
-     :              '(??)',
-     :              p%dpnl,
-     :              numvals,
-     :              0.0d0,
-     :              1.0d1)
 
          ! Read in max water increment from parameter file
 
       call Read_double_var (
-     :              calc_section,
+     :              parameters_section,
      :              'max_water_increment',
      :              '(??)',
      :              p%dw,
@@ -756,7 +644,7 @@
      :              1.0d1)
 
       call Read_double_var(
-     :           calc_section,
+     :           parameters_section,
      :           'swt',
      :           '()',
      :           p%swt,
@@ -765,16 +653,7 @@
      :           1d0)
 
       call Read_double_var(
-     :           calc_section,
-     :           'slcerr',
-     :           '()',
-     :           p%slcerr,
-     :           numvals,
-     :           1d-8,
-     :           1d-4)
-
-      call Read_double_var(
-     :           calc_section,
+     :           parameters_section,
      :           'slswt',
      :           '()',
      :           p%slswt,
@@ -786,7 +665,7 @@
          ! ------------------ Climate Information ------------------
 
       call Read_char_var (
-     :              climate_section,
+     :              parameters_section,
      :              'evap_source',
      :              '()',
      :              p%evap_source,
@@ -795,7 +674,7 @@
          ! Read in soil albedo from parameter file
 
       call Read_real_var (
-     :              climate_section,
+     :              parameters_section,
      :              'salb',
      :              '(??)',
      :              p%salb,
@@ -804,47 +683,33 @@
      :              1.0)
 
 
-      If (bypass_flag.eq.'on') then
-         p%ibp = 1
-            ! Read in bypass flow depth from parameter file
-
-         call Read_double_var (
-     :              bypass_flow_section,
-     :              'depth',
-     :              '(mm)',
-     :              p%xbp,
+         call Read_real_var (
+     :              parameters_section,
+     :              'cn2_bare',
+     :              '()',
+     :              p%cn2_bare,
      :              numvals,
-     :              1.0d0,
-     :              dble(num_nodes))
+     :              0e0,
+     :              1e2)  
 
-            ! Read in bypass flow conductance from parameter file
-
-         call Read_double_var (
-     :              bypass_flow_section,
-     :              'conductance',
-     :              '(??)',
-     :              p%gbp,
+         call Read_real_var (
+     :              parameters_section,
+     :              'cn_red',
+     :              '()',
+     :              p%cn_red,
      :              numvals,
-     :              1.0d-2,
-     :              1.0d2)
+     :              0e0,
+     :              1e2)  
 
-            ! Read in bypass flow storage from parameter file
-
-         call Read_double_var (
-     :              bypass_flow_section,
-     :              'storage',
-     :              '(??)',
-     :              p%sbp,
+         call Read_real_var (
+     :              parameters_section,
+     :              'cn_cov',
+     :              '()',
+     :              p%cn_cov,
      :              numvals,
-     :              1.0d-2,
-     :              1.0d2)
-
-      else
-         p%ibp = 0
-      endif
-
-
-
+     :              0e0,
+     :              1e0)       
+     
       if (p%isbc.eq.2) then
 
             ! Read in runoff function parameters from parameter file
@@ -952,60 +817,6 @@
       endif
 
 
-
-      If (p%ibbc.eq.0) then
-         call Read_double_var (
-     :              bottom_boundary_section,
-     :              'constant_gradient',
-     :              '(??)',
-     :              p%constant_gradient,
-     :              numvals,
-     :              -10d6,
-     :               10d6)
-
-      elseif (p%ibbc.eq.1) then
-         call Read_double_var (
-     :              bottom_boundary_section,
-     :              'constant_potential',
-     :              '(cm)',
-     :              p%constant_potential,
-     :              numvals,
-     :             -1d7,
-     :              1d7)
-
-      elseif (p%ibbc.eq.2) then
-      elseif (p%ibbc.eq.3) then
-         call Read_double_var (
-     :              bottom_boundary_section,
-     :              'constant_potential',
-     :              '(cm)',
-     :              p%constant_potential,
-     :              numvals,
-     :             -1d7,
-     :              1d7)
-
-      elseif (p%ibbc.eq.4) then
-         call Read_double_var (
-     :              bottom_boundary_section,
-     :              'water_table_depth',
-     :              '(mm)',
-     :              p%water_table_depth,
-     :              numvals,
-     :             0d0,
-     :              p%x(p%n))
-
-         call Read_double_var (
-     :              bottom_boundary_section,
-     :              'water_table_conductance',
-     :              '(/h)',
-     :              p%water_table_conductance,
-     :              numvals,
-     :             0d0,
-     :              1d0)
-
-      else
-      endif
-
       ! Subsurface Drainage Parameters
       ! ==============================
 
@@ -1060,7 +871,6 @@
          ! Do nothing
       endif
 
-      call pop_Routine (myname)
       return
       end subroutine
 
@@ -1069,15 +879,11 @@
 * ====================================================================
        subroutine apswim_get_other_variables ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *      Get the values of variables from other modules
-
-*+  Changes
-*     <insert here>
 
 *+  Local Variables
       integer numvals                  ! number of values returned
@@ -1124,9 +930,6 @@
 *+  Purpose
 *     Update variables owned by other modules.
 
-*+  Changes
-*     <insert here>
-
        double precision start_of_day
        double precision end_of_day
        real daily_rain
@@ -1148,9 +951,6 @@
 
 *+  Purpose
 *     Update variables owned by other modules.
-
-*+  Changes
-*     <insert here>
 
        double precision start_of_day
        double precision end_of_day
@@ -1179,7 +979,7 @@
       else
       endif
 
-         return
+      return
       end subroutine
 
 
@@ -1237,7 +1037,7 @@
          call respond2Get_double_array (
      :            Variable_name,
      :            '(mm)',
-     :            g%dlayer(0),
+     :            p%dlayer(0),
      :            p%n+1)
       else if (Variable_name .eq. 'bd') then
          call respond2Get_double_array (
@@ -1259,7 +1059,7 @@
      :            p%n+1)
       else if (Variable_name .eq. 'sw_dep') then
          do 11 node=0,p%n
-            dummy(node) = g%th(node)*g%dlayer(node)
+            dummy(node) = g%th(node)*p%dlayer(node)
    11    continue
          call respond2Get_double_array (
      :            Variable_name,
@@ -1275,7 +1075,7 @@
      :            p%n+1)
       else if (Variable_name .eq. 'll15_dep') then
          do 12 node=0,p%n
-            dummy(node) = p%LL15(node)*g%dlayer(node)
+            dummy(node) = p%LL15(node)*p%dlayer(node)
    12    continue
          call respond2Get_double_array (
      :            Variable_name,
@@ -1290,7 +1090,7 @@
      :            p%n+1)
       else if (Variable_name .eq. 'dul_dep') then
          do 13 node=0,p%n
-            dummy(node) = p%DUL(node)*g%dlayer(node)
+            dummy(node) = p%DUL(node)*p%dlayer(node)
    13    continue
          call respond2Get_double_array (
      :            Variable_name,
@@ -1305,7 +1105,7 @@
      :            p%n+1)
       else if (Variable_name .eq. 'sat_dep') then
          do 14 node=0,p%n
-            dummy(node) = p%SAT(node)*g%dlayer(node)
+            dummy(node) = p%SAT(node)*p%dlayer(node)
    14    continue
          call respond2Get_double_array (
      :            Variable_name,
@@ -1324,6 +1124,7 @@
      :            g%p(0),
      :            p%n+1)
       else if (Variable_name .eq. 'psi') then
+
          call respond2Get_double_array (
      :            Variable_name,
      :            '(??)',
@@ -1335,6 +1136,18 @@
      :            Variable_name,
      :            '(mm)',
      :            g%TD_runoff)
+
+      else if (Variable_name .eq. 'cn_runoff') then
+         call respond2Get_double_var (
+     :            Variable_name,
+     :            '(mm)',
+     :            g%CN_runoff)
+
+      else if (Variable_name .eq. 'cover_surface_runoff') then
+         call respond2Get_real_var (
+     :            Variable_name,
+     :            '()',
+     :            g%cover_surface_runoff)
 
       else if (Variable_name .eq. 'infiltration') then
 
@@ -1356,7 +1169,7 @@
      :            Variable_name,
      :            '(mm)',
      :            g%TD_pevap)
-cnh      print*,g%TD_pevap
+
       else if (Variable_name .eq. 'drain') then
          call respond2Get_double_var (
      :            Variable_name,
@@ -1379,13 +1192,13 @@ cnh      print*,g%TD_pevap
      :            '(mm)',
      :            eo)
 
-      else if (index (Variable_name, 'uptake_').eq.1) then
-         call split_line (Variable_name(8:),uname,ucrop,'_')
-         call apswim_get_uptake (ucrop, uname, uptake, uunits,uflag)
+      else if (index (Variable_name, 'uptake_water_').eq.1) then
+         ucrop = Variable_name(14:)
+         call apswim_get_sw_uptake (ucrop, uptake, uflag)
          if (uflag) then
             call respond2Get_double_array (
      :            Variable_name,
-     :            uunits,
+     :            '(mm)',
      :            uptake(0),
      :            p%n+1)
          else
@@ -1603,7 +1416,6 @@ cnh added as per request by Dr Val Snow
 * ====================================================================
        subroutine apswim_set_my_variable (Variable_name)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -1615,9 +1427,6 @@ cnh added as per request by Dr Val Snow
 
 *+  Changes
 *      21-06-96 NIH Changed respond2set calls to collect calls
-
-*+  Calls
-
 
 *+  Local Variables
       integer          node
@@ -1709,7 +1518,7 @@ cnh added as per request by Dr Val Snow
          call collect_double_var (
      :              Variable_name,
      :              '(cm)',
-     :              p%constant_potential,
+     :              p%bbc_value,
      :              numvals,
      :              -1d7,
      :              1d7)
@@ -1723,7 +1532,7 @@ cnh added as per request by Dr Val Snow
          call collect_double_var (
      :              Variable_name,
      :              '(cm)',
-     :              p%constant_gradient,
+     :              p%bbc_value,
      :              numvals,
      :              -1d7,
      :              1d7)
@@ -1741,20 +1550,15 @@ cnh added as per request by Dr Val Snow
       return
       end subroutine
 
-
-
 * ====================================================================
        subroutine apswim_zero_variables ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *     Set all variables in this module to zero.
 
-*+  Changes
-*     <insert here>
 
 *+  Local Variables
        integer counter
@@ -1790,17 +1594,15 @@ cnh added as per request by Dr Val Snow
       call apswim_reset_daily_totals ()
 
       do 6 counter = 0,M
-         g%dlayer(counter) = 0d0
          p%LL15(counter) = 0d0
          p%DUL(counter) = 0d0
          p%SAT(counter) = 0d0
+         p%dlayer(counter) = 0d0
     6 continue
       p%salb = 0.0
 
       g%run_has_started = .false.
 
-      p%constant_potential = 0.d0
-      p%constant_gradient = 0.d0
       g%crop_cover = 0.0d0
 
 * =====================================================================
@@ -1862,11 +1664,6 @@ cnh
 cnh*      common/bypass/p%ibp,p%gbp,p%sbp,g%hbp,g%hbp0,g%hbpold,g%qbp,g%qbpd,slbp0,g%qslbp
 *      common/bypass/p%ibp,p%gbp,p%sbp,g%hbp,g%hbp0,g%hbpold,g%qbp,g%qbpd,g%qslbp
 * =====================================================================
-      p%ibp = 0
-      p%gbp = 0d0
-      p%sbp = 0d0
-      g%hbp = 0d0
-      g%hbpold = 0d0
       g%qbp = 0d0
       g%qbpd = 0d0
 cnh      slbp0 = 0d0
@@ -1876,7 +1673,7 @@ cnh      slbp0 = 0d0
 
 * =====================================================================
 *      common/soilpr/p%ivap,index,wtint,g%hys,g%hysref,
-*     1              g%hysdry,g%hyscon,p%slmin,p%slmax,p%sl,p%wc,
+*     1              g%hysdry,g%hyscon,p%sl,p%wc,
 *     2              p%wcd,p%hkl,p%hkld
 * =====================================================================
 
@@ -1891,7 +1688,7 @@ cnh      slbp0 = 0d0
          p%psii(counter) = 0d0
          p%psie(counter) = 0d0
   211 continue
-
+      p%Kd = 0d0
       p%ivap = 0
 
 * =====================================================================
@@ -1962,13 +1759,13 @@ c            indxsl(counter,counter2)=0
 * =====================================================================
 *      common/itern/p%ersoil,p%ernode,p%errex,p%dppl,p%dpnl,g%work,p%slcerr,g%slwork
 * =====================================================================
-      p%ersoil = 0d0
-      p%ernode = 0d0
-      p%errex = 0d0
-      p%dppl = 0d0
-      p%dpnl = 0d0
+      c%ersoil = 0d0
+      c%ernode = 0d0
+      c%errex = 0d0
+      c%dppl = 0d0
+      c%dpnl = 0d0
       g%work = 0d0
-      p%slcerr = 0d0
+      c%slcerr = 0d0
       g%slwork = 0d0
 
 * =====================================================================
@@ -2029,12 +1826,12 @@ c      eqr0 = 0d0
 
       do 102 vegnum=1,MV
          g%pep(vegnum) = 0d0
+         g%canopy_height(vegnum) = 0d0
+         g%cover_tot(vegnum) = 0d0
          do 101 solnum=1,nsol
             g%solute_demand(vegnum,solnum) = 0d0
   101    continue
   102 continue
-
-      p%extra_solute_supply_flag = 'off'
 
       g%crops_found = .false.
 
@@ -2044,15 +1841,11 @@ c      eqr0 = 0d0
 * ====================================================================
        subroutine apswim_zero_module_links ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *     Reset all information regarding links to other modules
-
-*+  Changes
-*     100999 - NIH
 
 *+  Local Variables
        integer solnum
@@ -2068,21 +1861,14 @@ c      eqr0 = 0d0
       return
       end subroutine
 
-
-
-
 * ====================================================================
        subroutine apswim_Prepare ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *     Perform calculations before the current timestep.
-
-*+  Changes
-*     <insert here>
 
 *+  Local Variables
 
@@ -2103,8 +1889,6 @@ c      eqr0 = 0d0
          call apswim_get_obs_evap_variables ()
       endif
 
-
-
       return
       end subroutine
 
@@ -2113,25 +1897,12 @@ c      eqr0 = 0d0
 * ====================================================================
        subroutine apswim_init_calc ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *   Perform initial calculations from input parameters and prepare for
 *   simulation
-
-*+  Changes
-*   8-7-94 NIH - programmed and specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_init_calc')
-*
-
 
 *+  Local Variables
       double precision fraction
@@ -2142,9 +1913,8 @@ c      eqr0 = 0d0
       integer k
       integer l
       integer          node
-      integer          nslj, nslk, nsli
-      double precision slj(MP), slk(MP), sli(MP)
       integer          solnum
+      integer          num_layers
       double precision suction
       double precision thd
 c      double precision tth
@@ -2153,8 +1923,7 @@ c      double precision tth
        integer          time_mins
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
-
+      
       ! change units of params to normal SWIM units
       ! ie. cm and hours etc.
       call apswim_init_change_units()
@@ -2165,24 +1934,69 @@ c      double precision tth
 
 * ----------------- SET UP NODE SPECIFICATIONS -----------------------
       ! safer to use number returned from read routine
-      p%n = count_of_double_vals (p%x,M+1)-1
+      num_layers = count_of_double_vals (p%dlayer,M+1)
+      p%n = num_layers -1
+ 
+      p%dx(:) = p%dlayer(:)/10d0
+           
+      p%x(0) = 0d0
+      p%x(1) = 2d0*p%dx(0) + p%x(0)
+      do i=2,p%n-1
+c         p%x(i) = (2d0*(sum(p%dlayer(0:i-1))-p%x(i-1))+p%x(i-1))
+         p%x(i) = 2d0*p%dx(i-1) + p%x(i-2)
+      enddo
+      p%x(p%n) = sum(p%dx(0:p%n))
+      
+c      p%dx(0) = 0.5*(p%x(1) - p%x(0))
+c      do 10 i=1,p%n-1
+c         p%dx(i) = 0.5*(p%x(i+1)-p%x(i-1))
+c   10 continue
+c      p%dx(p%n) = 0.5*(p%x(p%n)-p%x(p%n-1))
 
-      p%dx(0) = 0.5*(p%x(1) - p%x(0))
-      g%dlayer(0) = p%dx(0)*10d0
-      do 10 i=1,p%n-1
-         p%dx(i) = 0.5*(p%x(i+1)-p%x(i-1))
-         g%dlayer(i) = p%dx(i)*10d0
-   10 continue
-      p%dx(p%n) = 0.5*(p%x(p%n)-p%x(p%n-1))
-      g%dlayer(p%n) = p%dx(p%n)*10d0
+* ----------------- Map Soil Properties -----------------------
+      
+c      call map_sw (p%num_dlayer_table,
+c     :             p%dlayer_table,
+c     :             p%sat_table, 
+c     :             p%n+1, 
+c     :             p%dlayer,
+c     :             p%sat)
 
+c      call map_sw (p%num_dlayer_table,
+c     :             p%dlayer_table,
+c     :             p%dul_table, 
+c     :             p%n+1, 
+c     :             p%dlayer,
+c     :             p%dul)
+
+c      call map_sw (p%num_dlayer_table,
+c     :             p%dlayer_table,
+c     :             p%ll15_table, 
+c     :             p%n+1, 
+c     :             p%dlayer,
+c     :             p%ll15)
+
+c      call map_sw (p%num_dlayer_table,
+c     :             p%dlayer_table,
+c     :             p%ks_table, 
+c     :             p%n+1, 
+c     :             p%dlayer,
+c     :             p%ks)
+
+c      call map_sw (p%num_dlayer_table,
+c     :             p%dlayer_table,
+c     :             p%bd_table, 
+c     :             p%n+1, 
+c     :             p%dlayer,
+c     :             p%rhob)
+          
 * ------- IF USING SIMPLE SOIL SPECIFICATION CALCULATE PROPERTIES -----
 
          do 26 i =0,p%n
-
-            p%b(i) = -log(psi_dul/psi_ll15)
+            p%psid(i) = psi_dul - (p%x(p%n) - p%x(i))
+            p%b(i) = -log(p%psid(i)/psi_ll15)
      :                   /log(p%dul(i)/p%ll15(i))
-            p%psie(i) = psi_dul*(p%dul(i)/p%sat(i))
+            p%psie(i) = p%psid(i)*(p%dul(i)/p%sat(i))
      :                   **(p%b(i))
             p%a(i) = (2.*p%b(i))/(2.*p%b(i)+1.)
 
@@ -2191,8 +2005,9 @@ c      double precision tth
             p%c(i) = (1.-p%a(i))/(p%psii(i)**2.)
 
    26    continue
-
+         
 * ---------- NOW SET THE ACTUAL WATER BALANCE STATE VARIABLES ---------
+
       if (g%th(1).ne.0) then
          ! water content was supplied in input file
          ! so calculate matric potential
@@ -2202,18 +2017,6 @@ c      double precision tth
          ! matric potential was supplied in input file
          ! so calculate water content
          call apswim_reset_water_balance (2,g%psi)
-
-      endif
-
-      ! The original swim used changed the meaning of p%ibp
-      ! also, to make it easier I have changed the meaning of the
-      ! old variable p%xbp.  It is no longer a depth but a node
-      ! number.  This is more accurate as the old depth may not
-      ! necessarily lie on a node and it was rounded to the node
-      ! above.
-      If (p%ibp.eq.1) then
-         p%ibp = p%xbp
-      else
       endif
 
       ! Calculate the solute/soil parameters from inputs
@@ -2224,11 +2027,43 @@ c      double precision tth
    30    continue
    40 continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
+* ====================================================================
+       subroutine map_sw (old_n, old_dlayer, old_sw, 
+     :                    new_n, new_dlayer, new_sw)
+* ====================================================================
+      Use infrastructure
+      implicit none
+      integer old_n, new_n
+       double precision old_dlayer(:),old_sw(:),new_dlayer(:),new_sw(:)
+       double precision cum_depth(M),cum_swdep(M)
+       double precision top, bottom, new_swdep
+       double precision accum
+       integer layer
+              
+     
+       accum = 0
+       cum_depth(1) = 0
+       cum_swdep(1) = 0
+       do layer = 1, old_n
+          cum_depth(layer+1) = sum(old_dlayer(1:layer))
+          accum = accum+old_dlayer(layer)*old_sw(layer)
+          cum_swdep(layer+1) = accum
+       enddo
+       top = 0
+       do layer = 1,new_n
+          bottom = sum(new_dlayer(1:layer))
+          new_swdep = dlinint (bottom, cum_depth, cum_swdep, old_n+1)
+     :              - dlinint (top, cum_depth, cum_swdep, old_n+1)
+          new_sw(layer) = new_swdep/new_dlayer(layer)
 
+          top = bottom
+       enddo
+       
+       return
+       end subroutine
 
 * ====================================================================
        subroutine apswim_interp (node,tpsi,tth,thd,hklg,hklgd)
@@ -2270,14 +2105,14 @@ c      double precision tth
       double precision temp
 
 *- Implementation Section ----------------------------------
-
+         
          tth   = apswim_Simpletheta(node,tpsi)
          temp  = apswim_Simpletheta(node,tpsi+dpsi)
          thd   = (temp-tth)/log10((tpsi+dpsi)/tpsi)
          hklg  = log10(apswim_SimpleK(node,tpsi))
          temp  = log10(apswim_SimpleK(node,tpsi+dpsi))
          hklgd = (temp-hklg)/log10((tpsi+dpsi)/tpsi)
-
+         
       return
       end subroutine
 
@@ -2289,7 +2124,7 @@ c      double precision tth
 *+  Sub-Program Arguments
       integer layer
       double precision    psi
-
+      double precision    S1,S2,wt
 *+  Purpose
 *      Calculate S for a given node for a specified suction.
 
@@ -2306,8 +2141,16 @@ c      double precision tth
          Apswim_SimpleS = 1d0
       elseif (psi.ge.p%psii(layer)) then
          Apswim_SimpleS = 1d0 - p%c(layer)*psi**2d0
-      else
+      elseif (psi.ge.psi_ll15) then
          Apswim_SimpleS =(psi/p%psie(layer))**(-1d0/p%b(layer))
+      else
+         wt = (Log(10**7d0) - Log(-psi))/(Log(10**7d0) - Log(15000d0))
+         S1 =(psi/p%psie(layer))**(-1d0/p%b(layer))
+         S2 = wt* (-15000d0 / p%psie(layer))**(-1d0 / p%b(layer))
+         apswim_simples = wt**0.5*S1+(1d0-wt**0.5)*S2
+         !print*,layer,log10(-psi),wt,s1,s2,Apswim_SimpleS
+         !apswim_simples = S1
+         Apswim_SimpleS = max(Apswim_SimpleS,1d-6)
       endif
 
       return
@@ -2331,13 +2174,46 @@ c      double precision tth
       character*(*) myname               ! name of current procedure
       parameter (myname = 'Apswim_Simpletheta')
 
+      double precision psi0
+      parameter (psi0 = -1d7)
+      !parameter (psi0 = -8d7)
+
 *+  Local Variables
       double precision S
+      double precision Psii, a,c,c1,c2,rossb,rosspsie
 
 *- Implementation Section ----------------------------------
+  
+
+      c1 = 1d0/p%b(layer)
+      c2 = -1.1223 + 2.8667 * c1**0.25 - 1.9938 * c1**0.5 + 1.2313 * c1
+      rossb = 1/c2
+
+      rosspsie = -Abs(((Abs(p%psid(layer))**(-c2) - Abs(psi0)**(-c2))
+     :      / (p%dul(layer)/ p%sat(layer))+Abs(psi0)**(-c2)))**(-1/c2)
+
+      a = 1d0 / ((p%psie(layer) / psi0) ** (-1d0 / rossb) - 1)
+      Psii = rosspsie * (2d0*rossb/(2d0*rossb+1))
+     :          **(-rossb)
+
+      c = (1d0+a)/((1d0+2d0*rossb) * Psii**2d0)
+
+!      if (psi.lt.psi_ll15) then
+!
+!         S = (Log(10**7d0) - Log(-psi)) / (Log(10**7d0) - Log(15000d0))
+!     :          * (-15000d0 / p%psie(layer))**(-1d0 / p%b(layer))
+!
+!         if (S.lt.0) S = 0
+      If (psi.le. Psii) Then
+         S = (Abs(psi)**(-1d0/rossb)-Abs(psi0)**(-1d0/rossb))
+     :     / (Abs(rosspsie)**(-1d0/rossb)
+     :         -Abs(psi0)**(-1/rossb))
+      Else
+         S = 1d0 - c * psi**2
+      EndIf
+      Apswim_Simpletheta = S * p%sat(layer)
 
       S = Apswim_SimpleS(layer,psi)
-
       Apswim_Simpletheta = S * p%sat(layer)
 
       return
@@ -2363,34 +2239,55 @@ c      double precision tth
       parameter (myname = 'apswim_SimpleK')
 
       double precision Kdul
-      parameter (Kdul = 0.1d0/24d0)
+      parameter (Kdul = 0.01d0/24d0)
+      double precision Kll
+      parameter (Kll = 6d-6/24d0)
+
 
 *+  Local Variables
       double precision S
       double precision Sdul
       double precision Ksa ! apparent Ks
-      double precision Power
+      double precision MacroP
+      double precision MicroP
       double precision Kdula
       double precision MicroK
+      double precision MicroKs
       double precision MacroK
+      double precision dul
+      double precision ll
+      double precision sat
+
+!      double precision PII
 
 *- Implementation Section ----------------------------------
 
-      S = Apswim_SimpleS(layer,psi)
-      apswim_SimpleK = p%Ks(layer)*S**(p%b(layer)*2d0+3d0)
+       S = Apswim_SimpleS(layer,psi)
+!      apswim_SimpleK = p%Ks(layer)*S**(p%b(layer)*2d0+3d0)
 
-      Sdul = Apswim_SimpleS(layer,psi_dul)
+      Sdul = Apswim_SimpleS(layer,p%psid(layer))
+      
+      Kdula = min(p%Kd,p%Ks(layer))
+ 
 
-      Kdula = min(Kdul,p%Ks(layer))
+!      PII = -3d0 !1d0 !-3d0
+!      Ksa = Kdula / (Sdul**(PII + 2. + 2. * p%b(layer)))
+!      MicroK = Ksa * s**(PII + 2. + 2. * p%b(layer))
 
-      Ksa = Kdula / (Sdul**(1. + 2. + 2. * p%b(layer)))
-
-      MicroK = Ksa * s**(1. + 2. + 2. * p%b(layer))
-
-      Power = Log(Kdula/100d0/(p%Ks(layer)-MicroK)) / Log(Sdul)
-      MacroK = (p%Ks(layer)-MicroK) * S**Power
-
-      apswim_SimpleK = (MicroK+MacroK)
+      dul = Apswim_Simpletheta(layer,p%psid(layer))
+      ll = Apswim_Simpletheta(layer,-20000.d0)
+      sat = Apswim_Simpletheta(layer,0d0)
+      
+      MicroP = log10(Kdula/Kll)/log10(dul/ll)
+      MicroKs = Kdula/(dul/sat)**MicroP
+      MicroK = MicroKs*S**MicroP
+      if(MicroKs.ge.p%Ks(layer)) then
+         apswim_SimpleK = MicroK
+      else
+         MacroP = Log10(Kdula/100d0/(p%Ks(layer)-MicroKs))/Log10(Sdul)
+         MacroK = (p%Ks(layer)-MicroKs) * S**MacroP
+         apswim_SimpleK = (MicroK+MacroK)
+      endif
 
       return
       end function
@@ -2431,7 +2328,7 @@ c      double precision tth
       double precision tolerance
       parameter (tolerance = 1d-9)
       double precision dpsi
-      parameter (dpsi = 0.01d0)
+      parameter (dpsi = -0.001d0)
 
 
 *+  Local Variables
@@ -2450,28 +2347,43 @@ c      double precision tth
       double precision z
       double precision err
       double precision dthdpsi
+      double precision thetai
+      
 *+  Initial Data Values
       theta1 = theta
 
 *- Implementation Section ----------------------------------
 
-         suction = psi_dul
+
+      thetai = apswim_simpletheta(node,p%psii(node)) 
+
+      if (theta.gt.thetai) then
+         suction = (p%SAT(node)-theta)/(p%c(node)*p%SAT(node))**0.5   
+         apswim_suction = suction
+      else   
+            
+         suction = p%psid(node)
          solved = .false.
          do 300 iteration = 1,max_iterations
+            
             dthdpsi = (apswim_SimpleTheta(node,suction+dpsi)
      :                -apswim_SimpleTheta(node,suction))
      :              /dpsi
             err = apswim_SimpleTheta(node,suction)-theta
+            
             if (abs(err) .lt. tolerance) then
                solved = .true.
                goto 400
             else
                suction = suction - err/dthdpsi
+               suction = min(suction,0d0)
             endif
 
   300    continue
   400    continue
-      apswim_suction = -suction
+         apswim_suction = max(0d0,-suction)
+
+      endif
 
       return
       end function
@@ -2489,9 +2401,6 @@ c      double precision tth
        double precision timestep
        double precision timestep_start
 
-*+  Purpose
-*     <insert here>
-
 *+  Notes
 *     SWIM solves Richards' equation for one dimensional vertical soil water
 *     infiltration and movement.  A surface seal, variable height of surface
@@ -2499,20 +2408,12 @@ c      double precision tth
 *     under a given matric potential gradient or given potl or zero flux or
 *     seepage.  The method uses a fixed space grid and a sinh transform of
 *     the matric potential, as reported in :
-*     Ross, g%p.J., 1990.  Efficient numerical methods for infiltration using
-*     Richards' equation.  Water Resources g%res. 26, 279-290.
+*     Ross, P.J., 1990.  Efficient numerical methods for infiltration using
+*     Richards' equation.  Water Resources Res. 26, 279-290.
 
 *+  Changes
-*     <insert here>
 *     26/11/1999 dph changed action_send(unknown_module, action, data)
 *                    to action_send_to_all_comps(action)
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_swim')
 
 *+  Local Variables
       double precision dr
@@ -2541,7 +2442,6 @@ c      double precision psiold(0:M)
       double precision LogTime
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       TimeStep_remaining = timestep
       g%t = Timestep_start
@@ -2561,7 +2461,7 @@ c      double precision psiold(0:M)
 
 10    continue
 cnh
-      call event_send('swim_timestep_preparation')
+      call event_send(unknown_module,'swim_timestep_preparation')
 
 *        calculate next step size_of g%dt
 c         print*,g%t
@@ -2666,9 +2566,9 @@ cnh Commented out until fully tested need for constraining timestep to within Eo
 
 *        initialise and take new step
 *        ----------------------------
+
          wpold=g%wp
          g%hold=g%h
-         g%hbpold=max(g%psi(p%ibp),0d0)
          do 34 i=0,p%n
 *           save transformed potls and water contents
             pold(i)=g%p(i)
@@ -2720,7 +2620,7 @@ cnh
             call apswim_check_demand()
 
 cnh
-         call event_send('pre_swim_timestep')
+         call event_send(unknown_module,'pre_swim_timestep')
 ***
 *           integrate for step g%dt
             call apswim_solve(itlim,fail)
@@ -2786,7 +2686,7 @@ cnh
 
 
 cnh
-               call event_send('post_swim_timestep')
+               call event_send(unknown_module,'post_swim_timestep')
 
             end if
 
@@ -2797,7 +2697,6 @@ cnh
 
       apswim_swim = fail
 
-      call pop_routine (myname)
       return
       end function
 
@@ -2806,22 +2705,11 @@ cnh
 * ====================================================================
        integer function apswim_time_to_mins (timestring)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
        character timestring*(*)
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*      24-8-94 NIH - specified and programmed
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_time_to_mins')
 
 *+  Local Variables
        integer colon
@@ -2832,7 +2720,6 @@ cnh
        integer numvals
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       colon = index(timestring,':')
 
@@ -2848,7 +2735,6 @@ cnh
 
       apswim_time_to_mins = hour*60 + mins
 
-      call pop_routine (myname)
       return
       end function
 
@@ -2870,14 +2756,6 @@ cnh
 *       by enabling two small rainfall periods to be summed to create
 *       one timestep instead of two.
 
-*+  Changes
-*     <insert here>
-
-*+  Calls
-
-*+  Constant Values
-      character myname*(*)
-      parameter (myname = 'apswim_process')
 
 *+  Local Variables
       logical fail
@@ -2900,6 +2778,7 @@ cnh
       call apswim_get_crop_variables ()
       call apswim_get_residue_variables ()
       call apswim_remove_interception ()
+      call apswim_CN_Runoff()
 
       time_of_day = apswim_time_to_mins (g%apsim_time)
       timestep_start = apswim_time (g%year,g%day,time_of_day)
@@ -2911,14 +2790,13 @@ cnh
          call apswim_report_status()
          call fatal_error (Err_Internal, 'Swim failed to find solution')
       else
-         if (p%extra_solute_supply_flag .eq. 'on') then
-            call apswim_extra_solute_supply ()
-         else
-         endif
+
          call apswim_set_other_variables ()
          call apswim_set_solute_variables()
       endif
 
+      call PublishUptakes()
+      
       return
       end subroutine
 
@@ -2934,15 +2812,9 @@ cnh
 *   Report all initial conditions and input parameters to the
 *   summary file.
 
-*+  Changes
-*   7-7-94 nih - programmed and specified
-
 *+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_sum_report')
-*
       integer num_psio
-      parameter (num_psio = 4)
+      parameter (num_psio = 8)
 
 *+  Local Variables
        double precision hklgd
@@ -2950,198 +2822,129 @@ cnh
        integer   j
        integer   layer                   ! soil layer number
        integer   nlayers                 ! number of soil layers
-       character string*100              ! output string
+       character string*200              ! output string
        double precision thd
 *
 *
-      double precision tho(0:6,num_psio)
-      double precision hklo(0:6,num_psio)
-      double precision hko (0:6,num_psio)
+      double precision tho(0:M,num_psio)
+      double precision hklo(0:M,num_psio)
+      double precision hko (0:M,num_psio)
 
 *+  Initial Data Values
       double precision psio(num_psio)
-      data psio/-15000.d0,-1000.d0,-100.d0,-10.d0/
+      data psio/-1.d-2,-10.d0,-100.d0,-1000.d0,-15000.d0,-1.d5,-1.d6
+     :           ,-1d7/
+     
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       string = New_Line//New_Line
-     :         //  '      APSIM soil profile'//New_Line
-     :         //'      ------------------'//New_Line
-     :         //New_Line
+     :      //'                      APSIM Soil Profile'//New_Line
+     :      //'                      ------------------'//New_Line
       call write_string (string)
 
-      string =     '      ---------------------------------------'
-     : //New_Line//'      dlayer   BD   SW     LL15   DUL   SAT'
+      string =     
+     :'---------------------------------------------------------------'
+     : //New_Line//
+     : ' x    dlayer   BD   SW     LL15   DUL   SAT      Ks      Psi'
       call write_string (string)
-      string =    '      ---------------------------------------'
+      string =    
+     :'---------------------------------------------------------------'
       call write_string (string)
 
 
       do 100 layer = 0,p%n
-         write(string,'(5x,f6.1,2x,f4.2,4(2x,f5.3))')
-     :       g%dlayer(layer), p%rhob(layer), g%th(layer),
-     :       p%LL15(layer), p%DUL(layer), p%SAT(layer)
+         write(string,'(f6.1,x,f6.1,2x,f4.2,4(2x,f5.3),x,f6.2,x,f8.1)')
+     :       p%x(layer)*10.,
+     :       p%dlayer(layer), p%rhob(layer), g%th(layer),
+     :       p%LL15(layer), p%DUL(layer), p%SAT(layer), p%Ks(layer),
+     :       g%psi(layer)
          call write_string (string)
   100 continue
-
-      string = New_Line//New_Line
-     :         //  '      APSWIM soil profile'//New_Line
-     :         //'      -------------------'//New_Line
-     :         //New_Line
+      string =    
+     :'---------------------------------------------------------------'
       call write_string (string)
-      string =     '     --------------------------------------------'
-     :            //    '-----'
-      call write_string (string)
-
-      string =     '      depth   Soil Type     Theta    Psi        Ks'
-      call write_string (string)
-
-      string =     '      -------------------------------------------'
-     :                 //'-----'
-      call write_string (string)
-
-      nlayers = count_of_double_vals (p%x,M)
-      do 200 layer = 0,nlayers-1        ! 5.3??
-         write(string,'(5x,f6.1,2x,a10,4x,f9.7,1x,f10.3,1x,f10.3)')
-cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
-     :       p%x(layer)*10., p%soil_type(layer), g%th(layer)
-     :       ,g%psi(layer)/1000., 99.
-         call write_string (string)
-  200 continue
 
       ! calculate Theta and g%hk for each psio
-
+      
       do 210 i=1,num_psio
-         do 205 j=0,6
+         do 205 j=0,p%n
             call apswim_interp(j,psio(i),tho(j,i),thd,hklo(j,i),hklgd)
-            hko(j,i) = exp(dlog(10d0)*hklo(j,i))
+            hko(j,i) = 10d0**hklo(j,i)
   205    continue
   210 continue
 
       string = New_Line//New_Line
-     :         //'      Soil Moisture Characteristics'//New_Line
-     :         //'      -----------------------------'//New_Line
-     :         //New_Line
-      call write_string (string)
-      string = '                             nodes(0-6)'//New_Line
-      call write_string (string)
-      string = '       g%psi   |        0          1          2'
-     :       //'          3          4          5          6'
-      call write_string (string)
-      string = '     -----------------------------'//
-     :'---------------------------------------------------------'
-      call write_string (string)
+     ://'                  Soil Moisture Characteristics'//New_Line
+     ://'                  -----------------------------'//New_Line
 
-      do 220 i=1,num_psio
-         write(string,'(6x,f6.2,1x,''|'',7(1x,f10.5))')
-     :              psio(i)/1000.d0, (tho(j,i),j=0,6)
-         call write_string (string)
-  220 continue
-
-      string = New_Line//New_Line
-     :         //'      Soil Hydraulic Conductivity'//New_Line
-     :         //'      ---------------------------'//New_Line
-     :         //New_Line
       call write_string (string)
-      string = '                             nodes(0-6)'//New_Line
+      string =
+     :'------------------------------------------------------------'//
+     :'--------'
       call write_string (string)
-      string = '       g%psi   |        0          1          2'
-     :       //'          3          4          5          6'
+      string = 
+     :'                         Soil Water Potential (cm)'
       call write_string (string)
-      string = '     -------------------------------------'//
-     :'-------------------------------------------------'
-      call write_string (string)
-      do 230 i=1,num_psio
-         write(string,'(6x,f6.2,1x,''|'',7(1x,f10.5))')
-     :              psio(i)/1000.d0, (hko(j,i),j=0,6)
-         call write_string (string)
-  230 continue
-
-
-
-      string = New_Line//New_Line
-     :         //'      Swim calculation parameters'
-     :         //New_Line
-     :         //'      ---------------------------'
+      string =
+     :'    x       0      10     100   1000  15000   10^5   10^6   10^7'
       call write_string (string)
 
       string =
-     :    '      p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex'
-     :         //' p%dppl p%dpnl max_water_increment'
+     :'------------------------------------------------------------'//
+     :'--------'
       call write_string (string)
 
-      string = '      --------------------------------------'
-     :         //'------------------------------'//New_Line
+      do 220 j=0,p%n 
+         write(string,'(f6.1,1x,''|'',8(1x,f6.4))')
+     :              p%x(j)*10., (tho(j,i),i=1,num_psio)
+         call write_string (string)
+  220 continue
+      string =
+     :'------------------------------------------------------------'//
+     :'--------'
       call write_string (string)
 
-      write(string,
-     :         '(5x,f5.1,1x,f5.1,3(1x,e8.3),1x,f4.2,1x,f4.2,f13.3)')
-     :         p%dtmin,p%dtmax,p%ersoil,p%ernode,p%errex, p%dppl,
-     :         p%dpnl, p%dw
-      call write_string (string//new_line)
+      string = New_Line//New_Line
+     ://'                   Soil Hydraulic Conductivity'//New_Line
+     ://'                   ---------------------------'//New_Line
 
-      call write_string (new_line//new_line)
+      call write_string (string)
+      string =
+     :'------------------------------------------------------------'//
+     :'-----------'
+      call write_string (string)
+      string = 
+     :'                         Soil Water Potential (cm)'
+      call write_string (string)
+      string =
+     :'    x       0        10       100     1000    15000     10^5'//
+     :'     10^6'
+      call write_string (string)
 
-      if (p%ibp.ne.0) then
-         call write_string ('     Bypass flow is active')
-         call write_string ('     depth(node)   conductance  storage')
-         call write_string (
-     :                     '     ----------------------------------')
-         write(string,'(5x,f5.0,''('',i4,'')'',3x,f11.4,2x,f7.3)')
-     :                      p%x(p%ibp),p%ibp,p%gbp,p%sbp
+      string =
+     :'------------------------------------------------------------'//
+     :'-----------'
+      call write_string (string)
+
+      do 225 j=0,p%n 
+         write(string,'(f6.1,1x,''|'',7(1x,g8.3))')
+     :              p%x(j)*10., (hko(j,i),i=1,(num_psio-1))
          call write_string (string)
-         call write_string (new_line//new_line)
-      else
-         call write_string ('     Bypass flow is INactive')
-      endif
+  225 continue
 
-      if (p%isbc .eq. 0) then
-         call write_string ('     No ponding (all runoff)')
-      elseif (p%isbc .eq.1) then
-         call write_string ('     Total ponding (no runoff)')
-      else
-         call write_string (
-     :                  '     Runoff calculated using runoff functions')
-         call write_string (
-     :              '     p%hm1   p%hm0   p%hrc   p%roff0   p%roff1')
-         write (string,'(5x,3(f3.1,3x),2(f5.2,3x))')
-     :                    p%hm1,p%hm0,p%hrc,p%roff0,p%roff1
-         call write_string (string)
-         call write_string (new_line//new_line)
-
-      endif
-
-      if (p%itbc.eq.0) then
-         call write_string (
-     :        '     top boundary condition = infinite conductance')
-      else if(p%itbc.eq.1) then
-         call write_string (
-     :        '     top boundary condition = constant potential')
-
-      else if(p%itbc.eq.2) then
-         call write_string (
-     :        '     top boundary condition = conductance function')
-         call write_string (
-     :        '       initial      minimum    precipitation')
-         call write_string (
-     :        '     conductance  conductance     constant')
-         call write_string (
-     :        '     ---------------------------------------')
-         write (string,'(5x,f11.4,2x,f11.4,2x,f13.4)')
-     :                    p%g1,p%g0,p%grc
-         call write_string (string)
-         call write_string (new_line//new_line)
-
-      else
-         call fatal_error(err_user,
-     :                 'bad top boundary conditions switch')
-      endif
+      string =
+     :'------------------------------------------------------------'//
+     :'-----------'     
+      call write_string (string)
+            
+ 
+      call write_string (new_line)
 
       if (p%ibbc.eq.0) then
          write(string,'(a,f10.3,a)')
      :        '     bottom boundary condition = specified gradient (',
-     :         p%constant_gradient,')'
+     :         p%bbc_value,')'
          call write_string (string)
 
       else if(p%ibbc.eq.1) then
@@ -3165,7 +2968,7 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
      :                 'bad bottom boundary conditions switch')
       endif
 
-      string = new_line//new_line//new_line
+      string = new_line
       call write_string (string)
 
       if (p%ivap.eq.0) then
@@ -3179,13 +2982,9 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
 
 
       string = '     Evaporation Source: '//p%evap_source
-     :               //new_line//new_line
+     :               //new_line
       call write_string (string)
 
-
-      call write_string (new_line//new_line)
-
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -3194,19 +2993,8 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
 * ====================================================================
        subroutine apswim_reset_daily_totals()
 * ====================================================================
-
       Use infrastructure
       implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   1-9-94 NIH - Specified and Programmed
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_reset_daily_totals')
 
 *+  Local Variables
       integer node
@@ -3214,7 +3002,6 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
       integer vegnum
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       g%TD_runoff  = 0.0
       g%TD_rain    = 0.0
@@ -3239,7 +3026,6 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
    62       continue
    61    continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -3248,48 +3034,15 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
 * ====================================================================
        subroutine apswim_check_inputs ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   NeilH - 19-09-1994 - Programmed and Specified
-
 *+  Local Variables
-      integer i
-      integer node
-      double precision psi1, psi2 ! g%psi at interpolation points
-      double precision th1, th2   ! theta at interpolation points
-      double precision hkl1, hkl2 ! log g%hk at interpolation points
-      double precision temp1, temp2 ! dummy numbers
-      double precision psix, thx, hklx ! point p%x for checking
-      character error_string*200
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_check_inputs')
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
-
-      if (p%ibp.ne.0) then
-         if (p%itbc.eq.1) then
-            call fatal_error(err_user,
-     :           'cannot have bypass flow and constant'//
-     :           ' potential at soil surface')
-         elseif (g%gf.le.0) then
-            call fatal_error(err_user,'bypass flow requires'//
-     :           'gravity downwards')
-         else
-         endif
-      else
-      endif
 
 
-      call pop_routine (myname)
+
       return
       end subroutine
 
@@ -3298,22 +3051,10 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
 * ====================================================================
        subroutine apswim_init_defaults ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   NeilH - 19-09-1994 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_init_defaults')
-
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       g%gf = 1.d0 !gravity factor will always be one(i.e. vertical profile)
 
@@ -3336,7 +3077,14 @@ cnh      g%cslsur = 0.d0 ! its an array now
 c      tzero = 0.d0
 c      eqr0  = 0.d0
 
-      call pop_routine (myname)
+      ! No solutes uptakes are calculated by this model
+      p%slupf(:) = 0d0
+      
+      ! Infinite surface conductance
+      p%itbc = 0
+      ! No storage of water on soil surface
+      p%isbc = 0
+
       return
       end subroutine
 
@@ -3345,38 +3093,22 @@ c      eqr0  = 0.d0
 * ====================================================================
        double precision function apswim_crain (time)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
        double precision time
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   NeilH - 29-09-1994 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_crain')
-
 *+  Local Variables
       double precision crain_mm
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       crain_mm = dlinint(time,g%SWIMRainTime,g%SWIMRainAmt,
      :                       g%SWIMRainNumPairs)
 
       apswim_crain = crain_mm / 10d0
 
-      call pop_routine (myname)
       return
       end function
 
@@ -3385,26 +3117,14 @@ c      eqr0  = 0.d0
 * ====================================================================
        double precision function apswim_cevap (time)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
        double precision time
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   NeilH - 29-09-1994 - Programmed and Specified
-
-*+  Calls
-
 
 *+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_cevap')
-*
       double precision pi
       parameter (pi = 3.14159d0)
 
@@ -3413,18 +3133,12 @@ c      eqr0  = 0.d0
        integer          counter         ! simple counter variable
        double precision Timefr          ! fractional distance between
                                         ! evap time pointer
-
-*+  Initial Data Values
-
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
-
-         cevap_mm = dlinint(time,g%SWIMEvapTime,g%SWIMEvapAmt,
+      cevap_mm = dlinint(time,g%SWIMEvapTime,g%SWIMEvapAmt,
      :                       g%SWIMEvapNumPairs)
 
       apswim_cevap = cevap_mm / 10d0
 
-      call pop_routine (myname)
       return
       end function
 
@@ -3433,7 +3147,6 @@ c      eqr0  = 0.d0
 *     ===========================================================
       double precision function dlinint (x, x_cord, y_cord, num_cord)
 *     ===========================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
@@ -3452,12 +3165,6 @@ c      eqr0  = 0.d0
 
 *+  Assumptions
 *       XY pairs are ordered by x in ascending order.
-
-*+  Changes
-*       230994 nih adapted from linear_interp_real
-
-*+  Calls
-
 
 *+  Local Variables
       integer          indx        ! position in table
@@ -3590,7 +3297,6 @@ c      eqr0  = 0.d0
 * ====================================================================
        double precision function apswim_time (yy,dd,tt)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -3598,12 +3304,6 @@ c      eqr0  = 0.d0
       integer yy
       integer dd
       integer tt
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   NeilH - 29-09-1994 - Programmed and Specified
 
 *+  Constant Values
       double precision days_to_hours              ! convert .....
@@ -3620,7 +3320,6 @@ c      eqr0  = 0.d0
       double precision time
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
       ! first we must calculate the julian date for the starting date.
       ! We will calculate time relative to this date.
       begin_Start_year = date_to_jday(1,1,g%start_year) - 1.d0
@@ -3635,16 +3334,8 @@ c      eqr0  = 0.d0
       Time = (julian_date - julian_start_date)*days_to_hours +
      :                    dble(tt)/60.d0
 
-cnh this function is used for purposes where a time before start of
-c   simulation is required - eg reading logfiles.
-c      If (Time .lt. 0d0) then
-c         call fatal_error (Err_User, 'Cant have -ve time')
-c      else
-c      endif
-
       apswim_time = time
 
-      call pop_routine (myname)
       return
       end function
 
@@ -3653,7 +3344,6 @@ c      endif
 * ====================================================================
        subroutine apswim_init_change_units ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -3662,19 +3352,11 @@ c      endif
 *   in APSIM compatible units and convert them here to SWIM compatible
 *   units.
 
-*+  Changes
-*   NeilH - 05-12-1994 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_init_change_units')
-
 *+  Local Variables
       integer i
       integer num_nodes
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       p%dtmin = p%dtmin/60.d0 ! convert to hours
       p%dtmax = p%dtmax/60.d0 ! convert to hours
@@ -3689,19 +3371,18 @@ c      endif
       p%roff0 = p%roff0 * (10d0**p%roff1)/10.d0 ! convert (mm/g%h)/mm^P to
                                           ! (cm/g%h)/(cm^P)
 
-      num_nodes = count_of_double_vals (p%x(0),M+1)
+      num_nodes = count_of_double_vals (p%dlayer(0),M+1)
 
       do 200 i=0,num_nodes-1
-         p%x(i) = p%x(i)/10.
+         p%ks(i) = p%ks(i)/10.
   200 continue
 
       do 300 i=1,MV
          g%root_radius(i) = g%root_radius(i)/10d0
   300 continue
 
+      p%Kd = p%Kd/10d0
 
-
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -3710,28 +3391,13 @@ c      endif
 * ====================================================================
        real function apswim_eqrain (time)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
       double precision time             ! first time (hours since start)
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   NeilH - 28-11-1996 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_eqrain')
-
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       apswim_eqrain = dlinint
      :                       (time
@@ -3740,36 +3406,20 @@ c      endif
      :                       ,g%SWIMRainNumPairs
      :                       )
 
-      call pop_routine (myname)
       return
       end function
-
 
 
 * ====================================================================
        subroutine apswim_read_solute_params ()
 * ====================================================================
-
       Use infrastructure
       implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   nih - 15-12-1994 - Programmed and Specified
-
-*+  Calls
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_read_solute_params')
 
 *+  Local Variables
        character table_name (nsol)*(strsize)
        double precision table_d0(nsol)
        double precision table_disp(nsol)
-       double precision table_slupf(nsol)
        double precision table_slos(nsol)
 cnh       double precision table_slsci(nsol)
 cnh       double precision table_slscr(nsol)
@@ -3786,7 +3436,6 @@ cnh       double precision table_slscr(nsol)
        logical found
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       ! First - Read in solute information
             ! ----------------------------------
@@ -3800,15 +3449,6 @@ cnh       double precision table_slscr(nsol)
      :           table_name,
      :           numvals)
 
-      call Read_double_array(
-     :           solute_section,
-     :           'slupf',
-     :           nsol,
-     :           '()',
-     :           table_slupf,
-     :           numvals,
-     :           0d0,
-     :           1d0)
 
       call Read_double_array(
      :           solute_section,
@@ -3923,7 +3563,7 @@ cnh       double precision table_slscr(nsol)
 
          do 150 solnum2 = 1,nsol
             if (table_name(solnum2).eq.p%solute_names(solnum)) then
-               p%slupf(solnum) = abs(table_slupf(solnum2))
+               
                p%slos(solnum)  = table_slos(solnum2)
 cnh               g%slsci(solnum) = table_slsci(solnum2)
 cnh               g%slscr(solnum) = table_slscr(solnum2)
@@ -3948,7 +3588,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
 
   200 continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -3963,13 +3602,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
 *+  Purpose
 *      Get the values of solute variables from other modules
 
-*+  Changes
-*     <insert here>
-
-*+  Constant Values
-      character myname*(*)
-      parameter (myname = 'apswim_get_solute_variables')
-
 *+  Local Variables
       integer solnum                   ! solute array index counter
       integer node                     ! layer number specifier
@@ -3977,7 +3609,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
                                        ! solute concn in layers(kg/ha)
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       do 100 solnum = 1, p%num_solutes
          call apswim_conc_water_solute (p%solute_names (solnum)
@@ -3988,7 +3619,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
 
   100 continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -4095,75 +3725,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
 
 
 
-* ====================================================================
-       subroutine apswim_read_crop_params ()
-* ====================================================================
-      Use infrastructure
-      implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   nih - 15-12-1994 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_read_crop_params')
-
-*+  Local Variables
-       integer numvals
-
-*- Implementation Section ----------------------------------
-      call push_routine (myname)
-
-      ! First - Read in solute information
-      ! ----------------------------------
-       numvals = 0
-
-      call Read_char_array(
-     :           crop_section,
-     :           'crop_name',
-     :           MV,
-     :           '()',
-     :           p%crop_table_name,
-     :           numvals)
-
-      call Read_double_array(
-     :           crop_section,
-     :           'min_xylem_potential',
-     :           MV,
-     :           '()',
-     :           p%crop_table_psimin,
-     :           numvals,
-     :           -1d7,
-     :           1d0)
-
-      call Read_double_array(
-     :           crop_section,
-     :           'root_radius',
-     :           MV,
-     :           '(mm)',
-     :           p%crop_table_root_radius,
-     :           numvals,
-     :           1d-3,
-     :           1d1)
-
-      call Read_double_array(
-     :           crop_section,
-     :           'root_conductance',
-     :           MV,
-     :           '()',
-     :           p%crop_table_root_con,
-     :           numvals,
-     :           1d-10,
-     :           1d-3)
-
-      call pop_routine (myname)
-      return
-      end subroutine
-
-
 
 * ====================================================================
        subroutine apswim_assign_crop_params ()
@@ -4171,18 +3732,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
       Use infrastructure
       implicit none
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   nih - 15-12-1994 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_assign_crop_params')
 
 *+  Local Variables
        integer vegnum
@@ -4190,7 +3739,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
        logical found
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       ! Now find what crops are out there and assign them the relevant
       ! ----------------------------------------------------------------
@@ -4206,26 +3754,43 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
       do 200 vegnum = 1,g%num_crops
          found = .false.
          do 150 vegnum2 = 1, MV
-            if (p%crop_table_name(vegnum2).eq.g%crop_names(vegnum)) then
+            if (c%crop_table_name(vegnum2).eq.g%crop_names(vegnum)) then
                found = .true.
-               g%psimin(vegnum) = p%crop_table_psimin(vegnum2)
-               g%root_radius(vegnum) = p%crop_table_root_radius(vegnum2)
+               g%psimin(vegnum) = c%crop_table_psimin(vegnum2)
+               g%root_radius(vegnum) = c%crop_table_root_radius(vegnum2)
      :                               /10d0 ! convert mm to cm
                g%root_conductance(vegnum)
-     :               = p%crop_table_root_con(vegnum2)
+     :               = c%crop_table_root_con(vegnum2)
             else
             endif
   150    continue
 
          if (.not.found) then
-            call fatal_error(Err_User,
-     :      g%crop_names(vegnum)//'not defined in crop section')
+            call warning_error(Err_Internal,
+     :        'Using default root parameters for '
+     :         //g%crop_names(vegnum))
+   
+         do 160 vegnum2 = 1, MV
+            if (c%crop_table_name(vegnum2).eq.'default') then
+               found = .true.
+               g%psimin(vegnum) = c%crop_table_psimin(vegnum2)
+               g%root_radius(vegnum) = c%crop_table_root_radius(vegnum2)
+     :                               /10d0 ! convert mm to cm
+               g%root_conductance(vegnum)
+     :               = c%crop_table_root_con(vegnum2)
+            else
+            endif
+  160    continue
+
+            if (.not.found) then
+               call fatal_error(Err_Internal,
+     :        'Could not find default root parameters')
+            endif
          else
          endif
 
   200 continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -4237,20 +3802,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
       Use infrastructure
       implicit none
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   nih - 15-12-1994 - Programmed and Specified
-*   nih - 27-05-1996 - Changed call get_last_module to get_posting_module
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_find_crops')
-
 *+  Local Variables
        character owner_module*(max_module_name_size)
        character crpname*(strsize)
@@ -4258,7 +3809,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
        integer request_no
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       request_no = 0
       g%num_crops = 0
@@ -4293,7 +3843,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
 
       g%nveg = g%num_crops
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -4306,11 +3855,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
 *+  Purpose
 *     Register any crop related output variables
 
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_register_crop_outputs')
-
 *+  Local Variables
       integer id
       integer vegnum
@@ -4318,7 +3862,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
       character Variable_name*64
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       do vegnum = 1, g%num_crops
          do solnum = 1, p%num_solutes
@@ -4326,12 +3869,11 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
             variable_name = 'uptake_'//trim(p%solute_names(solnum))
      :                       //'_'//trim(g%crop_names(vegnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DoubleArrayTypeDDML, ' ', ' ')
+     :                       DoubleArrayTypeDDML, ' ')
 
          end do
       end do
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -4341,14 +3883,6 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
       Use infrastructure
       implicit none
 
-*+  Purpose
-*     Register any solute related output variables
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_register_solute_outputs')
-
 *+  Local Variables
       integer id
       integer solnum
@@ -4356,57 +3890,53 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
       character DDML*128
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
-
-
 
       do solnum = 1, p%num_solutes
             DDML = '<type name="solute_flow" array="T"'
      :           //' kind="double" unit="kg/ha"/>'
             variable_name = 'flow_'//trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DDML, ' ', ' ')
+     :                       DDML, ' ')
 
             DDML = '<type name="solute_leach" array="F"'
      :           //' kind="double" unit="kg/ha"/>'
             variable_name = 'leach_'//trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DDML, ' ', ' ')
+     :                       DDML, ' ')
 
             DDML = '<type name="solute_exco" array="T"'
      :           //' kind="double" unit=""/>'
             variable_name = 'exco_'//trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DoubleArrayTypeDDML, ' ', ' ')
+     :                       DoubleArrayTypeDDML, ' ')
 
             DDML = '<type name="solute_dis" array="T"'
      :           //' kind="double" unit=""/>'
             variable_name = 'dis_'//trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DDML, ' ', ' ')
+     :                       DDML, ' ')
 
             DDML = '<type name="conc_water_solute" array="T"'
      :           //' kind="double" unit="ppm"/>'
             variable_name = 'conc_water_'//trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DDML, ' ', ' ')
+     :                       DDML, ' ')
 
             DDML = '<type name="conc_adsorb_solute" array="T"'
      :           //' kind="double" unit="ppm"/>'
             variable_name = 'conc_adsorb_'//trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DDML, ' ', ' ')
+     :                       DDML, ' ')
 
             DDML = '<type name="subsurface_drain_solute" array="F"'
      :           //' kind="double" unit="kg/ha"/>'
             variable_name = 'subsurface_drain_'//
      :                          trim(p%solute_names(solnum))
             id = Add_Registration (respondToGetSetReg, Variable_name,
-     :                       DDML, ' ', ' ')
+     :                       DDML, ' ')
 
       end do
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -4439,6 +3969,8 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
       double precision length          ! total length of roots for a plant (mm/mm2)
 *- Implementation Section ----------------------------------
 
+      bare = 1.0
+
       do 100 vegnum = 1, g%num_crops
 
          ! Initialise tempory varaibles to zero
@@ -4459,7 +3991,7 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
             length = 0d0
             do 60 layer = 1,p%n+1            !       /
                g%rld(layer-1,vegnum) = rlv_l(layer)*100d0
-               length = length + rlv_l(layer) * g%dlayer(layer-1)
+               length = length + rlv_l(layer) * p%dlayer(layer-1)
    60       continue
             if ((length.gt.0.).and.
      :          (length.lt.c%min_total_root_length)) then
@@ -4488,6 +4020,25 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
      :        'no sw demand returned from '//g%crop_names(vegnum))
          endif
 
+         call get_real_var (
+     :           g%crop_owners(vegnum),
+     :           'height',
+     :           '(mm)',
+     :           g%canopy_height(vegnum),
+     :           numvals,
+     :           0.0,
+     :           50e3)
+
+         call get_real_var (
+     :           g%crop_owners(vegnum),
+     :           'cover_tot',
+     :           '()',
+     :           g%cover_tot(vegnum),
+     :           numvals,
+     :           0.0,
+     :           1.0)
+         bare = bare * (1.0 - g%cover_tot(vegnum))
+
          do 99 solnum = 1, p%num_solutes
 
             solute_demand_name = string_concat(p%solute_names(solnum),
@@ -4505,45 +4056,7 @@ cnh               g%slscr(solnum) = table_slscr(solnum2)
 
   100 continue
 
-
-cnh the following code was taken directly from APSWat so that operation
-cnh across water balances is consistant.  This method however is
-cnh different to the way the rest of the crop variables are obtained.
-
-      call get_double_var_optional (unknown_module
-     :                             , 'cover_tot_sum'
-     :                             , '()'
-     :                             , g%crop_cover
-     :                             , numvals
-     :                             , 0.d0
-     :                             , 1.d0)
-
-      if (numvals.eq.0) then
-             ! we have no canopy module - get all crops covers
-
-         crop = 0
-         bare = 1.0
-2000     continue
-            crop = crop + 1
-            call get_real_vars (crop, 'cover_tot', '()'
-     :                              , cover, numvals
-     :                              , 0.0, 1.0)
-
-               ! Note - this is based on a reduction of Beers law
-               ! cover1+cover2 = 1 - exp (-(k1*lai1 + k2*lai2))
-
-            if (numvals.ne.0) then
-               bare = bare * (1.0 - cover)
-               goto 2000
-            else
-                  ! no more crops
-               g%crop_cover = 1.0 - bare
-            endif
-      else
-         ! got total cover from canopy module
-      endif
-
-cnh
+      g%crop_cover = 1.0 - bare
 
       return
       end subroutine
@@ -4695,6 +4208,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       else
       endif
 
+
       call apswim_insert_loginfo (
      :                         irrigation_time
      :                        ,duration
@@ -4741,7 +4255,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
         endif
   100 continue
 
-
       call pop_routine (myname)
       return
       end subroutine
@@ -4749,25 +4262,13 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_OnSubSurfaceFlow ()
 * ====================================================================
-
       Use infrastructure
       implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Assumptions
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_OnSubSurfaceFlow')
 
 *+  Local Variables
       double precision amount(0:m)
       integer          numvals
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       if (p%echo_directives.eq.'on') then
          ! flag this event in output file
@@ -4787,9 +4288,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
       g%SubSurfaceInflow(0:numvals) = g%SubSurfaceInflow(0:numvals)
      :                             + amount(0:numvals)
 
-
-
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -4848,7 +4346,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
 
 * ====================================================================
-       subroutine apswim_get_uptake (ucrop, uname, uarray, uunits,uflag)
+       subroutine apswim_get_sw_uptake (ucrop, uarray,uflag)
 * ====================================================================
 
       Use infrastructure
@@ -4857,34 +4355,20 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *+  Sub-Program Arguments
       double precision uarray(0:p%n)
       character ucrop *(*)
-      character uname *(*)
-      character uunits*(*)
-      logical       uflag
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 27-01-1995 - Programmed and Specified
+      logical   uflag
 
 *+  Constant Values
       character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_get_uptake')
+      parameter (myname = 'apswim_get_sw_uptake')
 
 *+  Local Variables
       integer counter
       integer node
-      integer solnum
       integer vegnum
-
-*+  Initial Data Values
-      uflag = .false. ! set to false to start - if match is found it is
-                      ! set to true.
-      uunits = ' '
-
+ 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
+      uflag = .false.
       call fill_double_array (uarray(0), 0d0, p%n+1)
 
       vegnum = 0
@@ -4899,36 +4383,44 @@ cnh NOTE - intensity is not part of the official design !!!!?
          ! ignore it
 
       else
+         uflag = .true.
+          do 40 node=0,p%n
+             ! uptake may be very small -ve - assume error small
+             uarray(node) = max (g%pwuptake(vegnum,node),0d0)
+   40     continue
 
-         if (uname.eq.'water') then
-             uflag = .true.
-             uunits = '(mm)'
-             do 40 node=0,p%n
-                ! uptake may be very small -ve - assume error small
-                uarray(node) = max (g%pwuptake(vegnum,node),0d0)
-   40        continue
-
-         else
-            do 100 solnum = 1, p%num_solutes
-               if (p%solute_names(solnum).eq.uname) then
-                  do 50 node=0,p%n
-                     uarray(node) = max(g%psuptake(solnum,vegnum,node)
-     :                                 ,0d0)
-   50             continue
-                  uflag = .true.
-                  uunits = '(kg/ha)'
-                  goto 110
-               else
-               endif
-  100       continue
-  110       continue
-         endif
       endif
 
-      call pop_routine (myname)
       return
       end subroutine
 
+* ====================================================================
+      subroutine PublishUptakes()
+* ====================================================================
+      Use infrastructure
+      implicit none
+      integer counter
+      integer node
+      type(WaterUptakesType) :: Water
+      character CropName*200
+
+      Water%num_Uptakes = g%num_crops
+
+      do counter = 1, g%num_crops
+         CropName = g%crop_names(counter)
+         call NullTermString(CropName)                         ! YUK - need to fix this.
+         Water%Uptakes(counter)%Name = CropName
+         Water%Uptakes(counter)%Num_amount = p%n+1
+
+         do node=0, p%n
+            ! uptake may be very small -ve - assume error small
+            Water%Uptakes(counter)%Amount(node+1) =
+     .            max(g%pwuptake(counter,node),0d0)
+         end do
+      end do
+      call publish_WaterUptakes(id%WaterUptakesCalculated, Water);
+
+      end subroutine
 * ====================================================================
        subroutine apswim_get_supply (ucrop, uname, uarray, uunits,uflag)
 * ====================================================================
@@ -5072,12 +4564,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *+  Sub-Program Arguments
        character solname*(*)
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   NeilH - 16-02-1995 - Programmed and Specified
-
 *+  Constant Values
       character myname*(*)               ! name of current procedure
       parameter (myname = 'apswim_solute_number')
@@ -5087,7 +4573,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
        integer solnum
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       solnum = 0
       do 100 counter = 1, p%num_solutes
@@ -5099,7 +4584,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
       apswim_solute_number = solnum
 
-      call pop_routine (myname)
       return
       end function
 
@@ -5196,6 +4680,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
          endif
        endif
 
+
       if (amount.gt.0d0) then
          time_of_day = apswim_time_to_mins (time)
          Time_mins = apswim_time (g%year,g%day,time_of_day)
@@ -5212,6 +4697,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
          ! No g%rain to add to record
       endif
 
+
       return
       end subroutine
 
@@ -5220,7 +4706,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *     ===========================================================
       subroutine apswim_pot_evapotranspiration (pot_eo)
 *     ===========================================================
-
       Use infrastructure
       implicit none
 
@@ -5229,16 +4714,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
 *+  Purpose
 *       calculate potential evapotranspiration
-
-*+  Changes
-*            26/5/95 NIH - adapted from soilwat_pot_evapotranspiration
-
-*+  Calls
-
-
-*+  Constant Values
-      character  my_name*(*)           ! name of subroutine
-      parameter (my_name = 'apswim_pot_evapotranspiration')
 
 *+  Local Variables
       double precision albedo          ! albedo taking into account plant
@@ -5250,7 +4725,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
 *- Implementation Section ----------------------------------
 
-      call push_routine (my_name)
 
 *  ******* calculate potential evaporation from soil surface (eos) ******
 
@@ -5274,7 +4748,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
       pot_eo = eeq*apswim_eeq_fac ()
 
-      call pop_routine (my_name)
       return
       end subroutine
 
@@ -5290,16 +4763,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *+  Purpose
 *                 calculate coefficient for equilibrium evaporation rate
 
-*+  Changes
-*        260595   nih adapted from soilwat_eeq_fac
-
-*+  Constant Values
-      character  my_name*(*)           ! name of subroutine
-      parameter (my_name = 'apswim_eeq_fac')
-
 *- Implementation Section ----------------------------------
 
-      call push_routine (my_name)
 
       if (g%maxt.gt.c%max_crit_temp) then
 
@@ -5323,8 +4788,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
          apswim_eeq_fac = 1.1
       endif
 
-      call pop_routine (my_name)
-      return
       end function
 
 
@@ -5332,19 +4795,13 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_read_constants ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *      Read in all constants from constants file.
 
-*+  Changes
-*     <insert here>
-
 *+  Constant Values
-       character myname*(*)
-       parameter (myname = 'apswim_read_constants')
 *
        character section_name*(*)
        parameter (section_name = 'constants')
@@ -5353,7 +4810,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
        integer numvals                 ! number of values read from file
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       call Read_integer_var (
      :              section_name,
@@ -5364,6 +4820,61 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              1,
      :              100)
 
+         ! Read in p%ersoil from parameter file
+
+      call Read_double_var (
+     :              section_name,
+     :              'ersoil',
+     :              '(??)',
+     :              c%ersoil,
+     :              numvals,
+     :              1.0d-10,
+     :              1.0d0)
+
+         ! Read in p%ernode from parameter file
+
+      call Read_double_var (
+     :              section_name,
+     :              'ernode',
+     :              '(??)',
+     :              c%ernode,
+     :              numvals,
+     :              1.0d-10,
+     :              1.0d0)
+
+         ! Read in p%errex from parameter file
+
+      call Read_double_var (
+     :              section_name,
+     :              'errex',
+     :              '(??)',
+     :              c%errex,
+     :              numvals,
+     :              1.0d-10,
+     :              1.0d0)
+
+         ! Read in p%dppl from parameter file
+
+      call Read_double_var (
+     :              section_name,
+     :              'dppl',
+     :              '(??)',
+     :              c%dppl,
+     :              numvals,
+     :              0.0d0,
+     :              1.0d1)
+
+         ! Read in p%dpnl from parameter file
+
+      call Read_double_var (
+     :              section_name,
+     :              'dpnl',
+     :              '(??)',
+     :              c%dpnl,
+     :              numvals,
+     :              0.0d0,
+     :              1.0d1)
+
       call Read_double_var (
      :              section_name,
      :              'negative_conc_warn',
@@ -5372,6 +4883,15 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              numvals,
      :              0d0,
      :              10d0)
+
+      call Read_double_var(
+     :           section_name,
+     :           'slcerr',
+     :           '()',
+     :           c%slcerr,
+     :           numvals,
+     :           1d-8,
+     :           1d-4)
 
       call Read_double_var (
      :              section_name,
@@ -5418,26 +4938,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              0.0,
      :              1.0)
 
-
-      call Read_double_var (
-     :              section_name,
-     :              'max_bitesize',
-     :              '(kg/ha)',
-     :              c%max_bitesize,
-     :              numvals,
-     :              1.0d-6,
-     :              1.0d0)
-
-      call Read_double_var (
-     :              section_name,
-     :              'extra_supply_fraction',
-     :              '()',
-     :              c%supply_fraction,
-     :              numvals,
-     :              1.0d-6,
-     :              1.0d0)
-
-
       call Read_double_var (
      :              section_name,
      :              'min_total_root_length',
@@ -5447,6 +4947,43 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              0d0,
      :              10d0)
 
+      call Read_char_array(
+     :           section_name,
+     :           'crop_name',
+     :           MV,
+     :           '()',
+     :           c%crop_table_name,
+     :           numvals)
+
+      call Read_double_array(
+     :           section_name,
+     :           'min_xylem_potential',
+     :           MV,
+     :           '()',
+     :           c%crop_table_psimin,
+     :           numvals,
+     :           -1d7,
+     :           1d0)
+
+      call Read_double_array(
+     :           section_name,
+     :           'root_radius',
+     :           MV,
+     :           '(mm)',
+     :           c%crop_table_root_radius,
+     :           numvals,
+     :           1d-3,
+     :           1d1)
+
+      call Read_double_array(
+     :           section_name,
+     :           'root_conductance',
+     :           MV,
+     :           '()',
+     :           c%crop_table_root_con,
+     :           numvals,
+     :           1d-10,
+     :           1d-3)
 
 
 
@@ -5474,6 +5011,29 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              numvals,
      :              0d0,
      :              10d0)
+
+
+      call read_real_array (section_name
+     :                   , 'canopy_fact', max_table, '()'
+     :                   , c%canopy_fact, c%num_canopy_fact
+     :                   , 0.0, 1.0)
+
+      call read_real_array (section_name
+     :                   , 'canopy_fact_height', max_table, '(mm)'
+     :                   , c%canopy_fact_height, numvals
+     :                   , 0.0, 100000.0)
+      if (numvals.ne. c%num_canopy_fact) then
+         call fatal_error (err_user
+     :                    , 'No. of canopy_fact coeffs do not match '
+     :                    //'no. of canopy_fact_height coeffs.')
+      else
+         ! matching number of coeffs
+      endif
+
+      call read_real_var (section_name
+     :                   , 'canopy_fact_default', '()'
+     :                   , c%canopy_fact_default, numvals
+     :                   , 0.0, 1.0)
 
 
       call Read_char_var (
@@ -5528,7 +5088,16 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :               c%lb_solute,
      :               1d10)
 
-      call pop_Routine (myname)
+
+      call Read_double_var (
+     :              section_name,
+     :              'hydrol_effective_depth',
+     :              '(mm)',
+     :              c%hydrol_effective_depth,
+     :              numvals,
+     :               0d0,
+     :               1d4)
+     
       return
       end subroutine
 
@@ -5537,31 +5106,17 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_get_green_cover (cover_green_sum)
 * ====================================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
-*+  Sub-Program Arguments
-       double precision cover_green_sum
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 26-05-1995 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_get_green_cover')
-
 *+  Local Variables
+      double precision cover_green_sum
       double precision bare
       double precision cover
       integer crop
       integer numvals
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       call get_double_var_optional (unknown_module
      :                                  , 'cover_green_sum', '()'
@@ -5592,7 +5147,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
          ! got green cover from canopy module
       endif
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -5601,22 +5155,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_calc_evap_variables ()
 * ====================================================================
-
       Use infrastructure
       implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 26-05-1995 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_calc_evap_variables')
 
 *+  Local Variables
       real amount
@@ -5627,7 +5167,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
       double precision time_mins
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       if ( reals_are_equal (g%apsim_timestep, 1440.) ) then
          ! timestep is 24 hours - OK
@@ -5675,7 +5214,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :      'apswim can only calculate Eo for daily timestep')
       endif
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -5684,21 +5222,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_recalc_eqrain ()
 * ====================================================================
-
       Use infrastructure
       implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 29-05-1995 - Programmed and Specified
-
-*+  Calls
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_recalc_eqrain')
 
 *+  Local Variables
       double precision amount
@@ -5708,7 +5233,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
       double precision avinten
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       ! leave the first element alone to keep magnitude in order
 
@@ -5730,7 +5254,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
   100 continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -5739,25 +5262,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_tillage ()
 * ====================================================================
-
       Use infrastructure
       implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 29-05-1995 - Programmed and Specified
-*      21-06-96 NIH Changed extract calls to collect calls
-*   neilh - 22-07-1996 removed data_String from arguments
-*   neilh - 29-08-1997 added test for whether directives are to be echoed
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_tillage')
 
 *+  Local Variables
       double precision new_hm1
@@ -5770,7 +5276,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
       integer          numvals
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       if (p%echo_directives.eq.'on') then
          ! flag this event in output file
@@ -5860,7 +5365,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
       ! Now set current surface conductance to max
       g%gsurf = p%g1
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -5869,7 +5373,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_reset_water_balance (wc_flag, water_content)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -5878,31 +5381,18 @@ cnh NOTE - intensity is not part of the official design !!!!?
                                          ! content
       double precision water_content (0:M)
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 02-06-1995 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_reset_water_balance')
-
 *+  Local Variables
       integer i                          ! node index counter
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       do 25 i=0,p%n
          if (wc_flag.eq.1) then
             ! water content was supplied in volumetric SW
             ! so calculate matric potential
+            
             g%th (i) = water_content(i)
-            g%psi(i) = apswim_suction (i,g%th(i))
+            g%psi(i) = - apswim_suction (i,g%th(i))
 
          else if (wc_flag.eq.2) then
             ! matric potential was supplied
@@ -5920,7 +5410,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
       g%wp = apswim_wpf ()
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -5929,23 +5418,12 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        double precision function apswim_theta (i,suction)
 * ====================================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
       integer i
       double precision suction
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 02-06-1995 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_theta')
 
 *+  Local Variables
       double precision thd
@@ -5954,14 +5432,12 @@ cnh NOTE - intensity is not part of the official design !!!!?
       double precision hklgd
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       call apswim_interp
      :           (i, suction, theta, thd, hklg, hklgd)
 
       apswim_theta = theta
 
-      call pop_routine (myname)
       return
       end function
 
@@ -5970,23 +5446,12 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine union_double_arrays (a,na,b,nb,c,nc,nc_max)
 * ====================================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
        integer na,nb,nc,nc_max
        double precision a(*),b(*),c(*)
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 08-06-1995 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'union_double_arrays')
 
 *+  Local Variables
        integer i
@@ -5997,7 +5462,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
       nc = 0
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       ! Put A into C
       ! ------------
@@ -6036,7 +5500,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
          endif
    30 continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -6145,7 +5608,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_hmin (deqrain, sstorage)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -6153,25 +5615,11 @@ cnh NOTE - intensity is not part of the official design !!!!?
       double precision deqrain
       double precision sstorage
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 14-09-1995 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_hmin')
-
 *+  Local Variables
       double precision decay_fraction
       double precision ceqrain
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
 cnh      g%hmin=p%hm0
 cnh      if(p%hrc.ne.0..and.ttt.gt.tzero)then
@@ -6212,7 +5660,6 @@ cnh      end if
          ! sstorage = p%hm0
       endif
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -6221,7 +5668,6 @@ cnh      end if
 * ====================================================================
        subroutine apswim_freundlich (node, solnum, Cw, Ctot, dCtot)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -6232,20 +5678,21 @@ cnh      end if
       double precision Ctot
       double precision dCtot
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   18-9-95 NIH - programmed and specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_freundlich')
-
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       ! calculate value of isotherm function and the derivative.
+      if (Cw .lt. 0) then
+         if (Cw.lt.-1e-6) then
+            call fatal_error (err_internal,
+     :           '-ve concentration in calculating isotherm')
+            Ctot = 0
+            dCtot = 0
+         else
+            Ctot = 0
+            dCtot = g%th(node)
+         endif
+
+      else
 
          Ctot = g%th(node) * Cw
      :        + p%ex(solnum,node) * Cw ** p%fip(solnum)
@@ -6253,8 +5700,8 @@ cnh      end if
      :         + p%ex(solnum,node)
      :         *p%fip(solnum)
      :         *Cw**(p%fip(solnum)-1d0)
+      endif
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -6264,7 +5711,6 @@ cnh      end if
        double precision function apswim_solve_freundlich
      :                                      (node, solnum, Ctot)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -6277,21 +5723,12 @@ cnh      end if
 *   Calculate the solute in solution for a given total solute
 *   concentration for a given node.
 
-*+  Changes
-*   18-9-95 NIH - programmed and specified
-
-*+  Calls
-
-
 *+  Constant Values
       integer max_iterations
       parameter (max_iterations = 1000)
 *
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_freundlich')
-*
       double precision tolerance
-      parameter (tolerance = 1d-6)
+      parameter (tolerance = 1d-10)
 
 *+  Local Variables
       double precision Cw
@@ -6302,41 +5739,52 @@ cnh      end if
       logical          solved
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
-      ! Take intital guess at Cw
-
-      Cw = ddivide (Ctot, g%th(node), 0.d0)
-
-      ! calculate value of isotherm function and the derivative.
-
-      call apswim_freundlich (node,solnum,Cw,f,dfdCw)
-
-      if (abs(f-Ctot) .lt. tolerance) then
-         ! It is already solved
-         solved = .true.
-
-      else if (dfdCw .eq. 0d0) then
-         ! We are at zero so Cw must be zero - this is a solution too
-         solved = .true.
-
+      if (Ctot.lt.0) then
+         if (Ctot.lt.-1e-6) then
+            call fatal_error (err_internal,
+     :           '-ve concentration in isotherm calculation')
+            solved = .false.
+            CW = 0
+         else
+            Cw = 0
+            solved = .true.
+         endif
       else
-         solved = .false.
-         do 100 iteration = 1,max_iterations
+         ! Take intital guess at Cw
 
-            call apswim_freundlich (node,solnum,Cw,f,dfdCw)
+         Cw = (ddivide (Ctot, (g%th(node)+p%ex(solnum,node))
+     :        , 0.d0))**(1.0/p%fip(solnum))
+     
+         ! calculate value of isotherm function and the derivative.
 
-            error_amount = f - Ctot
-            if (abs(error_amount) .lt. tolerance) then
-               solved = .true.
-               goto 200
-            else
-               Cw = Cw - ddivide(error_amount,dfdCw,0d0)
-            endif
+         call apswim_freundlich (node,solnum,Cw,f,dfdCw)
 
-  100    continue
-  200    continue
+         if (abs(f-Ctot) .lt. tolerance) then
+            ! It is already solved
+            solved = .true.
 
+         else if (dfdCw .eq. 0d0) then
+            ! We are at zero so Cw must be zero - this is a solution too
+            solved = .true.
+
+         else
+            solved = .false.
+            do 100 iteration = 1,max_iterations
+
+               call apswim_freundlich (node,solnum,Cw,f,dfdCw)
+
+               error_amount = f - Ctot
+               if (abs(error_amount) .lt. tolerance) then
+                  solved = .true.
+                  goto 200
+               else
+                  Cw = Cw - ddivide(error_amount,dfdCw,0d0)
+               endif
+
+  100       continue
+  200       continue
+         endif
       endif
 
       if (.not.solved) then
@@ -6349,7 +5797,6 @@ cnh      end if
 
       endif
 
-      call pop_routine (myname)
       return
       end function
 
@@ -6358,19 +5805,11 @@ cnh      end if
 * ====================================================================
        subroutine apswim_get_obs_evap_variables ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *      Get the evap values from other modules
-
-*+  Changes
-*    26/5/95 NIH - programmed and specified
-*    24/6/98 NIH - added check for swim getting Eo from itself
-
-*+  Calls
-
 
 *+  Local Variables
       integer numvals                  ! number of values returned
@@ -6443,247 +5882,9 @@ cnh      end if
       return
       end subroutine
 
-
-
-* ====================================================================
-       subroutine apswim_extra_solute_supply ()
-* ====================================================================
-
-      Use infrastructure
-      implicit none
-
-*+  Purpose
-*      Previous observations seem to imply that crops often take up
-*      more solute than calculated by a simple mass flow method.
-*      The physical mechanism is unknown and so a simple 'black box'
-*      approach is used here.  This subroutine will therefore
-*      perform a simple end-of-g%day calculation to try and supply
-*      extra solute to plants if mass flow has not supplied the
-*      crop demand.  This is based on a simple decay function
-*      that allows the rate at which this unknown mechanism supplies
-*      solute to vary with solute concentration.
-
-*+  Notes
-*      The solution used here is less than perfect in that it iterates
-*      through space and "pseudo-time" in small steps to approximate a
-*      solution.  This was deemed more suitable than a more complex
-*      simulatenous solution of solute flows based on some given uptake
-*      function.  The area of time increment size discrepency with this
-*      algorthm could do with some improvement. Note also that the amount
-*      of root in a layer does not regulate supply.  It is only used
-*      to partition solute.  Root length is assumed to have minimal
-*      influence on uptake. - Neil Huth.
-*
-*      To avoid NDP Peter made sure that rlv was never zero.  This is
-*      very bad for this routine.  To get around this I have added a
-*      minimum root length for uptake.  This may also help those users
-*      wanting to restrict uptake from layers with very few roots. - NH
-
-*+  Changes
-*   neilh - 20-12-1995 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      double precision bitesize_tolerence
-      parameter (bitesize_tolerence = 0.001d0)
-*
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_extra_solute_demand')
-*
-      double precision supply_tolerence
-      parameter (supply_tolerence = 0.00001d0)
-*
-      double precision demand_tolerence
-      parameter (demand_tolerence = 0.0000001d0)
-*
-      double precision minimum_rlv        ! (cm/cc)
-      parameter (minimum_rlv = 0.0005)
-
-*+  Local Variables
-      double precision bitesize
-      integer          crop
-      double precision aswf
-      double precision init_demand(MV)
-      double precision init_tot_demand
-      double precision init_tot_supply
-      integer          layer
-      double precision rel_uptake(MV)
-      double precision demand (MV)
-      double precision max_bite_pass
-      integer          solnum
-      double precision solute_in_layer
-      double precision supply (0:M)
-      double precision tot_rel_uptake
-      double precision tot_demand
-      double precision tot_rld(0:M)
-      double precision tot_supply
-      double precision tpsuptake
-      double precision uptake
-
-*- Implementation Section ----------------------------------
-      call push_routine (myname)
-
-      ! First check the total root density in each layer
-      ! ------------------------------------------------
-      do 200 layer = 0, p%n
-         tot_rld (layer) = 0.0
-         do 100 crop = 1, g%num_crops
-            if (g%rld(layer,crop).ge.minimum_rlv) then
-               tot_rld (layer) = tot_rld (layer) + g%rld(layer,crop)
-            else
-            endif
-  100    continue
-  200 continue
-
-
-      do 1000 solnum = 1, p%num_solutes
-
-         if (p%slupf(solnum).gt.0d0) then
-
-            call fill_double_array (supply(0), 0d0, M)
-            call fill_double_array (demand, 0d0, MV)
-            tot_supply = 0d0
-            tot_demand = 0d0
-
-
-            ! calculate the supply from soil for this solute
-            ! ----------------------------------------------
-            do 300 layer = 0,p%n
-               aswf = ddivide (g%th (layer) - p%LL15(layer)
-     :                        ,p%DUL(layer) - p%LL15(layer)
-     :                        ,0d0)
-               aswf = min(max(aswf,0d0),1d0)
-
-               supply (layer) = c%supply_fraction * aswf
-     :                 * max(apswim_solute_amount(solnum,layer),0.d0)
-               tot_supply = tot_supply
-     :                    + supply (layer)
-  300       continue
-            init_tot_supply = tot_supply
-
-            ! calculate the unsatisfied demand for each solute
-            ! ------------------------------------------------
-            !                by each crop
-            !                ------------
-
-             do 500 crop = 1, g%num_crops
-               tpsuptake = 0d0
-               do 400 layer = 0,p%n
-                  tpsuptake = tpsuptake
-     :                      + max(g%psuptake(solnum,crop,layer), 0d0)
-  400          continue
-
-               ! Note that we can only supply a fraction of the demand
-
-               demand(crop) =   c%supply_fraction *
-     :             max(g%solute_demand (crop,solnum) - tpsuptake, 0d0)
-               init_demand(crop) = demand(crop)
-               tot_demand = tot_demand + demand(crop)
-  500       continue
-            init_tot_demand = tot_demand
-
-            ! Now iteratively partition solute to plants based
-            ! ------------------------------------------------
-            !          on demands and root lengths.
-            !          ----------------------------
-
-            layer = 1
-            max_bite_pass = 0.d0
-  600       continue
-
-               tot_rel_uptake = 0.0
-               do 700 crop=1, g%num_crops
-                  if (demand(crop).gt.0.0) then
-                     if (g%rld(layer,crop).ge.minimum_rlv) then
-                         rel_uptake(crop)=g%rld(layer,crop)
-     :                                   /tot_rld(layer)
-     :                   *ddivide(init_demand(crop),init_tot_demand,0d0)
-                     else
-                        rel_uptake(crop)=0d0
-                     endif
-                  else
-                      rel_uptake(crop)=0d0
-                  endif
-                  tot_rel_uptake = tot_rel_uptake + rel_uptake(crop)
-  700          continue
-
-               bitesize = min(supply(layer),c%max_bitesize)
-     :                  * ddivide(supply(layer),tot_supply,0d0)
-
-               do 800 crop = 1, g%num_crops
-                  uptake = ddivide(rel_uptake(crop),tot_rel_uptake,0d0)
-     :                   * bitesize
-                  uptake = min(demand(crop), uptake)
-                  max_bite_pass = max(uptake,max_bite_pass)
-
-                  demand(crop) = demand(crop) - uptake
-                  tot_demand = tot_demand - uptake
-
-                  supply(layer)= supply(layer) - uptake
-                  tot_supply = tot_supply - uptake
-
-                  g%psuptake(solnum,crop,layer) =
-     :                    g%psuptake(solnum,crop,layer) + uptake
-
-                  solute_in_layer = apswim_solute_amount(solnum,layer)
-     :                            - uptake
-                  g%csl(solnum,layer) = apswim_solute_conc
-     :                                  (solnum
-     :                                  ,layer
-     :                                  ,solute_in_layer)
-
-  800          continue
-
-
-               if ((ddivide (tot_demand, init_tot_demand, 0d0)
-     :                            .le.
-     :                       demand_tolerence)
-     :         .or.
-     :             (ddivide (tot_supply, init_tot_supply, 0d0)
-     :                            .le.
-     :                       supply_tolerence))
-     :         then
-                  goto 900
-               else
-                  if (layer.lt.p%n) then
-                     layer = layer + 1
-                  else
-                     ! We have finished one pass through the profile
-                     ! Check to see if it is worth going through again
-                      if (ddivide (max_bite_pass, c%max_bitesize, 0d0)
-     :                            .le.
-     :                       bitesize_tolerence)
-     :                then
-                         goto 900
-                      else
-                        layer = 0
-                        max_bite_pass = 0.d0
-                      endif
-                  endif
-               endif
-
-            goto 600
-
-  900       continue
-
-         else
-            ! no uptake for this solute
-         endif
-
- 1000 continue
-
-      call pop_routine (myname)
-      return
-      end subroutine
-
-
-
 * ====================================================================
        double precision function apswim_solute_amount (solnum,node)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -6691,22 +5892,11 @@ cnh      end if
       integer solnum
       integer node
 
-*+  Purpose
-*
-
-*+  Changes
-*   neilh - 20-12-1995 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_solute_amount')
-
 *+  Local Variables
       double precision Ctot
       double precision dCtot
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       ! Step One - calculate total solute in node from solute in
       ! water and Freundlich isotherm.
@@ -6727,7 +5917,6 @@ cnh      end if
      :               * (p%dx(node)*(1d4)**2) ! cc soil/ha
      :               * 1d-9               ! kg/ug
 
-      call pop_routine (myname)
       return
       end function
 
@@ -6736,25 +5925,11 @@ cnh      end if
 * ====================================================================
        double precision function dbound (x,l,u)
 * ====================================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
       double precision x,l,u
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 20-12-1995 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'dbound')
 
 *- Implementation Section ----------------------------------
 
@@ -6776,19 +5951,6 @@ cnh      end if
       integer         solnum
       integer          node
       double precision amount
-
-*+  Purpose
-*
-
-*+  Changes
-*   neilh - 20-12-1995 - Programmed and Specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_solute_conc')
 
 *+  Local Variables
       double precision conc_soil
@@ -6816,12 +5978,9 @@ cnh      end if
       end function
 
 
-
-
 * ====================================================================
        double precision function apswim_slupf (crop, solnum)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -6829,42 +5988,11 @@ cnh      end if
       integer crop
       integer solnum
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 21-03-1996 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_slupf')
-
 *+  Local Variables
-c      double precision demand
-c      integer          layer
-c      double precision tpsuptake
-       integer active_crop
-       integer i
+
 *- Implementation Section ----------------------------------
 
-c      tpsuptake = 0d0
-c      do 400 layer = 0,p%n
-c         tpsuptake = tpsuptake
-c     :             + max(g%psuptake(solnum,crop,layer), 0d0)
-c  400 continue
-
-c      demand =
-c     :       max(g%solute_demand (crop,solnum) - tpsuptake,0d0)
-
-      if (g%demand_is_met(crop, solnum)
-     :         .and.
-     : p%solute_exclusion_flag.eq.'on')
-     :         then
-         apswim_slupf = 0d0
-      else
-         apswim_slupf = p%slupf (solnum)
-      endif
-
+      apswim_slupf = 0d0
 
       return
       end function
@@ -6874,19 +6002,8 @@ c     :       max(g%solute_demand (crop,solnum) - tpsuptake,0d0)
 * ====================================================================
        subroutine apswim_check_demand ()
 * ====================================================================
-
       Use infrastructure
       implicit none
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 02-04-1996 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_check_demand')
 
 *+  Local Variables
       double precision tpsuptake, demand
@@ -6894,7 +6011,6 @@ c     :       max(g%solute_demand (crop,solnum) - tpsuptake,0d0)
       integer num_active_crops
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       do 600 crop = 1, g%num_crops
       do 500 solnum = 1,p%num_solutes
@@ -6919,7 +6035,6 @@ c     :       max(g%solute_demand (crop,solnum) - tpsuptake,0d0)
   500 continue
   600 continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -6928,20 +6043,12 @@ c     :       max(g%solute_demand (crop,solnum) - tpsuptake,0d0)
 * ====================================================================
        subroutine apswim_report_status ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *   Dump a series of values to output file to be used by users in
 *   determining convergence problems, etc.
-
-*+  Changes
-*   neilh - 21-06-1996 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_report_status')
 
 *+  Local Variables
        integer i
@@ -6951,7 +6058,6 @@ c     :       max(g%solute_demand (crop,solnum) - tpsuptake,0d0)
        character        string*200
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       do 100 i=0,p%n
          call apswim_trans(g%p(i),t_psi(i),d1,d2)
@@ -6975,13 +6081,9 @@ c     :       max(g%solute_demand (crop,solnum) - tpsuptake,0d0)
       write(string,*) 'ron =',g%ron
       call write_string(string)
       call write_string('================================')
-c      pause
 
-      call pop_routine (myname)
       return
       end subroutine
-
-
 
 * ====================================================================
        subroutine apswim_insert_loginfo (time
@@ -6992,7 +6094,6 @@ c      pause
      :                                  ,SWIMNumPairs
      :                                  ,SWIMArraySize)
 * ====================================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
@@ -7005,19 +6106,6 @@ c      pause
        double precision SWIMAmt(SWIMArraySize)
        integer          SWIMNumPairs
 
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 28-11-1996 - adapted from apswim_insert_evap
-
-*+  Calls
-
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_insert_loginfo')
-
 *+  Local Variables
       double precision AvInt
       integer          counter
@@ -7028,7 +6116,6 @@ c      pause
       double precision SAmt
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       ftime = time+duration/60d0
       counter2 = 0
@@ -7124,11 +6211,8 @@ c      pause
 
       endif
 
-      call pop_routine (myname)
       return
       end subroutine
-
-
 
 * ====================================================================
       subroutine apswim_purge_log_info (time
@@ -7136,7 +6220,6 @@ c      pause
      :                                 ,SWIMAmt
      :                                 ,SWIMNumPairs)
 * ====================================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
@@ -7146,20 +6229,6 @@ c      pause
        double precision SWIMAmt (*)
        integer          SWIMNumPairs
 
-*+  Purpose
-*     <insert here>
-
-*+  Notes
-*   NIH - I know that it would not be hard to crash this routine
-*         but I hope that it will not be needed much longer.
-
-*+  Changes
-*   neilh - 04-08-1995 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_purge_rain_data')
-
 *+  Local Variables
       integer counter
       integer new_index
@@ -7167,7 +6236,6 @@ c      pause
       integer old_numpairs
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       old_numpairs = SWIMNumPairs
       new_start = 1
@@ -7195,7 +6263,6 @@ c      pause
          SwimAmt   (counter) = 0.0d0
  300  continue
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -7204,7 +6271,6 @@ c      pause
 * ====================================================================
        subroutine apswim_conc_water_solute (solname,conc_water_solute)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -7221,17 +6287,6 @@ c      pause
 *      be used for internal calculations of solute concentration during
 *      the process stage etc.
 
-*+  Changes
-*     12-06-1997 - huth - Programmed and Specified
-*     20-08-1998 - hills - added checking to make sure solute is found
-
-*+  Calls
-
-
-*+  Constant Values
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'apswim_conc_water_solute')
-
 *+  Local Variables
       integer          node
       double precision solute_n(0:M) ! solute at each node
@@ -7241,7 +6296,6 @@ c      pause
       call fill_double_array(conc_water_solute(0),0d0,p%n+1)
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       solnum = apswim_solute_number (solname)
 
@@ -7302,8 +6356,6 @@ c      pause
      :            //solname)
       endif
 
-
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -7312,7 +6364,6 @@ c      pause
 * ====================================================================
        subroutine apswim_conc_adsorb_solute (solname,conc_adsorb_solute)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -7329,18 +6380,6 @@ c      pause
 *      be used for internal calculations of solute concentration during
 *      the process stage etc.
 
-*+  Changes
-*     12-06-1997 - huth - Programmed and Specified
-*     20-08-1998 - hills - added checking to make sure solute is found
-*     21-08-1998 - hills - changed conc_adsorb calculation to be more stable
-
-*+  Calls
-
-
-*+  Constant Values
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'apswim_conc_adsorb_solute')
-
 *+  Local Variables
       integer          node
       double precision solute_n(0:M) ! solute at each node
@@ -7352,7 +6391,6 @@ c      pause
       call fill_double_array(conc_adsorb_solute(0),0d0,p%n+1)
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       solnum = apswim_solute_number (solname)
 
@@ -7418,8 +6456,6 @@ c      pause
      :            //solname)
       endif
 
-
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -7429,7 +6465,6 @@ c      pause
       subroutine apswim_get_flow (flow_name, flow_array, flow_units
      :                           ,flow_flag)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -7438,16 +6473,6 @@ c      pause
       character        flow_name *(*)
       character        flow_units*(*)
       logical          flow_flag
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*   neilh - 29-08-1997 - Programmed and Specified
-
-*+  Constant Values
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_get_flow')
 
 *+  Local Variables
       integer node
@@ -7461,7 +6486,6 @@ c      pause
       flow_units = ' '
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       call fill_double_array (flow_array(0), 0d0, p%n+2)
 
@@ -7487,7 +6511,6 @@ c      pause
   110    continue
       endif
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -7496,22 +6519,11 @@ c      pause
 * ====================================================================
        subroutine apswim_diagnostics (pold)
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
       double precision pold(0:p%n)
-
-*+  Purpose
-*     <insert here>
-
-*+  Changes
-*     15-04-1998 - neil huth - Programmed and Specified
-
-*+  Constant Values
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'apswim_diagnostics')
 
 *+  Local Variables
        character string*100
@@ -7521,7 +6533,6 @@ c      pause
        double precision k
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       string =     '     APSwim Numerical Diagnostics'
       call write_string (string)
@@ -7530,8 +6541,8 @@ c      pause
      :            //    '----------------------------------'
       call write_string (string)
 
-      string =     '      depth   Soil Type     Theta         g%psi    '
-     :            //    '    K           g%p          g%p*'
+      string =     '      depth      Theta         psi    '
+     :            //    '    K           p          p*'
       call write_string (string)
 
       string =     '     --------------------------------------------'
@@ -7544,8 +6555,8 @@ c      pause
          call apswim_watvar(layer,g%p(layer),dummy1,dummy2,dummy3,dummy4
      :                     ,dummy5,k,dummy6)
          write(string
-     :  ,'(5x,f6.1,2x,a10,4x,f9.7,4(1x,f10.3))')
-     :       p%x(layer)*10., p%soil_type(layer), g%th(layer)
+     :  ,'(5x,f6.1,9x,f9.7,4(1x,f10.3))')
+     :       p%x(layer)*10., g%th(layer)
      :       ,g%psi(layer), k ,g%p(layer), pold(layer)
          call write_string (string)
   200 continue
@@ -7554,29 +6565,22 @@ c      pause
      :            //    '----------------------------------'
       call write_string (string)
 
-
-      call pop_routine (myname)
       return
       end subroutine
 
 * ====================================================================
        subroutine apswim_get_residue_variables ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+   Purpose
 *      Get the values of residue variables from other modules
 
-*+   Changes
-
-
 *+  Local Variables
       integer numvals                  ! number of values returned
 
 *- Implementation Section ----------------------------------
-
 
          call get_double_var_optional (
      :            unknown_module,
@@ -7598,7 +6602,6 @@ c      pause
 * ====================================================================
       double precision function apswim_cover_eos_redn  ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
@@ -7607,13 +6610,6 @@ c      pause
 *      due to residues on the soil surface.
 *      Approach taken from directly from Soilwat code.
 
-*+  Changes
-*     30-10-1997 - neilh - Programmed and Specified
-
-*+  Constant Values
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'apswim_cover_eos_redn ')
-
 *+  Local Variables
       real       eos_canopy_fract      ! fraction of potential soil evaporation
                                        ! limited by crop canopy (mm)
@@ -7621,7 +6617,6 @@ c      pause
                                        ! limited by crop residue (mm)
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
          !---------------------------------------+
          ! reduce Eo to that under plant CANOPY                    <DMS June 95>
@@ -7657,7 +6652,6 @@ c      pause
 
       apswim_cover_eos_redn  = eos_canopy_fract * eos_residue_fract
 
-      call pop_routine (myname)
       return
       end function
 
@@ -7665,25 +6659,11 @@ c      pause
 *     ===========================================================
       subroutine apswim_on_new_solute ()
 *     ===========================================================
-
       Use infrastructure
       implicit none
 
 *+  Purpose
 *     Find the owner of any run_solutes
-
-*+  Mission Statement
-*      Find the owner of individual solutes
-
-*+  Changes
-*       170599 nih - specified
-
-*+  Calls
-
-
-*+  Constant Values
-      character  my_name*(*)           ! this subroutine name
-      parameter (my_name = 'apswim_on_new_solute')
 
 *+  Local Variables
       integer numvals
@@ -7693,8 +6673,6 @@ c      pause
       integer solnum
 
 *- Implementation Section ----------------------------------
-
-      call push_routine (my_name)
 
       call collect_integer_var (DATA_sender_ID
      :                          ,'()'
@@ -7726,7 +6704,6 @@ c      pause
 
   100 continue
 
-      call pop_routine (my_name)
       return
       end subroutine
 
@@ -7742,14 +6719,6 @@ c      pause
 *+  Purpose
 *     Update internal time record and reset daily state variables.
 
-*+  Mission Statement
-*     Update internal time record and reset daily state variables.
-
-*+  Changes
-*        270899 nih
-
-*+  Calls
-
 *+  Local Variables
       integer intTimestep
       integer          counter
@@ -7761,12 +6730,8 @@ c      pause
       integer          time_mins
       type(timeType) :: tick
 
-*+  Constant Values
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'apswim_ONtick')
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       call unpack_time(variant, tick)
       call jday_to_day_of_year(dble(tick%startday), g%day, g%year)
@@ -7819,38 +6784,24 @@ c      pause
 
       g%SubSurfaceInFlow = 0.0
 
-
-      call pop_routine (myname)
       return
       end subroutine
 
 * ====================================================================
        subroutine apswim_remove_interception ()
 * ====================================================================
-
       Use infrastructure
       implicit none
 
 *+   Purpose
 *      Remove interception losses from rainfall record
 
-*+   Changes
-
-*+  Calls
-
-
 *+  Local Variables
       integer numvals                  ! number of values returned
-      integer counter
-      integer start                ! record for start of interception
+
       double precision intercep
-      double precision tot_rain
-      double precision fraction
-      double precision start_timestep
-      integer          time_mins
 
 *- Implementation Section ----------------------------------
-
 
          call get_double_var_optional (
      :            unknown_module,
@@ -7866,7 +6817,27 @@ c      pause
          else
          endif
 
-      if (intercep.gt.0d0) then
+      call apswim_remove_from_rainfall(intercep)
+
+      return
+      end subroutine
+
+* ====================================================================
+       subroutine apswim_remove_from_rainfall(amount)
+* ====================================================================
+      Use infrastructure
+      implicit none
+      double precision amount
+      integer start                ! record for start of interception      
+      integer          time_mins
+      double precision start_timestep
+      integer counter
+      double precision tot_rain
+      double precision fraction
+
+*- Implementation Section ----------------------------------
+                  
+      if (amount.gt.0d0) then
 
          ! Firstly, find the record for start of rainfall for the
          ! current day - ie assume interception cannot come from
@@ -7891,7 +6862,7 @@ c      pause
          tot_rain = g%SWIMRainAmt(g%SWIMRainNumPairs)
      :            - g%SWIMRainAmt(start)
 
-         fraction = ddivide(intercep,tot_rain,1d6)
+         fraction = ddivide(amount,tot_rain,1d6)
          if (fraction.gt.1d0) then
             call fatal_error(ERR_Internal,'Interception > Rainfall')
          else
@@ -7905,14 +6876,12 @@ c      pause
       else
          ! do not bother removing zero
       endif
-
       return
       end subroutine
-
+       
 * ====================================================================
        double precision function apswim_water_table ()
 * ====================================================================
-      use Infrastructure
       Use infrastructure
       implicit none
 
@@ -7949,38 +6918,27 @@ c      pause
 *+  Purpose
 *     Advise other modules of new profile specification
 
-*+  Mission Statement
-*     Advise other modules of new profile specification
-
-*+  Changes
-*        210800 nih
-
 *+  Local Variables
       type(NewProfileType) :: newProfile
 
-*+  Constant Values
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'APSwim_New_Profile_Event')
-
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
-      newProfile%dlayer(:) = g%dlayer(0:p%n)
+      newProfile%dlayer(:) = p%dlayer(0:p%n)
       newProfile%num_dlayer = p%n+1
 
       newProfile%air_dry_dep(:) = 0.0
       newProfile%num_air_dry_dep = p%n+1
 
-      newProfile%ll15_dep(:) = p%ll15(0:p%n)*g%dlayer(0:p%n)
+      newProfile%ll15_dep(:) = p%ll15(0:p%n)*p%dlayer(0:p%n)
       newProfile%num_ll15_dep = p%n+1
 
-      newProfile%dul_dep(:) = p%dul(0:p%n)*g%dlayer(0:p%n)
+      newProfile%dul_dep(:) = p%dul(0:p%n)*p%dlayer(0:p%n)
       newProfile%num_dul_dep = p%n+1
 
-      newProfile%sat_dep(:) = p%sat(0:p%n)*g%dlayer(0:p%n)
+      newProfile%sat_dep(:) = p%sat(0:p%n)*p%dlayer(0:p%n)
       newProfile%num_sat_dep = p%n+1
 
-      newProfile%sw_dep(:) = g%th(0:p%n)*g%dlayer(0:p%n)
+      newProfile%sw_dep(:) = g%th(0:p%n)*p%dlayer(0:p%n)
       newProfile%num_sw_dep = p%n+1
 
       newProfile%bd(:) = p%rhob(0:p%n)
@@ -7988,7 +6946,6 @@ c      pause
 
       call publish_NewProfile(ID%new_profile, newProfile)
 
-      call pop_routine (myname)
       return
       end subroutine
 
@@ -8031,6 +6988,264 @@ c      pause
 
       return
       end function
+
+*     ===========================================================
+      subroutine apswim_CN_runoff ()
+*     ===========================================================
+      Use Infrastructure
+      implicit none
+      double precision rain
+       double precision start_of_day
+       double precision end_of_day
+             
+      call apswim_cover_surface_runoff (g%cover_surface_runoff)
+
+         start_of_day = apswim_time (g%year,g%day,
+     :                               apswim_time_to_mins(g%apsim_time))
+         end_of_day = apswim_time (g%year
+     :                            ,g%day
+     :                            ,apswim_time_to_mins(g%apsim_time)
+     :                                +int(g%apsim_timestep))
+
+      rain = (apswim_crain(end_of_day)-
+     :                     apswim_crain(start_of_day))*10d0      
+      call apswim_scs_runoff (rain,g%CN_runoff)
+      
+      call apswim_remove_from_rainfall (g%CN_runoff)
+      g%TD_runoff = g%TD_runoff + g%CN_runoff      
+      
+      return
+      end subroutine
+      
+*     ===========================================================
+      subroutine apswim_cover_surface_runoff (cover_surface_runoff)
+*     ===========================================================
+      Use Infrastructure
+      implicit none
+
+*+  Sub-Program Arguments
+      real       cover_surface_runoff   ! (output) effective runoff cover (0-1)
+
+
+*+  Local Variables
+      real       canopy_fact           ! canopy factor (0-1)
+      integer    crop                  ! crop number
+      real       effective_crop_cover  ! effective crop cover (0-1)
+      real       cover_surface_crop    ! efective total cover (0-1)
+ 
+*- Implementation Section ----------------------------------
+
+          ! cover cn response from perfect   - ML  & dms 7-7-95
+          ! nb. perfect assumed crop canopy was 1/2 effect of mulch
+          ! This allows the taller canopies to have less effect on runoff
+          ! and the cover close to ground to have full effect (jngh)
+
+          ! weight effectiveness of crop canopies
+          !    0 (no effect) to 1 (full effect)
+
+      cover_surface_crop = 0.0
+      do 1000 crop = 1, g%num_crops
+         if (g%canopy_height(crop).ge.0.0) then
+            canopy_fact = linear_interp_real (g%canopy_height(crop)
+     :                                       , c%canopy_fact_height
+     :                                       , c%canopy_fact
+     :                                       , c%num_canopy_fact)
+         else
+            canopy_fact = c%canopy_fact_default
+         endif
+
+         effective_crop_cover = g%cover_tot(crop) * canopy_fact
+         cover_surface_crop = add_cover (cover_surface_crop
+     :                                   , effective_crop_cover)
+1000  continue
+          ! add cover known to affect runoff
+          !    ie residue with canopy shading residue
+
+      cover_surface_runoff = add_cover (cover_surface_crop
+     :                         ,  real(g%residue_cover))
+
+      return
+      end subroutine
+
+*     ===========================================================
+      subroutine apswim_scs_runoff (rain,runoff)
+*     ===========================================================
+      Use Infrastructure
+      implicit none
+
+*+  Sub-Program Arguments
+      double precision       rain                  ! (input) rainfall for day (mm)
+      double precision       runoff                ! (output) runoff for day (mm)
+
+*+  Purpose
+*        calculate runoff using scs curve number method
+
+
+*+  Local Variables
+      real       cn                    ! scs curve number
+      real       cn1                   ! curve no. for dry soil (antecedant)
+                                       !    moisture
+      real       cn3                   ! curve no. for wet soil (antecedant)
+                                       !    moisture
+      real       cover_fract           ! proportion of maximum cover effect on
+                                       !    runoff (0-1)
+      real       cnpd                  ! cn proportional in dry range
+                                       !    (dul to ll15)
+      integer    layer                 ! layer counter
+
+      real       s                     ! potential max retention
+                                       !    (surface ponding + infiltration)
+      real       xpb                   ! intermedite variable for deriving
+                                       !    runof
+*
+      real       runoff_wf(0:M)   ! weighting factor for depth for each la
+      real       tillage_reduction     ! reduction in cn due to tillage
+      real       cn2_new
+      
+*- Implementation Section ----------------------------------
+
+            ! revision of the runoff calculation according to scs curve number
+            ! cnpd  : fractional avail. soil water weighted over the
+            !         hyd.eff. depth  <dms 7-7-95>
+            ! cn1   : curve number for dry soil
+            ! cn3   : curve number for wet soil
+            ! s     : s value from scs equation, transfer to mm scale
+            !         = max. pot. retention (~infiltration) (mm)
+
+           ! check if hydro_effective_depth applies for eroded profile.
+
+      call apswim_runoff_depth_factor (runoff_wf)
+
+      cnpd = 0.0
+      do 100 layer = 0, p%n
+         cnpd = cnpd
+     :        +(g%th(layer)-p%ll15(layer))/(p%dul(layer)-p%ll15(layer))
+     :        * runoff_wf(layer)
+  100 continue
+      cnpd = bound (cnpd, 0.0, 1.0)
+
+          ! reduce CN2 for the day due to cover effect
+
+      cover_fract = divide (g%cover_surface_runoff, p%cn_cov, 0.0)
+      cover_fract = bound (cover_fract, 0.0, 1.0)
+
+      cn2_new = p%cn2_bare - (p%cn_red * cover_fract)
+
+      cn2_new = bound (cn2_new, 0.0, 100.0)
+
+      cn1 = divide (cn2_new, (2.334 - 0.01334*cn2_new), 0.0)
+      cn3 = divide (cn2_new, (0.4036 + 0.005964*cn2_new), 0.0)
+      cn = cn1 + (cn3 - cn1) *cnpd
+
+          ! curve number will be decided from scs curve number table ??dms
+
+      s = 254.0* (divide (100.0, cn, 1000000.0) - 1.0)
+      xpb = rain - 0.2*s
+      xpb = l_bound (xpb, 0.0)
+
+      runoff = (xpb*xpb)/(rain + 0.8*s)
+
+c      call bound_check_real_var (runoff
+c     :                          ,0.0
+c     :                          ,rain
+c     :                          ,'runoff')
+
+      return
+      end subroutine
+
+* ====================================================================
+       integer function find_swim_layer (depth)
+* ====================================================================       
+      Use Infrastructure
+      implicit none
+
+       double precision depth
+       integer i
+       find_swim_layer = p%n
+
+       do 100 i = 0, p%n
+         if (sum(p%dlayer(0:i)).gt.depth) then
+            find_swim_layer = i
+            goto 200
+         endif
+  100  continue
+   
+  200  continue
+   
+       return
+       end function
+* ====================================================================
+       subroutine apswim_runoff_depth_factor (runoff_wf)
+* ====================================================================
+      Use Infrastructure
+      implicit none
+
+*+  Sub-Program Arguments
+      real    runoff_wf(0:M)              ! (OUTPUT) weighting factor for runoff
+
+*+  Purpose
+*      Calculate the weighting factor hydraulic effectiveness used
+*      to weight the effect of soil moisture on runoff.
+
+*+  Local Variables
+      real       profile_depth         ! current depth of soil profile
+                                       ! - for when erosion turned on
+      real       cum_depth             ! cumulative depth (mm)
+      double precision  hydrol_effective_depth ! hydrologically effective depth for
+                                        ! runoff (mm)
+      integer    hydrol_effective_layer ! layer number that the effective
+                                        ! depth occurs in ()
+      integer    layer                 ! layer counter
+
+      real       scale_fact            ! scaling factor for wf function to
+                                       ! sum to 1
+      real       wf_tot                ! total of wf ()
+      real       wx                    ! depth weighting factor for current
+                                       !    total depth.
+                                       !    intermediate variable for
+                                       !    deriving wf
+                                       !    (total wfs to current layer)
+      real       xx                    ! intermediate variable for deriving wf
+                                       ! total wfs to previous layer
+
+*- Implementation Section ----------------------------------
+
+      runoff_wf (0:M) = 0.0
+      xx     = 0.0
+      cum_depth = 0.0
+      wf_tot = 0.0
+
+           ! check if hydro_effective_depth applies for eroded profile.
+
+      profile_depth = sum(p%dlayer(0:p%n))
+      
+      hydrol_effective_depth = min (c%hydrol_effective_depth
+     :                            , profile_depth)
+
+      scale_fact = 1.0/(1.0 - exp(-4.16))
+      hydrol_effective_layer = find_swim_layer (hydrol_effective_depth)
+
+      do 100 layer = 0, hydrol_effective_layer
+         cum_depth = cum_depth + p%dlayer(layer)
+         cum_depth = min (cum_depth, hydrol_effective_depth)
+
+            ! assume water content to c%hydrol_effective_depth affects runoff
+            ! sum of wf should = 1 - may need to be bounded? <dms 7-7-95>
+
+         wx = scale_fact 
+     :      * (1.0 - exp( - 4.16* cum_depth/hydrol_effective_depth))
+         runoff_wf(layer) = wx - xx
+         xx = wx
+
+         wf_tot = wf_tot + runoff_wf(layer)
+
+  100 continue
+
+      call bound_check_real_var (wf_tot, 0.9999, 1.0001, 'wf_tot')
+
+      return
+      end subroutine
+
 
       include 'swim.for'
 
@@ -8085,17 +7300,7 @@ c      pause
 *      This routine is the interface between the main system and the
 *      apswim module.
 
-*+  Changes
-*        18081998   igh   Changed to use MES_Till
-*        270899 nih added clock tick event
-*        121099 dph added ACTION_Create handler.
-
-*+  Constant Values
-      character myname*(*)
-      parameter (myname = 'APSwim Main')
-
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
       if (Action.eq.ACTION_Get_variable) then
          call apswim_Send_my_variable (Data_string)
@@ -8147,8 +7352,20 @@ c      pause
          call Message_Unused ()
       endif
 
-      call pop_routine (myname)
       return
+      end subroutine
+      ! ====================================================================
+      ! do first stage initialisation stuff.
+      ! ====================================================================
+      subroutine doInit1 ()
+      use infrastructure
+      use APSwimModule
+
+      ml_external doInit1
+
+      call doRegistrations(id)
+      call apswim_zero_module_links()
+      call apswim_zero_variables()
       end subroutine
 ! ====================================================================
 ! This routine is the event handler for all events

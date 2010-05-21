@@ -158,9 +158,13 @@ namespace ApsimFile
       /// </summary>
       public string Property(string PropertyName)
          {
-         string PropertyPath = SoilMetaData.Instance.GetPropertyPath(PropertyName);
-         if (PropertyPath != "")
-            return XmlHelper.Value(Data, PropertyPath);
+         List<string> PropertyPaths = SoilMetaData.Instance.GetPropertyPaths(PropertyName);
+         foreach (string PropertyPath in PropertyPaths)
+            {
+            string Value = XmlHelper.Value(Data, PropertyPath);
+            if (Value != "")
+               return Value;
+            }
          return "";
          }
 
@@ -371,19 +375,7 @@ namespace ApsimFile
             throw new Exception("Cannot find soil variable: " + VariableName);
 
          // Mapping.
-         SoilLayerMap.Map(Value, TargetThickness, VariableUnMapped("BD (g/cc)"), VariableUnMapped("LL15 (mm/mm)"));
-
-         // HACK ALERT: If the variable is SW and it has been mapped then do bound check on sw
-         if (VariableName == "SW(mm/mm)")
-            {
-            double[] AirDry = Variable("AirDry (mm/mm)");
-            double[] DUL = Variable("DUL (mm/mm)");
-            for (int i = 0; i < Value.Doubles.Length; i++)
-               {
-               if (Value.Doubles[i] < AirDry[i])
-                  Value.Doubles[i] = AirDry[i];
-               }
-            }
+         SoilLayerMap.Map(Value, TargetThickness, this);
 
          return Value;
          }
@@ -446,9 +438,24 @@ namespace ApsimFile
 
          if (LocationName == "")
             {
-            LocationName = SoilMetaData.Instance.GetVariablePath(RawVariableName);
-            if (LocationName == "Sample")
+            List<string> LocationNames = SoilMetaData.Instance.GetVariablePaths(RawVariableName);
+            if (LocationNames.Count == 1 && LocationNames[0] == "Sample")
                LocationName = FindFirstMatchingLocation(RawVariableName);
+            else if (LocationNames.Count > 1)
+               {
+               // Loop through all location names looking for one that exists.
+               foreach (string Name in LocationNames)
+                  {
+                  if (XmlHelper.Find(Data, Name) != null)
+                     {
+                     LocationName = Name;
+                     break;
+                     }
+                  }
+               }
+            else if (LocationNames.Count == 1)
+               LocationName = LocationNames[0];
+
             if (LocationName == "")
                return DefaultValues(RawVariableName);
             }
@@ -1296,6 +1303,19 @@ namespace ApsimFile
          set
             {
             UserSetTargetThickness = value;
+            }
+         }
+
+      /// <summary>
+      /// Use the thickness node if it is present as a UserSetTargetThickness
+      /// </summary>
+      public void UseThicknessIfPresent()
+         {
+         string UserThickness = XmlHelper.Value(Data, "Thickness/Values");
+         if (UserThickness != "")
+            {
+            string[] Values = UserThickness.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            TargetThickness = MathUtility.StringsToDoubles(Values);
             }
          }
 
