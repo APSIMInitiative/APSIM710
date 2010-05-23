@@ -293,8 +293,6 @@ c     include   'fertiliz.inc'
   100    continue
 
          g%fert_applied = g%fert_applied + amount
-         write (string,*) 'fert_appl=',g%fert_applied
-         call WriteLine(string)
 
          write (string, '(1x, f7.2, 6a, 41x, a, f7.2, a, i3, a)')
      :             amount,
