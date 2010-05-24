@@ -589,7 +589,11 @@ namespace ApsimFile
          if (Value.Doubles == null)
             return;
          if (Value.Name == "Thickness")
+            {
             Value.Doubles = ToThickness;
+            if (Value.Units == "cm")
+               Value.Doubles = MathUtility.Divide_Value(Value.Doubles, 10);
+            }
          else
             Value.Doubles = MapToTarget(Value.Name + "(" + Value.Units + ")", Value.Doubles, Value.ThicknessMM, ToThickness, S);
 

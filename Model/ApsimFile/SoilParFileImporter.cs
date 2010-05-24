@@ -54,8 +54,10 @@ namespace ApsimFile
          // Read in all water parameters from specified section and file
          // ------------------------------------------------------------
          string SectionName = SectionBit + ".soilwat2.parameters";
-         NewSoil.SetProperty("U", GetStringValue(FileName, SectionName, "u"));
-         NewSoil.SetProperty("CONA", GetStringValue(FileName, SectionName, "cona"));
+         NewSoil.SetProperty("SummerU", GetStringValue(FileName, SectionName, "u"));
+         NewSoil.SetProperty("WinterU", GetStringValue(FileName, SectionName, "u"));
+         NewSoil.SetProperty("SummerCona", GetStringValue(FileName, SectionName, "cona"));
+         NewSoil.SetProperty("WinterCona", GetStringValue(FileName, SectionName, "cona"));
          NewSoil.SetProperty("CN2Bare", GetStringValue(FileName, SectionName, "cn2_bare"));
          NewSoil.SetProperty("Salb", GetStringValue(FileName, SectionName, "salb"));
          NewSoil.SetProperty("DiffusConst", GetStringValue(FileName, SectionName, "diffus_const"));

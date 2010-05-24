@@ -627,7 +627,7 @@ namespace Test
          double[] TargetThickness =  {100, 500};
 
          S.TargetThickness = TargetThickness;
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("ll15 (mm)"), new double[] { 43.5, 69.6 }));
+         Assert.IsTrue(MathUtility.AreEqual(S.Variable("ll15 (mm)"), new double[] { 29.0, 145.0 }));
 
          }
 

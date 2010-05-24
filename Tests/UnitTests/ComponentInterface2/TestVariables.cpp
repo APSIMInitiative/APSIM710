@@ -18,8 +18,8 @@ ScienceAPI* scienceAPI;
 unsigned messageArg = 123;
 int parentID = 0;
 int componentID = 1;
-vector<Message*> messages;
-vector<MessageData> messagesSent;
+std::vector<Message*> myMessages;
+std::vector<MessageData> messagesSent;
 
 //---------------------------------------------------------------------------
 // Simple helper function for sending a message.
@@ -45,8 +45,8 @@ void STDCALL PMCallback(const unsigned* arg, Message& message)
    BOOST_ASSERT(message.from == componentID);
    BOOST_ASSERT(message.to == parentID);
    BOOST_ASSERT(message.toAcknowledge == false);
-   messages.push_back(cloneMessage(message));
-   messagesSent.push_back(MessageData(*messages[messages.size()-1]));
+   myMessages.push_back(cloneMessage(message));
+   messagesSent.push_back(MessageData(*myMessages[myMessages.size()-1]));
 
    // if component wants the value of a variable then give it one.
    if (message.messageType == Message::GetValue)
@@ -102,7 +102,7 @@ void STDCALL PMCallback(const unsigned* arg, Message& message)
 //---------------------------------------------------------------------------
 void setup()
    {
-   componentInterface = new CMPComponentInterface(&messageArg, &PMCallback, componentID, parentID);
+   componentInterface = new CMPComponentInterface(&messageArg, &PMCallback, componentID, parentID, "dummy");
    scienceAPI = new ScienceAPIImpl(*componentInterface);
    }
 
@@ -113,9 +113,9 @@ void teardown()
    {
    delete componentInterface;
    delete scienceAPI;
-   for (unsigned i = 0; i != messages.size(); i++)
-      deleteClonedMessage(messages[i]);
-   messages.erase(messages.begin(), messages.end());
+   for (unsigned i = 0; i != myMessages.size(); i++)
+      deleteClonedMessage(myMessages[i]);
+   myMessages.erase(myMessages.begin(), myMessages.end());
    messagesSent.erase(messagesSent.begin(), messagesSent.end());
    }
 

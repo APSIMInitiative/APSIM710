@@ -20,13 +20,9 @@
     </drops>
     <ApsimToSim>
       [foreach Soil.SoilWat]
-      <component name="[soil.Name] Water" executable="%apsim%\Model\SoilWat.dll">
-        <executable>%apsim%\Model\SoilWat.dll</executable>
-        <initdata>
+      <component name="[soil.Name] Water" executable="%apsim%\Model\SoilWat.dll"><executable>%apsim%\Model\SoilWat.dll</executable><initdata>
                [Model SoilWat]
-               <diffus_const>[soil.DiffusConst]</diffus_const><diffus_slope>[soil.DiffusSlope]</diffus_slope><cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb>
-               <SummerCona>[soil.SummerCona]</SummerCona><WinterCona>[soil.WinterCona]</WinterCona><SummerU>[soil.SummerU]</SummerU><WinterU>[soil.WinterU]</WinterU><SummerDate>[soil.SummerDate]</SummerDate><WinterDate>[soil.WinterDate]</WinterDate>
-               <dlayer>[soil.Thickness(mm)]</dlayer><sat>[soil.Sat(mm/mm)]</sat><dul>[soil.Dul(mm/mm)]</dul><ll15>[soil.LL15(mm/mm)]</ll15><air_dry>[soil.AirDry(mm/mm)]</air_dry><swcon>[soil.SWCon(0-1)]</swcon><bd>[soil.BD(g/cc)]</bd><sw>[soil.SW(mm/mm)]</sw>
+               <diffus_const>[soil.DiffusConst]</diffus_const><diffus_slope>[soil.DiffusSlope]</diffus_slope><cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><SummerCona>[soil.SummerCona]</SummerCona><WinterCona>[soil.WinterCona]</WinterCona><SummerU>[soil.SummerU]</SummerU><WinterU>[soil.WinterU]</WinterU><SummerDate>[soil.SummerDate]</SummerDate><WinterDate>[soil.WinterDate]</WinterDate><dlayer>[soil.Thickness(mm)]</dlayer><sat>[soil.Sat(mm/mm)]</sat><dul>[soil.Dul(mm/mm)]</dul><ll15>[soil.LL15(mm/mm)]</ll15><air_dry>[soil.AirDry(mm/mm)]</air_dry><swcon>[soil.SWCon(0-1)]</swcon><bd>[soil.BD(g/cc)]</bd><sw>[soil.SW(mm/mm)]</sw>
                [if [soil.MWCon(0-1)]]
                <mwcon>[soil.MWCon(0-1)]</mwcon>
                [endif]
@@ -45,59 +41,19 @@
                [if [soil.KLAT]]
                <klat>[soil.KLAT]</klat>
                [endif]
-         </initdata>
-      </component>
+         </initdata></component>
       [endfor]
       [foreach Soil.Swim]
-      <component name="SWIM" executable="%apsim%\Model\swim3.dll">
-        <executable>%apsim%\Model\Swim3.dll</executable>
-        <initdata>
+      <component name="SWIM" executable="%apsim%\Model\swim3.dll"><executable>%apsim%\Model\Swim3.dll</executable><initdata>
                [Model Swim3]
-               <cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb>
-               <dlayer>[soil.Thickness]</dlayer>
-               <sat>[soil.Sat]</sat>
-               <dul>[soil.Dul]</dul>
-               <ll15>[soil.LL15]</ll15>
-               <bd>[soil.BD]</bd>
-               <theta>[soil.SW (mm/mm)]</theta>
-               <ks>[soil.KS]</ks>
-               <Kd>[soil.Kd]</Kd>
-               <vapour_conductivity>[soil.VC]</vapour_conductivity>
-               <run_solutes>no3 nh4 urea</run_solutes>
-               <rainfall_source>apsim</rainfall_source>
-               <evap_source>calc</evap_source>
-               <dtmin>[soil.dtmin]</dtmin>
-               <dtmax>[soil.dtmax]</dtmax>
-               <max_water_increment>[soil.MaxWaterIncrement]</max_water_increment>
-               <swt>[soil.SpaceWeightingFactor]</swt>
-               <slswt>[soil.SoluteSpaceWeightingFactor]</slswt>
-               <solute>
-                  <solute_name>urea   nh4 no3</solute_name>
-                  <exco>                              0    0    0      </exco>
-                  <fip>                               1    1    1      </fip>
-                  <dis>                               2    2    2      </dis>
-                  <slupf>                           1    1    1        </slupf>
-                  <slos>                         0.001 0.001 0.001     </slos>
-                  <d0>                              0    0    0        </d0>
-                  <a>                               0    0    0        </a>
-                  <dthc>                            0    0    0        </dthc>
-                  <dthp>                            1    1    1        </dthp>
-                  <disp>                            1    1    1        </disp>
-                  <ground_water_conc>               0    0    0        </ground_water_conc>
-               </solute>
+               <cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><dlayer>[soil.Thickness]</dlayer><sat>[soil.Sat]</sat><dul>[soil.Dul]</dul><ll15>[soil.LL15]</ll15><bd>[soil.BD]</bd><theta>[soil.SW (mm/mm)]</theta><ks>[soil.KS]</ks><Kd>[soil.Kd]</Kd><vapour_conductivity>[soil.VC]</vapour_conductivity><run_solutes>no3 nh4 urea</run_solutes><rainfall_source>apsim</rainfall_source><evap_source>calc</evap_source><dtmin>[soil.dtmin]</dtmin><dtmax>[soil.dtmax]</dtmax><max_water_increment>[soil.MaxWaterIncrement]</max_water_increment><swt>[soil.SpaceWeightingFactor]</swt><slswt>[soil.SoluteSpaceWeightingFactor]</slswt><solute><solute_name>urea   nh4 no3</solute_name><exco>                              0    0    0      </exco><fip>                               1    1    1      </fip><dis>                               2    2    2      </dis><slupf>                           1    1    1        </slupf><slos>                         0.001 0.001 0.001     </slos><d0>                              0    0    0        </d0><a>                               0    0    0        </a><dthc>                            0    0    0        </dthc><dthp>                            1    1    1        </dthp><disp>                            1    1    1        </disp><ground_water_conc>               0    0    0        </ground_water_conc></solute>
                
                gjhythtjht
                
                
-               <bottom_boundary_condition>[soil.BottomBoundaryCondition]</bottom_boundary_condition>
-               <bottom_boundary_value>[soil.BottomBoundaryValue]</bottom_boundary_value>
-               <water_table_conductance>[soil.WaterTableConductance]</water_table_conductance>
-            </initdata>
-      </component>
+               <bottom_boundary_condition>[soil.BottomBoundaryCondition]</bottom_boundary_condition><bottom_boundary_value>[soil.BottomBoundaryValue]</bottom_boundary_value><water_table_conductance>[soil.WaterTableConductance]</water_table_conductance></initdata></component>
       [endfor]
-      <component name="[soil.Name] Nitrogen" executable="%apsim%\Model\SoilN.dll">
-        <executable>%apsim%\Model\SoilN.dll</executable>
-        <initdata>
+      <component name="[soil.Name] Nitrogen" executable="%apsim%\Model\SoilN.dll"><executable>%apsim%\Model\SoilN.dll</executable><initdata>
                [Model SoilN]
                [if "[soil.SoilType]"]
                <soiltype>[soil.SoilType]</soiltype>
@@ -106,8 +62,7 @@
                [if [soil.Rocks(%)]]
                <rocks>[soil.Rocks(%)]</rocks>
                [endif]
-         </initdata>
-      </component>
+         </initdata></component>
       [if "[soil.RootCP]"]
       <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll"><executable>%apsim%\Model\SoilP.dll</executable><initdata>
                [Model SoilP]
@@ -571,106 +526,65 @@
     <lb_fom_cp>0.0</lb_fom_cp>
     <ub_fom_cp>3000.0</ub_fom_cp>
   </Model>
-     <Model name="Swim3">
-      <!--    ****************
+  <Model name="Swim3">
+    <!--    ****************
       Convergence
       ****************
       -->
-      <max_iterations description="number of iterations before timestep is halved">50 </max_iterations>
-
-      <ersoil>0.000001</ersoil>
-      <ernode>0.000001</ernode>
-      <errex>0.01</errex>
-      <dppl>2</dppl>
-      <dpnl>1</dpnl>
-      <slcerr>0.000001</slcerr>
-
-      <!--    ****************
+    <max_iterations description="number of iterations before timestep is halved">50 </max_iterations>
+    <ersoil>0.000001</ersoil>
+    <ernode>0.000001</ernode>
+    <errex>0.01</errex>
+    <dppl>2</dppl>
+    <dpnl>1</dpnl>
+    <slcerr>0.000001</slcerr>
+    <!--    ****************
       solute balance
       ****************
       Numerical Error can result in negative solute concentration
       We allert the user according to the level of loss of solute
       balance due to trucation of negative values.
       -->
-      <negative_conc_fatal units="kg/ha">0.1</negative_conc_fatal>
-      <negative_conc_warn units="kg/ha">0.001</negative_conc_warn>
-      <!--    ****************
+    <negative_conc_fatal units="kg/ha">0.1</negative_conc_fatal>
+    <negative_conc_warn units="kg/ha">0.001</negative_conc_warn>
+    <!--    ****************
       soilwat_eeq_fac
       ****************
       -->
-      <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
-      <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
-      <!--    ******************************
+    <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+    <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+    <!--    ******************************
       soilwat_pot_evapotranspiration
       ******************************
       -->
-      <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
-      <!--  Bare soil albedo must not exceed this value.
+    <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+    <!--  Bare soil albedo must not exceed this value.
       -->
-      <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
-      <!-- max_bitesize = .02
+    <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+    <!-- max_bitesize = .02
       -->
-      <min_total_root_length>0.01</min_total_root_length>
-
-      <crop_name>wheat   sugar   default </crop_name>
-      <min_xylem_potential> -15000. -15000. -15000.</min_xylem_potential>
-      <root_radius>  0.25 0.25 0.25    </root_radius>
-      <root_conductance> 1.4d-7 1.4d-7 1.4d-7 </root_conductance>
+    <min_total_root_length>0.01</min_total_root_length>
+    <crop_name>wheat   sugar   default </crop_name>
+    <min_xylem_potential> -15000. -15000. -15000.</min_xylem_potential>
+    <root_radius>  0.25 0.25 0.25    </root_radius>
+    <root_conductance> 1.4d-7 1.4d-7 1.4d-7 </root_conductance>
    ! ------------------------------------------
       <!--    ******************************
       Residue and Crop Cover Effects
       ******************************
       The effect of residue and canopy cover is implemented as in the soilwat model.
       These can be turn off for compatibility with SWIM standalone.
-      -->
-      <cover_effects>on          </cover_effects>
-      <A_to_evap_fact description="converts residue specfic area 'A' to">0.44      </A_to_evap_fact>
-      <!--    a coef. in exp effect on reducing
+      --><cover_effects>on          </cover_effects><A_to_evap_fact description="converts residue specfic area 'A' to">0.44      </A_to_evap_fact><!--    a coef. in exp effect on reducing
       pot. soil evap for wt. of mixed residues.
       0.44 = 0.00022/0.0005 DMS 1st approx. 6/95
-      -->
-      <canopy_eos_coef description="coef. in exp effect of canopy on">1.7       </canopy_eos_coef>
-      <!--    reducing pot. soil evap.
+      --><canopy_eos_coef description="coef. in exp effect of canopy on">1.7       </canopy_eos_coef><!--    reducing pot. soil evap.
       = 1.7 Adams, Arkin & Ritchie 1976
       Set the default rainfall and evaporation daily time courses
       these are used if the user does not specify them in the met file
-      -->
-    <canopy_fact>1.0  1.0  0.0  0.0</canopy_fact>
-    <canopy_fact_height units="mm">0  600  1800 30000</canopy_fact_height>
-    <canopy_fact_default description="canopy factor to use if height is missing">0.5</canopy_fact_default>
-    <hydrol_effective_depth units="mm">450</hydrol_effective_depth>
-
-      <default_rain_time>0:00</default_rain_time>
-      <default_rain_duration>1440.</default_rain_duration>
-      <default_evap_time>6:00</default_evap_time>
-      <default_evap_duration>720.</default_evap_duration>
-      <!--    ******
+      --><canopy_fact>1.0  1.0  0.0  0.0</canopy_fact><canopy_fact_height units="mm">0  600  1800 30000</canopy_fact_height><canopy_fact_default description="canopy factor to use if height is missing">0.5</canopy_fact_default><hydrol_effective_depth units="mm">450</hydrol_effective_depth><default_rain_time>0:00</default_rain_time><default_rain_duration>1440.</default_rain_duration><default_evap_time>6:00</default_evap_time><default_evap_duration>720.</default_evap_duration><!--    ******
       Bounds
       ******
-      -->
-      <lb_exco>0</lb_exco>
-      <ub_exco>15000</ub_exco>
-      <lb_fip>0</lb_fip>
-      <ub_fip>100</ub_fip>
-      <lb_dis>0</lb_dis>
-      <ub_dis>20</ub_dis>
-      <lb_slupf>0</lb_slupf>
-      <ub_slupf>1</ub_slupf>
-      <lb_slos>0</lb_slos>
-      <ub_slos>10</ub_slos>
-      <lb_d0>0</lb_d0>
-      <ub_d0>1</ub_d0>
-      <lb_a>0</lb_a>
-      <ub_a>100</ub_a>
-      <lb_dthc>0</lb_dthc>
-      <ub_dthc>1</ub_dthc>
-      <lb_dthp>0</lb_dthp>
-      <ub_dthp>10</ub_dthp>
-      <lb_disp>0</lb_disp>
-      <ub_disp>5</ub_disp>
-      <lb_solute>0</lb_solute>
-      <ub_solute>1000</ub_solute>
-   </Model>
+      --><lb_exco>0</lb_exco><ub_exco>15000</ub_exco><lb_fip>0</lb_fip><ub_fip>100</ub_fip><lb_dis>0</lb_dis><ub_dis>20</ub_dis><lb_slupf>0</lb_slupf><ub_slupf>1</ub_slupf><lb_slos>0</lb_slos><ub_slos>10</ub_slos><lb_d0>0</lb_d0><ub_d0>1</ub_d0><lb_a>0</lb_a><ub_a>100</ub_a><lb_dthc>0</lb_dthc><ub_dthc>1</ub_dthc><lb_dthp>0</lb_dthp><ub_dthp>10</ub_dthp><lb_disp>0</lb_disp><ub_disp>5</ub_disp><lb_solute>0</lb_solute><ub_solute>1000</ub_solute></Model>
   <Info name="SoilWat">
     <variables>
       <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />

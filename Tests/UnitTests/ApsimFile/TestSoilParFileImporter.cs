@@ -31,10 +31,8 @@ namespace Test
 
          "!Title = Jimbour Waco (Black Vertosol) #16\r\n" +
 
-         "   cona            = 3.5    ()     ! stage 2 evap coef.\r\n" +
          "   diffus_const    = 40    ()     ! coeffs for dbar\r\n" +
          "   diffus_slope    = 16    ()     !     \r\n" +
-         "   u               = 6    (mm)   ! stage 1 soil evaporation coefficient (mm)\r\n" +
          "   salb            = 0.13   ()     ! bare soil albedo\r\n" +
 
          "   ! CN2b CN_red CN_cov\r\n" +
@@ -144,8 +142,7 @@ namespace Test
                                             new double[] {1.04, 0.89, 0.89, 0.89, 0.77, 0.45, 0.27, 0.22, 0.16, 0.13, 0.12 }));
          Assert.IsTrue(MathUtility.AreEqual(S.Variable("nwheat LL"),
                                             new double[] { 0.290, 0.290, 0.320, 0.320, 0.350, 0.380, 0.410, 0.480, 0.470, 0.460, 0.440 }));
-         Assert.AreEqual(S.Property("Cona"), "3.5");
-         
+        
          }
       }
    }
