@@ -1,23 +1,23 @@
 //---------------------------------------------------------------------------
 #include <stdlib.h>
-#include <dir.h>
+//#include <dir.h>
 
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <string>
 #include <general/path.h>
 #include <general/io_functions.h>
 #include "TestIoFunctions.h"
 #include <wchar.h>
+#include <direct.h>
 
 #include <boost/test/unit_test.hpp>
 using boost::unit_test_framework::test_suite;
-
+using namespace std;
 void TestExpandFileName (void)
    {
-   char buf[MAXPATH];
-   getcwd(buf, MAXPATH);
-   strcat(buf, "\\test.dat");
+   string buf = getCurrentDirectory();
+   buf += "\\test.dat";
    std::string s = ExpandFileName("test.dat");
    BOOST_CHECK(s == buf);
 
@@ -64,111 +64,7 @@ void TestRemovePathAndExtension(void)
    BOOST_CHECK (t == "c");
    }
 
-// fn called by TestDirectoryListing();
-void TestAbsolutePath()
-    {
-        string dir = Path::getCurrentFolder().Get_path() + "\\testdir";
-        bool fp = true;
-        vector<string> dirlist;
-        rmdir(dir.c_str());
 
-        // Case 1.1: new empty dir
-        mkdir(dir.c_str());
-        string ds = dir + "\\";
-        getDirectoryListing(ds.c_str(),"*.*", dirlist, 0, fp);
-        for (vector<string>::iterator s = dirlist.begin();
-             s != dirlist.end();
-             s++) {
-             BOOST_CHECK(*s == "");
-        }
-        dirlist.clear();
-
-        // Case 1.2: add 1 file
-        string fs = dir + "\\test.dat";
-        ofstream f(fs.c_str());
-        f.close();
-        getDirectoryListing(ds.c_str(),"*.*", dirlist, 0, fp);
-        for (vector<string>::iterator s = dirlist.begin();
-             s != dirlist.end();
-             s++) {
-             BOOST_CHECK(*s == Path::getCurrentFolder().Get_path() + "\\testdir\\test.dat");
-        }
-        dirlist.clear();
-
-        // Case 1.3: add 2nd file
-        string fs2 = dir + "\\test.txt";
-        ofstream f2(fs2.c_str());
-        f2.close();
-        getDirectoryListing(ds.c_str(),"*.*", dirlist, 0, fp);
-        BOOST_CHECK(dirlist.size()==2);
-        dirlist.clear();
-
-        // Case 1.4: extension filter
-        getDirectoryListing(ds.c_str(),"*.txt", dirlist, 0, fp);
-        BOOST_CHECK(dirlist.size()==1);
-        unlink(fs2.c_str());
-        unlink(fs.c_str());
-
-        rmdir(dir.c_str());
-    }
-
-// a fn called by TestDirectoryListing();
-void TestRelativePath()
-    {
-        bool fp = false;
-        string dir = "testdir";
-        vector<string> dirlist;
-        rmdir(dir.c_str());
-
-        // Case 1.1: new empty dir
-        mkdir(dir.c_str());
-        string ds = dir + "\\";
-        getDirectoryListing(ds.c_str(),"*.*", dirlist, 0, fp);
-        for (vector<string>::iterator s = dirlist.begin();
-             s != dirlist.end();
-             s++) {
-             BOOST_CHECK(*s == "");
-        }
-        dirlist.clear();
-
-        // Case 1.2: add 1 file
-        string fs = dir + "\\test.dat";
-        ofstream f(fs.c_str());
-        f.close();
-        getDirectoryListing(ds.c_str(),"*.*", dirlist, 0, fp);
-        for (vector<string>::iterator s = dirlist.begin();
-             s != dirlist.end();
-             s++) {
-             BOOST_CHECK(*s == "test.dat");
-        }
-        dirlist.clear();
-
-        // Case 1.3: add 2nd file
-        string fs2 = dir + "\\test.txt";
-        ofstream f2(fs2.c_str());
-        f2.close();
-        getDirectoryListing(ds.c_str(),"*.*", dirlist, 0, fp);
-
-        BOOST_CHECK(dirlist.size() == 2);
-        dirlist.clear();
-
-        // Case 1.4: extension filter
-        getDirectoryListing(ds.c_str(),"*.txt", dirlist, 0, fp);
-        BOOST_CHECK(dirlist.size() == 1);
-
-        unlink(fs.c_str());
-        unlink(fs2.c_str());
-
-        rmdir(dir.c_str());
-    }
-
-void TestGetDirectoryListing(void)
-    {
-        //****** 1. Testing Relative Path **********
-        TestRelativePath();
-        //****** 2. Testing Absolute Path **********
-        TestAbsolutePath();
-    }
 
 // Not called and removed:
 //locateFile()
@@ -190,7 +86,6 @@ test_suite* testIoFunctions(void)
    test->add(BOOST_TEST_CASE(&TestFileExists));
    test->add(BOOST_TEST_CASE(&TestDirectoryExists));
    test->add(BOOST_TEST_CASE(&TestRemovePathAndExtension));
-   test->add(BOOST_TEST_CASE(&TestGetDirectoryListing));
 
    return test;
    }

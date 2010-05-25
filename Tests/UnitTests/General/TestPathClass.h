@@ -4,7 +4,7 @@
 // Aug 2004
 
 #include <boost/test/unit_test.hpp>
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include "general/path.h"
 

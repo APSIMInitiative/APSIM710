@@ -211,7 +211,7 @@ void testSetParameterValue2(void)
 //---------------------------------------------------------------------------
 // test the rename parameter functionality
 //---------------------------------------------------------------------------
-void testRenameParameter(void)
+void testRenameParameter2(void)
    {
    setUpControlFileConverter1();
    string ConversionXML = "<APSIM>"
@@ -231,7 +231,7 @@ void testRenameParameter(void)
 //---------------------------------------------------------------------------
 // test the delete parameter functionality
 //---------------------------------------------------------------------------
-void testDeleteParameter(void)
+void testDeleteParameter2(void)
    {
    setUpControlFileConverter1();
    string ConversionXML = "<APSIM>"
@@ -295,7 +295,7 @@ void testRemoveReportOutputSwitch(void)
 //---------------------------------------------------------------------------
 // test the RemoveReportOutputSwitch functionality
 //---------------------------------------------------------------------------
-void testMoveParameter(void)
+void testMoveParameter2(void)
    {
    setUpControlFileConverter1();
    string ConversionXML = "<APSIM>"
@@ -855,11 +855,11 @@ test_suite* testControlFileConverter(void)
    test_suite* test= BOOST_TEST_SUITE("TestControlFileConverter");
    test->add(BOOST_TEST_CASE(&testSetParameterValue));
    test->add(BOOST_TEST_CASE(&testSetParameterValue2));
-   test->add(BOOST_TEST_CASE(&testRenameParameter));
-   test->add(BOOST_TEST_CASE(&testDeleteParameter));
+   test->add(BOOST_TEST_CASE(&testRenameParameter2));
+   test->add(BOOST_TEST_CASE(&testDeleteParameter2));
    test->add(BOOST_TEST_CASE(&testChangeInstantiation));
    test->add(BOOST_TEST_CASE(&testRemoveReportOutputSwitch));
-   test->add(BOOST_TEST_CASE(&testMoveParameter));
+   test->add(BOOST_TEST_CASE(&testMoveParameter2));
    test->add(BOOST_TEST_CASE(&testNewFormatReportVariables));
    test->add(BOOST_TEST_CASE(&testMoveParamsFromConToPar));
    test->add(BOOST_TEST_CASE(&testRemoveSumAvgToTracker));

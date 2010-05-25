@@ -9,6 +9,7 @@ namespace CSGeneral
    /// </summary>
    public class MathUtility
       {
+      private const double tolerance = 0.00001;
       //------------------------------------------------
       // Returns true if specified value is 'missing'
       // -----------------------------------------------
@@ -22,7 +23,7 @@ namespace CSGeneral
       //-------------------------------------------------------------------------
       public static bool FloatsAreEqual(double value1, double value2)
          {
-         return FloatsAreEqual(value1, value2, 0.00001);
+         return FloatsAreEqual(value1, value2, tolerance);
          }
       //-------------------------------------------------------------------------
       //
@@ -30,6 +31,10 @@ namespace CSGeneral
       public static bool FloatsAreEqual(double value1, double value2, double tolerance)
          {
          return (Math.Abs(value1 - value2) < tolerance);
+         }
+      public static bool IsGreaterThan(double value1, double value2)
+         {
+         return value1 - value2 > tolerance;
          }
       //-------------------------------------------------------------------------
       //

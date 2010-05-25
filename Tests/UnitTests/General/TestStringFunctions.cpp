@@ -4,8 +4,8 @@
 // J Wang
 // Aug 2004
 #include "TestStringFunctions.h"
-#include <string.h>
-#include <list.h>
+#include <string>
+#include <list>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -15,6 +15,7 @@
 #include "general/string_functions.h"
 
 using namespace boost::unit_test_framework;
+using namespace std;
 
 int chkException = 1;
 
@@ -199,19 +200,19 @@ void TestSplitOffAfterDelimiter(){
 
 void TestSplitOffBracketedValue(){
     // 1. split from ( )
-    std::string a = splitOffBracketedValue("sjd(abc)", '(', ')');
+    std::string a = splitOffBracketedValue(string("sjd(abc)"), '(', ')');
     BOOST_CHECK(a == "abc");
 
     // 2. split from : :
-    std::string b = splitOffBracketedValue("sjd:abc:", ':', ':');
+    std::string b = splitOffBracketedValue(string("sjd:abc:"), ':', ':');
     BOOST_CHECK(b == "abc");
 
     // 3. binary 'bracket'
-    std::string c = splitOffBracketedValue("sjd\tabc\t", '\t', '\t');
+    std::string c = splitOffBracketedValue(string("sjd\tabc\t"), '\t', '\t');
     BOOST_CHECK(c == "abc");
 
     // 4. string contains \0 - returns null
-    std::string d = splitOffBracketedValue("s\0(abc)", '(', ')');
+    std::string d = splitOffBracketedValue(string("s\0(abc)"), '(', ')');
     BOOST_CHECK(d == "");
 }
 

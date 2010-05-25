@@ -3,18 +3,22 @@
 //
 // J Wang
 // Aug 2004
-#include <iostream.h>
-#include <list.h>
+#include <iostream>
+#include <list>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>  // BOOST_CHECK_CLOSE
-#include <string.h>
+#include <string>
+#include <vector>
 
 #include <general/math_functions.h>
 #include "TestMathFunctions.h"
 
 using boost::unit_test_framework::test_suite;
 using namespace boost::unit_test_framework;
-int chkException = 1;
+using namespace std;
+
+
+extern int chkException;
 void TestMultiplyAccumulate (void){
     // 1. float case
     vector<float> v1;

@@ -5,13 +5,13 @@
 
 #include <string>
 #include <boost/test/unit_test.hpp>
-#include <fstream.h>
-#include <dir.h>
+#include <fstream>
+#include <direct.h>
 #include <general/path.h>
 #include "TestPathClass.h"
 
 using boost::unit_test_framework::test_suite;
-
+using namespace std;
 string fn="c:\\test.path"; // do not alter
 string pn="c:\\testpath";  // do not alter
 

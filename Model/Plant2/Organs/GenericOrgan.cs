@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CSGeneral;
 
 class GenericOrgan : BaseOrgan, AboveGround
    {
@@ -69,7 +70,7 @@ class GenericOrgan : BaseOrgan, AboveGround
       {
       set
          {
-         if (value > Live.NonStructuralN)
+         if (MathUtility.IsGreaterThan(value, Live.NonStructuralN))
             throw new Exception("N Retranslocation exceeds nonstructural nitrogen in organ: " + Name);
          Live.NonStructuralN -= value;
          }

@@ -8,6 +8,7 @@ module PublishEventsModule
    ! ---------------------------------------------------------------
    use ConstantsModule
    use ComponentInterfaceModule
+   use ErrorModule
    implicit none
 
    character ModuleName*(*)        ! (INPUT) Name of module to send event to.
@@ -36,9 +37,13 @@ module PublishEventsModule
    else
       ! some other non protocol event - use the old postbox method.
       if (ModuleName == 'publish') then
-         ModuleNameID = -1
+         ModuleNameID = -1  
       else
          ok = component_name_to_id(ModuleName, ModuleNameID);
+         if (.not. ok .or. ModuleNameID .eq. -1) then
+            call fatal_error(1, "Cannot send event to module: " // trim(ModuleName) // ". Module does not exist.")
+            return        
+         endif
       endif
 
       call New_postbox ()

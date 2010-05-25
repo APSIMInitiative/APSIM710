@@ -10,6 +10,7 @@
 #include "TestDateClass.h"
 
 using boost::unit_test_framework::test_suite;
+using namespace std;
 
 unsigned long Julian2K = 2451545;  //Julian day 2451545 == Jan 1, 2000
 

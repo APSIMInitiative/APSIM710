@@ -2,7 +2,9 @@
 # make file for MS VS2008
 ###########################################
 
-######uncomment for debug everything###DEBUG=yes
+######uncomment for debug everything###
+
+### DEBUG=yes
 
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"
@@ -43,7 +45,8 @@ ifdef DEBUG
 /LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi 
+/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\debug\asynch-exceptions-on\link-static\threading-multi 
 else
 	CFLAGS := $(CFLAGS) /O2 /MD /GL
 #	LFLAGS := $(LFLAGS) 
@@ -52,7 +55,8 @@ else
 /LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\release\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\release\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\release\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\release\link-static\threading-multi 
+/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\release\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\release\asynch-exceptions-on\link-static\threading-multi
 endif
 
 # The rules

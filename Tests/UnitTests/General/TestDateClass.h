@@ -3,7 +3,7 @@
 // J Wang
 // Aug 2004
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <general/date_class.h>
 

@@ -11,7 +11,7 @@ SRC = Test.cpp \
       TestDateClass.cpp \
       TestHttp.cpp
 
-LIBS = General C:\Progra~1\Borland\CBuilder6\Components\Boost\libs\test\Test
+LIBS = General libboost_unit_test_framework-vc90-mt-1_42
 PROJECTTYPE = exe
 
 
