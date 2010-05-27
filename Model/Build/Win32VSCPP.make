@@ -4,7 +4,7 @@
 
 ######uncomment for debug everything###
 
-DEBUG=yes
+###DEBUG=yes
 
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"
