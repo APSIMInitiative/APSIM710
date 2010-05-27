@@ -30,7 +30,7 @@ void TestMultiplyAccumulate (void){
     v2.push_back(42.0);
 
     double result = multiply_accumulate (v1, v2);
-    BOOST_CHECK_CLOSE( result,(2.2*2.4+2.6*42.0), 1e-6 );
+    BOOST_CHECK_CLOSE( result,(2.2*2.4+2.6*42.0), 1e-4 );
 
     // 2. int case
     vector<int> v3;
@@ -218,13 +218,13 @@ void TestStringContainerToDoubleContainer(){
     // 3. null string
     str.clear();
     StringContainerToDoubleContainer(str,db);
-    BOOST_CHECK_EQUAL(db.front(),0.0);
+    BOOST_CHECK_EQUAL(db.size(),0);
     db.clear();
 
     // 4. unprintable char string
     str.push_back("\t");
     StringContainerToDoubleContainer(str,db);
-    BOOST_CHECK_EQUAL(db.front(),0.0);
+    BOOST_CHECK_EQUAL(db[0],0);
     str.clear();
     db.clear();
 }
@@ -252,7 +252,7 @@ void TestStringContainerToIntegerContainer(){
     // 3. null string
     str.clear();
     StringContainerToIntegerContainer(str,nt);
-    BOOST_CHECK_EQUAL(nt.front(),0);
+    BOOST_CHECK_EQUAL(nt.size(),0);
     nt.clear();
 
     // 4. unprintable char string

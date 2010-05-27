@@ -288,7 +288,7 @@ void IniFile::writeSection(const string& section, const string& newContents)
       {
       // make sure we have a carriage return before the start of the next
       // section.
-      if (newContents[newContents.length()-1] != '\n')
+      if (newContents.length() > 0 && newContents[newContents.length()-1] != '\n')
          posEndSection--;
       unsigned numCharsReplaced = posEndSection-posStartSection+1;
       contents.replace(posStartSection, numCharsReplaced, newContents);
@@ -400,8 +400,9 @@ void IniFile::deleteSection(const string& section)
          int delta = numCharsToDelete;
          updateIndexesAfter(*i, -delta);
          }
+      int Indx = std::distance(sectionNames.begin(), i);
       sectionNames.erase(i);
-      sectionIndexes.erase(sectionIndexes.begin() + (i-sectionNames.begin()));
+      sectionIndexes.erase(sectionIndexes.begin() + Indx);
 
       contents.erase(posStart, numCharsToDelete);
       ofstream out(fileName.c_str());

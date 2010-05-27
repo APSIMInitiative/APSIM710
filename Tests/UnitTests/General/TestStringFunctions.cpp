@@ -471,22 +471,22 @@ void TestStrICmp() {
 
 void TestReplaceAllChars (){
     // 1. normal replace
-    char *a="abfa";
+    char a[5] = "abfa";
     Replace_all_chars (a, 'a','A');
     BOOST_CHECK(a==string("AbfA"));
 
     // 2. char not found
-    char *b="abfa";
+    char b[5]="abfa";
     Replace_all_chars (b, 'z','A');
     BOOST_CHECK(b==string("abfa"));
 
     // 3. null parent string
-    char *c="";
+    char c[1]="";
     Replace_all_chars (c, 'a','A');
     BOOST_CHECK(c==string(""));
 
     // 4. binary replace char
-    char *d="abfa";
+    char d[5]="abfa";
     Replace_all_chars (d, 'a','\t');
     BOOST_CHECK(d==string("\tbf\t"));
 }
@@ -568,36 +568,6 @@ void TestFindSubString(){
     BOOST_CHECK_EQUAL(findSubString("ks2abc","ABc"),3);
 }
 
-void TestTrimFromSubstringAndCopy(){
-    // 1. normal usage
-    vector<string> a, b;
-    a.push_back("aber");
-    a.push_back("ab78");
-    trim_from_substring_and_copy< vector<string> > testa("aber",b);
-    std::for_each (a.begin(), a.end(), testa);
-    BOOST_CHECK(a.front()=="aber");
-    BOOST_CHECK(a.back()=="ab78");
-    BOOST_CHECK(b.front()=="");
-    BOOST_CHECK(b.back()=="ab78");
-
-    // 2. no substring removed - A remains, B NULL
-    vector<string> aa, bb;
-    aa.push_back("aber");
-    aa.push_back("ab78");
-    trim_from_substring_and_copy< vector<string> > testaa("ab",bb);
-    std::for_each (aa.begin(), aa.end(), testaa);
-    BOOST_CHECK(aa.front()=="aber");
-    BOOST_CHECK(aa.back()=="ab78");
-    BOOST_CHECK(bb.front()=="");
-    BOOST_CHECK(bb.back()=="");
-
-    // 3. null source container
-    vector<string> aaa, bbb;
-    trim_from_substring_and_copy< vector<string> > testaaa("ab",bbb);
-    std::for_each (aaa.begin(), aaa.end(), testaaa);
-    BOOST_CHECK(aaa.empty());
-    BOOST_CHECK(bbb.empty());
-}
 
 boost::unit_test_framework::test_suite* testStringFunctions(void)
 {
@@ -627,7 +597,6 @@ boost::unit_test_framework::test_suite* testStringFunctions(void)
     test->add(BOOST_TEST_CASE(&TestGetKeyValue));
     test->add(BOOST_TEST_CASE(&TestGetKeyNameAndValue));
     test->add(BOOST_TEST_CASE(&TestFindSubString));
-    test->add(BOOST_TEST_CASE(&TestTrimFromSubstringAndCopy));
 
     return test;
 }

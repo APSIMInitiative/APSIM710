@@ -1,14 +1,11 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
-#include <vcl.h>
-#pragma hdrstop
-
 #include "TestMacro.h"
 #include <general\StringTokenizer.h>
 #include <general\Macro.h>
 #include <general\xml.h>
+#include <general\path.h>
+#include <fstream>
 
-#pragma package(smart_init)
 using namespace std;
 //---------------------------------------------------------------------------
 // Setup testbed
@@ -70,13 +67,13 @@ void TestMacro::testForEach(void)
    Macro macro;
    vector<string> filesGenerated;
    macro.go(xml.documentElement(), macroContents, filesGenerated);
-   CPPUNIT_ASSERT(filesGenerated.size() == 1);
-   CPPUNIT_ASSERT(ExtractFileName(filesGenerated[0].c_str()) == "file1.txt");
+   BOOST_CHECK(filesGenerated.size() == 1);
+   BOOST_CHECK(fileTail(filesGenerated[0].c_str()) == "file1.txt");
 
    ifstream in(filesGenerated[0].c_str());
    ostringstream contents;
    contents << in.rdbuf();
-   CPPUNIT_ASSERT(contents.str() == "Layered\nLayered2\n");
+   BOOST_CHECK(contents.str() == "Layered\nLayered2\n");
    }
 //---------------------------------------------------------------------------
 // Test the go method.
@@ -91,13 +88,13 @@ void TestMacro::testForEachOnSingleLine(void)
    Macro macro;
    vector<string> filesGenerated;
    macro.go(xml.documentElement(), macroContents, filesGenerated);
-   CPPUNIT_ASSERT(filesGenerated.size() == 1);
-   CPPUNIT_ASSERT(ExtractFileName(filesGenerated[0].c_str()) == "file1.txt");
+   BOOST_CHECK(filesGenerated.size() == 1);
+   BOOST_CHECK(fileTail(filesGenerated[0].c_str()) == "file1.txt");
 
    ifstream in(filesGenerated[0].c_str());
    ostringstream contents;
    contents << in.rdbuf();
-   CPPUNIT_ASSERT(contents.str() == " Layered Layered2");
+   BOOST_CHECK(contents.str() == " Layered Layered2");
    }
 //---------------------------------------------------------------------------
 // Test the go method.
@@ -119,13 +116,13 @@ void TestMacro::testForEachNesting(void)
    Macro macro;
    vector<string> filesGenerated;
    macro.go(xml.documentElement(), macroContents, filesGenerated);
-   CPPUNIT_ASSERT(filesGenerated.size() == 1);
-   CPPUNIT_ASSERT(ExtractFileName(filesGenerated[0].c_str()) == "file1.txt");
+   BOOST_CHECK(filesGenerated.size() == 1);
+   BOOST_CHECK(fileTail(filesGenerated[0].c_str()) == "file1.txt");
 
    ifstream in(filesGenerated[0].c_str());
    ostringstream contents;
    contents << in.rdbuf();
-   CPPUNIT_ASSERT(contents.str() == "struct Layered\n"
+   BOOST_CHECK(contents.str() == "struct Layered\n"
                                     "   {\n"
                                     "   double layer;\n"
                                     "   double value;\n"
@@ -156,13 +153,13 @@ void TestMacro::testIf(void)
    Macro macro;
    vector<string> filesGenerated;
    macro.go(xml.documentElement(), macroContents, filesGenerated);
-   CPPUNIT_ASSERT(filesGenerated.size() == 1);
-   CPPUNIT_ASSERT(ExtractFileName(filesGenerated[0].c_str()) == "file1.txt");
+   BOOST_CHECK(filesGenerated.size() == 1);
+   BOOST_CHECK(fileTail(filesGenerated[0].c_str()) == "file1.txt");
 
    ifstream in(filesGenerated[0].c_str());
    ostringstream contents;
    contents << in.rdbuf();
-   CPPUNIT_ASSERT(contents.str() == "120ha, 1,2\n"
+   BOOST_CHECK(contents.str() == "120ha, 1,2\n"
                                     "      70ha\n");
    }
 //---------------------------------------------------------------------------
@@ -180,13 +177,13 @@ void TestMacro::testIfOnSingleLine(void)
    Macro macro;
    vector<string> filesGenerated;
    macro.go(xml.documentElement(), macroContents, filesGenerated);
-   CPPUNIT_ASSERT(filesGenerated.size() == 1);
-   CPPUNIT_ASSERT(ExtractFileName(filesGenerated[0].c_str()) == "file1.txt");
+   BOOST_CHECK(filesGenerated.size() == 1);
+   BOOST_CHECK(fileTail(filesGenerated[0].c_str()) == "file1.txt");
 
    ifstream in(filesGenerated[0].c_str());
    ostringstream contents;
    contents << in.rdbuf();
-   CPPUNIT_ASSERT(contents.str() == "120ha, 1,2, 70ha");
+   BOOST_CHECK(contents.str() == "120ha, 1,2, 70ha");
    }
 //---------------------------------------------------------------------------
 // Test the go method.
@@ -210,13 +207,13 @@ void TestMacro::testElse(void)
    Macro macro;
    vector<string> filesGenerated;
    macro.go(xml.documentElement(), macroContents, filesGenerated);
-   CPPUNIT_ASSERT(filesGenerated.size() == 1);
-   CPPUNIT_ASSERT(ExtractFileName(filesGenerated[0].c_str()) == "file1.txt");
+   BOOST_CHECK(filesGenerated.size() == 1);
+   BOOST_CHECK(fileTail(filesGenerated[0].c_str()) == "file1.txt");
 
    ifstream in(filesGenerated[0].c_str());
    ostringstream contents;
    contents << in.rdbuf();
-   CPPUNIT_ASSERT(contents.str() == "120ha, 1,2\n"
+   BOOST_CHECK(contents.str() == "120ha, 1,2\n"
                                     "      using frontpaddock\n"
                                     "      using backpaddock\n");
    }
@@ -244,13 +241,13 @@ void TestMacro::testElseIf(void)
    Macro macro;
    vector<string> filesGenerated;
    macro.go(xml.documentElement(), macroContents, filesGenerated);
-   CPPUNIT_ASSERT(filesGenerated.size() == 1);
-   CPPUNIT_ASSERT(ExtractFileName(filesGenerated[0].c_str()) == "file1.txt");
+   BOOST_CHECK(filesGenerated.size() == 1);
+   BOOST_CHECK(fileTail(filesGenerated[0].c_str()) == "file1.txt");
 
    ifstream in(filesGenerated[0].c_str());
    ostringstream contents;
    contents << in.rdbuf();
-   CPPUNIT_ASSERT(contents.str() == "120ha, 1,2\n"
+   BOOST_CHECK(contents.str() == "120ha, 1,2\n"
                                     "      using frontpaddock\n"
                                     "      using backpaddock\n");
    }

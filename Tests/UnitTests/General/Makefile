@@ -11,7 +11,7 @@ SRC = Test.cpp \
       TestDateClass.cpp \
       TestHttp.cpp
 
-LIBS = General libboost_unit_test_framework-vc90-mt-1_42
+LIBS = General libboost_unit_test_framework-vc90-mt-gd-1_42
 PROJECTTYPE = exe
 
 

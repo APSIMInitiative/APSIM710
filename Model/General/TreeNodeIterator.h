@@ -2,7 +2,6 @@
 #define TreeNodeIteratorH
 
 // turn of the warnings about "Functions containing for are not expanded inline.
-#pragma warn -inl
 
 // ------------------------------------------------------------------
 // This template provides a tree iterator.
@@ -115,7 +114,6 @@ struct TreeNodeAliasIterator
    };
 
 // restore the warnings about "Functions containing for are not expanded inline.
-#pragma warn .inl
 
 #endif
 

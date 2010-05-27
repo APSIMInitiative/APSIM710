@@ -8,7 +8,7 @@ echo ----------------------------------------------------- >> Build.out
 pushd %APSIM%\Model\%1
 
 if EXIST makefile (
-   %APSIM%\Model\Build\make >> %APSIM%\Model\Build\Build.out
+   call %APSIM%\Model\Build\RunMake >> %APSIM%\Model\Build\Build.out
 )
 
 popd

@@ -1,11 +1,7 @@
 //---------------------------------------------------------------------------
-#include <general\pch.h>
-#include <vcl.h>
-#pragma hdrstop
-
 #include "TestIniFile.h"
-
-#pragma package(smart_init)
+#include <fstream>
+using namespace std;
 
 //---------------------------------------------------------------------------
 // Setup a test .ini file.
@@ -34,7 +30,7 @@ void TestIniFile::setUp()
 //---------------------------------------------------------------------------
 void TestIniFile::tearDown()
    {
-   DeleteFile("test.ini");
+   unlink("test.ini");
    }
 //---------------------------------------------------------------------------
 // test read section names
@@ -45,14 +41,14 @@ void TestIniFile::testReadSectionNames(void)
       {
       vector<string> sectionNames;
       ini.readSectionNames(sectionNames);
-      CPPUNIT_ASSERT(sectionNames.size() == 3);
-      CPPUNIT_ASSERT(sectionNames[0] == "test section");
-      CPPUNIT_ASSERT(sectionNames[1] == "test2");
-      CPPUNIT_ASSERT(sectionNames[2] == "test 3");
+      BOOST_CHECK(sectionNames.size() == 3);
+      BOOST_CHECK(sectionNames[0] == "test section");
+      BOOST_CHECK(sectionNames[1] == "test2");
+      BOOST_CHECK(sectionNames[2] == "test 3");
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    };
 //---------------------------------------------------------------------------
@@ -64,14 +60,14 @@ void TestIniFile::testReadSection(void)
       {
       string section;
       ini.readSection("Test2", section);
-      CPPUNIT_ASSERT(section == "key3 = value3\n\nkey4 = value 4\n");
+      BOOST_CHECK(section == "key3 = value3\n\nkey4 = value 4\n");
 
       ini.readSection("test 3", section);
-      CPPUNIT_ASSERT(section == "");
+      BOOST_CHECK(section == "");
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 //---------------------------------------------------------------------------
@@ -83,20 +79,20 @@ void TestIniFile::testRead(void)
       {
       IniFile ini("test.ini");
       vector<string> values;
-      CPPUNIT_ASSERT(ini.read("test section", "key1", values));
-      CPPUNIT_ASSERT(values.size() == 2);
-      CPPUNIT_ASSERT(values[0] == "value1");
-      CPPUNIT_ASSERT(values[1] == "value2");
+      BOOST_CHECK(ini.read("test section", "key1", values));
+      BOOST_CHECK(values.size() == 2);
+      BOOST_CHECK(values[0] == "value1");
+      BOOST_CHECK(values[1] == "value2");
 
       string key3;
-      CPPUNIT_ASSERT(ini.read("test2", "key3", key3));
-      CPPUNIT_ASSERT(key3 == "value3");
-      CPPUNIT_ASSERT(!ini.read("test3", "key3", key3));
-      CPPUNIT_ASSERT(key3 == "");
+      BOOST_CHECK(ini.read("test2", "key3", key3));
+      BOOST_CHECK(key3 == "value3");
+      BOOST_CHECK(!ini.read("test3", "key3", key3));
+      BOOST_CHECK(key3 == "");
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 //---------------------------------------------------------------------------
@@ -111,21 +107,21 @@ void TestIniFile::testWriteSection(void)
 
       string section;
       ini.readSection("test2", section);
-      CPPUNIT_ASSERT(section == newContents);
+      BOOST_CHECK(section == newContents);
 
       ini.readSection("test 3", section);
-      CPPUNIT_ASSERT(section == "");
+      BOOST_CHECK(section == "");
 
       // write a section that doesn't already exist.
       newContents = "New section\n";
       ini.writeSection("new", newContents);
       ini.readSection("new", section);
-      CPPUNIT_ASSERT(section == newContents);
+      BOOST_CHECK(section == newContents);
 
       ostringstream contents;
       ifstream in("test.ini");
       contents << in.rdbuf();
-      CPPUNIT_ASSERT(contents.str() ==
+      BOOST_CHECK(contents.str() ==
             "\n\n\n"
             "[test section]\n"
             "\n"
@@ -147,7 +143,7 @@ void TestIniFile::testWriteSection(void)
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 //---------------------------------------------------------------------------
@@ -159,9 +155,9 @@ void TestIniFile::testWrite(void)
       {
       ini.write("test section", "key1", "newkeyvalue");
       vector<string> values;
-      CPPUNIT_ASSERT(ini.read("test section", "key1", values));
-      CPPUNIT_ASSERT(values.size() == 1);
-      CPPUNIT_ASSERT(values[0] == "newkeyvalue");
+      BOOST_CHECK(ini.read("test section", "key1", values));
+      BOOST_CHECK(values.size() == 1);
+      BOOST_CHECK(values[0] == "newkeyvalue");
 
       // test that we can write a key to a section that doesn't exist.
       ini.write("new section", "key1", "newkeyvalue");
@@ -169,7 +165,7 @@ void TestIniFile::testWrite(void)
       ostringstream contents;
       ifstream in("test.ini");
       contents << in.rdbuf();
-      CPPUNIT_ASSERT(contents.str() ==
+      BOOST_CHECK(contents.str() ==
             "\n\n\n"
             "[test section]\n"
             "\n"
@@ -189,7 +185,7 @@ void TestIniFile::testWrite(void)
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 //---------------------------------------------------------------------------
@@ -201,12 +197,12 @@ void TestIniFile::testDeleteKey(void)
       {
       ini.deleteKey("test section", "key1");
       vector<string> values;
-      CPPUNIT_ASSERT(!ini.read("test section", "key1", values));
+      BOOST_CHECK(!ini.read("test section", "key1", values));
 
       ostringstream contents;
       ifstream in("test.ini");
       contents << in.rdbuf();
-      CPPUNIT_ASSERT(contents.str() ==
+      BOOST_CHECK(contents.str() ==
             "\n\n\n"
             "[test section]\n"
             "\n"
@@ -222,7 +218,7 @@ void TestIniFile::testDeleteKey(void)
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 //---------------------------------------------------------------------------
@@ -236,7 +232,7 @@ void TestIniFile::testDeleteSection(void)
       ostringstream contents;
       ifstream in("test.ini");
       contents << in.rdbuf();
-      CPPUNIT_ASSERT(contents.str() ==
+      BOOST_CHECK(contents.str() ==
             "\n\n\n"
             "[test2 ]\n"
             "key3 = value3\n"
@@ -246,7 +242,7 @@ void TestIniFile::testDeleteSection(void)
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 //---------------------------------------------------------------------------
@@ -258,14 +254,14 @@ void TestIniFile::testGetKeysInSection(void)
       {
       vector<string> keys;
       ini.getKeysInSection("test section", keys);
-      CPPUNIT_ASSERT(keys.size() == 3);
-      CPPUNIT_ASSERT(keys[0] == "key1");
-      CPPUNIT_ASSERT(keys[1] == "key1");
-      CPPUNIT_ASSERT(keys[2] == "key2");
+      BOOST_CHECK(keys.size() == 3);
+      BOOST_CHECK(keys[0] == "key1");
+      BOOST_CHECK(keys[1] == "key1");
+      BOOST_CHECK(keys[2] == "key2");
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 //---------------------------------------------------------------------------
@@ -279,7 +275,7 @@ void TestIniFile::testRenameSection(void)
       ostringstream contents;
       ifstream in("test.ini");
       contents << in.rdbuf();
-      CPPUNIT_ASSERT(contents.str() ==
+      BOOST_CHECK(contents.str() ==
             "\n\n\n"
             "[new section name]\n"
             "\n"
@@ -297,7 +293,7 @@ void TestIniFile::testRenameSection(void)
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 
@@ -308,11 +304,11 @@ void TestIniFile::testRenameKey(void)
    {
    try
       {
-      CPPUNIT_ASSERT(ini.renameKey("test section", "key1", "newKey"));
+      BOOST_CHECK(ini.renameKey("test section", "key1", "newKey"));
       ostringstream contents;
       ifstream in("test.ini");
       contents << in.rdbuf();
-      CPPUNIT_ASSERT(contents.str() ==
+      BOOST_CHECK(contents.str() ==
             "\n\n\n"
             "[test section]\n"
             "\n"
@@ -330,7 +326,7 @@ void TestIniFile::testRenameKey(void)
       }
    catch (std::string& msg)
       {
-      CPPUNIT_ASSERT(false);
+      BOOST_CHECK(false);
       }
    }
 

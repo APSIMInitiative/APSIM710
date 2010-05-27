@@ -16,6 +16,9 @@ for /D %%d in (*) do (
    echo ----------------------------------------------------- >> ..\UnitTests.out
    echo %%d >> ..\UnitTests.out
    echo ----------------------------------------------------- >> ..\UnitTests.out
+   echo -----------------------------------------------------
+   echo %%d
+   echo -----------------------------------------------------
    if EXIST Test.sln (
       "C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\devenv" Test.sln /ReBuild debug
       if ERRORLEVEL 1 echo ERRORS FOUND >> ..\UnitTests.out
@@ -27,7 +30,7 @@ for /D %%d in (*) do (
       echo. >> ..\UnitTests.out
       )
    if EXIST Makefile (
-      %APSIM%\Model\Build\make -B
+      call %APSIM%\Model\Build\RunMake -B
       if ERRORLEVEL 1 echo ERRORS FOUND >> ..\UnitTests.out
       if ERRORLEVEL 0 (
          %APSIM%\Model\Test.exe >> ..\UnitTests.out

@@ -4,7 +4,7 @@
 
 ######uncomment for debug everything###
 
-### DEBUG=yes
+DEBUG=yes
 
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"
@@ -15,10 +15,10 @@ TCL = $(APSIM)\..\BuildLibraries\tcl\ASTcl\bin\tclsh84.exe
 
 DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BOOST_REGEX_STATIC_LINK"
 INCLUDES := /I $(APSIM)\Model /I $(BOOST) /I $(LIBXML)\include $(INCLUDES)
-LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib 
+LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib
 
 # add .lib to all user libraries
-LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib 
+LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib
 
 WARNINGS := /wd4996 /wd4068 /wd4290 /wd4251 /wd4244
 
@@ -26,30 +26,30 @@ CFLAGS := $(INCLUDES) $(DEFINES) /EHsc /W3 /nologo /c /TP /Fd"$(APSIM)\Model\$(P
 
 LFLAGS := /NOLOGO /SUBSYSTEM:CONSOLE /DYNAMICBASE /NXCOMPAT /MACHINE:X86
 
-SYSOBJS := kernel32.lib user32.lib advapi32.lib shell32.lib uuid.lib 
+SYSOBJS := kernel32.lib user32.lib advapi32.lib shell32.lib uuid.lib
 
 ifeq ($(PROJECTTYPE),exe)
 	CFLAGS := $(CFLAGS) /LD
-	LFLAGS := $(LFLAGS) 
+	LFLAGS := $(LFLAGS)
 else
 	CFLAGS := $(CFLAGS) /D "$(PROJECT)_EXPORTS"
-	LFLAGS := $(LFLAGS) /DLL 
+	LFLAGS := $(LFLAGS) /DLL
 endif
 
 # Optimisation and debug symbols.
 ifdef DEBUG
-	CFLAGS := $(CFLAGS) /Od /RTCs /ZI /MDd /D "_DEBUG" 
+	CFLAGS := $(CFLAGS) /Od /RTCs /ZI /MDd /D "_DEBUG"
 #	LIBS := cg32.lib import32.lib $(LIBS)
-#	LFLAGS := $(LFLAGS) 
+	LFLAGS := $(LFLAGS) /DEBUG /PDB:"$(APSIM)\Model\$(PROJECT).pdb"
 	LIBPATH := $(LIBPATH) \
 /LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\debug\asynch-exceptions-on\link-static\threading-multi 
+/LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\debug\asynch-exceptions-on\link-static\threading-multi
 else
 	CFLAGS := $(CFLAGS) /O2 /MD /GL
-#	LFLAGS := $(LFLAGS) 
+#	LFLAGS := $(LFLAGS)
 #	LIBS :=  import32.lib $(LIBS)
 	LIBPATH := $(LIBPATH) \
 /LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\release\link-static\threading-multi \
@@ -74,7 +74,7 @@ $(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS)
 else
 
 # Ugh. By default, MS dlls export symbols with _@ adornments, eg function "xyz" appears as "_xyz@n"
-#   what we do here is build the dll once, generate an unadorned .def file, and build it again with 
+#   what we do here is build the dll once, generate an unadorned .def file, and build it again with
 #   that def file so that the unadorned names are visible.
 $(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS)
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp

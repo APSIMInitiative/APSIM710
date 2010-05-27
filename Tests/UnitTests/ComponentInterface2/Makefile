@@ -8,7 +8,7 @@ SRC = testComponentInterface.cpp \
       TestEvents.cpp \
       TestMisc.cpp
 
-LIBS = General ApsimShared ComponentInterface2 libboost_unit_test_framework-vc90-mt-1_42
+LIBS = General ApsimShared ComponentInterface2 libboost_unit_test_framework-vc90-mt-gd-1_42
 
 PROJECTTYPE = exe
 

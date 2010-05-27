@@ -2,15 +2,18 @@
 #ifndef TestMacroH
 #define TestMacroH
 
-#include <cppunit\testcase.h>
-#include <cppunit\extensions\HelperMacros.h>
 #include <string>
+#include <boost/test/unit_test.hpp>
+using boost::unit_test_framework::test_suite;
+
 //---------------------------------------------------------------------------
-class TestMacro : public CppUnit::TestCase
+// 1. Create the testing class
+//---------------------------------------------------------------------------
+class TestMacro
    {
    public:
-      virtual void setUp(void);
-      virtual void tearDown(void);
+      void setUp(void);
+      void tearDown(void);
       void testForEach(void);
       void testForEachOnSingleLine(void);
       void testForEachNesting(void);
@@ -18,15 +21,25 @@ class TestMacro : public CppUnit::TestCase
       void testIfOnSingleLine(void);
       void testElse(void);
       void testElseIf(void);
-      CPPUNIT_TEST_SUITE(TestMacro);
-         CPPUNIT_TEST(testForEach);
-         CPPUNIT_TEST(testForEachOnSingleLine);
-         CPPUNIT_TEST(testForEachNesting);
-         CPPUNIT_TEST(testIf);
-         CPPUNIT_TEST(testIfOnSingleLine);
-         CPPUNIT_TEST(testElse);
-         CPPUNIT_TEST(testElseIf);
-      CPPUNIT_TEST_SUITE_END();
-
    };
+   
+//---------------------------------------------------------------------------
+// 2. Register the testing class into test suite
+//---------------------------------------------------------------------------
+class TestMacroSuite : public test_suite{
+public:
+    TestMacroSuite() : test_suite("TestMacroSuite")
+    {
+    boost::shared_ptr<TestMacro> instance(new TestMacro);
+
+    add(BOOST_CLASS_TEST_CASE(&TestMacro::testForEach,instance));
+    add(BOOST_CLASS_TEST_CASE(&TestMacro::testForEachOnSingleLine,instance));
+    add(BOOST_CLASS_TEST_CASE(&TestMacro::testForEachNesting,instance));
+    add(BOOST_CLASS_TEST_CASE(&TestMacro::testIf,instance));
+    add(BOOST_CLASS_TEST_CASE(&TestMacro::testIfOnSingleLine,instance));
+    add(BOOST_CLASS_TEST_CASE(&TestMacro::testElse,instance));
+    add(BOOST_CLASS_TEST_CASE(&TestMacro::testElseIf,instance));
+    }
+};     
+   
 #endif
