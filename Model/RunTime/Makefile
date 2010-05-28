@@ -10,6 +10,6 @@ dummy:
 ifeq ($(PLATFORM),WIN32)
 	@copy /Y c:\progra~1\Borland\CBuilder6\Components\libxml2\win32\bin.bcb\libxml2.dll $(APSIM)\Model
 else
-	@copy /Y $(APSIM)\..\BuildLibraries\libxml2-2.7.6.win32\bin\*.* $(APSIM)\Model
+	@copy /Y $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32\bin\*.* $(APSIM)\Model
 endif
 
