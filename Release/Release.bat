@@ -25,7 +25,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 %InsertFiles% ApsimSetup.vdproj ..\Model\RunTime\*.*                       %%Apsim%%\Model >> %APSIM%\Model\Build\build.out
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\bin\*.dll                 %%Apsim%%\Model\TclLink\bin >> %APSIM%\Model\Build\build.out
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\bin\*.exe                 %%Apsim%%\Model\TclLink\bin >> %APSIM%\Model\Build\build.out
-%InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\lib\*.*                   %%Apsim%%\Model\TclLink\lib >> %APSIM%\Model\Build\build.out
+%InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\lib\                   %%Apsim%%\Model\TclLink\lib >> %APSIM%\Model\Build\build.out
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\Tcl8.4.13.license.terms   %%Apsim%%\Model\TclLink >> %APSIM%\Model\Build\build.out
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\CIDataTypes.tcl           %%Apsim%%\Model\TclLink >> %APSIM%\Model\Build\build.out
 
