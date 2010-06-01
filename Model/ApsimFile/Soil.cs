@@ -204,7 +204,10 @@ namespace ApsimFile
       public string[] VariableAsStrings(string VariableName)
          {
          VariableValue Value = FindVariable(VariableName, TargetThickness);
-         return Value.Strings;
+         if (VariableName.Contains("Code"))
+            return Value.Codes;
+         else
+            return Value.Strings;
          }
       
       /// <summary>
@@ -653,12 +656,14 @@ namespace ApsimFile
                Table.Columns.Add(VariableName, typeof(double));
             else
                {
-               VariableValue Value;
-               if (LocationName == "")
-                  Value = FindVariable(VariableName);
-               else
-                  Value = FindVariable(VariableName, LocationName);
-
+               VariableValue Value = CalculatedVariables(RawVariableName);
+               if (Value == null)
+                  {
+                  if (LocationName == "")
+                     Value = FindVariable(VariableName);
+                  else
+                     Value = FindVariable(VariableName, LocationName);
+                  }
                if (Thickness.Doubles == null)
                   Thickness.Doubles = Value.ThicknessMM;
                
@@ -1327,6 +1332,13 @@ namespace ApsimFile
          return SoilMetaData.Instance.ValidUnits(RawVariableName);
          }
 
+      /// <summary>
+      /// Return a full code name from the abbreviated code passed in.
+      /// </summary>
+      public string GetFullCodeName(string CodeText, string RawVariableName)
+         {
+         return SoilMetaData.Instance.GetFullCodeName(CodeText, RawVariableName);
+         }
       
       //public bool UseEC
       //   {
@@ -1962,6 +1974,7 @@ namespace ApsimFile
       //      }
       //   }
       //#endregion
+
 
 
 

@@ -164,7 +164,20 @@ Public Class BaseController
             Select Case DoSave
                 Case DialogResult.Yes
                     ' Save the file
-                    ApsimData.Save()
+                    If ApsimData.FileName.Contains("Untitled") Then
+                        Dim Dialog As New SaveFileDialog
+                        Dialog.Filter = Configuration.Instance.Setting("DialogFilter")
+                        Dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
+                        Dialog.AddExtension = True
+                        Dialog.OverwritePrompt = True
+                        If Dialog.ShowDialog = DialogResult.OK Then
+                            Explorer.SaveCurrentView()
+                            ApsimData.SaveAs(Dialog.FileName)
+                            RefreshToolStrips()
+                        End If
+                    Else
+                        ApsimData.Save()
+                    End If
 
                 Case DialogResult.No
                     ' Do not save

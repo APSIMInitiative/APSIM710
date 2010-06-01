@@ -209,6 +209,29 @@ namespace ApsimFile
             return XmlHelper.Values(Variable, "units");
          }
 
+      /// <summary>
+      /// Return a full code name from the abbreviated code passed in.
+      /// </summary>
+      internal string GetFullCodeName(string CodeText, string RawVariableName)
+         {
+         ReadMetaData();
+         // If this is a crop variable then remove the crop bit.
+         int PosSpace = RawVariableName.IndexOf(' ');
+         if (PosSpace != -1)
+            RawVariableName = RawVariableName.Remove(0, PosSpace+1);
+         XmlNode CodeNode = XmlHelper.FindRecursively(MetaDataNode, RawVariableName);
+         if (CodeNode != null)
+            {
+            foreach (XmlNode Code in XmlHelper.ChildNodes(CodeNode, "Code"))
+               {
+               if (Code.InnerText == CodeText)
+                  return XmlHelper.Attribute(Code, "description");
+               }
+            return CodeText;
+            }
+         else
+            return CodeText;
+         }
       }
 
    public class SoilUtility

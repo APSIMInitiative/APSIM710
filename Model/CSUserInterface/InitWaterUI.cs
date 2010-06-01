@@ -467,6 +467,7 @@ namespace CSUserInterface
          {
          if (UserChange)
             {
+            UserChange = false;
             double[] pawc;
             if (RelativeToCombo.Text == "ll15")
                pawc = _Soil.Variable("PAWC (mm)");
@@ -479,6 +480,9 @@ namespace CSUserInterface
             Percent = Math.Min(Percent, 100);
             Percent = Math.Max(Percent, 0);
             PercentEdit.Value = Percent;  // this will trigger an event and call to OnPercentChanged
+            SaveUsingPercentMethod();
+            PopulateGraph();
+            UserChange = true;
             }
          }
 

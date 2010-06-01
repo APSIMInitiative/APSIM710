@@ -142,21 +142,32 @@ namespace CSUserInterface
             {
             string RawVariableName = Grid.Columns[Col].HeaderText;
             string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
-            string NewVariableName = RawVariableName + "Code" + "(" + Units + ")";
-            string[] Codes = _Soil.VariableAsStrings(NewVariableName);
-            if (Codes != null)
+            if (RawVariableName != "Depth")
                {
-               if (Codes.Length > 0 && Codes[0] == "Calculated")
+               string NewVariableName = RawVariableName + "Code" + "(" + Units + ")";
+               string[] Codes = _Soil.VariableAsStrings(NewVariableName);
+               if (Codes != null)
                   {
-                  Grid.Columns[Col].ReadOnly = true;
-                  Grid.Columns[Col].DefaultCellStyle.BackColor = Color.FromArgb(49, 163, 84);
-                  }
+                  if (Codes.Length > 0 && Codes[0] == "Calculated")
+                     Grid.Columns[Col].ReadOnly = true;
 
-               // Put codes as tooltips.
-               if (Codes.Length == Grid.Rows.Count - 1)
-                  {
-                  for (int Row = 0; Row < Codes.Length; Row++)
-                     Grid.Rows[Row].Cells[Col].ToolTipText = Codes[Row];
+                  // Put codes as tooltips.
+                  if (Codes.Length == Grid.Rows.Count - 1)
+                     {
+                     for (int Row = 0; Row < Codes.Length; Row++)
+                        {
+                        string CodeText = Codes[Row];
+                        if (CodeText != "")
+                           {
+                           if (CodeText != "Calculated")
+                              {
+                              CodeText = _Soil.GetFullCodeName(CodeText, RawVariableName);
+                              }
+                           Grid.Rows[Row].Cells[Col].ToolTipText = CodeText;
+                           Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Tomato;
+                           }
+                        }
+                     }
                   }
                }
             }
@@ -187,7 +198,7 @@ namespace CSUserInterface
       /// </summary>
       private void ColourCropColumns()
          {
-         Color[] CropColors = { Color.FromArgb(194, 230, 153), Color.FromArgb(120, 198, 121) };
+         Color[] CropColors = { Color.FromArgb(229, 245, 224), Color.FromArgb(199, 233, 192) };
          int CropIndex = 0;
          bool DoingCrops = false;
          foreach (DataGridViewColumn Col in Grid.Columns)

@@ -166,7 +166,7 @@ Public Class GenericUI
         Next
         Grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
         Grid.AutoResizeColumns()
-        Grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
+        Grid.Columns(4).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         IsDirty = False
     End Sub
 
@@ -289,6 +289,7 @@ Public Class GenericUI
             Case "multiedit"
                 Dim Text As New DataGridViewTextBoxCell()
                 Text.MaxInputLength = 5000
+                Text.Style.WrapMode = DataGridViewTriState.True
                 Row.Height = 80
                 Row.Cells.Add(Text)
 
@@ -312,7 +313,9 @@ Public Class GenericUI
                 End While
 
                 If Not IsNothing(Paddock) Then
-                    Combo.Items.AddRange(Paddock.ChildNames)
+                    For Each ModuleName As String In Paddock.ChildNames
+                        Combo.Items.Add(ModuleName)
+                    Next
                 End If
 
             Case "crop"
@@ -330,7 +333,9 @@ Public Class GenericUI
                             Crops.Add(Child.Name)
                         End If
                     Next
-                    Combo.Items.AddRange(Crops)
+                    For Each Crop As String In Crops
+                        Combo.Items.Add(Crop)
+                    Next
                 End If
 
             Case "cultivars"
@@ -346,7 +351,10 @@ Public Class GenericUI
                 Next
                 ' If we found a crop row then go and get all cultivars for that crop.
                 If CropRow < Grid.RowCount Then
-                    Combo.Items.AddRange(Types.Instance.Cultivars(Grid.Rows(CropRow).Cells(4).Value))
+                    Dim Cultivars() As String = Types.Instance.Cultivars(Grid.Rows(CropRow).Cells(4).Value)
+                    For Each Cultivar As String In Cultivars
+                        Combo.Items.Add(Cultivar)
+                    Next
                 End If
 
             Case "classes"
@@ -362,7 +370,10 @@ Public Class GenericUI
                 Next
                 ' If we found a crop row then go and get all cultivars for that crop.
                 If CropRow < Grid.RowCount Then
-                    Combo.Items.AddRange(Types.Instance.Classes(Grid.Rows(CropRow).Cells(4).Value))
+                    Dim Classes() As String = Types.Instance.Classes(Grid.Rows(CropRow).Cells(4).Value)
+                    For Each Clss As String In Classes
+                        Combo.Items.Add(Clss)
+                    Next
                 End If
 
 
