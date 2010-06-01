@@ -28,7 +28,7 @@ void testGetText(void)
 void testGetError(void)
    {
    tHTTP t;
-   string url ="http://apsrunet.apsim.info/no file";
+   string url ="http://apsrunet.apsim.info/no_file";
    string result = t.Get(url);
    //string text = t.responseText();
    int code = t.responseCode();
