@@ -14,7 +14,7 @@ forage sorghum = 1 sep - 31 dec
 stocking rates
 ---------------------
 buffel = 0.3 beasts/ha (set stocking rate)
-leucaena = 
+leucaena =
 forage oats 1 beast per ha (initial stocking rate for 3 months, then reduce to stock by taking 30% off)
 forage sorghum = 1 beast/ha
 
@@ -45,7 +45,7 @@ sell rule - sell in lotsof 120 when weight > 400kg.
 ]]></memo>
   <folder name="common stuff">
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">1/1/1980</start_date>
+      <start_date type="date" description="Enter the start date of the simulation (dd/mm/yyyy)">1/1/1980</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1989</end_date>
     </clock>
     <metfile name="met">
@@ -655,7 +655,7 @@ package require cdftcl
 package require tdom
 
 proc setupLogging {} {
-   global simName config 
+   global simName config
 
    # Find the number of graphs - 1 file for each. Delete each.
    set config(graphs) {}
@@ -706,7 +706,7 @@ proc logState {graph paddock state} {
    if {[lsearch $config(states) $state] < 0} {lappend config(states) $state}
 }
 
-# Write the files. 
+# Write the files.
 proc closeLogging {} {
    global config history simName
 
@@ -717,7 +717,7 @@ puts "graphs = $config(graphs)"
 
    foreach graph $config(graphs) {
 puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
-      set ncfp [ncdf create $simName.$graph.nc] 
+      set ncfp [ncdf create $simName.$graph.nc]
       ncdfdim $ncfp create index [llength $config(historyDays)]
       ncdfdim $ncfp create time -1
 
@@ -741,7 +741,7 @@ puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
       set id 0
       foreach p $config(paddocks) {
          set pid($p) $id; incr id
-      }   
+      }
 	  puts "writing rules"
       catch {unset pos}
       set i 0
@@ -756,7 +756,7 @@ puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
                      ncdfvar $ncfp put rule    $i $rule
                      ncdfvar $ncfp put value   $i $value
                      incr i
-                  } 
+                  }
                }
             }
          }
@@ -772,16 +772,16 @@ puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
                ncdfvar $ncfp put position  $i $pos($paddock,$day)
                set f 1
                break
-            } 
+            }
          }
          if {!$f} {
             ncdfvar $ncfp put position  $i -1
-         }   
+         }
       }
-      
+
       for {set j 0} {$j < [llength $config(historyDays)]} {incr j} {
          ncdfvar $ncfp put daynum $j [lindex $config(historyDays) $j]
-      }   
+      }
 
       ncdf close $ncfp
 puts "finished nc, opening $simName.$graph.xml"
@@ -794,7 +794,7 @@ puts "finished nc, opening $simName.$graph.xml"
          foreach {day state} $config(history,$paddock,$graph) {
             if {[info exists pos($paddock,$day)]} {
                puts $fp "<transition day=\"$day\" to=\"$state\" position=\"$pos($paddock,$day)\" />"
-            } 
+            }
          }
          puts $fp "</history>"
          incr id
@@ -802,11 +802,11 @@ puts "finished nc, opening $simName.$graph.xml"
 
       foreach paddock $config(paddocks) {
          puts $fp "<paddock id=\"$pid($paddock)\" name=\"$paddock\" />"
-      }   
+      }
       set id 0
       foreach rule $config(rules) {
-         set rule [string map {\< "&lt;"  \> "&gt;"     
-                               \& "&amp;" \" "&quot;"  
+         set rule [string map {\< "&lt;"  \> "&gt;"
+                               \& "&amp;" \" "&quot;"
                                \[ "&#91;" \] "&#93;"    } $rule]
          puts $fp "<rule id=\"$id\" name=\"$rule\" />"
          incr id
@@ -827,13 +827,13 @@ puts "finished nc, opening $simName.$graph.xml"
       puts $fp "</simulation>"
       close $fp
 puts "finished $simName.$graph.xml"
-   }  
+   }
    # $config(xmldoc) delete
 }
 
 # Override the "standard" decision routine to keep track of state info
 proc checkRules {thisPaddock} {
-  global config 
+  global config
   uplevel #0 set paddock $thisPaddock
   set bestScore -1.0; set bestTarget {}; set bestArc {}; set bestGraph {}
   foreach graph $config($thisPaddock,graphNames) {
@@ -857,7 +857,7 @@ proc checkRules {thisPaddock} {
            }
         }
      }
-  }   
+  }
   return [list  $bestScore $bestGraph $bestTarget $bestArc]
 }
 
@@ -1676,7 +1676,7 @@ proc checkRules {thisPaddock} {
            }
         }
      }
-  }   
+  }
   return [list  $bestScore $bestGraph $bestTarget $bestArc]
 }
 
@@ -1695,7 +1695,7 @@ proc changeState {paddock graph arc} {
 # Do daily process at top level
 proc doProcess {} {
    global date config daysSinceLastHarvest
-   
+
    set date "[apsimGet day],[apsimGet year]"
 
    set more 1
@@ -1714,10 +1714,10 @@ proc doProcess {} {
          set more 1
       }
    }
-   
+
    foreach paddock $config(paddocks) {
       incr daysSinceLastHarvest($paddock)
-   }   
+   }
 }
 
 # pass events to various output files
@@ -1752,7 +1752,7 @@ foreach paddock $config(paddocks) {
   set daysSinceLastHarvest($paddock) 60
 }
 
-# All our sols are called "Soil.." 
+# All our sols are called "Soil.."
 foreach paddock $config(paddocks) {
    set config($paddock,watBal)   ".masterpm.$paddock.Soil Water"
    set config($paddock,nModule)  ".masterpm.$paddock.Soil Nitrogen"
@@ -1840,15 +1840,15 @@ foreach p {p8 p9 p10} {
    set defaults(wheat,fertiliser,amount)       150       ;# kg urea/ha
 
    # (same as chickpea)
-   set defaults(wheat,sowingCosts)             {{category seedcost    name Wheat            rate 40  comment  "Wheat seed"} 
-                                                {category fertilisercost  name map              rate 20  comment  "Wheat MAP starter"} 
+   set defaults(wheat,sowingCosts)             {{category seedcost    name Wheat            rate 40  comment  "Wheat seed"}
+                                                {category fertilisercost  name map              rate 20  comment  "Wheat MAP starter"}
                                                 {category herbicide name "MCPA LVE"       rate 0.5 comment  "Wheat mcpa starter"}
                                                 {category herbicide name "Ally"           rate 5   comment  "Wheat metsulfuran starter"}}
 
-   set defaults(wheat,harvestingCosts)         {{category contract   name generic          rate 0.16666  comment  "Wheat contract harvest"} 
+   set defaults(wheat,harvestingCosts)         {{category contract   name generic          rate 0.16666  comment  "Wheat contract harvest"}
                                                 {category fuelcosts  name fuelcosts        rate 8.1      comment  "Wheat contract harvest fuel"}}
 
- 
+
    set defaults(sorghum,sow,tiller_no_fertile) 0
    set defaults(sorghum,sow,skip)              "solid"
    set defaults(sorghum,sow,region)            "CQ"
@@ -1857,8 +1857,8 @@ foreach p {p8 p9 p10} {
    set defaults(sorghum,fertiliser,amount)     160
    set defaults(sorghum,sowingCosts)           {{category seedcost   name sorghum   rate 4 comment "Sorghum seed"}}
 ## NBNB needs atrazine @3.5lt/ha in wet seasons
-   set defaults(sorghum,harvestingCosts)       {{category contract   name generic         rate 0.16666 comment  "Sorghum contract harvest"} 
-                                                {category herbicide  name Roundup         rate 1.5     comment  "Sorghum spray out"} 
+   set defaults(sorghum,harvestingCosts)       {{category contract   name generic         rate 0.16666 comment  "Sorghum contract harvest"}
+                                                {category herbicide  name Roundup         rate 1.5     comment  "Sorghum spray out"}
                                                 {category fuelcosts  name fuelcosts       rate 8.1     comment  "Sorghum contract harvest fuel"}}
    set defaults(sorghum,sow,cultivar)          medium
    set defaults(springSorghum,sow,cultivar)    late
@@ -1875,19 +1875,19 @@ foreach p {p8 p9 p10} {
    set defaults(maize,fertiliser,type)         urea
    set defaults(maize,fertiliser,amount)       200
    set defaults(maize,sowingCosts)             {{category seedcost   name maize     rate 8    comment "Maize Seed"}}
-   set defaults(maize,harvestingCosts)         {{category contract   name generic   rate 0.25 comment  "Maize contract harvest"} 
+   set defaults(maize,harvestingCosts)         {{category contract   name generic   rate 0.25 comment  "Maize contract harvest"}
                                                 {category fuelcosts  name fuelcosts rate 12.1  comment  "Maize contract harvest fuel"}}
 
 
    set defaults(chickpea,sow,cultivar)         amethyst
    set defaults(chickpea,sow,plants)           30
    set defaults(chickpea,fertiliser,amount)    0
-   set defaults(chickpea,sowingCosts)          {{category seedcost    name Chickpea         rate 45   comment "Chickpea Seed"}              
+   set defaults(chickpea,sowingCosts)          {{category seedcost    name Chickpea         rate 45   comment "Chickpea Seed"}
                                                 {category herbicide   name Roundup          rate 1.3  comment "Pre plant roundup"}
-                                                {category herbicide   name Amicide625       rate 0.2  comment "Pre plant 2,4D"} 
+                                                {category herbicide   name Amicide625       rate 0.2  comment "Pre plant 2,4D"}
                                                 {category herbicide   name "simazine"     rate 1.1    comment "Post Simazine"}
-                                                {category insecticide name "Larvin LV"    rate 0.75   comment "Insecticide"}}      
-   set defaults(chickpea,harvestingCosts)      {{category contract    name generic        rate 0.1851 comment  "Chickpea contract harvest"} 
+                                                {category insecticide name "Larvin LV"    rate 0.75   comment "Insecticide"}}
+   set defaults(chickpea,harvestingCosts)      {{category contract    name generic        rate 0.1851 comment  "Chickpea contract harvest"}
                                                 {category fuelcosts   name fuelcosts      rate 9.0    comment  "Chickpea contract harvest fuel"}}
 
    set defaults(weed,sow,cultivar)             late
@@ -1905,7 +1905,7 @@ foreach p {p8 p9 p10} {
    set config(springSorghum,alias) sorghum
    set config(earlySorghum,alias) sorghum
    set config(lateSorghum,alias) sorghum
-  
+
 
 # Initial conditions for each paddock
 set config(p1,initialState)         Fallow
@@ -1950,7 +1950,7 @@ set daysSinceLastHarvest(toplevel) 0
 # Return our reluctance to plant sorghum in the current paddock
 #  -> no more than 3 in a row.
 proc sorghumHistory {paddock} {
-   global history 
+   global history
    if {"[lindex $history($paddock) end]" == "sorghum" &&
        "[lindex $history($paddock) end-1]" == "sorghum" &&
        "[lindex $history($paddock) end-2]" == "sorghum"} {
@@ -2009,7 +2009,7 @@ proc getCover {paddock} {
 
 proc mseek2 {paddock} {
    global config
-   set ll2   [lindex [apsimGet $config($paddock,watBal).ll15] 1] 
+   set ll2   [lindex [apsimGet $config($paddock,watBal).ll15] 1]
    set swat2 [lindex [apsimGet $config($paddock,watBal).sw] 1]
    set dul2  [lindex [apsimGet $config($paddock,watBal).dul] 1]
    return [expr (($swat2-$ll2)/($dul2-$ll2))]
@@ -2029,7 +2029,7 @@ proc mseek2 {paddock} {
       foreach {accumulator} {runoff drain soil_loss es } {
          foreach paddock $paddocks {
             set $paddock.$accumulator 0.0
-         }   
+         }
       }
    }
    accumRain
@@ -2049,20 +2049,20 @@ if {[catch {checkWeeds; doProcess} msg]} {
         <script name="post">
           <text>
    set accRain [expr $accRain + [apsimGet rain]]
-   
+
    foreach {accumulator} {runoff drain es } {
       foreach paddock $paddocks {
          if {$paddock != "toplevel"} {
             set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet $config($paddock,watBal).$accumulator]]
          }
-      }   
+      }
    }
    foreach {accumulator} {soil_loss} {
       foreach paddock $paddocks {
          if {$paddock != "toplevel"} {
             set $paddock.$accumulator [expr [set $paddock.$accumulator] + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
          }
-      }   
+      }
    }
 
           </text>
@@ -2070,14 +2070,14 @@ if {[catch {checkWeeds; doProcess} msg]} {
         </script>
         <script name="start_simulation">
           <text>
- 
+
       set accRain 0.0
       foreach {accumulator} {runoff drain soil_loss es } {
          foreach paddock $paddocks {
             set $paddock.$accumulator 0.0
-         }   
+         }
       }
- 
+
  foreach p $config(cropPaddocks) {
    set config($p,pawc)        [calcPAWC $p]
 }
@@ -2104,7 +2104,7 @@ proc checkWeeds {} {
    global daysSinceLastHarvest weeds  config
 
    foreach paddock $config(cropPaddocks) {
-      if {[string match -nocase *fallow* [currentState $paddock]] && 
+      if {[string match -nocase *fallow* [currentState $paddock]] &&
           $daysSinceLastHarvest($paddock) > 30} {
 
          if {$weeds($paddock,GermDay) == {} && [sumLastRain 4] >= 25} {
@@ -2115,18 +2115,18 @@ proc checkWeeds {} {
          } elseif {$weeds($paddock,GermDay) != {}} {
             # Thermal time calc
             set weeds($paddock,tt) [expr $weeds($paddock,tt) + ([apsimGet maxt] + [apsimGet mint])/2.0]
-         
+
             # Surface SW calc
             set ll [lindex [apsimGet $config($paddock,watBal).ll15] 0];
             set sw [lindex [apsimGet $config($paddock,watBal).sw] 0]
             set dul [lindex [apsimGet $config($paddock,watBal).dul] 0]
             set swf [expr (($sw-$ll)/($dul-$ll))]
-         
+
             if {$swf < 0.5} {
                # kill off weeds
                set weeds($paddock,GermDay) {}
                apsimWriteToSummaryFile "Weeds die in $paddock"
-         
+
             } elseif {$weeds($paddock,tt) > 250.0} {
                # Weeds are mature - spray them
                incr weeds($paddock,Events)
@@ -2135,14 +2135,14 @@ proc checkWeeds {} {
                       area $config($paddock,area)  paddock $paddock  costtype fallow_cost]]
 
                apsimWriteToSummaryFile "Weeds mature in $paddock - sprayed out."
-            
+
                reportEvent $paddock "spray-type=roundup,amount=1.5"
-         
+
                set weeds($paddock,GermDay) {}
                set weeds($paddock,tt)      0.0
             }
          }
-      }   
+      }
    }
 }
 ]]></text>
@@ -2170,13 +2170,13 @@ proc open_ef_stuff {} {
    puts "open_ef_stuff called"
    set year [expr [apsimGet year] - 1 ]
    set ef(years) $year
-   set ef($year,balance) [apsimGet balance] 
+   set ef($year,balance) [apsimGet balance]
 
    set ef(accRain) 0.0
    foreach {accumulator} {runoff drain soil_loss es } {
      foreach paddock $config(cropPaddocks) {
        set ef($paddock,$accumulator) 0.0
-     }   
+     }
    }
 }
 
@@ -2222,7 +2222,7 @@ proc close_ef_stuff {} {
    # Area weighted averages of environmental stuff
    set tfa 0.0
    foreach paddock $config(cropPaddocks) {set tfa [expr $tfa + $config($paddock,area)]}
-   
+
    foreach year [lrange $ef(years) 1 end] {
       puts -nonewline $fp "31/6/$year"
       foreach {accumulator} {runoff drain soil_loss es} {
@@ -2241,7 +2241,7 @@ proc close_ef_stuff {} {
               puts -nonewline $fp ",$ef($year,$state)"
             } else {
               puts -nonewline $fp ",0"
-            }  
+            }
          }
       }
 
@@ -2250,7 +2250,7 @@ proc close_ef_stuff {} {
       puts $fp ""
    }
    close $fp
-   
+
    # per-crop yields etc..
    foreach state $ef(states) {
      if {$state != {}} {
@@ -2259,10 +2259,10 @@ proc close_ef_stuff {} {
          if {[info exists ef($state,yield)]} {
             foreach yield $ef($state,yield) {
                puts $fp $yield
-            }   
-         }  
+            }
+         }
          close $fp
-      }   
+      }
    }
 
 }
@@ -2276,7 +2276,7 @@ proc logState {graph paddock state} {
 
    set day [apsimGet day]
    set year [apsimGet year]
-   
+
    if {$day > 181} {incr year}
    if {![info exists ef($year,$state)]} {
      set ef($year,$state) 1
@@ -2305,16 +2305,16 @@ proc harvestAndEndCrop {paddock crop} {
                           "protein [apsimGet .masterpm.$paddock.$realCrop.grain_protein]" \
                           "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
                           "SW_state [apsimGet $config($paddock,watBal).esw]" \
-                          "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
-                          
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"
+
       } else {
          apsimSendMessage economics income {category cropprice} "name $realCrop"  \
                           "yield [expr [apsimGet .masterpm.$paddock.$realCrop.yield]/1000.0]" \
                           "area $config($paddock,area)" "paddock $paddock" "crop $realCrop" \
                           "SW_state [apsimGet $config($paddock,watBal).esw]" \
-                          "NO3_state [apsimGet $config($paddock,nModule).no3()]" 
-                          
-      }  
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"
+
+      }
       # Harvesting costs
       # {{category seedcost} {name cotton} {rate 3.5} {Comment "blah blah"}} ...
       array set costs [array get defaults $realCrop,harvestingCosts]
@@ -2358,26 +2358,26 @@ close_ef_stuff
         <script name="post">
           <text>
    set ef(accRain) [expr $ef(accRain) + [apsimGet rain]]
-   
+
    foreach {accumulator} {runoff drain es } {
       foreach paddock $paddocks {
          if {$paddock != "toplevel"} {
             set ef($paddock,$accumulator) [expr $ef($paddock,$accumulator) + [apsimGet $config($paddock,watBal).$accumulator]]
          }
-      }   
+      }
    }
    foreach {accumulator} {soil_loss} {
       foreach paddock $paddocks {
          if {$paddock != "toplevel"} {
             set ef($paddock,$accumulator) [expr $ef($paddock,$accumulator) + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
          }
-      }   
+      }
    }
-   
+
    if {[dayIs 181]} {
       do_end_financial_year
    }
-   
+
 </text>
           <event>post</event>
         </script>
@@ -2385,7 +2385,7 @@ close_ef_stuff
       <rule name="Rain Accumulator">
         <script name="init">
           <text>
-# The rainfall accumulator - set this list to 
+# The rainfall accumulator - set this list to
 #   the 10 days of rain prior to start of simulation
 set rainList {0.2 1.0 0 0 0 0 15 12 0 0 0 0}
 
@@ -2432,7 +2432,7 @@ proc reportEcon {from evt args} {
 
    if {[info exists event($from,daysSinceEcon)]} {append line ",$event($from,daysSinceEcon)"} else {append line ","}
    set event($from,daysSinceEcon) 0
-   
+
    if {$crop != ""} {
      append line ",$crop"
      if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
@@ -2440,7 +2440,7 @@ proc reportEcon {from evt args} {
      if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.grain_protein]"} else {append line ","}
    } else {
      append line ",,,,"
-   }  
+   }
 
    if {[info exists info(type)]} {append line ",$info(type)"} else {append line ","}
    if {[info exists info(amount)]} {append line ",$info(amount)"} else {append line ","}
@@ -2503,11 +2503,11 @@ proc open_annual_stuff {} {
    set year [expr [apsimGet year] - 1 ]
    set annual(years) $year
    set annual(accRain) 0.0
-   set annual($year,balance) [apsimGetOptional balance] 
+   set annual($year,balance) [apsimGetOptional balance]
    foreach {accumulator} {runoff drain soil_loss es } {
      foreach paddock $config(paddocks) {
         set annual($paddock,$accumulator) 0.0
-     }   
+     }
    }
 }
 
@@ -2572,7 +2572,7 @@ proc close_annual_stuff {} {
               puts -nonewline $fp ",$annual($year,$state)"
             } else {
               puts -nonewline $fp ",0"
-            }  
+            }
          }
       }
 
@@ -2583,7 +2583,7 @@ proc close_annual_stuff {} {
       puts $fp ""
    }
    close $fp
-   
+
 }
 
 # Log a state transition
@@ -2595,7 +2595,7 @@ proc logState {graph paddock state} {
 
    set day [apsimGet day]
    set year [apsimGet year]
-   
+
    if {![info exists annual($year,$state)]} {
      set annual($year,$state) 1
    } else {
@@ -2628,20 +2628,20 @@ close_annual_stuff
         <script name="post">
           <text>
    set annual(accRain) [expr $annual(accRain) + [apsimGet rain]]
-   
+
    foreach {accumulator} {runoff drain es } {
       foreach paddock $config(paddocks) {
          if {$paddock != "toplevel"} {
             set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet $config($paddock,watBal).$accumulator]]
          }
-      }   
+      }
    }
    foreach {accumulator} {soil_loss} {
       foreach paddock $config(paddocks) {
          if {$paddock != "toplevel"} {
             set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
          }
-      }   
+      }
    }
    </text>
           <event>post</event>
@@ -3316,11 +3316,11 @@ if {[anyAnimalsIn SorghumPaddock] &&
     [apsimGet "SorghumPaddock.SweetSorghum.biomass"] < 1000 } {
  foreach mob [listAnimalsIn SorghumPaddock] {
      if {[numAnimalsIn LeucaenaGrassPaddock] < $config(LeucaenaGrassPaddock,numAnimals) } {
-         moveStockTo $mob LeucaenaGrassPaddock leucaena      
-     } else {    
-         moveStockTo $mob BuffelPaddock buffel 
+         moveStockTo $mob LeucaenaGrassPaddock leucaena
+     } else {
+         moveStockTo $mob BuffelPaddock buffel
      }
- }    
+ }
 }
 
   if {[anyAnimalsIn BuffelPaddock ] &&
@@ -3328,9 +3328,9 @@ if {[anyAnimalsIn SorghumPaddock] &&
      [numAnimalsIn LeucaenaGrassPaddock] < $config(LeucaenaGrassPaddock,numAnimals) &&
      [apsimGet "LeucaenaGrassPaddock.leucaena.tsdm"] > 1000 } {
      puts "Buffel is scarce!!"
-     set mob [lightestMobIn BuffelPaddock ] 
+     set mob [lightestMobIn BuffelPaddock ]
      if {$mob != {}} {
-        moveStockTo $mob LeucaenaGrassPaddock leucaena   
+        moveStockTo $mob LeucaenaGrassPaddock leucaena
      }
   }
 
@@ -3339,7 +3339,7 @@ if {[anyAnimalsIn BuffelPaddock ] &&
      [apsimGet "BuffelPaddock.buffel.tsdm"] < 800 } {
      puts "Buffel is flogged!!"
      foreach mob [listAnimalsIn BuffelPaddock ] {
-        sell $mob   
+        sell $mob
      }
 }
 
@@ -3360,7 +3360,7 @@ puts "Only have  [llength [mobsOnFarm]] mobs on farm"
 puts "there are $n animals on $paddock.$pasture, which is [apsimGet $paddock.$pasture.tsdm]kg/ha"
              if {$n <  $config($paddock,numAnimals) && [apsimGet "$paddock.$pasture.tsdm"]  > 1000} {
 puts "trying to bring 200 animals into $paddock  $pasture"
-                 set mob [animalsIn 200 steers 250]       ;# replace sold animals @ 250Kg 
+                 set mob [animalsIn 200 steers 250]       ;# replace sold animals @ 250Kg
                  moveStockTo $mob $paddock $pasture
              }
     }
@@ -3369,13 +3369,13 @@ puts "trying to bring 200 animals into $paddock  $pasture"
 
 # Sell any animal > 450kg
 foreach mob $mobs {
-   if { [animalWeight $mob] > 450 } {    
+   if { [animalWeight $mob] > 450 } {
       sellAndReplace $mob
    }
 }
 
 foreach mob $mobs {
-  set paddock_$mob [animalPaddock $mob] 
+  set paddock_$mob [animalPaddock $mob]
 }
 ]]></text>
           <event>prepare</event>
@@ -3423,7 +3423,7 @@ puts "about to Start sim"
 
 # Start simulation in Jan 1978 with 4 mobs of cattle at different growth stages
 foreach {mob size num paddock crop} {
-       mob1 250 100 BuffelPaddock buffel 
+       mob1 250 100 BuffelPaddock buffel
        mob2 250 100 BuffelPaddock buffel
        mob3 300 100 BuffelPaddock buffel
        mob4 300 100 BuffelPaddock buffel
@@ -3433,7 +3433,7 @@ foreach {mob size num paddock crop} {
        mob8 350 100 BuffelPaddock buffel
        mob9 400 100 BuffelPaddock buffel
        mob10 400 100 BuffelPaddock buffel} {
-     set $mob [animalsIn $num steers $size] 
+     set $mob [animalsIn $num steers $size]
      moveStockTo $mob  $paddock $crop
 }
 
@@ -3498,9 +3498,9 @@ proc animalsIn { number class initialWeight } {
 
    foreach mob $animals(mobs) {
       if {$animals(${mob},state) == "off"} {break}
-   } 
+   }
    if {$animals(${mob},state) != "off"} {parray animals; error "Already too many mobs to make $class"}
-   
+
    set animals($mob,state)        on
    set animals($mob,class)        $class
    set animals($mob,alw)          $initialWeight
@@ -3531,11 +3531,11 @@ proc animalsOut { mob number } {
    global animals
 
    if {![info exists animals($mob,state)]} {puts "Trying to remove non-existent mob $mob"; return}
-   
+
    if {$number == "all"} { set number $animals($mob,number) }
 
    set animals(${mob},number) [expr $animals(${mob},number) - $number]
-   
+
    reportEvent livestock "sell-amount=$number,type=$animals($mob,class),weight=[format %.0f $animals($mob,alw)]"
    lappend animals(report) "[apsimGet dd/mm/yyyy],$mob,$number,$animals($mob,paddock).$animals($mob,crop),out,[format %.0f $animals($mob,alw)]"
 
@@ -3577,7 +3577,7 @@ proc doPostAnimals {} {
           # keep track of ALW if they're on a 'fake' paddock
           if {$animals(${mob},crop) == "stubble" || $animals(${mob},crop) == "stubble"} {
              set animals($mob,alw) [expr $animals($mob,alw) + 0.9]      ;# 0.9 kg/hd/day
-             
+
           } elseif {$animals(${mob},crop) == "feedlot"} {
              set animals($mob,alw) [expr $animals($mob,alw) + 2.0]      ;# 2.0 kg/hd/day
           } else {
@@ -3601,7 +3601,7 @@ proc doPostAnimals {} {
                 apsimSet $animals($mob,id).alw $animals($mob,alw)
              } else {
                set animals($mob,alw) [apsimGet $animals($mob,id).alw]
-             }  
+             }
           }
           incr animals(${mob},age)
       }
@@ -3609,7 +3609,7 @@ proc doPostAnimals {} {
 }
 
 
-#Move stock somewhere. 
+#Move stock somewhere.
 # mob = name of the animal group
 # paddock = the paddock they're going to
 # crop = The name of the crop they'll eat
@@ -3645,7 +3645,7 @@ proc moveStockTo {mob paddock crop} {
    lappend animals(report) "[apsimGet dd/mm/yyyy],$mob,$animals($mob,number),$from,$paddock.$crop,$animals($mob,alw)"
 }
 
-# Split a mob.  
+# Split a mob.
 proc splitMob { mob num paddock crop } {
    global config animals
 
@@ -3653,11 +3653,11 @@ proc splitMob { mob num paddock crop } {
 
    foreach newmob $animals(mobs) {
       if {$animals(${newmob},state) == "off"} {break}
-   } 
+   }
    if {$animals(${newmob},state) != "off"} {parray animals; error "Too many mobs to split"}
-   
+
    foreach what {state class alw number age} {
-      set animals($newmob,$what) $animals($mob,$what)  
+      set animals($newmob,$what) $animals($mob,$what)
    }
    set animals($mob,number) [expr $animals($mob,number) - $num]
    if {$animals($mob,number) < 0} {parray animals; error "mob $mob has negative size"}
@@ -3709,15 +3709,15 @@ proc animalDaysIn {mob where} {
    global animals
    if {$animals($mob,crop) == "$where"} {
      return $animals($mob,age)
-   } 
-   return 0  
+   }
+   return 0
 }
 
 proc heaviestMob {} {
    global animals
    set w 0.0; set m {}
    foreach mob $animals(mobs) {
-      if {[info exists animals($mob,alw)]} { 
+      if {[info exists animals($mob,alw)]} {
           if {$animals($mob,alw) > $w} {
              set w $animals($mob,alw)
              set m $mob
@@ -3731,7 +3731,7 @@ proc heaviestMobNotIn {paddock} {
    global animals
    set w 0.0; set m {}
    foreach mob $animals(mobs) {
-      if {[info exists animals($mob,alw)]} { 
+      if {[info exists animals($mob,alw)]} {
           if {[animalPaddock $mob] != "$paddock" && $animals($mob,alw) > $w} {
              set w $animals($mob,alw)
              set m $mob
@@ -3745,7 +3745,7 @@ proc lightestMobIn {paddock} {
    global animals
    set w 10000.0; set m {}
    foreach mob [listAnimalsIn $paddock] {
-      if {[info exists animals($mob,alw)]} { 
+      if {[info exists animals($mob,alw)]} {
           if {$animals($mob,alw) < $w} {
              set w $animals($mob,alw)
              set m $mob
@@ -3758,7 +3758,7 @@ proc lightestMobIn {paddock} {
 proc anyAnimalsIn {paddock} {
    global animals
    foreach mob $animals(mobs) {
-       if {$animals($mob,paddock) == "$paddock"} {return 1} 
+       if {$animals($mob,paddock) == "$paddock"} {return 1}
    }
    return 0
 }
@@ -3767,7 +3767,7 @@ proc listAnimalsIn {paddock} {
    global animals
    set r {}
    foreach mob $animals(mobs) {
-       if {$animals($mob,paddock) == "$paddock"} {lappend r $mob} 
+       if {$animals($mob,paddock) == "$paddock"} {lappend r $mob}
    }
    return $r
 }
@@ -3776,7 +3776,7 @@ proc mobsOnFarm {} {
    global animals
    set mobs {}
    foreach mob $animals(mobs) {
-       if {$animals($mob,state) != "off"} {lappend mobs $mob} 
+       if {$animals($mob,state) != "off"} {lappend mobs $mob}
    }
    return $mobs
 }
@@ -3822,13 +3822,13 @@ proc sellAndReplace {mob} {
    sell $mob
    replace $mob $n
 }
-    
+
 proc sell {mob} {
    animalsOut $mob all
 }
 
 proc replace {mob n} {
-   set mob [animalsIn $n steers 250]      ;# replace sold animals @ 250Kg 
+   set mob [animalsIn $n steers 250]      ;# replace sold animals @ 250Kg
    moveStockTo $mob BuffelPaddock buffel  ;# move onto buffel paddock
 }
 
@@ -3836,7 +3836,7 @@ proc numAnimalsIn { paddock } {
   set n 0
   foreach mob [listAnimalsIn $paddock] {
     set n [expr $n + [animalNumber $mob]]
-  }   
+  }
   return $n
 }
 
@@ -3887,11 +3887,11 @@ if {[anyAnimalsIn SorghumPaddock] &&
     [apsimGet "SorghumPaddock.SweetSorghum.biomass"] < 1000 } {
   foreach mob [listAnimalsIn SorghumPaddock] {
      if {[numAnimalsIn LeucaenaGrassPaddock] < $config(LeucaenaGrassPaddock,numAnimals) } {
-         moveStockTo $mob LeucaenaGrassPaddock leucaena      
-     } else {    
-         moveStockTo $mob BuffelPaddock buffel 
+         moveStockTo $mob LeucaenaGrassPaddock leucaena
+     } else {
+         moveStockTo $mob BuffelPaddock buffel
      }
-  }    
+  }
 }
 
 # If buffel is flogged, move animals to leucaena
@@ -3900,9 +3900,9 @@ if {[anyAnimalsIn BuffelPaddock ] &&
      [numAnimalsIn LeucaenaGrassPaddock] < $config(LeucaenaGrassPaddock,numAnimals) &&
      [apsimGet "LeucaenaGrassPaddock.leucaena.tsdm"] > 1000 } {
    puts "animals: Buffel is scarce - tsdm=[apsimGet BuffelPaddock.buffel.tsdm]"
-   set mob [lightestMobIn BuffelPaddock ] 
+   set mob [lightestMobIn BuffelPaddock ]
    if {$mob != {}} {
-       moveStockTo $mob LeucaenaGrassPaddock leucaena   
+       moveStockTo $mob LeucaenaGrassPaddock leucaena
    }
 }
 
@@ -3911,7 +3911,7 @@ if {[anyAnimalsIn BuffelPaddock ] &&
     [apsimGet "BuffelPaddock.buffel.tsdm"] < 800 } {
    puts "animals: Buffel is flogged - tsdm=[apsimGet BuffelPaddock.buffel.tsdm]"
    foreach mob [listAnimalsIn BuffelPaddock ] {
-      sell $mob   
+      sell $mob
    }
 }
 
@@ -3932,7 +3932,7 @@ if { [llength [mobsOnFarm]] < [llength $animals(mobs)] } {
 #puts "there are $n animals on $paddock.$pasture, which is [apsimGet $paddock.$pasture.tsdm]kg/ha"
       if {$n <  $config($paddock,numAnimals) && [apsimGet "$paddock.$pasture.tsdm"]  > 1000} {
 #puts "trying to bring 100 animals into $paddock  $pasture"
-         set mob [animalsIn 100 steers 250]       ;# replace sold animals @ 250Kg 
+         set mob [animalsIn 100 steers 250]       ;# replace sold animals @ 250Kg
          moveStockTo $mob $paddock $pasture
       }
    }
@@ -3940,7 +3940,7 @@ if { [llength [mobsOnFarm]] < [llength $animals(mobs)] } {
 
 # Sell any animal > 450kg
 foreach mob $animals(mobs) {
-   if { [animalWeight $mob] > 450 } {    
+   if { [animalWeight $mob] > 450 } {
       sellAndReplace $mob
    }
 }
@@ -3990,7 +3990,7 @@ proc sowCrop {paddock crop} {
    if {$fert(calcMethod) == "constant_rate"} {
       eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
       reportEvent $paddock "fertilise-type=$fert(type),amount=$fert(amount)"
- 
+
    } elseif {$fert(calcMethod) == "targetN"} {
       set n [apsimGet $config($paddock,nModule).no3()]
       set deficit [expr $fert(amount) - $n]
@@ -3999,10 +3999,10 @@ proc sowCrop {paddock crop} {
          eval apsimSendMessage .masterpm.$paddock.fertiliser apply [mash [array get fert]]
          reportEvent $paddock "fertilise-type=$fert(type),amount=$fert(amount)"
 
-      }                                 
+      }
    } elseif {$fert(calcMethod) == "howard"} {
-      set N  [apsimGet $config($paddock,nModule).no3()]      
-      set sw [apsimGet esw]             
+      set N  [apsimGet $config($paddock,nModule).no3()]
+      set sw [apsimGet esw]
       set deficit [expr $sw - $N]
       if {$deficit > 0.0} {
          set fert(amount) $deficit
@@ -4071,7 +4071,7 @@ proc getMSeek2 {paddock} {
    set ll2    [lindex [apsimGet $config($paddock,watBal).ll15] 1]
    set swat2  [lindex [apsimGet $config($paddock,watBal).sw]   1]
    set dul2   [lindex [apsimGet $config($paddock,watBal).dul]  1]
-   
+
    set mseek2 [expr (($swat2-$ll2)/($dul2-$ll2))]
 
    return $mseek2
@@ -4116,7 +4116,7 @@ proc reportCSV {from evt args} {
 
    if {[info exists event($from,daysSinceEvent)]} {append line ",$event($from,daysSinceEvent)"} else {append line ","}
    set event($from,daysSinceEvent) 0
-   
+
    append line ",$crop"
    if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
    if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.biomass]"} else {append line ","}
@@ -4135,7 +4135,7 @@ proc reportCSV {from evt args} {
    append line ,[apsimGet ".masterpm.$from.surface organic matter.surfaceom_wt"]
    append line ",[apsimGet $config($from,watBal).cover_surface_runoff]"
    append line ",[apsimGet .masterpm.$from.tracker.n_mineralisation_sum]"
-   
+
    apsimSendMessage $from.tracker blork
 
    lappend event(lines) $line
@@ -4158,7 +4158,7 @@ foreach paddock $config(cropPaddocks) {
       set ep [apsimGetOptional $paddock.$crop.ep]
       if {$ep != ""} {
         set event($paddock,ep) [expr $event($paddock,ep) + $ep]
-      }  
+      }
    }
 }</text>
           <event>post</event>
@@ -4201,14 +4201,14 @@ foreach paddock $config(paddocks) {
           <text># Set up a CSV event based report file
 
 #Event	Plant or Harvest or Death
-#Paddock name	
+#Paddock name
 #Area	Paddock area
 #Year	always handy
 #Date	dd/mm/yyyy format
 #Days	days since last reported (ie fallow length or crop length)
 #Crop	name of crop sown or harvested
 #Yield	wet grain yield (standard moisture content)
-#Biomass	
+#Biomass
 #ESW	extractable soil water (ideally based on CLL rather than LL15)
 #NO3	soil nitrate N ian all layers (kgN/ha)
 #Rain	rainfall since last reported
@@ -4229,7 +4229,7 @@ proc reportCSV {from evt args} {
 
    if {[info exists event($from,daysSinceEvent)]} {append line ",$event($from,daysSinceEvent)"} else {append line ","}
    set event($from,daysSinceEvent) 0
-   
+
    append line ",$crop"
    if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.yield]"} else {append line ","}
    if {$evt == "harvest"} {append line ",[apsimGetOptional .masterpm.$from.$crop.biomass]"} else {append line ","}
@@ -4251,7 +4251,7 @@ proc reportCSV {from evt args} {
    append line ",[apsimGet .masterpm.$from.tracker.n_mineralisation_sum]"
    append line ",[apsimGet $config($from,nModule).oc(1)]"
    append line ",[apsimGet $config($from,nModule).oc(2)]"
-   
+
    apsimSendMessage $from.tracker blork
 
    lappend event(lines) $line
@@ -4361,7 +4361,7 @@ source $apsuite/UserInterface/APSFarm/Machinery.tcl
 proc machinery:process {} {
    global machinery:jobs
    set tomorrowsJobs {}
-   # Go through each job. If an item is in use in any prior job, we can't do it today. 
+   # Go through each job. If an item is in use in any prior job, we can't do it today.
    for {set ijob 0} {$ijob < [llength ${machinery:jobs}]} {incr ijob} {
       set job [lindex ${machinery:jobs} $ijob]
       foreach {tid iid area paddock costtype} [split $job ","] {break}
@@ -4378,20 +4378,20 @@ proc machinery:process {} {
         if {$maxHours * $rate <= $area} {
            set hours $maxHours
            set areaToday [expr $maxHours * $rate]
-        } else {   
+        } else {
            set hours [expr $area / $rate]
            set areaToday [expr $hours * $rate]
-        }   
+        }
         #apsimWriteToSummaryFile "hours='$hours', rate='$rate',cost='[getFuelCost $tid $iid]',oil='[getValue $tid oil]',paddock='$paddock',costtype=$costtype"
         set cost [expr $hours * [getFuelCost $tid $iid] * (1.0 + [getValue $tid oil]/100.0)]
         setValue $tid annualCost [expr [getValue $tid annualCost] + $cost]
         apsimSendMessage "" expenditure [list cost $cost] [list comment "fuel & oil costs of [getName $tid] + [getName $iid]"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
 
-        set cost [expr $hours * [getValue $tid newPrice] * ([getValue $tid repairs]/100.0)/ [getValue $tid lifeOfEquipment]] 
+        set cost [expr $hours * [getValue $tid newPrice] * ([getValue $tid repairs]/100.0)/ [getValue $tid lifeOfEquipment]]
         setValue $tid annualCost [expr [getValue $tid annualCost] + $cost]
         apsimSendMessage "" expenditure [list cost $cost] [list comment "Repairs & maintenance of [getName $tid]"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
 
-        set cost [expr $hours * [getValue $iid newPrice] * ([getValue $iid repairs]/100.0)/ [getValue $iid lifeOfEquipment]] 
+        set cost [expr $hours * [getValue $iid newPrice] * ([getValue $iid repairs]/100.0)/ [getValue $iid lifeOfEquipment]]
         setValue $iid annualCost [expr [getValue $iid annualCost] + $cost]
         apsimSendMessage "" expenditure [list cost $cost] [list comment "Repairs & maintenance of [getName $iid]"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
 
@@ -4409,7 +4409,7 @@ proc machinery:process {} {
         }
       } else {
         lappend tomorrowsJobs $job
-      } 
+      }
    }
    set machinery:jobs $tomorrowsJobs
 }
@@ -4419,7 +4419,7 @@ proc machinery:end_year {} {
    set fp [open "MCA_100_sw_con_fallow_red fallow.hoursWorked.csv" a]
    puts -nonewline $fp "[apsimGet year]"
 
-   foreach id [concat [getTractorIds] [getImplementIds]] {   
+   foreach id [concat [getTractorIds] [getImplementIds]] {
      puts -nonewline $fp ",[getValue $id hoursWorked],[getValue $id annualCost]"
      setValue $id hoursWorked 0
      setValue $id annualCost 0.0
@@ -4436,22 +4436,22 @@ proc machinery:end_year {} {
            } else {
               if {[getValue $id loanPeriod] <=  [getValue $id loanDuration]} {
                  #A = P(i(1+i)^n)/((1+i)^n - 1)
-                 set P [getValue $id newPrice] 
+                 set P [getValue $id newPrice]
                  set i [expr [getValue $id loanInterestRate]/100.0]
                  set n [getValue $id loanDuration]
                  set A [expr $P * ($i*pow(1+$i,$n))/(pow(1.0+$i,$n) - 1.0) ]
                  apsimSendMessage "" expenditure [list cost $A] [list interest_paid $A] [list comment "Loan repayments for [getName $id]"]
-                 
+
                  setValue $id loanPeriod [expr 1 + [getValue $id loanPeriod]]
                  if { [getValue $id loanPeriod] >  [getValue $id loanDuration] } {
                      apsimWriteToSummaryFile "Loan for [getName $id] is finished"
                  }
               }
-              
+
            }
         }
-     }    
-   }  
+     }
+   }
    puts $fp ""
    close $fp
 }
@@ -5206,7 +5206,7 @@ set config(paddocks)  [list "BuffelPaddock" \
                             "CropPaddock3" \
                             "CropPaddock4" \
                             "CropPaddock5" ]
-                                   
+
 
 </text>
           <event>init</event>
@@ -5255,7 +5255,7 @@ set config(BuffelPaddock,area)         2000.0                         ;# 2000ha 
 set config(LeucaenaGrassPaddock,area)  600.0                          ;# area of Leucaena-Grass at Echo Hills
 
 # These paddocks are "managed" by in-paddock management rules
-set config(OatsPaddock,graphNames)           {} ;# ForageOats 
+set config(OatsPaddock,graphNames)           {} ;# ForageOats
 set config(SorghumPaddock,graphNames)        {} ;# ForageSorghum
 
 
@@ -5325,7 +5325,7 @@ setupAnimals 10
 
 # Start simulation with all mobs of cattle at different growth stages in the one paddock
 foreach {mob size num paddock crop} {
-       mob1 250 100 BuffelPaddock buffel 
+       mob1 250 100 BuffelPaddock buffel
        mob2 250 100 BuffelPaddock buffel
        mob3 300 100 BuffelPaddock buffel
        mob4 300 100 BuffelPaddock buffel
@@ -5335,7 +5335,7 @@ foreach {mob size num paddock crop} {
        mob8 350 100 BuffelPaddock buffel
        mob9 400 100 BuffelPaddock buffel
        mob10 400 100 BuffelPaddock buffel} {
-     set $mob [animalsIn $num steers $size] 
+     set $mob [animalsIn $num steers $size]
      moveStockTo $mob  $paddock $crop
 }
 </text>
@@ -5383,7 +5383,7 @@ ready_to_graze = 0</text>
           </script>
           <script name="start_of_day">
             <text>if pasture_in = 0 then
-   buffel establish init_section = establishment 
+   buffel establish init_section = establishment
    pasture_in = 1
 endif
 
@@ -5471,7 +5471,7 @@ Average buffel for qld
 
 Use 0.5 for kl - in GRASP GMK uses p106:
 -------------------------------------
-               ROOT DISTRIBUTION                                             
+               ROOT DISTRIBUTION
 106      0.5  Relative supply of layer 3 cf layers 1,2. Usually 0.5
 
 </memo>
@@ -5578,8 +5578,8 @@ Use 0.5 for kl - in GRASP GMK uses p106:
        act_mods reseting
        delta_dm = 0
    endif
-    
-          
+
+
           </text>
             <event>start_of_day</event>
           </script>
@@ -5625,7 +5625,7 @@ ready_to_graze = 0</text>
           </script>
           <script name="start_of_day">
             <text>if pasture_in = 0 then
-   leucaena establish init_section = establishment 
+   leucaena establish init_section = establishment
    pasture_in = 1
 endif
 
@@ -5773,7 +5773,7 @@ At Echo Hills, the pasture under the Leucaena is: silk sorghum ,green panic and 
             endif
          endif
       endif
-            
+
       num_days_grazed = num_days_grazed +1]]></text>
             <event>start_of_day</event>
           </script>
@@ -5802,14 +5802,14 @@ At Echo Hills, the pasture under the Leucaena is: silk sorghum ,green panic and 
             <event>init</event>
           </script>
           <script name="start_of_day">
-            <text><![CDATA[    
+            <text><![CDATA[
 
    if  (plant_status = 'alive' and mint < 5.0) or plant_status = 'dead' then
           SweetSorghum end_crop
 
    endif
-    
-          
+
+
           ]]></text>
             <event>start_of_day</event>
           </script>

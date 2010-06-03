@@ -36,6 +36,8 @@ class Field
       std::string alias;
       std::string nastring;
       std::string format;
+      std::string upperCaseFormat;
+      
       bool csv;
       std::string unitsToOutput;
 

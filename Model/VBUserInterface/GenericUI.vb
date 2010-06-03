@@ -197,8 +197,16 @@ Public Class GenericUI
                 Dim NewRow As DataRow = Table.NewRow()
                 Table.Rows.Add(NewRow)
                 For Col As Integer = 0 To Grid.Columns.Count - 1
-                    If Not IsNothing(Grid.Rows(Row).Cells(Col).Value) Then
-                        NewRow(Col) = Grid.Rows(Row).Cells(Col).Value.ToString()
+                    Dim Value As String = Grid.Rows(Row).Cells(Col).Value
+
+                    If Not IsNothing(Value) Then
+                        ' Make sure we save date rows as dd/mm/yyyy.
+                        If Col = 4 AndAlso Grid.Rows(Row).Cells(1).Value = "date" Then
+                            Dim DateValue As DateTime = Value
+                            NewRow(Col) = DateValue.ToString("dd/MM/yyyy")
+                        Else
+                            NewRow(Col) = Value
+                        End If
                     End If
                 Next
             Next
@@ -252,7 +260,11 @@ Public Class GenericUI
 
         AddValueCellToRow(Type, Row)
 
-        If Not IsDBNull(Value) Then
+        If Type = "date" Then
+            Row.Cells(4).Value = DateTime.ParseExact(Value, "d/M/yyyy", Nothing)
+            Dim DateFormat As DateTimeFormatInfo = CultureInfo.CurrentCulture.DateTimeFormat
+            Row.Cells(4).ToolTipText = "Format: " + DateFormat.ShortDatePattern
+        ElseIf Not IsDBNull(Value) Then
             Row.Cells(4).Value = Value
         End If
 
@@ -376,6 +388,9 @@ Public Class GenericUI
                     Next
                 End If
 
+            Case "date"
+                Dim DateEditor As New CalendarCell()
+                Row.Cells.Add(DateEditor)
 
             Case Else       'if type is none of the above. ("ddmmmdate", "text", etc.)
                 Row.Cells.Add(New DataGridViewTextBoxCell())  'This actually makes the cell a text cell type. This must be the default for the Grid. 

@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 #include <sstream>
-
+#include <General/strptime.h>
 #include <General/date_class.h>
 #include <General/stream_functions.h>
 #include <General/string_functions.h>
@@ -176,6 +177,20 @@ int Month_string_2_integer (string& Month_string)
       Julian_day = 0;
    }
 
+void GDate::Read(const string& Str, const string& Format)
+   {
+   // Need to create a sanitised format string i.e. from dd/mm/yyyy to %d/%m/%Y
+   string Fmt = Format;
+   replaceAll(Fmt, "dd", "d");
+   replaceAll(Fmt, "d", "%d");
+   replaceAll(Fmt, "mm", "m");
+   replaceAll(Fmt, "m", "%m");
+   replaceAll(Fmt, "yyyy", "%Y");
+
+   tm TM;
+   if (strptime((char*) Str.c_str(), Fmt.c_str(), &TM) != NULL)
+      Set(TM.tm_mday, TM.tm_mon+1, TM.tm_year);  // not sure why strptime as dates from 0 to 11.
+   }
 // *******************************************************************
        void GDate::Write(string &Str)  {
 // *******************************************************************
@@ -401,53 +416,38 @@ int Month_string_2_integer (string& Month_string)
 
 
 // *******************************************************************
-       void GDate::Get_dmy(unsigned int& D, unsigned int& m, unsigned int& y)  {
+       void GDate::Get_dmy(unsigned int& d, unsigned int& m, unsigned int& y)  {
 // *******************************************************************
 
-//  Short description:
-//    Convert a Julian day number to its corresponding Gregorian calendar
-//    date.  Algorithm 199 from Communications of the ACM, Volume 6, No. 8,
-//    (Aug. 1963), p. 444.  Gregorian calendar started on Sep. 14, 1752.
-//    This function not valid before that.
-
-//  Notes:
-
-//  Changes:
-//    DPH 13/1/95
-
-//  Calls:
-
-//  Internal variables
-//    none
-
-// -------------------- Executable code section ----------------------
+//      This implementation is only valid for dates in the Gregorian
+//      calender (after 15 October 1582).
+//      THIS IS BASED ON THE ALGORITHM BY FLIEGEL AND VAN FLANDERN IN
+//      C.ACM VOL.11 (OCT,1968) P.657
 
    if (Is_valid())
       {
-      unsigned long d;
-      unsigned long j = Julian_day - 1721119L;
-      y = (unsigned int) (((j<<2) - 1) / 146097L);
-      j = (j<<2) - 1 - 146097L*y;
-      d = (j>>2);
-      j = ((d<<2) + 3) / 1461;
-      d = (d<<2) + 3 - 1461*j;
-      d = (d + 4)>>2;
-      m = (unsigned int) (5*d - 3)/153;
-      d = 5*d - 3 - 153*m;
-      D = (unsigned int) ((d + 5)/5);
-      y = (unsigned int) (100*y + j);
+      // fliegel and van flanden algorithm:
 
-      if( m < 10 )
-         m += 3;
-      else
-         {
-         m -= 9;
-         y++;
-         }
+      double work = Julian_day + 68569.0;
+      double work0 = int(4.0 * work / 146097.0);
+      work = work - int((146097.0 * work0 + 3.0) /4.0);
+      double yy = int(4000.0 * (work + 1.0) / 1461001.0);
+
+      work = work - int(1461.0 * yy / 4.0) + 31.0;
+      double mm = int(80.0 * work / 2447.0);
+      double day = work - int(2447.0 * mm / 80.0);
+
+      work = int(mm / 11.0);
+      double month = mm + 2.0 - 12.0 * work;
+      double year = 100.0 * (work0 - 49.0) + yy + work;
+
+      d = day;
+      m = month;
+      y = year;
       }
    else
       {
-      D = 0;
+      d = 0;
       m = 0;
       y = 0;
       }
@@ -458,11 +458,10 @@ int Month_string_2_integer (string& Month_string)
 // *******************************************************************
 
 //  Short description:
-//    Convert Gregorian calendar date to the corresponding Julian day
-//    number j.  Algorithm 199 from Communications of the ACM, Volume 6, No.
-//    8, (Aug. 1963), p. 444.  Gregorian calendar started on Sep. 14, 1752.
-//    This function not valid before that.
-//    Returns 0 if the date is invalid.
+//      This implementation is only valid for dates in the Gregorian
+//      calender (after 15 October 1582).
+//      THIS IS BASED ON THE ALGORITHM BY FLIEGEL AND VAN FLANDERN IN
+//      C.ACM VOL.11 (OCT,1968) P.657
 
 //  Notes:
 
@@ -476,25 +475,16 @@ int Month_string_2_integer (string& Month_string)
 
 // -------------------- Executable code section ----------------------
 
-   if( y <= 99 )
-     y += 1900;
-
    if(Dmy_is_valid(d, m, y))
       {
-      if( m > 2 )
-        m -= 3;
-      else
-        {
-        m += 9;
-        y--;
-        }
+      double Quotnt = int((m - 14.0) / 12.0);
 
-      c = y / 100;
-      ya = y - 100*c;
-      Julian_day = ((146097L*c)>>2) + ((1461*ya)>>2) + (153*m + 2)/5 + d + 1721119L;
+      Julian_day = d - 32075.0 + int(1461.0 * (y + 4800.0 + Quotnt) /4.0)
+                               + int( 367.0 * (m - 2.0    - Quotnt * 12.0) / 12.0)
+                               - int(   3.0 * int((y + 4900.0 + Quotnt) / 100.0) /4.0);
       }
    else
-      Julian_day = 0;
+      Julian_day = 0.0;
    }
 
 

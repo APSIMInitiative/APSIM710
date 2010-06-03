@@ -15,7 +15,8 @@ SRC =   date_class.cpp		\
 	IniFile.cpp 		\
 	stream_processor.cpp    \
 	dll.cpp			\
-	http.cpp
+	http.cpp   \
+	strptime.cpp
 
 PROJECTTYPE=staticlib
 

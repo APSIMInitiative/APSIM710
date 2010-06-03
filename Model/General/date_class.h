@@ -48,6 +48,8 @@ class EXPORT GDate
          {Must_have_year = Must_have;};// Set the Must_have_year flag.
       void Read(const char *Str);      // Read a date (in normal format) from string
       void Read(std::istream& In_stream);   // Read a date (in normal format) from in stream
+      void Read(const std::string& Str, const std::string& Format);
+      
       void Write(std::string &Str);           // Write the date to string.
       void Write(std::ostream& Out_stream); // Write the date to the output stream
       void Set_write_format(const char* Format)

@@ -30,11 +30,11 @@ public class TestApsimFileReader
 
       Out = new StreamWriter("test3.out");
       Out.WriteLine("Title = Test file3");
-      Out.WriteLine("date      dlayer(1) dlayer(2) dlayer(3) sw(1) sw(2) sw(3)");
-      Out.WriteLine("  ()         ()         ()        ()      ()    ()     ()");
-      Out.WriteLine("1/1/2000    100        300       300      10    15     20");
-      Out.WriteLine("2/1/2000    100        300       300      11    16     21");
-      Out.WriteLine("3/1/2000    100        300       300      12    17     22");
+      Out.WriteLine("date            dlayer(1) dlayer(2) dlayer(3) sw(1) sw(2) sw(3)");
+      Out.WriteLine("(mm/dd/yyyy)       ()         ()        ()      ()    ()     ()");
+      Out.WriteLine("1/13/2000          100        300       300      10    15     20");
+      Out.WriteLine("1/14/2000          100        300       300      11    16     21");
+      Out.WriteLine("1/15/2000          100        300       300      12    17     22");
       Out.Close();
 
       }
@@ -260,7 +260,7 @@ public class TestApsimFileReader
                          "  <GDApsimFileReader>" +
                          "   <FileName>test3.out</FileName>" +
                          "  </GDApsimFileReader>" +
-                         "  <Date>2/1/2000</Date>" +
+                         "  <Date>14/01/2000</Date>" +
                          "</GDDepth>";
 
       DataProcessor Processor = new DataProcessor();
@@ -269,20 +269,20 @@ public class TestApsimFileReader
       Assert.AreEqual(Data.Rows.Count, 3);
 
       // First row
-      Assert.AreEqual(Convert.ToString(Data.Rows[0][0]), "2/01/2000 12:00:00 AM");  // date
+      Assert.AreEqual(Convert.ToString(Data.Rows[0][0]), "14/01/2000 12:00:00 AM");  // date
       Assert.AreEqual(Convert.ToDouble(Data.Rows[0][1]), 50);          // depth
       Assert.AreEqual(Convert.ToDouble(Data.Rows[0][2]), 11);          // sw
-      Assert.AreEqual(Convert.ToString(Data.Rows[0][3]), "Test file3, 2/01/2000");  // title
+      Assert.AreEqual(Convert.ToString(Data.Rows[0][3]), "Test file3, 14/01/2000");  // title
 
-      Assert.AreEqual(Convert.ToString(Data.Rows[1][0]), "2/01/2000 12:00:00 AM");  // date
+      Assert.AreEqual(Convert.ToString(Data.Rows[1][0]), "14/01/2000 12:00:00 AM");  // date
       Assert.AreEqual(Convert.ToDouble(Data.Rows[1][1]), 250);       // depth
       Assert.AreEqual(Convert.ToDouble(Data.Rows[1][2]), 16);        // sw
-      Assert.AreEqual(Convert.ToString(Data.Rows[1][3]), "Test file3, 2/01/2000");  // title
+      Assert.AreEqual(Convert.ToString(Data.Rows[1][3]), "Test file3, 14/01/2000");  // title
 
-      Assert.AreEqual(Convert.ToString(Data.Rows[2][0]), "2/01/2000 12:00:00 AM");  // date
+      Assert.AreEqual(Convert.ToString(Data.Rows[2][0]), "14/01/2000 12:00:00 AM");  // date
       Assert.AreEqual(Convert.ToDouble(Data.Rows[2][1]), 550);       // depth
       Assert.AreEqual(Convert.ToDouble(Data.Rows[2][2]), 21);        // sw
-      Assert.AreEqual(Convert.ToString(Data.Rows[2][3]), "Test file3, 2/01/2000");  // title
+      Assert.AreEqual(Convert.ToString(Data.Rows[2][3]), "Test file3, 14/01/2000");  // title
       }
 
    }

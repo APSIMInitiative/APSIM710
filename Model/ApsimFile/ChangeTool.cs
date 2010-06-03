@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 22;
+      public static int CurrentVersion = 23;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -54,7 +54,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion19),
                                           new UpgraderDelegate(ToVersion20),
                                           new UpgraderDelegate(ToVersion21),
-                                          new UpgraderDelegate(ToVersion22)
+                                          new UpgraderDelegate(ToVersion22),
+                                          new UpgraderDelegate(ToVersion23)
                                        };
          if (Data != null)
             {
@@ -1447,6 +1448,27 @@ namespace ApsimFile
                }
             }
          }
+
+      private static void ToVersion23(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // Rework the clock start and end date nodes so that they have a
+         // format specifier.
+         // ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "clock" && XmlHelper.Attribute(Node, "shortcut") == "")
+            {
+            foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
+               {
+               string Description = XmlHelper.Attribute(Child, "description");
+               string Format = StringManip.SplitOffBracketedValue(ref Description, '(', ')');
+               XmlHelper.SetAttribute(Child, "description", Description);
+               XmlHelper.SetAttribute(Child, "type", "date");
+               }
+            }
+         }
+
+
 
       }
    }

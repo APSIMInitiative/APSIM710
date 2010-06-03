@@ -53,6 +53,13 @@ Field::Field (ScienceAPI& scienceAPI,
       else
          this->format = "3";
       }
+   if (this->units == "()" && this->format != "" && !Is_numerical(format.c_str()))
+      {
+      this->units = "(" + this->format + ")";
+      this->unitsToOutput = "(" + this->format + ")";
+      }
+   upperCaseFormat = format;  
+   To_upper(upperCaseFormat);    
    }
 
 // ------------------------------------------------------------------
@@ -159,7 +166,7 @@ void Field::formatValues(void)
             {
             GDate d;
             d.Set(atoi(values[i].c_str()));
-            d.Set_write_format(format.c_str());
+            d.Set_write_format(upperCaseFormat.c_str());
             d.Write(values[i]);
             }
          }
@@ -388,10 +395,7 @@ void ReportComponent::createVariable(const string& name)
       {
       keyword = tokens[currTok++];
       if (Str_i_Eq(keyword, "format"))
-         {
          format = tokens[currTok++];
-         To_upper(format);
-         }
       else if (Str_i_Eq(keyword, "units"))
          units = tokens[currTok++];
       else if (Str_i_Eq(keyword, "as"))

@@ -279,7 +279,7 @@ namespace UIUtility
          for (int Row = 0; Row != Grid.Rows.Count; Row++)
             {
             if (Grid.Cells[Row, Col].Text != "")
-               return StringManip.DetermineType(Grid.Cells[Row, Col].Text);
+               return StringManip.DetermineType(Grid.Cells[Row, Col].Text, "");
             }
          return typeof(string);
          }
@@ -311,7 +311,7 @@ namespace UIUtility
          for (int Row = 0; Row != Grid.Rows.Count; Row++)
             {
             if (Grid.Rows[Row].Cells[Col].Value != null)
-               return StringManip.DetermineType(Grid.Rows[Row].Cells[Col].Value.ToString());
+               return StringManip.DetermineType(Grid.Rows[Row].Cells[Col].Value.ToString(), "");
             }
          return typeof(string);
          }

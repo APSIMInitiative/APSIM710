@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 
 using CSGeneral;
+using System.Globalization;
 
 
 // An APSIMInputFile is either a ".met" file or a ".out" file.
@@ -138,7 +139,7 @@ namespace ApsimFile
             {
             if (Data.Columns.IndexOf(Constant.Name) == -1)
                {
-               Type ColumnType = StringManip.DetermineType(Constant.Value);
+               Type ColumnType = StringManip.DetermineType(Constant.Value, "");
                Data.Columns.Add(new DataColumn(Constant.Name, ColumnType));
                }
             for (int Row = StartRow; Row < Data.Rows.Count; Row++)
@@ -245,15 +246,36 @@ namespace ApsimFile
                   {
                   Type ColumnType;
                   if (Words[w] == "?" || Words[w] == "*" || Words[w] == "")
-                     ColumnType = StringManip.DetermineType(LookAheadForNonMissingValue(In, w));
+                     ColumnType = StringManip.DetermineType(LookAheadForNonMissingValue(In, w), Units[w]);
                   else
-                     ColumnType = StringManip.DetermineType(Words[w]);
+                     ColumnType = StringManip.DetermineType(Words[w], Units[w]);
                   Data.Columns.Add(new DataColumn(Headings[w], ColumnType));
                   }
                }
             Words[w] = Words[w].Trim();
             if (Words[w] != "?" && Words[w] != "*" && Words[w] != "")
-               NewMetRow[Headings[w]] = Words[w];
+               {
+               if (Data.Columns[w].DataType == typeof(DateTime))
+                  {
+                  // Need to get a sanitised date e.g. d/M/yyyy 
+                  string DateFormat = Units[w].ToLower();
+                  DateFormat = StringManip.SplitOffBracketedValue(ref DateFormat, '(', ')');
+                  DateFormat = DateFormat.Replace("mm", "m");
+                  DateFormat = DateFormat.Replace("dd", "d");
+                  DateFormat = DateFormat.Replace("m", "M");
+                  if (DateFormat == "")
+                     DateFormat = "d/M/yyyy";
+                  try
+                     {
+                     DateTime Value = DateTime.ParseExact(Words[w], DateFormat, null);
+                     NewMetRow[Headings[w]] = Value;
+                     }
+                  catch (Exception err)
+                  { }
+                  }
+               else
+                  NewMetRow[Headings[w]] = Words[w];
+               }
             }
          Data.Rows.Add(NewMetRow);
          }

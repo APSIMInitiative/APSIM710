@@ -297,7 +297,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
             g%end_current_run = .true.
          else
             ! See if we need to output a % done to standard error stream.
-            TodayPercentDone = (g%current_date - g%start_date) / 
+            TodayPercentDone = (g%current_date - g%start_date) /
      :                         (g%end_date - g%start_date) * 100
             TodayPercentDone = TodayPercentDone / 5 * 5
             if (g%PercentDone <> TodayPercentDone .and.
@@ -482,7 +482,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
             str(4:4) = '0'
          endif
          call Respond2get_char_var
-     .        (variable_name, '()', str)
+     .        (variable_name, '(dd/mm)', str)
 
       else if (variable_name .eq. 'dd/mm/yyyy') then
          write (str, '(i2,a,i2,a,i4)')
@@ -496,7 +496,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
             str(4:4) = '0'
          endif
          call Respond2get_char_var
-     .        (variable_name, '()', str)
+     .        (variable_name, '(dd/mm/yyyy)', str)
 
       else if (variable_name .eq. 'mm/dd/yyyy') then
          write (str, '(i2,a,i2,a,i4)')
@@ -510,7 +510,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
             str(4:4) = '0'
          endif
          call Respond2get_char_var
-     .        (variable_name, '()', str)
+     .        (variable_name, '(mm/dd/yyyy)', str)
 
       else if (variable_name .eq. 'dd_mmm_yyyy') then
          write (str, '(i2,a,a,a,i4)')
@@ -522,7 +522,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
          endif
 
          call Respond2get_char_var
-     .        (variable_name, '()', str)
+     .        (variable_name, '(dd_mmm_yyyy)', str)
 
       else if (variable_name .eq. 'dd/mmm/yyyy') then
          write (str, '(i2,a,a,a,i4)')
@@ -534,7 +534,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
          endif
 
          call Respond2get_char_var
-     .        (variable_name, '()', str)
+     .        (variable_name, '(dd/mmm/yyyy)', str)
 
       else if (variable_name .eq. 'mmm/dd/yyyy') then
          write (tempstring,'(i2)') thisdate(1)
@@ -548,7 +548,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
 
 
          call Respond2get_char_var
-     .        (variable_name, '()', str)
+     .        (variable_name, '(mmm/dd/yyyy)', str)
 
       else if (variable_name .eq. 'dd_mmm') then
          write (str, '(i2,a,a)')
@@ -559,7 +559,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
          endif
 
          call Respond2get_char_var
-     .        (variable_name, '()', str)
+     .        (variable_name, '(dd_mmm)', str)
 
       else
          call Message_unused ()
@@ -928,7 +928,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       use infrastructure
       use ClockModule
       ml_external doInit1
-      
+
       call doRegistrations(id)
       g%id_start_simulation = add_registration(eventReg,
      .                                         'start_simulation',
@@ -969,4 +969,3 @@ C     Last change:  E     5 Dec 2000    8:52 am
       return
       end subroutine respondToEvent
 
-                                   

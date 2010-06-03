@@ -207,7 +207,12 @@ namespace CSGeneral
             {
             string ColumnName = Row.Table.Columns[Col].ColumnName.ToLower();
             if (ColumnName == "date")
-               return DateTime.Parse(Row[Col].ToString());
+               {
+               if (Row.Table.Columns[Col].DataType == typeof(DateTime))
+                  return (DateTime) Row[Col];
+               else
+                  return DateTime.Parse(Row[Col].ToString());
+               }
             else if (ColumnName == "year")
                Year = Convert.ToInt32(Row[Col]);
             else if (ColumnName == "month")

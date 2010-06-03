@@ -248,7 +248,7 @@ namespace CSGeneral
          return "\"" + St + "\"";
          }
 
-      public static Type DetermineType(string Value)
+      public static Type DetermineType(string Value, string Units)
          {
          Type ColumnType;
          if (Value == "?")
@@ -257,7 +257,11 @@ namespace CSGeneral
          else if (StringManip.IsNumeric(Value))
             ColumnType = Type.GetType("System.Single");
 
-         else if (StringManip.IsDateTime(Value))
+         else if (Units == "" && StringManip.IsDateTime(Value))
+            ColumnType = Type.GetType("System.DateTime");
+
+         else if ((Units.Contains("d") && Units.Contains("/") && Units.Contains("y")) 
+                   || StringManip.IsDateTime(Value))
             ColumnType = Type.GetType("System.DateTime");
 
          else

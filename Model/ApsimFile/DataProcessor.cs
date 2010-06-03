@@ -368,7 +368,7 @@ public class DataProcessor
       List<string> DateStrings = XmlHelper.Values(Node, "date");
       DateTime[] Dates = new DateTime[DateStrings.Count];
       for (int i = 0; i < DateStrings.Count; i++)
-         Dates[i] = DateTime.Parse(DateStrings[i]);
+         Dates[i] = DateTime.ParseExact(DateStrings[i], "d/M/yyyy", null);
 
       for (int Row = 0; Row < Data.Rows.Count; Row++)
          {

@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <General/date_class.h>
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
 #include <General/path.h>
@@ -281,19 +282,24 @@ gregorian::date ApsimDataFile::getDate(void)
 
    if (dateI != temporalData.end())
       {
-#ifdef NOTYET
-// when boost is upgraded
-      date_input_facet *f = new date_input_facet("%x");  // Default format is system locale
-      if (Str_i_Eq(dateI->units, "YYYYMMDD")) {
-          f->format("%Y%m%d");                           // ISO (yyyymmdd)
-      }
-      istringstream dStr(dateI->values[0]);
-      dStr.imbue(f);
-      date d;
-      dStr >> d;
-      return d;
-#endif
-      return date(from_string(dateI->values[0]));
+      string dateFormat = dateI->units;
+      if (dateFormat == "")
+         dateFormat = "dd/mm/yyyy";
+         
+      replaceAll(dateFormat, "(", "");
+      replaceAll(dateFormat, ")", "");
+
+      GDate d;
+      d.Read(dateI->values[0], dateFormat);
+      if (d.Is_valid())
+         {
+         date gregDate(d.Get_year(), d.Get_month(), d.Get_day());
+         return gregDate;
+         }
+      else
+         return date(pos_infin);
+
+      //return date(from_string(dateI->values[0]));
       }
    else
       {
