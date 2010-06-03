@@ -53,13 +53,13 @@ Field::Field (ScienceAPI& scienceAPI,
       else
          this->format = "3";
       }
-   if (this->units == "()" && this->format != "" && !Is_numerical(format.c_str()))
+   if (this->units == "()" && this->format != "" && !Is_numerical(this->format.c_str()))
       {
       this->units = "(" + this->format + ")";
       this->unitsToOutput = "(" + this->format + ")";
       }
-   upperCaseFormat = format;  
-   To_upper(upperCaseFormat);    
+   upperCaseFormat = format;
+   To_upper(upperCaseFormat);
    }
 
 // ------------------------------------------------------------------

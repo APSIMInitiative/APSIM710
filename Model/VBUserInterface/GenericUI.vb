@@ -261,7 +261,9 @@ Public Class GenericUI
         AddValueCellToRow(Type, Row)
 
         If Type = "date" Then
-            Row.Cells(4).Value = DateTime.ParseExact(Value, "d/M/yyyy", Nothing)
+            If Value <> "" Then
+                Row.Cells(4).Value = DateTime.ParseExact(Value, "d/M/yyyy", Nothing)
+            End If
             Dim DateFormat As DateTimeFormatInfo = CultureInfo.CurrentCulture.DateTimeFormat
             Row.Cells(4).ToolTipText = "Format: " + DateFormat.ShortDatePattern
         ElseIf Not IsDBNull(Value) Then

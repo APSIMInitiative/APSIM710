@@ -134,7 +134,7 @@ Public Class MainUI
             Width = 400
          End If
       Catch ex As System.Exception
-         Me.WindowState = FormWindowState.Normal
+            Me.WindowState = FormWindowState.Maximized
       End Try
 
     End Sub
