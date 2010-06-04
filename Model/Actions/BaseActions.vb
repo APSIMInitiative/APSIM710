@@ -196,9 +196,9 @@ Public Class BaseActions
                 Component.Type = "folder" Or _
                 Component.Type = "outputfile" Then
             ' Need to recurse.
-            If Component.Type = "folder" Then
-                ExportDirectory = ExportDirectory + "\" + Component.Name
-            End If
+         If Component.Type = "folder" Or Component.Type = "simulation" Then
+            ExportDirectory = ExportDirectory + "\" + Component.Name
+         End If
             For Each Child As ApsimFile.Component In Component.ChildNodes
                 ExportAllRecursively(Child, ExportDirectory, ExportExtension)
             Next

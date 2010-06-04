@@ -255,7 +255,7 @@ namespace ApsimFile
             Words[w] = Words[w].Trim();
             if (Words[w] != "?" && Words[w] != "*" && Words[w] != "")
                {
-               if (Data.Columns[w].DataType == typeof(DateTime))
+               if (Data.Columns[Headings[w]].DataType == typeof(DateTime))
                   {
                   // Need to get a sanitised date e.g. d/M/yyyy 
                   string DateFormat = Units[w].ToLower();
