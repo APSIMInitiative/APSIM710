@@ -147,18 +147,26 @@ Public Class BaseActions
 #End Region
 
 #Region "Export"
-    Public Shared Sub Export(ByVal Controller As BaseController)
-        Dim SaveDialog As New SaveFileDialog()
-        SaveDialog.Filter = "PNG file|*.png|JPG files|*.jpg|GIF files|*.gif|BMP files|*.bmp"
-        SaveDialog.DefaultExt = ".png"
-        SaveDialog.Title = "Specify a filename to save the charts to"
-        SaveDialog.OverwritePrompt = True
-        SaveDialog.RestoreDirectory = True
-        If SaveDialog.ShowDialog() = DialogResult.OK Then
+
+    Public Shared Sub ExportToBMP(ByVal Controller As BaseController)
+        Export(Controller, ".bmp")
+    End Sub
+    Public Shared Sub ExportToGIF(ByVal Controller As BaseController)
+        Export(Controller, ".gif")
+    End Sub
+    Public Shared Sub ExportToJPG(ByVal Controller As BaseController)
+        Export(Controller, ".jpg")
+    End Sub
+    Public Shared Sub ExportToPNG(ByVal Controller As BaseController)
+        Export(Controller, ".png")
+    End Sub
+    Public Shared Sub Export(ByVal Controller As BaseController, ByVal Extension As String)
+        Dim FolderDialog As New FolderBrowserDialog()
+        If FolderDialog.ShowDialog() = DialogResult.OK Then
             ComponentsToPrint.Clear()
             Contr = Controller
 
-            ExportAll(Contr, Contr.Selection, Path.GetDirectoryName(SaveDialog.FileName), Path.GetExtension(SaveDialog.FileName))
+            ExportAll(Contr, Contr.Selection, FolderDialog.SelectedPath, Extension)
 
         End If
         MessageBox.Show("All graphs have been exported", "Export completed", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -168,52 +176,72 @@ Public Class BaseActions
     Public Shared Sub ExportAll(ByVal Controller As BaseController, ByVal Selection As Component, _
                                 ByVal ExportDirectory As String, ByVal ExportExtension As String)
         Contr = Controller
-        If ComponentsToPrint.Count = 0 Then
-            GetListOfComponentsToPrint(Contr, Selection)
-            Directory.CreateDirectory(ExportDirectory)
-            ' cleanup all previous files.
-            Utility.DeleteFiles(ExportDirectory + "\\*" + ExportExtension)
 
-            ComponentsToPrintIndex = 1
-        End If
+        ' cleanup all previous files.
+        Utility.DeleteFiles(ExportDirectory + "\\*" + ExportExtension, True)
 
-        For Each SelectedPath As String In ComponentsToPrint
-            Contr.SelectedPath = SelectedPath
-            Dim CurrentView As BaseView = Contr.Explorer.CurrentView
-            Dim r As New Rectangle(New Point(0, 0), CurrentView.Size)
-            Dim img As New Bitmap(r.Width, r.Height)
-            Dim g As Graphics = Graphics.FromImage(img)
-
-            ' change the controller to the standard one so that we don't get a 'printing page...' dialog.
-            ' PrintController OldController = PrintForm.PrintController;
-            Dim PF As New PrintForm()
-            PF.PrintController = New System.Drawing.Printing.StandardPrintController()
-            PF.BodyContainer = CurrentView
-            AddHandler PF.PreDraw, AddressOf OnExportPreDraw
-            PF.PrintControl(g, r, CurrentView, 1.0F)
-
-            g.Dispose()
-            Dim NewFileName As String = ExportDirectory + "\\" _
-                                      + Controller.ApsimData.Find(SelectedPath).Name _
-                                      + ExportExtension
-            If (Path.GetExtension(NewFileName) = ".bmp") Then
-                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Bmp)
-            ElseIf (Path.GetExtension(NewFileName) = ".gif") Then
-                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Gif)
-            ElseIf (Path.GetExtension(NewFileName) = ".jpg") Then
-                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Jpeg)
-            ElseIf (Path.GetExtension(NewFileName) = ".png") Then
-                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Png)
-            Else
-                Throw New Exception("Invalid format for exporting: " + NewFileName)
-                img.Dispose()
-            End If
-            ComponentsToPrintIndex = ComponentsToPrintIndex + 1
-        Next
-
+        ' go export all graphs that we can find.
+        ExportAllRecursively(Selection, ExportDirectory, ExportExtension)
 
     End Sub
 
+    Private Shared Sub ExportAllRecursively(ByVal Component As Component, _
+                                            ByVal ExportDirectory As String, _
+                                            ByVal ExportExtension As String)
+        If (Component.Type = "Graph" Or Component.Type = "RegressionGraph" Or Component.Type = "GraphReport" Or Component.Type = "memo") Then
+            ExportComponent(Component.FullPath, ExportDirectory, ExportExtension)
+
+        ElseIf Component.Type = "area" Or _
+                Component.Type = "simulation" Or _
+                Component.Type = "folder" Or _
+                Component.Type = "outputfile" Then
+            ' Need to recurse.
+            If Component.Type = "folder" Then
+                ExportDirectory = ExportDirectory + "\" + Component.Name
+            End If
+            For Each Child As ApsimFile.Component In Component.ChildNodes
+                ExportAllRecursively(Child, ExportDirectory, ExportExtension)
+            Next
+        End If
+
+    End Sub
+
+    Private Shared Sub ExportComponent(ByVal SelectedPath As String, _
+                                       ByVal ExportDirectory As String, _
+                                       ByVal ExportExtension As String)
+        Directory.CreateDirectory(ExportDirectory)
+
+        Contr.SelectedPath = SelectedPath
+        Dim CurrentView As BaseView = Contr.Explorer.CurrentView
+        Dim r As New Rectangle(New Point(0, 0), CurrentView.Size)
+        Dim img As New Bitmap(r.Width, r.Height)
+        Dim g As Graphics = Graphics.FromImage(img)
+
+        ' change the controller to the standard one so that we don't get a 'printing page...' dialog.
+        ' PrintController OldController = PrintForm.PrintController;
+        Dim PF As New PrintForm()
+        PF.PrintController = New System.Drawing.Printing.StandardPrintController()
+        PF.BodyContainer = CurrentView
+        AddHandler PF.PreDraw, AddressOf OnExportPreDraw
+        PF.PrintControl(g, r, CurrentView, 1.0F)
+
+        g.Dispose()
+        Dim NewFileName As String = ExportDirectory + "\\" _
+                                  + Contr.ApsimData.Find(SelectedPath).Name _
+                                  + ExportExtension
+        If (Path.GetExtension(NewFileName) = ".bmp") Then
+            img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Bmp)
+        ElseIf (Path.GetExtension(NewFileName) = ".gif") Then
+            img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Gif)
+        ElseIf (Path.GetExtension(NewFileName) = ".jpg") Then
+            img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Jpeg)
+        ElseIf (Path.GetExtension(NewFileName) = ".png") Then
+            img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Png)
+        Else
+            Throw New Exception("Invalid format for exporting: " + NewFileName)
+            img.Dispose()
+        End If
+    End Sub
 
     Private Shared Sub OnExportPreDraw(ByVal sender As Object, ByVal e As PreDrawEventArgs)
         Contr.Explorer.CurrentView.PrintPage(e.Bounds, e.Graphics)

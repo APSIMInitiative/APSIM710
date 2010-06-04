@@ -272,7 +272,17 @@ namespace ApsimFile
          Value.Doubles = Values;
          SetVariable(LocationName, Value);
          }
-
+      /// <summary>
+      /// Set a variable in a specific location.
+      /// </summary>
+      public void SetVariable(string VariableName, string[] Values, string LocationName)
+         {
+         VariableValue Value = new VariableValue();
+         Value.Name = VariableName;
+         Value.Units = StringManip.SplitOffBracketedValue(ref Value.Name, '(', ')');
+         Value.Strings = Values;
+         SetVariable(LocationName, Value);
+         }
       /// <summary>
       /// Set the layered values of the specified variable. Use default
       /// locations (Profile nodes) as no profile node name has been 
@@ -557,6 +567,18 @@ namespace ApsimFile
 
             else if (Value.Units == "cm" && ToUnits == "mm")
                Value.Doubles = MathUtility.Multiply_Value(Value.Doubles, 10);
+
+            else if (Value.Units == "mm/mm" && ToUnits == "grav. mm/mm")
+               {
+               VariableValue BD = FindVariable("BD (g/cc)", Value.ThicknessMM);
+               Value.Doubles = MathUtility.Divide(Value.Doubles, BD.Doubles);
+               }
+
+            else if (Value.Units == "grav. mm/mm" && ToUnits == "mm/mm")
+               {
+               VariableValue BD = FindVariable("BD (g/cc)", Value.ThicknessMM);
+               Value.Doubles = MathUtility.Multiply(Value.Doubles, BD.Doubles);
+               }
 
             else if (Value.Units == "Walkley Black %" && ToUnits == "Total %")
                Value.Doubles = MathUtility.Multiply_Value(Value.Doubles, 1.3);

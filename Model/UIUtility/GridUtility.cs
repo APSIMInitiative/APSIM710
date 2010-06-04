@@ -106,7 +106,7 @@ namespace UIUtility
       // ---------------------------------------------------------- 
       public static double[] GetColumnAsDoubles(DataGridView Grid, int ColumnIndex)
          {
-         int NumValues = Grid.RowCount - 1;
+         int NumValues = Grid.RowCount;
          if (!Grid.ReadOnly)
             NumValues--;
          double[] Values = new double[NumValues];

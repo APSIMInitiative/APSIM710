@@ -56,8 +56,9 @@ namespace CSUserInterface
       /// </summary>
       override public void OnRefresh()
          {
-         this.Grid.CellValueChanged -= new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
          this.Grid.ColumnWidthChanged -= new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
+         if (Table != null)
+            Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
 
          Properties.OnRefresh();
          Properties.Visible = !Properties.IsEmpty;
@@ -97,8 +98,10 @@ namespace CSUserInterface
          AdjustDecPlaces();
 
          CreateUnitsMenus();
-         this.Grid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
+         Label.Visible = Label.Text != "";
+
          this.Grid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
+         Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
          }
 
       /// <summary>
@@ -113,6 +116,7 @@ namespace CSUserInterface
 
       private void CreateUnitsMenus()
          {
+         string LabelText = "";
          for (int Col = 0; Col < Grid.Columns.Count; Col++)
             {
             string RawVariableName = Grid.Columns[Col].HeaderText;
@@ -129,8 +133,15 @@ namespace CSUserInterface
                   }
                PopupMenu.ItemClicked += new ToolStripItemClickedEventHandler(OnUnitMenuClicked);
                Grid.Columns[Col].HeaderCell.ContextMenuStrip = PopupMenu;
+
+               // Add to label text.
+               if (LabelText != "")
+                  LabelText += ", ";
+               LabelText += RawVariableName;
                }
             }
+         if (LabelText != "")
+            Label.Text = "By right clicking on column headings, you can change the units of these variables: " + LabelText;
          }
 
       /// <summary>
@@ -269,7 +280,11 @@ namespace CSUserInterface
          {
          // Make sure we save the properties.
          if (Properties.Visible)
+            {
             Properties.OnSave();
+            Data.OwnerDocument.LoadXml(Properties.GetData());
+            Data = Data.OwnerDocument.DocumentElement;
+            }
 
          XmlDocument Doc = new XmlDocument();
          Doc.LoadXml(_Soil.XML);
@@ -307,8 +322,11 @@ namespace CSUserInterface
                 Grid.Columns[Col].HeaderText.Contains("PAWC")))
                {
                double[] Values = GridUtility.GetColumnAsDoubles(Grid, Col);
-               TotalGrid.Rows[0].Cells[Col].Value = MathUtility.Sum(Values);
-               TotalsFound = true;
+               if (MathUtility.ValuesInArray(Values))
+                  {
+                  TotalGrid.Rows[0].Cells[Col].Value = MathUtility.Sum(Values);
+                  TotalsFound = true;
+                  }
                }
             }
          TotalPanel.Visible = TotalsFound;
@@ -359,13 +377,16 @@ namespace CSUserInterface
       /// <summary>
       /// The value of a cell has changed.
       /// </summary>
-      private void OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
+      void OnTableRowChanged(object sender, DataRowChangeEventArgs e)
          {
-         string VariableName = Table.Columns[e.ColumnIndex].ColumnName;
+         int ColIndex = Grid.CurrentCell.ColumnIndex;
+         int RowIndex = Grid.CurrentCell.RowIndex;
+
+         string VariableName = Table.Columns[ColIndex].ColumnName;
 
          SaveTableColumn(VariableName);
          OnRefresh();
-         Grid.CurrentCell = Grid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+         Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
          }
 
       /// <summary>
@@ -376,7 +397,7 @@ namespace CSUserInterface
          if (e.KeyCode == Keys.Delete)
             {
             // Turn off the cell value changed event.
-            this.Grid.CellValueChanged -= new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
+            Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
 
             // Make the values in the grid null.
             List<string> ColumnsChanged = new List<string>();
@@ -396,7 +417,7 @@ namespace CSUserInterface
                SaveTableColumn(Col);
 
             // Turn on the cell value changed event and refresh.
-            this.Grid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
+            Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
             OnRefresh();
             if (SavedRow < Grid.Columns.Count)
                Grid.CurrentCell = Grid.Rows[SavedRow].Cells[SavedCol];
@@ -420,7 +441,7 @@ namespace CSUserInterface
             if (Data.Name == "SoilCrop")
                _Soil.SetVariable(LocationName + " " + VariableName, Values);
             else
-               _Soil.SetVariable(VariableName, Values);
+               _Soil.SetVariable(VariableName, Values, LocationName);
             }
          else
             _Soil.Read(Table, VariableName, LocationName);
@@ -446,7 +467,6 @@ namespace CSUserInterface
          SaveTableColumn(NewColumnName);
          OnRefresh();         
          }
-
 
       }
    }

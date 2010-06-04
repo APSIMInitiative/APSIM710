@@ -131,11 +131,16 @@ namespace CSGeneral
          if (File.Exists(FileName))
             throw new Exception("Cannot find a unique filename for file: " + BaseName);
          }
-      public static void DeleteFiles(string FileSpec)
+      public static void DeleteFiles(string FileSpec, bool Recurse)
          {
          foreach (string FileName in Directory.GetFiles(Path.GetDirectoryName(FileSpec),
                                                         Path.GetFileName(FileSpec)))
             File.Delete(FileName);
+         if (Recurse)
+            {
+            foreach (string SubDirectory in Directory.GetDirectories(Path.GetDirectoryName(FileSpec)))
+               DeleteFiles(SubDirectory + "\\" + Path.GetFileName(FileSpec), true);
+            }
          }
 
       }

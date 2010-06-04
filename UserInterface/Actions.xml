@@ -396,8 +396,19 @@
          </OnInvoke>
       </Print>
       <Export>
-         <Text>Export...</Text>
-         <Description>Export the currently selected graph(s) to a bitmap file</Description>
+         <Text>Export to...</Text>
+         <Description>Export the currently selected graph(s)</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
+         <AppliesTo>Graph</AppliesTo>
+         <AppliesTo>GraphReport</AppliesTo>
+         <AppliesTo>Folder</AppliesTo>
+         <AppliesTo>Simulation</AppliesTo>
+         <AppliesTo>Area</AppliesTo>
+      </Export>
+      <ExportBMP>
+         <Text>Export to BMP...</Text>
+         <Description>Export the currently selected graph(s) to a .bmp file</Description>
          <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
          <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
          <AppliesTo>Graph</AppliesTo>
@@ -408,10 +419,62 @@
          <OnInvoke>
             <call>
                <class>Actions.BaseActions</class>
-               <method>Export</method>
+               <method>ExportToBMP</method>
             </call>
          </OnInvoke>
-      </Export>
+      </ExportBMP>
+      <ExportJPG>
+         <Text>Export to JPG...</Text>
+         <Description>Export the currently selected graph(s) to a .jpg file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
+         <AppliesTo>Graph</AppliesTo>
+         <AppliesTo>GraphReport</AppliesTo>
+         <AppliesTo>Folder</AppliesTo>
+         <AppliesTo>Simulation</AppliesTo>
+         <AppliesTo>Area</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>ExportToJPG</method>
+            </call>
+         </OnInvoke>
+      </ExportJPG>
+      <ExportGIF>
+         <Text>Export to GIF...</Text>
+         <Description>Export the currently selected graph(s) to a .gif file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
+         <AppliesTo>Graph</AppliesTo>
+         <AppliesTo>GraphReport</AppliesTo>
+         <AppliesTo>Folder</AppliesTo>
+         <AppliesTo>Simulation</AppliesTo>
+         <AppliesTo>Area</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>ExportToGIF</method>
+            </call>
+         </OnInvoke>
+      </ExportGIF>
+      <ExportPNG>
+         <Text>Export to PNG...</Text>
+         <Description>Export the currently selected graph(s) to a .png file</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
+         <AppliesTo>Graph</AppliesTo>
+         <AppliesTo>GraphReport</AppliesTo>
+         <AppliesTo>Folder</AppliesTo>
+         <AppliesTo>Simulation</AppliesTo>
+         <AppliesTo>Area</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>ExportToPNG</method>
+            </call>
+         </OnInvoke>
+      </ExportPNG>
+
       <Checkpoint>
          <Text>Checkpoint simulation</Text>
          <Description>Save all simulation, output and summary files to a checkpoint folder.</Description>
@@ -491,7 +554,12 @@
       <Item>GraphWizard</Item>
       <Item>Excel</Item>
       <Item>Print</Item>
-      <Item>Export</Item>
+      <DropDownItem action="Export">
+         <Item>ExportBMP</Item>
+         <Item>ExportGIF</Item>
+         <Item>ExportJPG</Item>
+         <Item>ExportPNG</Item>
+      </DropDownItem>
       <Separator/>
       <Item>Delete</Item>
       <Item>Rename</Item>

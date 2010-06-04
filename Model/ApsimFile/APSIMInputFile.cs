@@ -260,6 +260,7 @@ namespace ApsimFile
                   // Need to get a sanitised date e.g. d/M/yyyy 
                   string DateFormat = Units[w].ToLower();
                   DateFormat = StringManip.SplitOffBracketedValue(ref DateFormat, '(', ')');
+                  DateFormat = DateFormat.Replace("mmm", "MMM");
                   DateFormat = DateFormat.Replace("mm", "m");
                   DateFormat = DateFormat.Replace("dd", "d");
                   DateFormat = DateFormat.Replace("m", "M");
