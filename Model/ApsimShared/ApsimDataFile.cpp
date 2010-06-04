@@ -283,9 +283,13 @@ gregorian::date ApsimDataFile::getDate(void)
    if (dateI != temporalData.end())
       {
       string dateFormat = dateI->units;
-      if (dateFormat == "")
-         dateFormat = "dd/mm/yyyy";
-         
+      if (dateFormat == "()")
+         {
+         if (dateI->values[0].find("/") != string::npos)
+            dateFormat = "yyyy/mm/dd";
+         else
+            dateFormat = "yyyy-mm-dd";
+         }
       replaceAll(dateFormat, "(", "");
       replaceAll(dateFormat, ")", "");
 
