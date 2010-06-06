@@ -133,13 +133,16 @@ namespace CSGeneral
          }
       public static void DeleteFiles(string FileSpec, bool Recurse)
          {
-         foreach (string FileName in Directory.GetFiles(Path.GetDirectoryName(FileSpec),
-                                                        Path.GetFileName(FileSpec)))
-            File.Delete(FileName);
-         if (Recurse)
+         if (Directory.Exists(Path.GetDirectoryName(FileSpec)))
             {
-            foreach (string SubDirectory in Directory.GetDirectories(Path.GetDirectoryName(FileSpec)))
-               DeleteFiles(SubDirectory + "\\" + Path.GetFileName(FileSpec), true);
+            foreach (string FileName in Directory.GetFiles(Path.GetDirectoryName(FileSpec),
+                                                           Path.GetFileName(FileSpec)))
+               File.Delete(FileName);
+            if (Recurse)
+               {
+               foreach (string SubDirectory in Directory.GetDirectories(Path.GetDirectoryName(FileSpec)))
+                  DeleteFiles(SubDirectory + "\\" + Path.GetFileName(FileSpec), true);
+               }
             }
          }
 

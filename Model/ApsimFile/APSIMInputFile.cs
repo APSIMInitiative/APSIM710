@@ -220,6 +220,8 @@ namespace ApsimFile
                Units = StringManip.SplitStringHonouringQuotes(HeadingLines[1], " \t");
                }
             TitleFound = TitleFound || StringManip.IndexOfCaseInsensitive(Headings, "title") != -1;
+            if (Headings.Count != Units.Count)
+               throw new Exception("The number of headings and units doesn't match in file: " + _FileName);
             }
          if (!TitleFound)
             _Constants.Add(new APSIMConstant("Title", Path.GetFileNameWithoutExtension(_FileName), "", ""));
