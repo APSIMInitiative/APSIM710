@@ -55,7 +55,7 @@ void Phenology::onInit1(protocol::Component *)
    scienceAPI.exposeWritable("Phase", "", "Plant stage", FloatSetter(&Phenology::onSetStage));
    scienceAPI.expose("DeltaStage", "", "Change in plant stage", dltStage);
    scienceAPI.exposeFunction("StageName", "", "Plant stage name", StringGetter(&Phenology::stageName));
-   scienceAPI.exposeFunction("TT", "deg. day", "Todays thermal time", FloatGetter(&Phenology::TT));
+   scienceAPI.exposeFunction("TT", "deg.day", "Todays thermal time", FloatGetter(&Phenology::TT));
 
    scienceAPI.subscribe("harvest", NullFunction(&Phenology::onHarvest));
    scienceAPI.subscribe("end_crop", NullFunction(&Phenology::onEndCrop));
