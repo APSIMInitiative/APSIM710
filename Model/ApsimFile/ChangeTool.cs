@@ -1436,6 +1436,7 @@ namespace ApsimFile
                XmlHelper.SetValue(SoilWatNode, "Slope", "");
                XmlHelper.SetValue(SoilWatNode, "DischargeWidth", "");
                XmlHelper.SetValue(SoilWatNode, "CatchmentArea", "");
+               XmlHelper.SetValue(SoilWatNode, "MaxPond", "");
                }
             XmlNode SoilOrganicMatterNode = XmlHelper.Find(Node, "SoilOrganicMatter");
             if (SoilOrganicMatterNode != null)

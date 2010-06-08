@@ -98,16 +98,18 @@ public class GenericUIEditor
       // Add new child nodes.
       foreach (DataRow Row in Table.Rows)
          {
-         XmlNode NewProperty = _Data.OwnerDocument.CreateElement(Row["Name"].ToString());
-         XmlHelper.SetAttribute(NewProperty, "type", Row["Type"].ToString());
-         if (Row["List items (CSV)"].ToString() != "")
-            XmlHelper.SetAttribute(NewProperty, "listvalues", Row["List items (CSV)"].ToString());
-         if (Row["Description"].ToString() != "")
-            XmlHelper.SetAttribute(NewProperty, "description", Row["Description"].ToString());
-         if (Row["Value"].ToString() != "")
-            NewProperty.InnerText = Row["Value"].ToString();
-
-         _Data.AppendChild(NewProperty);
+         if (Row["Name"].ToString() != "")
+            {
+            XmlNode NewProperty = _Data.OwnerDocument.CreateElement(Row["Name"].ToString());
+            XmlHelper.SetAttribute(NewProperty, "type", Row["Type"].ToString());
+            if (Row["List items (CSV)"].ToString() != "")
+               XmlHelper.SetAttribute(NewProperty, "listvalues", Row["List items (CSV)"].ToString());
+            if (Row["Description"].ToString() != "")
+               XmlHelper.SetAttribute(NewProperty, "description", Row["Description"].ToString());
+            if (Row["Value"].ToString() != "")
+               NewProperty.InnerText = Row["Value"].ToString();
+            _Data.AppendChild(NewProperty);
+            }
          }
       }
    }

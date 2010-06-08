@@ -4477,7 +4477,7 @@ c  dsg   070302  added runon
       elseif (variable_name .eq. 'max_pond') then
          call collect_real_var (variable_name, '()'
      :                             , p%max_pond, numvals
-     :                             , 0.0, 100.0)
+     :                             , 0.0, 1000.0)
 
 
       elseif (variable_name .eq. 'dul_dep') then
