@@ -5,6 +5,7 @@ PROJECT = SoilWat
 SRC = Evap.for Lateral.for SoilWat.for
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
+DEF = SoilWat.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

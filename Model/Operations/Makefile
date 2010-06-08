@@ -5,6 +5,7 @@ PROJECT = Operations
 SRC = Registrations.f90 Operations.for
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface ApsimShared
+DEF = Operations.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

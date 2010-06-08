@@ -5,6 +5,7 @@ PROJECT = Accum
 SRC = Registrations.f90 accum.for
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
+DEF = accum.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

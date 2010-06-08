@@ -5,6 +5,7 @@ PROJECT = Clock
 SRC = Registrations.f90 clock.for clock_read_params.for
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
+DEF = Clock.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

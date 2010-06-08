@@ -5,6 +5,7 @@ PROJECT = SoilN
 SRC = SoilN.for
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
+DEF = SoilN.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll
