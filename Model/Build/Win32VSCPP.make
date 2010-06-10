@@ -11,11 +11,12 @@ LD="$(VSINSTALLDIR)\VC\bin\link.exe"
 
 BOOST = $(APSIM)\..\BuildLibraries\boost_1_42_0-msvc
 LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32
+ICONV = $(APSIM)\..\BuildLibraries\libiconv-1.11.1.win32
 TCL = $(APSIM)\..\BuildLibraries\tcl\ASTcl\bin\tclsh84.exe
 
 DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BOOST_REGEX_STATIC_LINK"
-INCLUDES := /I $(APSIM)\Model /I $(BOOST) /I $(LIBXML)\include $(INCLUDES)
-LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib
+INCLUDES := /I $(APSIM)\Model /I $(BOOST) /I $(LIBXML)\include /I $(ICONV)\include $(INCLUDES)
+LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib /LIBPATH:$(ICONV)\lib
 
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib
