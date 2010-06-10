@@ -15,6 +15,8 @@
 using namespace std;
 
 FortranComponentWrapper* currentWrapper = NULL;
+CRITICAL_SECTION swapMutex;
+bool swapMutexInited = false;
 
 FortranComponentWrapper::FortranComponentWrapper(ScienceAPI* api, CMPComponentInterface* ci, void* handle)
    : scienceapi(*api), dllHandle(handle), componentinterface(ci)
@@ -31,6 +33,11 @@ FortranComponentWrapper::~FortranComponentWrapper()
    // -----------------------------------------------------------------------
    // Destructor
    // -----------------------------------------------------------------------
+   // get FORTRAN to release memory blocks.
+     const int doAllocate = false;
+     swapInstanceIn();
+     allocDealloc(&doAllocate);
+	 swapInstanceOut();
    }
 void FortranComponentWrapper::onInit1()
    {
@@ -84,6 +91,11 @@ void FortranComponentWrapper::swapInstanceIn()
    // We also keep track of the previous wrappers, necessary when one instance of a FORTRAN
    // model calls into another instance of the same FORTRAN component interface.
    // -----------------------------------------------------------------------
+   if (!swapMutexInited) {
+     InitializeCriticalSection(&swapMutex);
+     swapMutexInited = true;
+   }
+   EnterCriticalSection(&swapMutex);
    callStack.push(currentWrapper);
 
    currentWrapper = this;
@@ -100,6 +112,7 @@ void FortranComponentWrapper::swapInstanceOut()
       memcpy(currentWrapper->realCommonBlock, &(currentWrapper->ourCommonBlock), sizeof(CommonBlock));
       }
    callStack.pop();
+   LeaveCriticalSection(&swapMutex);
    }
 
 // -----------------------------------------------------------------------
