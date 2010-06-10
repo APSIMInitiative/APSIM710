@@ -5001,8 +5001,6 @@ c dsg 070302 added runon
             call Message_unused ()
          endif
 
-
-
       else if (variable_name .eq. 'water_table') then
          call respond2get_real_var ('water_table','mm',g%water_table)
 
@@ -5061,12 +5059,21 @@ c dsg 070302 added runon
 
 * ====================================================================
 * Globals
+         g%rain = 0.0
+		 g%runon = 0.0
+		 g%interception = 0.0
+		 g%radn = 0.0
+		 g%mint = 0.0
+		 g%maxt = 0.0
 c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
          g%cover_surface_runoff = 0.0         ! effective total cover (0-1)
          g%cover_tot(:) = 0.0                 ! total canopy cover of crops (0-1)
          g%cover_green(:) = 0.0               ! green canopy cover of crops (0-1)
          g%canopy_height(:) = 0.0             ! canopy heights of each crop (mm)
          g%num_crops = 0                      ! number of crops ()
+         g%year = 0
+         g%day = 0
+         g%today = 0.0		 
          g%sumes1 = 0.0                       ! cumulative soil evaporation in stage 1 (mm)
          g%sumes2 = 0.0                       ! cumulative soil evaporation in stage 2 (mm)
          g%t = 0.0                            ! time after 2nd-stage soil evaporation
@@ -5090,6 +5097,7 @@ c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
 
          g%residue_cover = 0.0                ! residue cover reduces  cn2_bare
          g%eo = 0.0                           ! potential evapotranspiration (mm)
+		 g%real_eo = 0.0
          g%eos = 0.0                          ! pot sevap after modification for green cover &
                                               ! residue wt
          g%cn2_new = 0.0                      ! New cn2  after modification for crop
@@ -5120,6 +5128,7 @@ c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
          g%drain = 0.0                        ! drainage rate from bottom layer (cm/d)
          g%infiltration = 0.0                 ! infiltration (mm)
          g%runoff = 0.0                       ! runoff (mm)
+		 g%runoff_pot = 0.0
          g%irrigation = 0.0                   ! irrigation (mm)
          g%obsrunoff = 0.0                    ! observed runoff (mm)
          g%tillage_cn_red = 0.0               ! reduction in CN due to tillage ()
@@ -7494,6 +7503,8 @@ c
      .                     'water_table', floatTypeDDML, 'mm')
       dummy = add_registration_with_units(respondToGetReg, 'sws',
      .                     floatarrayTypeDDML, 'mm/mm')
+      dummy = add_registration_with_units(respondToGetReg, 
+     .                     'outflow_lat', floatarrayTypeDDML, 'mm')
 
       ! variables that are settable
       dummy = add_registration_with_units(respondToSetReg, 'insoil',
