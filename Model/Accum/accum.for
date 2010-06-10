@@ -107,10 +107,14 @@
      .   'Maximum number of days is 20')
 
 *+  Local Variables
-      integer Indx                     ! Index into array
+       integer Indx                     ! Index into array
        integer Numvals                 ! Number of values
        integer Pos                     ! Position in string
        character Size_string*50        ! string version of size
+	   integer I
+	   integer Dummy
+	   integer nDigits
+	   integer idx
 
 *- Implementation Section ----------------------------------
 
@@ -125,10 +129,10 @@
          Pos = index(g%variable_names(indx), '[')
          if (Pos .eq. 0) then
             call Fatal_error(Err_internal, Err2)
-
+			
          else
             ! Extract size component.
-
+            idx = Pos-1
             Size_string = g%variable_names(indx)(Pos + 1:)
             g%variable_names(indx)(Pos:) = Blank
             Pos = index(Size_string, ']')
@@ -142,6 +146,15 @@
 
                if (g%variable_sizes(indx) .gt. 0 .and.
      .             g%variable_sizes(g%num_variables) .le. Max_days) then
+* Actually register the variables that "accum" makes available.
+		 do i = 1, g%variable_sizes(indx)
+		    write(Size_string, *) i
+			Size_string = ADJUSTL(Size_string)
+			nDigits = LEN_TRIM(Size_string)
+            dummy = add_registration_with_units(respondToGetReg,
+     . 	  g%variable_names(indx)(:idx)//'['//Size_string(:nDigits)//']',
+     .                     floatTypeDDML, '')
+		 end do
                   goto 10
 
                else
@@ -149,6 +162,8 @@
                endif
             endif
          endif
+		 
+ 
 10    continue
 
       call pop_routine(This_routine)
