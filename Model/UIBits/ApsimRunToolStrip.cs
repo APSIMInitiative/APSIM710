@@ -72,10 +72,10 @@ public class ApsimRunToolStrip
       // ----------------------------------------------------------
       foreach (Job J in _JobRunner.Jobs)
          {
-         RunApsimFileJob ApsimJob = (RunApsimFileJob)J;
+         RunApsimJob ApsimJob = (RunApsimJob)J;
          if (ApsimJob != null && ApsimJob.HasErrors)
             {
-            return ApsimJob.SimulationPath;
+            return Path.GetFileNameWithoutExtension(ApsimJob.SimFileName);
             }
          }
       return "";

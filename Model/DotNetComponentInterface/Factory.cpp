@@ -7,11 +7,13 @@ Factory::Factory()
    // --------------------------------------------------------------------
    
    RegisteredProperties = gcnew List<FactoryProperty^>();
-   RegisteredEventHandlers = gcnew List<FactoryEventHandler^>();
+   RegisteredEventHandlers = gcnew List<EvntHandler^>();
    RegisteredEvents = gcnew List<FactoryEvent^>();
    }
 
-void Factory::Create(String^ Xml, Assembly^ AssemblyWithTypes)
+void Factory::Create(String^ Xml, 
+                     Assembly^ AssemblyWithTypes,
+                     ModelFramework::ApsimComponent^ ParentComponent)
    {
    // --------------------------------------------------------------------
    // Create instances (and populate their fields and properies of all 
@@ -22,19 +24,22 @@ void Factory::Create(String^ Xml, Assembly^ AssemblyWithTypes)
    XmlDocument^ Doc = gcnew XmlDocument();
    Doc->LoadXml(Xml);
    RemoveShortCuts(Doc->DocumentElement);
-   _Root = CreateInstance(Doc->DocumentElement, nullptr, nullptr);
+   _Root = CreateInstance(Doc->DocumentElement, nullptr, nullptr, ParentComponent);
    }
-void Factory::Create(XmlNode^ Node, Assembly^ AssemblyWithTypes)
-   {
-   // --------------------------------------------------------------------
-   // Create instances (and populate their fields and properies of all 
-   // classes as specified by the Xml passed in. The newly created root
-   // instance can be retrieved by the 'Root' property.
-   // --------------------------------------------------------------------
-   CallingAssembly = AssemblyWithTypes;
-   _Root = CreateInstance(Node, nullptr, nullptr);
-   }
-Instance^ Factory::CreateInstance(XmlNode^ Node, XmlNode^ Parent, Instance^ ParentInstance)
+//void Factory::Create(XmlNode^ Node, Assembly^ AssemblyWithTypes)
+//   {
+//   // --------------------------------------------------------------------
+//   // Create instances (and populate their fields and properies of all 
+//   // classes as specified by the Xml passed in. The newly created root
+//   // instance can be retrieved by the 'Root' property.
+//   // --------------------------------------------------------------------
+//   CallingAssembly = AssemblyWithTypes;
+//   _Root = CreateInstance(Node, nullptr, nullptr);
+//   }
+Instance^ Factory::CreateInstance(XmlNode^ Node, 
+                                  XmlNode^ Parent, 
+                                  Instance^ ParentInstance, 
+                                  ModelFramework::ApsimComponent^ ParentComponent)
    {
    // --------------------------------------------------------------------
    // Create an instance of a the 'Instance' class based on the 
@@ -46,11 +51,12 @@ Instance^ Factory::CreateInstance(XmlNode^ Node, XmlNode^ Parent, Instance^ Pare
       throw gcnew Exception("Cannot find a class called: " + Node->Name);
    Instance^ CreatedInstance = dynamic_cast<Instance^> (Activator::CreateInstance(ClassType));
 
-   CreatedInstance->Initialise(XmlHelper::Name(Node), ParentInstance);
+   CreatedInstance->Initialise(XmlHelper::Name(Node), ParentInstance, ParentComponent);
    GetAllProperties(CreatedInstance, Parent);
    GetAllEventHandlers(CreatedInstance);
    GetAllEvents(CreatedInstance);
-   PopulateParams(CreatedInstance, Node);
+   PopulateParams(CreatedInstance, Node, ParentComponent);
+   CreatedInstance->Initialised();
    return CreatedInstance;
    }
 void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)
@@ -156,7 +162,7 @@ void Factory::GetAllEvents(Instance^ Obj)
       }
    }   
 
-   void Factory::PopulateParams(Instance^ Obj, XmlNode^ Node)
+   void Factory::PopulateParams(Instance^ Obj, XmlNode^ Node,ModelFramework::ApsimComponent^ ParentComponent)
       {
       // --------------------------------------------------------------------
       // Go through all child XML nodes for the node passed in and set
@@ -170,7 +176,7 @@ void Factory::GetAllEvents(Instance^ Obj)
             if (t != nullptr)
                {
                // Create a child instance - indirect recursion.
-               Instance^ ChildInstance = CreateInstance(Child, Child, Obj);
+               Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
                Obj->Add(ChildInstance);   
                }
             else if (!Child->HasChildNodes && Child->InnerText == "")

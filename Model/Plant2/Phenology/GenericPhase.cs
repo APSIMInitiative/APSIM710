@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-public class FixedPhase : Phase
+public class GenericPhase : Phase
    {
    private  double _CumulativeTT;
    [Output] public double CumulativeTT { get { return _CumulativeTT; } }
@@ -11,7 +11,7 @@ public class FixedPhase : Phase
    /// <summary>
    /// Initialise everything
    /// </summary>
-   public override void Initialise() { _CumulativeTT = 0; }
+   public override void Initialising() { _CumulativeTT = 0; }
 
    /// <summary>
    /// Do our timestep development

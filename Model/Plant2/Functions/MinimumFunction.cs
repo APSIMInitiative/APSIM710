@@ -6,7 +6,7 @@ using CSGeneral;
 
 class MinimumFunction : Function
    {
-   [Param] string[] Property;
+   [Param] string[] Property = null;
 
    [Output]
    public override double Value

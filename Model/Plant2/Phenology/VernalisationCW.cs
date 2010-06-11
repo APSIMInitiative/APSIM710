@@ -13,7 +13,6 @@ public class VernalisationCW : Instance
    private double Mint = 0;
    [Param] private double VernSens = 0;
    [Param] private double PhotopSens = 0;
-   [Param] private double Twilight = 0;
    [Param] private string StartStageForEffects = "";
    [Param] private string EndStageForEffects = "";
    [Param] private string StartStageForCumulativeVD = "";
@@ -34,7 +33,7 @@ public class VernalisationCW : Instance
    /// <summary>
    /// Initialise everything
    /// </summary>
-   public override void Initialise() 
+   public override void Initialising() 
       { 
       Plant = (Plant)Root;
       CumulativeVD = 0;

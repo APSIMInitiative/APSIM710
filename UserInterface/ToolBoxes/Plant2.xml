@@ -1,4 +1,4 @@
-<folder version="19" name="Plant2">
+<folder version="23" name="Plant2">
   <Construct />
   <MetaData />
   <Model />
@@ -51,14 +51,14 @@
         </XYPairs>
       </GenericFunction>
     </EmergingPhase>
-    <FixedPhase>
+    <GenericPhase>
       <Start type="text" description="Start">Germination</Start>
       <End type="text" description="End">Emergence</End>
       <Constant name="Target">
         <Value type="text" description="Value">100</Value>
       </Constant>
       <TemperatureFunction />
-    </FixedPhase>
+    </GenericPhase>
     <EndPhase>
       <Start>Maturity</Start>
       <End>Unused</End>
@@ -82,7 +82,7 @@
         </XYPairs>
       </TemperatureFunction>
     </Vernalisation>
-    <FixedPhase name="Inductive">
+    <GenericPhase name="Inductive">
       <Start type="text" description="Start">Emergence</Start>
       <End type="text" description="End">EndJuvenile</End>
       <Constant name="Target">
@@ -98,7 +98,14 @@
           <XY>100 515</XY>
         </XYPairs>
       </GenericFunction>
-    </FixedPhase>
+    </GenericPhase>
+    <PhaseJumpFunction>
+      <Start type="text" description="Start stage name:">Germination</Start>
+      <End type="text" description="End stage name:">Emergence</End>
+      <Event type="text" description="Look for this event:">Cut</Event>
+      <PhaseNameToJumpTo type="text" description="Phase name to jump to">
+      </PhaseNameToJumpTo>
+    </PhaseJumpFunction>
   </folder>
   <folder name="Functions">
     <PhotoperiodFunction>

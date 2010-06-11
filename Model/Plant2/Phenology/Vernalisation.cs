@@ -20,7 +20,7 @@ public class Vernalisation : Instance
    /// <summary>
    /// Initialise everything
    /// </summary>
-   public override void Initialise()
+   public override void Initialising()
       {
       CumulativeVD = 0;
       }

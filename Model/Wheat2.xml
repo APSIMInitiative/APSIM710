@@ -62,7 +62,6 @@
           <EndStageForCumulativeVD>FloralInitiation</EndStageForCumulativeVD>
           <VernSens>1.5</VernSens>
           <PhotopSens>3.0</PhotopSens>
-          <Twilight>-6.0</Twilight>
           <TemperatureFunction name="VDModel">
             <XYPairs>
               <XY> 0 0.0</XY>
@@ -100,7 +99,7 @@
             </XYPairs>
           </GenericFunction>
         </EmergingPhase>
-        <FixedPhase name="Inductive">
+        <GenericPhase name="Inductive">
           <Start>Emergence</Start>
           <End>FloralInitiation</End>
           <Constant name="Target">
@@ -117,8 +116,8 @@
           <MinimumFunction name="Stress">
             <Property>Phenology.Vernalisation.VernEff Phenology.Vernalisation.PhotopEff</Property>
           </MinimumFunction>
-        </FixedPhase>
-        <FixedPhase name="FloralInitiationToFlagLeaf">
+        </GenericPhase>
+        <GenericPhase name="FloralInitiationToFlagLeaf">
           <Start>FloralInitiation</Start>
           <End>FlagLeaf</End>
           <Constant name="Target">
@@ -135,8 +134,8 @@
           <MinimumFunction name="Stress">
             <Property>Phenology.Vernalisation.VernEff Phenology.Vernalisation.PhotopEff</Property>
           </MinimumFunction>
-        </FixedPhase>
-        <FixedPhase name="FlagLeafToFlowering">
+        </GenericPhase>
+        <GenericPhase name="FlagLeafToFlowering">
           <Start>FlagLeaf</Start>
           <End>Flowering</End>
           <Constant name="Target">
@@ -153,8 +152,8 @@
           <MinimumFunction name="Stress">
             <Property>Phenology.Vernalisation.VernEff Phenology.Vernalisation.PhotopEff</Property>
           </MinimumFunction>
-        </FixedPhase>
-        <FixedPhase name="FloweringToGrainFilling">
+        </GenericPhase>
+        <GenericPhase name="FloweringToGrainFilling">
           <Start>Flowering</Start>
           <End>StartGrainFill</End>
           <Constant name="Target">
@@ -168,8 +167,8 @@
               <XY> 34  0</XY>
             </XYPairs>
           </GenericFunction>
-        </FixedPhase>
-        <FixedPhase name="GrainFilling">
+        </GenericPhase>
+        <GenericPhase name="GrainFilling">
           <Start>StartGrainFill</Start>
           <End>EndGrainFill</End>
           <Constant name="Target">
@@ -183,8 +182,8 @@
               <XY> 34  0</XY>
             </XYPairs>
           </GenericFunction>
-        </FixedPhase>
-        <FixedPhase name="Maturing">
+        </GenericPhase>
+        <GenericPhase name="Maturing">
           <Start>EndGrainFill</Start>
           <End>Maturity</End>
           <Constant name="Target">
@@ -198,8 +197,8 @@
               <XY> 34  0</XY>
             </XYPairs>
           </GenericFunction>
-        </FixedPhase>
-        <FixedPhase name="MaturityToHarvestRipe">
+        </GenericPhase>
+        <GenericPhase name="MaturityToHarvestRipe">
           <Start>Maturity</Start>
           <End>HarvestRipe</End>
           <Constant name="Target">
@@ -213,7 +212,7 @@
               <XY> 34  0</XY>
             </XYPairs>
           </GenericFunction>
-        </FixedPhase>
+        </GenericPhase>
         <EndPhase name="ReadyForHarvesting">
           <Start>HarvestRipe</Start>
           <End>Unused</End>

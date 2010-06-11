@@ -8,6 +8,5 @@ Instance::Instance()
    {
    Children = gcnew NamedList<NamedItem^>();
    Parent = nullptr;
-   ComponentName = "";
    }
 

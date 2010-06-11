@@ -14,7 +14,7 @@ public class LeafAppearancePhase : Phase
    /// <summary>
    /// Initialise everything
    /// </summary>
-   public override void Initialise()
+   public override void Initialising()
       { 
       CumulativeTT = 0;
       NodeNoAtStart = 0;

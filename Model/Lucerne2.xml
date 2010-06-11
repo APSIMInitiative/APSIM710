@@ -1,4 +1,4 @@
-<Type version="19" name="ChickPea2">
+<Type version="23" name="lucerne2">
   <Info>
     <variables>
       <variable name="Crop_Type" description="" read="T" write="F" kind="string" array="" units="" />
@@ -15,6 +15,7 @@
       <variable name="PhenologyThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="PhenologyShockTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="PhenologyJuvenileCumulativeVD" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileCumulativeTT" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="PhenologyJuvenileTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="PhenologyJuvenileVDModelValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="PhenologyVegetativeTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
@@ -104,8 +105,9 @@
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\ChickPea.jpg</Image>
-    <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+    <Image>%apsim%\UserInterface\Images\lucerne.jpg</Image>
+    <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+    <Documentation name="Lucerne science documentation">../apsim/lucerne/docs/lucerne_science.htm</Documentation>
     <Documentation name="Generic plant">../apsim/plant/docs/plant_science.htm</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
@@ -116,118 +118,118 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <variables link="%apsim%\Documentation\ModelInfo\ChickPea.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\ChickPea.xml" />
     <ApsimToSim>
-      <component name="[InstanceName]" executable="[dll]">
+      <component name="[lucerne2.name]" executable="[dll]">
         <executable>[dll]</executable>
         <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
         <initdata>
                [Model]
-               <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf></initdata>
+               <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
       </component>
     </ApsimToSim>
   </MetaData>
   <Model>
-    <Cultivar name="amethyst">
-      <Construct type="text" description="Construct">Plant</Construct>
+    <Cultivar name="hunter_river">
+      <Construct>Plant</Construct>
     </Cultivar>
     <Plant>
-      <CropType type="text" description="CropType">ChickPea</CropType>
+      <CropType>lucerne</CropType>
       <Population>
         <Value>4</Value>
       </Population>
       <AnnualPlantArbitrator name="Arbitrator">
-        <DMSink type="text" description="DMSink">Stem</DMSink>
-        <NSink type="text" description="NSink">Stem</NSink>
+        <DMSink>Stem</DMSink>
+        <NSink>Stem</NSink>
       </AnnualPlantArbitrator>
       <Phenology>
         <TemperatureFunction name="ThermalTime">
           <XYPairs>
-            <XY>0 0</XY>
-            <XY>30 30</XY>
-            <XY>40 0</XY>
+            <XY> 1  0.0</XY>
+            <XY> 5  3.0</XY>
+            <XY>10  6.5</XY>
+            <XY>15 10.0</XY>
+            <XY>30 25.0</XY>
+            <XY>40  0.0</XY>
           </XYPairs>
         </TemperatureFunction>
-        <PhotoperiodFunction name="Photoperiod">
-          <Twilight type="text" description="Twilight">-6</Twilight>
-        </PhotoperiodFunction>
         <GerminatingPhase name="Germinating">
-          <Start type="text" description="Start">Sowing</Start>
-          <End type="text" description="End">Germination</End>
+          <Start>Sowing</Start>
+          <End>Germination</End>
         </GerminatingPhase>
         <EmergingPhase name="Emerging">
           <Start type="text" description="Start">Germination</Start>
           <End type="text" description="End">Emergence</End>
           <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
           <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </EmergingPhase>
         <GenericPhase name="EmergenceToEndJuvenile">
           <Start type="text" description="Start">Emergence</Start>
           <End type="text" description="End">EndJuvenile</End>
           <Constant name="Target">
-            <Value type="text" description="Value">515</Value>
+            <Value type="text" description="Value">700</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="EndJuvenileToInitiation">
           <Start type="text" description="Start">EndJuvenile</Start>
           <End type="text" description="End">FloralInitiation</End>
-          <GenericFunction name="Target">
-            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-            <XYPairs>
-              <XY>10.7 446</XY>
-              <XY>17 0</XY>
-            </XYPairs>
-          </GenericFunction>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <Constant name="Target">
+            <Value type="text" description="Value">300</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="InitiationToFlowering">
           <Start type="text" description="Start">FloralInitiation</Start>
           <End type="text" description="End">Flowering</End>
           <Constant name="Target">
-            <Value type="text" description="Value">33</Value>
+            <Value type="text" description="Value">200</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="FloweringToStartGrainFilling">
           <Start type="text" description="Start">Flowering</Start>
           <End type="text" description="End">StartPodGrowth</End>
           <Constant name="Target">
-            <Value type="text" description="Value">450</Value>
+            <Value type="text" description="Value">100</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="PodFilling">
           <Start type="text" description="Start">StartPodGrowth</Start>
           <End type="text" description="End">Maturity</End>
           <Constant name="Target">
-            <Value type="text" description="Value">690</Value>
+            <Value type="text" description="Value">9400</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="Maturing">
           <Start type="text" description="Start">EndGrainFill</Start>
           <End type="text" description="End">Maturity</End>
           <Constant name="Target">
-            <Value type="text" description="Value">60</Value>
+            <Value type="text" description="Value">500</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="MaturityToHarvestRipe">
           <Start type="text" description="Start">Maturity</Start>
           <End type="text" description="End">HarvestRipe</End>
           <Constant name="Target">
-            <Value type="text" description="Value">1</Value>
+            <Value type="text" description="Value">5</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <EndPhase name="ReadyForHarvesting">
           <Start type="text" description="Start">HarvestRipe</Start>
           <End type="text" description="End">Unused</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/ChickPea2/Model/Plant/Phenology/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
+        <PhaseJumpFunction>
+          <Start type="text" description="Start stage name:">Germination</Start>
+          <End type="text" description="End stage name:">Maturity</End>
+          <Event type="text" description="Look for this event:">Harvest</Event>
+          <PhaseNameToJumpTo type="text" description="Phase name to jump to">EndJuvenileToInitiation</PhaseNameToJumpTo>
+        </PhaseJumpFunction>
       </Phenology>
       <Leaf>
         <Frgr>1</Frgr>

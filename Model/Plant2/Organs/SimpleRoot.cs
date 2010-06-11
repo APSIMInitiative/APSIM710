@@ -8,9 +8,7 @@ public class SimpleRoot : Organ
    {
    private double Uptake = 0;
 
-   
-   [Event] public event ApsimTypeDelegate WaterChanged;
-
+  
    public override Biomass Live { get { return new Biomass(); } }
    public override Biomass Dead { get { return new Biomass(); } }
 

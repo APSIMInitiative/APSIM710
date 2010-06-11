@@ -258,7 +258,7 @@ Public Class GenericUI
         Row.Cells(2).Value = ListItems
         Row.Cells(3).Value = Description
 
-        AddValueCellToRow(Type, Row)
+        AddValueCellToRow(Type, Row, Value)
 
         If Type = "date" Then
             If Value <> "" Then
@@ -272,7 +272,7 @@ Public Class GenericUI
 
         Return Row
     End Function
-    Private Sub AddValueCellToRow(ByVal Type As String, ByVal Row As DataGridViewRow)
+    Private Sub AddValueCellToRow(ByVal Type As String, ByVal Row As DataGridViewRow, ByVal Value As String)
 
         Select Case Type
 
@@ -284,6 +284,7 @@ Public Class GenericUI
 
             Case "list"
                 Dim Combo As New DataGridViewComboBoxCell
+                Combo.Items.Add(Value)
                 If Not IsNothing(Row.Cells(2).Value) Then
                     For Each St As String In Row.Cells(2).Value.Split(",")
                         Combo.Items.Add(St)
@@ -293,6 +294,7 @@ Public Class GenericUI
 
             Case "multilist"
                 Dim Combo As New DataGridViewComboBoxCell
+                Combo.Items.Add(Value)
                 If Not IsNothing(Row.Cells(2).Value) Then
                     For Each St As String In Row.Cells(2).Value.Split(",")
                         Combo.Items.Add(St)
@@ -320,7 +322,6 @@ Public Class GenericUI
             Case "modulename"
                 Dim Combo As New DataGridViewComboBoxCell
                 Row.Cells.Add(Combo)
-
                 Dim Paddock As ApsimFile.Component = Controller.ApsimData.Find(NodePath).FindContainingPaddock()
                 While Not IsNothing(Paddock) AndAlso Paddock.Type.ToLower = "folder"
                     Paddock = Paddock.Parent
@@ -347,6 +348,7 @@ Public Class GenericUI
                             Crops.Add(Child.Name)
                         End If
                     Next
+                    Combo.Items.Add(Value)
                     For Each Crop As String In Crops
                         Combo.Items.Add(Crop)
                     Next
@@ -355,6 +357,7 @@ Public Class GenericUI
             Case "cultivars"
                 Dim Combo As New DataGridViewComboBoxCell
                 Row.Cells.Add(Combo)
+                Combo.Items.Add(Value)
 
                 ' Try and locate a row with crop as the name.
                 Dim CropRow As Integer
@@ -374,6 +377,7 @@ Public Class GenericUI
             Case "classes"
                 Dim Combo As New DataGridViewComboBoxCell
                 Row.Cells.Add(Combo)
+                Combo.Items.Add(Value)
 
                 ' Try and locate a row with crop as the name.
                 Dim CropRow As Integer
@@ -462,24 +466,7 @@ Public Class GenericUI
         If TypeOf Grid.CurrentCell Is DataGridViewComboBoxCell Then
             Dim Combo As DataGridViewComboBoxCell = Grid.CurrentCell
             If Not Combo.Items.Contains(e.FormattedValue) Then
-
-                ' Insert the new value into position 0
-                ' in the item collection of the cell
                 Combo.Items.Insert(0, e.FormattedValue)
-                ' When setting the Value of the cell, the  
-                ' string is not shown until it has been
-                ' comitted. The code below will make sure 
-                ' it is committed directly.
-                If Grid.IsCurrentCellDirty Then
-                    ' Ensure the inserted value will 
-                    ' be shown directly.
-                    ' First tell the DataGridView to commit 
-                    ' itself using the Commit context...
-                    Grid.CommitEdit(DataGridViewDataErrorContexts.Commit)
-                End If
-                ' ...then set the Value that needs 
-                ' to be committed in order to be displayed directly.
-                Combo.Value = Combo.Items(0)
             End If
         End If
     End Sub

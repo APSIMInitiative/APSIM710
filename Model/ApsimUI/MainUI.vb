@@ -708,13 +708,15 @@ Public Class MainUI
     End Sub
 
     Private Sub OnErrorsClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ErrorsButton.Click
-        Dim ErrorNodePath As String = ApsimRunToolStrip.Instance.GetSimulationWithError()
-        If ErrorNodePath <> "" Then
-            ErrorNodePath = ErrorNodePath + "/SummaryFile"
-            If Not IsNothing(SimulationController.ApsimData.Find(ErrorNodePath)) Then
-                SimulationController.SelectedPath = ErrorNodePath
+        Dim SimulationName As String = ApsimRunToolStrip.Instance.GetSimulationWithError()
+        If SimulationName <> "" Then
+            Dim Simulation As Component = SimulationController.ApsimData.RootComponent.FindRecursively(SimulationName, "simulation")
+            If Not IsNothing(Simulation) Then
+                Dim SummaryComponent As Component = Simulation.Find("SummaryFile")
+                If Not IsNothing(SummaryComponent) Then
+                    SimulationController.SelectedPath = SummaryComponent.FullPath
+                End If
             End If
-
         End If
     End Sub
 

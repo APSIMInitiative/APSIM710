@@ -11,7 +11,24 @@ public class Phenology : Instance
    private string CurrentlyOnFirstDayOfPhase = "";
    private Plant Plant;
    [Event] public event NullTypeDelegate GrowthStage;
-   [Output] private string CurrentPhaseName { get { return CurrentPhase.Name; } }
+
+   /// <summary>
+   /// This property is used to retrieve or set the current phase name.
+   /// </summary>
+   [Output] public string CurrentPhaseName 
+      { 
+      get 
+         { 
+         return CurrentPhase.Name; 
+         }
+      set
+         {
+         int PhaseIndex = Phases.IndexOf(value);
+         if (PhaseIndex == -1)
+            throw new Exception("Cannot jump to phenology phase: " + value + ". Phase not found.");
+         CurrentPhase = Phases[PhaseIndex];
+         }
+      }
    
    /// <summary>
    /// Constructor
@@ -37,27 +54,12 @@ public class Phenology : Instance
       double FractionOfDayToUse = CurrentPhase.DoTimeStep(1.0);
       while (FractionOfDayToUse > 0)
          {
-         string OldPhaseName = CurrentPhase.Name;
-
          // Transition to the next phase.
-         CurrentPhaseIndex++;
-         if (CurrentPhaseIndex >= Phases.Count)
+         if (CurrentPhaseIndex+1 >= Phases.Count)
             throw new Exception("Cannot transition to the next phase. No more phases exist");
 
-         CurrentlyOnFirstDayOfPhase = CurrentPhase.Start;
+         CurrentPhase = Phases[CurrentPhaseIndex+1];
 
-         // If the new phase is a rewind phase then reinitialise all phases and rewind back to the
-         // first phase.
-         if (Phases[CurrentPhaseIndex] is RewindPhase)
-            {
-            foreach (Phase P in Phases)
-               P.Initialise();
-            CurrentPhaseIndex = 0;
-            }
-
-         // Send a PhaseChanged event.
-         if (OnPhaseChanged != null)
-            OnPhaseChanged.Invoke(OldPhaseName, CurrentPhase.Name);
          GrowthStage.Invoke();
 
          // Tell the new phase to use the fraction of day left.
@@ -84,6 +86,30 @@ public class Phenology : Instance
       get
          {
          return Phases[CurrentPhaseIndex];
+         }
+      set
+         {
+         string OldPhaseName = CurrentPhase.Name;
+
+         CurrentPhaseIndex = Phases.IndexOf(value.Name);
+         if (CurrentPhaseIndex == -1)
+            throw new Exception("Cannot jump to phenology phase: " + value + ". Phase not found.");
+
+         CurrentlyOnFirstDayOfPhase = CurrentPhase.Start;
+
+         // If the new phase is a rewind phase then reinitialise all phases and rewind back to the
+         // first phase.
+         if (Phases[CurrentPhaseIndex] is RewindPhase)
+            {
+            foreach (Phase P in Phases)
+               P.Initialising();
+            CurrentPhaseIndex = 0;
+            }
+         CurrentPhase.Initialising();
+
+         // Send a PhaseChanged event.
+         if (OnPhaseChanged != null)
+            OnPhaseChanged.Invoke(OldPhaseName, CurrentPhase.Name);
          }
       }
 

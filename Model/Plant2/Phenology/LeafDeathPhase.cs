@@ -12,7 +12,7 @@ public class LeafDeathPhase : Phase
    /// <summary>
    /// Initialise everything
    /// </summary>
-   public override void Initialise()  { _CumulativeValue = 0.0; }
+   public override void Initialising() { _CumulativeValue = 0.0; }
 
    /// <summary>
    /// Do our timestep development

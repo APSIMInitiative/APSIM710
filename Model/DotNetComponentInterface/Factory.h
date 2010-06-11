@@ -22,26 +22,27 @@ public ref class Factory
          {
          List<FactoryProperty^>^ get() { return RegisteredProperties; }
          }
-      property List<FactoryEventHandler^>^ EventHandlers 
+      property List<EvntHandler^>^ EventHandlers 
          {
-         List<FactoryEventHandler^>^ get() { return RegisteredEventHandlers; }
+         List<EvntHandler^>^ get() { return RegisteredEventHandlers; }
          }
       property List<FactoryEvent^>^ Events 
          {
          List<FactoryEvent^>^ get() { return RegisteredEvents; }
          }
-      void Create(String^ Xml, Assembly^ Assembly);
-      void Create(XmlNode^ Node, Assembly^ Assembly);
-      void PopulateParams(Instance^ Obj, XmlNode^ Node);
+      void Create(String^ Xml, Assembly^ Assembly, ModelFramework::ApsimComponent^ ParentComponent);
+      //void Create(XmlNode^ Node, Assembly^ Assembly);
+      void PopulateParams(Instance^ Obj, XmlNode^ Node, ModelFramework::ApsimComponent^ ParentComponent);
       void ThrowOnUnInitialisedParameters();
    private:
       Instance^ _Root;
       List<FactoryProperty^>^ RegisteredProperties;
-      List<FactoryEventHandler^>^ RegisteredEventHandlers;
+      List<EvntHandler^>^ RegisteredEventHandlers;
       List<FactoryEvent^>^ RegisteredEvents;
       Assembly^ CallingAssembly;
       
-      Instance^ CreateInstance(XmlNode^ Node, XmlNode^ Parent, Instance^ ParentInstance);
+      Instance^ CreateInstance(XmlNode^ Node, XmlNode^ Parent, Instance^ ParentInstance,
+                               ModelFramework::ApsimComponent^ ParentComponent);
       void GetAllProperties(Instance^ Obj, XmlNode^ Parent);
       void GetAllEventHandlers(Instance^ Obj);
       void GetAllEvents(Instance^ Obj);

@@ -50,6 +50,15 @@ public ref class NamedList : List<T>
             }
          return false;
          }         
+      int IndexOf(String^ NameToFInd)
+         {
+         for (int i = 0; i < this->Count; i++)
+            {
+            if (this[i]->Name->ToLower() == NameToFInd->ToLower())
+               return i;
+            }
+         return -1;
+         }           
    };
 
 

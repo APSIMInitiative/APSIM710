@@ -1,5 +1,6 @@
 #pragma once
 #include "VariableType.h"
+#include "RuntimeEventHandler.h"
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Collections::Specialized;
@@ -98,7 +99,11 @@ public ref class ComponentType : public TypedItem
          ParentComponent->Publish(Name + "." + EventName, Data);
          }
          
-         
+      void Subscribe(String^ EventName, RuntimeEventHandler::NullFunction^ F) 
+         {
+         RuntimeEventHandler^ Event = gcnew RuntimeEventHandler(EventName, F);
+         ParentComponent->Subscribe(Event);
+         }
          
 
       

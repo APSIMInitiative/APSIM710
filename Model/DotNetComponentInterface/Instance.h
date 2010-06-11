@@ -29,7 +29,6 @@ public ref class LayeredList : List<T>
 public ref class Instance : NamedItem
    {
    private:
-      //static PaddockType^ _Paddock;
       String^ MyFQN()
          {
          String^ FQN = "";
@@ -38,7 +37,6 @@ public ref class Instance : NamedItem
          FQN += Name;
          return FQN;
          }
-      String^ ComponentName;
       ModelFramework::ApsimComponent^ Component;
    
    protected:
@@ -88,22 +86,20 @@ public ref class Instance : NamedItem
             return ((Instance^) Children[ChildName])->Find(Remainder);
             }
          }         
-      void Setup(String^ ComponentNam, ModelFramework::ApsimComponent^ component) 
-         {
-         ComponentName = ComponentNam;
-         Component = component;
-         Initialise();
-         }
-      void Initialise(String^ Nam, Instance^ Paren)
+      void Initialise(String^ Nam, Instance^ Paren, ModelFramework::ApsimComponent^ ParentComponent)
          {
          Name = Nam;
          Parent = Paren;
+         Component = ParentComponent;
          Children->ParentName = MyFQN();
-         Initialise();
+         Initialising();
          }
-      virtual void Initialise()
+      virtual void Initialising()
          {
          }
+      virtual void Initialised()
+         {
+         }         
       property Instance^ Root 
          { 
          virtual Instance^ get() 

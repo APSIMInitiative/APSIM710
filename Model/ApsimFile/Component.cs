@@ -522,6 +522,26 @@ namespace ApsimFile
          return Paddock;
          }
 
+      public Component FindRecursively(string ComponentName, string ComponentType)
+         {
+         // ------------------------------------------------------
+         // Recursively locates a component with the specified name
+         // ------------------------------------------------------
+
+         if (ComponentName == "")
+            throw new Exception("Cannot call FindRecursively with a blank name");
+         if (ComponentName.ToLower() == Name.ToLower() &&
+             (ComponentType == "" || ComponentType.ToLower() == Type.ToLower()))
+            return this;
+
+         foreach (Component Child in ChildNodes)
+            {
+            Component FoundComponent = Child.FindRecursively(ComponentName, ComponentType);
+            if (FoundComponent != null)
+               return FoundComponent;
+            }
+         return null;
+         }
       public void Replace(string Xml)
          {
          // -------------------------------------------------------

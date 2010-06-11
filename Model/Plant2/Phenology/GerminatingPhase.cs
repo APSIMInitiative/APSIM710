@@ -6,7 +6,7 @@ using CSGeneral;
 
 class GerminatingPhase : Phase
    {
-   [Input] private double[] ESW;
+   [Input] private double[] ESW = null;
 
    /// <summary>
    /// Do our timestep development

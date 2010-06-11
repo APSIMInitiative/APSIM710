@@ -72,15 +72,15 @@
             <XY>35 0.0</XY>
           </XYPairs>
         </TemperatureFunction>
-        <FixedPhase name="Shock">
+        <GenericPhase name="Shock">
           <Constant name="Target">
             <Value>80</Value>
           </Constant>
           <Start>Transplanting</Start>
           <End>EndShock</End>
           <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
-        </FixedPhase>
-        <FixedPhase name="Juvenile">
+        </GenericPhase>
+        <GenericPhase name="Juvenile">
           <GenericFunction name="Target">
             <XProperty>Phenology.Vernalisation.CumulativeVD</XProperty>
             <XYPairs>
@@ -91,29 +91,29 @@
           <Start>EndShock</Start>
           <End>FloralInitiation</End>
           <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
-        </FixedPhase>
+        </GenericPhase>
         <LeafAppearancePhase name="Vegetative">
           <Start>FloralInitiation</Start>
           <End>StartBudding</End>
           <RemainingLeaves>10.</RemainingLeaves>
           <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
         </LeafAppearancePhase>
-        <FixedPhase name="Budding">
+        <GenericPhase name="Budding">
           <Constant name="Target">
             <Value>120</Value>
           </Constant>
           <Start>StartBudding</Start>
           <End>Buttoning</End>
           <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
-        </FixedPhase>
-        <FixedPhase name="Heading">
+        </GenericPhase>
+        <GenericPhase name="Heading">
           <Constant name="Target">
             <Value>180</Value>
           </Constant>
           <Start>Buttoning</Start>
           <End>Maturity</End>
           <TemperatureFunction shortcut="/broccoli/Model/Plant/Phenology/ThermalTime" />
-        </FixedPhase>
+        </GenericPhase>
         <EndPhase name="Mature">
           <Start>Maturity</Start>
           <End>Unused</End>

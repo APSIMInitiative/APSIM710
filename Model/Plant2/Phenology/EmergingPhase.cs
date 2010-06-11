@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-class EmergingPhase : FixedPhase
+class EmergingPhase : GenericPhase
    {
    private double SowingDepth;
    [Param] private double ShootLag = 0;

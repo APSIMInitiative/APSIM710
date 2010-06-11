@@ -49,6 +49,7 @@ public ref class ApsimComponent
       void Get(String^ PropertyName, ApsimType^ Data);		
       void Set(String^ PropertyName, ApsimType^ Data);
       void Publish(String^ EventName, ApsimType^ Data);
+      void Subscribe(EvntHandler^ Event);
       
       String^ GetName() {return Name;}
 

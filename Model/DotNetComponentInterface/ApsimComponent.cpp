@@ -210,7 +210,7 @@ unsigned ApsimComponent::CallBack(int RegistrationIndex, char* messageData, int 
  			Registrations[RegistrationIndex]->pack(messageData);
 		else if (OpCode == 2)
 		   {
-		   bool IsEvent = dynamic_cast<FactoryEventHandler^>(Registrations[RegistrationIndex]) != nullptr;
+		   bool IsEvent = dynamic_cast<EvntHandler^>(Registrations[RegistrationIndex]) != nullptr;
 		   if (IsEvent && Init2Received)
 	   	   GetAllInputs();
          Registrations[RegistrationIndex]->unpack(messageData);
@@ -250,13 +250,9 @@ void ApsimComponent::RegisterAllEventHandlers(Factory^ F)
 	// Look for all event handlers and register them.
 	// ----------------------------------------------
 	for (int i = 0; i != F->EventHandlers->Count; i++)
-	   {
-	   FactoryEventHandler^ Event = F->EventHandlers[i];
-      int RegistrationIndex = Registrations->Count;
-      Registrations->Add(Event);
-      CISubscribe(ComponentI, Event->EventName, &::CallBack, instanceNumber, RegistrationIndex, Event->DDML());
-      }
+	   Subscribe(F->EventHandlers[i]);
    }
+
 
 void ApsimComponent::GetAllInputs()
    {
@@ -300,6 +296,12 @@ void ApsimComponent::Publish(String^ EventName, ApsimType^ Data)
          instanceNumber, RegistrationIndex, Data->DDML());
    Registrations->RemoveAt(RegistrationIndex);
    }
+void ApsimComponent::Subscribe(EvntHandler^ Event)
+   {
+   int RegistrationIndex = Registrations->Count;
+   Registrations->Add(Event);
+   CISubscribe(ComponentI, Event->EventName, &::CallBack, instanceNumber, RegistrationIndex, Event->DDML());
+   }   
 void ApsimComponent::TrapAllEvents(Factory^ F)
 	{
 	// ----------------------------------------------
@@ -328,9 +330,8 @@ void ApsimComponent::BuildObjects(XmlNode^ XML)
 	// Build all objects based on the XML passed in.
 	// ----------------------------------------------
    Fact = gcnew Factory();
-   Fact->Create(XML->OuterXml, modelAssembly);
+   Fact->Create(XML->OuterXml, modelAssembly, this);
    Model = dynamic_cast<Instance^> (Fact->Root);
-   Model->Setup(Name, this);
    String^ InstanceName = Name;
    if (InstanceName->Contains("."))
       {
@@ -424,7 +425,7 @@ void ApsimComponent::CallEventHandlers(String^ EventName, SowType^ Data)
    //Parameters[0] = Data;
 	for (int i = 0; i != Fact->EventHandlers->Count; i++)
 	   {
-	   FactoryEventHandler^ Event = Fact->EventHandlers[i];
+	   EvntHandler^ Event = Fact->EventHandlers[i];
 	   if (Event->EventName->Compare(Event->EventName, EventName) == 0)
 	      Event->Invoke(Data);
       }
@@ -541,9 +542,8 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
    if (ModelDescription != nullptr)
       {
       Fact = gcnew Factory();
-      Fact->Create(ModelDescription->OuterXml, modelAssembly);
+      Fact->Create(ModelDescription->OuterXml, modelAssembly, this);
       Model = dynamic_cast<Instance^> (Fact->Root);
-      Model->Setup(Name, this);
 
       // get description for all properties.
       for (int i = 0; i != Fact->Properties->Count; i++)
