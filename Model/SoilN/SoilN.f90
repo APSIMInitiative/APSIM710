@@ -703,18 +703,16 @@ subroutine soiln2_zero_all_globals ()
    g%day_of_year      = 0
    g%year             = 0
    g%root_CN          = 0.0
-   g%root_CN_pool(:)  = 0.0
    g%root_wt          = 0.0
-   g%root_depth       = 0.0
    g%soil_CN          = 0.0
    g%biom_C(:)        = 0.0
    g%biom_N(:)        = 0.0
    g%fom_N(:)         = 0.0
    g%fom_c_pool(:, :)   = 0.0
+   g%fom_n_pool(:, :) = 0.0
    g%dlt_fom_c_pool1(:) = 0.0
    g%dlt_fom_c_pool2(:) = 0.0
    g%dlt_fom_c_pool3(:) = 0.0
-   g%fom_n_pool(:, :) = 0.0
    g%hum_C(:)         = 0.0
    g%hum_N(:)         = 0.0
    g%inert_C(:)       = 0.0
@@ -733,23 +731,18 @@ subroutine soiln2_zero_all_globals ()
    g%dlt_fom_C_atm(:,:)   = 0.0
    g%dlt_fom_C_biom(:,:)  = 0.0
    g%dlt_fom_C_hum(:,:)   = 0.0
-   g%dlt_fom_n(:, :)      = 0.0
    g%dlt_fom_N_min(:)     = 0.0
    g%dlt_hum_C_atm(:)     = 0.0
    g%dlt_hum_C_biom(:)    = 0.0
    g%dlt_hum_N_min(:)     = 0.0
    g%dlt_N_decomp(:)      = 0.0
    g%dlt_fom_N_incorp(:)    = 0.0
+   g%dlt_fom_n(:,:)         = 0.0
    g%dlt_res_c_atm(:, :)    = 0.0
    g%dlt_res_c_biom(:, :)   = 0.0
    g%dlt_res_c_hum(:, :)    = 0.0
-   g%soilp_dlt_res_c_atm(:) = 0.0
-   g%soilp_dlt_res_c_hum(:) = 0.0
-   g%soilp_dlt_res_c_biom(:)= 0.0
-   g%soilp_dlt_org_p(:)     = 0.0
    g%pot_C_decomp(:)        = 0.0
    g%pot_N_decomp(:)        = 0.0
-   g%pot_P_decomp(:)        = 0.0
    g%dlt_res_C_decomp(:, :) = 0.0
    g%dlt_res_N_decomp(:, :) = 0.0
    g%dlt_res_nh4_min (:)    = 0.0
@@ -773,18 +766,14 @@ subroutine soiln2_zero_all_globals ()
    g%sw_dep(:)              = 0.0
    g%dlt_N_sed              = 0.0
    g%dlt_C_loss_sed         = 0.0
-   g%p_N_reduction          = 0
-   g%dlt_rntrf(:)         = 0.0
-   g%dlt_urea_hydrol(:)   = 0.0
-   g%excess_nh4(:)        = 0.0
+   g%p_N_reduction    = 0
    g%oldC = 0.0
    g%oldN = 0.0
-   g%soiltype           = blank
-   g%pond_active = 'no'
-   g%residue_module     = blank
+   g%use_organic_solutes = .false.
    g%residue_name(:)    = blank
    g%residue_type(:)     = blank
    g%fom_types(:)         = blank
+   g%pond_active = 'no'
 
    ! I think that this needs to be true by default
    ! for comms to work - NIH
@@ -792,8 +781,10 @@ subroutine soiln2_zero_all_globals ()
    ! Not sure about these - NIH
    g%use_external_tav_amp = .false.
    g%use_external_ph      = .false.
-   g%use_organic_solutes = .false.
 
+   g%dlt_rntrf(:)         = 0.0
+   g%dlt_urea_hydrol(:)   = 0.0
+   g%excess_nh4(:)        = 0.0
 
       ! Constants
    c%CNrf_coeff            = 0.0
@@ -801,7 +792,7 @@ subroutine soiln2_zero_all_globals ()
    c%fom_min               = 0.0
    c%fr_fom(:,:)           = 0.0
    c%OC2OM_factor          = 0.0
-   c%opt_temp(:)           = 0.0
+   c%opt_temp(2)           = 0.0
    c%NH4ppm_min            = 0.0
    c%no3ppm_min            = 0.0
    c%wf_min_index(:)       = 0.0
@@ -1207,6 +1198,7 @@ subroutine soiln2_send_my_variable (variable_name)
    real       org_n (max_layer)     ! organic n
    real       oc_percent(max_layer) ! organic c %
    real       temp(max_layer)
+   character   err_string*80
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
@@ -1839,6 +1831,7 @@ subroutine soiln2_set_my_variable (variable_name)
    character*80 string              ! tmp
    integer      pool_num            ! pool number
    character    error_string*100    ! error string
+   character    err_string*80
       real       dltN
       real       oldN(max_layer)       ! temporary array
 
@@ -2192,7 +2185,7 @@ subroutine soiln2_init_calc ()
    cum_depth = 0.0
    previous_cum_depth = 0.0
 
-   do layer = 1,INT(deepest_layer)  ! Should this be INT() or NINT() ??
+   do layer = 1,deepest_layer
       cum_depth = cum_depth + g%dlayer(layer)
       factor=min(1.0,divide((g%root_depth - previous_cum_depth),g%dlayer(layer),0.0))
       root_distrib(layer) = exp (-3.0*min(1.0,divide(cum_depth,g%root_depth,0.0)))*factor
@@ -2597,6 +2590,7 @@ subroutine soiln2_soil_temp (soil_temp)
    integer    layer                 ! layer counter
    integer    num_layers            ! number of layers
    integer    numvals               ! number of values returned
+
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
@@ -3223,6 +3217,8 @@ subroutine soiln2_process ()
    parameter (my_name = 'soiln2_process')
 
 !+  Local Variables
+      character  error_string *80      ! error message if inadequate N
+                                    ! for immobilization
    integer    layer                 ! soil layer count
    integer    numvals
    integer    num_layers            ! number of soil layers used
@@ -3235,6 +3231,7 @@ subroutine soiln2_process ()
    real       fom_cn                ! CN ratio of fom
    real       dlt_pond_c_hum        ! humic material from breakdown of residues in pond (if present)
    real       dlt_pond_c_biom       ! biom material from breakdown of residues in pond (if present)
+   character  err_string*120
 
 !- Implementation Section ----------------------------------
 
@@ -3371,7 +3368,7 @@ subroutine soiln2_process ()
 
        g%no3(layer) = l_bound (g%no3(layer), g%no3_min(layer))
 
-	  ! nitrification of some ammonium-N
+       ! nitrification of some ammonium-N
 
        call soiln2_nitrification (layer, dlt_rntrf)
 
@@ -3618,6 +3615,7 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
                                     ! rates if insufficient N to meet
                                     ! immobilization demand
    real       fom_cn                ! CN ratio of fom pool
+   character  err_string*80
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
@@ -4551,7 +4549,7 @@ subroutine soiln2_notification ()
    solute_names(6) = 'org_c_pool3'
    solute_names(7) = 'org_n'
 
-   if (g%use_organic_solutes) then
+   if (g%use_organic_solutes .eq. .true.) then
       ! publish all the solutes including the organic ones
       numsolutes = 7
    else
@@ -4912,14 +4910,6 @@ subroutine Soiln2_ONNew_Profile (variant)
 !   g%sw_dep(:) = 0.0
 !   g%bd(:) = 0.0
 
-   newProfile%dlayer(:) = 0.0
-   newProfile%air_dry_dep(:) = 0.0
-   newProfile%ll15_dep(:) = 0.0
-   newProfile%dul_dep(:) = 0.0
-   newProfile%sat_dep(:) = 0.0
-   newProfile%sw_dep(:) = 0.0
-   newProfile%bd(:) = 0.0
-
    call unpack_newProfile(variant, newProfile)
 
    g%ll15_dep(:) = newProfile%ll15_dep
@@ -5013,6 +5003,7 @@ subroutine Main (action, data_string)
 !+  Constant Values
    character  my_name*(*)
    parameter (my_name='APSIM_SoilN2')
+   character  err_string*120         ! Error message string
 
 !- Implementation Section ----------------------------------
 
