@@ -45,7 +45,7 @@ public class TestPlant
                    "</Plant>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
 
       Plant P = (Plant)Factory.Root;
       Assert.IsNotNull(P);

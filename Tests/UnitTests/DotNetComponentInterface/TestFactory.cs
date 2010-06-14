@@ -45,7 +45,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       Comp1 Model = (Comp1)Factory.Root;
       Assert.AreEqual(Model.Params.Length, 3);
       Assert.AreEqual(Model.Params[0], "A,");
@@ -68,7 +68,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       Comp1 Model = (Comp1)Factory.Root;
       Assert.AreEqual(Model.Param1, 12);
       Assert.AreEqual(Model.NewMet.maxt, 30);
@@ -86,7 +86,7 @@ public class TestFactory
                    "   <NotAParam>12</NotAParam>" +
                    "</Comp1>";
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       }
 
    [Test] 
@@ -101,7 +101,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       Comp1 Model = (Comp1)Factory.Root;
       Assert.AreEqual(Model.Param2, 12);
       }
@@ -117,7 +117,7 @@ public class TestFactory
                    "   <Param2>12</Param2>" +
                    "</Comp1>";
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       }
    
    [Test] 
@@ -132,7 +132,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       Comp1 Model = (Comp1)Factory.Root;
       Assert.AreEqual(Model.GetParam3(), 12);
       }
@@ -149,7 +149,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       List<FactoryProperty> Properties = Factory.Properties;
       Assert.AreEqual(Properties.Count, 6);
       Assert.AreEqual(Properties[0].Name, "Param1");
@@ -173,8 +173,8 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
-      List<FactoryEventHandler> Events = Factory.EventHandlers;
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
+      List<EvntHandler> Events = Factory.EventHandlers;
       Assert.AreEqual(Events.Count, 2);
       Assert.AreEqual(Events[0].EventName, "NewMet");
       Assert.AreEqual(Events[0].Typ.Name, "NewMetType");
@@ -196,7 +196,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       SubComp SubComp = (SubComp)Factory.Root.Children[0];
       Assert.AreEqual(SubComp.SubParam1, 1);
       }
@@ -218,7 +218,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       Assert.AreEqual(Factory.Properties.Count, 8);
       Assert.AreEqual(Factory.Properties[0].FQN, "Param1");
       Assert.AreEqual(Factory.Properties[7].FQN, "LeafTTSubParam1");
@@ -241,7 +241,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       Assert.AreEqual(Factory.Properties.Count, 8);
       Assert.AreEqual(Factory.Properties[0].FQN, "Param1");
       Assert.AreEqual(Factory.Properties[7].FQN, "StemSubParam1");
@@ -267,7 +267,7 @@ public class TestFactory
                    "</Comp1>";
 
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly());
+      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
       Factory.ThrowOnUnInitialisedParameters();
       }
 

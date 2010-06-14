@@ -25,7 +25,7 @@ public class TestRoot
                    "   </Root>";
       Root Root = new Root();
       Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetAssembly(Root.GetType()));
+      Factory.Create(Xml, Assembly.GetAssembly(Root.GetType()), null);
 
       Root = (Root)Factory.Root;
       Assert.IsNotNull(Root);

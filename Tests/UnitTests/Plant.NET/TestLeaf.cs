@@ -48,7 +48,7 @@ public class TestLeaf
                    "</Plant>";
       Factory Factory = new Factory();
       Leaf Leaf = new Leaf();
-      Factory.Create(Xml, Assembly.GetAssembly(Leaf.GetType()));
+      Factory.Create(Xml, Assembly.GetAssembly(Leaf.GetType()), null);
 
       Leaf = (Leaf)Factory.Root.Children[0];
       Assert.IsNotNull(Leaf);
