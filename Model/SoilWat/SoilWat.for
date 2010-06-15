@@ -5001,8 +5001,6 @@ c dsg 070302 added runon
             call Message_unused ()
          endif
 
-
-
       else if (variable_name .eq. 'water_table') then
          call respond2get_real_var ('water_table','mm',g%water_table)
 
@@ -5061,6 +5059,7 @@ c dsg 070302 added runon
 
 * ====================================================================
 * Globals
+! 	Met and date fields are zeroed in zero_event_data
 c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
          g%cover_surface_runoff = 0.0         ! effective total cover (0-1)
          g%cover_tot(:) = 0.0                 ! total canopy cover of crops (0-1)
@@ -5120,6 +5119,7 @@ c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
          g%drain = 0.0                        ! drainage rate from bottom layer (cm/d)
          g%infiltration = 0.0                 ! infiltration (mm)
          g%runoff = 0.0                       ! runoff (mm)
+		 g%runoff_pot = 0.0                   ! potential runoff with no pond(mm)  
          g%irrigation = 0.0                   ! irrigation (mm)
          g%obsrunoff = 0.0                    ! observed runoff (mm)
          g%tillage_cn_red = 0.0               ! reduction in CN due to tillage ()
@@ -5277,6 +5277,7 @@ c         g%crop_module(:) = ' '               ! list of modules
 
          g%year = 0                           ! year
          g%day  = 0                           ! day of year
+         g%today  = 0                         ! Julian date
          g%rain = 0.0                         ! precipitation (mm/d)
          g%runon = 0.0                        ! run on H20 (mm/d)
          g%interception = 0.0
@@ -7494,6 +7495,8 @@ c
      .                     'water_table', floatTypeDDML, 'mm')
       dummy = add_registration_with_units(respondToGetReg, 'sws',
      .                     floatarrayTypeDDML, 'mm/mm')
+      dummy = add_registration_with_units(respondToGetReg, 
+     .                     'outflow_lat', floatarrayTypeDDML, 'mm')
 
       ! variables that are settable
       dummy = add_registration_with_units(respondToSetReg, 'insoil',
