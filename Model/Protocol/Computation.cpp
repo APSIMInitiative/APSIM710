@@ -196,7 +196,7 @@ bool Computation::loadComponent(const std::string& filename,
              }
           else 
              {
-             componentInterface = getExecutableDirectory() + "/" + componentInterface;
+             componentInterface = fileDirName(executableFileName) + "/" + componentInterface;
              handle = loadDLL(componentInterface.c_str());
              }
 #else
@@ -256,6 +256,9 @@ bool Computation::loadComponent(const std::string& filename,
 // ------------------------------------------------------------------
 void Computation::unloadComponent(void)
    {
-   if (handle) 
-     closeDLL(handle);
+   if (handle)
+	 {
+	   closeDLL(handle);
+	   handle = NULL;
+	 }
    }
