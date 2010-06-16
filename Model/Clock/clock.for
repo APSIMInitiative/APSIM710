@@ -300,7 +300,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
             TodayPercentDone = (g%current_date - g%start_date) /
      :                         (g%end_date - g%start_date) * 100
             TodayPercentDone = TodayPercentDone / 5 * 5
-            if (g%PercentDone <> TodayPercentDone .and.
+            if (g%PercentDone .ne. TodayPercentDone .and.
      :          TodayPercentDone .lt. 100 ) then
                write(str, '(a1, i3)') '%', TodayPercentDone
                call writeStdErr(str)
