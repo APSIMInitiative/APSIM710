@@ -26,6 +26,7 @@ module Registrations
       integer :: post
       integer :: actualresiduedecompositioncalculated
       integer :: BiomassRemoved
+      integer :: dummy
 
    end type IDsType
 
@@ -35,6 +36,19 @@ module Registrations
          use Infrastructure
          type(IDsType) :: id
 
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_wt', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_c', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_n', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_p', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_ashalk', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_no3', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_nh4', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_labile_p', floatTypeDDML, 'kg/ha', '')
+         id%dummy = add_reg(respondToGetReg, 'surfaceom_cover', floatTypeDDML, 'm^2/m^2', '')
+         id%dummy = add_reg(respondToGetReg, 'tf', floatTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'wf', floatTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'cf', floatTypeDDML, '', '')
+         id%dummy = add_reg(respondToGetReg, 'leaching_fr', floatTypeDDML, '', '')
          id%potentialresiduedecompositioncalculated = add_registration(eventReg, 'potentialresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
          id%surfaceorganicmatterstate = add_registration(eventReg, 'surfaceorganicmatterstate', SurfaceOrganicMatterTypeDDML, '')
          id%IncorpFOMPool = add_registration(eventReg, 'IncorpFOMPool', FOMPoolTypeDDML, '')
@@ -55,10 +69,11 @@ module Registrations
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
          id%irrigated = add_registration(respondToEventReg, 'irrigated', ApsimVariantTypeDDML, '')
          id%crop_chopped = add_registration(respondToEventReg, 'crop_chopped', ApsimVariantTypeDDML, '')
-         id%BiomassRemoved = add_registration(respondToEventReg, 'BiomassRemoved', nullTypeDDML, '')
+         id%BiomassRemoved = add_registration(respondToEventReg, 'BiomassRemoved', BiomassRemovedTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
          id%actualresiduedecompositioncalculated = add_registration(respondToEventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
-      end subroutine
+
+	 end subroutine
 end module Registrations
 

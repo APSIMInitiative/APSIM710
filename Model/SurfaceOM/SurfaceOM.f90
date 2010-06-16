@@ -504,6 +504,7 @@ subroutine surfom_read_param ()
    integer   cnr_pool_flag                   ! flag indicating whether cnr fpool info is provided
    integer   cpr_pool_flag                   ! flag indicating whether cpr fpool info is provided
    integer   residue_number                  ! number of residue type in the c%fom_types array
+   integer   dummy                     
    character temp_type(max_residues)*32      ! temporary array for residue types
    character temp_name(max_residues)*32      ! temporary array for resiude names
    real      temp_wt(max_residues)
@@ -584,7 +585,7 @@ subroutine surfom_read_param ()
    do  i = 1,g%num_surfom
 
      ! collect relevant type-specific constants from the ini-file
-     call surfom_read_type_specific_constants(temp_type(i),i)
+      call surfom_read_type_specific_constants(temp_type(i),i)
 
       g%SurfOM(i)%name = temp_name(i)
       g%SurfOM(i)%OrganicMatterType = temp_type(i)
@@ -609,6 +610,30 @@ subroutine surfom_read_param ()
       g%SurfOM(i)%Lying(1:MaxFr)%N  = tot_n(i) *  c%fr_pool_n(1:MaxFr,i) * (1 - p%standing_fraction(i))
       g%SurfOM(i)%Lying(1:MaxFr)%P  = tot_p(i) *  c%fr_pool_p(1:MaxFr,i) * (1 - p%standing_fraction(i))
       g%SurfOM(i)%Lying(1:MaxFr)%AshAlk = 0.0
+	  
+      dummy = add_reg(respondToGetReg, 'surfaceom_wt_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_c_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_n_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_p_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_ashalk_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_no3_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_nh4_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_labile_p_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_c1_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_c2_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_c3_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_n1_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_n2_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_n3_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_p1_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_p2_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_p3_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_c_decomp_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_n_decomp_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_p_decomp_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
+      dummy = add_reg(respondToGetReg, 'standing_fr_' // g%surfOM(i)%name, floatTypeDDML, '', '')
+      dummy = add_reg(respondToGetReg, 'surfaceom_cover_' // g%surfOM(i)%name, floatTypeDDML, 'm^2/m^2', '')
+      dummy = add_reg(respondToGetReg, 'crnf_' // g%surfOM(i)%name, floatTypeDDML, '', '')
 
    end do
 
@@ -2682,6 +2707,12 @@ subroutine SurfOMOnBiomassRemoved (variant)
    real       surfom_N_added        ! amount of residue N added (kg/ha)
    real       surfom_P_added       ! amount of residue N added (kg/ha)
    type(BiomassRemovedType) :: BiomassRemoved
+   
+   ! For gfortran, ensure these arrays are initialised to 0
+   BiomassRemoved%fraction_to_Residue(:) = 0.0
+   BiomassRemoved%dlt_crop_dm(:) = 0.0
+   BiomassRemoved%dlt_dm_N(:) = 0.0
+   BiomassRemoved%dlt_dm_P(:) = 0.0
 
    call unpack_BiomassRemoved(variant, BiomassRemoved)
 
