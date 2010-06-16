@@ -35,6 +35,7 @@ module Registrations
       subroutine doRegistrations(id)
          use Infrastructure
          type(IDsType) :: id
+		 integer :: dummy
 
          id%lightprofilecalculated = add_registration(eventReg, 'lightprofilecalculated', LightProfileTypeDDML, '')
          id%canopywaterbalancecalculated = add_registration(eventReg, 'canopywaterbalancecalculated', CanopyWaterBalanceTypeDDML, '')
@@ -61,6 +62,16 @@ module Registrations
          id%newpotentialgrowth = add_registration(respondToEventReg, 'newpotentialgrowth', NewPotentialGrowthTypeDDML, '')
          id%sys_init = add_registration(respondToEventReg, 'sys_init', nullTypeDDML, '')
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'interception', floatTypeDDML, 'mm')
+         dummy = add_registration_with_units(respondToGetReg, 'gc', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'ga', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'petr', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'peta', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'net_radn', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'net_rs', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'net_rl', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'soil_heat', floatTypeDDML, '')
+         dummy = add_registration_with_units(respondToGetReg, 'dryleaffraction', floatTypeDDML, '')
       end subroutine
 end module Registrations
 
