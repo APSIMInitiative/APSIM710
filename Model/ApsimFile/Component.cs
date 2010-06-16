@@ -319,11 +319,19 @@ namespace ApsimFile
                XmlNode SoilNode = Doc.DocumentElement.ChildNodes[0];
                XmlNode InitWaterNode = XmlHelper.FindByType(SoilNode, "InitWater");
                XmlNode InitNitrogenNode = XmlHelper.FindByType(SoilNode, "InitNitrogen");
-               XmlNode SoilSampleNode = XmlHelper.FindByType(SoilNode, "SoilSample");
+               XmlNode SoilSampleNode = XmlHelper.FindByType(SoilNode, "Sample");
                if (InitWaterNode == null && InitNitrogenNode == null && SoilSampleNode == null)
                   {
-                  SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("InitWater"));
-                  SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("InitNitrogen"));
+                  InitWaterNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("InitWater"));
+                  InitWaterNode.InnerXml = 
+                      "<percentmethod>" +
+                      "  <percent>1</percent>" +
+                      "  <distributed>filled from top</distributed>" +
+                      "</percentmethod>";
+
+                  InitNitrogenNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("Sample"));
+                  XmlHelper.SetName(InitNitrogenNode, "Initial nitrogen");
+                  InitNitrogenNode.InnerXml = "<Date type=\"date\" description=\"Sample date:\" />";
                   }
                }
 

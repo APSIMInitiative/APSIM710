@@ -1,11 +1,11 @@
 <folder version="23" name="simulations">
-  <simulation name="ReleasedWheat">
+  <simulation name="ReleasedMaize">
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">1/4/1940</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">31/12/1940</end_date>
+      <start_date type="date" description="Enter the start date of the simulation">01/04/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">30/06/1941</end_date>
     </clock>
     <summaryfile>
       <filename name="filename">Continuous Wheat Simulation.sum</filename>
@@ -258,6 +258,74 @@
             </Layer>
           </SoilCrop>
           <SoilCrop name="Lucerne">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.29</LL>
+              <KL units="/day">0.1</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.29</LL>
+              <KL>0.1</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.29</LL>
+              <KL>0.1</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.29</LL>
+              <KL>0.1</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.3</LL>
+              <KL>0.09</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.31</LL>
+              <KL>0.09</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.32</LL>
+              <KL>0.09</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.33</LL>
+              <KL>0.09</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.34</LL>
+              <KL>0.09</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.35</LL>
+              <KL>0.09</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.36</LL>
+              <KL>0.09</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="Lucerne2">
             <Layer>
               <Thickness units="mm">150</Thickness>
               <LL units="mm/mm">0.29</LL>
@@ -930,17 +998,17 @@
         <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
       </surfaceom>
       <fertiliser />
-      <wheat />
+      <maize />
       <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
-            <category description="Sowing criteria" />
-            <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category description="Sowing parameters" />
-            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">150</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+            <category type="category" description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">1-nov</date>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">maize</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">dekalb_xl82</cultivar>
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
           </ui>
@@ -955,13 +1023,12 @@
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category description="Harvesting criteria" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize</crop>
           </ui>
           <script name="end_of_day">
             <text>
-
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+           if ([crop].stage = 11) then
               [crop]  harvest
               [crop]  end_crop
            endif
@@ -976,6 +1043,13 @@
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="stage" array="No" description="Plant stage" />
           <variable name="stagename" array="No" description="Plant stage name" />
+          <variable name="leaf_no_final" />
+          <variable name="leaf_no" array="No" />
+          <variable name="leaf_no_dead()" array="Yes" />
+          <variable name="tt_tot()" />
+          <variable name="tt_tot" />
+          <variable name="phase_tt" />
+          <variable name="lai" />
         </variables>
         <events name="Reporting Frequency">
           <event name="daily" />
@@ -983,40 +1057,108 @@
       </outputfile>
     </area>
   </simulation>
-  <simulation name="Wheat2" shortcut="/simulations/ReleasedWheat">
-    <metfile name="met" shortcut="/simulations/ReleasedWheat/met" />
-    <clock shortcut="/simulations/ReleasedWheat/clock" />
-    <summaryfile shortcut="/simulations/ReleasedWheat/summaryfile" />
-    <area name="paddock" shortcut="/simulations/ReleasedWheat/paddock">
-      <soil name="Soil" shortcut="/simulations/ReleasedWheat/paddock/Soil">
-        <Water shortcut="/simulations/ReleasedWheat/paddock/Soil/Water">
-          <SoilCrop name="Barley" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/Barley" />
-          <SoilCrop name="Chickpea" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/Chickpea" />
-          <SoilCrop name="Lucerne" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/Lucerne" />
-          <SoilCrop name="Maize" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/Maize" />
-          <SoilCrop name="Perennial Grass" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/Perennial Grass" />
-          <SoilCrop name="Sorghum" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/Sorghum" />
-          <SoilCrop name="Wheat" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/Wheat" />
-          <SoilCrop name="wheat2" shortcut="/simulations/ReleasedWheat/paddock/Soil/Water/wheat2" />
+  <simulation name="Maize2" shortcut="/simulations/ReleasedMaize">
+    <metfile name="met" shortcut="/simulations/ReleasedMaize/met" />
+    <clock shortcut="/simulations/ReleasedMaize/clock" />
+    <summaryfile shortcut="/simulations/ReleasedMaize/summaryfile" />
+    <area name="paddock" shortcut="/simulations/ReleasedMaize/paddock">
+      <soil name="Soil" shortcut="/simulations/ReleasedMaize/paddock/Soil">
+        <InitWater name="Initial water" shortcut="/simulations/ReleasedMaize/paddock/Soil/Initial water" />
+        <Water shortcut="/simulations/ReleasedMaize/paddock/Soil/Water">
+          <SoilCrop name="Barley" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Barley" />
+          <SoilCrop name="Chickpea" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Chickpea" />
+          <SoilCrop name="Lucerne" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Lucerne" />
+          <SoilCrop name="Lucerne2" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Lucerne2" />
+          <SoilCrop name="Maize2">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.29</LL>
+              <KL units="/day">0.1</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.29</LL>
+              <KL>0.1</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.34</LL>
+              <KL>0.1</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.34</LL>
+              <KL>0.08</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.37</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.4</LL>
+              <KL>0.04</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.42</LL>
+              <KL>0.02</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.48</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.47</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.46</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.44</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="Perennial Grass" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Perennial Grass" />
+          <SoilCrop name="Sorghum" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Sorghum" />
+          <SoilCrop name="Wheat" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Wheat" />
+          <SoilCrop name="wheat2" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/wheat2" />
         </Water>
-        <SoilWat shortcut="/simulations/ReleasedWheat/paddock/Soil/SoilWat" />
-        <SoilOrganicMatter shortcut="/simulations/ReleasedWheat/paddock/Soil/SoilOrganicMatter" />
-        <Lab shortcut="/simulations/ReleasedWheat/paddock/Soil/Lab" />
-        <InitWater name="Initial Water" shortcut="/simulations/ReleasedWheat/paddock/Soil/Initial water" />
-        <Sample name="Initial Nitrogen" shortcut="/simulations/ReleasedWheat/paddock/Soil/Initial nitrogen" />
+        <SoilWat shortcut="/simulations/ReleasedMaize/paddock/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/ReleasedMaize/paddock/Soil/SoilOrganicMatter" />
+        <Lab shortcut="/simulations/ReleasedMaize/paddock/Soil/Lab" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/ReleasedMaize/paddock/Soil/Initial nitrogen" />
       </soil>
-      <surfaceom name="surface organic matter" shortcut="/simulations/ReleasedWheat/paddock/surface organic matter" />
-      <fertiliser shortcut="/simulations/ReleasedWheat/paddock/fertiliser" />
-      <folder name="Manager folder" shortcut="/simulations/ReleasedWheat/paddock/Manager folder">
+      <surfaceom name="surface organic matter" shortcut="/simulations/ReleasedMaize/paddock/surface organic matter" />
+      <fertiliser shortcut="/simulations/ReleasedMaize/paddock/fertiliser" />
+      <folder name="Manager folder" shortcut="/simulations/ReleasedMaize/paddock/Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
-            <category description="Sowing criteria" />
-            <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category description="Sowing parameters" />
-            <crop type="crop" description="Enter name of crop to sow : ">wheat2</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">150</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+            <category type="category" description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">1-nov</date>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">maize2</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">dekalb_xl82</cultivar>
             <class type="classes" description="Enter crop growth class : " />
             <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
           </ui>
@@ -1029,17 +1171,46 @@
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager name="Harvesting rule" shortcut="/simulations/ReleasedWheat/paddock/Manager folder/Harvesting rule" />
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize2</crop>
+          </ui>
+          <script name="end_of_day">
+            <text>
+           if (today = date('1-oct')) then
+              [crop]  harvest
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
       </folder>
-      <outputfile shortcut="/simulations/ReleasedWheat/paddock/outputfile">
+      <maize2 name="Maize2">
+        <ini>
+          <filename>%apsim%\Model\Maize2.xml</filename>
+        </ini>
+      </maize2>
+      <outputfile shortcut="/simulations/ReleasedMaize/paddock/outputfile">
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="StageCodeValue" array="No" description="Plant stage" />
           <variable name="PhenologyCurrentPhaseName" array="No" description="Plant stage name" />
+          <variable name="LeafFinalNodeNo" />
+          <variable name="LeafNodeNo" array="No" />
+          <variable name="LeafDeadNodeNo" array="No" />
+          <variable name="LeafTotalNo" />
+          <variable name="LeafFullyExpandedNodeNo" array="No" />
+          <variable name="PhenologyThermalTimeValue" array="No" />
+          <variable name="PhenologyEmergingCumulativeTT" />
+          <variable name="PhenologyEmergenceToEndJuvenileCumulativeTT" />
+          <variable name="PhenologyEndJuvenileToInitiationCumulativeTT" />
+          <variable name="PhenologyEndJuvenileToInitiationTargetValue" />
+          <variable name="LeafLai" />
         </variables>
-        <events name="Reporting Frequency" shortcut="/simulations/ReleasedWheat/paddock/outputfile/Reporting Frequency" />
+        <events name="Reporting Frequency" shortcut="/simulations/ReleasedMaize/paddock/outputfile/Reporting Frequency" />
       </outputfile>
-      <wheat2 />
       <micromet name="Micromet">
         <soilalbedo name="soilalbedo">0.23</soilalbedo>
         <a_interception name="a_interception">0.0</a_interception>
@@ -1049,4 +1220,44 @@
       </micromet>
     </area>
   </simulation>
+  <Graph name="Leaf number">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>leaf_no</Y>
+      <Y>LeafNodeNo</Y>
+      <Y>LeafFullyExpandedNodeNo</Y>
+      <Y>leaf_no_dead()</Y>
+      <Y>LeafDeadNodeNo</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="Thermal Time">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>tt_tot(4)</Y>
+      <Y>PhenologyEndJuvenileToInitiationTargetValue</Y>
+      <Y>phase_tt(4)</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="LAI">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>lai</Y>
+      <Y>LeafLai</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
 </folder>

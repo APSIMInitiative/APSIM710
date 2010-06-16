@@ -189,6 +189,17 @@ Public Class ApsimUIActions
         End If
     End Sub
 
+    Public Shared Sub Plant2Documentation(ByVal Controller As BaseController)
+        BaseActions.FileSave(Controller)
+        Dim XmlFileName As String = Controller.ApsimData.FileName
+        Dim HtmlFileName As String = Path.GetTempPath() + Path.GetFileNameWithoutExtension(XmlFileName) + ".html"
+        Dim Arguments As String = StringManip.DQuote(XmlFileName) + " " + StringManip.DQuote(HtmlFileName)
+
+        'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
+        Dim P As Process = Utility.RunProcess(Configuration.ApsimBinDirectory + "\Plant2Documentation.exe", Arguments, Path.GetDirectoryName(XmlFileName))
+        Utility.CheckProcessExitedProperly(P)
+        Process.Start(HtmlFileName)
+    End Sub
 End Class
 
 

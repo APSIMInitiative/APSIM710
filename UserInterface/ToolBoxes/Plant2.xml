@@ -5,18 +5,90 @@
   <Cultivar />
   <Plant />
   <folder name="Organs">
-    <Population />
+    <Population>
+      <Value>4</Value>
+    </Population>
     <Arbitrator />
     <SimpleArbitrator />
-    <AnnualPlantArbitrator />
-    <Leaf />
-    <GenericOrgan />
-    <Root />
-    <ReproductiveOrgan />
-    <ReserveOrgan />
+    <AnnualPlantArbitrator>
+      <DMSink type="text" description="DMSink">Stem</DMSink>
+      <NSink type="text" description="NSink">Stem</NSink>
+    </AnnualPlantArbitrator>
+    <Leaf>
+      <FrostFraction>
+        <XY> 0 0.0</XY>
+        <XY> 2 0.0</XY>
+      </FrostFraction>
+      <Frgr type="text" description="Frgr">1</Frgr>
+      <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+      <MaxCover type="text" description="MaxCover">1.0</MaxCover>
+      <KDead type="text" description="KDead">0.5</KDead>
+      <MaxNodeNo type="text" description="MaxNodeNo">40</MaxNodeNo>
+      <InitialAreas type="text" description="InitialAreas">380</InitialAreas>
+      <InitialAges type="text" description="InitialAges">30</InitialAges>
+      <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+      <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+      <FinalNodeNoEstimate>16</FinalNodeNoEstimate>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </Leaf>
+    <GenericOrgan>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </GenericOrgan>
+    <Root>
+      <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+      <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+      <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+      <InitialDM>0.2</InitialDM>
+      <SpecificRootLength>40000</SpecificRootLength>
+      <KNO3>0.02</KNO3>
+      <KNH4>0.0</KNH4>
+    </Root>
+    <ReproductiveOrgan>
+      <MaximumSize />
+      <RipeStage />
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </ReproductiveOrgan>
+    <SimpleReproductiveOrgan>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </SimpleReproductiveOrgan>
+    <HIReproductiveOrgan>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </HIReproductiveOrgan>
+    <ReserveOrgan>
+      <InitialDM />
+      <DailyRetransFraction />
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </ReserveOrgan>
     <RootSWIM />
-    <SimpleLeaf />
-    <SimpleReproductiveOrgan />
+    <SimpleLeaf>
+      <Frgr>1</Frgr>
+      <FT>
+        <XY>5 1.0</XY>
+        <XY>20 1.0</XY>
+        <XY>25 1.0</XY>
+        <XY>40 1.0</XY>
+      </FT>
+      <FVPD>
+        <XY>0 1.0</XY>
+        <XY>10 1.0</XY>
+        <XY>50 1.0</XY>
+      </FVPD>
+      <Height>800</Height>
+      <LAI>6</LAI>
+      <LAIDead>0</LAIDead>
+      <K>0.5</K>
+      <KDead>0.5</KDead>
+    </SimpleLeaf>
+    <SimpleReproductiveOrgan name="SimpleReproductiveOrgan1">
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </SimpleReproductiveOrgan>
     <SimpleRoot />
   </folder>
   <folder name="Phenology">
@@ -66,9 +138,20 @@
     </EndPhase>
     <GerminatingPhase />
     <LeafAppearancePhase>
+      <Start>
+      </Start>
+      <End>
+      </End>
       <RemainingLeaves />
+      <TemperatureFunction />
     </LeafAppearancePhase>
-    <LeafDeathPhase />
+    <LeafDeathPhase>
+      <Start>
+      </Start>
+      <End>
+      </End>
+      <TemperatureFunction />
+    </LeafDeathPhase>
     <RewindPhase />
     <Vernalisation>
       <StartStage type="text" description="StartStage">Germination</StartStage>
@@ -113,12 +196,63 @@
       </Twilight>
     </PhotoperiodFunction>
     <MinimumFunction />
-    <PhaseLookup />
-    <PhaseLookupValue />
-    <StageLookup />
-    <XYPairs />
-    <RUEModel />
+    <PhaseLookup>
+      <PhaseLookupValue>
+        <Start>
+        </Start>
+        <End>
+        </End>
+        <Constant name="Function">
+          <Value type="text">
+          </Value>
+        </Constant>
+      </PhaseLookupValue>
+    </PhaseLookup>
+    <StageBasedInterpolation>
+      <Stages>Germination Emergence 50%Anthesis StartGrainFill Maturity </Stages>
+      <Codes>  0.93         0.93      0.93    0.93            0.90</Codes>
+    </StageBasedInterpolation>
+    <RUEModel>
+      <FT>
+        <XY>5 0.0</XY>
+        <XY>15 1.0</XY>
+        <XY>28 1.0</XY>
+        <XY>35 1.0</XY>
+        <XY>40 0.0</XY>
+      </FT>
+      <FVPD>
+        <XY> 0 1.0</XY>
+        <XY>10 1.0</XY>
+        <XY>50 1.0</XY>
+      </FVPD>
+      <RUE>1.2</RUE>
+    </RUEModel>
     <Summary />
+    <OnEventFunction>
+      <Event />
+    </OnEventFunction>
+    <BellCurveFunction>
+      <GenericFunction name="LargestLeaf">
+        <XProperty type="text" description="XProperty">
+        </XProperty>
+        <XYPairs />
+      </GenericFunction>
+      <GenericFunction name="AreaMax">
+        <XProperty type="text" description="XProperty">
+        </XProperty>
+        <XYPairs />
+      </GenericFunction>
+      <GenericFunction name="Breadth">
+        <XProperty type="text" description="XProperty">
+        </XProperty>
+        <XYPairs />
+      </GenericFunction>
+      <GenericFunction name="Skewness">
+        <XProperty type="text" description="XProperty">
+        </XProperty>
+        <XYPairs />
+      </GenericFunction>
+    </BellCurveFunction>
     <TemperatureFunction>
       <XYPairs>
         <XY>5 0</XY>

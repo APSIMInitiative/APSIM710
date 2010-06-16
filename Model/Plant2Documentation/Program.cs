@@ -80,14 +80,18 @@ namespace Plant2Doco
 
       private static void DocumentNode(StreamWriter OutputFile, XmlNode N, int NextLevel)
          {
-         if (XmlHelper.ChildNodes(N, "").Count == 0)
+         if (XmlHelper.Attribute(N, "shortcut") != "")
+            {
+            OutputFile.WriteLine("<p>" + XmlHelper.Name(N) + " uses the same value as " + XmlHelper.Attribute(N, "shortcut"));
+            }
+         else if (XmlHelper.ChildNodes(N, "").Count == 0)
             DocumentProperty(OutputFile, N, NextLevel);
          else if (XmlHelper.ChildNodes(N, "xy").Count > 0)
             CreateGraph(OutputFile, N, NextLevel);
          else if (XmlHelper.Type(N) == "TemperatureFunction")
             DocumentTemperatureFunction(OutputFile, N, NextLevel);
-         else if (XmlHelper.Type(N) == "FixedPhase")
-            DocumentFixedPhase(OutputFile, N, NextLevel);
+         //else if (XmlHelper.Type(N) == "GenericPhase")
+         //   DocumentFixedPhase(OutputFile, N, NextLevel);
          else if (XmlHelper.Type(N) == "PhaseLookupValue")
             DocumentPhaseLookupValue(OutputFile, N, NextLevel);
          else if (XmlHelper.Type(N) == "ChillingPhase")
@@ -125,7 +129,7 @@ namespace Plant2Doco
          OutputFile.WriteLine(ClassDescription(N));
          string start = XmlHelper.FindByType(N,"Start").InnerText;
          string end = XmlHelper.FindByType(N,"End").InnerText;
-         string TTT = XmlHelper.FindByType(N, "TTTarget").InnerText;
+         string TTT = XmlHelper.FindByType(N, "Target").InnerText;
          string text = "";
          text = XmlHelper.Name(N) + " extends from " + start + " to " + end + " with a fixed thermal time duration of " + TTT + " degree.days.";
          OutputFile.WriteLine(text);

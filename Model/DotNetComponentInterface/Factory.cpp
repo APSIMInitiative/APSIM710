@@ -256,7 +256,10 @@ void Factory::RemoveShortCuts(XmlNode^ Node)
       XmlNode^ ReferencedNode = XmlHelper::Find(Node->OwnerDocument->DocumentElement, ShortCutPath);
       if (ReferencedNode == nullptr)
          throw gcnew Exception("Cannot find short cut node: " + ShortCutPath);
-      Node->ParentNode->ReplaceChild(ReferencedNode->CloneNode(true), Node);	      
+      XmlNode^ NewNode = ReferencedNode->CloneNode(true);
+      Node->ParentNode->ReplaceChild(NewNode, Node);
+      if (XmlHelper::Attribute(Node, "name") != "")
+         XmlHelper::SetName(NewNode, XmlHelper::Name(Node));
       }
 	
 	for (int i = 0; i < Node->ChildNodes->Count; i++)

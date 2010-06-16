@@ -16,7 +16,7 @@ public class Leaf : BaseOrgan, AboveGround
    private double MinT = 0;
    private double _FinalNodeNo = 0;
    [Output]
-   private double NodeNo = 0;
+   public double NodeNo = 0;
    [Output("Height")]
    private double Height = 0;
 
@@ -45,7 +45,8 @@ public class Leaf : BaseOrgan, AboveGround
    double[] InitialAges = null;                   // Initial number of leaf nodes
    [Param]
    double InitialLeafPrimordia = 0;           // Initial number of leaf primordia
-
+   [Param]
+   double FinalNodeNoEstimate = 0;
    [Param]
    private LinearInterpolation FrostFraction = null;
    #endregion
@@ -54,7 +55,15 @@ public class Leaf : BaseOrgan, AboveGround
       {
       get
          {
-         return _FinalNodeNo;
+         return Math.Max(_FinalNodeNo, FinalNodeNoEstimate); 
+         }
+      }
+   [Output]
+   public double RemainingNodeNo
+      {
+      get
+         {
+         return _FinalNodeNo - NodeNo;
          }
       }
    [Output]

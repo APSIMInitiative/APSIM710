@@ -51,8 +51,8 @@ public class Phenology : Instance
          CurrentlyOnFirstDayOfPhase = Phases[0].Start;
          }
 
-      double FractionOfDayToUse = CurrentPhase.DoTimeStep(1.0);
-      while (FractionOfDayToUse > 0)
+      double FractionOfDayLeftOver = CurrentPhase.DoTimeStep(1.0);
+      while (FractionOfDayLeftOver > 0)
          {
          // Transition to the next phase.
          if (CurrentPhaseIndex+1 >= Phases.Count)
@@ -63,7 +63,7 @@ public class Phenology : Instance
          GrowthStage.Invoke();
 
          // Tell the new phase to use the fraction of day left.
-         FractionOfDayToUse = CurrentPhase.DoTimeStep(FractionOfDayToUse);
+         FractionOfDayLeftOver = CurrentPhase.DoTimeStep(FractionOfDayLeftOver);
          }
       }
 
