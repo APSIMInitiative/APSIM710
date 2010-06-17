@@ -29,15 +29,22 @@ namespace ApsimFile
          XmlDocument SettingsDoc = new XmlDocument();
          SettingsDoc.Load(SettingsFile);
          SettingsNode = SettingsDoc.DocumentElement;
-         
+
+
          // 2. Update from local data
          SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                      "\\Apsim\\" + ApsimVersion() + "\\Apsim.xml";
          if (File.Exists(SettingsFile))
              {
+             string ExecutableBuildDate = ApsimBuildDate();
+             string ExecutableBuildNumber = ApsimBuildNumber();
              SettingsDoc.Load(SettingsFile);
              SettingsNode = SettingsDoc.DocumentElement;
+             // store the build number & date of the currently executing apsim to fix bug #1159
+             XmlHelper.SetValue(SettingsNode, "version/builddate", ExecutableBuildDate);
+             XmlHelper.SetValue(SettingsNode, "version/buildnumber", ExecutableBuildNumber);
              }
+
          }
       public static Configuration Instance
          {
