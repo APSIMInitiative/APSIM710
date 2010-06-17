@@ -633,7 +633,7 @@ subroutine surfom_read_param ()
       dummy = add_reg(respondToGetReg, 'surfaceom_p_decomp_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
       dummy = add_reg(respondToGetReg, 'standing_fr_' // g%surfOM(i)%name, floatTypeDDML, '', '')
       dummy = add_reg(respondToGetReg, 'surfaceom_cover_' // g%surfOM(i)%name, floatTypeDDML, 'm^2/m^2', '')
-      dummy = add_reg(respondToGetReg, 'crnf_' // g%surfOM(i)%name, floatTypeDDML, '', '')
+      dummy = add_reg(respondToGetReg, 'cnrf_' // g%surfOM(i)%name, floatTypeDDML, '0-1', '')
 
    end do
 
