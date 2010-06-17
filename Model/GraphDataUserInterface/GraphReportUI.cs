@@ -35,24 +35,22 @@ namespace GraphDataUserInterface
             if (GraphNode.Name == "Graph")
                {
                GraphUI Graph = new GraphUI();
-               Graph.OnLoad(Controller, NodePath + "/" + XmlHelper.Name(GraphNode), GraphNode.OuterXml);
-               Graph.OnRefresh();
                Graph.Parent = this;
+               Graph.OnLoad(Controller, NodePath + "/" + XmlHelper.Name(GraphNode), GraphNode.OuterXml);
                }
             if (GraphNode.Name == "RegressionGraph")
                {
                RegressionGraphUI Graph = new RegressionGraphUI();
-               Graph.OnLoad(Controller, NodePath + "/" + XmlHelper.Name(GraphNode), GraphNode.OuterXml);
-               Graph.OnRefresh();
                Graph.Parent = this;
+               Graph.OnLoad(Controller, NodePath + "/" + XmlHelper.Name(GraphNode), GraphNode.OuterXml);
                }
             }
 
-         PositionGraphs();
+         PositionAndRefreshGraphs();
 
          }
 
-      private void PositionGraphs()
+      private void PositionAndRefreshGraphs()
          {
          this.Resize -= OnResize;
          int NumGraphs = Controls.Count;
@@ -80,6 +78,8 @@ namespace GraphDataUserInterface
                      Col = 0;
                      Row++;
                      }
+                  GraphUI Graph = (GraphUI)C;
+                  Graph.OnRefresh();
                   }
 
                }
@@ -89,7 +89,7 @@ namespace GraphDataUserInterface
 
       private void OnResize(object sender, EventArgs e)
          {
-         PositionGraphs();
+         PositionAndRefreshGraphs();
          }
 
       public override void PrintPage(Rectangle MarginBounds, Graphics g)

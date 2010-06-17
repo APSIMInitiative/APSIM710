@@ -158,14 +158,19 @@ Public Class GenericUI
 
         Grid.Rows.Clear()
         Grid.ColumnCount = Table.Columns.Count
+        Grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
         For Col As Integer = 0 To Table.Columns.Count - 1
             Grid.Columns(Col).HeaderText = Table.Columns(Col).ColumnName
+            Grid.Columns(Col).SortMode = DataGridViewColumnSortMode.NotSortable
         Next
         For Each Row As DataRow In Table.Rows
             Grid.Rows.Add(CreateGridRow(ToStr(Row(0)), ToStr(Row(1)), ToStr(Row(2)), ToStr(Row(3)), ToStr(Row(4))))
         Next
-        Grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
-        Grid.AutoResizeColumns()
+
+        ' Size the columns sensibly
+        For Col As Integer = 0 To Table.Columns.Count - 1
+            Grid.Columns(Col).Width = Grid.Columns(Col).GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, True)
+        Next
         Grid.Columns(4).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         IsDirty = False
     End Sub

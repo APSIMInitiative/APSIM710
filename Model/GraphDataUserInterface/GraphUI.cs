@@ -663,7 +663,7 @@ namespace GraphDataUserInterface
             DateTime Min = DateTime.FromOADate(Minimum);
             DateTime Max = DateTime.FromOADate(Maximum);
 
-            const int MaxNumLabels = 12;
+            int MaxNumLabels = Math.Min(Width / 85, 12);
 
             // Go work out a date scaling.
             int Days = 0;
