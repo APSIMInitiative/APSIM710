@@ -189,10 +189,12 @@ void FortranWrapper::respondToGet(unsigned int& fromID, protocol::QueryValueData
    string name = getRegistration(componentID, qData.ID)->getNameWithoutBrackets();
    inApsimGetQuery = false;
    queryData = qData;
+   messageWasUsed = true;
    Main("get", name.c_str());
-
    *instance = saved;
    currentInstance = savedThis;
+   if (!messageWasUsed)
+      protocol::Component::respondToGet(fromID, qData);
    }
 // ------------------------------------------------------------------
 // respond to a set request.
