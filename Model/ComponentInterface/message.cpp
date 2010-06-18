@@ -2,19 +2,19 @@
 
 #include <stdio.h>
 #include <stdexcept>
-
+#include <boost/thread/tss.hpp>
+using namespace std;
 #include "message.h"
 
-using namespace std;
 namespace protocol {
-
-static int runningMessageID = 0;
 
 static const unsigned MAX_NUM_MESSAGES = 20;
 static const unsigned MAX_MESSAGE_SIZE = 5000;
-static Message* messages[MAX_NUM_MESSAGES]
-   = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-static unsigned nextFreeMessage = 0;
+
+boost::thread_specific_ptr<int> runningMessageIDPtr;
+boost::thread_specific_ptr<unsigned> nextFreeMessagePtr;
+boost::thread_specific_ptr<Message*> msgPtr;
+
 // ------------------------------------------------------------------
 //  Short description:
 //    Initialise all static messages
@@ -27,12 +27,16 @@ static unsigned nextFreeMessage = 0;
 // ------------------------------------------------------------------
 void initMessages(void)
    {
-   if (messages[0] == NULL)
-      {
-      for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
-         messages[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
-      }
-   }
+	   if (msgPtr.get() == 0) {
+		   msgPtr.reset(new Message*[MAX_NUM_MESSAGES]);
+		   Message** messages = msgPtr.get();
+           for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
+             messages[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
+		   runningMessageIDPtr.reset(new int(0));
+		   nextFreeMessagePtr.reset(new unsigned(0));
+	   }
+}
+
 
 // ------------------------------------------------------------------
 //  Short description:
@@ -46,8 +50,9 @@ void initMessages(void)
 // ------------------------------------------------------------------
 void deleteMessages(void)
    {
-   nextFreeMessage = 0;
-   if (messages[0] != NULL)
+   Message** messages = msgPtr.get();
+   *nextFreeMessagePtr = 0;
+   if (messages != NULL && messages[0] != NULL)
       {
       for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
          {
@@ -55,7 +60,9 @@ void deleteMessages(void)
          messages[messageI] = NULL;
          }
       }
+   msgPtr.reset(NULL); 
    }
+   
 
 
 // ------------------------------------------------------------------
@@ -75,6 +82,9 @@ Message EXPORT * constructMessage(MessageType messageType,
                                   unsigned int numDataBytes)
    {
    Message* message;
+   Message** messages = msgPtr.get();
+   unsigned & nextFreeMessage = *nextFreeMessagePtr;
+   int & runningMessageID = *runningMessageIDPtr;
    if (nextFreeMessage > MAX_NUM_MESSAGES)
       {
       throw runtime_error("Internal error: Too many messages sent from component.");
@@ -105,6 +115,7 @@ Message EXPORT * constructMessage(MessageType messageType,
 
 void EXPORT deleteMessage(Message* message)
    {
+   unsigned & nextFreeMessage = *nextFreeMessagePtr;
    if (message->nDataBytes > MAX_MESSAGE_SIZE - sizeof(Message))
       delete [] message;
    else

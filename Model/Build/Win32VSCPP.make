@@ -47,6 +47,7 @@ ifdef DEBUG
 /LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\thread\build\msvc-9.0\debug\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\debug\asynch-exceptions-on\link-static\threading-multi
 else
 	CFLAGS := $(CFLAGS) /O2 /MD /GL
@@ -57,6 +58,7 @@ else
 /LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\release\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\release\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\release\link-static\threading-multi \
+/LIBPATH:$(BOOST)\bin.v2\libs\thread\build\msvc-9.0\release\link-static\threading-multi \
 /LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\release\asynch-exceptions-on\link-static\threading-multi
 endif
 
