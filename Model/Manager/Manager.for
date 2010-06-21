@@ -1384,7 +1384,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       Action = adjustl(Action)
 
       if (Module_name .eq. All_active_modules) then
-         modNameID = -1
+         modNameID = 0
       else
          ok = component_name_to_id(Module_name, modNameID);
          if (.not.ok) then
@@ -1432,7 +1432,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             call Write_string(msg)
          endif
 
-         if (data_string <> ' ' .and.
+         if (data_string .ne. ' ' .and.
      :      index(Data_string, '=') .eq. 0) then
             write (msg, '(50a)' )
      :         'Your manager file has data in an action line that does',
@@ -1491,7 +1491,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       newString = ' '
       new_value_string = ' '
 
-      if (index(st, '=') <> 0) then
+      if (index(st, '=') .ne. 0) then
 
          ! string will look like:
          !   cultivar = hartog, plants = 121.61, sowing_depth = 30 (mm)
@@ -1499,7 +1499,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          ! manager variable.  Make sure we honour double quotes ie don't
          ! substitute local variable values.
          call get_next_variable(st, key, Value_string)
-         do while (key <> ' ')
+         do while (key .ne. ' ')
             call split_off_units (Value_string, units)
                ! may be multiple values
             new_value_string = ' '
@@ -1507,7 +1507,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             do valueIndx = 1, Numvals
                call Get_next_word(Value_string, value)
                value = No_leading_spaces(value)
-               if (value(1:1) <> '"' .and. value(1:1) <> '''') then
+               if (value(1:1) .ne. '"' .and. value(1:1) .ne. '''') then
 
                   localIndex = find_string_in_array(value,
      :                                        g%local_variable_names,
@@ -1526,17 +1526,17 @@ C     Last change:  P    25 Oct 2000    9:26 am
             enddo
 
             ! append all the bits for the current key to a new string.
-            if (newString <> ' ') then
+            if (newString .ne. ' ') then
                call append_string(newString, ',')
             endif
             call append_string(newString, ' ' // key)
-            if (value <> ' ') then
+            if (value .ne. ' ') then
                call append_string(newString, ' =')
                call append_string(newString, ' '
      :                        // No_leading_spaces(new_value_string))
             else
             endif
-            if (units <> '()') then
+            if (units .ne. '()') then
                call append_string(newString, ' ' // units)
             endif
 
