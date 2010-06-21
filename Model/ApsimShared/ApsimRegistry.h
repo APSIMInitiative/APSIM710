@@ -27,7 +27,7 @@ class EXPORT ApsimRegistry
          paddocks.item.Name = ".MasterPM";
          paddocks.parent = &paddocks;
          };
-      ~ApsimRegistry();
+	  ~ApsimRegistry();
 
       ApsimRegistration* createNativeRegistration
             (EventTypeCode kind, const std::string& regName, const std::string& ddml,
@@ -91,38 +91,39 @@ class EXPORT ApsimRegistry
 
       void dumpStats(void);
       void dumpComponentTree(void);
-      void dumpAll(void);
+	  void dumpAll(void);
+	  void freeAll(void);
 
-      bool hasChildren(int componentID);
+	  bool hasChildren(int componentID);
    private:
-      typedef multimap<string, ApsimRegistration* , less<string> > registrations_type;
-      registrations_type registrations;
+	  typedef multimap<string, ApsimRegistration* , less<string> > registrations_type;
+	  registrations_type registrations;
 
-      // associate component ID with string names
-      typedef struct {
-         int ID;
-         std::string Name;
-         std::string Type;
-      } Component;
-      vector<Component> components;
+	  // associate component ID with string names
+	  typedef struct {
+		 int ID;
+		 std::string Name;
+		 std::string Type;
+	  } Component;
+	  vector<Component> components;
 
-      // Tree class that holds the paddock structure
-      template<class PItem> class PTree
-         {
-         public:
-          PItem item;
-          std::vector<PTree*> children;
-          PTree *parent;
-         };
-      PTree<Component>  paddocks;
-      PTree<Component> *findComponent(int componentID);
-      PTree<Component> *findComponent(PTree<Component> *node, int componentID);
-      void getComponents(PTree<Component>*node, vector<int> &components);
-      void getDescendants(PTree<Component>*node, vector<int> &siblings);
+	  // Tree class that holds the paddock structure
+	  template<class PItem> class PTree
+		 {
+		 public:
+		  PItem item;
+		  std::vector<PTree*> children;
+		  PTree *parent;
+		 };
+	  PTree<Component>  paddocks;
+	  PTree<Component> *findComponent(int componentID);
+	  PTree<Component> *findComponent(PTree<Component> *node, int componentID);
+	  void getComponents(PTree<Component>*node, vector<int> &components);
+	  void getDescendants(PTree<Component>*node, vector<int> &siblings);
 
-      // Test whether a registration is in the scope of a component
-      bool inScope(int , ApsimRegistration*);
-      bool inScope(PTree<Component>*callerNode, ApsimRegistration *reg);
+	  // Test whether a registration is in the scope of a component
+	  bool inScope(int , ApsimRegistration*);
+	  bool inScope(PTree<Component>*callerNode, ApsimRegistration *reg);
 
       // Whether a component is using our assigned reg IDs
       bool isForeign(int componentID);
@@ -136,7 +137,8 @@ class EXPORT ApsimRegistry
       void pruneNonMatchingEvents (ApsimRegistration * reg, std::vector<ApsimRegistration*>&subscribers);
 
       void dumpComponentTree(int indent, PTree<Component>* node);
-      void dumpAll(PTree<Component>* node);
+	  void dumpAll(PTree<Component>* node);
+	  void freeAll(PTree<Component>* node);
    };
 
 

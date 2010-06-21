@@ -13,18 +13,24 @@
 
 using namespace std;
 
-ApsimRegistry GlobalApsimRegistry;    // singleton registry.
+#include <boost/thread/tss.hpp>
+boost::thread_specific_ptr<ApsimRegistry> GlobalApsimRegistry;
 
 ApsimRegistry& ApsimRegistry::getApsimRegistry(void)
 // ------------------------------------------------------------------
 // Return the singleton global ApsimRegistry.
 // ------------------------------------------------------------------
    {
-   return GlobalApsimRegistry;
+	   if (GlobalApsimRegistry.get() == 0) {
+		   GlobalApsimRegistry.reset(new ApsimRegistry);
+	   }
+	 return *GlobalApsimRegistry;
    }
 
  ApsimRegistry::~ApsimRegistry()
    {
+   if (components.size() > 0)
+	 freeAll();
    reset();
    }
 
@@ -32,9 +38,9 @@ ApsimRegistry& ApsimRegistry::getApsimRegistry(void)
 void ApsimRegistry::reset(void)
    {
    for (registrations_type::iterator i = registrations.begin();
-        i != registrations.end();
-        i++)
-      delete i->second;
+		i != registrations.end();
+		i++)
+	  delete i->second;
    registrations.clear();
    components.clear();
    taintedComponents.clear();
@@ -42,16 +48,16 @@ void ApsimRegistry::reset(void)
 
 // Create a native registration.
 ApsimRegistration* ApsimRegistry::createNativeRegistration
-      (EventTypeCode kind, const std::string& regName, const std::string& ddml,
-       int destinationComponentID, int componentID)
+	  (EventTypeCode kind, const std::string& regName, const std::string& ddml,
+	   int destinationComponentID, int componentID)
    {
    return new NativeRegistration(kind, regName, ddml, destinationComponentID, componentID);
    }
 
 // Create a foreign registration.
 ApsimRegistration* ApsimRegistry::createForeignRegistration
-      (EventTypeCode kind, const std::string& regName, const std::string& ddml,
-       int destinationComponentID, int componentID, unsigned foreignID)
+	  (EventTypeCode kind, const std::string& regName, const std::string& ddml,
+	   int destinationComponentID, int componentID, unsigned foreignID)
    {
    return new ForeignRegistration(kind, regName, ddml, destinationComponentID, componentID, foreignID);
    }
@@ -61,34 +67,35 @@ ApsimRegistration* ApsimRegistry::createForeignRegistration
 unsigned int ApsimRegistry::add(ApsimRegistration *reg)
    {
    if ( reg->getName().rfind(".") != string::npos)
-     throw std::runtime_error("trying to add a qualified registration " + reg->getName());
+	 throw std::runtime_error("trying to add a qualified registration " + reg->getName());
 
    if ( reg->getTypeCode() != ::respondToEvent && !isForeign(reg->getComponentID()))
-      {
-      // return old registration if present. NB. foreigns are often "re-registered"
-      //   with different IDs!!!
-      registrations_type::iterator i, j, a, b;
+	  {
+	  // return old registration if present. NB. foreigns are often "re-registered"
+	  //   with different IDs!!!
+	  registrations_type::iterator i, j, a, b;
 
-      a = registrations.lower_bound(reg->getNameWithoutBrackets());
-      b = registrations.upper_bound(reg->getNameWithoutBrackets());
+	  a = registrations.lower_bound(reg->getNameWithoutBrackets());
+	  b = registrations.upper_bound(reg->getNameWithoutBrackets());
 
-      for (i = a; i != b; i++)
-         {
-         if (i->second->getTypeCode() == reg->getTypeCode() &&
-             i->second->getComponentID() == reg->getComponentID() &&
-             i->second->getDestinationID() == reg->getDestinationID() &&
-             i->second->getName() == reg->getName() )
-            {
+	  for (i = a; i != b; i++)
+		 {
+		 if (i->second->getTypeCode() == reg->getTypeCode() &&
+			 i->second->getComponentID() == reg->getComponentID() &&
+			 i->second->getDestinationID() == reg->getDestinationID() &&
+			 i->second->getName() == reg->getName() )
+			{
 //            cout << "removing (" << i->second->getType() << "." << i->second->getComponentID() << "." <<
 //               i->second->getName() << "->" << i->second->getDestinationID() << ")= " << ((unsigned int)i->second) << " called again - returning " << i->second->getRegID() << endl;
 //            delete reg;
 //            return ((unsigned int)i->second);
-              delete i->second;
-              registrations.erase(i);
-              break;
-            }
-         }
-      }
+			  delete i->second;
+			  registrations.erase(i);
+			  break;
+			}
+		 }
+	  }
+
    registrations.insert(registrations_type::value_type(reg->getNameWithoutBrackets(), reg));
 
 //   cout << "add (" << reg->getType() << ":" << componentByID(reg->getComponentID()) << "." <<
@@ -101,7 +108,7 @@ unsigned int ApsimRegistry::add(ApsimRegistration *reg)
 
 // Find subscribers to an event.
 void ApsimRegistry::lookup(ApsimRegistration * reg,
-                           std::vector<ApsimRegistration*>&subscribers)
+						   std::vector<ApsimRegistration*>&subscribers)
    {
 //   string regName = reg->getName();
 //   cout << "lookup:" << reg->getRegID() << ":subscribers to " <<
@@ -206,11 +213,11 @@ void ApsimRegistry::pruneNonMatchingEvents (ApsimRegistration * reg, std::vector
          {
          if ((*sub)->getDestinationID() > 0)
             {
-            // See if the subscriber cared about sender (eg wheat.sowing vs *.sowing)
+			// See if the subscriber cared about sender (eg wheat.sowing vs *.sowing)
             if ((*sub)->getDestinationID() != reg->getComponentID())
                {
                subscribers.erase(sub);
-               more = 1;
+			   more = 1;
                break;
                }
             }
@@ -244,61 +251,60 @@ void ApsimRegistry::erase(EventTypeCode type, int owner, unsigned int regID)
 // component & registration ID. "Native" registrations
 // are easy, foreigns need special care.
 ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
-                                       int ownerID,
-                                       unsigned int regnID)
+									   int ownerID,
+									   unsigned int regnID)
    {
    if (isForeign(ownerID))
-      {
-      for (registrations_type::iterator i = registrations.begin();
-           i != registrations.end();
-           i++)
-         {
-         if (i->second->getTypeCode() == type &&
-             i->second->getComponentID() == ownerID &&
-             i->second->getRegID() == regnID)
-            return (i->second);
-         }
-      return NULL;
-      }
+	  {
+	  for (registrations_type::iterator i = registrations.begin();
+		   i != registrations.end();
+		   i++)
+		 {
+		 if (i->second->getTypeCode() == type &&
+			 i->second->getComponentID() == ownerID &&
+			 i->second->getRegID() == regnID)
+			return (i->second);
+		 }
+	  return NULL;
+	  }
    return ((ApsimRegistration *) regnID);
    }
 
 ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
-                                       int ownerID,
-                                       int destID,
-                                       const std::string &name)
+									   int ownerID,
+									   int destID,
+									   const std::string &name)
    {
    registrations_type::iterator i, a, b;
 
    // Sometimes registrations are
-   string regName = name;
+   string regName;
    unsigned int pos = name.rfind('(');
    if (pos != std::string::npos)
-      regName = name.substr(0, pos);
+	  regName = ToLower(name.substr(0, pos));
    else
-      regName = name;
+	  regName = ToLower(name);
 
    a = registrations.lower_bound(regName);
    b = registrations.upper_bound(regName);
 
    for (i = a; i != b; i++)
-      {
-      if (i->second->getTypeCode() == type &&
-          i->second->getComponentID() == ownerID &&
-          i->second->getDestinationID() == destID &&
-          i->second->getName() == regName)
-         {
-         return(i->second);
-         }
-      }
-
+	  {
+	  if (i->second->getTypeCode() == type &&
+		  i->second->getComponentID() == ownerID &&
+		  i->second->getDestinationID() == destID &&
+		  i->second->getName() == regName)
+		 {
+		 return(i->second);
+		 }
+	  }
    return NULL;
    }
 
 void ApsimRegistry::addComponent(int parentID,
-                                 int componentID,
-                                 const std::string &name,
-                                 const std::string &type)
+								 int componentID,
+								 const std::string &name,
+								 const std::string &type)
    {
    Component c;
    c.ID = componentID;
@@ -346,13 +352,13 @@ ApsimRegistry::PTree<ApsimRegistry::Component>* ApsimRegistry::findComponent(int
 
 ApsimRegistry::PTree<ApsimRegistry::Component>* ApsimRegistry::findComponent(ApsimRegistry::PTree<ApsimRegistry::Component> *node, int componentID)
   {
-  if (node->item.ID == componentID) return node;
+  if (node == NULL || node->item.ID == componentID) return node;
   PTree<Component>* child;
   for (unsigned i = 0; i < node->children.size(); i++)
-     {
+	 {
      if ((child = findComponent(node->children[i], componentID)) != NULL)
         return child;
-     }
+	 }
   return NULL;
   }
 
@@ -396,7 +402,7 @@ void ApsimRegistry::getSiblingsAndDescendants(int componentID, vector<int> &sibl
       {
       siblings.push_back(container->children[i]->item.ID);
       getDescendants(container->children[i], siblings);
-      }
+	  }
 
    PTree<Component>* grandparent = container->parent;
    if (grandparent == NULL) {throw std::runtime_error("NULL node in getSiblingsAndParents2!");}
@@ -431,7 +437,7 @@ void ApsimRegistry::getSiblingsAndParents(int componentID, vector<int> &siblings
       for (unsigned i = 0; i != grandparent->children.size(); i++)
         {
         if (grandparent->children[i]->item.ID != container->parent->item.ID)
-           siblings.push_back(grandparent->children[i]->item.ID);
+		   siblings.push_back(grandparent->children[i]->item.ID);
         }
       }
    // And the masterPM
@@ -443,7 +449,7 @@ void ApsimRegistry::getDescendants(ApsimRegistry::PTree<ApsimRegistry::Component
    for (unsigned i = 0; i != node->children.size(); i++)
       {
       siblings.push_back(node->children[i]->item.ID);
-      getDescendants(node->children[i], siblings);
+	  getDescendants(node->children[i], siblings);
       }
    }
 
@@ -465,8 +471,8 @@ std::string ApsimRegistry::getComponentType(int componentID)
 std::string ApsimRegistry::componentByID(int id)
    {
    for (unsigned int i = 0; i < components.size(); i++ )
-      if (components[i].ID == id)
-         return components[i].Name;
+	  if (components[i].ID == id)
+		 return components[i].Name;
 
    return "";
 }
@@ -478,19 +484,19 @@ void ApsimRegistry::setForeignTaint(int id)
 void ApsimRegistry::clearForeignTaint(int id)
 {
    vector<int>::iterator i =
-        std::find(taintedComponents.begin(),
-                  taintedComponents.end(),
-                  id);
+		std::find(taintedComponents.begin(),
+				  taintedComponents.end(),
+				  id);
 
    if (i != taintedComponents.end())
-     taintedComponents.erase(i);
+	 taintedComponents.erase(i);
 }
 
 bool ApsimRegistry::isForeign(int id)
 {
    return(std::find(taintedComponents.begin(),
                     taintedComponents.end(),
-                    id) != taintedComponents.end());
+					id) != taintedComponents.end());
 }
 
 
@@ -540,7 +546,7 @@ void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module 
 //cout << "Testing RE: variable=\""<<name<<"\", re=\"" << componentName << "\"\n";
          // It's an RE. Test against all the component names we know about.
          //boost::regex e(componentName);
-         //
+		 //
          //for (unsigned int i = 0; i < components.size(); i++)
          //  if (regex_match(components[i].Name,e)) 
          //    ids.push_back(components[i].ID);
@@ -587,7 +593,7 @@ std::string ApsimRegistry::getDescription(int componentID)
       if (reg->getComponentID() == componentID)
          {
          if (reg->getTypeCode() == ::respondToGet)
-               {
+			   {
                string st = "   <property name=\"";
                st += reg->getName();
                st += "\" access=\"read\" init=\"F\">\n";
@@ -634,7 +640,7 @@ std::string ApsimRegistry::getDescription(int componentID)
             delete doc;
             st += "</event>\n";
             properties.insert(make_pair(reg->getName(), st));
-            }
+			}
          else if (reg->getTypeCode() == ::get)
             {
             string st = "   <driver name=\"";
@@ -664,7 +670,7 @@ void ApsimRegistry::dumpStats(void)
    int nrespondToEvent=0;
    int nrespondToGetSet=0;
    for (registrations_type::iterator i = registrations.begin();
-        i != registrations.end();
+		i != registrations.end();
         i++)
       {
       if (i->second->getTypeCode() == ::get) nget++;
@@ -686,14 +692,35 @@ void ApsimRegistry::dumpStats(void)
    cout << "respondToGetSet="<<nrespondToGetSet<<endl;
    }
 
+void ApsimRegistry::freeAll(void)
+{
+   PTree<Component>* root = findComponent(/*masterPMID*/1);
+   freeAll(root);
+}
+
+void ApsimRegistry::freeAll(PTree<Component>* node)
+{
+   if (node != NULL) {
+	   for (unsigned i = 0; i != node->children.size(); i++)
+		  {
+			    freeAll(node->children[i]);
+		  }
+	   if (node->item.Type != "")
+	   {
+         delete node;
+	     node = NULL;
+	   }
+   }
+}
+
 void ApsimRegistry::dumpAll(void)
    {
    PTree<Component>* root = findComponent(/*masterPMID*/1);
    if (root == NULL) {throw std::runtime_error("NULL node in dumpComponentTree!");}
    for (unsigned i = 0; i != root->children.size(); i++)
-      {
-      dumpAll(root->children[i]);
-      }
+	  {
+	  dumpAll(root->children[i]);
+	  }
    }
 void ApsimRegistry::dumpAll(PTree<Component>* node)
    {
@@ -710,8 +737,8 @@ void ApsimRegistry::dumpComponentTree(void)
    if (root == NULL) {throw std::runtime_error("NULL node in dumpComponentTree!");}
    int indent = 0;
    for (unsigned i = 0; i != root->children.size(); i++)
-      {
-      dumpComponentTree(indent, root->children[i]);
+	  {
+	  dumpComponentTree(indent, root->children[i]);
       }
    }
 void ApsimRegistry::dumpComponentTree(int indent, PTree<Component>* node)
@@ -781,8 +808,8 @@ extern "C" void EXPORT STDCALL getChildren(char* ComponentName, char* Data)
          strcat(Data, "\"");
          strcat(Data, ChildName.c_str());
          strcat(Data, "\"");
-         }
-      }
+		 }
+	  }
    }
 
 extern "C" bool EXPORT STDCALL findVariable(char* OwnerComponentName, char* VariableName)
@@ -803,4 +830,3 @@ extern "C" void EXPORT STDCALL getComponentType(char* ComponentName, char* Type)
    int ComponentID = ApsimRegistry::getApsimRegistry().componentByName(ComponentName);
    strcpy(Type, ApsimRegistry::getApsimRegistry().getComponentType(ComponentID).c_str());
    }
-   
