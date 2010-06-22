@@ -32,107 +32,111 @@ class Variant
       // variants class.
       Variant(const Variant& from)
          {
-         copyFrom(from);
-         }
+		 copyFrom(from);
+		 }
 
-      ~Variant(void) {delete [] newDataPtr;}
-      Variant& operator= (const Variant& rhs)
-         {
-         delete [] newDataPtr;
-         copyFrom(rhs);
-         return *this;
-         }
+	  ~Variant(void) {delete [] newDataPtr;}
+	  Variant& operator= (const Variant& rhs)
+		 {
+		 delete [] newDataPtr;
+		 copyFrom(rhs);
+		 return *this;
+		 }
 
-      bool isValid(void) {return messageData.isValid();}
-      const Type& getType(void) const {return type;}
-      unsigned getFromId(void) {return fromId;}
-      void setFromId(unsigned id) {fromId = id;}
+	  bool isValid(void) {return messageData.isValid();}
+	  const Type& getType(void) const {return type;}
+	  unsigned getFromId(void) {return fromId;}
+	  void setFromId(unsigned id) {fromId = id;}
 
-      template <class T>
-      bool unpack(T& obj)
-         {
-         messageData >> obj;
-         return true;
-         }
+	  template <class T>
+	  bool unpack(T& obj)
+		 {
+		 messageData >> obj;
+		 return true;
+		 }
 
-      template <class T>
-      bool unpack(TypeConverter *typeConverter, ArraySpecifier *arraySpecifier, T& obj)
-         {
-         if (arraySpecifier != NULL)
-            {
-            if (!type.isArray())
-               return false;
-            else
-               arraySpecifier->convert(messageData, type.getCode());
-            }
-         if (typeConverter != NULL)
-            typeConverter->getValue(messageData, obj);
+	  template <class T>
+	  bool unpack(TypeConverter *typeConverter, ArraySpecifier *arraySpecifier, T& obj)
+		 {
+		 if (arraySpecifier != NULL)
+			{
+			if (!type.isArray())
+			   return false;
+			else
+			   arraySpecifier->convert(messageData, type.getCode());
+			}
+		 if (typeConverter != NULL)
+			typeConverter->getValue(messageData, obj);
 
-         else
-            messageData >> obj;
-         return true;
-         }
+		 else
+			messageData >> obj;
+		 return true;
+		 }
 
-      template <class T>
-      bool unpackArray(T obj[], unsigned& numValues)
-         {
-         messageData >> numValues;
-         for (unsigned i = 0; i != numValues; i++)
-            messageData >> obj[i];
-         return true;
-         }
+	  template <class T>
+	  bool unpackArray(T obj[], unsigned& numValues)
+		 {
+		 messageData >> numValues;
+		 for (unsigned i = 0; i != numValues; i++)
+			messageData >> obj[i];
+		 return true;
+		 }
 
-      template <class T>
-      bool unpackArray(TypeConverter *typeConverter, ArraySpecifier *arraySpecifier, T obj[], unsigned& numValues)
-         {
-         if (arraySpecifier != NULL)
-            {
-            if (!type.isArray())
-               return false;
-            else
-               arraySpecifier->convert(messageData, type.getCode());
-            }
-         messageData >> numValues;
-         for (unsigned i = 0; i != numValues; i++)
-            messageData >> obj[i];
-         return true;
-         }
-      void aliasTo(Variant& variant)
-         {
-         type = Type(variant.type);
-         fromId = variant.fromId;
-         messageData = MessageData(variant.messageData.ptr(), variant.messageData.bytesUnRead());
-         }
-      void aliasTo(MessageData& fromMessageData)
-         {
-         // extract the type and simply alias to the remaining unread bytes.
-         fromMessageData >> type;
-         messageData = MessageData(fromMessageData.ptr(), fromMessageData.bytesUnRead());
-         }
-      void writeTo(MessageData& toMessageData) const
-         {
-         // write type and then the data.
-         toMessageData << type;
-         toMessageData.copyFrom(messageData.start(), messageData.totalBytes());
-         }
-      unsigned size(void) const {return memorySize(type) + messageData.totalBytes();}
-      MessageData * getMessageData(void) {return &messageData;}
+	  template <class T>
+	  bool unpackArray(TypeConverter *typeConverter, ArraySpecifier *arraySpecifier, T obj[], unsigned& numValues)
+		 {
+		 if (arraySpecifier != NULL)
+			{
+			if (!type.isArray())
+			   return false;
+			else
+			   arraySpecifier->convert(messageData, type.getCode());
+			}
+		 messageData >> numValues;
+		 for (unsigned i = 0; i != numValues; i++)
+			messageData >> obj[i];
+		 return true;
+		 }
+	  void aliasTo(Variant& variant)
+		 {
+		 type = Type(variant.type);
+		 fromId = variant.fromId;
+		 messageData = MessageData(variant.messageData.ptr(), variant.messageData.bytesUnRead());
+		 }
+	  void aliasTo(MessageData& fromMessageData)
+		 {
+		 // extract the type and simply alias to the remaining unread bytes.
+		 fromMessageData >> type;
+		 messageData = MessageData(fromMessageData.ptr(), fromMessageData.bytesUnRead());
+		 }
+	  void writeTo(MessageData& toMessageData) const
+		 {
+		 // write type and then the data.
+		 toMessageData << type;
+		 toMessageData.copyFrom(messageData.start(), messageData.totalBytes());
+		 }
+	  unsigned size(void) const {return memorySize(type) + messageData.totalBytes();}
+	  MessageData * getMessageData(void) {return &messageData;}
 
    private:
-      char* newDataPtr;
-      Type type;
-      MessageData messageData;
-      unsigned fromId;
-      
-      void copyFrom(const Variant& from)
-         {
-         newDataPtr = new char[from.messageData.totalBytes()+1];
-         messageData = MessageData(newDataPtr, from.messageData.totalBytes());
-         messageData.copyFrom(from.messageData.start(), from.messageData.totalBytes());
-         messageData.reset();
-         type = from.type;
-         fromId = from.fromId;
-         }
+	  char* newDataPtr;
+	  Type type;
+	  MessageData messageData;
+	  unsigned fromId;
+	  std::string typeStr;
+
+	  void copyFrom(const Variant& from)
+		 {
+		 newDataPtr = new char[from.messageData.totalBytes()+1];
+		 messageData = MessageData(newDataPtr, from.messageData.totalBytes());
+		 messageData.copyFrom(from.messageData.start(), from.messageData.totalBytes());
+		 messageData.reset();
+// We need to make a copy of the type information, not just take a reference
+		 const FString& fromtype = from.type.getTypeString();
+		 typeStr.assign(fromtype.f_str(), fromtype.length());
+		 type = Type(typeStr.c_str());
+		 fromId = from.fromId;
+		 }
 
    };
 

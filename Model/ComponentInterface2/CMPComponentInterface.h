@@ -8,7 +8,7 @@
 #include <ComponentInterface2/ScienceAPI.h>
 #include <General/xml.h>
 
-class Message;
+struct Message;
 
 typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message& message);
 
