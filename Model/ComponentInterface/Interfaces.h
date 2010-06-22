@@ -9,7 +9,7 @@
 
 namespace protocol {
 
-class Message;
+struct Message;
 class EXPORT IMessageHook
    {
    public:

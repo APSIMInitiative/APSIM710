@@ -106,7 +106,7 @@ class EXPORT MessageData
       // boolean
       inline MessageData& operator>> (bool& value)
          {
-         value = *((byte*)currentPtr);
+         value = *((byte*)currentPtr) != 0;
          currentPtr += memorySize(value);
          return *this;
          }
