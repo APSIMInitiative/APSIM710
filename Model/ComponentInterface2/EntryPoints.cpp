@@ -443,3 +443,17 @@ extern "C" void EXPORT STDCALL  CIDeleteMessageData(DOTNETWrapper* wrapper)
    delete wrapper->messageData;
    delete wrapper;
    }
+extern "C" Message EXPORT * STDCALL CICreateMessageCopy(Message* message)
+{
+	Message* copy = new Message;
+	memcpy(copy, message, sizeof(Message));
+	copy->dataPtr = new char[copy->nDataBytes];
+	memcpy(copy->dataPtr, message->dataPtr, copy->nDataBytes);
+	return copy;
+}
+extern "C" void EXPORT STDCALL CIDeleteMessageCopy(Message* message)
+{
+	delete [] message->dataPtr;
+	delete message;
+}
+
