@@ -50,9 +50,11 @@ extern "C" {
 	[DllImport("ComponentInterface2.dll", EntryPoint = "CIWarning", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
 	void CIWarning(int ComponentInterface, String^ Line);
 
-   [DllImport("ApsimShared.dll", EntryPoint = "componentByID", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
-   void ComponentByID(int componentID, System::Text::StringBuilder^ ComponentName);
+	[DllImport("ComponentInterface2.dll", EntryPoint = "CICreateMessageCopy", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
+	char* CICreateMessageCopy(char* Message);
 
+	[DllImport("ComponentInterface2.dll", EntryPoint = "CIDeleteMessageCopy", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
+	void CIDeleteMessageCopy(char* Message);
 
 }
 
@@ -110,13 +112,12 @@ void ApsimComponent::messageToLogic (char* message)
 	   {
 	   if (Init1)
 		   {
-		   Init1 = false;
-
-         ComponentByID(ComponentID, Contents);
-         Name = Contents->ToString();
+		   char* msgCopy = CICreateMessageCopy(message);
+ 		   Init1 = false;
 
 		   char* messageData = CreateMessageData(message);
 		   ::unpack(messageData, Contents, "");
+		   ::unpack(messageData, Name, "");
 		   DeleteMessageData(messageData);
 
 		   CISubscribe(ComponentI, "Init2", &::CallBack, instanceNumber, INIT2INDEX, "<type/>");
@@ -153,8 +154,7 @@ void ApsimComponent::messageToLogic (char* message)
    		   }
    		else if (IsPlant)
 		      {
-		      ManagerEventType^ dummy = gcnew ManagerEventType();
-            SowType^ sowDummy = gcnew SowType();
+            ApsimVariantType^ sowDummy = gcnew ApsimVariantType();
             CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, sowDummy->DDML());
             CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
             CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
@@ -172,8 +172,11 @@ void ApsimComponent::messageToLogic (char* message)
                }
    		   BuildObjects(InitData->ChildNodes[0]);
    		   }
+		   CIMessageToLogic(ComponentI, msgCopy);
+		   CIDeleteMessageCopy(msgCopy);
 		   }
-	   CIMessageToLogic(ComponentI, message);
+	   else
+	     CIMessageToLogic(ComponentI, message);
 	   }
 	catch (System::Exception^ err)
 		{

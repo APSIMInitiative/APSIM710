@@ -104,6 +104,37 @@ void __stdcall getDescription(const char* initScript, char* description)
       MessageBox::Show(err->Message);
       }
    }
+
+// ------------------------------------------------------------------
+// Return component description info.
+// ------------------------------------------------------------------
+extern "C" __declspec( dllexport )
+void __stdcall getDescriptionLength(const char* initScript, int* lLength)
+   {
+   try
+      {
+      XmlDocument^ Doc = gcnew XmlDocument();
+      Doc->LoadXml(gcnew String(initScript));
+      
+      // Load the assembly.
+      String^ ExecutableFileName = XmlHelper::Attribute(Doc->DocumentElement, "executable");
+      Assembly^ Assemb = Assembly::LoadFile(ExecutableFileName);
+      
+      XmlNode^ InitData = XmlHelper::Find(Doc->DocumentElement, "initdata");
+      if (InitData != nullptr)
+         {
+         ApsimComponent^ Comp = gcnew ApsimComponent(Assemb, 0);
+         char* str = (char*)(void*)Marshal::StringToHGlobalAnsi(Comp->GetDescription(InitData));
+		 *lLength = strlen(str);
+         Marshal::FreeHGlobal((IntPtr)str);
+         }
+      }
+   catch (System::Exception^ err)
+      {
+      MessageBox::Show(err->Message);
+      }
+   }
+
 // ------------------------------------------------------------------
 // The PM is instructing us to create an instance of all our data.
 // ------------------------------------------------------------------
