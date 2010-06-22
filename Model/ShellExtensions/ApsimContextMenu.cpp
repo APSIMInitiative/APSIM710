@@ -10,7 +10,7 @@
 #include <General\stream_functions.h>
 #include <ApsimShared\ApsimVersion.h>
 
-HINSTANCE hInst;
+HINSTANCE hInstance;
 extern ULONG g_DllRefCount;
 using namespace std;
 
@@ -19,9 +19,7 @@ using namespace std;
 //---------------------------------------------------------------------------
 const char *szCLSID = "{5637FAA5-A5A4-42DD-A9F2-AE08F204B5";
 
-//typedef HRESULT (STDAPICALLTYPE * LPFNGETCLASSOBJECT) (REFCLSID, REFIID, LPVOID *);
-
-EXPORT HRESULT STDAPICALLTYPE DllCanUnloadNow(REFCLSID, REFIID, LPVOID *)
+STDAPI DllCanUnloadNow(void)
    {
    return (g_DllRefCount > 0 ? S_FALSE : S_OK);
    }
@@ -42,8 +40,7 @@ string getClsid(void)
 //---------------------------------------------------------------------------
 // create a CClassFactory object
 //---------------------------------------------------------------------------
-  STDAPI DllGetClassObject
-   (REFCLSID rclsid, REFIID riid, LPVOID *ppReturn)
+   STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID *ppReturn)
    {
    *ppReturn = NULL;
 
@@ -68,12 +65,12 @@ string getClsid(void)
 // Register this DLL by setting up our registry entries to point to
 // our shell extension class.
 //---------------------------------------------------------------------------
- STDAPI DllRegisterServer(void)
+   STDAPI DllRegisterServer(void)
    {
+   HRESULT hRes = SELFREG_E_CLASS;
    string key = getKey();
    HKEY hKey;
    DWORD unused;
-   HRESULT hRes = SELFREG_E_CLASS;
 
    if(RegCreateKeyEx(HKEY_CLASSES_ROOT,
                      "CLSID",
@@ -97,7 +94,7 @@ string getClsid(void)
          if(RegCreateKey(hKey, "InProcServer32", &hKey) == ERROR_SUCCESS)
             {
             char lpFilename[MAX_PATH] = {0};
-            GetModuleFileName(hInst, lpFilename, MAX_PATH);
+            GetModuleFileName(hInstance, lpFilename, MAX_PATH);
             RegSetValueEx(hKey,
                           NULL,
                           0,
@@ -137,14 +134,14 @@ string getClsid(void)
          hRes = S_OK;
          }
       }
-
    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0, 0);
+        
    return hRes;
    }
 //---------------------------------------------------------------------------
 // UnRegister this DLL by cleaning up our registry entries
 //---------------------------------------------------------------------------
- STDAPI DllUnregisterServer(void)
+   STDAPI DllUnregisterServer(void)
    {
    string key = getKey();
 
@@ -220,27 +217,17 @@ string getClsid(void)
       return SELFREG_E_CLASS;
    }
 
-#if 0
-extern HINSTANCE hInstance;
 //---------------------------------------------------------------------------
 // Main entry point into the DLL - called by Windows.
+// Was DllEntryPoint - but not called by MS compiler
 //---------------------------------------------------------------------------
-int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
+int WINAPI DllMain(HINSTANCE hinst, unsigned long reason, void*)
    {
-   hInstance = hinst;
-   //Application->Initialize();
    switch(reason)
       {
-      case DLL_PROCESS_ATTACH: hInst = hinst;
+      case DLL_PROCESS_ATTACH: hInstance = hinst;
                                break;
       case DLL_PROCESS_DETACH: break;
       }
-
-   const unsigned _MCW_EW = 0x037f;
-   const unsigned _EM_INVALID = 0xffff;
-   //_controlfp(_MCW_EW, _EM_INVALID);
-
    return TRUE;
    }
-
-#endif

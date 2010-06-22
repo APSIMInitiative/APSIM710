@@ -126,4 +126,10 @@ call MakeProject RunMacro
 call MakeProject AgPasture
 call MakeProject RunEditor
 
+rem -------------------------------------------------------------
+rem Need to embed manifests into dll built by MS compiler
+rem Win sxs(side by side) implementation of runtime dll's
+rem -------------------------------------------------------------
+call EmbedManifests
+
 popd

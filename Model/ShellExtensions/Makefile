@@ -14,8 +14,7 @@ SRC = ContextHandler.cpp \
       ..\General\io_functions.cpp \
       ..\ApsimShared\ApsimDirectories.cpp \
       ..\ApsimShared\ApsimVersion.cpp \
-      ..\ApsimShared\ApsimSettings.cpp \
-      ..\ApsimShared\ApsimShared.cpp
+      ..\ApsimShared\ApsimSettings.cpp
 
 RES = Icons.res
 PROJECTTYPE = dll
@@ -23,4 +22,3 @@ VCL = yes
 LIBS = ole32
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
-

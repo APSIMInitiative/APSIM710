@@ -11,6 +11,16 @@ set text [exec dumpbin /exports $dll]
 set pastheader 0
 puts "LIBRARY [file tail $dll]"
 puts "EXPORTS"
+
+
+if {[string tolower [file tail $dll] ] == "shellextensions.dll"} {
+puts "DllMain PRIVATE"
+puts "DllRegisterServer PRIVATE"
+puts "DllUnregisterServer PRIVATE"
+puts "DllGetClassObject PRIVATE"
+puts "DllCanUnloadNow PRIVATE"
+}
+
 foreach line [split $text "\n"] {
    if {[scan $line "%s %s %s %s" ordinal hint RVA longName] == 4} {
       if {$pastheader} {
