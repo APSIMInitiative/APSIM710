@@ -193,7 +193,7 @@ module ComponentInterfaceModule
        function store_in_postbox(str)
        ml_external store_in_postbox
        character(len=*), intent(in) :: str
-       logical :: store_in_postbox
+       logical*1 :: store_in_postbox
        end function store_in_postbox
 
        function get_posting_module()
@@ -205,14 +205,14 @@ module ComponentInterfaceModule
        ml_external component_id_to_name
        integer, intent(in)              :: id
        character(len=*), intent(in out) :: name
-       logical                          :: component_id_to_name
+       logical*1                         :: component_id_to_name
        end function component_id_to_name
 
        function component_name_to_id(name, id)
        ml_external component_name_to_id
        character(len=*), intent(in) :: name
        integer, intent(out)         :: id
-       logical                      :: component_name_to_id
+       logical*1                      :: component_name_to_id
        end function component_name_to_id
 
        subroutine event_send(moduleID, eventName)
