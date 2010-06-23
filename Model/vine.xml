@@ -107,10 +107,11 @@
           <End>LeafFall</End>
           <TemperatureFunction shortcut="/vine/Model/Plant/Phenology/ThermalTime" />
         </LeafDeathPhase>
-        <RewindPhase name="Rewind">
+        <GotoPhase name="Rewind">
           <Start>LeafFall</Start>
           <End>Unused</End>
-        </RewindPhase>
+          <PhaseNameToGoto>Dormant</PhaseNameToGoto>
+        </GotoPhase>
       </Phenology>
       <Leaf>
         <Biomass name="Live" />
@@ -139,18 +140,26 @@
           <XY>2 0.0</XY>
         </FrostFraction>
         <RUEModel name="Photosynthesis">
-          <FT>
-            <XY>5 0.0</XY>
-            <XY>20 1.0</XY>
-            <XY>30 1.0</XY>
-            <XY>45 0.0</XY>
-          </FT>
-          <FVPD>
-            <XY>0 1.0</XY>
-            <XY>10 1.0</XY>
-            <XY>50 1.0</XY>
-          </FVPD>
-          <RUE>0.8</RUE>
+		      <Constant name="RUE">
+		        <Value type="text" description="Value">0.8</Value>
+		      </Constant>
+		      <WeightedTemperatureFunction name="FT">
+		        <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+		        <XYPairs>
+	            <XY>5 0.0</XY>
+	            <XY>20 1.0</XY>
+	            <XY>30 1.0</XY>
+	            <XY>45 0.0</XY>
+		        </XYPairs>
+		      </WeightedTemperatureFunction>
+		      <GenericFunction name="FVPD">
+		        <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+		        <XYPairs>
+	            <XY>0 1.0</XY>
+	            <XY>10 1.0</XY>
+	            <XY>50 1.0</XY>
+		        </XYPairs>
+		      </GenericFunction>        	
         </RUEModel>
         <TemperatureFunction name="ThermalTime">
           <XYPairs>

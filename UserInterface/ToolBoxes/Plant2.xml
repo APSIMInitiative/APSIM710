@@ -2,7 +2,13 @@
   <Construct />
   <MetaData />
   <Model />
-  <Cultivar />
+  <Cultivar>
+    <Construct>Plant</Construct>
+    <Override name="Phenology.Vernalisation">
+      <VernSens>2.5</VernSens>
+      <PhotopSens>3.5</PhotopSens>
+    </Override>
+  </Cultivar>
   <Plant />
   <folder name="Organs">
     <Population>
@@ -110,8 +116,8 @@
     </VernalisationCW>
     <Phenology />
     <EmergingPhase name="Emerging">
-      <Start type="text" description="Start">Germination</Start>
-      <End type="text" description="End">Emergence</End>
+      <Start type="text" description="Start stage name">Germination</Start>
+      <End type="text" description="End stage name">Emergence</End>
       <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
       <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
       <GenericFunction name="ThermalTime">
@@ -124,38 +130,52 @@
       </GenericFunction>
     </EmergingPhase>
     <GenericPhase>
-      <Start type="text" description="Start">Germination</Start>
-      <End type="text" description="End">Emergence</End>
+      <Start type="text" description="Start stage name">Germination</Start>
+      <End type="text" description="End stage name">Emergence</End>
       <Constant name="Target">
         <Value type="text" description="Value">100</Value>
       </Constant>
       <TemperatureFunction />
     </GenericPhase>
     <EndPhase>
-      <Start>Maturity</Start>
-      <End>Unused</End>
+      <Start description="Start stage name">
+      </Start>
+      <End description="End stage name">
+      </End>
       <TemperatureFunction />
     </EndPhase>
-    <GerminatingPhase />
-    <LeafAppearancePhase>
-      <Start>
+    <GerminatingPhase>
+      <Start description="Start stage name">
       </Start>
-      <End>
+      <End description="End stage name">
+      </End>
+    </GerminatingPhase>
+    <LeafAppearancePhase>
+      <Start description="Start stage name">
+      </Start>
+      <End description="End stage name">
       </End>
       <RemainingLeaves />
       <TemperatureFunction />
     </LeafAppearancePhase>
     <LeafDeathPhase>
-      <Start>
+      <Start description="Start stage name">
       </Start>
-      <End>
+      <End description="End stage name">
       </End>
       <TemperatureFunction />
     </LeafDeathPhase>
-    <RewindPhase />
+    <GotoPhase>
+      <Start description="Start stage name">
+      </Start>
+      <End description="End stage name">
+      </End>
+      <PhaseNameToGoto>
+      </PhaseNameToGoto>
+    </GotoPhase>
     <Vernalisation>
-      <StartStage type="text" description="StartStage">Germination</StartStage>
-      <EndStage type="text" description="EndStage">EndJuvenile</EndStage>
+      <StartStage type="text" description="Start stage name">Germination</StartStage>
+      <EndStage type="text" description="End stage name">EndJuvenile</EndStage>
       <TemperatureFunction name="VDModel">
         <XYPairs>
           <XY>0 1</XY>
@@ -166,8 +186,8 @@
       </TemperatureFunction>
     </Vernalisation>
     <GenericPhase name="Inductive">
-      <Start type="text" description="Start">Emergence</Start>
-      <End type="text" description="End">EndJuvenile</End>
+      <Start type="text" description="Start stage name">Emergence</Start>
+      <End type="text" description="End stage name">EndJuvenile</End>
       <Constant name="Target">
         <Value type="text" description="Value">401</Value>
       </Constant>
@@ -191,6 +211,14 @@
     </PhaseJumpFunction>
   </folder>
   <folder name="Functions">
+    <WeightedTemperatureFunction>
+      <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+      <XYPairs>
+        <XY>5 0</XY>
+        <XY>30 30</XY>
+        <XY>40 0</XY>
+      </XYPairs>
+    </WeightedTemperatureFunction>
     <PhotoperiodFunction>
       <Twilight type="text" description="Twilight">
       </Twilight>
@@ -213,23 +241,34 @@
       <Codes>  0.93         0.93      0.93    0.93            0.90</Codes>
     </StageBasedInterpolation>
     <RUEModel>
-      <FT>
-        <XY>5 0.0</XY>
-        <XY>15 1.0</XY>
-        <XY>28 1.0</XY>
-        <XY>35 1.0</XY>
-        <XY>40 0.0</XY>
-      </FT>
-      <FVPD>
-        <XY> 0 1.0</XY>
-        <XY>10 1.0</XY>
-        <XY>50 1.0</XY>
-      </FVPD>
-      <RUE>1.2</RUE>
+      <Constant name="RUE">
+        <Value type="text" description="Value">1.2</Value>
+      </Constant>
+      <WeightedTemperatureFunction name="FT">
+        <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+        <XYPairs>
+          <XY>5 0</XY>
+          <XY>30 1</XY>
+          <XY>40 0</XY>
+        </XYPairs>
+      </WeightedTemperatureFunction>
+      <GenericFunction name="FVPD">
+        <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+        <XYPairs>
+          <XY> 0  1.0</XY>
+          <XY> 10 1.0</XY>
+          <XY> 50 1.0</XY>
+        </XYPairs>
+      </GenericFunction>
     </RUEModel>
     <Summary />
     <OnEventFunction>
       <Event />
+      <GenericFunction name="Function">
+        <XProperty type="text" description="XProperty">
+        </XProperty>
+        <XYPairs />
+      </GenericFunction>
     </OnEventFunction>
     <BellCurveFunction>
       <GenericFunction name="LargestLeaf">

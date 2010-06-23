@@ -17,6 +17,9 @@ using System.Text;
             Phase P = plant.Phenology.CurrentPhase;
             for (int i = 0; i < Stages.Length; i++)
                {
+               if (!plant.Phenology.IsValidPhase(Stages[i]))
+                  throw new Exception("Invalid stage name specified in StageLookup. Stage name = " + Stages[i]);
+
                if (Stages[i] == P.Start)
                   {
                   Code = Codes[i];

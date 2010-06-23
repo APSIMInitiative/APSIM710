@@ -4,29 +4,21 @@ using System.Text;
 
 
 public class RUEModel : Instance
-      {
+   {
    private NewMetType MetData;
 
-   [Param] private double RUE = 0;
-   [Param] private LinearInterpolation FT = null;   // Temperature effect on Growth Interpolation Set
-   [Param] private LinearInterpolation FVPD = null; // VPD effect on Growth Interpolation Set
    [Input] private double MaxT = 0;
    [Input] private double MinT = 0;
    [Input] private double VP = 0;
 
-   [EventHandler] public void OnNewMet(NewMetType NewMetData)
+   [EventHandler]
+   public void OnNewMet(NewMetType NewMetData)
       {
       MetData = NewMetData;
       }
-   [Output] public double Ft
-      {
-      get
-         {
-         double Tav = 0.75*MaxT + 0.25*MinT;
-         return FT.Value(Tav);
-         }
-      }
-   [Output] public double Fvpd
+
+   [Output]
+   public double VPD
       {
       get
          {
@@ -38,14 +30,30 @@ public class RUEModel : Instance
          double VPDmaxt = VBMet.Humidity.svp((float)MaxT) - VP;
          VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
-         double VPD = SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;
-
-         return FVPD.Value(VPD);
+         return SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;
          }
       }
-
+   [Output]
+   public double Ft
+      {
+      get
+         {
+         Function FT = (Function)Children["Ft"];
+         return FT.Value;
+         }
+      }
+   [Output]
+   public double Fvpd
+      {
+      get
+         {
+         Function FVPD = (Function)Children["Fvpd"];
+         return FVPD.Value;
+         }
+      }
    public double Growth(double RadnInt, double Fw)
       {
-      return RadnInt * RUE * Math.Min(Ft, Fvpd) * Fw;
+      Function RUE = (Function)Children["RUE"];
+      return RadnInt * RUE.Value * Math.Min(Ft, Fvpd) * Fw;
       }
-      }
+   }

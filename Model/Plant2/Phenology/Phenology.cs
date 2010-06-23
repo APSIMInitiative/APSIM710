@@ -99,11 +99,15 @@ public class Phenology : Instance
 
          // If the new phase is a rewind phase then reinitialise all phases and rewind back to the
          // first phase.
-         if (Phases[CurrentPhaseIndex] is RewindPhase)
+         if (Phases[CurrentPhaseIndex] is GotoPhase)
             {
             foreach (Phase P in Phases)
                P.Initialising();
-            CurrentPhaseIndex = 0;
+
+            GotoPhase GotoP = (GotoPhase)Phases[CurrentPhaseIndex];
+            CurrentPhaseIndex = Phases.IndexOf(GotoP.PhaseNameToGoto);
+            if (CurrentPhaseIndex == -1)
+               throw new Exception("Cannot goto phase: " + GotoP.PhaseNameToGoto + ". Phase not found.");
             }
          CurrentPhase.Initialising();
 
@@ -157,6 +161,17 @@ public class Phenology : Instance
          if (P.Start == Start)
             return P;
       throw new Exception("Unable to find phase starting with " + Start);
+      }
+
+   /// <summary>
+   /// A utility function to return true if a phenological phase is valid.
+   /// </summary>
+   public bool IsValidPhase(String Start)
+      {
+      foreach (Phase P in Phases)
+         if (P.Start == Start)
+            return true;
+      return false;
       }
    }
 

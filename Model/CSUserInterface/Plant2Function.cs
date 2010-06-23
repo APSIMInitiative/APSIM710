@@ -63,6 +63,15 @@ namespace CSUserInterface
          Line.YValues.DataMember = "Y";
          this.Grid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
 
+         ApsimFile.Component Parent = Controller.ApsimData.Find(NodePath).Parent;
+         if (Parent != null)
+            {
+            Chart.Axes.Left.Title.Text = Parent.Name;
+            if (Parent.Type == "GenericFunction")
+               {
+               Chart.Axes.Bottom.Title.Text = XmlHelper.Value(Parent.ContentsAsXML, "XProperty");
+               }
+            }
          }
 
       /// <summary>

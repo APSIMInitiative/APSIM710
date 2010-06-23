@@ -18,9 +18,9 @@ using System.Text;
                throw new Exception("Phase end name not set:" + Name);
 
             Plant P = (Plant) Root;
-            if (P.Phenology.Between(Start, End))
+            if (P.Phenology.Between(Start, End) && Children.Count > 0)
                {
-               Function Lookup = Children["Function"] as Function;
+               Function Lookup = Children[0] as Function;
                return Lookup.Value;
                }
             else

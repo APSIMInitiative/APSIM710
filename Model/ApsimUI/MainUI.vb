@@ -200,7 +200,7 @@ Public Class MainUI
         '
         Me.ToolBoxPanel.Controls.Add(Me.ToolBoxToolBarPanel)
         Me.ToolBoxPanel.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.ToolBoxPanel.Location = New System.Drawing.Point(0, 410)
+        Me.ToolBoxPanel.Location = New System.Drawing.Point(0, 408)
         Me.ToolBoxPanel.Name = "ToolBoxPanel"
         Me.ToolBoxPanel.Size = New System.Drawing.Size(735, 104)
         Me.ToolBoxPanel.TabIndex = 12
@@ -282,7 +282,7 @@ Public Class MainUI
         Me.SimulationContainer.ContentPanel.Controls.Add(Me.SimulationExplorer)
         Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolboxSplitter)
         Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolBoxPanel)
-        Me.SimulationContainer.ContentPanel.Size = New System.Drawing.Size(735, 514)
+        Me.SimulationContainer.ContentPanel.Size = New System.Drawing.Size(735, 512)
         Me.SimulationContainer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SimulationContainer.Location = New System.Drawing.Point(0, 0)
         Me.SimulationContainer.Name = "SimulationContainer"
@@ -312,13 +312,13 @@ Public Class MainUI
         Me.SimulationExplorer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SimulationExplorer.Location = New System.Drawing.Point(0, 0)
         Me.SimulationExplorer.Name = "SimulationExplorer"
-        Me.SimulationExplorer.Size = New System.Drawing.Size(735, 407)
+        Me.SimulationExplorer.Size = New System.Drawing.Size(735, 405)
         Me.SimulationExplorer.TabIndex = 36
         '
         'ToolboxSplitter
         '
         Me.ToolboxSplitter.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.ToolboxSplitter.Location = New System.Drawing.Point(0, 407)
+        Me.ToolboxSplitter.Location = New System.Drawing.Point(0, 405)
         Me.ToolboxSplitter.Name = "ToolboxSplitter"
         Me.ToolboxSplitter.Size = New System.Drawing.Size(735, 3)
         Me.ToolboxSplitter.TabIndex = 25
@@ -340,7 +340,7 @@ Public Class MainUI
         Me.RunToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RunButton, Me.PauseButton, Me.StopButton, Me.RunProgress, Me.PercentLabel, Me.ErrorsButton})
         Me.RunToolStrip.Location = New System.Drawing.Point(105, 0)
         Me.RunToolStrip.Name = "RunToolStrip"
-        Me.RunToolStrip.Size = New System.Drawing.Size(217, 44)
+        Me.RunToolStrip.Size = New System.Drawing.Size(223, 46)
         Me.RunToolStrip.TabIndex = 2
         '
         'RunButton
@@ -349,7 +349,7 @@ Public Class MainUI
         Me.RunButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.RunButton.Name = "RunButton"
-        Me.RunButton.Size = New System.Drawing.Size(30, 41)
+        Me.RunButton.Size = New System.Drawing.Size(32, 43)
         Me.RunButton.Text = "Run"
         Me.RunButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
         Me.RunButton.ToolTipText = "Run APSIM"
@@ -362,7 +362,7 @@ Public Class MainUI
         Me.PauseButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.PauseButton.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.PauseButton.Name = "PauseButton"
-        Me.PauseButton.Size = New System.Drawing.Size(40, 41)
+        Me.PauseButton.Size = New System.Drawing.Size(42, 43)
         Me.PauseButton.Text = "Pause"
         Me.PauseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
         Me.PauseButton.ToolTipText = "Pause APSIM"
@@ -374,7 +374,7 @@ Public Class MainUI
         Me.StopButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.StopButton.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.StopButton.Name = "StopButton"
-        Me.StopButton.Size = New System.Drawing.Size(33, 41)
+        Me.StopButton.Size = New System.Drawing.Size(35, 43)
         Me.StopButton.Text = "Stop"
         Me.StopButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
         Me.StopButton.ToolTipText = "Stop APSIM"
@@ -390,7 +390,7 @@ Public Class MainUI
         'PercentLabel
         '
         Me.PercentLabel.Name = "PercentLabel"
-        Me.PercentLabel.Size = New System.Drawing.Size(0, 41)
+        Me.PercentLabel.Size = New System.Drawing.Size(0, 43)
         '
         'ErrorsButton
         '
@@ -398,7 +398,7 @@ Public Class MainUI
         Me.ErrorsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.ErrorsButton.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ErrorsButton.Name = "ErrorsButton"
-        Me.ErrorsButton.Size = New System.Drawing.Size(71, 41)
+        Me.ErrorsButton.Size = New System.Drawing.Size(76, 43)
         Me.ErrorsButton.Text = "Errors found"
         Me.ErrorsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
         Me.ErrorsButton.Visible = False
@@ -407,12 +407,12 @@ Public Class MainUI
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(182, 26)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(184, 26)
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(181, 22)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(183, 22)
         Me.ToolStripMenuItem1.Text = "ToolStripMenuItem1"
         '
         'MainUI

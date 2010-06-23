@@ -17,10 +17,10 @@ class OnEventFunction : Function
 
    public void OnEvent()
       {
-
-      Function F = Children["Function"] as Function;
-      if (F == null)
+      if (Children.Count == 0)
          throw new Exception("Cannot find function in function: " + Name);
+
+      Function F = Children[0] as Function;
       _Value = F.Value;
       }
 

@@ -164,7 +164,10 @@ Public Class GenericUI
             Grid.Columns(Col).SortMode = DataGridViewColumnSortMode.NotSortable
         Next
         For Each Row As DataRow In Table.Rows
-            Grid.Rows.Add(CreateGridRow(ToStr(Row(0)), ToStr(Row(1)), ToStr(Row(2)), ToStr(Row(3)), ToStr(Row(4))))
+            ' Only show rows that aren't XY rows. These XY rows are used in the Plant2IDE.
+            If Row(0) <> "XY" Then
+                Grid.Rows.Add(CreateGridRow(ToStr(Row(0)), ToStr(Row(1)), ToStr(Row(2)), ToStr(Row(3)), ToStr(Row(4))))
+            End If
         Next
 
         ' Size the columns sensibly
@@ -187,6 +190,9 @@ Public Class GenericUI
         ' --------------------------------------------------------------
         ' Save all our changes back to Data
         ' --------------------------------------------------------------
+        If Grid.IsCurrentCellInEditMode Then
+            Grid.EndEdit()
+        End If
         If IsDirty Then
 
             Dim NumValues As Integer = Grid.RowCount

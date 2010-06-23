@@ -28,39 +28,23 @@
       /// </summary>
       private void InitializeComponent()
          {
-         this.Properties = new VBUserInterface.GenericUI();
-         this.Grid = new System.Windows.Forms.DataGridView();
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Plant2Function));
          this.splitter1 = new System.Windows.Forms.Splitter();
          this.Chart = new Steema.TeeChart.TChart();
          this.Line = new Steema.TeeChart.Styles.Line();
+         this.panel1 = new System.Windows.Forms.Panel();
+         this.Properties = new VBUserInterface.GenericUI();
+         this.Grid = new System.Windows.Forms.DataGridView();
+         this.splitter2 = new System.Windows.Forms.Splitter();
+         this.panel1.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.Grid)).BeginInit();
          this.SuspendLayout();
          // 
-         // Properties
-         // 
-         this.Properties.AutoScroll = true;
-         this.Properties.BackColor = System.Drawing.SystemColors.Window;
-         this.Properties.Dock = System.Windows.Forms.DockStyle.Left;
-         this.Properties.HelpText = "";
-         this.Properties.Location = new System.Drawing.Point(0, 16);
-         this.Properties.Name = "Properties";
-         this.Properties.Size = new System.Drawing.Size(278, 275);
-         this.Properties.TabIndex = 2;
-         // 
-         // Grid
-         // 
-         this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-         this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.Grid.Location = new System.Drawing.Point(278, 16);
-         this.Grid.Name = "Grid";
-         this.Grid.Size = new System.Drawing.Size(377, 275);
-         this.Grid.TabIndex = 3;
-         // 
          // splitter1
          // 
-         this.splitter1.Location = new System.Drawing.Point(278, 16);
+         this.splitter1.Location = new System.Drawing.Point(278, 0);
          this.splitter1.Name = "splitter1";
-         this.splitter1.Size = new System.Drawing.Size(3, 275);
+         this.splitter1.Size = new System.Drawing.Size(3, 215);
          this.splitter1.TabIndex = 4;
          this.splitter1.TabStop = false;
          // 
@@ -94,6 +78,7 @@
          // 
          // 
          // 
+         this.Chart.Axes.Bottom.Labels.CustomSize = 30;
          // 
          // 
          // 
@@ -106,6 +91,7 @@
          // 
          // 
          this.Chart.Axes.Bottom.Labels.Shadow.Visible = false;
+         this.Chart.Axes.Bottom.Labels.ValueFormat = "#,##0.####";
          // 
          // 
          // 
@@ -129,6 +115,9 @@
          // 
          // 
          this.Chart.Axes.Bottom.Title.Font.Shadow.Visible = false;
+         this.Chart.Axes.Bottom.Title.Font.Size = 12;
+         this.Chart.Axes.Bottom.Title.Lines = new string[] {
+        ""};
          // 
          // 
          // 
@@ -261,6 +250,7 @@
          // 
          // 
          // 
+         this.Chart.Axes.Left.Labels.CustomSize = 40;
          // 
          // 
          // 
@@ -273,6 +263,7 @@
          // 
          // 
          this.Chart.Axes.Left.Labels.Shadow.Visible = false;
+         this.Chart.Axes.Left.Labels.ValueFormat = "###0.#####";
          this.Chart.Axes.Left.MaximumOffset = 5;
          // 
          // 
@@ -297,6 +288,9 @@
          // 
          // 
          this.Chart.Axes.Left.Title.Font.Shadow.Visible = false;
+         this.Chart.Axes.Left.Title.Font.Size = 12;
+         this.Chart.Axes.Left.Title.Lines = new string[] {
+        ""};
          // 
          // 
          // 
@@ -413,7 +407,7 @@
          this.Chart.Axes.Top.Title.Shadow.Visible = false;
          this.Chart.BackColor = System.Drawing.SystemColors.Window;
          this.Chart.Cursor = System.Windows.Forms.Cursors.Default;
-         this.Chart.Dock = System.Windows.Forms.DockStyle.Bottom;
+         this.Chart.Dock = System.Windows.Forms.DockStyle.Fill;
          // 
          // 
          // 
@@ -438,10 +432,10 @@
          // 
          // 
          // 
-         this.Chart.Header.Brush.Gradient.EndColor = System.Drawing.Color.Gray;
-         this.Chart.Header.Brush.Gradient.MiddleColor = System.Drawing.Color.Empty;
-         this.Chart.Header.Brush.Gradient.StartColor = System.Drawing.Color.White;
-         this.Chart.Header.Brush.Gradient.Visible = true;
+         this.Chart.Header.Gradient.EndColor = System.Drawing.Color.Gray;
+         this.Chart.Header.Gradient.MiddleColor = System.Drawing.Color.Empty;
+         this.Chart.Header.Gradient.StartColor = System.Drawing.Color.White;
+         this.Chart.Header.Gradient.Visible = true;
          // 
          // 
          // 
@@ -505,7 +499,7 @@
          this.Chart.Legend.Title.Shadow.Visible = false;
          this.Chart.Legend.Transparent = true;
          this.Chart.Legend.Visible = false;
-         this.Chart.Location = new System.Drawing.Point(0, 291);
+         this.Chart.Location = new System.Drawing.Point(0, 231);
          this.Chart.Name = "Chart";
          // 
          // 
@@ -521,9 +515,9 @@
          // 
          // 
          // 
-         this.Chart.Panel.Brush.Gradient.EndColor = System.Drawing.Color.Yellow;
-         this.Chart.Panel.Brush.Gradient.MiddleColor = System.Drawing.Color.Empty;
-         this.Chart.Panel.Brush.Gradient.StartColor = System.Drawing.Color.White;
+         this.Chart.Panel.Gradient.EndColor = System.Drawing.Color.Yellow;
+         this.Chart.Panel.Gradient.MiddleColor = System.Drawing.Color.Empty;
+         this.Chart.Panel.Gradient.StartColor = System.Drawing.Color.White;
          // 
          // 
          // 
@@ -535,7 +529,7 @@
          this.Chart.Panel.Shadow.Visible = false;
          this.Chart.Panel.Shadow.Width = 0;
          this.Chart.Series.Add(this.Line);
-         this.Chart.Size = new System.Drawing.Size(655, 250);
+         this.Chart.Size = new System.Drawing.Size(655, 310);
          // 
          // 
          // 
@@ -676,18 +670,57 @@
          // 
          this.Line.YValues.DataMember = "Y";
          // 
+         // panel1
+         // 
+         this.panel1.Controls.Add(this.splitter1);
+         this.panel1.Controls.Add(this.Properties);
+         this.panel1.Controls.Add(this.Grid);
+         this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+         this.panel1.Location = new System.Drawing.Point(0, 16);
+         this.panel1.Name = "panel1";
+         this.panel1.Size = new System.Drawing.Size(655, 215);
+         this.panel1.TabIndex = 6;
+         // 
+         // Properties
+         // 
+         this.Properties.AutoScroll = true;
+         this.Properties.BackColor = System.Drawing.SystemColors.Window;
+         this.Properties.Dock = System.Windows.Forms.DockStyle.Left;
+         this.Properties.HelpText = "";
+         this.Properties.Location = new System.Drawing.Point(0, 0);
+         this.Properties.Name = "Properties";
+         this.Properties.Size = new System.Drawing.Size(278, 215);
+         this.Properties.TabIndex = 3;
+         // 
+         // Grid
+         // 
+         this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+         this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.Grid.Location = new System.Drawing.Point(0, 0);
+         this.Grid.Name = "Grid";
+         this.Grid.Size = new System.Drawing.Size(655, 215);
+         this.Grid.TabIndex = 3;
+         // 
+         // splitter2
+         // 
+         this.splitter2.Dock = System.Windows.Forms.DockStyle.Top;
+         this.splitter2.Location = new System.Drawing.Point(0, 231);
+         this.splitter2.Name = "splitter2";
+         this.splitter2.Size = new System.Drawing.Size(655, 3);
+         this.splitter2.TabIndex = 7;
+         this.splitter2.TabStop = false;
+         // 
          // Plant2Function
          // 
-         this.Controls.Add(this.splitter1);
-         this.Controls.Add(this.Grid);
-         this.Controls.Add(this.Properties);
+         this.Controls.Add(this.splitter2);
          this.Controls.Add(this.Chart);
+         this.Controls.Add(this.panel1);
          this.Name = "Plant2Function";
          this.Controls.SetChildIndex(this.MyHelpLabel, 0);
+         this.Controls.SetChildIndex(this.panel1, 0);
          this.Controls.SetChildIndex(this.Chart, 0);
-         this.Controls.SetChildIndex(this.Properties, 0);
-         this.Controls.SetChildIndex(this.Grid, 0);
-         this.Controls.SetChildIndex(this.splitter1, 0);
+         this.Controls.SetChildIndex(this.splitter2, 0);
+         this.panel1.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.Grid)).EndInit();
          this.ResumeLayout(false);
 
@@ -695,10 +728,12 @@
 
       #endregion
 
-      private VBUserInterface.GenericUI Properties;
-      private System.Windows.Forms.DataGridView Grid;
       private System.Windows.Forms.Splitter splitter1;
       private Steema.TeeChart.TChart Chart;
       private Steema.TeeChart.Styles.Line Line;
+      private System.Windows.Forms.Panel panel1;
+      private VBUserInterface.GenericUI Properties;
+      private System.Windows.Forms.DataGridView Grid;
+      private System.Windows.Forms.Splitter splitter2;
       }
    }

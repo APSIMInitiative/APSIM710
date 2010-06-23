@@ -263,19 +263,27 @@
           </XYPairs>
         </GenericFunction>
         <RUEModel name="Photosynthesis">
-          <FT>
+		      <Constant name="RUE">
+		        <Value type="text" description="Value">1.2</Value>
+		      </Constant>
+		      <WeightedTemperatureFunction name="FT">
+		        <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+		        <XYPairs>
             <XY>5 0.0</XY>
             <XY>15 1.0</XY>
             <XY>28 1.0</XY>
             <XY>35 1.0</XY>
             <XY>40 0.0</XY>
-          </FT>
-          <FVPD>
+		        </XYPairs>
+		      </WeightedTemperatureFunction>
+		      <GenericFunction name="FVPD">
+		        <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+		        <XYPairs>
             <XY> 0 1.0</XY>
             <XY>10 1.0</XY>
             <XY>50 1.0</XY>
-          </FVPD>
-          <RUE>1.2</RUE>
+		        </XYPairs>
+		      </GenericFunction>        	
         </RUEModel>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Early">

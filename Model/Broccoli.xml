@@ -293,18 +293,26 @@
           </XYPairs>
         </GenericFunction>
         <RUEModel name="Photosynthesis">
-          <FT>
-            <XY> 0 0.0</XY>
-            <XY>10 1.0</XY>
-            <XY>22 1.0</XY>
-            <XY>35 0.0</XY>
-          </FT>
-          <FVPD>
-            <XY> 0 1.0</XY>
-            <XY>10 1.0</XY>
-            <XY>50 1.0</XY>
-          </FVPD>
-          <RUE>1.7</RUE>
+		      <Constant name="RUE">
+		        <Value type="text" description="Value">1.7</Value>
+		      </Constant>
+		      <WeightedTemperatureFunction name="FT">
+		        <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+		        <XYPairs>
+	            <XY> 0 0.0</XY>
+	            <XY>10 1.0</XY>
+	            <XY>22 1.0</XY>
+	            <XY>35 0.0</XY>
+		        </XYPairs>
+		      </WeightedTemperatureFunction>
+		      <GenericFunction name="FVPD">
+		        <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+		        <XYPairs>
+	            <XY> 0 1.0</XY>
+	            <XY>10 1.0</XY>
+	            <XY>50 1.0</XY>
+		        </XYPairs>
+		      </GenericFunction>        	
         </RUEModel>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Early">
@@ -553,7 +561,7 @@
         </Constant>
       </SimpleReproductiveOrgan>
       <StageBasedInterpolation name="StageCode">
-        <Stages>Transplanting EndShock FloralInitiation FinalLeaf  Buttoning Maturity</Stages>
+        <Stages>Transplanting EndShock FloralInitiation StartBudding  Buttoning Maturity</Stages>
         <Codes>   1               2              3            4           5      6</Codes>
       </StageBasedInterpolation>
       <Summary />
