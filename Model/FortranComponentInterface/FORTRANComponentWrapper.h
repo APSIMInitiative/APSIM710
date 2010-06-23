@@ -5,6 +5,7 @@
 #include <ComponentInterface/TypeConverter.h>
 #include <ComponentInterface/ArraySpecifier.h>
 #include <ComponentInterface/Component.h>
+#include <windows.h>
 
 // turn of the warnings about "Functions containing for are not expanded inline.
 #pragma warn -inl
@@ -95,7 +96,7 @@ class FortranWrapper : public protocol::Component
          if (getVariable((unsigned int)regItem, &variant, isOptional))
             {
             protocol::TypeConverter* typeConverter = NULL;
-            getTypeConverter(regItem->getName().c_str(),
+			getTypeConverter(regItem->getName().c_str(),
                              variant->getType(),
                              regItem->getDDML().c_str(),
                              typeConverter);
@@ -104,7 +105,8 @@ class FortranWrapper : public protocol::Component
             bool ok = variant->unpack(typeConverter,
                                       arraySpec,
                                       value);
-            if (arraySpec) delete arraySpec;
+			if (arraySpec) delete arraySpec;
+			delete typeConverter; 
 
             if (!ok)
                {
@@ -136,7 +138,7 @@ class FortranWrapper : public protocol::Component
             if (variant != NULL)
                {
                protocol::TypeConverter* typeConverter = NULL;
-               getTypeConverter(regItem->getName().c_str(),
+			   getTypeConverter(regItem->getName().c_str(),
                                 variant->getType(),
                                 regItem->getDDML().c_str(),
                                 typeConverter);
@@ -145,7 +147,8 @@ class FortranWrapper : public protocol::Component
                bool ok = variant->unpack(typeConverter,
                                          arraySpec,
                                          value);
-               if (arraySpec) delete arraySpec;
+			   if (arraySpec) delete arraySpec;
+			   delete typeConverter;
 
                if (!ok)
                   {
@@ -217,20 +220,31 @@ class FortranWrapper : public protocol::Component
 
          return setVariable(variableID, 1, value);
          }
-      void new_postbox(void)
-         {
-         outgoingApsimVariant.reset();
-         post_var("sender", protocol::DTstring, false, getName());
-         post_var("sender_id", protocol::DTint4, false, componentID);
+	  void new_postbox(void)
+		 {
+		 outgoingApsimVariant.reset();
+#ifdef NOTYET
+		 std::string name=getName();
+		 unsigned numvals = 1;
+		 FStrings values((char*)name.c_str(), name.length(), numvals, numvals);
+		 post_var("sender", protocol::DTstring, true, values);
+		 char buf[40];
+		 int buflen = sprintf(buf, "%d", componentID);
+		 FStrings value(buf, buflen, numvals, numvals);
+		 post_var("sender_id", protocol::DTstring, true, value);
+#else
+		 post_var("sender", protocol::DTstring, false, getName());
+		 post_var("sender_id", protocol::DTint4, false, componentID);
+#endif
          }
-      template <class T>
-      void collect_var(const FString& variableName, protocol::DataTypeCode dataType,
-                       bool isArray, T& value, unsigned& numvals, bool isOptional)
-         {
+	  template <class T>
+	  void collect_var(const FString& variableName, protocol::DataTypeCode dataType,
+					   bool isArray, T& value, unsigned& numvals, bool isOptional)
+		 {
          bool ok;
          if (inRespondToSet)
             {
-            protocol::TypeConverter* converter = NULL;
+			protocol::TypeConverter* converter = NULL;
             getTypeConverter(variableName,
                                   incomingVariant.getType().getCode(),
                                   dataType,
@@ -239,7 +253,8 @@ class FortranWrapper : public protocol::Component
                                   converter);
             incomingVariant.unpack(converter,
                                    NULL /*protocol::ArraySpecifier::create(regItem)*/,
-                                   value);
+								   value);
+			delete converter;
             ok = true;
             }
          else
@@ -297,7 +312,10 @@ class FortranWrapper : public protocol::Component
       protocol::Variants* vars;
       unsigned fromID;
 
-      void swapInstanceIn(void);
+	  void swapInstanceIn(void);
+	  void swapInstanceOut(void);
+      Instance saved;
+      FortranWrapper* savedThis;
 
       void setup(void);
       void setupFortranDll(void);

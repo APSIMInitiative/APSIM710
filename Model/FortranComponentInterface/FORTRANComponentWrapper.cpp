@@ -26,6 +26,8 @@ static const int ERR_internal = 1;
 static const int ERR_user = 2;
 
 FortranWrapper* FortranWrapper::currentInstance = NULL;
+CRITICAL_SECTION swapMutex;
+bool swapMutexInited = false;
 
 // ------------------------------------------------------------------
 // constructor
@@ -44,6 +46,7 @@ FortranWrapper::~FortranWrapper(void)
    const unsigned int doAllocate = false;
    swapInstanceIn();
    alloc_dealloc_instance(&doAllocate);
+   swapInstanceOut();
 
    if (libraryHandle)
       {
@@ -137,8 +140,6 @@ void FortranWrapper::doInit1(const protocol::Init1Data& init1Data)
    setup();
 
    protocol::Component::doInit1(init1Data);
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    if (my_do_init1)
@@ -146,44 +147,35 @@ void FortranWrapper::doInit1(const protocol::Init1Data& init1Data)
    else
       Main("create", asString(init1Data.sdml).c_str());
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
    }
 // ------------------------------------------------------------------
 // do init2 stuff
 // ------------------------------------------------------------------
 void FortranWrapper::doInit2(void)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    Main("init2", "");
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
    }
 // ------------------------------------------------------------------
 // do commence stuff
 // ------------------------------------------------------------------
 void FortranWrapper::doCommence(void)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    Main("start", "");
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
    }
 // ------------------------------------------------------------------
 // respond to a get request.
 // ------------------------------------------------------------------
 void FortranWrapper::respondToGet(unsigned int& fromID, protocol::QueryValueData& qData)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    string name = getRegistration(componentID, qData.ID)->getNameWithoutBrackets();
@@ -191,8 +183,7 @@ void FortranWrapper::respondToGet(unsigned int& fromID, protocol::QueryValueData
    queryData = qData;
    messageWasUsed = true;
    Main("get", name.c_str());
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
    if (!messageWasUsed)
       protocol::Component::respondToGet(fromID, qData);
    }
@@ -201,8 +192,6 @@ void FortranWrapper::respondToGet(unsigned int& fromID, protocol::QueryValueData
 // ------------------------------------------------------------------
 bool FortranWrapper::respondToSet(unsigned int& fromID, protocol::QuerySetValueData& querySetData)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    string name = getRegistration(componentID, querySetData.ID)->getName();
@@ -213,8 +202,7 @@ bool FortranWrapper::respondToSet(unsigned int& fromID, protocol::QuerySetValueD
 
    Main("set", name.c_str());
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
 
    return messageWasUsed;
    }
@@ -223,22 +211,17 @@ bool FortranWrapper::respondToSet(unsigned int& fromID, protocol::QuerySetValueD
 // ------------------------------------------------------------------
 void FortranWrapper::notifyTermination(void)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    Main("end_run", "");
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
    }
 // ------------------------------------------------------------------
 // respond to an event.
 // ------------------------------------------------------------------
 void FortranWrapper::respondToEvent(unsigned int& fromID, unsigned int& eventID, protocol::Variant& var)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    incomingApsimVariant.aliasTo(* var.getMessageData());
@@ -251,16 +234,13 @@ void FortranWrapper::respondToEvent(unsigned int& fromID, unsigned int& eventID,
    if (!messageWasUsed)
       if (my_respondToEvent) {(*my_respondToEvent)(fromID, eventID, &var);}
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
    }
 // ------------------------------------------------------------------
 // respond to an onApsimGetQuery message
 // ------------------------------------------------------------------
 void FortranWrapper::onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQueryData& apsimGetQueryData)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    inApsimGetQuery = true;
@@ -272,16 +252,13 @@ void FortranWrapper::onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQuer
 
    Main("get", qualifiedName.c_str());
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
    }
 // ------------------------------------------------------------------
 // respond to an onApsimSetQuery message
 // ------------------------------------------------------------------
 bool FortranWrapper::onApsimSetQuery(protocol::ApsimSetQueryData& apsimSetQueryData)
    {
-   Instance saved = *instance;
-   FortranWrapper* savedThis = currentInstance;
    swapInstanceIn();
 
    incomingVariant.aliasTo(apsimSetQueryData.variant);
@@ -290,8 +267,7 @@ bool FortranWrapper::onApsimSetQuery(protocol::ApsimSetQueryData& apsimSetQueryD
 
    Main("set", apsimSetQueryData.name);
 
-   *instance = saved;
-   currentInstance = savedThis;
+   swapInstanceOut();
 
    return messageWasUsed;
    }
@@ -299,10 +275,24 @@ bool FortranWrapper::onApsimSetQuery(protocol::ApsimSetQueryData& apsimSetQueryD
 // swap an instance in.
 // ------------------------------------------------------------------
 void FortranWrapper::swapInstanceIn(void)
-   {
-   *instance = myInstance;
-   currentInstance = this;
+{
+   if (!swapMutexInited) {
+      InitializeCriticalSectionAndSpinCount(&swapMutex, 0x800000400);
+      swapMutexInited = true;
    }
+   EnterCriticalSection(&swapMutex);
+   saved = *instance;
+   *instance = myInstance;
+   savedThis = currentInstance;
+   currentInstance = this;
+}
+
+void FortranWrapper::swapInstanceOut(void)
+{
+   *instance = saved;
+   currentInstance = savedThis;
+   LeaveCriticalSection(&swapMutex);
+}
 
 void FortranWrapper::event_send(int destID, const FString& eventName)
    {
@@ -804,7 +794,7 @@ void boundCheckDoubleArray(double* values, unsigned numvals, double lower, doubl
    for (unsigned i = 0; i != numvals; i++)
       {
       //string z = asString(variableName) + "(" + itoa(i+1) + ")";
-      boundCheckVar(values[i], lower, upper, variableName);
+	  boundCheckVar(values[i], lower, upper, variableName);
       }
    }
 // ------------------------------------------------------------------
@@ -851,7 +841,7 @@ extern "C" void EXPORT STDCALL get_real_var
    if (*numvals == 0)
       *value = 0;
    else
-      boundCheckVar(*value, *lower, *upper, FString(variableName, variableNameLength, FORString));
+	  boundCheckVar(*value, *lower, *upper, FString(variableName, variableNameLength, FORString));
    }
 // ------------------------------------------------------------------
 // Module is requesting the value of a variable from another module.
@@ -945,7 +935,7 @@ extern "C" void EXPORT STDCALL get_real_vars
    FortranWrapper::currentInstance->get_vars
       (*requestNo, FString(variableName, variableNameLength, FORString), realType, *value, *numvals);
    if (*numvals == 0)
-      *value = 0;
+	  *value = 0;
    else
       boundCheckVar(*value, *lower, *upper, FString(variableName, variableNameLength, FORString));
    }
@@ -992,7 +982,7 @@ extern "C" void EXPORT STDCALL get_double_vars
    if (*numvals == 0)
       *value = 0;
    else
-      boundCheckVar(*value, *lower, *upper, FString(variableName, variableNameLength, FORString));
+	  boundCheckVar(*value, *lower, *upper, FString(variableName, variableNameLength, FORString));
    }
 // ------------------------------------------------------------------
 // Module is requesting the value of a variable from another module.
@@ -1039,7 +1029,7 @@ extern "C" void EXPORT STDCALL get_char_var
 extern "C" void EXPORT STDCALL get_char_var_optional
    (int* componentID, const char* variableName, const char* units,
     char* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
+	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
    FString valueString(value, valueLength, FORString);
    FortranWrapper::currentInstance->get_var
@@ -1098,7 +1088,7 @@ extern "C" void EXPORT STDCALL set_double_var(int* componentID, const char* vari
                                          unsigned unitsLength )
    {
    FortranWrapper::currentInstance->set_var
-      (*componentID, FString(variableName, variableNameLength, FORString), doubleType,
+	  (*componentID, FString(variableName, variableNameLength, FORString), doubleType,
        *value);
    }
 // ------------------------------------------------------------------
@@ -1117,29 +1107,29 @@ extern "C" void EXPORT STDCALL set_double_array(int* componentID, const char* va
 // Module wants to set the value of a variable in another module.
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL set_char_var(int* componentID, const char* variableName,
-                                       const char* units, const char* value,
-                                       unsigned variableNameLength,
-                                       unsigned unitsLength, unsigned valueLength)
+									   const char* units, const char* value,
+									   unsigned variableNameLength,
+									   unsigned unitsLength, unsigned valueLength)
    {
    FortranWrapper::currentInstance->set_var
-      (*componentID, FString(variableName, variableNameLength, FORString), stringType,
-       FString(value, valueLength, FORString));
+	  (*componentID, FString(variableName, variableNameLength, FORString), stringType,
+	   FString(value, valueLength, FORString));
    }
 
 extern "C" void EXPORT STDCALL set_char_var_optional(
-                                       int* componentID,
-                                       const char* variableName,
-                                       const char* units,
-                                       int *num_set,
-                                       const char* value,
-                                       unsigned variableNameLength,
-                                       unsigned unitsLength, unsigned valueLength)
+									   int* componentID,
+									   const char* variableName,
+									   const char* units,
+									   int *num_set,
+									   const char* value,
+									   unsigned variableNameLength,
+									   unsigned unitsLength, unsigned valueLength)
    {
    bool result = FortranWrapper::currentInstance->set_var_optional
-      (*componentID,
-       FString(variableName, variableNameLength, FORString),
-       stringType,
-       FString(value, valueLength, FORString));
+	  (*componentID,
+	   FString(variableName, variableNameLength, FORString),
+	   stringType,
+	   FString(value, valueLength, FORString));
    *num_set = result ? 1 : 0;
    }
 
@@ -1147,13 +1137,13 @@ extern "C" void EXPORT STDCALL set_char_var_optional(
 // Module wants to set the value of a variable in another module.
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL set_char_array(int* componentID, const char* variableName,
-                                         const char* units, char* value, unsigned* numvals,
-                                         unsigned variableNameLength, unsigned unitsLength,
-                                         unsigned valueLength)
+										 const char* units, char* value, unsigned* numvals,
+										 unsigned variableNameLength, unsigned unitsLength,
+										 unsigned valueLength)
    {
    FStrings values(value, valueLength, *numvals, *numvals);
    FortranWrapper::currentInstance->set_var
-      (*componentID, FString(variableName, variableNameLength, FORString), stringArrayType, values);
+	  (*componentID, FString(variableName, variableNameLength, FORString), stringArrayType, values);
    }
 // ------------------------------------------------------------------
 // Module is requesting a new postbox.
@@ -1176,91 +1166,141 @@ extern "C" void EXPORT STDCALL event_send(int *id, const char* eventName, unsign
    FortranWrapper::currentInstance->event_send(*id, FString(eventName, eventNameLength, FORString));
    }
 // ------------------------------------------------------------------
-// Module is posting a value into a variant.
+// Module is posting a string array into a variant.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL post_integer_var
-   (const char* variableName, const char* units, int* value,
-    unsigned variableNameLength, unsigned unitsLength)
+extern "C" void EXPORT STDCALL post_char_array
+   (const char* variableName, const char* units, const char* value, unsigned* numvals,
+	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
+   FStrings values(const_cast<char*>(value), valueLength, *numvals, *numvals);
    FortranWrapper::currentInstance->post_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTint4, false, *value);
-   }
-// ------------------------------------------------------------------
-// Module is posting a value into a variant.
-// ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL post_real_var
-   (const char* variableName, const char* units, float* value,
-    unsigned variableNameLength, unsigned unitsLength)
-   {
-   FortranWrapper::currentInstance->post_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTsingle, false, *value);
-   }
-// ------------------------------------------------------------------
-// Module is posting a value into a variant.
-// ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL post_real_array
-   (const char* variableName, const char* units, float* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength)
-   {
-   protocol::vector<float> values(value, *numvals, *numvals);
-   FortranWrapper::currentInstance->post_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTsingle, true, values);
-   }
-// ------------------------------------------------------------------
-// Module is posting a value into a variant.
-// ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL post_double_var
-   (const char* variableName, const char* units, double* value,
-    unsigned variableNameLength, unsigned unitsLength)
-   {
-   FortranWrapper::currentInstance->post_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTdouble, false, *value);
-   }
-// ------------------------------------------------------------------
-// Module is posting a value into a variant.
-// ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL post_double_array
-   (const char* variableName, const char* units, double* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength)
-   {
-   protocol::vector<double> values(value, *numvals, *numvals);
-   FortranWrapper::currentInstance->post_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTdouble, true, values);
+	  (FString(variableName, variableNameLength, FORString), protocol::DTstring, true,
+	   values);
    }
 // ------------------------------------------------------------------
 // Module is posting a string into a variant.
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL post_char_var
    (const char* variableName, const char* units, const char* value,
-    unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
+	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
+#ifdef NOTYET
+   unsigned numvals = 1;
+   post_char_array(variableName, units, value, &numvals, variableNameLength, unitsLength, valueLength);
+#else
    FortranWrapper::currentInstance->post_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
-       FString(value, valueLength, FORString));
+	  (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
+	   FString(value, valueLength, FORString));
+#endif
    }
 // ------------------------------------------------------------------
-// Module is posting a string array into a variant.
+// Module is posting a value into a variant.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL post_char_array
-   (const char* variableName, const char* units, char* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
+extern "C" void EXPORT STDCALL post_integer_var
+   (const char* variableName, const char* units, int* value,
+	unsigned variableNameLength, unsigned unitsLength)
    {
-   FStrings values(value, valueLength, *numvals, *numvals);
+#ifdef NOTYET
+   char tmp[40];   //temp char string
+   sprintf(tmp, "%d", *value);
+   post_char_var(variableName, units, tmp,
+	 variableNameLength, unitsLength, strlen(tmp));
+#else
    FortranWrapper::currentInstance->post_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTstring, true,
-       values);
+	  (FString(variableName, variableNameLength, FORString), protocol::DTint4, false, *value);
+#endif
+   }
+// ------------------------------------------------------------------
+// Module is posting a value into a variant.
+// ------------------------------------------------------------------
+extern "C" void EXPORT STDCALL post_real_var
+   (const char* variableName, const char* units, float* value,
+	unsigned variableNameLength, unsigned unitsLength)
+   {
+#ifdef NOTYET
+   char tmp[40];   //temp char string
+   sprintf(tmp, "%.12g", *value);
+   post_char_var(variableName, units, tmp,
+	 variableNameLength, unitsLength, strlen(tmp));
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTsingle, false, *value);
+#endif
+   }
+// ------------------------------------------------------------------
+// Module is posting a value into a variant.
+// ------------------------------------------------------------------
+extern "C" void EXPORT STDCALL post_real_array
+   (const char* variableName, const char* units, float* value, unsigned* numvals,
+	unsigned variableNameLength, unsigned unitsLength)
+   {
+   protocol::vector<float> values(value, *numvals, *numvals);
+#ifdef NOTYET
+   char* temp = (char*)malloc(*numvals*24);
+   memset(temp, ' ', *numvals*24);
+   char tmp[40];
+   for (int i=0; i < *numvals; i++) {
+	 int nChars = sprintf(tmp, "%.12g", values[i]);
+	 strncpy(temp + 24 * i, tmp, nChars);
+   }
+   post_char_array(variableName, units, temp, numvals,
+	 variableNameLength, unitsLength, 24);
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTsingle, true, values);
+#endif
+   }
+// ------------------------------------------------------------------
+// Module is posting a value into a variant.
+// ------------------------------------------------------------------
+extern "C" void EXPORT STDCALL post_double_var
+   (const char* variableName, const char* units, double* value,
+	unsigned variableNameLength, unsigned unitsLength)
+   {
+#ifdef NOTYET
+   char tmp[40];   //temp char string
+   sprintf(tmp, "%.12g", *value);
+   post_char_var(variableName, units, tmp,
+	 variableNameLength, unitsLength, strlen(tmp));
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTdouble, false, *value);
+#endif
+   }
+// ------------------------------------------------------------------
+// Module is posting a value into a variant.
+// ------------------------------------------------------------------
+extern "C" void EXPORT STDCALL post_double_array
+   (const char* variableName, const char* units, double* value, unsigned* numvals,
+	unsigned variableNameLength, unsigned unitsLength)
+   {
+   protocol::vector<double> values(value, *numvals, *numvals);
+#ifdef NOTYET
+   char* temp = (char*)malloc(*numvals*24);
+   memset(temp, ' ', *numvals*24);
+   char tmp[40];
+   for (int i=0; i < *numvals; i++) {
+	 int nChars = sprintf(tmp, "%.12g", values[i]);
+	 strncpy(temp + 24 * i, tmp, nChars);
+   }
+   post_char_array(variableName, units, temp, numvals,
+	 variableNameLength, unitsLength, 24);
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTdouble, true, values);
+#endif
    }
 // ------------------------------------------------------------------
 // Module is getting a value from a variant.
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL collect_char_var
    (const char* variableName, const char* units, char* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
+	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
    FString newValue;
    FortranWrapper::currentInstance->collect_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
-       newValue, *numvals, false);
+	  (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
+	   newValue, *numvals, false);
    FString(value, valueLength, FORString) = newValue;
    }
 // ------------------------------------------------------------------
@@ -1268,12 +1308,12 @@ extern "C" void EXPORT STDCALL collect_char_var
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL collect_char_var_optional
    (const char* variableName, const char* units, char* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
+	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
    FString newValue;
    FortranWrapper::currentInstance->collect_var
-      (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
-       newValue, *numvals, true);
+	  (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
+	   newValue, *numvals, true);
    FString(value, valueLength, FORString) = newValue;
    }
 // ------------------------------------------------------------------
@@ -1281,12 +1321,12 @@ extern "C" void EXPORT STDCALL collect_char_var_optional
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL collect_char_array
    (const char* variableName, unsigned* arraySize, char* units, char* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
+	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
    FString name(variableName, variableNameLength, FORString);
    FStrings values(value, valueLength, *arraySize, 0);
    FortranWrapper::currentInstance->collect_var
-      (name, protocol::DTstring, true, values, *numvals, false);
+	  (name, protocol::DTstring, true, values, *numvals, false);
    *numvals = values.getNumElements();
    }
 // ------------------------------------------------------------------
@@ -1294,12 +1334,12 @@ extern "C" void EXPORT STDCALL collect_char_array
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL collect_char_array_optional
    (const char* variableName, unsigned* arraySize, char* units, char* value, unsigned* numvals,
-    unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
+	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
    FString name(variableName, variableNameLength, FORString);
    FStrings values(value, valueLength, *arraySize, 0);
    FortranWrapper::currentInstance->collect_var
-      (name, protocol::DTstring, true, values, *numvals, true);
+	  (name, protocol::DTstring, true, values, *numvals, true);
    *numvals = values.getNumElements();
    }
 
@@ -1448,7 +1488,7 @@ void stripBlanks(FString& str)
 // ------------------------------------------------------------------
 // Store the specified string into the 'postbox'
 // ------------------------------------------------------------------
-extern "C" unsigned EXPORT STDCALL store_in_postbox(const char* str, unsigned strLength)
+extern "C" bool EXPORT STDCALL store_in_postbox(const char* str, unsigned strLength)
    {
    FString line(str, strLength, FORString);
 
@@ -1496,28 +1536,28 @@ extern "C" int EXPORT STDCALL get_posting_module(void)
 // return the posting module to caller.
 // ------------------------------------------------------------------
 extern "C" bool EXPORT STDCALL component_id_to_name(unsigned* id, char* name,
-                                                   unsigned nameLength)
+												   unsigned nameLength)
    {
    string nameString = asString(name, nameLength);
    bool ok = FortranWrapper::currentInstance->componentIDToName(*id, nameString);
    if (ok)
-      FString(name, nameLength, FORString) = nameString.c_str();
+	  FString(name, nameLength, FORString) = nameString.c_str();
    return ok;
    }
 // ------------------------------------------------------------------
 // return the posting module to caller.
 // ------------------------------------------------------------------
 extern "C" bool EXPORT STDCALL component_name_to_id(char* name, int* id,
-                                                   unsigned nameLength)
+												   unsigned nameLength)
    {
    int iid = -1;
    bool ok = FortranWrapper::currentInstance->componentNameToID
-                    (asString(name, nameLength), iid);
+					(asString(name, nameLength), iid);
 
    if (ok)
-     *id = iid;
+	 *id = iid;
    else
-     *id = -1;
+	 *id = -1;
 
    return ok;
    }
