@@ -246,6 +246,12 @@ public class Plant : Instance
          }
       }
 
+      [Event] public event NullTypeDelegate Cutting;
+      [EventHandler]
+      private void OnCut()
+         {
+         Cutting.Invoke();
+         }
    #region Events we're publishing
    private void PublishNewCropEvent()
       {

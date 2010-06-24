@@ -5,6 +5,11 @@ using System.Text;
 public class Leaf : BaseOrgan, AboveGround
    {
    #region Class Data Members
+   [Input]
+   private int Day = 0;
+   [Input]
+   private int Year = 0;
+
    private double _WaterAllocation;
 
    private double PEP = 0;
@@ -273,26 +278,7 @@ public class Leaf : BaseOrgan, AboveGround
          {
          // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
 
-
-         for (int i = 0; i < InitialAreas.Length; i++)
-            {
-            NodeNo = i + 1;
-
-            Population Population = Plant.Children["Population"] as Population;
-            Leaves.Add(new LeafCohort(Population.Value * PrimaryBudNo,  //Branch No 
-                                   InitialAges[i],  // Cohort Age
-                                   NodeNo,  // Cohort rank
-                                   Children["MaxArea"] as Function,
-                                   Children["GrowthDuration"] as Function,
-                                   Children["LagDuration"] as Function,
-                                   Children["SenescenceDuration"] as Function,
-                                   Children["SpecificLeafArea"] as Function,
-                                   InitialAreas[i],
-                                   Children["CriticalNConc"] as Function));
-
-            }
-         // Add fraction of top leaf expanded to node number.
-         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
+         InitialiseCohorts();
 
          }
 
@@ -328,12 +314,41 @@ public class Leaf : BaseOrgan, AboveGround
                                 Children["LagDuration"] as Function,
                                 Children["SenescenceDuration"] as Function,
                                 Children["SpecificLeafArea"] as Function,
-                                0.0, Children["CriticalNConc"] as Function));
+                                0.0, Children["CriticalNConc"] as Function,
+                                   Children["MinimumNConc"] as Function,
+                                Children["StructuralNConc"] as Function,
+                                Children["InitialNConc"] as Function));    
          }
       foreach (LeafCohort L in Leaves)
          {
          L.DoPotentialGrowth(ThermalTime.Value);
          }
+
+      }
+   private void InitialiseCohorts()
+      {
+      for (int i = 0; i < InitialAreas.Length; i++)
+         {
+         NodeNo = i + 1;
+
+         Population Population = Plant.Children["Population"] as Population;
+         Leaves.Add(new LeafCohort(Population.Value * PrimaryBudNo,  //Branch No 
+                                InitialAges[i],  // Cohort Age
+                                NodeNo,  // Cohort rank
+                                Children["MaxArea"] as Function,
+                                Children["GrowthDuration"] as Function,
+                                Children["LagDuration"] as Function,
+                                Children["SenescenceDuration"] as Function,
+                                Children["SpecificLeafArea"] as Function,
+                                InitialAreas[i],
+                                Children["CriticalNConc"] as Function,
+                                Children["MinimumNConc"] as Function,
+                                Children["StructuralNConc"] as Function,
+                                Children["InitialNConc"] as Function));
+
+         }
+      // Add fraction of top leaf expanded to node number.
+      NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
 
       }
    public override void DoActualGrowth()
@@ -643,7 +658,14 @@ public class Leaf : BaseOrgan, AboveGround
          return Live.N;
          }
       }
-
+   [Output]
+   public double DeadN2
+      {
+      get
+         {
+         return Dead.N;
+         }
+      }
    [Output]
    public double LiveWt2
       {
@@ -712,5 +734,67 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
 
+   public override double NRetranslocationSupply 
+      { 
+      get 
+         {
+         double Supply = 0;
+         foreach (LeafCohort L in Leaves)
+            Supply += L.NRetranslocationSupply;
+         return Supply;
+         } 
+      }
+   public override double NRetranslocation
+      {
+      set
+         {
+         double NSupply = NRetranslocationSupply;
+         if (value > NSupply)
+            throw new Exception(Name + " cannot supply that amount for N retranslocation");
+         if (value > 0)
+            {
+            double fraction = value/NSupply;
+            foreach (LeafCohort L in Leaves)
+               {
+               L.NRetranslocation = fraction * L.NRetranslocationSupply;
+               }
+            }
+         }
+      }
+
+   [EventHandler]
+   private void OnKillLeaf(KillLeafType KillLeaf)
+      {
+      DateTime Today = new DateTime(Year, 1, 1);
+      Today = Today.AddDays(Day - 1);
+      string Indent = "     ";
+      string Title = Indent + Today.ToShortDateString() + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
+      Console.WriteLine("");
+      Console.WriteLine(Title);
+      Console.WriteLine(Indent + new string('-', Title.Length));
+
+      foreach (LeafCohort L in Leaves)
+         {
+         L.DoKill(KillLeaf.KillFraction);
+         }
+
+      }
+
+   [EventHandler]
+   private void OnCut()
+      {
+      DateTime Today = new DateTime(Year, 1, 1);
+      Today = Today.AddDays(Day - 1);
+      string Indent = "     ";
+      string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
+      Console.WriteLine("");
+      Console.WriteLine(Title);
+      Console.WriteLine(Indent + new string('-', Title.Length));
+
+      Live.Clear();
+      Dead.Clear();
+      Leaves.Clear();
+      InitialiseCohorts();
+      }
    }
    

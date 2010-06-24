@@ -145,6 +145,111 @@
         <PhotopSens>3.5</PhotopSens>
       </Override>
     </Cultivar>
+    <Cultivar name="h45">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.5</VernSens>
+        <PhotopSens>1.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="wyalkatchem">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.6</VernSens>
+        <PhotopSens>1.8</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="lorikeet">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>3.9</VernSens>
+        <PhotopSens>3.9</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="rongotea">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="avalon">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="bounty">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="moulin">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>5.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="kopara">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="batten">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="advantage">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>2.0</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="cr137">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.0</VernSens>
+        <PhotopSens>4.0</PhotopSens>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Spear">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.5</VernSens>
+        <PhotopSens>3.5</PhotopSens>
+      </Override>
+      <Override name="Grain.NumberFunction">
+        <XProperty>Stem.Live.Wt</XProperty>
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>1000 20000</XY>
+        </XYPairs>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Wilgoyne">
+      <Construct>Plant</Construct>
+      <Override name="Phenology.Vernalisation">
+        <VernSens>1.4</VernSens>
+        <PhotopSens>1.6</PhotopSens>
+      </Override>
+      <Override name="Grain.NumberFunction">
+        <XProperty>Stem.Live.Wt</XProperty>
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>1000 20000</XY>
+        </XYPairs>
+      </Override>
+    </Cultivar>
     <Plant>
       <CropType>wheat</CropType>
       <Population>
@@ -338,8 +443,8 @@
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
-            <XY>0 0.5</XY>
-            <XY>0.5 0.5</XY>
+            <XY> 0 0.5</XY>
+            <XY> 0.45 0.45</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="Height">
@@ -356,21 +461,22 @@
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
             <XYPairs>
-              <XY>0 0</XY>
-              <XY>10 1</XY>
-              <XY>25 1</XY>
-              <XY>35 0</XY>
+            <XY>0 0.0</XY>
+            <XY>10 1.0</XY>
+            <XY>25 1.0</XY>
+            <XY>35 0.0</XY>
             </XYPairs>
           </WeightedTemperatureFunction>
           <GenericFunction name="FVPD">
             <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
             <XYPairs>
-              <XY>0 1</XY>
-              <XY>10 1</XY>
-              <XY>50 1</XY>
+            <XY> 0 1.0</XY>
+            <XY>10 1.0</XY>
+            <XY>50 1.0</XY>
             </XYPairs>
           </GenericFunction>
         </RUEModel>
+        
         <StageBasedInterpolation name="PartitionFraction">
           <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
           <Codes>    0.0       0.60      0.40             0.0        0.0         0.0         0.0           0.0     0.0 </Codes>
@@ -492,8 +598,11 @@
           <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
           <Codes>   0.025      0.025     0.021            0.016    0.010       0.0075       0.005         0.005     0.005    </Codes>
         </StageBasedInterpolation>
-        <Constant name="XCriticalNConc">
-          <Value>0.05</Value>
+        <Constant name="StructuralNConc">
+          <Value>0.003</Value>
+        </Constant>
+        <Constant name="InitialNConc">
+          <Value>0.1</Value>
         </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
@@ -554,14 +663,14 @@
             <Start>Emergence</Start>
             <End>FloralInitiation</End>
             <Constant name="Function">
-              <Value>1.0</Value>
+              <Value>0.33</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="Middle">
             <Start>FloralInitiation</Start>
             <End>Flowering</End>
             <Constant name="Function">
-              <Value>0.00</Value>
+              <Value>0.33</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="Late">
@@ -628,7 +737,7 @@
               <Value>30</Value>
             </Constant>
           </PhaseLookupValue>
-          <PhaseLookupValue name="PodFilling">
+          <PhaseLookupValue name="PostFlowering">
             <Start>Flowering</Start>
             <End>Maturity</End>
             <Constant name="Function">
@@ -658,6 +767,8 @@
         <RipeStage>Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
         <GenericFunction name="NumberFunction">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -672,7 +783,7 @@
             <TemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0.0</XY>
-                <XY>25 0.001</XY>
+                <XY>26 0.001</XY>
                 <XY>30 0.001</XY>
                 <XY>35 0.001</XY>
               </XYPairs>
@@ -684,16 +795,27 @@
             <TemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0.0</XY>
-                <XY>25 0.002</XY>
+                <XY>26 0.002</XY>
                 <XY>30 0.002</XY>
                 <XY>35 0.002</XY>
               </XYPairs>
             </TemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
-        <Constant name="NFillingRate">
-          <Value>0.000055</Value>
-        </Constant>
+        <PhaseLookup name="NFillingRate">
+          <PhaseLookupValue name="EarlyGrainGrowth">
+            <Start>Flowering</Start>
+            <End>Maturity</End>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>0 0.0</XY>
+                <XY>25 0.000055</XY>
+                <XY>30 0.000055</XY>
+                <XY>35 0.000055</XY>
+              </XYPairs>
+            </TemperatureFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
         <Constant name="MaxNConcDailyGrowth">
           <Value>0.03</Value>
         </Constant>
@@ -704,6 +826,10 @@
       <StageBasedInterpolation name="StageCode">
         <Stages>Sowing      Germination     Emergence  FloralInitiation FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
         <Codes>   1               2              3            4             5            6            7             8           9      10</Codes>
+      </StageBasedInterpolation>
+      <StageBasedInterpolation name="ZadokStage">
+        <Stages>Sowing      Germination     Emergence  FloralInitiation FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
+        <Codes>   0               5              10            30             37       65          70             85           90      90</Codes>
       </StageBasedInterpolation>
       <Summary />
     </Plant>

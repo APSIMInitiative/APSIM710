@@ -4,10 +4,41 @@ using System.Text;
 
 public class Biomass : Instance
    {
-   [Output][Units("g/m^2")] public double StructuralWt = 0;
-   [Output][Units("g/m^2")] public double NonStructuralWt = 0;
-   [Output][Units("g/m^2")] public double StructuralN = 0;
-   [Output] [Units("g/m^2")]public double NonStructuralN = 0;
+   private double _StructuralWt = 0;
+   private double _NonStructuralWt = 0;
+   private double _StructuralN = 0;
+   private double _NonStructuralN = 0;
+
+   [Output] [Units("g/m^2")] public double NonStructuralN
+      {
+      get { return _NonStructuralN; }
+      set { _NonStructuralN = value; 
+         }
+      }
+   [Output] [Units("g/m^2")] public double StructuralN
+      {
+      get { return _StructuralN; }
+      set
+         {
+         _StructuralN = value;
+         }
+      }
+   [Output] [Units("g/m^2")] public double NonStructuralWt
+      {
+      get { return _NonStructuralWt; }
+      set
+         {
+         _NonStructuralWt = value;
+         }
+      }
+   [Output] [Units("g/m^2")] public double StructuralWt
+      {
+      get { return _StructuralWt; }
+      set
+         {
+         _StructuralWt = value;
+         }
+      }
 
    [Output][Units("g/m^2")] public double Wt
    {

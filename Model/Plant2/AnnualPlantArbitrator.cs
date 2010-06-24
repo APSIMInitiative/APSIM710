@@ -259,34 +259,53 @@ public class AnnualPlantArbitrator : Arbitrator
         // OTHER ORGANS AS REQUIRED/ALLOWED.
         // ==============================================================================
 
-        double TotalUnmetDemand = 0;
+        double TotalRetransDemand = 0;
+        double[] RetransDemand = new double[Organs.Count];
         for (int i = 0; i < Organs.Count; i++)
-            TotalUnmetDemand += Math.Max(NDemand[i] - NAllocation[i],0.0);
+           if (Organs[i] is Reproductive)
+              {
+              RetransDemand[i] = Math.Max(NDemand[i] - NAllocation[i], 0.0);
+              TotalRetransDemand += RetransDemand[i];
+              }
 
         double RetransDemandFraction = 0;
-        if (TotalUnmetDemand > 0)
-            RetransDemandFraction = Math.Min(1, TotalNRetranslocationSupply / TotalUnmetDemand);
+        if (TotalRetransDemand > 0)
+            RetransDemandFraction = Math.Min(1, TotalNRetranslocationSupply / TotalRetransDemand);
 
         double RetransSupplyFraction = 0;
         if (TotalNRetranslocationSupply > 0)
-            RetransSupplyFraction = Math.Min(1, TotalUnmetDemand * RetransDemandFraction / TotalNRetranslocationSupply);
+            RetransSupplyFraction = Math.Min(1, TotalRetransDemand * RetransDemandFraction / TotalNRetranslocationSupply);
 
         // Allocate Daily Retranslocation to organs according to demand and Supply
 
         for (int i = 0; i < Organs.Count; i++)
-        {
-            double Nretrans = RetransDemandFraction * (NDemand[i] - NAllocation[i]);
-            NAllocation[i] += Nretrans;
-            NRetranslocation[i] = NRetranslocationSupply[i] * RetransSupplyFraction;
-            TotalNAllocated += Nretrans;
-        }
+           {
+           if (Organs[i] is Reproductive)
+              {
+              double Nretrans = RetransDemandFraction * RetransDemand[i];
+              NAllocation[i] += Nretrans;
+
+              }
+           else
+              {
+              double Nretrans = RetransSupplyFraction * NRetranslocationSupply[i];
+              NRetranslocation[i] += Nretrans;
+
+              }
+
+           }
 
         // Now Send Arbitration Results to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
-        {
-            Organs[i].NAllocation = NAllocation[i];
-            Organs[i].NRetranslocation = NRetranslocation[i];
-        }
+           {
+           if (NAllocation[i] < -0.00001)
+              throw new Exception("-ve N Allocation");
+           else if (NAllocation[i] < 0.0)
+              NAllocation[i] = 0.0;
+
+           Organs[i].NAllocation = NAllocation[i];
+           Organs[i].NRetranslocation = NRetranslocation[i];
+           }
 
         // ==============================================================================
         // CHECK OVERALL MASS BALANCE

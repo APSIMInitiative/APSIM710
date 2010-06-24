@@ -22,6 +22,9 @@ class LeafCohort
    private double SenescenceDuration = 0;
    private double SpecificLeafAreaMax = 0;
    private double CriticalNConc = 0;
+   private double MinimumNConc = 0;
+   private double StructuralNConc = 0;
+   private double InitialNConc = 0;
 
    #endregion
    public bool Finished
@@ -55,7 +58,7 @@ class LeafCohort
          }
       }
 
-   public LeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function CNC)
+   public LeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function CNC, Function MNC, Function SNC, Function INC)
       {
       _Population = popn;
       Rank = rank;
@@ -66,6 +69,10 @@ class LeafCohort
       SenescenceDuration = sd.Value;
       SpecificLeafAreaMax = sla.Value;
       CriticalNConc = CNC.Value;
+      MinimumNConc = MNC.Value;
+      StructuralNConc = SNC.Value;
+      InitialNConc = INC.Value;
+
       //if (InitialArea != 0)
       //   if (InitialArea < MaxArea)
       //      Age = GrowthDuration * InitialArea / MaxArea;
@@ -75,6 +82,7 @@ class LeafCohort
 
       LiveArea = InitialArea * Population;
       Live.StructuralWt = LiveArea / SpecificLeafAreaMax;
+      Live.StructuralN = Live.StructuralWt * INC.Value;
 
       }
 
@@ -147,7 +155,18 @@ class LeafCohort
       {
       set
          {
-         Live.StructuralN += value;
+         double StructN = Live.Wt * StructuralNConc;
+         double Ndmd = StructN - Live.StructuralN;
+         if (Ndmd < 0)
+            Ndmd = 0.0;
+         if (Ndmd > value)
+            Ndmd = value;
+
+         Live.StructuralN += Ndmd;
+         Live.NonStructuralN += value - Ndmd;
+
+         //Live.StructuralN += value/3.0;
+         //Live.NonStructuralN += 2.0*value/3.0;
          }
       }
    public void DoActualGrowth(double TT)
@@ -189,14 +208,19 @@ class LeafCohort
          Live.StructuralN -= Senescing;
          Dead.StructuralN += Senescing;
 
-
          }
 
       Age = Age + TT;
 
       }
 
-   public void DoFrost(double fraction)
+   private double NFac()
+      {
+      double Nconc = Live.NConc;
+      double value = Math.Min(1.0,Math.Max(0.0,(Nconc - MinimumNConc)/(CriticalNConc - MinimumNConc)));
+      return value;
+      }
+   public void DoKill(double fraction)
       {
       double change;
       change = LiveArea * fraction;
@@ -220,5 +244,27 @@ class LeafCohort
       Dead.NonStructuralN += change;
 
       }
+
+   public void DoFrost(double fraction)
+      {
+      DoKill(fraction);
+      }
+      public  double NRetranslocationSupply 
+      { 
+      get 
+         {
+         double Nf = NFac();
+         return Live.NonStructuralN *Nf; 
+         } 
+      }
+      public  double NRetranslocation
+         {
+         set
+            {
+            if (value > Live.NonStructuralN)
+               throw new Exception("A leaf cohort cannot supply that amount for N retranslocation");
+            Live.NonStructuralN = Live.NonStructuralN - value;
+            }
+         }
    }
    

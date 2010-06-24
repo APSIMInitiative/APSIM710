@@ -12,6 +12,7 @@ public class Root : BaseOrgan, BelowGround
    private double[] Uptake = null;
    public Biomass[] LayerLive;
    public Biomass[] LayerDead;
+   private SowType SowingInfo = null;
 
    [Event] public event ApsimTypeDelegate WaterChanged;
    [Event] public event ApsimTypeDelegate NitrogenChanged;
@@ -33,6 +34,12 @@ public class Root : BaseOrgan, BelowGround
    [Output][Units("mm")] public double Depth = 0;
    #endregion
 
+   [EventHandler]
+   public void OnSow(SowType Sow)
+      {
+      SowingInfo = Sow;
+      }
+
    public override void DoPotentialGrowth()
       {
       if (LayerLive == null)
@@ -49,7 +56,7 @@ public class Root : BaseOrgan, BelowGround
          {
          Population Population = Plant.Children["Population"] as Population;
          LayerLive[0].StructuralWt = InitialDM * Population.Value;
-         Depth = dlayer[0];
+         Depth = SowingInfo.Depth;
          }
 
       if (ll.Length != dlayer.Length)
@@ -217,7 +224,7 @@ public class Root : BaseOrgan, BelowGround
       double depth_to_root = 0;           // depth to root in layer (mm)
       double depth_of_root_in_layer = 0;  // depth of root within layer (mm)
       // Implementation Section ----------------------------------
-      for (int i = 0; i < layer; i++)
+      for (int i = 0; i <= layer; i++)
          depth_to_layer_bottom += dlayer[i];
       depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
       depth_to_root = Math.Min(depth_to_layer_bottom, root_depth);
