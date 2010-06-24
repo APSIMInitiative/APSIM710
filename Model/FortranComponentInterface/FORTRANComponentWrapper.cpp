@@ -283,14 +283,15 @@ void FortranWrapper::swapInstanceIn(void)
    EnterCriticalSection(&swapMutex);
    saved = *instance;
    *instance = myInstance;
-   savedThis = currentInstance;
+   callStack.push(currentInstance);
    currentInstance = this;
 }
 
 void FortranWrapper::swapInstanceOut(void)
 {
    *instance = saved;
-   currentInstance = savedThis;
+   currentInstance = callStack.top();
+   callStack.pop();
    LeaveCriticalSection(&swapMutex);
 }
 

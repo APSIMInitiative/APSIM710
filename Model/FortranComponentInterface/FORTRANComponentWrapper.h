@@ -6,6 +6,7 @@
 #include <ComponentInterface/ArraySpecifier.h>
 #include <ComponentInterface/Component.h>
 #include <windows.h>
+#include <stack>
 
 // turn of the warnings about "Functions containing for are not expanded inline.
 #pragma warn -inl
@@ -315,7 +316,7 @@ class FortranWrapper : public protocol::Component
 	  void swapInstanceIn(void);
 	  void swapInstanceOut(void);
       Instance saved;
-      FortranWrapper* savedThis;
+      std::stack<FortranWrapper *> callStack;
 
       void setup(void);
       void setupFortranDll(void);
