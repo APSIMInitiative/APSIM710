@@ -58,11 +58,12 @@ namespace CSUserInterface
          {
          this.Grid.ColumnWidthChanged -= new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
          if (Table != null)
-            Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
+             Table.ColumnChanged -= new DataColumnChangeEventHandler(OnTableColumnChanged);
+            //Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
 
          Properties.OnRefresh();
          Properties.Visible = !Properties.IsEmpty;
-
+          
          // Create and fill a datatable from our soil
          Table = new DataTable();
          Table.TableName = "Data";
@@ -101,7 +102,8 @@ namespace CSUserInterface
          Label.Visible = Label.Text != "";
 
          this.Grid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
-         Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
+         Table.ColumnChanged += new DataColumnChangeEventHandler(OnTableColumnChanged);
+         //Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
          }
 
       /// <summary>
@@ -377,17 +379,31 @@ namespace CSUserInterface
       /// <summary>
       /// The value of a cell has changed.
       /// </summary>
-      void OnTableRowChanged(object sender, DataRowChangeEventArgs e)
-         {
-         int ColIndex = Grid.CurrentCell.ColumnIndex;
-         int RowIndex = Grid.CurrentCell.RowIndex;
+      void OnTableColumnChanged(object sender, DataColumnChangeEventArgs e)
+      {
+          int ColIndex = Grid.CurrentCell.ColumnIndex;
+          int RowIndex = Grid.CurrentCell.RowIndex;
 
-         string VariableName = Table.Columns[ColIndex].ColumnName;
+          string VariableName = Table.Columns[ColIndex].ColumnName;
 
-         SaveTableColumn(VariableName);
-         OnRefresh();
-         Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
-         }
+          SaveTableColumn(VariableName);
+          OnRefresh();
+          Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
+      }
+      ///// <summary>
+      ///// The value of a cell has changed.
+      ///// </summary>
+      //void OnTableRowChanged(object sender, DataRowChangeEventArgs e)
+      //   {
+      //   int ColIndex = Grid.CurrentCell.ColumnIndex;
+      //   int RowIndex = Grid.CurrentCell.RowIndex;
+
+      //   string VariableName = Table.Columns[ColIndex].ColumnName;
+
+      //   SaveTableColumn(VariableName);
+      //   OnRefresh();
+      //   Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
+      //   }
 
       /// <summary>
       /// Trap the delete key.
@@ -397,7 +413,8 @@ namespace CSUserInterface
          if (e.KeyCode == Keys.Delete)
             {
             // Turn off the cell value changed event.
-            Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
+             Table.ColumnChanged -= new DataColumnChangeEventHandler(OnTableColumnChanged);
+            //Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
 
             // Make the values in the grid null.
             List<string> ColumnsChanged = new List<string>();
@@ -417,7 +434,8 @@ namespace CSUserInterface
                SaveTableColumn(Col);
 
             // Turn on the cell value changed event and refresh.
-            Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
+            Table.ColumnChanged += new DataColumnChangeEventHandler(OnTableColumnChanged);
+            //Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
             OnRefresh();
             if (SavedRow < Grid.Columns.Count)
                Grid.CurrentCell = Grid.Rows[SavedRow].Cells[SavedCol];
