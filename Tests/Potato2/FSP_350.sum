@@ -10,7 +10,7 @@
              Copyright(c) APSRU               
 
 Version                = 7.2
-Title                  = Plant2 Pukekohe_FSP_highN1
+Title                  = FSP_350
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
@@ -43,7 +43,7 @@ Paddock:
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Tests\Validation\Potato\Pukehohe.met
+     INPUT File name: Pukehohe.met
 
 ------- outputfile Initialisation ---------------------------------------------
      Output frequency:
@@ -51,27 +51,29 @@ Paddock:
      Output variables:
         dd/mmm/yyyy
         biomass
-        leafgreenwt
-        leafgreenn
-        leafsenescedwt
-        stemgreenwt
-        stemgreenn
-        TuberGreenWt
-        TuberGreenN
+        leaflivewt2
+        leafliven2
+        leafdeadwt2
+        stemlivewt
+        stemliven
+        tuberlivewt
+        TuberliveN
         nfact_expan
         nfact_photo
-        lai
-        leaf_no
-        stagename
+        LeafLAI
+        Cover_tot
+        PhenologyCurrentPhaseName
         tt
-        node_no
-        height
-        node_no_fx
-        node_no_sen
+        Leafnodeno
+        LeafHeightValue
+        Leafnodeno_fx
+        Leafnodeno_sen
         ttafteremergence
         ttaftersowing
+        AboveGroundDM
+        AboveGroundN
 
-     Output file = Plant2 Pukekohe_FSP_highN1.out
+     Output file = FSP_350.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -80,8 +82,10 @@ Paddock:
 ------- operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-      2/05/2000  Prepare      fertiliser apply amount= 300 (kg/ha), type= urea_N (), depth= 10 (mm)
-     14/06/2000  Prepare      fertiliser apply amount= 170 (kg/ha), type= urea_N (), depth= 10 (mm)
+      2/05/2000  Prepare      fertiliser apply amount= 180 (kg/ha), type= urea_N (), depth= 10 (mm)
+     14/06/2000  Prepare      fertiliser apply amount= 57 (kg/ha), type= urea_N (), depth= 10 (mm)
+     10/07/2000  Prepare      fertiliser apply amount= 57 (kg/ha), type= urea_N (), depth= 10 (mm)
+      3/08/2000  Prepare      fertiliser apply amount= 57 (kg/ha), type= urea_N (), depth= 10 (mm)
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -111,7 +115,7 @@ Paddock:
         if (stf > 1) then
            stf = 1
         endif
-        swf = (sw(1) - ll15(1))/(dul(1) - ll15(1))
+        swf = (sw(1) - ll(1))/(dul(1) - ll(1))
         if (swf < 0) then
            swf = 0
         endif
@@ -130,8 +134,9 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if potato2.stagename = 'maturity' or potato2.plant_status = 'dead' then
+                if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
+       potato2  end_crop
                 endif
      END of rules
      
@@ -284,17 +289,28 @@ Paddock:
 2 May 2000(Day of year=123), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       300.00 of N as urea (urea_n)
+       180.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
 2 May 2000(Day of year=123), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
      Manager creating a new local real variable : stf = 1.51967
-     Manager creating a new local real variable : swf = 0.96747
+2 May 2000(Day of year=123): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "ll(1)".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : ll(1) = 0.00000
+     Manager creating a new local real variable : swf = 0.98028
      Manager creating a new local real variable : density = 20.00000
-3/05/2000 - Germination
+2/05/2000 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-1/06/2000 - Emergence
+30/05/2000 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 14 June 2000(Day of year=166), operations: 
@@ -302,22 +318,44 @@ Paddock:
 14 June 2000(Day of year=166), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       170.00 of N as urea (urea_n)
+        57.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
-30/06/2000 - FloralInitiation
-                            LAI = 0.12 (m^2/m^2)
-           Above Ground Biomass = 6.67 (g/m^2)
-2/07/2000 - TuberInitiation
+28/06/2000 - FloralInitiation
+                            LAI = 0.60 (m^2/m^2)
+           Above Ground Biomass = 24.53 (g/m^2)
+30/06/2000 - TuberInitiation
+                            LAI = 0.70 (m^2/m^2)
+           Above Ground Biomass = 29.73 (g/m^2)
+10 July 2000(Day of year=192), operations: 
+      Sending apply message to fertiliser
+10 July 2000(Day of year=192), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        57.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+3 August 2000(Day of year=216), operations: 
+      Sending apply message to fertiliser
+3 August 2000(Day of year=216), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        57.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+2/09/2000 - FinalLeaf
+                            LAI = 2.48 (m^2/m^2)
+           Above Ground Biomass = 533.47 (g/m^2)
+19/11/2000 - FullSenescence
                             LAI = 0.13 (m^2/m^2)
-           Above Ground Biomass = 7.30 (g/m^2)
-5/09/2000 - Flowering
-                            LAI = 3.81 (m^2/m^2)
-           Above Ground Biomass = 201.77 (g/m^2)
-21/11/2000 - FullSenescence
-                            LAI = 4.55 (m^2/m^2)
-           Above Ground Biomass = 1183.84 (g/m^2)
-21/11/2000 - Maturity
-                            LAI = 4.55 (m^2/m^2)
-           Above Ground Biomass = 1183.84 (g/m^2)
-1 December 2000(Day of year=336), clock: 
-     Simulation is terminating due to end criteria being met.
+           Above Ground Biomass = 1451.30 (g/m^2)
+19/11/2000 - Maturity
+                            LAI = 0.13 (m^2/m^2)
+           Above Ground Biomass = 1451.30 (g/m^2)
+19 November 2000(Day of year=324): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     Mass Balance Error in Photosynthesis DM Allocation
+     Component name: potato2
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     

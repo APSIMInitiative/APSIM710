@@ -10,7 +10,7 @@
              Copyright(c) APSRU               
 
 Version                = 7.2
-Title                  = Pukekohe_FSP_highN
+Title                  = Baxters_14Oct_2
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
@@ -19,13 +19,13 @@ Paddock:
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
-   Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
+   Component        "Baxters_compact Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
-   Component           "Templeton Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                       "potato" = %apsim%\Model\Plant.dll
+   Component     "Baxters_compact Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "potato2" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -37,13 +37,13 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/05/2000
-     Simulation end date   =  1/12/2000
+     Simulation start date = 14/10/1998
+     Simulation end date   =  1/06/1999
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Tests\Validation\Potato\Pukehohe.met
+     INPUT File name: lincoln.met
 
 ------- outputfile Initialisation ---------------------------------------------
      Output frequency:
@@ -51,27 +51,24 @@ Paddock:
      Output variables:
         dd/mmm/yyyy
         biomass
-        leafgreenwt
-        leafgreenn
-        leafsenescedwt
-        stemgreenwt
-        stemgreenn
-        TuberGreenWt
-        TuberGreenN
+        leaflivewt2
+        leafliven2
+        leafdeadwt2
+        stemlivewt
+        stemliven
+        tuberlivewt
+        TuberliveN
         nfact_expan
         nfact_photo
-        lai
-        leaf_no
-        stagename
+        LeafLAI
+        Cover_tot
+        PhenologyCurrentPhaseName
         tt
-        node_no
-        height
-        node_no_fx
-        node_no_sen
-        ttafteremergence
-        ttaftersowing
+        Leafnodeno
+        stagecodevalue
+        leafsize
 
-     Output file = Pukekohe_FSP_highN.out
+     Output file = Baxters_14Oct_2.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -80,8 +77,17 @@ Paddock:
 ------- operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-      2/05/2000  Prepare      fertiliser apply amount= 300 (kg/ha), type= urea_N (), depth= 10 (mm)
-     14/06/2000  Prepare      fertiliser apply amount= 170 (kg/ha), type= urea_N (), depth= 10 (mm)
+      2/10/1998  Prepare      irrigation apply amount= 40 (mm)
+     26/10/1998  Prepare      irrigation apply amount= 70 (mm)
+     15/12/1998  Prepare      irrigation apply amount= 70 (mm)
+     29/12/1998  Prepare      irrigation apply amount= 10 (mm)
+     30/12/1998  Prepare      irrigation apply amount= 55 (mm)
+      7/01/1999  Prepare      irrigation apply amount= 50 (mm)
+     21/01/1999  Prepare      irrigation apply amount= 40 (mm)
+     10/02/1999  Prepare      irrigation apply amount= 28 (mm)
+     19/02/1999  Prepare      irrigation apply amount= 15 (mm)
+      9/03/1999  Prepare      irrigation apply amount= 25 (mm)
+     29/12/1998  Prepare      fertiliser apply amount= 150 (kg/ha), type= urea_N (), depth= 10 (mm)
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -95,14 +101,25 @@ Paddock:
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
+       potato2  harvest
+       potato2  end_crop
+                endif
+     END of rules
+     
+
 ------- Sowing rule Initialisation --------------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
            if (paddock_is_fallow() = 1 ) then
-              if (date_within('2-may, 2-may') = 1) then
+              if (date_within('14-oct, 14-oct') = 1) then
      if (rain[7] >= 10 and esw >= 10) or
-         ('yes' = 'yes' and today = date('2-may'))) then
+         ('yes' = 'yes' and today = date('14-oct'))) then
         choosenextcrop = 'yes'
         stf = st(1) / 10.
         if (stf < 0) then
@@ -111,29 +128,18 @@ Paddock:
         if (stf > 1) then
            stf = 1
         endif
-        swf = (sw(1) - ll15(1))/(dul(1) - ll15(1))
+        swf = (sw(1) - ll(1))/(dul(1) - ll(1))
         if (swf < 0) then
            swf = 0
         endif
         if (swf > 1) then
            swf = 1
         endif
-        density = 5*4
-        potato sow plants = density, sowing_depth = 200, cultivar = russet, row_spacing = 650, crop_class = plant
+        density = 2.16*4
+        potato2 sow population =density, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
      endif
               endif
            endif
-     END of rules
-     
-
-------- Harvesting rule Initialisation ----------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-                if potato.stagename = 'maturity' or potato.plant_status = 'dead' then
-       potato  harvest
-       potato  end_crop
-                endif
      END of rules
      
 
@@ -144,7 +150,7 @@ Paddock:
      
         - Reading Parameters
 
-------- Templeton Water Initialisation ----------------------------------------
+------- Baxters_compact Water Initialisation ----------------------------------
      
          - Reading constants
      
@@ -233,7 +239,7 @@ Paddock:
                       Effective Cover from Surface Materials =   0.6
      
 
-------- Templeton Nitrogen Initialisation -------------------------------------
+------- Baxters_compact Nitrogen Initialisation -------------------------------
      
         - Reading Parameters
      
@@ -250,14 +256,14 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.60  1.82   40.00    0.12    0.00
-             2     6.20  1.47   54.00    0.24    0.00
-             3     5.70  1.20    5.00    0.36    0.00
-             4     5.50  1.03    5.00    0.36    0.00
-             5     5.50  0.47    5.00    0.36    0.00
-             6     5.50  0.47    5.00    0.36    0.00
+             1     6.60  1.82  150.00    0.00    0.00
+             2     6.20  1.47   67.00    0.00    0.00
+             3     5.70  1.20   30.00    0.00    0.00
+             4     5.50  1.03    5.00    0.00    0.00
+             5     5.50  0.47    0.00    0.00    0.00
+             6     5.50  0.47    0.00    0.00    0.00
           ------------------------------------------------
-           Totals              114.00    1.80    0.00
+           Totals              252.00    0.00    0.00
           ------------------------------------------------
      
      
@@ -280,151 +286,73 @@ Paddock:
            Totals  170141.1 14794.9  1098.9   137.4  1200.0    40.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-2 May 2000(Day of year=123), operations: 
-      Sending apply message to fertiliser
-2 May 2000(Day of year=123), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       300.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-2 May 2000(Day of year=123), Sowing rule: 
      Manager creating a new local string variable : choosenextcrop = yes
-     Manager creating a new local real variable : stf = 1.51967
-     Manager creating a new local real variable : swf = 0.96747
-     Manager creating a new local real variable : density = 20.00000
-2 May 2000(Day of year=123), potato: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = russet
-        Phases:
-           out
-           sowing
-           emerging
-              shoot_lag                  =      72 (dd)
-              shoot_rate                 =       1 (dd/mm)
-           emergence
-              x_pp_emergence             =      12      18 (h)
-              y_tt_emergence             =     280     280 (dd)
-           vegetative
-              tt_vegetative              =      20 (dd)
-           earlytuber
-              tt_earlytuber              =     550 (dd)
-           senescing
-              tt_senescing               =     850 (dd)
-           senesced
-              tt_senesced                =       5 (dd)
-           maturity
-              tt_maturity                =       5 (dd)
-     
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         100.0     0.100          0.130       1.000
-         200.0     0.100          0.130       1.000
-         300.0     0.070          0.100       1.000
-         300.0     0.050          0.080       1.000
-         300.0     0.050          0.110       1.000
-         300.0     0.050          0.110       1.000
-         -----------------------------------------------
-         Extractable SW:   294mm in  1500mm total depth ( 20%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-2 May 2000(Day of year=123): 
+     Manager creating a new local real variable : stf = 1.47615
+14 October 1998(Day of year=287): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     sowing_depth = 200.000000
-             exceeds upper limit of 100.000000
-     Component name: potato
+     Uninitialised variable "ll(1)".
+     Variables should have a value before they are used in an expression.
+     Component name: Sowing rule
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            123  200.0   20.0  650.0   0.0   0.0 russet
-         ------------------------------------------------
-     
-3 May 2000(Day of year=124), potato: 
-      stage 2.0 emerging
-31 May 2000(Day of year=152), potato: 
-      stage 3.0 emergence
-                     biomass =           0.60 (g/m^2)   lai          =   0.088 (m^2/m^2)
-                     stover N conc =     6.50 (%)    extractable sw =   75.92 (mm)
-14 June 2000(Day of year=166), operations: 
+     Manager creating a new local real variable : ll(1) = 0.00000
+     Manager creating a new local real variable : swf = 1.00000
+     Manager creating a new local real variable : density = 8.64000
+14/10/1998 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+26 October 1998(Day of year=299), operations: 
+      Sending apply message to irrigation
+16/11/1998 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+12/12/1998 - FloralInitiation
+                            LAI = 5.11 (m^2/m^2)
+           Above Ground Biomass = 228.39 (g/m^2)
+14/12/1998 - TuberInitiation
+                            LAI = 5.35 (m^2/m^2)
+           Above Ground Biomass = 251.54 (g/m^2)
+15 December 1998(Day of year=349), operations: 
+      Sending apply message to irrigation
+29 December 1998(Day of year=363), operations: 
+      Sending apply message to irrigation
       Sending apply message to fertiliser
-14 June 2000(Day of year=166), fertiliser: 
+29 December 1998(Day of year=363), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       170.00 of N as urea (urea_n)
+       150.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
-29 June 2000(Day of year=181), potato: 
-      stage 4.0 vegetative
-                     biomass =          33.39 (g/m^2)   lai          =   1.305 (m^2/m^2)
-                     stover N conc =     5.20 (%)    extractable sw =  141.35 (mm)
-1 July 2000(Day of year=183), potato: 
-      stage 5.0 earlytuber
-                     biomass =          37.11 (g/m^2)   lai          =   1.390 (m^2/m^2)
-                     stover N conc =     5.10 (%)    extractable sw =  133.94 (mm)
-3 September 2000(Day of year=247), potato: 
-      stage 6.0 senescing
-                     biomass =         166.63 (g/m^2)   lai          =   3.256 (m^2/m^2)
-                     stover N conc =     4.08 (%)    extractable sw =  246.09 (mm)
-20 November 2000(Day of year=325), potato: 
-      stage 7.0 senesced
-                     biomass =         187.28 (g/m^2)   lai          =   0.052 (m^2/m^2)
-                     stover N conc =     9.97 (%)    extractable sw =  292.19 (mm)
-21 November 2000(Day of year=326), potato: 
-      stage 8.0 maturity
-                     biomass =         187.90 (g/m^2)   lai          =   0.047 (m^2/m^2)
-                     stover N conc =     9.83 (%)    extractable sw =  304.69 (mm)
-21 November 2000(Day of year=326), Harvesting rule: 
-     Manager sending message :- potato harvest
+30 December 1998(Day of year=364), operations: 
+      Sending apply message to irrigation
+7 January 1999(Day of year=7), operations: 
+      Sending apply message to irrigation
+21 January 1999(Day of year=21), operations: 
+      Sending apply message to irrigation
+24/01/1999 - FinalLeaf
+                            LAI = 6.03 (m^2/m^2)
+           Above Ground Biomass = 1239.15 (g/m^2)
+10 February 1999(Day of year=41), operations: 
+      Sending apply message to irrigation
+19 February 1999(Day of year=50), operations: 
+      Sending apply message to irrigation
+9 March 1999(Day of year=68), operations: 
+      Sending apply message to irrigation
+30/03/1999 - FullSenescence
+                            LAI = 0.12 (m^2/m^2)
+           Above Ground Biomass = 2337.07 (g/m^2)
+30/03/1999 - Maturity
+                            LAI = 0.12 (m^2/m^2)
+           Above Ground Biomass = 2337.07 (g/m^2)
+30 March 1999(Day of year=89): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     Mass Balance Error in Photosynthesis DM Allocation
+     Component name: potato2
      
-      flowering day          =    0                           stover (kg/ha)         =     1879.0
-      maturity day           =  326                           grain yield (kg/ha)    =        0.0
-      grain % water content  =    0.0                         grain yield wet (kg/ha)=        0.0
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      3.676
-      total above ground biomass (kg/ha)    =     1879.0
-      live above ground biomass (kg/ha)     =     1879.0
-      green above ground biomass (kg/ha)    =      369.5
-      senesced above ground biomass (kg/ha) =     1509.5
-      number of leaves       =     45.9
-      DM Root:Shoot ratio    =     0.16                       Harvest Index          =       0.00
-      Stover C:N ratio       =    12.75                       Root C:N ratio         =      36.38
-      grain N percent        =     0.00                       total N content (kg/ha)=      58.97
-      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=   22.64
-      green N content (kg/ha)=    36.33
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         vegetative           to earlytuber              0.000        0.000        0.000        0.001
-         earlytuber           to senescing               0.000        0.000        0.000        0.000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                1873.0                     0.0
-                          N  (kg/ha) =                  58.61                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =               10434.0                     0.0
-                          N  (kg/ha) =                 156.52                    0.00
-     
-     Manager sending message :- potato end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   6.0                   303.6
-                          N  (kg/ha) =                   0.36                    3.34
-     
-1 December 2000(Day of year=336), clock: 
-     Simulation is terminating due to end criteria being met.
