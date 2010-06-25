@@ -497,7 +497,11 @@ Public Class SoilTempdotNET
         'clay//
         'if clay has more or less elements than the number of layers, throw exception
         BoundCheck(clay.Length, gNumLayers, gNumLayers, "clay layers")
-        BoundCheckArray(clay, 0.000001, 1.0, "clay")
+        BoundCheckArray(clay, 0.01, 100.0, "clay")
+
+        For layer As Integer = 0 To gNumLayers - 1
+            clay(layer) = clay(layer) / 100.0   'convert from % units ased as user input to proportion 
+        Next 'layer
 
         ReDim Preserve gClay(gNumLayers + 1)     ' Clay dimensioned for layers 1 to gNumlayers + 1 extra for zone below bottom layer
         clay.CopyTo(gClay, 1)
