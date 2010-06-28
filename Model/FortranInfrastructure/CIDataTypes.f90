@@ -200,11 +200,11 @@ module dataTypes
    character(len=*), parameter :: NewMetTypeDDML = &
       '<type name="NewMet">' // &
       '   <field name="today" kind="double" />' // &
-      '   <field name="radn" kind="single" lower_bound="0.0" upper_bound="50.0" units="MJ/m2/d" />' // &
+      '   <field name="radn" kind="single" lower_bound="0.0" upper_bound="50.0" units="MJ/m^2" />' // &
       '   <field name="maxt" kind="single" lower_bound="-10.0" upper_bound="70.0" units="oC" />' // &
       '   <field name="mint" kind="single" lower_bound="-20.0" upper_bound="50.0" units="oC" />' // &
-      '   <field name="rain" kind="single" lower_bound="0.0" upper_bound="1000.0" units="mm/d" />' // &
-      '   <field name="vp" kind="single" units="????" />' // &
+      '   <field name="rain" kind="single" lower_bound="0.0" upper_bound="1000.0" units="mm" />' // &
+      '   <field name="vp" kind="single" units="hPa" />' // &
       '   </type>'
    type NewMetType
       sequence

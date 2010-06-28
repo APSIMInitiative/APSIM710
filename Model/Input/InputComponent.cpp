@@ -26,7 +26,7 @@ using namespace boost::gregorian;
 static const char* dayLengthType =
    "<type name=\"daylength\" kind=\"single\" unit=\"hours\"/>";
 static const char* vpType =
-   "<type kind=\"single\"/>";
+   "<type kind=\"single\" unit=\"hPa\"/>";
 static const char* startDateType =
    "<type name=\"startDate\" kind=\"integer4\" unit=\"julian days\"/>";
 static const char* endDateType =
@@ -119,7 +119,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 	  if (iAmMet)
 		 {
 		 daylengthID = addRegistration(::respondToGet, 0, "day_length", dayLengthType);
-		 vpID = addRegistration(::respondToGet, 0, "vp", vpType);
+		 vpID = addRegistration(::respondToGetSet, 0, "vp", vpType);
 		 }
 	  else
 		 daylengthID = 0;
