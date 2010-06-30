@@ -224,6 +224,7 @@ class FortranWrapper : public protocol::Component
 	  void new_postbox(void)
 		 {
 		 outgoingApsimVariant.reset();
+#ifdef NOTYET
 		 std::string name=getName();
 		 unsigned numvals = 1;
 		 FStrings values((char*)name.c_str(), name.length(), numvals, numvals);
@@ -232,6 +233,10 @@ class FortranWrapper : public protocol::Component
 		 int buflen = sprintf(buf, "%d", componentID);
 		 FStrings value(buf, buflen, numvals, numvals);
 		 post_var("sender_id", protocol::DTstring, true, value);
+#else
+		 post_var("sender", protocol::DTstring, false, getName());
+		 post_var("sender_id", protocol::DTint4, false, componentID);
+#endif
          }
 	  template <class T>
 	  void collect_var(const FString& variableName, protocol::DataTypeCode dataType,

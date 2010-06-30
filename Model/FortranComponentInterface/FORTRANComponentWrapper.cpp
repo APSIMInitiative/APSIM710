@@ -1185,8 +1185,14 @@ extern "C" void EXPORT STDCALL post_char_var
    (const char* variableName, const char* units, const char* value,
 	unsigned variableNameLength, unsigned unitsLength, unsigned valueLength)
    {
+#ifdef NOTYET
    unsigned numvals = 1;
    post_char_array(variableName, units, value, &numvals, variableNameLength, unitsLength, valueLength);
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
+	   FString(value, valueLength, FORString));
+#endif
    }
 // ------------------------------------------------------------------
 // Module is posting a value into a variant.
@@ -1195,10 +1201,15 @@ extern "C" void EXPORT STDCALL post_integer_var
    (const char* variableName, const char* units, int* value,
 	unsigned variableNameLength, unsigned unitsLength)
    {
+#ifdef NOTYET
    char tmp[40];   //temp char string
    sprintf(tmp, "%d", *value);
    post_char_var(variableName, units, tmp,
 	 variableNameLength, unitsLength, strlen(tmp));
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTint4, false, *value);
+#endif
    }
 // ------------------------------------------------------------------
 // Module is posting a value into a variant.
@@ -1207,10 +1218,15 @@ extern "C" void EXPORT STDCALL post_real_var
    (const char* variableName, const char* units, float* value,
 	unsigned variableNameLength, unsigned unitsLength)
    {
+#ifdef NOTYET
    char tmp[40];   //temp char string
    sprintf(tmp, "%.12g", *value);
    post_char_var(variableName, units, tmp,
 	 variableNameLength, unitsLength, strlen(tmp));
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTsingle, false, *value);
+#endif
    }
 // ------------------------------------------------------------------
 // Module is posting a value into a variant.
@@ -1220,6 +1236,7 @@ extern "C" void EXPORT STDCALL post_real_array
 	unsigned variableNameLength, unsigned unitsLength)
    {
    protocol::vector<float> values(value, *numvals, *numvals);
+#ifdef NOTYET
    char* temp = (char*)malloc(*numvals*24);
    memset(temp, ' ', *numvals*24);
    char tmp[40];
@@ -1229,6 +1246,10 @@ extern "C" void EXPORT STDCALL post_real_array
    }
    post_char_array(variableName, units, temp, numvals,
 	 variableNameLength, unitsLength, 24);
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTsingle, true, values);
+#endif
    }
 // ------------------------------------------------------------------
 // Module is posting a value into a variant.
@@ -1237,10 +1258,15 @@ extern "C" void EXPORT STDCALL post_double_var
    (const char* variableName, const char* units, double* value,
 	unsigned variableNameLength, unsigned unitsLength)
    {
+#ifdef NOTYET
    char tmp[40];   //temp char string
    sprintf(tmp, "%.12g", *value);
    post_char_var(variableName, units, tmp,
 	 variableNameLength, unitsLength, strlen(tmp));
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTdouble, false, *value);
+#endif
    }
 // ------------------------------------------------------------------
 // Module is posting a value into a variant.
@@ -1250,6 +1276,7 @@ extern "C" void EXPORT STDCALL post_double_array
 	unsigned variableNameLength, unsigned unitsLength)
    {
    protocol::vector<double> values(value, *numvals, *numvals);
+#ifdef NOTYET
    char* temp = (char*)malloc(*numvals*24);
    memset(temp, ' ', *numvals*24);
    char tmp[40];
@@ -1259,6 +1286,10 @@ extern "C" void EXPORT STDCALL post_double_array
    }
    post_char_array(variableName, units, temp, numvals,
 	 variableNameLength, unitsLength, 24);
+#else
+   FortranWrapper::currentInstance->post_var
+	  (FString(variableName, variableNameLength, FORString), protocol::DTdouble, true, values);
+#endif
    }
 // ------------------------------------------------------------------
 // Module is getting a value from a variant.
@@ -1527,9 +1558,9 @@ extern "C" bool EXPORT STDCALL component_name_to_id(char* name, int* id,
    if (ok)
 	 *id = iid;
    else
-	 *id = -1;
+	 *id = 0; // -1;
 
-   return ok;
+   return true; // ok;
    }
 // ------------------------------------------------------------------
 // Module is reading a string from a file.
