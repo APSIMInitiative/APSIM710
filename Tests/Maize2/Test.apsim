@@ -1044,12 +1044,13 @@
           <variable name="stage" array="No" description="Plant stage" />
           <variable name="stagename" array="No" description="Plant stage name" />
           <variable name="leaf_no_final" />
-          <variable name="leaf_no" array="No" />
+          <variable name="node_no" array="No" />
           <variable name="leaf_no_dead()" array="Yes" />
           <variable name="tt_tot()" />
           <variable name="tt_tot" />
           <variable name="phase_tt" />
           <variable name="lai" />
+          <variable name="root_depth" />
         </variables>
         <events name="Reporting Frequency">
           <event name="daily" />
@@ -1208,6 +1209,7 @@
           <variable name="PhenologyEndJuvenileToInitiationCumulativeTT" />
           <variable name="PhenologyEndJuvenileToInitiationTargetValue" />
           <variable name="LeafLai" />
+          <variable name="RootDepth" />
         </variables>
         <events name="Reporting Frequency" shortcut="/simulations/ReleasedMaize/paddock/outputfile/Reporting Frequency" />
       </outputfile>
@@ -1242,9 +1244,8 @@
       <colour>
       </colour>
       <X>Date</X>
-      <Y>tt_tot(4)</Y>
-      <Y>PhenologyEndJuvenileToInitiationTargetValue</Y>
-      <Y>phase_tt(4)</Y>
+      <Y>tt_tot()</Y>
+      <Y>Cumulative PhenologyThermalTimeValue</Y>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>
@@ -1257,6 +1258,18 @@
       <X>Date</X>
       <Y>lai</Y>
       <Y>LeafLai</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="RootDepth">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>tt_tot()</Y>
+      <Y>Cumulative PhenologyThermalTimeValue</Y>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>

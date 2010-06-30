@@ -18,7 +18,8 @@ Paddock:
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                       "dlt_dm" = %apsim%\Model\Manager.dll
+   Component "Fertilise incrop on critical NO3 level- top up" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -35,8 +36,8 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/04/1940
-     Simulation end date   = 31/12/1940
+     Simulation start date =  1/06/1940
+     Simulation end date   = 31/12/1941
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
@@ -49,7 +50,40 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         StageCodeValue
+        PhenologyThermalTimeValue
+        StageCodeValue
         PhenologyCurrentPhaseName
+        PhenologyCurrentStageName
+        RootDepth
+        LeafNodeNo
+        LeafFullyExpandedNodeNo
+        LeafDeadNodeNo
+        LeafGreenNo
+        LeafTotalNo
+        RootLengthDensity()
+        LeafLAI
+        TotalDM
+        BelowGroundDM
+        AboveGroundDM
+        StemLiveWt
+        LeafLiveWt2
+        PodLiveWt
+        LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
+        LeafFrgr
+        LeafFw
+        DltDM
+        SumDM
+        RootTemperatureEffectValue
+        LeafPhotosynthesisFt
+        esw
+        sw
+        LeafDeadWt2
+        StemDeadWt2
+        PrevDayDeadWt
+        ShootDeadWt
+        DltDMold
+        RootWaterUptake
 
      Output file = Lucerne2.out
      Format = normal
@@ -61,19 +95,59 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-             if (today = date('1-jun') then
+             if (today = date('1-jun-1940') then
        lucerne2 sow population =300, depth = 10, cultivar = hunter_river, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
               endif
      END of rules
      
 
-------- Harvesting rule Initialisation ----------------------------------------
+------- dlt_dm Initialisation -------------------------------------------------
      Manager rules:
      
+     SECTION:- init
+     prevdaydm = 0
+     dltdm = 0
+     sumdm = 0
+     prevdaydeadwt = 0
+     dltdmold =0
+     
+     SECTION:- start_of_day
+     prevdaydm = abovegrounddm
+     prevdaydeadwt = leafdeadwt2 + stemdeadwt2
+          if stagecodevalue >= 6.0 then
+               lucerne2  cut
+           endif
+     
      SECTION:- end_of_day
-                if (today = date('1-oct')) then
-       lucerne2  harvest
-                endif
+     shootdeadwt = leafdeadwt2 + stemdeadwt2
+     dltdm = (abovegrounddm - shootdeadwt)- (prevdaydm - prevdaydeadwt)
+     dltdmold = abovegrounddm - prevdaydm
+     sumdm = belowgrounddm + stemlivewt + leaflivewt2 + podlivewt
+     if dltdm <= 0 then
+        dltdm = 0
+     endif
+     if dltdmold <= 0 then
+        dltdmold = 0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : prevdaydm = 0.00000
+     Manager creating a new local real variable : dltdm = 0.00000
+     Manager creating a new local real variable : sumdm = 0.00000
+     Manager creating a new local real variable : prevdaydeadwt = 0.00000
+     Manager creating a new local real variable : dltdmold = 0.00000
+
+------- Fertilise incrop on critical NO3 level- top up Initialisation ---------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (lucerne2.plant_status = 'alive') then
+     no3_available = no3(1) + no3(2) + no3(3)
+     if (no3_available <= 100) then
+        n_deficit = 200 - no3_available
+        'fertiliser' apply amount = n_deficit (kg/ha), depth = 50 (mm), type = no3_n ()
+     endif
+              endif
      END of rules
      
 
@@ -201,19 +275,19 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     8.40  1.04    9.95    0.92    0.00
-             2     8.80  0.89    3.25    0.15    0.00
-             3     9.00  0.89    6.43    0.31    0.00
-             4     9.20  0.89    5.21    0.31    0.00
-             5     9.20  0.77    5.41    0.32    0.00
-             6     9.10  0.45    5.66    0.33    0.00
-             7     9.00  0.27    5.72    0.34    0.00
+             1     8.40  1.04   15.30    0.92    0.00
+             2     8.80  0.89   15.45    0.15    0.00
+             3     9.00  0.89   24.48    0.31    0.00
+             4     9.20  0.89   18.36    0.31    0.00
+             5     9.20  0.77   12.72    0.32    0.00
+             6     9.10  0.45    9.99    0.33    0.00
+             7     9.00  0.27    6.72    0.34    0.00
              8     9.00  0.22    5.87    0.35    0.00
              9     8.90  0.16    6.02    0.35    0.00
             10     8.90  0.13    6.12    0.36    0.00
             11     8.90  0.12    6.38    0.38    0.00
           ------------------------------------------------
-           Totals               66.01    4.10    0.00
+           Totals              127.41    4.10    0.00
           ------------------------------------------------
      
      
@@ -241,8 +315,19 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-1 June 1940(Day of year=153), Sow on a fixed date: 
      Manager sending message :- lucerne2 sow  population = 300, depth = 10, cultivar = hunter_river, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
+1 June 1940(Day of year=153): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "stemdeadwt2".
+     Variables should have a value before they are used in an expression.
+     Component name: dlt_dm
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : stemdeadwt2 = 0.00000
+     Manager creating a new local real variable : shootdeadwt = 0.00000
 2/06/1940 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -250,37 +335,245 @@ Paddock:
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 23/08/1940 - EndJuvenile
-                            LAI = 6.77 (m^2/m^2)
-           Above Ground Biomass = 494.44 (g/m^2)
-16/09/1940 - FloralInitiation
-                            LAI = 5.45 (m^2/m^2)
-           Above Ground Biomass = 630.66 (g/m^2)
-30/09/1940 - Flowering
-                            LAI = 4.51 (m^2/m^2)
-           Above Ground Biomass = 689.65 (g/m^2)
-1 October 1940(Day of year=275), Harvesting rule: 
-     Manager sending message :- lucerne2 harvest
-
-     1/10/1940  - Harvesting Pod from lucerne2
-     ----------------------------------------------
-     Pod Yield DWt: 6.92 (g/m^2)
-
-20/10/1940 - FloralInitiation
-                            LAI = 3.02 (m^2/m^2)
-           Above Ground Biomass = 740.04 (g/m^2)
-31/10/1940 - Flowering
-                            LAI = 2.42 (m^2/m^2)
-           Above Ground Biomass = 759.35 (g/m^2)
-6/11/1940 - StartPodGrowth
                             LAI = 1.89 (m^2/m^2)
-           Above Ground Biomass = 768.03 (g/m^2)
-12 December 1940(Day of year=347): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Retranslocation exceeds nonstructural biomass in organ: Stem
-     Component name: lucerne2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+           Above Ground Biomass = 195.98 (g/m^2)
+16/09/1940 - FloralInitiation
+                            LAI = 4.04 (m^2/m^2)
+           Above Ground Biomass = 426.00 (g/m^2)
+30/09/1940 - Flowering
+                            LAI = 5.03 (m^2/m^2)
+           Above Ground Biomass = 540.88 (g/m^2)
+1 October 1940(Day of year=275), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     1/10/1940  - Cutting Leaf from lucerne2
+     --------------------------------------------
+
+     1/10/1940  - Cutting Stem from lucerne2
+     --------------------------------------------
+
+     1/10/1940  - Cutting Pod from lucerne2
+     -------------------------------------------
+19/10/1940 - RGFloralInitiation
+                            LAI = 0.83 (m^2/m^2)
+           Above Ground Biomass = 118.28 (g/m^2)
+31/10/1940 - RGFlowering
+                            LAI = 2.35 (m^2/m^2)
+           Above Ground Biomass = 334.62 (g/m^2)
+1 November 1940(Day of year=306), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     1/11/1940  - Cutting Leaf from lucerne2
+     --------------------------------------------
+
+     1/11/1940  - Cutting Stem from lucerne2
+     --------------------------------------------
+
+     1/11/1940  - Cutting Pod from lucerne2
+     -------------------------------------------
+18/11/1940 - RGFloralInitiation
+                            LAI = 0.82 (m^2/m^2)
+           Above Ground Biomass = 127.61 (g/m^2)
+29/11/1940 - RGFlowering
+                            LAI = 2.05 (m^2/m^2)
+           Above Ground Biomass = 305.86 (g/m^2)
+30 November 1940(Day of year=335), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     30/11/1940  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     30/11/1940  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     30/11/1940  - Cutting Pod from lucerne2
+     --------------------------------------------
+16/12/1940 - RGFloralInitiation
+                            LAI = 0.79 (m^2/m^2)
+           Above Ground Biomass = 88.12 (g/m^2)
+26/12/1940 - RGFlowering
+                            LAI = 2.34 (m^2/m^2)
+           Above Ground Biomass = 248.84 (g/m^2)
+27 December 1940(Day of year=362), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     27/12/1940  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     27/12/1940  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     27/12/1940  - Cutting Pod from lucerne2
+     --------------------------------------------
+11/01/1941 - RGFloralInitiation
+                            LAI = 0.49 (m^2/m^2)
+           Above Ground Biomass = 33.42 (g/m^2)
+22/01/1941 - RGFlowering
+                            LAI = 2.12 (m^2/m^2)
+           Above Ground Biomass = 199.55 (g/m^2)
+23 January 1941(Day of year=23), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     23/01/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     23/01/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     23/01/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+9/02/1941 - RGFloralInitiation
+                            LAI = 0.84 (m^2/m^2)
+           Above Ground Biomass = 105.85 (g/m^2)
+19/02/1941 - RGFlowering
+                            LAI = 2.29 (m^2/m^2)
+           Above Ground Biomass = 279.57 (g/m^2)
+20 February 1941(Day of year=51), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     20/02/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     20/02/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     20/02/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+7/03/1941 - RGFloralInitiation
+                            LAI = 0.73 (m^2/m^2)
+           Above Ground Biomass = 73.60 (g/m^2)
+18/03/1941 - RGFlowering
+                            LAI = 2.27 (m^2/m^2)
+           Above Ground Biomass = 235.44 (g/m^2)
+19 March 1941(Day of year=78), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     19/03/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     19/03/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     19/03/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+5/04/1941 - RGFloralInitiation
+                            LAI = 0.73 (m^2/m^2)
+           Above Ground Biomass = 64.44 (g/m^2)
+18/04/1941 - RGFlowering
+                            LAI = 2.34 (m^2/m^2)
+           Above Ground Biomass = 253.96 (g/m^2)
+19 April 1941(Day of year=109), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     19/04/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     19/04/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     19/04/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+11/05/1941 - RGFloralInitiation
+                            LAI = 0.82 (m^2/m^2)
+           Above Ground Biomass = 99.32 (g/m^2)
+28/05/1941 - RGFlowering
+                            LAI = 2.33 (m^2/m^2)
+           Above Ground Biomass = 308.33 (g/m^2)
+29 May 1941(Day of year=149), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     29/05/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     29/05/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     29/05/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+1/07/1941 - RGFloralInitiation
+                            LAI = 0.74 (m^2/m^2)
+           Above Ground Biomass = 106.72 (g/m^2)
+26/07/1941 - RGFlowering
+                            LAI = 2.35 (m^2/m^2)
+           Above Ground Biomass = 367.14 (g/m^2)
+27 July 1941(Day of year=208), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     27/07/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     27/07/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     27/07/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+31/08/1941 - RGFloralInitiation
+                            LAI = 0.86 (m^2/m^2)
+           Above Ground Biomass = 164.99 (g/m^2)
+15/09/1941 - RGFlowering
+                            LAI = 1.95 (m^2/m^2)
+           Above Ground Biomass = 340.10 (g/m^2)
+16 September 1941(Day of year=259), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     16/09/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     16/09/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     16/09/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+7/10/1941 - RGFloralInitiation
+                            LAI = 0.48 (m^2/m^2)
+           Above Ground Biomass = 55.72 (g/m^2)
+19/10/1941 - RGFlowering
+                            LAI = 0.50 (m^2/m^2)
+           Above Ground Biomass = 68.39 (g/m^2)
+20 October 1941(Day of year=293), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     20/10/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     20/10/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     20/10/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+6/11/1941 - RGFloralInitiation
+                            LAI = 0.55 (m^2/m^2)
+           Above Ground Biomass = 50.94 (g/m^2)
+17/11/1941 - RGFlowering
+                            LAI = 0.72 (m^2/m^2)
+           Above Ground Biomass = 82.42 (g/m^2)
+18 November 1941(Day of year=322), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     18/11/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     18/11/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     18/11/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+5/12/1941 - RGFloralInitiation
+                            LAI = 0.07 (m^2/m^2)
+           Above Ground Biomass = 6.48 (g/m^2)
+17/12/1941 - RGFlowering
+                            LAI = 0.07 (m^2/m^2)
+           Above Ground Biomass = 6.75 (g/m^2)
+18 December 1941(Day of year=352), dlt_dm: 
+     Manager sending message :- lucerne2 cut
+
+     18/12/1941  - Cutting Leaf from lucerne2
+     ---------------------------------------------
+
+     18/12/1941  - Cutting Stem from lucerne2
+     ---------------------------------------------
+
+     18/12/1941  - Cutting Pod from lucerne2
+     --------------------------------------------
+31 December 1941(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

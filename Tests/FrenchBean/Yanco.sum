@@ -19,6 +19,7 @@ Paddock:
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                        "Calcs" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -84,6 +85,9 @@ Paddock:
         nh4()
         urea()
         AboveGroundN
+        SWtot
+        irrigation
+        rain
 
      Output file = Yanco.out
      Format = normal
@@ -125,6 +129,7 @@ Paddock:
      22/04/2009  Prepare      Irrigation apply amount = 19.17
      24/04/2009  Prepare      Irrigation apply amount = 19.17
      27/04/2009  Prepare      Irrigation apply amount = 19.17
+          9-feb  Prepare      'Soil Water' set eo_source = pan
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -137,6 +142,18 @@ Paddock:
            depth for calculating available soil water =     600.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
+
+------- Calcs Initialisation --------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     swtot = sw_dep(1) + sw_dep(2) + sw_dep(3)
+     END of rules
+     
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -285,6 +302,9 @@ Paddock:
            Totals  158678.2 12694.3   482.9    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
+      Sending set message to soil water
+           Eo source:             pan
+     Manager creating a new local real variable : swtot = 27.80000
 12 February 2009(Day of year=43), operations: 
       Sending apply message to fertiliser
 12 February 2009(Day of year=43), fertiliser: 
@@ -324,7 +344,7 @@ Paddock:
       Sending apply message to irrigation
 26/03/2009 - Flowering
                             LAI = 3.46 (m^2/m^2)
-           Above Ground Biomass = 178.82 (g/m^2)
+           Above Ground Biomass = 179.58 (g/m^2)
 27 March 2009(Day of year=86), operations: 
       Sending apply message to fertiliser
 27 March 2009(Day of year=86), fertiliser: 
@@ -344,8 +364,8 @@ Paddock:
 7 April 2009(Day of year=97), operations: 
       Sending apply message to irrigation
 7/04/2009 - StartPodGrowth
-                            LAI = 4.51 (m^2/m^2)
-           Above Ground Biomass = 353.76 (g/m^2)
+                            LAI = 4.49 (m^2/m^2)
+           Above Ground Biomass = 354.57 (g/m^2)
 10 April 2009(Day of year=100), operations: 
       Sending apply message to irrigation
 13 April 2009(Day of year=103), operations: 
@@ -365,9 +385,9 @@ Paddock:
 
      28/04/2009  - Harvesting Pod from frenchbean
      -------------------------------------------------
-     Pod Yield DWt: 149.02 (g/m^2)
-     Pod Size: 0.51 (g)
-     Pod Number: 292.76 (/m^2)
+     Pod Yield DWt: 130.29 (g/m^2)
+     Pod Size: 0.26 (g)
+     Pod Number: 500.00 (/m^2)
 
       Sending endcrop message to frenchbean
 30 April 2009(Day of year=120), clock: 

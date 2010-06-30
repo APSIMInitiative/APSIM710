@@ -50,7 +50,7 @@ Paddock:
 
 ------- PatchTemp Initialisation ----------------------------------------------
      Sparse data is allowed
-     INPUT File name: ROSPatchTemp.met
+     INPUT File name: ROSPatchTempVP.met
 
 ------- PatchRadn Initialisation ----------------------------------------------
      Sparse data is allowed
@@ -97,6 +97,14 @@ Paddock:
         NO3()
         NH4()
         Urea()
+        es
+        windspeed
+        vp
+        Height
+        drain
+        RootWaterSupply
+        pan
+        PodNumber
 
      Output file = GattonROS2.out
      Format = normal
@@ -141,7 +149,7 @@ Paddock:
      
      SECTION:- start_of_day
            if (today = date('25-feb') then
-             frenchbean sow population =29, depth = 50, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
+             frenchbean sow population =31, depth = 30, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
              endif
      END of rules
      
@@ -177,9 +185,9 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  150.  0.250  0.260  0.400  0.430  0.260  1.380  0.762  0.300
-          150.-  300.  0.250  0.250  0.460  0.500  0.448  1.280  0.190  0.300
-          300.-  600.  0.250  0.250  0.460  0.500  0.448  1.280  0.048  0.300
+            0.-  150.  0.250  0.300  0.400  0.430  0.250  1.380  0.762  0.300
+          150.-  300.  0.250  0.300  0.480  0.500  0.480  1.280  0.190  0.300
+          300.-  600.  0.250  0.300  0.460  0.500  0.448  1.280  0.048  0.300
         ---------------------------------------------------------------------
      
      
@@ -190,11 +198,11 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  150.      39.00       0.00      21.00       4.50
-          150.-  300.      37.50      29.70      31.50       6.00
-          300.-  600.      75.00      59.40      63.00      12.00
+            0.-  150.      45.00       0.00      15.00       4.50
+          150.-  300.      45.00      27.00      27.00       3.00
+          300.-  600.      90.00      44.40      48.00      12.00
           ---------------------------------------------------------
-               Totals     151.50      89.10     115.50      22.50
+               Totals     180.00      71.40      90.00      19.50
           ---------------------------------------------------------
      
      
@@ -206,7 +214,7 @@ Paddock:
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   0.00        0.13        1.00        1.00
+                   0.00        0.13       40.00       16.00
           ---------------------------------------------------------
      
      
@@ -288,7 +296,7 @@ Paddock:
 ------- Start of simulation  --------------------------------------------------
       Sending apply message to irrigation
 25 February 2009(Day of year=56), Sow on a fixed date: 
-     Manager sending message :- frenchbean sow  population = 29, depth = 50, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
+     Manager sending message :- frenchbean sow  population = 31, depth = 30, cultivar = simba, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = frenchbean
 25 February 2009(Day of year=56), Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
 25 February 2009(Day of year=56), fertiliser: 
@@ -314,8 +322,8 @@ Paddock:
 31 March 2009(Day of year=90), operations: 
       Sending apply message to irrigation
 2/04/2009 - Flowering
-                            LAI = 2.55 (m^2/m^2)
-           Above Ground Biomass = 132.85 (g/m^2)
+                            LAI = 1.60 (m^2/m^2)
+           Above Ground Biomass = 94.65 (g/m^2)
 3 April 2009(Day of year=93), operations: 
       Sending apply message to irrigation
 8 April 2009(Day of year=98), operations: 
@@ -324,8 +332,8 @@ Paddock:
       Sending apply message to irrigation
       Sending apply message to irrigation
 13/04/2009 - StartPodGrowth
-                            LAI = 3.02 (m^2/m^2)
-           Above Ground Biomass = 213.85 (g/m^2)
+                            LAI = 1.93 (m^2/m^2)
+           Above Ground Biomass = 157.79 (g/m^2)
 15 April 2009(Day of year=105), operations: 
       Sending apply message to irrigation
 17 April 2009(Day of year=107), operations: 
@@ -335,9 +343,9 @@ Paddock:
 
      20/04/2009  - Harvesting Pod from frenchbean
      -------------------------------------------------
-     Pod Yield DWt: 48.02 (g/m^2)
-     Pod Size: 0.22 (g)
-     Pod Number: 216.55 (/m^2)
+     Pod Yield DWt: 54.40 (g/m^2)
+     Pod Size: 0.11 (g)
+     Pod Number: 500.00 (/m^2)
 
       Sending endcrop message to frenchbean
 21 April 2009(Day of year=111), clock: 

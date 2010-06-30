@@ -100,6 +100,27 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   double[] Age
+      {
+      get
+         {
+         int i = 0;
+
+         double[] values = new double[(int)MaxNodeNo];
+         for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+            values[i] = 0;
+         i = 0;
+         foreach (LeafCohort L in Leaves)
+            {
+            values[i] = L.NodeAge;
+            i++;
+            }
+
+         return values;
+         }
+      }
+
+   [Output]
    double[] MaxSize
       {
       get
@@ -182,6 +203,50 @@ public class Leaf : BaseOrgan, AboveGround
          return n / Population.Value;
          }
       }
+   [Output]
+   private double ExpandingNodeNo
+      {
+      get
+         {
+         double n = 0;
+         foreach (LeafCohort L in Leaves)
+            {
+            if (L.IsGrowing)
+               n += 1;
+            }
+         return n;
+         }
+      }
+   [Output]
+   private double GreenNodeNo
+      {
+      get
+         {
+         double n = 0;
+         foreach (LeafCohort L in Leaves)
+            {
+            if (L.IsGreen)
+               n += 1;
+            }
+         return n;
+         }
+      }
+   
+   [Output]
+   private double SenescingNodeNo
+      {
+      get
+         {
+         double n = 0;
+         foreach (LeafCohort L in Leaves)
+            {
+            if (L.IsSenescing)
+               n += 1;
+            }
+         return n;
+         }
+      }
+
    [Output]
    private double SLAcheck
       {
@@ -406,6 +471,7 @@ public class Leaf : BaseOrgan, AboveGround
          foreach (LeafCohort L in Leaves)
             if (L.IsDead)
                DNN++;
+
          return DNN;
          }
       }
@@ -580,7 +646,6 @@ public class Leaf : BaseOrgan, AboveGround
       {
       get
          {
-
          Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
          return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
          }
@@ -651,6 +716,7 @@ public class Leaf : BaseOrgan, AboveGround
       }
 
    [Output]
+   [Units("g/m^2")]
    public double LiveN2
       {
       get
@@ -659,6 +725,7 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   [Units("g/m^2")]
    public double DeadN2
       {
       get
@@ -667,6 +734,7 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   [Units("g/m^2")]
    public double LiveWt2
       {
       get
@@ -675,6 +743,7 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   [Units("g/m^2")]
    public double DeadWt2
       {
       get
@@ -683,6 +752,7 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   [Units("g/m^2")]
    public double DeadN
       {
       get
@@ -691,6 +761,7 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   [Units("g/m^2")]
    public override double NDemand
       {
       get
@@ -791,10 +862,13 @@ public class Leaf : BaseOrgan, AboveGround
       Console.WriteLine(Title);
       Console.WriteLine(Indent + new string('-', Title.Length));
 
+      NodeNo = 0;
+      _FinalNodeNo = 0;
       Live.Clear();
       Dead.Clear();
       Leaves.Clear();
       InitialiseCohorts();
+
       }
    }
    

@@ -27,6 +27,10 @@ class LeafCohort
    private double InitialNConc = 0;
 
    #endregion
+   public  double NodeAge
+      {
+      get { return Age; }
+      }
    public bool Finished
       {
       get
@@ -85,12 +89,28 @@ class LeafCohort
       Live.StructuralN = Live.StructuralWt * INC.Value;
 
       }
+   public bool IsGrowing
+      {
+      get { return (Age < GrowthDuration); } 
+      }
+   public bool IsGreen
+      {
+      get { return (Age < (GrowthDuration+LagDuration+SenescenceDuration));}
+      }
+   public bool IsSenescing
+      {
+      get { return (Age < (GrowthDuration+LagDuration+SenescenceDuration)&&(Age>(GrowthDuration+LagDuration))); }
+      }
+   public bool ShouldBeDead
+      {
+      get { return (Age > (GrowthDuration + LagDuration + SenescenceDuration)); }
+      }
 
    public bool IsDead
       {
       get
          {
-         return MathUtility.FloatsAreEqual(LiveArea,0.0);
+         return MathUtility.FloatsAreEqual(LiveArea, 0.0) && !MathUtility.FloatsAreEqual(DeadArea, 0.0);
          }
       }
    public bool IsFullyExpanded
@@ -144,6 +164,8 @@ class LeafCohort
       {
       set
          {
+         if (value < 0)
+            throw new Exception("Leaf cohort allocation -ve DM value");
          Live.StructuralWt += value;
          //LiveArea += Math.Min(PotentialAreaGrowth,value * SpecificLeafAreaMax);
          LiveArea += PotentialAreaGrowth;
@@ -173,20 +195,29 @@ class LeafCohort
       {
       if (MaxLiveArea < LiveArea)
          MaxLiveArea = LiveArea;
-
       //Calculate Senescence
       double FractionSenescing = 0;
       double AreaSenescing = 0;
-      if (Age > LagDuration + GrowthDuration)
+      double TTInSenPhase = Math.Max(0.0,Age+TT-LagDuration-GrowthDuration);
+
+      if (TTInSenPhase > 0)
          {
+
+         if (Rank == 10)
+         { }
+
          double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration;
          double RemainingTT = Math.Max(0, LeafDuration - Age);
 
          if (RemainingTT == 0)
             FractionSenescing = 1;
          else
-            FractionSenescing = Math.Min(1, TT / RemainingTT);
+            FractionSenescing = Math.Min(1, Math.Min(TT,TTInSenPhase) / RemainingTT);
 
+         if ((FractionSenescing >1) || (FractionSenescing<0))
+            {
+            throw new Exception("Bad Fraction Senescing");
+            }
          // Update State Variables
          AreaSenescing = LiveArea * FractionSenescing;
          DeadArea = DeadArea + AreaSenescing;

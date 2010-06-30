@@ -33,7 +33,7 @@
               <Thickness units="mm">150</Thickness>
               <BD units="g/cc">1.38</BD>
               <AirDry units="mm/mm">0.25</AirDry>
-              <LL15 units="mm/mm">0.26</LL15>
+              <LL15 units="mm/mm">0.3</LL15>
               <DUL units="mm/mm">0.4</DUL>
               <SAT units="mm/mm">0.43</SAT>
             </Layer>
@@ -41,35 +41,35 @@
               <Thickness>150</Thickness>
               <BD>1.28</BD>
               <AirDry>0.25</AirDry>
-              <LL15>0.25</LL15>
-              <DUL>0.46</DUL>
+              <LL15>0.3</LL15>
+              <DUL>0.48</DUL>
               <SAT>0.5</SAT>
             </Layer>
             <Layer>
               <Thickness>300</Thickness>
               <BD>1.28</BD>
               <AirDry>0.25</AirDry>
-              <LL15>0.25</LL15>
+              <LL15>0.3</LL15>
               <DUL>0.46</DUL>
               <SAT>0.5</SAT>
             </Layer>
             <SoilCrop name="frenchbean">
               <Layer>
                 <Thickness units="mm">150</Thickness>
-                <LL units="mm/mm">0.25</LL>
-                <KL units="/day">0.14</KL>
+                <LL units="mm/mm">0.3</LL>
+                <KL units="/day">0.2</KL>
                 <XF units="0-1">1</XF>
               </Layer>
               <Layer>
                 <Thickness>150</Thickness>
                 <LL>0.35</LL>
-                <KL>0.14</KL>
+                <KL>0.1</KL>
                 <XF>1</XF>
               </Layer>
               <Layer>
                 <Thickness>300</Thickness>
                 <LL>0.35</LL>
-                <KL>0.14</KL>
+                <KL>0.1</KL>
                 <XF>1</XF>
               </Layer>
             </SoilCrop>
@@ -81,8 +81,8 @@
             <WinterU>6</WinterU>
             <SummerDate>1-Nov</SummerDate>
             <WinterDate>1-Apr</WinterDate>
-            <DiffusConst>1</DiffusConst>
-            <DiffusSlope>1</DiffusSlope>
+            <DiffusConst>40</DiffusConst>
+            <DiffusSlope>16</DiffusSlope>
             <Salb>0.13</Salb>
             <Cn2Bare>73</Cn2Bare>
             <CnRed>20</CnRed>
@@ -296,6 +296,14 @@
             <variable name="NO3()" />
             <variable name="NH4()" />
             <variable name="Urea()" />
+            <variable name="es" />
+            <variable name="windspeed" />
+            <variable name="vp" />
+            <variable name="Height" />
+            <variable name="drain" />
+            <variable name="RootWaterSupply" />
+            <variable name="pan" />
+            <variable name="PodNumber" />
           </variables>
           <events name="Reporting Frequency">
             <event name="end_step" />
@@ -462,8 +470,8 @@
       <patchinput name="PatchRadn" shortcut="/simulations/Gatton/GattonROS4/PatchRadn" />
       <patchinput name="PatchRain" shortcut="/simulations/Gatton/GattonROS4/PatchRain" />
       <clock>
-        <start_date type="date" description="Enter the start date of the simulation">24/02/2009</start_date>
-        <end_date type="date" description="Enter the end date of the simulation">21/04/2009</end_date>
+        <start_date type="date" description="Enter the start date of the simulation">24/2/2009</start_date>
+        <end_date type="date" description="Enter the end date of the simulation">21/4/2009</end_date>
       </clock>
       <summaryfile shortcut="/simulations/Gatton/GattonROS4/summaryfile" />
       <area name="paddock" shortcut="/simulations/Gatton/GattonROS4/paddock">
@@ -476,11 +484,11 @@
             </Layer>
             <Layer>
               <Thickness>150</Thickness>
-              <SW>0.46</SW>
+              <SW>0.48</SW>
             </Layer>
             <Layer>
               <Thickness>300</Thickness>
-              <SW>0.455</SW>
+              <SW>0.457</SW>
             </Layer>
           </Sample>
           <Water shortcut="/simulations/Gatton/GattonROS4/paddock/Soil/Water">
@@ -578,11 +586,11 @@
             <Date type="date" description="Sample date:" />
             <Layer>
               <Thickness units="mm">150</Thickness>
-              <SW units="mm/mm">0.26</SW>
+              <SW units="mm/mm">0.25</SW>
             </Layer>
             <Layer>
               <Thickness>150</Thickness>
-              <SW>0.448</SW>
+              <SW>0.48</SW>
             </Layer>
             <Layer>
               <Thickness>300</Thickness>
@@ -716,7 +724,7 @@
             </Layer>
             <Layer>
               <Thickness>150</Thickness>
-              <SW>0.44</SW>
+              <SW>0.45</SW>
             </Layer>
             <Layer>
               <Thickness>300</Thickness>
@@ -817,7 +825,7 @@
     <simulation name="GattonROS4" shortcut="/simulations/Gatton/GattonOct08">
       <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met" />
       <patchinput name="PatchTemp">
-        <filename name="filename">ROSPatchTemp.met</filename>
+        <filename name="filename">ROSPatchTempVP.met</filename>
       </patchinput>
       <patchinput name="PatchRadn">
         <filename name="filename">ROSPatchRadn.met</filename>
@@ -840,7 +848,7 @@
             </Layer>
             <Layer>
               <Thickness>150</Thickness>
-              <SW>0.44</SW>
+              <SW>0.455</SW>
             </Layer>
             <Layer>
               <Thickness>300</Thickness>
@@ -864,8 +872,8 @@
               <date type="text" description="Enter sowing date (dd-mmm) : ">25-feb</date>
               <category description="Sowing parameters" />
               <crop type="modulename" description="Enter name of crop to sow : ">frenchbean</crop>
-              <density type="text" description="Enter sowing density  (plants/m2) : ">29</density>
-              <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+              <density type="text" description="Enter sowing density  (plants/m2) : ">31</density>
+              <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
               <cultivar type="text" description="Enter cultivar : ">simba</cultivar>
               <row_spacing type="text" description="Enter row spacing (mm) : ">750</row_spacing>
               <class type="text" description="Enter Crop Class:">frenchbean</class>
@@ -1038,6 +1046,14 @@ Some visible salt damage on photo from 29-apr
             <operation condition="start_of_day">
               <date>14-may</date>
               <action>Irrigation apply amount = 20</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>25-mar</date>
+              <action>frenchbean KillLeaf KillFraction = 0.2</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>31-mar</date>
+              <action>frenchbean KillLeaf KillFraction = 0.2</action>
             </operation>
           </operations>
         </folder>
@@ -1406,6 +1422,17 @@ Some visible salt damage on photo from 29-apr
           <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
         </GDApsimFileReader>
       </Plot>
+      <Plot name="Additions">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>rain</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
     </Graph>
     <Graph name="SW 0-15cm">
       <Plot name="Predicted">
@@ -1541,6 +1568,200 @@ Some visible salt damage on photo from 29-apr
         <GDApsimFileReader name="ApsimFileReader">
           <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
         </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="ROS LAI">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafLAI</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS2.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS3.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <Y>LeafLAI</Y>
+        <GDFilter name="Filter">
+          <Filter>title = 'GattonROS1' or title = 'GattonROS2' or title = 'GattonROS3' or title = 'GattonROS4'</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\Gatton.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="ROS BIOMASS">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>AboveGroundDM</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS2.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS3.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <Y>AboveGroundDM</Y>
+        <GDFilter name="Filter">
+          <Filter>title = 'GattonROS1' or title = 'GattonROS2' or title = 'GattonROS3' or title = 'GattonROS4'</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\Gatton.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="ROS1 SW">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>sw(1)</Y>
+        <Y>sw(2)</Y>
+        <Y>sw(3)</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\FrenchBean\GattonROS1.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <Y>sw(1)</Y>
+        <Y>sw(2)</Y>
+        <Y>sw(3)</Y>
+        <GDFilter name="Filter">
+          <Filter>title = 'GattonROS1'</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\GattonTotalSW.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="ROS1 ET">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafTranspiration</Y>
+        <Y>eo</Y>
+        <Y>es</Y>
+        <Y>LeafWaterDemand</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="ROS1 VP">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>cover_green</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="Height">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Height</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <GDFilter name="Filter">
+          <Filter>
+          </Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\Gatton.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="Water Stress">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafFW</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="ROSDrain">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cumulative drain</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS2.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS3.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="Water Supply Demand">
+      <Plot name="Demand">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafWaterDemand</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Supply">
+        <SeriesType>Dash line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>RootWaterSupply</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
   </folder>
@@ -3099,7 +3320,28 @@ Some visible salt damage on photo from 29-apr
               <date>27/04/2009</date>
               <action>Irrigation apply amount = 19.17</action>
             </operation>
+            <operation condition="start_of_day">
+              <date>9-feb</date>
+              <action>'Soil Water' set eo_source = pan</action>
+            </operation>
           </operations>
+          <manager name="Calcs">
+            <script name="init">
+              <text>
+              </text>
+              <event>init</event>
+            </script>
+            <script name="start_of_day">
+              <text>
+              </text>
+              <event>start_of_day</event>
+            </script>
+            <script name="end_of_day">
+              <text>SWtot = sw_dep(1) + sw_dep(2) + sw_dep(3)
+</text>
+              <event>end_of_day</event>
+            </script>
+          </manager>
         </folder>
         <micromet name="Micromet">
           <soilalbedo type="text" description="soilalbedo">0.13</soilalbedo>
@@ -3147,6 +3389,9 @@ Some visible salt damage on photo from 29-apr
             <variable name="nh4()" />
             <variable name="urea()" />
             <variable name="AboveGroundN" />
+            <variable name="SWtot" />
+            <variable name="irrigation" />
+            <variable name="rain" array="Rainfall" />
           </variables>
           <events name="Reporting Frequency">
             <event name="end_step" />
@@ -3332,6 +3577,42 @@ Some visible salt damage on photo from 29-apr
             <FileName>c:\apsim\Tests\FrenchBean\Observed\Yancosw.txt</FileName>
           </GDApsimFileReader>
         </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="Yanco TotalSoilWater">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>SWtot</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <Y>Swtot</Y>
+        <GDFilter name="Filter">
+          <Filter>
+          </Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\Yancosw.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+      <Plot name="Predicted1">
+        <SeriesType>Bar</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>irrigation</Y>
+        <Y>rain</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
     <Graph name="RootDepth">
