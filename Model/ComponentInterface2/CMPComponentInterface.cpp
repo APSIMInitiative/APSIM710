@@ -356,8 +356,8 @@ void CMPComponentInterface::subscribe(const std::string& name, Packable* handler
       init1 = handler;
    else if (Str_i_Eq(name, "init2"))
       init2.push_back( handler );
-
-   RegisterWithPM(name, "", "", respondToEventReg, handler);
+   else
+     RegisterWithPM(name, "", "", respondToEventReg, handler);
    }
 
 void CMPComponentInterface::publish(const std::string& name, Packable* data)
