@@ -4346,7 +4346,7 @@ c  dsg   070302  added runon
       real       newSWDep              ! temporary
       real       dltSWDep
       real       oldSWDep(max_layer)       ! temporary array
-
+      character  line*200              ! temp output record
       character  string*300            ! output string
 *- Implementation Section ----------------------------------
 
@@ -4644,7 +4644,9 @@ c  dsg   070302  added runon
          call collect_real_var (variable_name, '()'
      :                             , p%cona, numvals
      :                             , 0.0001, 10.0)
-
+         write (line, '(6x, a, f4.1)') 'Cona:             ',
+     :        p%cona
+         call write_string (line)         
       elseif (variable_name .eq. 'u') then
          call collect_real_var (variable_name, '()'
      :                             , p%u, numvals
@@ -4654,6 +4656,13 @@ c  dsg   070302  added runon
      :                             , water_table, numvals
      :                             , 0.0, 10000.)
          call SetWaterTable(water_table)
+
+      elseif (variable_name .eq. 'eo_source') then
+         call collect_char_var (variable_name, '()'
+     :                             , g%eo_source, numvals)
+         write (line, '(6x, a, a)') 'Eo source:             ',
+     :        g%eo_source
+         call write_string (line)         
       else
          call Message_unused ()
 

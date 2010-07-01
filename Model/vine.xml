@@ -140,26 +140,26 @@
           <XY>2 0.0</XY>
         </FrostFraction>
         <RUEModel name="Photosynthesis">
-		      <Constant name="RUE">
-		        <Value type="text" description="Value">0.8</Value>
-		      </Constant>
-		      <WeightedTemperatureFunction name="FT">
-		        <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
-		        <XYPairs>
-	            <XY>5 0.0</XY>
-	            <XY>20 1.0</XY>
-	            <XY>30 1.0</XY>
-	            <XY>45 0.0</XY>
-		        </XYPairs>
-		      </WeightedTemperatureFunction>
-		      <GenericFunction name="FVPD">
-		        <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
-		        <XYPairs>
-	            <XY>0 1.0</XY>
-	            <XY>10 1.0</XY>
-	            <XY>50 1.0</XY>
-		        </XYPairs>
-		      </GenericFunction>        	
+          <Constant name="RUE">
+            <Value type="text" description="Value">0.8</Value>
+          </Constant>
+          <WeightedTemperatureFunction name="FT">
+            <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+            <XYPairs>
+              <XY>5 0.0</XY>
+              <XY>20 1.0</XY>
+              <XY>30 1.0</XY>
+              <XY>45 0.0</XY>
+            </XYPairs>
+          </WeightedTemperatureFunction>
+          <GenericFunction name="FVPD">
+            <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+            <XYPairs>
+              <XY>0 1.0</XY>
+              <XY>10 1.0</XY>
+              <XY>50 1.0</XY>
+            </XYPairs>
+          </GenericFunction>
         </RUEModel>
         <TemperatureFunction name="ThermalTime">
           <XYPairs>
@@ -432,11 +432,15 @@
       <variable name="LeafRemainingNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPotentialGrowth" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafSize" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="LeafAge" description="" read="T" write="F" kind="double" array="T" units="" />
       <variable name="LeafMaxSize" description="" read="T" write="F" kind="double" array="T" units="" />
       <variable name="LeafMaxLeafArea" description="" read="T" write="F" kind="double" array="T" units="" />
       <variable name="LeafBranchNo" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafTotalNo" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafGreenNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafExpandingNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafGreenNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSenescingNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafSLAcheck" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafSpecificArea" description="" read="T" write="F" kind="double" array="" units="mm^2/g" />
       <variable name="LeafCohortNo" description="" read="T" write="F" kind="double" array="" units="" />
@@ -455,28 +459,32 @@
       <variable name="Cover_green" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="Cover_tot" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="Cover_dead" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafLiveN2" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafLiveWt2" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafDeadWt2" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafNDemand" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafLiveN2" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="LeafDeadN2" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="LeafLiveWt2" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="LeafDeadWt2" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="LeafNDemand" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="LeafNAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
-      <variable name="LeafLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="LeafLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="LeafLiveStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="LeafLiveNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="LeafLiveNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafLiveStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafLiveNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafLiveStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="LeafLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="LeafLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="LeafLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="LeafDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="LeafDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="LeafDeadStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="LeafDeadNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="LeafDeadNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafDeadStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafDeadNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafDeadStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="LeafDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="LeafDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="LeafDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="LeafHeightValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisVPD" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPhotosynthesisFt" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPhotosynthesisFvpd" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFTValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="LeafPhotosynthesisFVPDValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="LeafMaxAreaValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafSpecificLeafAreaValue" description="" read="T" write="F" kind="double" array="" units="" />
@@ -486,17 +494,17 @@
       <variable name="LeafBranchingRateValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafExpansionStressValue" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="StemLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="StemLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="StemLiveStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="StemLiveNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="StemDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="StemDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="StemDeadStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="StemDeadNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -517,17 +525,17 @@
       <variable name="BerrySize" description="" read="T" write="F" kind="double" array="" units="g" />
       <variable name="BerryFSize" description="" read="T" write="F" kind="double" array="" units="g" />
       <variable name="BerryReadyForHarvest" description="" read="T" write="F" kind="integer4" array="" units="" />
-      <variable name="BerryLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="BerryLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="BerryLiveStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="BerryLiveNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="BerryLiveNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="BerryLiveStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="BerryLiveNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="BerryLiveStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="BerryLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="BerryLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="BerryLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="BerryDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="BerryDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="BerryDeadStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="BerryDeadNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="BerryDeadNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="BerryDeadStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="BerryDeadNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="BerryDeadStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="BerryDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="BerryDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="BerryDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -536,17 +544,17 @@
       <variable name="BerryFillingRateEarlyBerryGrowthFunctionValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="BerryFillingRateLateBerryGrowthFunctionValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="BerryWaterContentValue" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="ReserveLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="ReserveLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="ReserveLiveStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="ReserveLiveNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveLiveNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveLiveStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveLiveNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveLiveStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="ReserveLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="ReserveLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="ReserveLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="ReserveDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="ReserveDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="ReserveDeadStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
-      <variable name="ReserveDeadNonStructuralN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveDeadNonStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveDeadStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveDeadNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="ReserveDeadStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="ReserveDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="ReserveDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="ReserveDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -555,6 +563,7 @@
     <events>
       <event name="NewCrop" description="" />
       <event name="Sowing" description="" />
+      <event name="Cutting" description="" />
       <event name="GrowthStage" description="" />
       <event name="NewPotentialGrowth" description="" />
       <event name="New_Canopy" description="" />
