@@ -179,7 +179,7 @@
           <GenericFunction name="Target">
             <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
             <XYPairs>
-              <XY>12 280</XY>
+              <XY>10 280</XY>
               <XY>18 280</XY>
             </XYPairs>
           </GenericFunction>
@@ -200,9 +200,13 @@
         <GenericPhase name="EarlyTuber">
           <Start type="text" description="Start">TuberInitiation</Start>
           <End type="text" description="End">FinalLeaf</End>
-          <Constant name="Target">
-            <Value type="text" description="Value">550</Value>
-          </Constant>
+          <GenericFunction name="Target">
+            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+            <XYPairs>
+              <XY>10 700</XY>
+              <XY>18 1200</XY>
+            </XYPairs>
+          </GenericFunction>
           <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
           </TemperatureFunction>
@@ -255,8 +259,8 @@
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
-            <XY>0 0.9</XY>
-            <XY>1 0.9</XY>
+            <XY>0 0.6</XY>
+            <XY>1 0.6</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="Height">
@@ -268,7 +272,7 @@
         </GenericFunction>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes"> 0          0             0.46            0.46               0.23                  0.05         0                        0</Codes>
+          <Codes type="text" description="Codes"> 0          0             0.46            0.46               0.18                  0.05         0                        0</Codes>
         </StageBasedInterpolation>
         <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
@@ -297,7 +301,7 @@
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
             <XY>0.1 0</XY>
-            <XY>1.1 1</XY>
+            <XY>1 1</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="SpecificLeafArea">
@@ -311,8 +315,8 @@
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>1 2000</XY>
-            <XY>10 15000</XY>
-            <XY>40 15000</XY>
+            <XY>12 40000</XY>
+            <XY>40 40000</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="GrowthDuration">
@@ -330,31 +334,30 @@
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>1 100</XY>
-            <XY>7 250</XY>
-            <XY>18 250</XY>
-            <XY>35 250</XY>
-            <XY>40 250</XY>
+            <XY>7 350</XY>
+            <XY>30 350</XY>
+            <XY>40 100</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>1 130</XY>
-            <XY>7 130</XY>
-            <XY>8 130</XY>
-            <XY>18 130</XY>
-            <XY>35 130</XY>
-            <XY>40 130</XY>
+            <XY>1 150</XY>
+            <XY>7 150</XY>
+            <XY>8 150</XY>
+            <XY>18 150</XY>
+            <XY>35 150</XY>
+            <XY>40 150</XY>
           </XYPairs>
         </GenericFunction>
-        <GenericFunction name="BranchingRate">
+<GenericFunction name="BranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>7 0</XY>
-            <XY>8 0</XY>
-            <XY>10 0</XY>
-            <XY>16 0</XY>
+            <XY>5 0</XY>
+            <XY>7 0.5</XY>
+            <XY>13 0.5</XY>
+            <XY>15 0</XY>
           </XYPairs>
         </GenericFunction>
         <Constant name="CriticalNConc">
@@ -372,15 +375,15 @@
 
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
-            <Value type="text" description="Value">1.2</Value>
+            <Value type="text" description="Value">1.44</Value>
           </Constant>
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
             <XYPairs>
-              <XY>0 0</XY>
+              <XY>2 0</XY>
               <XY>12 1</XY>
               <XY>24 1</XY>
-              <XY>35 0</XY>
+              <XY>34 0</XY>
             </XYPairs>
           </WeightedTemperatureFunction>
           <GenericFunction name="FVPD">
@@ -398,10 +401,10 @@
         <Biomass name="Dead" />
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes"> 0          0             0.38            0.38                0.19                  0             0                        0</Codes>
+          <Codes type="text" description="Codes"> 0          0             0.38            0.38                0.16                  0             0                        0</Codes>
         </StageBasedInterpolation>
         <Constant name="StructuralFraction">
-          <Value>0.5</Value>
+          <Value type="text" description="Value">0.1</Value>
         </Constant>
         <Constant name="CriticalNConc">
           <Value>0.01</Value>
@@ -415,7 +418,7 @@
         <Biomass name="Dead" />
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes">  0          0            0                 0                    0.42                  0.95         1.0                     0</Codes>
+          <Codes type="text" description="Codes">  0          0            0                 0                    0.61                  0.95         1.0                     0</Codes>
         </StageBasedInterpolation>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
@@ -466,7 +469,7 @@
         </PhaseLookup>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes"> 0          0             0.17            0.17               0.17                  0            0                        0</Codes>
+          <Codes type="text" description="Codes"> 0          0             0.17            0.17               0.05                  0            0                        0</Codes>
         </StageBasedInterpolation>
       </Root>
       <StageBasedInterpolation name="StageCode">

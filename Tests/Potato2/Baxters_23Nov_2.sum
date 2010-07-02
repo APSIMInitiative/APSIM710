@@ -122,29 +122,8 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-           if (paddock_is_fallow() = 1 ) then
-              if (date_within('23-nov, 23-nov') = 1) then
-     if (rain[7] >= 10 and esw >= 10) or
-         ('yes' = 'yes' and today = date('23-nov'))) then
-        choosenextcrop = 'yes'
-        stf = st(1) / 10.
-        if (stf < 0) then
-           stf = 0
-        endif
-        if (stf > 1) then
-           stf = 1
-        endif
-        swf = (sw(1) - ll(1))/(dul(1) - ll(1))
-        if (swf < 0) then
-           swf = 0
-        endif
-        if (swf > 1) then
-           swf = 1
-        endif
-        density = 2.16*4
-        potato2 sow population =density, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-     endif
-              endif
+           if today = date('23-nov-1998') then
+        potato2 sow population = 12, depth = 120, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
            endif
      END of rules
      
@@ -292,30 +271,13 @@ Paddock:
            Totals  170141.1 14794.9  1098.9   137.4  1200.0    40.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local string variable : choosenextcrop = yes
-     Manager creating a new local real variable : stf = 1.57469
-23 November 1998(Day of year=327): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "ll(1)".
-     Variables should have a value before they are used in an expression.
-     Component name: Sowing rule
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : ll(1) = 0.00000
-     Manager creating a new local real variable : swf = 1.00000
-     Manager creating a new local real variable : density = 8.64000
 23/11/1998 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-15 December 1998(Day of year=349), operations: 
-      Sending apply message to irrigation
-22/12/1998 - Emergence
+14/12/1998 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-22 December 1998(Day of year=356): 
+14 December 1998(Day of year=348): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -325,8 +287,10 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-22 December 1998(Day of year=356), Harvesting rule: 
+14 December 1998(Day of year=348), Harvesting rule: 
      Manager creating a new local real variable : tt_emerge = 0.00000
+15 December 1998(Day of year=349), operations: 
+      Sending apply message to irrigation
 29 December 1998(Day of year=363), operations: 
       Sending apply message to irrigation
       Sending apply message to fertiliser
@@ -337,94 +301,25 @@ Paddock:
                                          added at depth   10.00 (layer   1)
 30 December 1998(Day of year=364), operations: 
       Sending apply message to irrigation
+5/01/1999 - FloralInitiation
+                            LAI = 1.35 (m^2/m^2)
+           Above Ground Biomass = 84.35 (g/m^2)
+6/01/1999 - TuberInitiation
+                            LAI = 1.52 (m^2/m^2)
+           Above Ground Biomass = 105.16 (g/m^2)
 7 January 1999(Day of year=7), operations: 
       Sending apply message to irrigation
-13/01/1999 - FloralInitiation
-                            LAI = 0.64 (m^2/m^2)
-           Above Ground Biomass = 85.44 (g/m^2)
-14/01/1999 - TuberInitiation
-                            LAI = 0.68 (m^2/m^2)
-           Above Ground Biomass = 98.66 (g/m^2)
 21 January 1999(Day of year=21), operations: 
       Sending apply message to irrigation
 10 February 1999(Day of year=41), operations: 
       Sending apply message to irrigation
 19 February 1999(Day of year=50), operations: 
       Sending apply message to irrigation
-24/02/1999 - FinalLeaf
-                            LAI = 1.14 (m^2/m^2)
-           Above Ground Biomass = 718.74 (g/m^2)
 9 March 1999(Day of year=68), operations: 
       Sending apply message to irrigation
+16/03/1999 - FinalLeaf
+                            LAI = 1.64 (m^2/m^2)
+           Above Ground Biomass = 1518.12 (g/m^2)
 Removing Leaves from plant
-11/05/1999 - FullSenescence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 892.86 (g/m^2)
-12/05/1999 - Maturity
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 892.86 (g/m^2)
-12 May 1999(Day of year=132), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-13 May 1999(Day of year=133), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-14 May 1999(Day of year=134), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-15 May 1999(Day of year=135), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-16 May 1999(Day of year=136), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-17 May 1999(Day of year=137), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-18 May 1999(Day of year=138), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-19 May 1999(Day of year=139), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-20 May 1999(Day of year=140), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-21 May 1999(Day of year=141), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-22 May 1999(Day of year=142), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-23 May 1999(Day of year=143), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-24 May 1999(Day of year=144), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-25 May 1999(Day of year=145), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-26 May 1999(Day of year=146), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-27 May 1999(Day of year=147), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-28 May 1999(Day of year=148), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-29 May 1999(Day of year=149), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-30 May 1999(Day of year=150), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-31 May 1999(Day of year=151), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 June 1999(Day of year=152), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 1 June 1999(Day of year=152), clock: 
      Simulation is terminating due to end criteria being met.

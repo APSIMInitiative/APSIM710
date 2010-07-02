@@ -122,29 +122,8 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-           if (paddock_is_fallow() = 1 ) then
-              if (date_within('14-oct, 14-oct') = 1) then
-     if (rain[7] >= 10 and esw >= 10) or
-         ('yes' = 'yes' and today = date('14-oct'))) then
-        choosenextcrop = 'yes'
-        stf = st(1) / 10.
-        if (stf < 0) then
-           stf = 0
-        endif
-        if (stf > 1) then
-           stf = 1
-        endif
-        swf = (sw(1) - ll(1))/(dul(1) - ll(1))
-        if (swf < 0) then
-           swf = 0
-        endif
-        if (swf > 1) then
-           swf = 1
-        endif
-        density = 2.16*4
-        potato2 sow population =density, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-     endif
-              endif
+           if today = date('14-oct-1998') then
+        potato2 sow population = 7, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
            endif
      END of rules
      
@@ -292,21 +271,6 @@ Paddock:
            Totals  170141.1 14794.9  1098.9   137.4  1200.0    40.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local string variable : choosenextcrop = yes
-     Manager creating a new local real variable : stf = 1.47615
-14 October 1998(Day of year=287): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "ll(1)".
-     Variables should have a value before they are used in an expression.
-     Component name: Sowing rule
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : ll(1) = 0.00000
-     Manager creating a new local real variable : swf = 1.00000
-     Manager creating a new local real variable : density = 8.64000
 14/10/1998 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -328,11 +292,11 @@ Paddock:
 16 November 1998(Day of year=320), Harvesting rule: 
      Manager creating a new local real variable : tt_emerge = 0.00000
 12/12/1998 - FloralInitiation
-                            LAI = 0.62 (m^2/m^2)
-           Above Ground Biomass = 94.10 (g/m^2)
+                            LAI = 1.06 (m^2/m^2)
+           Above Ground Biomass = 66.48 (g/m^2)
 14/12/1998 - TuberInitiation
-                            LAI = 0.69 (m^2/m^2)
-           Above Ground Biomass = 111.11 (g/m^2)
+                            LAI = 1.31 (m^2/m^2)
+           Above Ground Biomass = 91.11 (g/m^2)
 15 December 1998(Day of year=349), operations: 
       Sending apply message to irrigation
 29 December 1998(Day of year=363), operations: 
@@ -349,154 +313,22 @@ Paddock:
       Sending apply message to irrigation
 21 January 1999(Day of year=21), operations: 
       Sending apply message to irrigation
-24/01/1999 - FinalLeaf
-                            LAI = 1.16 (m^2/m^2)
-           Above Ground Biomass = 770.50 (g/m^2)
 10 February 1999(Day of year=41), operations: 
       Sending apply message to irrigation
 19 February 1999(Day of year=50), operations: 
       Sending apply message to irrigation
+25/02/1999 - FinalLeaf
+                            LAI = 2.08 (m^2/m^2)
+           Above Ground Biomass = 1893.20 (g/m^2)
 9 March 1999(Day of year=68), operations: 
       Sending apply message to irrigation
 Removing Leaves from plant
-30/03/1999 - FullSenescence
+13/05/1999 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1105.20 (g/m^2)
-30/03/1999 - Maturity
+           Above Ground Biomass = 1932.55 (g/m^2)
+13/05/1999 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1105.20 (g/m^2)
-30 March 1999(Day of year=89), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-31 March 1999(Day of year=90), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 April 1999(Day of year=91), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-2 April 1999(Day of year=92), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-3 April 1999(Day of year=93), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-4 April 1999(Day of year=94), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-5 April 1999(Day of year=95), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-6 April 1999(Day of year=96), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-7 April 1999(Day of year=97), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-8 April 1999(Day of year=98), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-9 April 1999(Day of year=99), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-10 April 1999(Day of year=100), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-11 April 1999(Day of year=101), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-12 April 1999(Day of year=102), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-13 April 1999(Day of year=103), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-14 April 1999(Day of year=104), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-15 April 1999(Day of year=105), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-16 April 1999(Day of year=106), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-17 April 1999(Day of year=107), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-18 April 1999(Day of year=108), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-19 April 1999(Day of year=109), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-20 April 1999(Day of year=110), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-21 April 1999(Day of year=111), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-22 April 1999(Day of year=112), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-23 April 1999(Day of year=113), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-24 April 1999(Day of year=114), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-25 April 1999(Day of year=115), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-26 April 1999(Day of year=116), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-27 April 1999(Day of year=117), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-28 April 1999(Day of year=118), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-29 April 1999(Day of year=119), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-30 April 1999(Day of year=120), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 May 1999(Day of year=121), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-2 May 1999(Day of year=122), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-3 May 1999(Day of year=123), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-4 May 1999(Day of year=124), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-5 May 1999(Day of year=125), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-6 May 1999(Day of year=126), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-7 May 1999(Day of year=127), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-8 May 1999(Day of year=128), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-9 May 1999(Day of year=129), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-10 May 1999(Day of year=130), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-11 May 1999(Day of year=131), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-12 May 1999(Day of year=132), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
+           Above Ground Biomass = 1932.55 (g/m^2)
 13 May 1999(Day of year=133), Harvesting rule: 
      Manager sending message :- potato2 harvest
      Manager sending message :- potato2 end_crop
