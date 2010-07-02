@@ -32,10 +32,8 @@ EXPORT STDCALL Variant::~Variant() { if (bufStart) {free(bufStart); bufLen = 0;}
        }
    std::string DDML(const Variant& data)
        {
-       std::string result = "<type name=\"Variant\" array=\"T\">";
-       //... WRONG. Needs to write each field..
-       result += "</type>";
-       return result;
+	   ApsimVariantType dummy;	
+	   return DDML(dummy);
        }
 
 
@@ -66,8 +64,14 @@ bool EXPORT STDCALL get(Variant& v, const std::string& name, std::string &value)
          int typeCode;
          bool isArray;
          unpack(m, typeCode); 
-         unpack(m, isArray); 
          if (typeCode != 8) throw std::runtime_error("Variant Type (string) conversion NYI");
+         unpack(m, isArray); 
+		 if (isArray) 
+		 {
+      		 int arraySize;
+			 unpack(m, arraySize);
+             if (arraySize > 1) throw std::runtime_error("Multiple values provided when only one was expected");
+		 }
          unpack(m, value); 
          return true;
          }
@@ -91,6 +95,12 @@ bool EXPORT STDCALL get(Variant& v, const std::string& name, float &value)
          bool isArray;
          unpack(m, typeCode); 
          unpack(m, isArray); 
+		 if (isArray) 
+		 {
+      		 int arraySize;
+			 unpack(m, arraySize);
+             if (arraySize > 1) throw std::runtime_error("Multiple values provided when only one was expected");
+		 }
          if (typeCode == 8)
             {
             std::string scratch;
@@ -109,42 +119,22 @@ bool EXPORT STDCALL get(Variant& v, const std::string& name, float &value)
 
 void EXPORT STDCALL pack(Variant& v, const std::string& name, const std::string &value)
 {
-   int newSize = 4 + name.size() +    /* name */
-                 4 +                  /* numBytes */
-                 4 +                  /* typeCode */
-                 1 +                  /* isArray */
-                 4 + value.size();    /* value */
-   v.bufStart = (char *) realloc(v.bufStart, v.bufLen + newSize);
-   MessageData m(v.bufStart, v.bufLen + newSize);
-   m.seek(v.bufStart+v.bufLen);
-   v.bufLen += newSize;
-   
-   pack(m, name);
-   pack(m, (int)(4 + 1 + 4 + value.size())); 
-   pack(m, (int)DTstring); 
-   pack(m, (bool)false); 
-   pack(m, value); 
+	std::vector<std::string>values;
+	values.push_back(value);
+	pack(v, name, values);
 //   printf("packVariant(string): %d = %d\n", newSize, m.totalBytes());
 }
 
 void EXPORT STDCALL pack(Variant& v, const std::string& name, std::vector<float> &value)
 {
-   int numBytes = 4 + value.size() * sizeof(float);
-   int newSize = 4 + name.size() +     /* name */
-                 4 +                   /* numBytes */
-                 4 +                   /* typeCode */
-                 1 +                   /* isArray */
-                 numBytes;             /* value */
-   v.bufStart = (char *) realloc(v.bufStart, v.bufLen + newSize);
-   MessageData m(v.bufStart, v.bufLen + newSize);
-   m.seek(v.bufStart+v.bufLen);
-   v.bufLen += newSize;
-   
-   pack(m, name);
-   pack(m, (int)(5 + numBytes)); 
-   pack(m, (int)DTsingle); 
-   pack(m, (bool)true); 
-   pack(m, value); 
+	std::vector<std::string>values;
+    for (int i = 0; i < (int)value.size(); ++i ) 
+	{
+		char buf[_CVTBUFSIZE];
+		_gcvt_s(buf, _CVTBUFSIZE, value[i], 12);
+		values.push_back (std::string(buf));
+	}
+	pack(v, name, values);
 //   printf("packVariant (float[]): %d = %d\n", newSize, m.totalBytes());
 }
 
