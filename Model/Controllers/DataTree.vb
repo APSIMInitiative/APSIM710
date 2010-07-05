@@ -377,7 +377,7 @@ Public Class DataTree
 
                     Else
 
-                        MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & in the name")
+                        MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! in the name")
                         e.CancelEdit = True     'cancel the edit event.
 
                     End If

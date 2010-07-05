@@ -86,7 +86,7 @@ Public Class BaseActions
                 If Not CSGeneral.Utility.CheckForInvalidChars(NewName) Then
                     Controller.Selection.Name = NewName
                 Else
-                    MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & in the name")
+                    MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! in the name")
                 End If
 
             End If
