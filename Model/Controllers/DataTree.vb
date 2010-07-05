@@ -337,8 +337,9 @@ Public Class DataTree
 
 #Region "Rename methods"        'This is a Rename done by doing 2 seperate clicks (See "Left Click Only" code in TreeView_MouseDown). NOT by a right mouse click then selecting rename, this is handled by Rename() sub in BaseAction.vb   
 
-    'event handlers for a Node.BeginEdit()
 
+
+    'event handlers for a Node.BeginEdit()
 
     Private Sub OnBeforeEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.NodeLabelEditEventArgs) Handles Me.BeforeLabelEdit
         ' ---------------------------------------------------
@@ -359,16 +360,28 @@ Public Class DataTree
 
         If Not FirstTimeRename Then
             If Not IsNothing(e.Label) Then
-                If e.Label.Length > 0 Then 'Check user typed something in. So you are not trying to rename it to a blank.
-                    ' Firstly empty the current selections.
-                    Controller.SelectedPath = ""
 
-                    ' Change the data
-                    Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(e.Node))
-                    Comp.Name = e.Label
+                If (e.Label.Length > 0) Then 'Check user typed something in. So you are not trying to rename it to a blank.
 
-                    ' Now tell the base controller about the new selections.
-                    Controller.SelectedPath = GetPathFromNode(e.Node.Parent) + "/" + e.Label
+                    If Not (CSGeneral.Utility.CheckForInvalidChars(e.Label)) Then
+
+                        ' Firstly empty the current selections.
+                        Controller.SelectedPath = ""
+
+                        ' Change the data
+                        Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(e.Node))
+                        Comp.Name = e.Label
+
+                        ' Now tell the base controller about the new selections.
+                        Controller.SelectedPath = GetPathFromNode(e.Node.Parent) + "/" + e.Label
+
+                    Else
+
+                        MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & in the name")
+                        e.CancelEdit = True     'cancel the edit event.
+
+                    End If
+
                 Else
                     e.CancelEdit = True     'cancel the edit event.
                 End If
