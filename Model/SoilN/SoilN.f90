@@ -230,6 +230,8 @@ module Soiln2Module
       logical   use_external_ph           ! flag for soil ph
       logical   use_organic_solutes       ! flag for FOM leaching
 
+      real         nitrification_inhibition(max_layer)  ! nitrification inhibition -VOS added 13 Dec 09
+
    end type Soiln2Globals
 ! ====================================================================
 !      type Soiln2Parameters
@@ -793,6 +795,14 @@ subroutine soiln2_zero_all_globals ()
    g%use_external_tav_amp = .false.
    g%use_external_ph      = .false.
    g%use_organic_solutes = .false.
+
+
+
+   g%dlt_rntrf(:)         = 0.0
+   g%dlt_urea_hydrol(:)   = 0.0
+   g%excess_nh4(:)        = 0.0
+   g%nitrification_inhibition(:) = 0.0 ! nitrification inhibition - default to no effect - VOS added 13 Dec 09, reviewed by RCichota (9/feb/2010)
+
 
 
       ! Constants
@@ -1685,6 +1695,13 @@ subroutine soiln2_send_my_variable (variable_name)
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name,'(kg/ha)', g%soilp_dlt_org_p, num_layers)
 
+!-------------------Added by RCichota, 29/Jan/2010, Reviewed (9/feb/2010)---------
+   elseif (variable_name .eq. 'nitrification_inhibition') then
+   !                           --------------
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'()', g%nitrification_inhibition, num_layers)
+!---------------------------------------------------------------------------------
+
    elseif (variable_name .eq. 'tf') then
    !                           --------------
       num_layers = count_of_real_vals (g%dlayer, max_layer)
@@ -1988,6 +2005,19 @@ subroutine soiln2_set_my_variable (variable_name)
 
          call fatal_error (Err_User,error_string)
       endif
+
+!---------------------------------------------------------------------------------
+! Changes by RCichota (29/Jan/2010), reviewed (9/feb/2010)
+   elseif (variable_name .eq. 'nitrification_inhibition') then
+   
+      call collect_real_array(variable_name, max_layer, '()', tarray, numvals, 0.0, 1.0)
+
+      do layer = 1, numvals
+         g%nitrification_inhibition(layer) = tarray(layer)
+      end do
+!---------------------------------------------------------------------------------
+
+
 
    else
          ! Don't know this variable name
@@ -3810,6 +3840,13 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
    nh4ppm = g%nh4(layer)*soiln2_fac (layer)
    opt_rate_ppm = divide((c%nitrification_pot* nh4ppm),(nh4ppm + c%nh4_at_half_pot),0.0)
    opt_rate = divide(opt_rate_ppm,soiln2_fac(layer),0.0)
+
+   !-----Changes by VOS 13 Dec 09, Reviewed by RCichota (9/02/2010)----------------
+   opt_rate = divide(opt_rate_ppm,soiln2_fac(layer),0.0) * max(0,1-g%nitrification_inhibition(layer))
+   ! old code-> opt_rate = divide(opt_rate_ppm,soiln2_fac(layer),0.0)
+   !--------------------------------------------------------------------------------
+
+
    dlt_rntrf = pni * opt_rate
    nh4_avail = l_bound (g%nh4(layer) - g%nh4_min(layer), 0.0)
    dlt_rntrf = bound (dlt_rntrf, 0.0, nh4_avail)

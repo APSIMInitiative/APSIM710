@@ -1,0 +1,235 @@
+<Type name="SoilNui">
+  <MetaData>
+    <UItype>VBUserInterface.GenericUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation name="Water science documentation">../apsim/soilwat2/docs/soilwat2_science.htm</Documentation>
+    <Documentation name="Nitrogen science documentation">../apsim/soiln2/docs/soiln2_science.htm</Documentation>
+    <Documentation name="Phosphorus documentation">../apsim/soilp/docs/soilp_science.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\shovel32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\shovel16.bmp</SmallIcon>
+    <dll>%apsim%\Model\SoilN.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+      <drop>factorial</drop>
+    </drops>
+    <ApsimToSim>
+     <component name="SoilNui" executable="[dll]">
+     <executable>[dll]</executable>
+
+	 <initdata>
+               [Model]
+			   <enr_a_coeff>7.4 ()</enr_a_coeff>
+			   <enr_b_coeff>0.2</enr_b_coeff>
+			   <profile_reduction>off</profile_reduction>
+			   <root_wt>[SoilNui.root_wt]</root_wt>
+			   <root_cn>[SoilNui.root_cn]</root_cn>
+			   <soil_cn>[SoilNui.soil_cn]</soil_cn>
+			   <ph>[SoilNui.ph]</ph><oc>[SoilNui.oc]</oc>
+			   <fbiom>[SoilNui.fbiom]</fbiom>
+			   <finert>[SoilNui.finert]</finert>
+			   <no3ppm>[SoilNui.no3ppm]</no3ppm>
+			   <nh4ppm>[SoilNui.nh4ppm]</nh4ppm>
+			   <ureappm>[SoilNui.ureappm]</ureappm> 
+               <rocks>0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</rocks>
+         </initdata>
+		 </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+      <standard>
+
+      <cnrf_coeff description="coeff. to determine the magnitude">0.693  </cnrf_coeff>
+      <!--  of C:N effects on decomposition of FOM ()
+         -->
+      <cnrf_optcn description="C:N above which decomposition rate">25.0   </cnrf_optcn>
+      <!--  of FOM declines ()
+         -->
+      <ef_biom description="fraction of biomass C mineralized">0.4       </ef_biom>
+      <!--  retained in system (0-1)
+         -->
+      <ef_fom description="fraction of FOM C mineralized">0.4        </ef_fom>
+      <!--  retained in system (0-1)
+         -->
+      <ef_hum description="fraction of humic C mineralized">0.4        </ef_hum>
+      <!--  retained in system (0-1)
+         -->
+      <ef_res description="fraction of residue C mineralized">0.4        </ef_res>
+      <!--  retained in system (0-1)
+         -->
+      <fom_min description="minimum allowable FOM (kg/ha)">0.5       </fom_min>
+      <fr_biom_biom description="fraction of retained biomass C">0.6  </fr_biom_biom>
+      <!--  returned to biomass (0-1)
+         -->
+      <fr_fom_biom description="fraction of retained FOM C">0.9   </fr_fom_biom>
+      <!--  transferred to biomass (0-1)
+         -->
+      <fr_res_biom description="fraction of retained residue C">0.9   </fr_res_biom>
+      <!--  transferred to biomass (0-1)
+         -->
+      <fom_type>default manure  mucuna lablab shemp  stable </fom_type>
+      <fr_carb description="carbohydrate fraction of FOM (0-1)">0.2      0.3     0.54        0.57    0.45   0.0 </fr_carb>
+      <fr_cell description="cellulose fraction of FOM (0-1)">   0.7      0.3     0.37        0.37    0.47   0.1  </fr_cell>
+      <fr_lign description="lignin fraction of FOM (0-1)">      0.1      0.4     0.09        0.06    0.08   0.9 </fr_lign>
+      <oc2om_factor description="factor to convert organic carbon to">1.7  </oc2om_factor>
+      <!--  organic matter ()
+         -->
+      <mcn description="C:N ratio of microbes ()">8.0           </mcn>
+      <!-- dsg 200509 ****** the following constants are for (a) aerobic AND (b)anaerobic conditions ***** -->
+      <opt_temp description="Soil temperature above which there">32.0  32.0   </opt_temp>
+      <!--  is no further effect on mineralisation
+         and nitrification (oC)
+         -->
+      <rd_biom description="potential rate of soil biomass">0.0081  0.004  </rd_biom>
+      <!--  mineralization (per day)
+         -->
+      <rd_carb description="maximum rate constant for">0.2   0.1    </rd_carb>
+      <!--  decomposition of FPool1 (0-1)
+         -->
+      <rd_cell description="maximum rate constant for">0.05  0.25    </rd_cell>
+      <!--  decomposition of FPool2 (0-1)
+         -->
+      <rd_lign description="maximum rate constant for">0.0095   0.003  </rd_lign>
+      <!--  decomposition of FPool3 (0-1)
+         -->
+      <rd_hum description="potential rate of humus">0.00015  0.00007  </rd_hum>
+      <!--  mineralization (per day)
+         -->
+      <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+      <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
+      <min_depth description="depth of soil from which N can be">100.    </min_depth>
+      <!--  immobilised by decomposing surface
+         residues (mm)
+         ______________________________________________________________________-
+         Specifying the water factor for Nitrogen Transformations is
+         by referring to water content via an indexing system and linear interpolation
+         between specified coordinates.
+         (see example)
+
+         1 |    ______
+         |   /.     \                In this example
+         .5 |  / .      -               wf_index = 0.0 0.5 1.0 2.0
+         | /  .        \             wf_values= 0.0 1.0 1.0 0.25
+         |/   .
+         0 ______________________-
+         LL       DUL   SAT
+         =0       =1    =2
+         -->
+      <wfmin_index description="index specifying water content">0.0 0.5 1.0 2.0  </wfmin_index>
+      <!--  for water factor for mineralization
+         -->
+      <wfmin_values description="value of water factor function">0.0 1.0 1.0 0.5  </wfmin_values>
+      <!--  at given index values(mineralization)
+         -->
+      <wfnit_index description="index specifying water content">0.0 0.25 1.0 2.0  </wfnit_index>
+      <!--  for water factor for nitrification
+         -->
+      <wfnit_values description="value of water factor function">0.0 1.0 1.0 0.0  </wfnit_values>
+      <!--  at given index values(nitrification)
+         ______________________________________________________________________-
+         -->
+      <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)">40.0</nitrification_pot>
+      <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential">90</nh4_at_half_pot>
+      <!--  nitrification (Michaelis-Menton kinetics)
+         -->
+      <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
+      <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
+      <!-- ______________________________________________________________________-
+         -->
+      <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)">0.0006 </dnit_rate_coeff>
+      <dnit_wf_power description="power term for calculation of water factor for denitrification">1        </dnit_wf_power>
+    </standard>
+  </Model>
+  <Info name="SoilNui">
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="biom_c" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="biom_n" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="carbon_tot" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_biom_c_atm" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_biom_c_hum" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_biom_n_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_c_loss_in_sed" description="" read="T" write="F" kind="single" array="" units="kg" />
+      <variable name="dlt_fom_c_atm" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_biom" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_hum" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_pool1" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_pool2" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_pool3" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_n_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_hum_c_atm" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_hum_c_biom" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_hum_n_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_n_loss_in_sed" description="" read="T" write="F" kind="single" array="" units="kg" />
+      <variable name="dlt_n_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_n_min_res" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_n_min_tot" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4_net" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="dlt_no3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_no3_dnit" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_no3_net" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_no3ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="dlt_org_c_pool" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_org_n" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_c_atm" description="" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="dlt_res_c_biom" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_c_hum" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_nh4_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_no3_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_urea" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_urea_hydrol" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dnit" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="excess_nh4" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c_pool1" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c_pool2" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c_pool3" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n_pool1" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n_pool2" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n_pool3" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fr_carb" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="fr_cell" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="fr_lign" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="hum_c" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="hum_n" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="n_reduction" description="" read="F" write="T" kind="string" array="" units="" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="nh4" description="" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="nh4_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="nh4_transform_net" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="nh4ppm" description="" read="T" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="nit_tot" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3" description="" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="no3_min" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3_transform_net" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3ppm" description="" read="T" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="num_fom_types" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="oc" description="" read="T" write="F" kind="single" array="T" units="%" />
+      <variable name="org_c_pool" description="" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="org_n" description="" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_org_p" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_res_c_atm" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_res_c_biom" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_res_c_hum" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="st" description="" read="T" write="F" kind="single" array="T" units="oC" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="urea" description="" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+    </variables>
+    <events>
+      <event name="actualresiduedecompositioncalculated" description="" />
+      <event name="c_balance" description="" />
+      <event name="externalmassflow" description="" />
+      <event name="n_balance" description="" />
+      <event name="new_solute" description="" />
+    </events>
+  </Info>
+</Type>

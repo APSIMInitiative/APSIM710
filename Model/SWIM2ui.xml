@@ -1,0 +1,249 @@
+<Type version="23" name="SWIM2uiForDean">
+  <MetaData>
+    <UItype>VBUserInterface.GenericUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation name="Science documentation">../apsim/apswim/docs/apswim_science.htm</Documentation>
+    <Documentation name="Technical specification">../apsim/apswim/docs/SWIMv21UserManual.pdf</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\note_pinned32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\note_pinned16.png</SmallIcon>
+    <dll>%apsim%\Model\SWIM2.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <variables name="SWIM variables" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+    <events name="SWIM events" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+    <ApsimToSim>
+      <component name="[SWIM2uiForDean.name]" executable="[dll]">
+        <executable>[dll]</executable>
+        <initdata>
+              [Model]
+           </initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <!-- Model  name="SWIM_General" -->
+    <!-- ***  Convergence  ****************                 -->
+    <max_iterations description="number of iterations before timestep is halved">50</max_iterations>
+    <!-- ***  solute balance  ****************
+      Numerical Error can result in negative solute concentration
+      We allert the user according to the level of loss of solute
+      balance due to trucation of negative values.            -->
+    <negative_conc_fatal units="kg/ha">0.1</negative_conc_fatal>
+    <negative_conc_warn units="kg/ha">0.001</negative_conc_warn>
+    <!-- ****  soilwat_eeq_fac  **************** -->
+    <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+    <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+    <!-- *** soilwat_pot_evapotranspiration  ************** -->
+    <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+    <!-- Bare soil albedo must not exceed this value.       -->
+    <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+    <!-- max_bitesize = .02                                 -->
+    <max_bitesize>0.1</max_bitesize>
+    <extra_supply_fraction>0.5</extra_supply_fraction>
+    <trf_fasw>0 1</trf_fasw>
+    <trf_value>1  1</trf_value>
+    <!-- trf_fasw = 0.0  0.5  1.0 
+           trf_value= 0.0  1.0  1.0                           -->
+    <min_total_root_length>0.01</min_total_root_length>
+    <!-- ***  Residue and Crop Cover Effects    **************
+      The effect of residue and canopy cover is implemented as in the soilwat model.
+      These can be turn off for compatibility with SWIM standalone. -->
+    <cover_effects>on</cover_effects>
+    <A_to_evap_fact description="converts residue specfic area 'A' to">0.44</A_to_evap_fact>
+    <!--    a coef. in exp effect on reducing pot. soil evap for wt. of mixed residues.
+      0.44 = 0.00022/0.0005 DMS 1st approx. 6/95              -->
+    <canopy_eos_coef description="coef. in exp effect of canopy on">1.7</canopy_eos_coef>
+    <!-- reducing pot. soil evap. = 1.7 Adams, Arkin & Ritchie 1976
+      Set the default rainfall and evaporation daily time courses these are used
+      if the user does not specify them in the met file       -->
+    <default_rain_time>0:00</default_rain_time>
+    <default_rain_duration>1440.0</default_rain_duration>
+    <default_evap_time>6:00</default_evap_time>
+    <default_evap_duration>720.</default_evap_duration>
+    <!-- ***  Bounds  ***                                   -->
+    <lb_exco>0</lb_exco>
+    <ub_exco>15000</ub_exco>
+    <lb_fip>0</lb_fip>
+    <ub_fip>100</ub_fip>
+    <lb_dis>0</lb_dis>
+    <ub_dis>20</ub_dis>
+    <lb_slupf>0</lb_slupf>
+    <ub_slupf>1</ub_slupf>
+    <lb_slos>0</lb_slos>
+    <ub_slos>10</ub_slos>
+    <lb_d0>0</lb_d0>
+    <ub_d0>1</ub_d0>
+    <lb_a>0</lb_a>
+    <ub_a>100</ub_a>
+    <lb_dthc>0</lb_dthc>
+    <ub_dthc>1</ub_dthc>
+    <lb_dthp>0</lb_dthp>
+    <ub_dthp>10</ub_dthp>
+    <lb_disp>0</lb_disp>
+    <ub_disp>5</ub_disp>
+    <lb_solute>0</lb_solute>
+    <ub_solute>1000</ub_solute>
+    <!-- Model  name="SWIM_Soil"  -->
+    <init>
+      <slmin>-3.0</slmin>
+      <slmax>7.0</slmax>
+      <bypass_flow>off</bypass_flow>
+      <runoff>0</runoff>
+      <top_boundary_condition>0</top_boundary_condition>
+      <bottom_boundary_condition>0</bottom_boundary_condition>
+      <vapour_conductivity>on</vapour_conductivity>
+      <run_solutes>urea no3 nh4</run_solutes>
+      <extra_solute_supply>on</extra_solute_supply>
+      <solute_exclusion>on</solute_exclusion>
+      <subsurface_drain>off</subsurface_drain>
+      <!--  Soil profile description  -->
+      <!--        (0)   (1)   (2)   (3)   (4)   (5)   (6)   (7)   (8)   (9)   (10)  (11)  (12)  (13)  (14)  (15)  (16)  (17)  (18)  (19)  (20)  (21)  (22)  (23)  (24)  -->
+      <x>         0     10    20    40    60    90    110   150   200   250   300   350   400   450   500   600   700   800   900   1000  1100  1200  1300  1400  1500  </x>
+      <soil_type> A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    A1    </soil_type>
+      <psi>      -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100   </psi>
+    </init>
+    <solute>
+      <solute_name>no3  nh4  urea  orgn  br  cl</solute_name>
+      <slupf>1.0  1.0  0.0  0.0  0.0  0.0</slupf>
+      <slos>0.0  0.0  0.0   0.0  0.0  0.0</slos>
+      <d0>0.0684  0.07056  0.0684  0.072  0.01  0.01</d0>
+      <a>0.0  0.0  0.0  0.0  0.0  0.0</a>
+      <dthc>0  0   0  0  0  0</dthc>
+      <dthp>1  1   1  1  1  1</dthp>
+      <disp>1  1   1  1  1  1</disp>
+      <ground_water_conc>0  0  0  0  0  0</ground_water_conc>
+    </solute>
+    <calc>
+      <dtmin>0.0</dtmin>
+      <dtmax>30.0</dtmax>
+      <ersoil>0.0001</ersoil>
+      <ernode>0.0001</ernode>
+      <slcerr>0.0001</slcerr>
+      <errex>0.01</errex>
+      <dppl>2</dppl>
+      <dpnl>1</dpnl>
+      <max_water_increment>0.5</max_water_increment>
+      <swt>0</swt>
+      <slswt>0.0</slswt>
+    </calc>
+    <climate>
+      <rainfall_source>apsim</rainfall_source>
+      <evap_source>calc</evap_source>
+      <salb>0.23</salb>
+    </climate>
+    <runoff>
+      <maximum_surface_storage>20</maximum_surface_storage>
+      <minimum_surface_storage>10</minimum_surface_storage>
+      <initial_surface_storage>15</initial_surface_storage>
+      <precipitation_constant>50</precipitation_constant>
+      <runoff_rate_factor>0.2</runoff_rate_factor>
+      <runoff_rate_power>2</runoff_rate_power>
+    </runoff>
+    <bottom_boundary>
+      <constant_gradient>0</constant_gradient>
+      <constant_potential>100.</constant_potential>
+    </bottom_boundary>
+    <top_boundary>
+      <maximum_conductance>4.0</maximum_conductance>
+      <minimum_conductance>0.02</minimum_conductance>
+      <initial_conductance>4.0</initial_conductance>
+      <precipitation_constant>25</precipitation_constant>
+    </top_boundary>
+    <bypass_flow>
+      <depth>11</depth>
+      <conductance>0.10</conductance>
+      <storage>0.10</storage>
+    </bypass_flow>
+    <crop>
+      <crop_name>AgPasture   agpasture   grass   wheat   lucerne</crop_name>
+      <min_xylem_potential>-15000.   -15000.   -1500.   -15000.   -15000. (cm)</min_xylem_potential>
+      <root_radius>0.25   0.25   0.25   0.25   0.25 (mm)</root_radius>
+      <root_conductance>1.4d-7   1.4d-7   1.4d-7   1.4d-7   1.4d-7</root_conductance>
+    </crop>
+    <drain>
+      <drain_depth>450. (mm)</drain_depth>
+      <drain_spacing>2000 (mm)</drain_spacing>
+      <drain_radius>35 (mm)</drain_radius>
+      <klat>1000. (mm/d)</klat>
+      <imperm_depth>800.</imperm_depth>
+    </drain>
+    <!--  Description of each soil horizon (Horotiu)  -->
+    <A1>
+      <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +3.500000D-01 +7.142766D-01 +8.326376D-01 +2.129957D+00 +3.775342D+00 +6.023898D+00 +7.000000D+00 </sl>
+      <wc>+6.800000D-01 +6.800000D-01 +6.799988D-01 +6.799694D-01 +6.792305D-01 +6.703131D-01 +6.281510D-01 +5.913289D-01 +2.805678D-01 +1.281068D-01 +6.779279D-02 +5.936176D-02 </wc>
+      <wcd>-8.900874D-09 -2.235798D-07 -5.616072D-06 -1.410693D-04 -3.543502D-03 -4.461004D-02 -2.387733D-01 -3.561303D-01 -1.516863D-01 -5.138499D-02 -1.170555D-02 -6.158931D-03 </wcd>
+      <hkl>+6.989700D-01 +6.989697D-01 +6.989618D-01 +6.987641D-01 +6.937951D-01 +6.333561D-01 +3.353024D-01 +5.664662D-02 -3.557314D+00 -8.140886D+00 -1.440472D+01 -1.712386D+01 </hkl>
+      <hkld>-5.982477D-08 -1.502730D-06 -3.774695D-05 -9.482048D-04 -2.384579D-02 -3.045164D-01 -1.748773D+00 -2.785714D+00 -2.785714D+00 -2.785714D+00 -2.785714D+00 -2.785714D+00 </hkld>
+      <bulk_density>0.75</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 25.7 0 0 0 0 0 0</exco>
+      <fip>1 0.55 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </A1>
+    <A2>
+      <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +5.000000D-01 +1.100000D+00 +1.447011D+00 +1.607294D+00 +2.895815D+00 +4.574199D+00 +6.972041D+00 +7.000000D+00 </sl>
+      <wc>+6.400000D-01 +6.400000D-01 +6.400000D-01 +6.399989D-01 +6.399730D-01 +6.393228D-01 +6.292669D-01 +5.869426D-01 +5.395454D-01 +2.913812D-01 +1.756615D-01 +1.342658D-01 +1.340840D-01 </wc>
+      <wcd>-3.118676D-10 -7.833760D-09 -1.967752D-07 -4.942768D-06 -1.241567D-04 -3.118676D-03 -4.942768D-02 -2.443385D-01 -2.937003D-01 -1.178790D-01 -3.589306D-02 -6.564672D-03 -6.435915D-03 </wcd>
+      <hkl>+4.771213D-01 +4.771212D-01 +4.771209D-01 +4.771131D-01 +4.769166D-01 +4.719781D-01 +3.948005D-01 +5.214806D-02 -3.709948D-01 -3.939206D+00 -8.587040D+00 -1.522722D+01 -1.530464D+01 </hkl>
+      <hkld>-2.366954D-09 -5.945520D-08 -1.493447D-06 -3.751377D-05 -9.423508D-04 -2.370071D-02 -3.831216D-01 -2.067430D+00 -2.769231D+00 -2.769231D+00 -2.769231D+00 -2.769231D+00 -2.769231D+00 </hkld>
+      <bulk_density>0.8</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 16.8 0 0 0 0 0 0</exco>
+      <fip>1 0.56 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </A2>
+    <B1>
+      <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.693848D-01 +5.179593D-01 +2.257106D+00 +4.494876D+00 +7.000000D+00 </sl>
+      <wc>+6.800000D-01 +6.799999D-01 +6.799969D-01 +6.799225D-01 +6.780528D-01 +6.630884D-01 +6.269442D-01 +3.606128D-01 +2.340644D-01 +1.913920D-01 </wc>
+      <wcd>-2.252473D-08 -5.657957D-07 -1.421215D-05 -3.569930D-04 -8.967258D-03 -7.788060D-02 -2.312533D-01 -9.497538D-02 -3.022238D-02 -8.387539D-03 </wcd>
+      <hkl>+9.030899D-01 +9.030888D-01 +9.030597D-01 +9.023299D-01 +8.839628D-01 +7.344515D-01 +3.535357D-01 -4.052302D+00 -9.721321D+00 -1.606763D+01 </hkl>
+      <hkld>-2.208297D-07 -5.546992D-06 -1.393350D-04 -3.500452D-03 -8.825418D-02 -7.899870D-01 -2.533333D+00 -2.533333D+00 -2.533333D+00 -2.533333D+00 </hkld>
+      <bulk_density>0.84</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 1.0 0 0 0 0 0 0</exco>
+      <fip>1 0.57 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </B1>
+    <B2>
+      <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +3.500000D-01 +6.695110D-01 +8.770710D-01 +2.667525D+00 +5.042684D+00 +7.000000D+00 </sl>
+      <wc>+6.300000D-01 +6.300000D-01 +6.299988D-01 +6.299705D-01 +6.292583D-01 +6.206626D-01 +5.893323D-01 +5.501247D-01 +3.451396D-01 +2.545568D-01 +2.319671D-01 </wc>
+      <wcd>-8.579731D-09 -2.155131D-07 -5.413444D-06 -1.359796D-04 -3.415652D-03 -4.300051D-02 -1.872818D-01 -1.788565D-01 -6.779872D-02 -1.872236D-02 -6.483591D-03 </wcd>
+      <hkl>+4.771212D-01 +4.771206D-01 +4.771057D-01 +4.767303D-01 +4.672918D-01 +3.520575D-01 -8.996127D-02 -6.992016D-01 -5.965242D+00 -1.295101D+01 -1.870782D+01 </hkl>
+      <hkld>-1.136015D-07 -2.853541D-06 -7.167791D-05 -1.800592D-03 -4.530754D-02 -5.826251D-01 -2.752788D+00 -2.941176D+00 -2.941176D+00 -2.941176D+00 -2.941176D+00 </hkld>
+      <bulk_density>0.85</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 0.1 0 0 0 0 0 0</exco>
+      <fip>1 0.61 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </B2>
+    <C1>
+      <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.817095D-01 +5.695669D-01 +6.779682D-01 +1.331602D+00 +2.196592D+00 +3.488122D+00 +5.683723D+00 +7.000000D+00 </sl>
+      <wc>+5.600000D-01 +5.599999D-01 +5.599970D-01 +5.599239D-01 +5.580872D-01 +5.424174D-01 +4.938090D-01 +4.512214D-01 +2.604409D-01 +1.792732D-01 +1.540313D-01 +1.501386D-01 +1.500184D-01 </wc>
+      <wcd>-2.212640D-08 -5.557901D-07 -1.396082D-05 -3.506799D-04 -8.808680D-03 -8.097107D-02 -3.048209D-01 -4.623920D-01 -1.695331D-01 -4.493603D-02 -6.188348D-03 -2.127359D-04 -2.820476D-05 </wcd>
+      <hkl>+7.781512D-01 +7.781502D-01 +7.781256D-01 +7.775059D-01 +7.619043D-01 +6.258660D-01 +1.664182D-01 -2.930326D-01 -3.779079D+00 -8.392357D+00 -1.528052D+01 -2.699039D+01 -3.401054D+01 </hkl>
+      <hkld>-1.875000D-07 -4.709788D-06 -1.183054D-04 -2.972227D-03 -7.499497D-02 -7.168957D-01 -3.080362D+00 -5.333333D+00 -5.333333D+00 -5.333333D+00 -5.333333D+00 -5.333333D+00 -5.333333D+00 </hkld>
+      <bulk_density>1</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 0 0 0 0 0 0 0</exco>
+      <fip>1 1 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </C1>
+    <C2>
+      <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -5.367227D-01 -3.231053D-01 +5.387051D-01 +1.682741D+00 +3.395700D+00 +6.337521D+00 +7.000000D+00 </sl>
+      <wc>+4.799997D-01 +4.799913D-01 +4.797818D-01 +4.745181D-01 +4.507931D-01 +4.019235D-01 +2.119416D-01 +1.299898D-01 +1.041734D-01 +1.001411D-01 +1.000658D-01 </wc>
+      <wcd>-1.592857D-06 -4.001075D-05 -1.005025D-03 -2.524508D-02 -1.345028D-01 -3.476023D-01 -1.288776D-01 -3.452706D-02 -4.804852D-03 -1.624685D-04 -7.577569D-05 </wcd>
+      <hkl>+1.698966D+00 +1.698861D+00 +1.696226D+00 +1.629551D+00 +1.316912D+00 +6.002163D-01 -4.139741D+00 -1.043194D+01 -1.985321D+01 -3.603323D+01 -3.967686D+01 </hkl>
+      <hkld>-2.002491D-05 -5.030140D-04 -1.264211D-02 -3.220186D-01 -1.831712D+00 -5.500000D+00 -5.500000D+00 -5.500000D+00 -5.500000D+00 -5.500000D+00 -5.500000D+00 </hkld>
+      <bulk_density>1.5</bulk_density>
+      <solute_name>urea nh4 no3 br cl  orgc orgn sol8</solute_name>
+      <exco>0 0 0 0 0 0 0 0</exco>
+      <fip>1 1 1 1 1 1 1 1</fip>
+      <dis>1 1 1 1 1 1 1 1</dis>
+    </C2>
+  </Model>
+</Type>
