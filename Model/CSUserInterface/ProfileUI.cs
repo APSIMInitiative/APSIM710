@@ -391,6 +391,7 @@ namespace CSUserInterface
 
           SaveTableColumn(VariableName);
           //OnRefresh();
+          RefreshGraph();
           Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
       } 
       ///// <summary>
