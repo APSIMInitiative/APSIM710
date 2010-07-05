@@ -376,6 +376,9 @@ namespace CSUserInterface
          Configuration.Instance.SetSetting("SoilSplitterPosition", TopPanel.Height.ToString());
          }
 
+
+
+
       /// <summary>
       /// The value of a cell has changed.
       /// </summary>
@@ -387,9 +390,9 @@ namespace CSUserInterface
           string VariableName = Table.Columns[ColIndex].ColumnName;
 
           SaveTableColumn(VariableName);
-          OnRefresh();
+          //OnRefresh();
           Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
-      }
+      } 
       ///// <summary>
       ///// The value of a cell has changed.
       ///// </summary>
@@ -436,7 +439,7 @@ namespace CSUserInterface
             // Turn on the cell value changed event and refresh.
             Table.ColumnChanged += new DataColumnChangeEventHandler(OnTableColumnChanged);
             //Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
-            OnRefresh();
+            //OnRefresh();
             if (SavedRow < Grid.Columns.Count)
                Grid.CurrentCell = Grid.Rows[SavedRow].Cells[SavedCol];
             }
@@ -465,6 +468,7 @@ namespace CSUserInterface
             _Soil.Read(Table, VariableName, LocationName);
          }
 
+
       /// <summary>
       /// User has changed the units for a variable.
       /// </summary>
@@ -485,6 +489,8 @@ namespace CSUserInterface
          SaveTableColumn(NewColumnName);
          OnRefresh();         
          }
+
+
 
       }
    }
