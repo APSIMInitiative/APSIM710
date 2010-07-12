@@ -70,7 +70,6 @@ C     Last change:  DSG  15 Jun 2000    3:40 pm
 
 *     Global Variables
 
-
 *     Subroutine Arguments
       integer itlim           !(input) limit for no. of iterations
       logical fail            !(output)fail flag
@@ -98,6 +97,8 @@ C     Last change:  DSG  15 Jun 2000    3:40 pm
       double precision dp(-1:M)
       double precision vbp(-1:M)
       double precision wpold
+      character string*100
+      integer          node
 
 *     Constant Values
 *     none
@@ -137,8 +138,9 @@ cnh            if(fail)go to 90
             if(fail) then
 cnh               call warning_error(Err_internal,
 cnh     :            'swim will reduce timestep to solve water movement')
-                  call Write_string (
-     :      'swim will reduce timestep to avoid error in water balance')
+               write(string,*) 'swim will reduce timestep '
+     :            ,'to avoid error in water balance'
+               call Write_string (string)
                goto 90
             endif
 
@@ -166,8 +168,9 @@ cnh     :            'swim will reduce timestep to solve water movement')
       if(fail.and.it.lt.itlim)go to 10
 cnh      if(p%isol.ne.1.or.fail)go to 90
       if (fail) then
-         call Write_string (
-     :   'Maximum iterations reached - swim will reduce timestep')
+            write(string,*) 'Maximum iterations reached - '
+     :         ,'swim will reduce timestep to solve water movement'
+            call Write_string (string)
          goto 90
       endif
       if(p%isol.ne.1) then
@@ -181,9 +184,9 @@ cnh      call getsol(a(0),b(0),c(0),d(0),rhs(0),dp(0),vbp(0),fail)
          call apswim_getsol
      :          (solnum,a(0),b(0),c_(0),d(0),rhs(0),dp(0),vbp(0),fail)
          If (fail) then
-            call Write_string (
-     :         'swim will reduce timestep to solve solute movement')
-
+            write(string,*) 'Maximum iterations reached - '
+     :         ,'swim will reduce timestep to solve solute movement'
+            call Write_string (string)
             goto 85
          endif
    80 continue
@@ -1016,7 +1019,13 @@ cnh         j=indxsl(solnum,i)
             nonlin=.TRUE.
             c2(i)=0.
             if(c1(i).gt.0.)c2(i)=c1(i)**(p%fip(solnum,j)-1.)
-            exco1=p%ex(solnum,j)*p%fip(solnum,j)*c2(i)
+
+!``````````````````````````````````````````````````````````````````````````````````````````````````
+cRC         Changed by RCichota 30/jan/2010
+            exco1=p%ex(solnum,j)*c2(i)
+!            exco1=p%ex(solnum,j)*p%fip(solnum,j)*c2(i)    !<---old code
+!``````````````````````````````````````````````````````````````````````````````````````````````````
+
             exco2=p%betaex(solnum,j)*p%fip(solnum,j)*c2(i)
             exco3=p%betaex(solnum,j)*(1.-p%fip(solnum,j))*c2(i)
          end if
@@ -1193,8 +1202,8 @@ cnh end subroutine
                if(.not.Doubles_are_equal(p%x(i-1),p%x(i))) then
                   if (i.gt.0) then
                      j=j+1
-                  end if
-                  END if
+                  endif
+               endif
 cnh               kk=indxsl(solnum,i)
                kk = i
                if(.not.Doubles_are_equal(p%fip(solnum,kk),1.0d0))then
@@ -1202,16 +1211,24 @@ cnh               kk=indxsl(solnum,i)
                   if(g%csl(solnum,i).gt.0.)then
                      cp=g%csl(solnum,i)**(p%fip(solnum,kk)-1.)
                   endif
-                  d1=p%fip(solnum,kk)*(cp-c2(i))
-                  d2=(1.-p%fip(solnum,kk))
-     :              *(g%csl(solnum,i)*cp-c1(i)*c2(i))
+
+!````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+cRC      Changed by RCichota (29/Jan/2010), original code is commented out
+                  d1 = cp-c2(i)
+!                  d1=p%fip(solnum,kk)*(cp-c2(i))
+!                  d2=(1.-p%fip(solnum,kk))
+!     :              *(g%csl(solnum,i)*cp-c1(i)*c2(i))
                   c1(i)=g%csl(solnum,i)
                   c2(i)=cp
                   b(j)=b(j)-(p%ex(solnum,kk)/g%dt-p%betaex(solnum,kk))
      :                 *d1*p%dx(i)
-                  rhs(j)=rhs(j)+(p%ex(solnum,kk)/g%dt
-     :                            -p%betaex(solnum,kk))
-     :                          *d2*p%dx(i)
+!                  rhs(j)=rhs(j)+(p%ex(solnum,kk)/g%dt
+!     :                            -p%betaex(solnum,kk))
+!     :                          *d2*p%dx(i)
+!````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+! Changes in the calc of d1 are to agree with the calc of exco1 above (no need to multiply by p%fip
+! If p%fip < 1, the unkown is Cw, and is only used in the calc of b. thus rhs is commented out.
+!````````````````````````````````````````````````````````````````````````````````````````````````````````````````
                end if
 67          continue
             go to 62
@@ -2052,4 +2069,3 @@ cnh added following declarations
       call pop_routine (my_name)
       return
       end function
-
