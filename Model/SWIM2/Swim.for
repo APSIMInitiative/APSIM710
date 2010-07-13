@@ -1961,7 +1961,7 @@ cnh added following declarations
 
 *     Internal Variables
       integer drain_node
-      real dlayer(1:M)
+      real dlayer(1:M+1)
       double precision q,q2,d,wt_above_drain,wt_above_drain2
       double precision qdrain2(0:M)
 
@@ -1972,11 +1972,11 @@ cnh added following declarations
 *
       qdrain(0:M) = 0d0
       qdrainpsi(0:M) = 0d0
-      dlayer(0:M) = g%dlayer(0:M)
+      dlayer(0:M+1) = g%dlayer(0:M)
 
       if (p%subsurface_drain.eq.'on') then
          drain_node = find_layer_no(real(p%drain_depth)
-     :                             ,dlayer(0)
+     :                             ,dlayer(1)
      :                             ,p%n+1)
      :              - 1
 
