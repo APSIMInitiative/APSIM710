@@ -38,7 +38,7 @@
       parameter (M=100)
 
       integer MP
-      parameter (MP=50) ! originally = 100,  !RCichota changed from 25 to 50
+      parameter (MP=50) ! originally = 100,  !RCichota changed  from 25 to 50
 
 !cnh      integer MPSL
 !cnh      parameter (MPSL=11) ! originally = 101
