@@ -137,8 +137,8 @@ Public Class SoilTempdotNET
     Private Height As Double = 0.0    ' (mm) height of canopy above ground
 #End Region
 #Region "[Param]s From Files"
-    <Param()> _
-    Private clay() As Double
+
+    <Param()> Private clay() As Double
     <Param()> _
     Private nu As Double = 0.0                  'forward/backward differencing coefficient (0-1).
     ' A weighting factor which may range from 0 to 1. If nu=0, the flux is determined by the temperature difference
