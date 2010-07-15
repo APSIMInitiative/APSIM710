@@ -1,4 +1,3 @@
-#pragma hdrstop
 
 #include "ProtocolVector.h"
 #include <General/string_functions.h>

@@ -1,4 +1,4 @@
-#include <ComponentInterface2/ScienceAPI.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 using namespace std;
 
 #include "PlantInterface.h"
@@ -7,7 +7,7 @@ using namespace std;
 //-----------------------------------------------------------------------------
 // Create an instance of the Plant module
 //-----------------------------------------------------------------------------
-extern "C" EXPORT PlantInterface* STDCALL createComponent(ScienceAPI & api)
+extern "C" EXPORT PlantInterface* STDCALL createComponent(ScienceAPI2 & api)
    {
    return new PlantInterface(api);
    }

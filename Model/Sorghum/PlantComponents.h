@@ -10,7 +10,7 @@
 #include "Utilities.h"
 
 class TableFn;
-class ScienceAPI;
+class ScienceAPI2;
 class Plant;
 
 //---------------------------------------------------------------------------
@@ -20,8 +20,8 @@ class PlantComponent
    private:
    protected:
    public:
-   ScienceAPI  &scienceAPI;
-   PlantComponent(ScienceAPI &api) : scienceAPI(api) {};
+   ScienceAPI2  &scienceAPI;
+   PlantComponent(ScienceAPI2 &api) : scienceAPI(api) {};
 
    Plant *plant;
 
@@ -86,7 +86,7 @@ class PlantPart : public PlantComponent
 
 
    public:
-   PlantPart(ScienceAPI &api) ;
+   PlantPart(ScienceAPI2 &api) ;
    void initialize(void);
    virtual void  phenologyEvent(int) = 0;
    virtual float calcNDemand(void) = 0;
@@ -142,7 +142,7 @@ class PlantProcess : public PlantComponent
    private:
 
    public:
-   PlantProcess(ScienceAPI &api) : PlantComponent(api) {};
+   PlantProcess(ScienceAPI2 &api) : PlantComponent(api) {};
    virtual void  phenologyEvent(int) = 0;
 
    // variables

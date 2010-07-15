@@ -53,7 +53,7 @@ class Biomass : public PlantProcess
 // public Methods -------------------------------------------------------
    public:
    // plant
-   Biomass(ScienceAPI &, Plant *p);
+   Biomass(ScienceAPI2 &, Plant *p);
    ~Biomass();
 
    void  readParams (void);

@@ -201,42 +201,42 @@
       return
       end subroutine
 
-* ====================================================================
+! ====================================================================
       subroutine Send_Crop_Chopped_Event (crop_type                    &
                                                 , dm_type              &
                                                 , dlt_crop_dm          &
                                                 , dlt_dm_n             &
                                                 , fraction_to_Residue  &
                                                 , max_part)
-* ====================================================================
+! ====================================================================
       use ConstantsModule            ! all_active_modules
       use convertmodule
       use errorModule
       use ComponentInterfaceModule
       implicit none
 
-*+  Sub-Program Arguments
+!+  Sub-Program Arguments
       character  crop_type*(*)              ! (INPUT) crop type
       character  dm_type(*)*(*)             ! (INPUT) residue type
       real  dlt_crop_dm(*)                  ! (INPUT) residue weight (kg/ha)
       real  dlt_dm_n(*)                     ! (INPUT) residue N weight (kg/ha)
       real  fraction_to_Residue(*)          ! (INPUT) residue fraction to residue (0-1)
       integer max_part                      ! (INPUT) number of residue types
-*+  Purpose
-*     Notify other modules of crop chopped.
+!+  Purpose
+!     Notify other modules of crop chopped.
 
-*+  Mission Statement
-*     Notify other modules of crop chopped.
+!+  Mission Statement
+!     Notify other modules of crop chopped.
 
-*+  Changes
-*   070999 jngh - Programmed and Specified
-*   190901 jngh - corrected dm_type to array
+!+  Changes
+!   070999 jngh - Programmed and Specified
+!   190901 jngh - corrected dm_type to array
 
-*+  Constant Values
+!+  Constant Values
       character*(*) myname               ! name of current procedure
       parameter (myname = 'Send_Crop_Chopped_Event')
 
-*- Implementation Section ----------------------------------
+!- Implementation Section ----------------------------------
       call push_routine (myname)
 
       call new_postbox ()
@@ -285,7 +285,7 @@
       return
       end subroutine
 
-* ====================================================================
+! ====================================================================
       subroutine Send_Crop_Chopped_Event_N_P (crop_type                &
                                                 , dm_type              &
                                                 , dlt_crop_dm          &
@@ -293,14 +293,14 @@
                                                 , dlt_dm_p             &
                                                 , fraction_to_Residue  &
                                                 , max_part)
-* ====================================================================
+! ====================================================================
       use ConstantsModule            ! all_active_modules
       use convertmodule
       use errorModule
       use ComponentInterfaceModule
       implicit none
 
-*+  Sub-Program Arguments
+!+  Sub-Program Arguments
       character  crop_type*(*)              ! (INPUT) crop type
       character  dm_type(*)*(*)             ! (INPUT) residue type
       real  dlt_crop_dm(*)                  ! (INPUT) residue weight (kg/ha)
@@ -308,21 +308,21 @@
       real  dlt_dm_p(*)                     ! (INPUT) residue P weight (kg/ha)
       real  fraction_to_Residue(*)          ! (INPUT) residue fraction to residue (0-1)
       integer max_part                      ! (INPUT) number of residue types
-*+  Purpose
-*     Notify other modules of crop chopped.
+!+  Purpose
+!     Notify other modules of crop chopped.
 
-*+  Mission Statement
-*     Notify other modules of crop chopped.
+!+  Mission Statement
+!     Notify other modules of crop chopped.
 
-*+  Changes
-*   070999 jngh - Programmed and Specified
-*   190901 jngh - corrected dm_type to array
+!+  Changes
+!   070999 jngh - Programmed and Specified
+!   190901 jngh - corrected dm_type to array
 
-*+  Constant Values
+!+  Constant Values
       character*(*) myname               ! name of current procedure
       parameter (myname = 'Send_Crop_Chopped_Event_N_P')
 
-*- Implementation Section ----------------------------------
+!- Implementation Section ----------------------------------
       call push_routine (myname)
 
       call new_postbox ()

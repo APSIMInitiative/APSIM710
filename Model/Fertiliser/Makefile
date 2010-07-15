@@ -2,7 +2,13 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Fertiliser
 
-SRC = Fertiliser.for ../FortranInfrastructure/EntryPoints2.f90
+SRC = Fertiliser.for 
+ifeq ($(PLATFORM),Linux)
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux2.for 
+else
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints2.for 
+endif
+
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface2
 EXPORTS = OnTick,OnNewProfile,OnApply,getDescription,getDescriptionLength

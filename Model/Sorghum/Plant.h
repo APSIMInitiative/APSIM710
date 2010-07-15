@@ -1,7 +1,7 @@
 #ifndef Plant_H_
 #define Plant_H_
 
-#include <ComponentInterface2/ScienceAPI.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/Variant.h>
 
@@ -35,11 +35,11 @@ typedef enum {aFloat, aInt, aString} aType;
 class Plant
    {
    private:
-   ScienceAPI& scienceAPI;
+   ScienceAPI2& scienceAPI;
    float stage;
 
    public:
-   Plant(ScienceAPI &api);
+   Plant(ScienceAPI2 &api);
    ~Plant();
 
    // Plant sub-classes

@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------------------------
 //------ Stem Constructor
 //------------------------------------------------------------------------------------------------
-Stem::Stem(ScienceAPI &api, Plant *p) : PlantPart(api) 
+Stem::Stem(ScienceAPI2 &api, Plant *p) : PlantPart(api) 
    {
    plant = p;
    name = "Stem";

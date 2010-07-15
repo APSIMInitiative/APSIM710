@@ -1,3 +1,4 @@
+#ifdef __WIN32__
 #include <windows.h>
 //---------------------------------------------------------------------------
 //   Important note about DLL memory management when your DLL uses the
@@ -25,3 +26,4 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void* lpReserved
 }
 //---------------------------------------------------------------------------
 
+#endif

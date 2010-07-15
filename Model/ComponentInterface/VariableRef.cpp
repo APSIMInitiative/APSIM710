@@ -1,5 +1,3 @@
-#pragma hdrstop
-
 #include "VariableRef.h"
 #include "DataTypes.h"
 

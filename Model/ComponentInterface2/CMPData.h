@@ -13,6 +13,7 @@
 #include <ComponentInterface2/Bounded.h>
 #include <ComponentInterface2/FortranString.h>
 #include <ComponentInterface2/FortranArray.h>
+#include <ComponentInterface2/Variant.h>
 
 void EXPORT getKindAndArray(const std::string& ddml, std::string& kind, bool& isArray);
 
@@ -327,4 +328,75 @@ class NullMethod : public Packable
          return DDML(null);
          }
    };
+
+// -------------------------------------------------------------------
+// A wrapper class for CMP gets and sets that has a name associated
+// -------------------------------------------------------------------
+template <class FT, class T>
+class NamedMethod : public Packable
+   {
+   private:
+      std::string apsimName;
+      FT f;
+      T variable;
+   public:
+      NamedMethod(const std::string &name, FT& fn)
+         {
+         f = fn;
+         apsimName = name;
+         }
+      virtual unsigned memorySize()
+         {
+         f(apsimName, variable);
+         return ::memorySize(variable);
+         }
+      virtual void pack(MessageData& messageData)
+         {
+         f(apsimName, variable);
+         ::pack(messageData, variable);
+         }
+      virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
+         {
+         ::unpack(messageData, /*sourceDDML,*/ variable);
+         f(apsimName, variable);
+         }
+      virtual std::string ddml() {return DDML(variable);}
+   };
+
+template <class FT, class T>
+class NamedDualMethod : public Packable
+   {
+   private:
+      std::string apsimName;
+      FT getter;
+      FT setter;
+      T variable;
+   public:
+      NamedDualMethod(const std::string &name, FT& get, FT& set) : getter(get), setter(set) 
+      	 { 
+         apsimName = name;
+      	 }
+
+      virtual unsigned memorySize()
+         {
+         getter(apsimName, variable);
+         return ::memorySize(variable);
+         }
+      virtual void pack(MessageData& messageData)
+         {
+         // Assumes that memorySize was called immediately before this method.
+         // No need to call it again.
+         ::pack(messageData, variable);
+         }
+      virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
+         {
+         ::unpack(messageData, variable);
+         setter(apsimName, variable);
+         }
+      virtual std::string ddml()
+         {
+         return DDML(variable);
+         }
+   };
+
 #endif

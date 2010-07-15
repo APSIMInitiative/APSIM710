@@ -1,11 +1,10 @@
 
+#include <stdio.h>
 #include <math.h>
 
 #include <vector>
 #include <General/date_class.h>
-#include <ComponentInterface2/ScienceAPI.h>
-#include <ComponentInterface2/DataTypes.h>
-#include <ComponentInterface2/Variant.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 
 #include "Plant.h"
 #include "PlantInterface.h"
@@ -15,7 +14,7 @@ using namespace std;
 //------------------------------------------------------------------------------------------------
 //------------- Plant Constructor
 //------------------------------------------------------------------------------------------------
-Plant::Plant(ScienceAPI &api) : scienceAPI(api)
+Plant::Plant(ScienceAPI2 &api) : scienceAPI(api)
    {
    initialize();
    }
@@ -137,27 +136,27 @@ void Plant::onSowCrop(Variant &sowLine)
    scienceAPI.write("Sowing initiate\n");
 
    string temp;
-   if (get(sowLine,"crop_class", temp) == false)
+   if (sowLine.get("crop_class", temp) == false)
       cropClass = defaultCropClass;
    else
       cropClass = temp;
 
-   if (get(sowLine, "cultivar", temp) == false)
+   if (sowLine.get("cultivar", temp) == false)
       throw std::runtime_error("Cultivar not specified");
    else
       cultivar = temp;
 
-   if (get(sowLine, "plants", plantDensity) == false)
+   if (sowLine.get("plants", plantDensity) == false)
       throw std::runtime_error("plant density ('plants') not specified");
 
    checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
 
-   if (get(sowLine, "sowing_depth", sowingDepth) == false)
+   if (sowLine.get("sowing_depth", sowingDepth) == false)
       throw std::runtime_error("sowing depth not specified");
 
    checkRange(scienceAPI,sowingDepth, 0.0, 100.0, "sowing_depth");
 
-   if (get(sowLine, "row_spacing", rowSpacing) == false)
+   if (sowLine.get("row_spacing", rowSpacing) == false)
       rowSpacing = rowSpacingDefault;
    // row spacing was originally in metres
    // for compatibility, is now in mm
@@ -170,7 +169,7 @@ void Plant::onSowCrop(Variant &sowLine)
    checkRange(scienceAPI, rowSpacing, 100.0, 10000.0, "row_spacing");
 
    skipRow = 1.0;
-   if (get(sowLine, "skip", temp) )
+   if (sowLine.get("skip", temp) )
       {
       if (temp == "single")skipRow = 1.5;
       else if (temp == "double")skipRow = 2.0;
@@ -181,7 +180,7 @@ void Plant::onSowCrop(Variant &sowLine)
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
 
-   if (get(sowLine, "tiller_no_fertile", ftn) == false)
+   if (sowLine.get("tiller_no_fertile", ftn) == false)
       {
       scienceAPI.get( "latitude",  "", 0, latitude, -90.0f, 90.0f);
       // if no tiller number is entered, estimate it

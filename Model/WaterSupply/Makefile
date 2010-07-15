@@ -2,7 +2,13 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = WaterSupply
 
-SRC = Registrations.f90 WaterSupply.f90
+SRC = Registrations.f90 WaterSupply.f90 
+ifeq ($(PLATFORM),Linux)
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+else
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+endif
+
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
 

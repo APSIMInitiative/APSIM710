@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------
 //------ Roots Constructor
 //------------------------------------------------------------------------------------------------
-Roots::Roots(ScienceAPI& api, Plant *p) : PlantPart(api)
+Roots::Roots(ScienceAPI2& api, Plant *p) : PlantPart(api)
    {
    plant = p;
    name = "Roots";

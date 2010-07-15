@@ -39,6 +39,7 @@ bool tHTTP::Get(const std::string& filename, const std::string& url)
   myContext = xmlNanoHTTPOpen(url.c_str(), &myContentType);
   if (myContext == NULL) 
      {
+     fclose(fp);
      _ErrorMessage = "HTTP Open failure: " + url; 
      return false;
      }
@@ -47,6 +48,7 @@ bool tHTTP::Get(const std::string& filename, const std::string& url)
   char *buffer = (char*)malloc(buflen);
   if (buffer == NULL) 
      {
+     fclose(fp);
      _ErrorMessage = "malloc failure"; 
      return false;
      }
@@ -55,6 +57,7 @@ bool tHTTP::Get(const std::string& filename, const std::string& url)
      {
      fwrite(buffer, sizeof(char), bytesRead, fp);
      }
+
   fclose(fp);
   free(buffer);
 

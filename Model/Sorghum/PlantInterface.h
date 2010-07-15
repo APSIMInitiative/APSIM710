@@ -2,7 +2,7 @@
 #ifndef PlantInterfaceH
 #define PlantInterfaceH
 
-class ScienceAPI;
+class ScienceAPI2;
 
 #include "Plant.h"
 
@@ -13,7 +13,7 @@ class ScienceAPI;
 class PlantInterface 
    {
    public:
-   PlantInterface(ScienceAPI & api) : scienceAPI(api)
+   PlantInterface(ScienceAPI2 & api) : scienceAPI(api)
       {
       scienceAPI.subscribe("init1", nullFunction(&PlantInterface::onInit1));
       scienceAPI.subscribe("init2", nullFunction(&PlantInterface::onInit2));
@@ -27,7 +27,7 @@ class PlantInterface
 
    private:
       Plant     *plant;    // The plant module
-      ScienceAPI  &scienceAPI;
+      ScienceAPI2  &scienceAPI;
 
    void onInit1(void)
             {

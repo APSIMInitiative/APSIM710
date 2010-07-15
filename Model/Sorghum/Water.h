@@ -84,7 +84,7 @@ class Water : public PlantProcess
 // public Methods -------------------------------------------------------
    public:
    // plant
-   Water(ScienceAPI &, Plant *p);
+   Water(ScienceAPI2 &, Plant *p);
    ~Water();
 
    // plant

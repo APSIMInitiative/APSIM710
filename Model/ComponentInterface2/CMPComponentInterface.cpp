@@ -6,7 +6,7 @@
 #include <General/path.h>
 #include "DataTypes.h"
 #include "CMPData.h"
-#include "ScienceAPI.h"
+#include "ScienceAPI2.h"
 #include "CMPComponentInterface.h"
 #include "ArraySpecifier.h"
 #include "Messages.h"

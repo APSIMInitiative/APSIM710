@@ -2,9 +2,10 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = FortranInfrastructure
 
-SRC1 = DataTypes.f90 \
+SRC = DataTypes.f90 \
       DataTypesInterface.f90 \
       ScienceAPI.f90 \
+      ScienceAPI2.f90 \
       ComponentInterfaceModule.f90 \
       ConvertModule.f90 \
       ConstantsModule.f90 \
@@ -19,18 +20,6 @@ SRC1 = DataTypes.f90 \
       PublishEvents.f90 \
       Infrastructure.f90 \
       Infrastructure2.f90
-
-ifeq ($(PLATFORM),WIN32)
-      SRC = $(SRC1) EntryPoints.for 
-endif
-
-ifeq ($(PLATFORM),WIN32VS)
-      SRC = $(SRC1) EntryPoints.for 
-endif
-
-ifeq ($(PLATFORM),Linux)
-      SRC = $(SRC1) EntryPointsLinux.for
-endif
 
 PROJECTTYPE = lib
 

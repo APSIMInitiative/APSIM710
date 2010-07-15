@@ -3,7 +3,7 @@
 
 #include "TestVariables.h"
 #include <ComponentInterface2/DataTypes.h>
-#include <ComponentInterface2/ScienceAPIImpl.h>
+#include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/Messages.h>
@@ -14,7 +14,7 @@ using namespace std;
 using namespace boost::unit_test_framework;
 
 CMPComponentInterface* componentInterface;
-ScienceAPI* scienceAPI;
+ScienceAPI2* scienceAPI;
 unsigned messageArg = 123;
 int parentID = 0;
 int componentID = 1;
@@ -103,7 +103,7 @@ void STDCALL PMCallback(const unsigned* arg, Message& message)
 void setup()
    {
    componentInterface = new CMPComponentInterface(&messageArg, &PMCallback, componentID, parentID, "dummy");
-   scienceAPI = new ScienceAPIImpl(*componentInterface);
+   scienceAPI = new ScienceAPI2Impl(*componentInterface);
    }
 
 //---------------------------------------------------------------------------

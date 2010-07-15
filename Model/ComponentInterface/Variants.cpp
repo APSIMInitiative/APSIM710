@@ -1,5 +1,3 @@
-#pragma hdrstop
-
 #include <stdexcept>
 #include "Variants.h"
 #include <General/platform.h>

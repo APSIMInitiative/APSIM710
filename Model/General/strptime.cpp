@@ -47,7 +47,9 @@ http://www.opengroup.org/onlinepubs/009695399/functions/strptime.html
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
-#include <general/string_functions.h>
+#include <General/string_functions.h>
+
+
 
 /*
  * We do not implement alternate representations. However, we always
@@ -58,6 +60,8 @@ http://www.opengroup.org/onlinepubs/009695399/functions/strptime.html
 #define	LEGAL_ALT(x)		{ if (alt_format & ~(x)) return (0); }
 
 #define TM_YEAR_BASE 0
+
+#ifdef __WIN32__
 int strncasecmp(const char* st1, const char* st2, int i)
    {
    return strnicmp(st1, st2, i);
@@ -66,6 +70,7 @@ int strcasecmp(const char* st1, const char* st2)
    {
    return Str_i_Cmp(st1, st2);
    }   
+#endif
 
 static	int conv_num(const char **, int *, int, int);
 

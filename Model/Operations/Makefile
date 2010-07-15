@@ -2,7 +2,13 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Operations
 
-SRC = Registrations.f90 Operations.for
+SRC = Registrations.f90 Operations.for 
+ifeq ($(PLATFORM),Linux)
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+else
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+endif
+
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface ApsimShared
 DEF = Operations.def

@@ -18,6 +18,6 @@ SRC =   date_class.cpp		\
 	http.cpp   \
 	strptime.cpp
 
-PROJECTTYPE=staticlib
+PROJECTTYPE=libdll
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

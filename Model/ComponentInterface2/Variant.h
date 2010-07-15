@@ -1,34 +1,42 @@
 #ifndef VariantH
 #define VariantH
 
-#include <General/platform.h>
+#include <stdlib.h>
 #include <string>
 #include <vector>
 
-class Variant 
-      {
-      public:
-        EXPORT STDCALL Variant();
-        EXPORT STDCALL ~Variant();
-        char * bufStart;
-        unsigned int bufLen;
-      };
-class MessageData;
+#include <General/platform.h>
 
 // ------------------------------------------------------------------
 //  Short description:
 //     Variant class for handling unspecified data types. These
-//     structures are created at run time.
+//     structures are created at run time. Ugly as sin.
 // ------------------------------------------------------------------
-bool EXPORT STDCALL get(Variant&, const std::string& name, std::string &value);
-bool EXPORT STDCALL get(Variant&, const std::string& name, float &value);
+class EXPORT Variant 
+      {
+      private:
+      public:
+        char * bufStart;
+        unsigned int bufLen;
 
-void EXPORT STDCALL pack(Variant&, const std::string& name, const std::string &value);
-void EXPORT STDCALL pack(Variant&, const std::string& name, std::vector<float> &value);
-void EXPORT STDCALL pack(Variant&, const std::string& name, std::vector<std::string> &value);
+        Variant();
+        ~Variant();
+
+        bool get(const std::string& name, std::string &value);
+        bool get(const std::string& name, float &value);
+
+        void pack(const std::string& name, const std::string &value);
+        void pack(const std::string& name, std::vector<float> &value);
+        void pack(const std::string& name, std::vector<std::string> &value);
+        	
+//        void * getRawData(void) {return (void*) bufStart;};
+      };
+
+class MessageData;
 
 void EXPORT pack(MessageData& messageData, const Variant& data);
 void EXPORT unpack(MessageData& messageData, Variant& data);
 unsigned EXPORT memorySize(Variant& data) ;
 std::string EXPORT DDML(const Variant& data);
+
 #endif

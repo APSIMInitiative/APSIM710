@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------------------------
 //------ Rachis Constructor
 //------------------------------------------------------------------------------------------------
-Rachis::Rachis(ScienceAPI &api, Plant *p) : PlantPart(api)
+Rachis::Rachis(ScienceAPI2 &api, Plant *p) : PlantPart(api)
    {
    plant = p;
    name = "Rachis";

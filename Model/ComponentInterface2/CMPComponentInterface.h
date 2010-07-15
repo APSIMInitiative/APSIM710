@@ -5,7 +5,7 @@
 #include <map>
 #include <ComponentInterface2/Interfaces.h>
 #include <ComponentInterface2/CMPData.h>
-#include <ComponentInterface2/ScienceAPI.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 #include <General/xml.h>
 
 struct Message;
@@ -46,6 +46,7 @@ class EXPORT CMPComponentInterface
       std::string getName(void);
       std::string getFQName(void);
       std::string getExecutableFileName(void);
+      const std::string getInitData(void) {return simScript->documentElement().write();}
       
       // internal stuff.
       void messageToLogic(const Message& message);
@@ -58,7 +59,7 @@ class EXPORT CMPComponentInterface
 
       void deRegisterAll();
    private:
-      ScienceAPI* scienceAPI;
+      ScienceAPI2* scienceAPI;
       unsigned* callbackArg;
       unsigned componentID;
       unsigned parentID;

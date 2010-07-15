@@ -42,7 +42,7 @@ class Stem : public PlantPart
 
 // public Methods -------------------------------------------------------
    public:
-   Stem(ScienceAPI &, Plant *p);
+   Stem(ScienceAPI2 &, Plant *p);
 
    // plant
    void  calcCanopyHeight(void);

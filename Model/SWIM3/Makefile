@@ -2,7 +2,13 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = SWIM3
 
-SRC = Registrations.f90 SWIM3.for
+SRC = Registrations.f90 SWIM3.for 
+ifeq ($(PLATFORM),Linux)
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+else
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+endif
+
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
 

@@ -51,7 +51,7 @@ void *loadDLL(const string& filename)
          throw std::runtime_error(errorMessage);
          }
    #else
-      result = dlopen(filename.c_str(), RTLD_NOW|RTLD_LOCAL);
+      result = dlopen(filename.c_str(), RTLD_LAZY|RTLD_GLOBAL);
       char *dllerr = dlerror();
       if (dllerr != NULL)
 	     {

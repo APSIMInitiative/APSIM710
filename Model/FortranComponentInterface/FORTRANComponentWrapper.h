@@ -1,16 +1,15 @@
 #ifndef FORTRANComponentWrapperH
 #define FORTRANComponentWrapperH
+#include <stdio.h>
 #include <ComponentInterface/Variants.h>
 #include <ComponentInterface/ApsimVariant.h>
 #include <ComponentInterface/TypeConverter.h>
 #include <ComponentInterface/ArraySpecifier.h>
 #include <ComponentInterface/Component.h>
+#ifdef __WIN32__
 #include <windows.h>
+#endif
 #include <stack>
-
-// turn of the warnings about "Functions containing for are not expanded inline.
-#pragma warn -inl
-
 
 typedef EXPORT void (STDCALL Main_t)(const char* action, const char* data, unsigned actionLength, unsigned dataLength);
 typedef EXPORT void (STDCALL alloc_dealloc_instance_t)(const unsigned int* doAllocate);

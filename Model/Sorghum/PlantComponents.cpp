@@ -6,7 +6,7 @@ using namespace std;
 #include "Utilities.h"
 
 //---------------------------------------------------------------------------
-PlantPart::PlantPart(ScienceAPI &api) : PlantComponent (api)
+PlantPart::PlantPart(ScienceAPI2 &api) : PlantComponent (api)
    {
    initialize();
    }

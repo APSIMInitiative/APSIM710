@@ -53,7 +53,7 @@ class Grain : public PlantPart
 
 // public Methods -------------------------------------------------------
    public:
-    Grain(ScienceAPI &, Plant *p);
+    Grain(ScienceAPI2 &, Plant *p);
    ~Grain();
 
    // plant

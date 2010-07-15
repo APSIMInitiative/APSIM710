@@ -1,14 +1,13 @@
-#pragma hdrstop
 #include <sstream>
 
-#include <ApsimShared/ApsimVersion.h>
-#include <ComponentInterface2/ScienceAPI.h>
 #include <General/math_functions.h>
 #include <General/stl_functions.h>
 #include <General/string_functions.h>
 #include <General/date_class.h>
 #include <General/path.h>
 #include <General/StringTokenizer.h>
+#include <ApsimShared/ApsimVersion.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 
 #include "ReportComponent.h"
 using namespace std;
@@ -16,7 +15,7 @@ using namespace std;
 // ------------------------------------------------------------------
 // Field constructor
 // ------------------------------------------------------------------
-Field::Field (ScienceAPI& scienceAPI,
+Field::Field (ScienceAPI2& scienceAPI,
               const std::string& fqn,
               const std::string& ddml,
               const std::string& alias,
@@ -270,7 +269,7 @@ void Field::writeValue(ostream& out)
 // ------------------------------------------------------------------
 // Create an instance of the REPORT module
 // ------------------------------------------------------------------
-extern "C" EXPORT ReportComponent* STDCALL createComponent(ScienceAPI& scienceAPI)
+extern "C" EXPORT ReportComponent* STDCALL createComponent(ScienceAPI2& scienceAPI)
    {
    return new ReportComponent(scienceAPI);
    }
@@ -281,7 +280,7 @@ extern "C" void  EXPORT STDCALL deleteComponent(ReportComponent* component)
 // ------------------------------------------------------------------
 // initialise the REPORT component.
 // ------------------------------------------------------------------
-ReportComponent::ReportComponent(ScienceAPI& scienceapi)
+ReportComponent::ReportComponent(ScienceAPI2& scienceapi)
    : scienceAPI(scienceapi)
    {
    outputOnThisDay = false;

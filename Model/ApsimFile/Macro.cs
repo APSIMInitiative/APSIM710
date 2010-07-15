@@ -56,6 +56,7 @@ namespace ApsimFile
          Contents = ParseForEach(Contents, MacroValues, AliasNames, AliasNodes);
          ReplaceGlobalMacros(ref Contents, MacroValues);
          ParseIf(ref Contents);
+		 ParseToLower(ref Contents);
          return Contents;
          }
       // ------------------------------------------------------------------
@@ -509,7 +510,32 @@ namespace ApsimFile
             PosComment = Contents.IndexOf("[comment]");
             }
          }
-      //---------------------------------------------------------------
+      void ParseToLower(ref string Contents)
+         {
+         const string opentext = "[tolower]";
+         const string closetext = "[endtolower]";
+
+		 int Pos = Contents.IndexOf(opentext);
+         while (Pos != -1)
+            {
+            Pos = AdjustStartPos(Contents, Pos);
+            int PosEnd = Contents.IndexOf(closetext);
+            if (PosEnd == -1)
+               throw new Exception("Cannot find matching [endtolower] macro");
+
+			PosEnd = AdjustStartPos(Contents, PosEnd);
+			int n = PosEnd - Pos - opentext.Length;
+
+			string text = Contents.Substring(Pos + opentext.Length, n);
+
+            Contents =  Contents.Substring(0, Pos ) + 
+					     text.ToLower() +
+						 Contents.Substring(PosEnd + closetext.Length, Contents.Length - (PosEnd + closetext.Length));
+            Pos = Contents.IndexOf(opentext);
+            }
+         }
+
+		//---------------------------------------------------------------
       // Parse all comment statements and remove.
       //---------------------------------------------------------------
       void ParseIncludes(ref string Contents)

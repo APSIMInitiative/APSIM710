@@ -1,15 +1,12 @@
 //------------------------------------------------------------------------------------------------
-
+#include <stdio.h>
 #include "Plant.h"
 #include "Phenology.h"
-#ifdef __WIN32__
-   #include <stdio.h>
-#endif
 
 //------------------------------------------------------------------------------------------------
 //------ Phenology constructor
 //------------------------------------------------------------------------------------------------
-Phenology::Phenology(ScienceAPI &api, Plant *p) : PlantProcess(api)
+Phenology::Phenology(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
    {
    plant = p;
 

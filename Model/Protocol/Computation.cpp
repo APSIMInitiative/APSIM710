@@ -155,7 +155,7 @@ bool Computation::loadComponent(const std::string& filename,
        wrapperDll_t *wrapperDll;
        wrapperDll = (wrapperDll_t *) dllProcAddress(handle, "wrapperDLL");
        if (wrapperDll == NULL)
-          throw std::runtime_error("Cannot find entry point 'wrapperDll' in dll: " + executableFileName);
+          throw std::runtime_error("Cannot find entry point 'wrapperDLL' in dll: " + executableFileName);
 
        // Go get the wrapperDll filename.
        char wrapperFileName[1024];

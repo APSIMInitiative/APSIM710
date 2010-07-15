@@ -2,7 +2,13 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Millet
 
-SRC = Registrations.f90 MilletMain.for
+SRC = Registrations.f90 MilletMain.for 
+ifeq ($(PLATFORM),Linux)
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+else
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+endif
+
 
 STATICLIBS = FortranInfrastructure CropTemplate
 LIBS = FortranComponentInterface

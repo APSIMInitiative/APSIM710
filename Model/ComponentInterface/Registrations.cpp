@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
 #include <stdexcept>
 #include "Registrations.h"
 

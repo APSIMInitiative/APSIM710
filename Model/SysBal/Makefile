@@ -2,7 +2,13 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = SysBal
 
-SRC = Registrations.f90 SysBal.for
+SRC = Registrations.f90 SysBal.for 
+ifeq ($(PLATFORM),Linux)
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+else
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+endif
+
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
 

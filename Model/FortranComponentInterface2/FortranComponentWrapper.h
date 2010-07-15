@@ -3,17 +3,17 @@
 #include <General/platform.h>
 #include <stack>
 
-class ScienceAPI;
+class ScienceAPI2;
 class CMPComponentInterface;
 
 class FortranComponentWrapper
    {
    public:
-      FortranComponentWrapper(ScienceAPI* scienceAPI,
+      FortranComponentWrapper(ScienceAPI2* scienceAPI,
                               CMPComponentInterface* componentInterface,
                               void* dllHandle);
       ~FortranComponentWrapper();
-      ScienceAPI& scienceAPI() {return scienceapi;}
+      ScienceAPI2& scienceAPI() {return scienceapi;}
       CMPComponentInterface& componentInterface() {return *componentinterface;}
 
       void swapInstanceIn();
@@ -43,7 +43,7 @@ class FortranComponentWrapper
          };
 
       std::stack<FortranComponentWrapper *> callStack;
-      ScienceAPI& scienceapi;
+      ScienceAPI2& scienceapi;
       CMPComponentInterface* componentinterface;
       void* dllHandle;
       typedef void (STDCALL NullMethod)();

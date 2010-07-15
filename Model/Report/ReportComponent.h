@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-class ScienceAPI;
+class ScienceAPI2;
 
 // ------------------------------------------------------------------
 // A class encapsulating a user specified field (column) that needs
@@ -14,7 +14,7 @@ class ScienceAPI;
 class Field
    {
    public:
-      Field (ScienceAPI& scienceAPI,
+      Field (ScienceAPI2& scienceAPI,
              const std::string& fqn,
              const std::string& units,
              const std::string& alias,
@@ -29,7 +29,7 @@ class Field
       void writeToSummary(void);
 
    private:
-      ScienceAPI* scienceAPI;
+      ScienceAPI2* scienceAPI;
       std::string fqn;
       std::string units;
       std::string kind;
@@ -55,12 +55,12 @@ class Field
 class ReportComponent
    {
    public:
-      ReportComponent(ScienceAPI& scienceAPI);
+      ReportComponent(ScienceAPI2& scienceAPI);
       virtual void onInit1();
       virtual void onInit2();
 
    private:
-      ScienceAPI& scienceAPI;
+      ScienceAPI2& scienceAPI;
       std::ofstream file;
       bool outputOnThisDay;
       std::vector<std::string> variableLines;

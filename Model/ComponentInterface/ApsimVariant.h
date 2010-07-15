@@ -7,9 +7,6 @@
 
 #include <stdexcept>
 
-// turn of the warnings about "Functions containing for are not expanded inline.
-#pragma warn -inl
-
 namespace protocol {
 
 //---------------------------------------------------------------------------
@@ -136,8 +133,5 @@ inline unsigned int memorySize(const ApsimVariant& variant)
 std::string EXPORT DDML(const ApsimVariant& value);
 
 } // namespace protocol
-
-// restore the warnings about "Functions containing for are not expanded inline.
-#pragma warn .inl
 
 #endif

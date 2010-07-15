@@ -1,9 +1,9 @@
 #include "FortranComponentWrapper.h"
-#include <ComponentInterface2/ScienceAPI.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 #ifndef __WIN32__
    #include <dlfcn.h>
 #else
-   #include <windows.h>  // for LoadLibrary
+   #include <windows.h>  // for LoadLibrary and mutex
 #endif
 #include <iostream>
 #include <ComponentInterface2/CMPComponentInterface.h>
@@ -15,10 +15,12 @@
 using namespace std;
 
 FortranComponentWrapper* currentWrapper = NULL;
+#ifdef __WIN32__
 CRITICAL_SECTION swapMutex;
 bool swapMutexInited = false;
+#endif
 
-FortranComponentWrapper::FortranComponentWrapper(ScienceAPI* api, CMPComponentInterface* ci, void* handle)
+FortranComponentWrapper::FortranComponentWrapper(ScienceAPI2* api, CMPComponentInterface* ci, void* handle)
    : scienceapi(*api), dllHandle(handle), componentinterface(ci)
    {
    // -----------------------------------------------------------------------
@@ -112,7 +114,9 @@ void FortranComponentWrapper::swapInstanceOut()
       memcpy(currentWrapper->realCommonBlock, &(currentWrapper->ourCommonBlock), sizeof(CommonBlock));
       }
    callStack.pop();
+#ifdef __WIN32__
    LeaveCriticalSection(&swapMutex);
+#endif
    }
 
 // -----------------------------------------------------------------------

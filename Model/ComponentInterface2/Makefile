@@ -13,13 +13,14 @@ SRC = 	  ComponentInterface.cpp           \
           CreateComponent.cpp               \
           Bounded.cpp                       \
           Variant.cpp                       \
-	       DataTypes.cpp	                    \
-          ScienceAPIImpl.cpp                \
+          DataTypes.cpp	                    \
+          ScienceAPI2.cpp                    \
+          ScienceAPI2Impl.cpp                \
           Messages.cpp                      \
           FortranString.cpp                 \
           FortranArray.cpp                  \
           StructureConverter.cpp
 
-LIBS = General ApsimShared Protocol
-PROJECTTYPE = dll
+LIBS = General ApsimShared 
+PROJECTTYPE = libdll
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

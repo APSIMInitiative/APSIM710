@@ -8,9 +8,6 @@ class Component;
 void EXPORT tooManyError(unsigned int maxCount);
 void EXPORT rangeError(unsigned int index, unsigned int maxCount);
 
-// turn of the warnings about "Functions containing for are not expanded inline.
-#pragma warn -inl
-
 // ------------------------------------------------------------------
 //  Short description:
 //     This template class is a vector container that mimics the
@@ -113,7 +110,7 @@ class vector
       T* array;
 
    };
-#pragma warn -inl
+
 // VECTOR type
 template <class T>
 inline MessageData& operator<<(MessageData& messageData, const vector<T>& values)
@@ -146,7 +143,6 @@ inline unsigned int memorySize(const vector<T>& values)
       size += values.size() * memorySize(values[0]);
    return size;
    }
-#pragma warn .inl
 
   std::string EXPORT DDML(const protocol::vector<int>& );
   std::string EXPORT DDML(const protocol::vector<float>& );
@@ -154,8 +150,5 @@ inline unsigned int memorySize(const vector<T>& values)
 
 } // namespace protocol
 
-
-// restore the warnings about "Functions containing for are not expanded inline.
-#pragma warn .inl
 
 #endif

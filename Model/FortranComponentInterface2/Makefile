@@ -6,7 +6,7 @@ SRC = 	 FortranComponentInterface.cpp     \
           EntryPoints.cpp                   \
           DataTypes.cpp	                    \
           FortranComponentWrapper.cpp       \
-          ScienceAPI.cpp
+          ScienceAPI2.cpp
 
 
 LIBS = General ApsimShared Protocol ComponentInterface2

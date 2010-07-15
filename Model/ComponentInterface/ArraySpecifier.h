@@ -9,9 +9,6 @@
 #include <stdexcept>
 namespace protocol {
 
-// turn of the warnings about "Functions containing for are not expanded inline.
-#pragma warn -inl
-
 //---------------------------------------------------------------------------
 // This class encapsulates the array indexing and summing support in all
 // APSIM components.  It allows:
@@ -106,8 +103,5 @@ class EXPORT ArraySpecifier
 
 
 } // namespace protocol
-
-// restore the warnings about "Functions containing for are not expanded inline.
-#pragma warn .inl
 
 #endif

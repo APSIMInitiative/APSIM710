@@ -1,8 +1,6 @@
 #include "Bounded.h"
 #include <General/platform.h>
-#ifdef __WIN32__
 #include <stdio.h>
-#endif
 
 using namespace std;
 

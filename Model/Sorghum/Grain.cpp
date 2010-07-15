@@ -1,14 +1,12 @@
 //------------------------------------------------------------------------------------------------
+#include <stdio.h>
 #include "Grain.h"
 #include "Plant.h"
-#ifdef __WIN32__
-   #include <stdio.h>
-#endif
 
 //---------------------------------------------------------------------------
 //------ Grain Constructor
 //------------------------------------------------------------------------------------------------
-Grain::Grain(ScienceAPI &api, Plant *p) : PlantPart(api)
+Grain::Grain(ScienceAPI2 &api, Plant *p) : PlantPart(api)
    {
    plant = p;
    name = "Grain";
@@ -330,12 +328,12 @@ void  Grain::Harvest(void)
          }
 
       Variant chopped;
-      pack(chopped, "crop_type",   plant->getCropType());
-      pack(chopped, "dm_type",     part_name);
-      pack(chopped, "dlt_crop_dm", dlt_dm_crop);
-      pack(chopped, "dlt_dm_n",    dlt_dm_n);
-      pack(chopped, "dlt_dm_p",    dlt_dm_p);
-      pack(chopped, "fraction_to_residue", fraction_to_residue);
+      chopped.pack("crop_type",   plant->getCropType());
+      chopped.pack("dm_type",     part_name);
+      chopped.pack("dlt_crop_dm", dlt_dm_crop);
+      chopped.pack("dlt_dm_n",    dlt_dm_n);
+      chopped.pack("dlt_dm_p",    dlt_dm_p);
+      chopped.pack("fraction_to_residue", fraction_to_residue);
 
 
       scienceAPI.publish ("crop_chopped", chopped);

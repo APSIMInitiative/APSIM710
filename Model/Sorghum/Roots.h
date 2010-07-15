@@ -73,7 +73,7 @@ class Roots : public PlantPart
    // plant
    void   calcSenLength(void);
    void   calcRootDistribution(void);
-   Roots(ScienceAPI &, Plant *p);
+   Roots(ScienceAPI2 &, Plant *p);
    ~Roots();
 
    void  readParams (void);

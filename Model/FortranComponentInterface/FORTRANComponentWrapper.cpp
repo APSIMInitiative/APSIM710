@@ -2,6 +2,7 @@
 // Wrapper dll for fortran routines.
 // Keeps pointers to fortran entry points (Main(), do_init1() etc..
 // and calls them when reqd.
+#include <stdio.h>
 #include <ComponentInterface/ScienceAPI.h>
 #include <General/dll.h>
 #include "FORTRANComponentWrapper.h"
@@ -17,17 +18,14 @@ static const char* stringType = "<type kind=\"string\"/>";
 static const char* stringArrayType = "<type kind=\"string\" array=\"T\"/>";
 static const char* logicalType = "<type kind=\"boolean\"/>";
 
-
-
-// turn of the warnings about "Functions containing for are not expanded inline.
-#pragma warn -inl
-
 static const int ERR_internal = 1;
 static const int ERR_user = 2;
 
 FortranWrapper* FortranWrapper::currentInstance = NULL;
+#ifdef __WIN32__
 CRITICAL_SECTION swapMutex;
 bool swapMutexInited = false;
+#endif
 
 // ------------------------------------------------------------------
 // constructor
@@ -276,11 +274,13 @@ bool FortranWrapper::onApsimSetQuery(protocol::ApsimSetQueryData& apsimSetQueryD
 // ------------------------------------------------------------------
 void FortranWrapper::swapInstanceIn(void)
 {
+#ifdef __WIN32__
    if (!swapMutexInited) {
       InitializeCriticalSectionAndSpinCount(&swapMutex, 0x800000400);
       swapMutexInited = true;
    }
    EnterCriticalSection(&swapMutex);
+#endif
    saved = *instance;
    *instance = myInstance;
    callStack.push(currentInstance);
@@ -292,7 +292,9 @@ void FortranWrapper::swapInstanceOut(void)
    *instance = saved;
    currentInstance = callStack.top();
    callStack.pop();
+#ifdef __WIN32__
    LeaveCriticalSection(&swapMutex);
+#endif
 }
 
 void FortranWrapper::event_send(int destID, const FString& eventName)

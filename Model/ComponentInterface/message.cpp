@@ -1,5 +1,3 @@
-#pragma hdrstop
-
 #include <stdio.h>
 #include <stdexcept>
 #include <boost/thread/tss.hpp>

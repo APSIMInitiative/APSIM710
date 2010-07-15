@@ -3,7 +3,7 @@
 
 #include <General/platform.h>
 #include <General/dll.h>
-#include <ComponentInterface2/ScienceAPIImpl.h>
+#include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <map>
 #include "FortranComponentWrapper.h"
@@ -11,19 +11,19 @@
 
 using namespace std;
 
-unsigned CreateComponent(ScienceAPI* scienceAPI, CMPComponentInterface* componentInterface,
+unsigned CreateFortranComponent(ScienceAPI2* scienceAPI, CMPComponentInterface* componentInterface,
                          const char* dllFileName, void* dllHandle)
    {
    return (unsigned) new FortranComponentWrapper(scienceAPI, componentInterface, dllHandle);
    }
-void DeleteComponent(unsigned component, void* dllHandle)
+void DeleteFortranComponent(unsigned component, void* dllHandle)
    {
    delete (FortranComponentWrapper*) component;
    }
 struct Bit
    {
    CMPComponentInterface* componentInterface;
-   ScienceAPIImpl* scienceAPI;
+   ScienceAPI2Impl* scienceAPI;
    void* dllHandle;
    unsigned component;
 
@@ -32,7 +32,7 @@ struct Bit
       delete componentInterface;
       delete scienceAPI;
 
-      DeleteComponent(component, dllHandle);
+      DeleteFortranComponent(component, dllHandle);
 
       closeDLL(dllHandle);
       }
@@ -55,12 +55,12 @@ extern "C" void EXPORT STDCALL createInstance
    // create a component interface and a science api that the component
    // will talk to.
    bit->componentInterface = new CMPComponentInterface(callbackArg, callback, *componentID, *parentID, dllFileName);
-   bit->scienceAPI = new ScienceAPIImpl(*bit->componentInterface);
+   bit->scienceAPI = new ScienceAPI2Impl(*bit->componentInterface);
 
    // go create an instance of our component by loading the correct dll
    // and calling a createComponent entry point.
    bit->dllHandle = loadDLL(dllFileName);
-   bit->component = CreateComponent(bit->scienceAPI, bit->componentInterface,
+   bit->component = CreateFortranComponent(bit->scienceAPI, bit->componentInterface,
                                     dllFileName, bit->dllHandle);
 
    // The instance number we return to the PM is a pointer to the component

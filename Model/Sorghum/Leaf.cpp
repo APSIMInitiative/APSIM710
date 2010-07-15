@@ -1,14 +1,13 @@
 //------------------------------------------------------------------------------------------------
+#include <stdio.h>
 #include "Plant.h"
 #include "Leaf.h"
-#ifdef __WIN32__
-   #include <stdio.h>
-#endif
+
 
 //------------------------------------------------------------------------------------------------
 //------ Leaf Constructor
 //------------------------------------------------------------------------------------------------
-Leaf::Leaf(ScienceAPI &api, Plant *p) : PlantPart(api)
+Leaf::Leaf(ScienceAPI2 &api, Plant *p) : PlantPart(api)
    {
    plant = p;
    name = "Leaf";

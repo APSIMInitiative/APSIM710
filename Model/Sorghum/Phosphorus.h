@@ -91,7 +91,7 @@ class Phosphorus : public PlantProcess
 
 // public Methods -------------------------------------------------------
    public:
-   Phosphorus(ScienceAPI &, Plant *p);
+   Phosphorus(ScienceAPI2 &, Plant *p);
    ~Phosphorus();
 
     // plant

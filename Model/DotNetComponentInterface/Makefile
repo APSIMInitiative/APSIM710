@@ -14,7 +14,7 @@ SRC = ApsimAttributes.cpp \
    Stdafx.cpp \
    VariableType.cpp
 
-PROJECT = DotNetComponentInterface
+PROJECT = DOTNETComponentInterface
 
 PROJECTTYPE = dll
 

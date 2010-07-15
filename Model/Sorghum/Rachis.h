@@ -30,7 +30,7 @@ class Rachis : public PlantPart
 
 // public Methods -------------------------------------------------------
    public:
-   Rachis(ScienceAPI &, Plant *p);
+   Rachis(ScienceAPI2 &, Plant *p);
    ~Rachis();
    // plant
    void  readParams (void);

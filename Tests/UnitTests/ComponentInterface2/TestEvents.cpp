@@ -3,7 +3,7 @@
 
 #include "TestEvents.h"
 #include <ComponentInterface2/DataTypes.h>
-#include <ComponentInterface2/ScienceAPIImpl.h>
+#include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/Messages.h>
@@ -12,7 +12,7 @@
 using namespace boost::unit_test_framework;
 
 extern CMPComponentInterface* componentInterface;
-extern ScienceAPI* scienceAPI;
+extern ScienceAPI2* scienceAPI;
 extern unsigned messageArg;
 extern int parentID;
 extern int componentID;

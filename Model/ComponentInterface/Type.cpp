@@ -1,5 +1,3 @@
-#pragma hdrstop
-
 #include <stdexcept>
 #include "Type.h"
 using namespace protocol;

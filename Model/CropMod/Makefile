@@ -2,7 +2,13 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = CropMod
 
-SRC = CropModData.for CropMod.for CropModMain.for
+SRC = CropModData.for CropMod.for CropModMain.for 
+ifeq ($(PLATFORM),Linux)
+SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+else
+SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+endif
+
 
 STATICLIBS = FortranInfrastructure CropTemplate
 LIBS = FortranComponentInterface

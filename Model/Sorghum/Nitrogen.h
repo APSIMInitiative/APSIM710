@@ -89,7 +89,7 @@ class Nitrogen : public PlantProcess
 
 // public Methods -------------------------------------------------------
    public:
-   Nitrogen(ScienceAPI &, Plant *p);
+   Nitrogen(ScienceAPI2 &, Plant *p);
    ~Nitrogen();
 
    // plant

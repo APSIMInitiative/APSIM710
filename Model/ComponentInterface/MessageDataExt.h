@@ -8,9 +8,6 @@
 
 namespace protocol {
 
-// turn of the warnings about "Functions containing for are not expanded inline.
-#pragma warn -inl
-
 // STRING specialisations
 inline MessageData& operator>>(MessageData& messageData, std::string& value)
    {
@@ -62,9 +59,6 @@ inline unsigned int memorySize(const std::vector<T>& values)
       size += memorySize(values[i]);
    return size;
    }
-
-// restore the warnings about "Functions containing for are not expanded inline.
-#pragma warn .inl
 
    } // end namespace protocol
 #endif

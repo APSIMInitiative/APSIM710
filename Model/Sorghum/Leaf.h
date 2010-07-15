@@ -125,7 +125,7 @@ class Leaf : public PlantPart
 
 // public Methods -------------------------------------------------------
    public:
-   Leaf(ScienceAPI &, Plant *p);
+   Leaf(ScienceAPI2 &, Plant *p);
    ~Leaf();
 
    // plant

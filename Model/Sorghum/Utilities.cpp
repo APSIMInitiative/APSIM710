@@ -1,13 +1,11 @@
 //------------------------------------------------------------------------------------------------
+#include <stdio.h>
 
-#include <ComponentInterface2/ScienceAPI.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 using namespace std;
 
 #include "PlantComponents.h"
 #include "Utilities.h"
-#ifdef __WIN32__
-   #include <stdio.h>
-#endif
 
 
 // Conversion from a Julian date to a Gregorian calendar date.
@@ -95,7 +93,7 @@ float sumVector(vector<float> vec, int from, int to)
 //------------------------------------------------------------------------------------------------
 //---  Checks if a variable lies outside lower and upper bounds.
 //------------------------------------------------------------------------------------------------
-void checkRange(ScienceAPI &api, float value, float lower, float upper, const std::string &vName)
+void checkRange(ScienceAPI2 &api, float value, float lower, float upper, const std::string &vName)
    {
    char msg[512];
    char m1[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
@@ -242,7 +240,7 @@ float bound(float value,float lower, float upper)
 //------------------------------------------------------------------------------------------------
 //----------- Table Function constructor
 //------------------------------------------------------------------------------------------------
-TableFn::TableFn(ScienceAPI &P, string xName,string yName)
+TableFn::TableFn(ScienceAPI2 &P, string xName,string yName)
    {
    P.read(xName,"",true,x);
    P.read(yName,"",true,y);
@@ -250,7 +248,7 @@ TableFn::TableFn(ScienceAPI &P, string xName,string yName)
 //------------------------------------------------------------------------------------------------
 //----------- Table Function read
 //------------------------------------------------------------------------------------------------
-void TableFn::read(ScienceAPI &P, string xName,string yName)
+void TableFn::read(ScienceAPI2 &P, string xName,string yName)
    {
    P.read(xName,"",true,x);
    P.read(yName,"",true,y);

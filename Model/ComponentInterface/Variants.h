@@ -7,7 +7,6 @@
 namespace protocol {
 class TypeConverter;
 
-#pragma warn -inl
 // ------------------------------------------------------------------
 //  Short description:
 //     This class encapsulates one or more variant variables as
@@ -52,7 +51,6 @@ class Variants
    private:
       vector<Variant*> variants;
    };
-#pragma warn .inl
 
 } // namespace protocol
 #endif

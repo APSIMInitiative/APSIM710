@@ -12,7 +12,7 @@
 using namespace std;
 
 
-class ScienceAPI;
+class ScienceAPI2;
 
 //------------------------------------------------------------------------------------------------
 
@@ -27,7 +27,7 @@ inline bool isEqual(float A, float B) {return(fabs(A-B)<1.0E-6);}
 #define Min(a, b)  (((a) < (b)) ? (a) : (b))
 
 //------------------------------------------------------------------------------------------------
-void checkRange(ScienceAPI &api, float value, float lower, float upper, const std::string &msg);
+void checkRange(ScienceAPI2 &api, float value, float lower, float upper, const std::string &msg);
 
 int   findIndex(float value, std::vector<float> items);
 void  fillVector(vector<float> &temp,std::vector<float> &newVect);
@@ -81,9 +81,9 @@ class TableFn
    std::vector<float> y;
 
    TableFn(void){};
-   TableFn(ScienceAPI &api,  std::string xName, std::string yName);
+   TableFn(ScienceAPI2 &api,  std::string xName, std::string yName);
    TableFn(std::vector<float> xVec,std::vector<float> yVec);
-   void  read(ScienceAPI &api,  std::string xName, std::string yName);
+   void  read(ScienceAPI2 &api,  std::string xName, std::string yName);
    void  load(std::vector<float> xVec,std::vector<float> yVec);
    float value(float v) const;
    };

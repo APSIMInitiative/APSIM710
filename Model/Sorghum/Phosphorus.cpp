@@ -1,14 +1,13 @@
 //------------------------------------------------------------------------------------------------
+#include <stdio.h>
 
 #include "Plant.h"
 #include "Phosphorus.h"
-#ifdef __WIN32__
-   #include <stdio.h>
-#endif
+
 //------------------------------------------------------------------------------------------------
 //------ Phosphorus Constructor
 //------------------------------------------------------------------------------------------------
-Phosphorus::Phosphorus(ScienceAPI &api, Plant *p) : PlantProcess(api)
+Phosphorus::Phosphorus(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
    {
    plant = p;
 

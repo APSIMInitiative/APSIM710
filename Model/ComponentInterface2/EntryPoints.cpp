@@ -3,7 +3,7 @@
 
 #include <General/platform.h>
 #include <General/dll.h>
-#include <ComponentInterface2/ScienceAPIImpl.h>
+#include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/StructureConverter.h>
 #include <map>
@@ -11,13 +11,13 @@
 
 using namespace std;
 
-unsigned CreateComponent(ScienceAPI* scienceAPI, CMPComponentInterface* componentInterface, const char* dllFileName, void* dllHandle);
+unsigned CreateComponent(ScienceAPI2* scienceAPI, CMPComponentInterface* componentInterface, const char* dllFileName, void* dllHandle);
 void DeleteComponent(unsigned component, void* dllHandle);
 
 struct Bit
    {
    CMPComponentInterface* componentInterface;
-   ScienceAPIImpl* scienceAPI;
+   ScienceAPI2Impl* scienceAPI;
    void* dllHandle;
    unsigned component;
 
@@ -49,7 +49,7 @@ extern "C" void EXPORT STDCALL createInstance
    // create a component interface and a science api that the component
    // will talk to.
    bit->componentInterface = new CMPComponentInterface(callbackArg, callback, *componentID, *parentID, dllFileName);
-   bit->scienceAPI = new ScienceAPIImpl(*bit->componentInterface);
+   bit->scienceAPI = new ScienceAPI2Impl(*bit->componentInterface);
 
    // go create an instance of our component by loading the correct dll
    // and calling a createComponent entry point.

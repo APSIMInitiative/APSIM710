@@ -1,39 +1,39 @@
 
-CPPDEBUGFLAGS=-g -Wall
-LDDEBUGFLAGS=-lg
+CPPDEBUGFLAGS=-g 
+LDDEBUGFLAGS := $(LDDEBUGFLAGS) -lg 
 
-BOOST_INCLUDEDIR=-I$(APSIM)/../BuildLibraries/boost_1_42_0-linux
+BOOST_INCLUDEDIR=-I/usr/include/boost
 XML2_INCLUDEDIR=-I/usr/include/libxml2
 XML2_LIBDIR= -L/usr/lib
 
 CC=/usr/bin/g++
 LD=/usr/bin/ld
-CFLAGS=$(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) -I$(APSIM)/Model 	\
-         -fpermissive -fPIC $(CPPDEBUGFLAGS)
+CFLAGS= -Wall $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) -I$(APSIM)/Model \
+-Wno-write-strings -fpermissive -fPIC $(CPPDEBUGFLAGS) $(INCLUDES)
 
 #-Wno-deprecated
 
 #-----------------------------------------------------------------------
 # Required libraries
+LIBS:= $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) \
+        $(EXTRALIBS) -lboost_filesystem-mt -lboost_regex-mt -lboost_date_time-mt -lboost_thread-mt \
+        $(XML2_LIBDIR) -lxml2
+
+
 ifeq ($(PROJECTTYPE),dll)
-LDFLAGS:= --export-dynamic \
--u Main -u doInit1 -u wrapperDLL -u respondToEvent -u alloc_dealloc_instance \
--u getInstance -u getDescription -u getDescriptionLength --no-allow-shlib-undefined
+LDFLAGS:= --no-allow-shlib-undefined --warn-common -u wrapperDLL -u getInstance -u getDescription -u getDescriptionLength  $(LDFLAGS) 
+LIBS := $(LIBS) -ldl
 endif
 
 ifeq ($(PROJECTTYPE),libdll)
-LDFLAGS:= --export-dynamic --no-allow-shlib-undefined
+LDFLAGS:= --no-allow-shlib-undefined --warn-common --export-dynamic $(LDFLAGS) 
+LIBS := $(LIBS) -ldl
 endif
 
 ifeq ($(PROJECTTYPE),exe)
-LDFLAGS:= 
+LDFLAGS:= --export-dynamic $(LDFLAGS) 
 endif
 
-LIBS:= $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) \
-        -lboost_filesystem-mt -lboost_regex-mt -lboost_date_time-mt \
-        $(XML2_LIBDIR) -lxml2 $(LDDEBUGFLAGS)
-
-# -Wl,-Map $(APSIM)/Model/$(PROJECT).map
 
 OBJ:=	$(SRC:.cpp=.o)
 
@@ -49,13 +49,10 @@ endif
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(APSIM)/Model/$(PROJECT).x: $(PREBUILD) $(OBJ)
-	$(CC) -o $@ $(OBJ) $(LDFLAGS) $(LIBS)
+	$(CC) -o $@ $(OBJ) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
 
 $(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(OBJ)
-	$(CC) -shared -o $@ $(OBJ) $(LDFLAGS) $(LIBS)
+	$(CC) -shared -o $@ $(OBJ) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
 
 clean:
 	rm -f $(OBJ) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so
-
-
-

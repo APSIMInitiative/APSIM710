@@ -1,14 +1,14 @@
 //---------------------------------------------------------------------------
 #ifndef BuiltInsH
 #define BuiltInsH
-#include <ComponentInterface2/MessageData.h>
-#include <stdexcept>
-#include <ComponentInterface2/FortranString.h>
 
-#ifdef __WIN32__
 #include <stdio.h>
 #include <stdlib.h>
-#endif
+#include <stdexcept>
+
+#include <ComponentInterface2/MessageData.h>
+#include <ComponentInterface2/FortranString.h>
+
 
 // ------ boolean ------
 inline unsigned int memorySize(const bool& value)

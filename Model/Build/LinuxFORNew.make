@@ -1,37 +1,32 @@
 
-CPPDEBUGFLAGS=-g
+CPPDEBUGFLAGS=-g 
 LDDEBUGFLAGS=-lg
 
 CC=/usr/bin/g++
-LD=ld
-
-# Lahey 6.2 compiler
-LF95=/usr/local/lf9562/bin/lf95
+LD=/usr/bin/ld
+F95 = /usr/local/gfortran/bin/gfortran
 
 # add suffix to all user libraries
-LIBS := $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) \
-	-ldl -L/usr/local/lf9562/lib -lfj9i6 -lfj9f6 -lfj9e6 -lfccx86_6a -lfst -lz 
-
+LIBS := $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) /usr/local/gfortran/lib/libgfortran.a -ldl $(LDDEBUGFLAGS)
 STATICLIBS := $(foreach library,$(STATICLIBS),$(APSIM)/Model/$(library).a)
 
-F90FLAGS= --tp -nco --o0 --pca -nsav -stchk -trace -nchk -nin --ml cdecl --staticlink $(CPPDEBUGFLAGS)
+F90FLAGS= -cpp -D"ml_external=!" -fno-underscoring -mrtd -ffree-line-length-none -finit-local-zero $(CPPDEBUGFLAGS)
+F90INCLUDES = 
+F90MODS=-I$(APSIM)/Model/FortranInfrastructure 
 
-F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
+CFLAGS= -Wall -I$(APSIM)/Model -Wno-write-strings -fpermissive -fPIC $(CPPDEBUGFLAGS)
 
-F90MODS=-M. -M$(APSIM)/Model/FortranInfrastructure -M$(APSIM)/Model/CropTemplate -M$(APSIM)/Model/CropMod 
-
-OBJS:=	$(SRC:.for=.o)
+OBJS:=	$(SRC:.for=.o) 
 OBJS:=	$(OBJS:.f90=.o)
+OBJS:= $(OBJS:.cpp=.o)
 
 ifeq ($(PROJECTTYPE),libdll)
-LDFLAGS:= --export-dynamic 
+LDFLAGS:= --no-allow-shlib-undefined 
 all: $(APSIM)/Model/$(PROJECT).so
 endif
 
 ifeq ($(PROJECTTYPE),dll)
-LDFLAGS:= --export-dynamic \
--u Main -u doInit1 -u wrapperDLL -u respondToEvent -u alloc_dealloc_instance \
--u getInstance -u getDescription -u getDescriptionLength --no-allow-shlib-undefined
+LDFLAGS:= --no-allow-shlib-undefined -u wrapperDLL -u getInstance -u getDescription -u getDescriptionLength 
 all: $(APSIM)/Model/$(PROJECT).so
 endif
 
@@ -40,10 +35,13 @@ all: $(APSIM)/Model/$(PROJECT).a
 endif
 
 %.o: %.for
-	$(LF95) -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+	$(F95) -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
 %.o: %.f90
-	$(LF95) -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+	$(F95) -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+
+%.o:    %.cpp
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(APSIM)/Model/$(PROJECT).so: $(OBJS)
 	$(CC) -shared -o $(APSIM)/Model/$(PROJECT).so $(LDFLAGS) $(OBJS) $(STATICLIBS) $(LIBS)
@@ -52,5 +50,5 @@ $(APSIM)/Model/$(PROJECT).a: $(OBJS)
 	ar rv $@ $(OBJS)
 
 clean:
-	rm -f $(OBJS) $(APSIM)/Model/$(PROJECT).so $(APSIM)/Model/$(PROJECT).a
+	rm -f *.mod $(OBJS) $(APSIM)/Model/$(PROJECT).so $(APSIM)/Model/$(PROJECT).a
 

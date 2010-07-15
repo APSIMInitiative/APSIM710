@@ -14,8 +14,7 @@ SRC = crp_util.for \
       crp_temp.for \
       CropLibrary.for
 
-
 PROJECTTYPE = lib
-STATICLIBS = FortranInfrastructure
 
 include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
+

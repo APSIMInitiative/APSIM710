@@ -75,7 +75,7 @@ class Phenology : public PlantProcess
 // public Methods -------------------------------------------------------
    public:
       // called from plant
-   Phenology(ScienceAPI &api, Plant *p);
+   Phenology(ScienceAPI2 &api, Plant *p);
    ~Phenology();
    void  readParams (void);
    void  updateVars(void);

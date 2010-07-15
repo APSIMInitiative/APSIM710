@@ -5,10 +5,7 @@
 #include <stdexcept>
 
 #include <stdlib.h>
-
-#ifdef __WIN32__
 #include <stdio.h>
-#endif
 
 #include <General/string_functions.h>
 

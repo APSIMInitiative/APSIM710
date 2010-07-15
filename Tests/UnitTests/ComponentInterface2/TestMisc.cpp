@@ -3,7 +3,7 @@
 
 #include "TestMisc.h"
 #include <ComponentInterface2/DataTypes.h>
-#include <ComponentInterface2/ScienceAPIImpl.h>
+#include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/Messages.h>
@@ -11,7 +11,7 @@
 
 using namespace boost::unit_test_framework;
 
-extern ScienceAPI* scienceAPI;
+extern ScienceAPI2* scienceAPI;
 extern vector<MessageData> messagesSent;
 
 void setup();
