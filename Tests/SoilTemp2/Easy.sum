@@ -1,0 +1,481 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = Easy
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                  "Operations1" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component       "Cut or graze AgPasture" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                      "SWIM2ui" = %apsim%\Model\SWIM2.dll
+   Component         "SoilTemp2 (withSWIM)" = %apsim%\Model\SoilTemp2.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                      "SoilNui" = %apsim%\Model\SoilN.dll
+   Component                "AgPastureSWIM" = %apsim%\Model\AgPasture.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1970
+     Simulation end date   = 14/07/1970
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Goond.met
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        leach_no3 as NO3Flow(150cm)
+        removed_n as RemovedN
+        NitrogenUptake as UptakeN
+        ave_soil_temp
+
+     Output file = Easy Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations1 Initialisation --------------------------------------------
+     Operations Schedule
+     ===================
+         20-Jan  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Jan  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Jan  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Feb  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Feb  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Feb  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Mar  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Mar  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Mar  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Apr  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Apr  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Apr  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-May  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-May  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-May  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Aug  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Aug  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Aug  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Sep  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Sep  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Sep  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Oct  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Oct  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Oct  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Nov  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Nov  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Nov  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+         20-Dec  Prepare      fertiliser apply amount = 5, depth = 1 (mm), type = urea_n
+         20-Dec  Prepare      fertiliser apply amount = 5, depth = 10 (mm), type = urea_n
+         20-Dec  Prepare      fertiliser apply amount = 5, depth = 20 (mm), type = urea_n
+
+------- Cut or graze AgPasture Initialisation ---------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     start_sim_date = today
+     days_after_cut = 21 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     
+     SECTION:- start_of_day
+     if today >= date('1/01/1900') and today <= date('1/12/2010') then
+        preharvest_dm = agpastureswim.abovegroundwt
+        preharvest_n = agpastureswim.abovegroundn
+        harvested_dm =0
+        harvested_n = 0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0
+        n_conc_total = 0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 21 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2500 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1250 then
+           agpastureswim graze type = 'residue', amount = 1250
+           has_cut = 'true'
+           harvested_dm = agpastureswim.harvestwt
+           harvested_n = agpastureswim.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surface organic matter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0
+              n_on_urine = return_n - n_on_dung
+              'surface organic matter' add_surfaceom name = dung, type = manure, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 20 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+        days_after_cut = 0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : start_sim_date = 2440588.00000
+     Manager creating a new local real variable : days_after_cut = 20.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2ui Initialisation ------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.31  0.463  0.161  0.353  0.463
+            10.0  1.31  0.463  0.161  0.353  0.463
+            10.0  1.31  0.463  0.161  0.353  0.463
+            15.0  1.31  0.463  0.161  0.353  0.463
+            20.0  1.31  0.463  0.161  0.353  0.463
+            20.0  1.31  0.463  0.161  0.353  0.463
+            20.0  1.31  0.463  0.161  0.353  0.463
+            25.0  1.31  0.463  0.161  0.353  0.463
+            25.0  1.31  0.463  0.161  0.353  0.463
+            25.0  1.37  0.444  0.172  0.353  0.444
+            25.0  1.46  0.414  0.188  0.353  0.414
+            30.0  1.52  0.394  0.198  0.353  0.394
+            30.0  1.52  0.394  0.198  0.353  0.394
+            40.0  1.55  0.389  0.198  0.351  0.389
+            50.0  1.63  0.371  0.198  0.346  0.371
+            50.0  1.69  0.360  0.198  0.343  0.360
+            50.0  1.69  0.360  0.198  0.343  0.360
+            50.0  1.69  0.360  0.198  0.343  0.360
+            50.0  1.69  0.360  0.198  0.343  0.360
+            50.0  1.69  0.360  0.198  0.343  0.360
+            50.0  1.69  0.360  0.198  0.343  0.360
+            75.0  1.67  0.363  0.190  0.339  0.363
+            75.0  1.62  0.372  0.168  0.328  0.372
+           100.0  1.60  0.376  0.160  0.324  0.376
+           100.0  1.60  0.376  0.160  0.324  0.376
+           100.0  1.60  0.376  0.160  0.324  0.376
+           100.0  1.60  0.376  0.160  0.324  0.376
+           100.0  1.60  0.376  0.160  0.324  0.376
+           100.0  1.60  0.376  0.160  0.324  0.376
+            60.0  1.60  0.376  0.160  0.324  0.376
+            40.0  1.60  0.376  0.160  0.324  0.376
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  tLw_0         0.4633663     -0.001     20.133
+            10.0  tLw_0         0.4633663     -0.001     20.133
+            20.0  tLw_0         0.4633663     -0.001     20.133
+            30.0  tLw_0         0.4633663     -0.001     20.133
+            50.0  tLw_0         0.4633663     -0.001     20.133
+            70.0  tLw_0         0.4633663     -0.001     20.133
+            90.0  tLw_0         0.4633663     -0.001     20.133
+           110.0  tLw_0         0.4633663     -0.001     20.133
+           140.0  tLw_0         0.4633663     -0.001     20.133
+           160.0  -             0.4436182     -0.001      9.803
+           190.0  -             0.4139959     -0.001      3.331
+           210.0  LFs_0         0.3942478     -0.001      1.622
+           250.0  LFs_0         0.3942478     -0.001      1.622
+           270.0  -             0.3885191     -0.001      0.956
+           330.0  -             0.3713329     -0.001      0.196
+           370.0  LCf_0         0.3598754     -0.001      0.068
+           430.0  LCf_0         0.3598754     -0.001      0.068
+           470.0  LCf_0         0.3598754     -0.001      0.068
+           530.0  LCf_0         0.3598754     -0.001      0.068
+           570.0  LCf_0         0.3598754     -0.001      0.068
+           630.0  LCf_0         0.3598754     -0.001      0.068
+           670.0  -             0.3632037     -0.001      0.099
+           780.0  -             0.3723563     -0.001      0.280
+           820.0  LCs_0         0.3756845     -0.001      0.408
+           980.0  LCs_0         0.3756845     -0.001      0.408
+          1020.0  LCs_0         0.3756845     -0.001      0.408
+          1180.0  LCs_0         0.3756845     -0.001      0.408
+          1220.0  LCs_0         0.3756845     -0.001      0.408
+          1380.0  LCs_0         0.3756845     -0.001      0.408
+          1420.0  LCs_0         0.3756845     -0.001      0.408
+          1500.0  LCs_0         0.3756845     -0.001      0.408
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.16146    0.16146    0.16146    0.16146    0.16146    0.16146    0.16146
+            -1.00 |    0.24600    0.24600    0.24600    0.24600    0.24600    0.24600    0.24600
+            -0.10 |    0.35278    0.35278    0.35278    0.35278    0.35278    0.35278    0.35278
+            -0.01 |    0.45946    0.45946    0.45946    0.45946    0.45946    0.45946    0.45946
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00001    0.00001    0.00001    0.00001    0.00001    0.00001    0.00001
+            -0.10 |    0.00530    0.00530    0.00530    0.00530    0.00530    0.00530    0.00530
+            -0.01 |    0.81648    0.81648    0.81648    0.81648    0.81648    0.81648    0.81648
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0   0.5 .100E-03 .100E-03 .100E-01 2.00 1.00        0.025
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          grass     grass            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilNui Initialisation ------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.68    0.29    0.10    0.00
+             2     6.00  1.68    0.79    0.26    0.00
+             3     6.00  1.67    0.94    0.31    0.00
+             4     6.00  1.67    1.47    0.49    0.00
+             5     6.00  1.66    1.97    0.66    0.00
+             6     6.00  1.66    1.97    0.66    0.00
+             7     6.00  1.66    1.97    0.66    0.00
+             8     6.00  1.65    2.46    0.82    0.00
+             9     6.00  1.65    2.46    0.82    0.00
+            10     6.00  1.65    2.52    0.84    0.00
+            11     6.00  1.62    2.52    0.84    0.00
+            12     6.00  1.53    2.95    0.98    0.00
+            13     6.00  1.40    2.74    0.91    0.00
+            14     6.00  1.26    3.44    1.15    0.00
+            15     6.00  1.11    3.92    1.31    0.00
+            16     6.00  0.97    3.41    1.14    0.00
+            17     6.00  0.86    2.91    0.97    0.00
+            18     6.00  0.76    2.27    0.76    0.00
+            19     6.00  0.68    2.02    0.67    0.00
+            20     6.00  0.61    1.79    0.60    0.00
+            21     6.00  0.55    1.64    0.55    0.00
+            22     6.00  0.50    2.21    0.74    0.00
+            23     6.00  0.44    1.86    0.62    0.00
+            24     6.00  0.40    2.11    0.70    0.00
+            25     6.00  0.36    1.87    0.62    0.00
+            26     6.00  0.33    1.63    0.54    0.00
+            27     6.00  0.31    1.44    0.48    0.00
+            28     6.00  0.30    1.25    0.42    0.00
+            29     6.00  0.29    1.01    0.34    0.00
+            30     6.00  0.28    0.58    0.19    0.00
+            31     6.00  0.28    0.38    0.13    0.00
+          ------------------------------------------------
+           Totals               60.81   20.27    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       1019.3    78.4    81.5    10.2    26.6     0.9
+             2       2033.7   156.4   162.7    20.3    26.1     0.9
+             3       2030.1   156.2   162.4    20.3    25.6     0.9
+             4       3037.8   233.7   243.0    30.4    24.8     0.8
+             5       4040.7   310.8   323.3    40.4    23.9     0.8
+             6       4034.7   310.4   318.7    39.8    22.9     0.8
+             7       4034.9   310.4   310.7    38.8    22.0     0.7
+             8       5050.2   388.5   368.7    46.1    21.0     0.7
+             9       5075.9   390.5   329.9    41.2    19.9     0.7
+            10       5344.4   411.1   299.3    37.4    19.0     0.6
+            11       5677.0   436.7   255.5    31.9    18.0     0.6
+            12       6760.7   520.1   229.9    28.7    17.0     0.6
+            13       6240.2   480.0   156.0    19.5    16.0     0.5
+            14       7716.0   593.5   131.2    16.4    14.8     0.5
+            15       8996.6   692.0    90.0    11.2    13.4     0.4
+            16       8140.8   626.2    65.1     8.1    12.1     0.4
+            17       7162.9   551.0    57.3     7.2    10.9     0.4
+            18       6352.2   488.6    50.8     6.4     9.9     0.3
+            19       5666.8   435.9    45.3     5.7     9.0     0.3
+            20       5098.5   392.2    40.8     5.1     8.1     0.3
+            21       4630.4   356.2    37.0     4.6     7.3     0.2
+            22       6153.2   473.3    49.2     6.2     6.3     0.2
+            23       5323.4   409.5    42.6     5.3     5.4     0.2
+            24       6273.8   482.6    50.2     6.3     4.4     0.1
+            25       5670.2   436.2    45.4     5.7     3.6     0.1
+            26       5241.4   403.2    41.9     5.2     3.0     0.1
+            27       4955.5   381.2    39.6     5.0     2.4     0.1
+            28       4749.0   365.3    38.0     4.7     2.0     0.1
+            29       4621.9   355.5    37.0     4.6     1.6     0.1
+            30       2716.0   208.9    21.7     2.7     1.5     0.0
+            31       1797.9   138.3    14.4     1.8     1.3     0.0
+          ---------------------------------------------------------
+           Totals  155646.2 11972.8  4139.2   517.4   400.0    13.3
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : preharvest_dm = 2050.00000
+     Manager creating a new local real variable : preharvest_n = 68.10000
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
+     Manager creating a new local real variable : n_conc_removed = 3.40658
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
+20 January 1970(Day of year=20), Operations1: 
+      Sending apply message to fertiliser
+20 January 1970(Day of year=20), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth   20.00 (layer   3)
+20 February 1970(Day of year=51), Operations1: 
+      Sending apply message to fertiliser
+20 February 1970(Day of year=51), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth   20.00 (layer   3)

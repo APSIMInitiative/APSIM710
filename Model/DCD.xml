@@ -1,0 +1,40 @@
+<Type name="dcd">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/solute/docs/solute_science.htm</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\potion_green32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\potion_green16.png</SmallIcon>
+      <dll>%apsim%\Model\Solute.dll</dll>
+      <drops>
+         <drop>toolbox</drop>
+         <drop>area</drop>
+         <drop>simulation</drop>
+         <drop>folder</drop>
+      </drops>
+      <ApsimToSim>
+         <component name="[dcd.name]" executable="[dll]">
+            <executable>[dll]</executable>
+            <initdata>
+               [Model]
+               <solute_names>dcd</solute_names>
+               <d0_dcd>[dcd.d0]</d0_dcd>
+               <dcd>[dcd.layers]</dcd>
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <ub_solute description="Upper bound for solutes">1000</ub_solute>
+      <lb_solute description="Lower bound for solutes">0</lb_solute>
+   </Model>
+   <Info>
+      <variables>
+         <variable name="dcd" description ="dcd (dicyandiamide) in each layer (kg/ha)"/>
+         <variable name="max_dcd" description ="max dcd in any layer (kg/ha)"/>
+         <variable name="maxppm_dcd" description ="max dcd in any layer (ppm)"/>
+         <variable name="maxlayer_dcd" description ="soil layer in which max_dcd occurs"/>
+      </variables>
+   </Info>
+</Type>

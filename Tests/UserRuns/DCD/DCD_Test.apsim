@@ -1,0 +1,2494 @@
+<folder version="23" name="simulations">
+  <simulation name="DCD_Test">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\Goond.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/07/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/07/1940</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Continuous Wheat Simulation.sum</filename>
+    </summaryfile>
+    <area name="Pdk_plusDCD">
+      <SoilN_dcd>
+        <category description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">50</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+        <category description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">7.7 7.1 7 6.8 6.6 6.4 6.2 5.8 5.1 4.4 4 3.5 3 2.5 1.8 1.5 1.1 0.9 0.8 0.7 0.5 0.4 0.3 0.2 0.2 0.1 0.1 0.1 0.1 0.1 0.1 </oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080 0.080 0.080 0.080 0.080 0.079 0.077 0.073 0.065 0.056 0.045 0.034 0.025 0.017 0.010 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.55 0.55 0.55 0.56 0.57 0.58 0.59 0.74 0.79 0.84 0.88 0.92 0.95 0.97 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 </finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77  1.53  1.32  1.17  1.02  0.90  0.78  0.63  0.60  0.60</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59  0.51  0.44  0.39  0.34  0.30  0.26  0.21  0.20  0.20</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil):">40</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
+      </SoilN_dcd>
+      <folder name="Manager folder">
+        <manager name="Cut or graze AgPasture">
+          <ui>
+            <category description="Cut or graze rotation" />
+            <CutPasture_start_date type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">1/01/1900</CutPasture_start_date>
+            <CutPasture_end_date type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">1/12/2010</CutPasture_end_date>
+            <AgPasture_type type="list" listvalues="AgPasture,AgPastureSWIM,ryegrass_clover,ryegrass,clover" description="Enter pasture type">AgPastureSWIM</AgPasture_type>
+            <rotation_type type="list" listvalues="Fixed intervals,Target mass" description="Enter the rotation type: ">Fixed intervals</rotation_type>
+            <cut_interval type="text" description="Enter the interval between cuts/grazings (days):">21</cut_interval>
+            <upper_threshold type="text" description="Enter the upper mass threshold (kg/ha):">2500</upper_threshold>
+            <lower_threshold type="text" description="Enter the lower mass threshold (kg/ha):">1250</lower_threshold>
+            <category description="Management of cut/grazed material" />
+            <treatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut/grazed material:">Return as residue</treatment_type>
+            <remove_dm_frac type="text" description="Enter fraction of dm that is removed from field (0-1):">0.98</remove_dm_frac>
+            <remove_n_frac type="text" description="Enter fraction of N that is removed from field (0-1):">0.98</remove_n_frac>
+            <dung_fraction type="text" description="Enter proportion of N in dung of the returned amount (0-1):">0</dung_fraction>
+          </ui>
+          <script name="init">
+            <text>Start_sim_date = today
+days_after_cut = [cut_interval] - 1
+Do_Cut = 'FALSE'
+Has_Cut = 'FALSE'</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[if today >= date('[CutPasture_start_date]') and today <= date('[CutPasture_end_date]') then
+
+   preharvest_dm = [AgPasture_type].AboveGroundWt
+   preharvest_n = [AgPasture_type].AboveGroundN
+   harvested_dm =0
+   harvested_n = 0
+   removed_dm = 0.0
+   removed_n = 0.0
+   return_dm = 0.0
+   return_n = 0.0
+   GrowthRateCalc = 0
+   n_conc_total = 0
+   days_after_cut = days_after_cut + 1
+   Has_Cut = 'FALSE'
+
+   if '[rotation_type]' = 'Fixed intervals' then
+      if days_after_cut = [cut_interval] then
+         Do_Cut = 'TRUE'
+      endif
+   elseif '[rotation_type]' = 'Target mass' then
+      if preharvest_dm >= [upper_threshold] then
+         Do_Cut = 'TRUE'
+      endif
+   endif
+
+endif   ! of today
+
+If Do_Cut = 'TRUE' then
+   
+!- Cut or graze ---------------------------------------------------------------------------------------
+
+   if preharvest_dm > [lower_threshold] then
+      [AgPasture_type] graze type = 'residue', amount = [lower_threshold]
+      Has_Cut = 'TRUE'
+      harvested_dm = [AgPasture_type].HarvestWt
+      harvested_n = [AgPasture_type].HarvestN
+      GrowthRateCalc = harvested_dm/days_after_cut
+      if harvested_dm > 0 then
+         n_conc_removed = harvested_n*100/harvested_dm
+      endif
+
+!- Residue management -------------------------------------------------------------------------
+      removed_dm =  harvested_dm* [remove_dm_frac]
+      removed_n = harvested_n* [remove_n_frac]
+      return_dm = harvested_dm - removed_dm 
+      return_n = harvested_n - removed_n 
+
+      if '[treatment_type]' = 'Return as residue' and [remove_dm_frac] < 1 then
+         'surface organic matter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+      elseif '[treatment_type]' = 'Return as dung & urine' then
+         ! Is advised that dung and urine return should be done using other manager, 'Urine_patch' or 'Apply or return N and water'
+         N_on_dung = return_n * [dung_fraction]
+         N_on_urine = return_n - N_on_dung
+         'surface organic matter' add_surfaceom name = dung, type = manure, mass =  return_dm (kg/ha), n = N_on_dung (kg/ha), cpr = 0
+         if N_on_urine > 0 then
+            fertiliser apply amount = N_on_urine (kg/ha), depth = 20 (mm), type = urea_n ()
+         endif
+      endif
+   endif
+   days_after_cut = 0
+   Do_Cut = 'FALSE'
+
+endif  ! of Do_Cut
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager2 name="Apply_DCD">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyDCD_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">05/07/1940</ApplyDCD_start_date>
+            <ApplyDCD_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_end_date>
+            <ApplyDCD_interval type="text" description="Type the interval between applications (days):">5000</ApplyDCD_interval>
+            <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
+            <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script
+   Inherits Instance
+   
+   'Parameter variables:
+   <param> Private ApplyDCD_start_date As String
+   <param> Private ApplyDCD_end_date As String
+   <param> Private ApplyDCD_interval As Integer
+   <param> Private DCD_to_add As Single
+   <param> Private Depth_for_DCD As Single
+
+   'Variables read from other modules
+   <Input> Private dd_mmm_yyyy As String
+   <Input> Private dlayer As Single()
+   <Input> Private dcd As Single()
+
+   'Output variables
+   <Output><Units("kg/ha")> Public dcd_added As Single       'The amount of dcd added
+
+   Private Ini_Date As Date                     'The date when DCD applications start (in date format)
+   Private End_Date As Date                     'The date when DCD applications finish (in date format)
+   Private Today_Date As Date                   'The date of today (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after a urine application
+   Private SoilDepth As Single                  'The soil depth (mm)
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+
+   <EventHandler()> Public Sub OnInit2()
+
+      'Put the dates into date format:
+      Ini_Date = ApplyDCD_start_date
+      End_Date = ApplyDCD_end_date
+        
+      
+      'Computes the layer at which dcd will be applied
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If Depth_from_surface <= Depth_for_DCD Then dcd_layer = z
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+      Next
+      
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim delta_dcd As Single()
+
+      'Re-set variables
+      Today_Date = dd_mmm_yyyy.Replace("_", "/")
+      ReDim delta_dcd(dlayer.Length - 1)
+      dcd_added = 0
+
+      'Decide whether it is time to apply DCD:
+      If Today_date >= Ini_date And Today_date <= End_date Then
+         If Today_date = Ini_date Then
+            delta_dcd(dcd_layer) = DCD_to_add
+            dcd_added += DCD_to_add
+            TimeAfterApplication = 1
+         Else
+            If TimeAfterApplication >= ApplyDCD_interval Then
+               delta_dcd(dcd_layer) = DCD_to_add
+               dcd_added += DCD_to_add
+               TimeAfterApplication = 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               dcd_added = 0
+            End If
+         End If
+
+         If TimeAfterApplication = 1 Then
+            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
+            Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+    ]]></text>
+        </manager2>
+        <manager2 name="DCD_action">
+          <ui>
+            <Dummy1 type="category" description="DCD effect function" />
+            <dcd_x type="text" description="Type the dcd concent. [ppm] (x values for dcd effect):">0.2  2.0  5  10</dcd_x>
+            <dcd_y type="text" description="Type the inhibition factor [0-1] (y values for dcd effect):">0.0  0.1  0.7  1.0</dcd_y>
+            <Dummy2 type="category" description="DCD degradation functions" />
+            <dcd_degrad_pot type="text" description="Type the dcd degradation rate at optimum cond. (%/day):">70</dcd_degrad_pot>
+            <sw_dcd_x type="text" description="Type the water content [% of WP-SAT] (x values for sw effect on dcd):">0.0  0.2  0.4  0.5  0.8  0.9  1.0</sw_dcd_x>
+            <sw_dcd_y type="text" description="Type the dcd degradation (y values for sw effect on dcd):">0.0  0.2  0.8  1.0  1.0  0.7  0.0</sw_dcd_y>
+            <temp_dcd_x type="text" description="Type the soil temp. (x values for temp. effect on dcd):">0  10  20  30</temp_dcd_x>
+            <temp_dcd_y type="text" description="Type the dcd degrad. (y values for temp. effect on dcd):">0.0  0.1  0.3  1.0</temp_dcd_y>
+            <ph_dcd_x type="text" description="Type the soil pH (x values for pH effect on dcd):">4.0  5.0  7.5  9.0</ph_dcd_x>
+            <ph_dcd_y type="text" description="Type the dcd degrad. (y values for pH effect on dcd):">0.0  1.0  1.0  0.0</ph_dcd_y>
+            <carbon_dcd_x type="text" description="Type the soil org. carbon[%] (x values for C effect on dcd):">0.1  0.5  1.0  2.0  3.0  4.0</carbon_dcd_x>
+            <carbon_dcd_y type="text" description="Type the dcd degrad. (y values for C effect on dcd):">0.00  0.03  0.15  0.55  0.90  1.00</carbon_dcd_y>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script 
+   Inherits Instance
+   
+   'Parameter variables:   
+   <param> Private dcd_x As String
+   <param> Private dcd_y As String
+   <param> Private dcd_degrad_pot As Single
+   <param> Private sw_dcd_x As String
+   <param> Private sw_dcd_y As String
+   <param> Private temp_dcd_x As String
+   <param> Private temp_dcd_y As String
+   <param> Private ph_dcd_x As String
+   <param> Private ph_dcd_y As String
+   <param> Private carbon_dcd_x As String
+   <param> Private carbon_dcd_y As String
+
+   'Variables read from other modules
+   <Input> Private dlayer As Single()
+   <Input> Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
+   <Input(True)> Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+
+   'Output variables
+   <Output><Units(" ")> Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
+   <Output><Units(" ")> Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
+   <Output><Units("kg/ha")> Public dcd_degraded As Single
+   
+   Private SoilTemp As Single()                 'The soil temperature (oC)
+
+   Private SoilCarbon As Single()               'Total soil carbon (%)
+   Private SoilPH As Single()                   'The soil pH
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+   Private delta_dcd As Single()                'The changes in dcd content for each layer
+   Private sw_fraction As Single()              'The sw fractioin between LL15 and SAT (100)
+
+   Private x_dcd_effect_function As Single()    'The values of x of the function describing the dcd effect
+   Private y_dcd_effect_function As Single()    'The values of y of the function describing the dcd effect
+   Private x_sw_effect_function As Single()     'The values of x of the function describing the effect of soil water on dcd degradation
+   Private y_sw_effect_function As Single()     'The values of y of the function describing the effect of soil water on dcd degradation
+   Private x_temp_effect_function As Single()   'The values of x of the function describing the effect of temperature on dcd degradation
+   Private y_temp_effect_function As Single()   'The values of y of the function describing the effect of temperature on dcd degradation
+   Private x_ph_effect_function As Single()     'The values of x of the function describing the effect of soil pH on dcd degradation
+   Private y_ph_effect_function As Single()     'The values of y of the function describing the effect of soil pH on dcd degradation
+   Private x_carbon_effect_function As Single() 'The values of x of the function describing the effect of soil organic carbon on dcd degradation
+   Private y_carbon_effect_function As Single() 'The values of y of the function describing the effect of soil organic carbon on dcd degradation
+
+   <EventHandler()> Public Sub OnInit2()
+
+      'Initialise the inhibition factor:
+      ReDim dcd_inhibition_effect(dlayer.Length - 1)
+      ReDim dcd_degradation(dlayer.Length - 1)
+      ReDim SoilCarbon(dlayer.Length - 1)
+      ReDim SoilPH(dlayer.Length - 1)
+
+      'Set base ph
+      For z As Integer = 0 To dlayer.length - 1
+         SoilPH(z) = 6  'Soil pH is not simulated so assumed as a constant
+      Next
+      
+      'Get the dcd effect coefficients:
+      x_dcd_effect_function = makeArray(dcd_x)
+      y_dcd_effect_function = makeArray(dcd_y)
+      Call checkArray(x_dcd_effect_function, y_dcd_effect_function)
+      '  This represents the response curve for nitrification inhibition due to the
+      '    presence of dcd. It varies between 0 (no effect) and 1 (total inhibition).
+      '  The x vakues represent the dcd amount in the soil and y the correspondent inhibiton effect.
+
+      'Get the coefficients for the sw effect on dcd degradation:
+      x_sw_effect_function = makeArray(sw_dcd_x)
+      y_sw_effect_function = makeArray(sw_dcd_y)
+      Call checkArray(x_sw_effect_function, y_sw_effect_function)
+      '  This is the effect of water content on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil water content and y the correspondent water effect.
+      
+      'Get the coefficients for the temp effect on dcd degradation:
+      x_temp_effect_function = makeArray(temp_dcd_x)
+      y_temp_effect_function = makeArray(temp_dcd_y)
+      Call checkArray(x_temp_effect_function, y_temp_effect_function)
+      '  This is the effect of soil temperature on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil temperature and y the correspondent effect.
+
+      'Get the coefficients for the pH effect on dcd degradation:
+      x_ph_effect_function = makeArray(ph_dcd_x)
+      y_ph_effect_function = makeArray(ph_dcd_y)
+      Call checkArray(x_ph_effect_function, y_ph_effect_function)
+      '  This is the effect of soil pH on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil pH and y the correspondent pH effect.
+
+      'Get the coefficients for the carbon effect on dcd degradation:
+      x_carbon_effect_function = makeArray(carbon_dcd_x)
+      y_carbon_effect_function = makeArray(carbon_dcd_y)
+      Call checkArray(x_carbon_effect_function, y_carbon_effect_function)
+      '  This is the effect of soil carbon on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil carbon content and y the correspondent effect.
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim MySoilN As ComponentType = MyPaddock.Component("SoilN")
+      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim SoilWater As Single() = MyPaddock.SoilWater.sw                         'Soil water content ()
+      Dim SoilCarb_tot As Single() = MyPaddock.SoilNitrogen.carbon_tot           'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = MyPaddock.SoilWater.bd                       'Soil bulk density (g/cm3)
+      Dim delta_urea As Single()
+      
+      Try
+         ReDim SoilTemp(ave_soil_temp.Length - 1)
+         ave_soil_temp.CopyTo(SoilTemp, 0) 
+      Catch
+         Dim st As Single() = MyPaddock.SoilNitrogen.st   'Soil temperature from SoilN (oC)
+         ReDim SoilTemp(st.Length - 1)
+         st.CopyTo(SoilTemp, 0) 
+      End Try
+
+      ReDim delta_dcd(dlayer.Length - 1)
+      ReDim delta_urea(dlayer.Length - 1)
+      Dim SWFraction As Single() = CalcSW_Frac(SoilWater)
+      
+      dcd_degraded = 0
+      For z As Integer = 0 To dlayer.length - 1
+         'calculate the dcd_inhibition factor
+         If dcd(z) > 0 Then
+            'Transform dcd from kg/ha to ppm
+            Dim dcd_ppm As Single = dcd(z) * 10 / dlayer(z)    'g/L_soil
+            dcd_ppm = dcd_ppm * 1000 / SoilDensity(z)          'ppm
+            
+            'interpolated value based on the function given in the UI, bounds it between 0 and 1.
+            dcd_inhibition_effect(z) = math.Max(0, math.Min(1, InterpolateVals(dcd_ppm, x_dcd_effect_function, y_dcd_effect_function)))
+
+            'Calculate the dcd degradation factor
+            '       * all factor vary between 0 and 1, except f_temp
+            Dim f_water As Single = math.Max(0, math.Min(1, InterpolateVals(SWFraction(z), x_sw_effect_function, y_sw_effect_function)))
+            Dim f_temp As Single = math.Max(0, math.Min(1, InterpolateVals(SoilTemp(z), x_temp_effect_function, y_temp_effect_function)))
+            Dim f_ph As Single = math.Max(0, math.Min(1, InterpolateVals(Soilph(z), x_ph_effect_function, y_pH_effect_function)))
+            SoilCarbon(z) = SoilCarb_tot(z) / (SoilDensity(z) * dlayer(z) * 100)   'Transform soil carbon from kg/ha into %
+            Dim f_carbon As Single = math.Max(0, math.Min(1, InterpolateVals(SoilCarbon(z), x_carbon_effect_function, y_carbon_effect_function)))
+            dcd_degradation(z) = dcd_degrad_pot * f_water * f_temp * f_ph * f_carbon   '(%)
+            dcd_degradation(z) = Math.Max(0, Math.Min(1, dcd_degradation(z) / 100))    'make sure degradation is 0-1
+            delta_dcd(z) = -dcd(z) * dcd_degradation(z)       '(kg/ha)
+            delta_urea(z) = -delta_dcd(z)    'dcd_degrade into urea
+            
+            dcd_degraded += delta_dcd(z)
+         Else
+            dcd_inhibition_effect(z) = 0
+            dcd_degradation(z) = 0
+         End If
+      Next
+      MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
+      MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+      MyPaddock.SoilNitrogen.dlt_urea = delta_urea
+
+   End Sub
+   
+   Sub checkArray(ByRef MyArray_x As Single(), ByRef MyArray_y As Single()) 
+      
+      'make sure that both x and y arrays have the same length (the smallest is chosen if not)
+      
+      If MyArray_x.Length > MyArray_y.Length Then
+         ReDim Preserve MyArray_x(MyArray_y.Length - 1)
+      ElseIf MyArray_x.Length < MyArray_y.Length Then
+         ReDim Preserve MyArray_y(MyArray_x.Length - 1)
+      End If
+      
+   End Sub
+   
+   Function makeArray(ByVal ArrayString As String) As Single()
+      
+      'Get the string with values from the user interface and put the values in an numeric array
+      
+      Dim MyArray_string As String()
+      Dim MyArray_single As Single()
+      Dim Separator As Char() = " "
+      
+      '1-Split string into array
+      MyArray_string = ArrayString.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+      
+      '2-convert array into type single
+      ReDim MyArray_single(MyArray_string.Length - 1)      
+      For i As Integer = 0 To MyArray_single.length - 1
+         MyArray_single(i) = MyArray_string(i)
+      Next
+      Return MyArray_single
+      
+   End Function
+
+   
+   Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
+      
+      Dim MyPaddock As New PaddockType(Me)
+      Dim SAT As Single() = MyPaddock.SoilWater.sat                       'Soil water content at saturation ()
+      Dim WP As Single() = MyPaddock.SoilWater.ll15                       'Soil water content at lower limit/wilting point ()
+      Dim WFraction(SoilWater.Length -1) As Single
+      
+      For z As Integer = 0 To SoilWater.Length - 1
+         WFraction(z) = (SoilWater(z) - WP(z)) / (SAT(z) - WP(z))
+      Next
+      Return WFraction
+      
+   End Function
+
+   Function InterpolateVals(ByVal my_x As Single, ByVal x_array As Single(), ByVal y_array As Single()) As Single
+      
+      'Find out the value correspondig to my_x in the function described by the x and y arrays
+      
+      If my_x <= x_array(0) Then
+         InterpolateVals = y_array(0)
+      ElseIf my_x >= x_array(x_array.length - 1)
+         InterpolateVals = y_array(y_array.length - 1)
+      Else
+         For i As Integer = 1 To x_array.length - 1
+            If my_x <= x_array(i) Then
+               InterpolateVals = y_array(i - 1) + ((my_x - x_array(i - 1)) * (y_array(i) - y_array(i - 1)) / (x_array(i) - x_array(i - 1)))
+               i = x_array.length 
+            End If
+         Next
+      End If
+
+   End Function
+
+End Class
+    ]]></text>
+        </manager2>
+        <manager2 name="CentrePivotIrrigation">
+          <ui>
+            <Dummy type="category" description="Central Pivot Irrigation Manager" />
+            <DoIrrigate type="yesno" description="Turn irrigation on?">no</DoIrrigate>
+            <Dummy type="category" description="Parameters for all soils" />
+            <Irrigation_start_date type="ddmmmdate" description="Start of irrigation season (dd-mmm):">1-oct</Irrigation_start_date>
+            <Irrigation_end_date type="ddmmmdate" description="End of irrigation season (dd-mmm):">30-apr</Irrigation_end_date>
+            <PAW_depth type="text" description="Enter the depth to which water deficit is computed (mm):">500</PAW_depth>
+            <CritPAWForShallow type="text" description="PAW below which soil is considered &quot;shallow&quot; (mm):">30</CritPAWForShallow>
+            <CritRainToPause type="text" description="Amount of rainfall over the last 3 days to cause pause to irrigator (mm):">30</CritRainToPause>
+            <DaysToPauseOnCritRain type="text" description="Number of days to pause irrigator after critical rainfall (days):">3</DaysToPauseOnCritRain>
+            <Dummy type="category" description="Shallow Soils" />
+            <PercPAWIrrigDeficitShallow type="text" description="Percentage of PAW at which irrigation starts (%):">30</PercPAWIrrigDeficitShallow>
+            <IrrigReturnShallow type="text" description="Irrigation return period (days):">2</IrrigReturnShallow>
+            <IrrigAmtShallow type="text" description="Effective irrigation amount (mm):">10</IrrigAmtShallow>
+            <IrrigEffShallow type="text" description="Irrigation efficiency (%):">75</IrrigEffShallow>
+            <Dummy type="category" description="Deep Soils" />
+            <IrrigDeficitDeep type="text" description="Deficit at which irrigation starts (mm):">40</IrrigDeficitDeep>
+            <PercPAWIrrigDeficitDeep type="text" description="Minimum percentage of PAW to force irrigation to start (%):">30</PercPAWIrrigDeficitDeep>
+            <IrrigReturnDeep type="text" description="Irrigation return period (days):">4</IrrigReturnDeep>
+            <IrrigAmtDeep type="text" description="Effective irrigation amount (mm):">20</IrrigAmtDeep>
+            <IrrigEffDeep type="text" description="Irrigation efficiency for deep soils (%):">85</IrrigEffDeep>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+Public Class Script 
+   Inherits Instance
+   
+   'Parameter variables:
+   <param> Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
+   <param> Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
+   <param> Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
+   <param> Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
+   <param> Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
+
+   <param> Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
+   <param> Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   
+   <param> Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
+   <param> Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
+   <param> Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
+   <param> Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
+   <param> Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
+   <param> Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
+   <param> Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
+   <param> Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
+   <param> Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
+
+   'Variables read from other modules
+   <Input> Private dd_mmm_yyyy As String                    'Today's date
+   <Input> Private dlayer As Single()                       'Thickness of soil layers (mm)
+   <Input> Private rain As Single                           'Rainfall (mm)
+
+   'Output variables
+   <Output><Units("mm")> Public SoilWaterDeficit As Single  'Soil water deficit (mm)
+   <Output><Units("")> Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
+   <Output><Units("")> Public SoilPAW As Single             'The potencial plant available water (mm)
+   <Output><Units("")> Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
+   <Output><Units("")> Public IrrigReturn As Single         'The return period for irrigation
+   <Output><Units("")> Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
+   <Output><Units("")> Public IrrigEff As Single            'The irrigaton efficiency (%)
+   <Output><Units("mm")> Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
+   <Output><Units("")> Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
+
+   'Internal variables
+   Private StartDate As Date                                'The date when irrigation start (in date format)
+   Private EndDate As Date                                  'The date when irrigation finish (in date format)
+   Private RainOnPreviousDays(2) As Single                  'Record the rain of the previous 3 days (mm)
+   
+   <EventHandler()> Public Sub OnInit2()
+
+      'Put the dates into date format:
+      StartDate = Date.Parse(Irrigation_start_date)
+      EndDate = Date.Parse(Irrigation_end_date)
+
+      DaysAfterIrrigation = 5000  'so will reset to 1 on first day
+
+      'Zero rain on previous 3 days
+      RainOnPrevious3Days = 0.0
+      Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim sw_DUL As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
+      Dim sw_LL15 As Single() = MyPaddock.SoilWater.ll15_dep        'sw at LL15 
+      Dim DepthFromSurface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         DepthFromSurface += dlayer(z)
+         If DepthFromSurface <= PAW_depth Then
+            SoilPAW += sw_dul(z) - sw_LL15(z)
+         Else
+            z = dlayer.Length - 1
+         End If
+      Next
+      
+      Console.WriteLine("------- Irrigation Manager Initialisation ------------------------------------")
+      Console.WriteLine("")
+      Console.WriteLine("   Irrigation season between " & StartDate.ToString("dd MMMM") & " and " & EndDate.ToString("dd MMMM"))
+      Console.WriteLine("   Soil Layer to calculate irrigation is  " & PAW_depth & " mm")
+      Console.WriteLine("   With plant available water of " & SoilPAW & " mm")
+      If SoilPAW <= CritPAWForShallow Then
+         Console.WriteLine("   Soil is considered shallow")
+      Else
+         Console.WriteLine("   Soil is considered Deep")
+      End If
+      Console.WriteLine("")
+
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim sw_dul As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
+      Dim sw_sw As Single() = MyPaddock.SoilWater.sw_dep          'sw at LL 
+      
+      'Calc the amount of rain today plus the previous two days
+      RainOnPreviousDays(2) = RainOnPreviousDays(1)
+      RainOnPreviousDays(1) = RainOnPreviousDays(0)
+      RainOnPreviousDays(0) = rain
+      RainOnPrevious3Days = RainOnPreviousDays(0) + RainOnPreviousDays(1) + RainOnPreviousDays(2)
+      
+      'Calc the number of days paused after large rainfal
+      If RainOnPrevious3Days >= CritRainToPause Then
+         Days2Pause = DaysToPauseOnCritRain
+      Else
+         Days2Pause = Days2Pause - 1   'Can go negative, thats OK
+      End If
+      
+      'Calc the soil water deficit     
+      Dim DepthFromSurface As Integer = 0
+      SoilWaterDeficit = 0.0         
+      For z As Integer = 0 To dlayer.length - 1
+         DepthFromSurface += dlayer(z)
+         If DepthFromSurface <= PAW_depth Then
+            SoilWaterDeficit += Math.Min(0, sw_sw(z) - sw_dul(z))
+         Else
+            z = dlayer.Length - 1
+         End If
+      Next
+      '      SoilWaterDeficit_nve = -1 * SoilWaterDeficit 
+
+      If DoIrrigate = "yes" Then
+         Dim Today As Date = Date.Parse(dd_mmm_yyyy.Replace("_", "/"))
+         If isBetween(today, StartDate, EndDate) Then
+                  
+            'Decide whether irrigation is needed
+            If SoilPAW <= CritPAWForShallow Then
+               'Use shallow soil parameters
+               IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
+               IrrigReturn = IrrigReturnShallow
+               IrrigAmt = IrrigAmtShallow
+               IrrigEff = IrrigEffShallow            
+            Else
+               'Use deep soil parameters
+               'IrrigDeficit = IrrigDeficitDeep
+               IrrigDeficit = Math.Min(IrrigDeficitDeep, PercPAWIrrigDeficitShallow / 100 * SoilPAW)
+               IrrigReturn = IrrigReturnDeep
+               IrrigAmt = IrrigAmtDeep
+               IrrigEff = IrrigEffDeep
+            End If
+         
+            'Check whether irrigation is paused
+            DaysAfterIrrigation = DaysAfterIrrigation + 1
+            If Days2Pause < 0.5 Then
+               'Irrigation is not paused, check return
+               If DaysAfterIrrigation > IrrigReturn Then
+                  DaysAfterIrrigation = 1  'irrigation is allowed
+
+                  'Check whether soil needs irrigation
+                  If SoilWaterDeficit <= -IrrigDeficit Then
+                     MyPaddock.Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01))
+                  End If
+               End If
+            End If
+            
+         End If  'Today
+      End If  'DoIrrigate
+         
+   End Sub
+
+   Private Function isBetween(ByVal today As Date, ByVal startdate As Date, ByVal enddate As Date) As Boolean
+      
+      'Check whether today is between the start and the end dates.  This is needed because start and end dates don't have year
+      
+      Dim date1 As Date = New Date(today.Year, startdate.Month, startdate.Day)
+      Dim date2 As Date = New Date(today.Year, enddate.Month, enddate.Day)
+
+      If (date1 > date2) Then
+         'Irrigation in the middle of the year - ex: summer in the northern hemisphere
+         Return (today >= date1 Or today <= date2)
+      Else
+         'Irrigation in the end of the year - ex: summer in the southern hemisphere
+         Return (today >= date1 And today <= date2)
+      End If
+      
+   End Function
+   
+End Class
+]]></text>
+        </manager2>
+        <operations>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 1 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 20 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 40 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 50 (mm), type = urea_n</action>
+          </operation>
+        </operations>
+      </folder>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">0.8</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <DCD>
+        <d0 type="text" description="dcd diffusivity in water (mm2/d)">108</d0>
+        <layers type="text" description="dcd in each layer (kg/ha)">0 0 0 0 0 0 0 0 0 0 0 0</layers>
+      </DCD>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">20</mass>
+        <cnr type="text" description="C:N ratio of initial residue">17</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <SWIM2ui>
+        <ini name="Ini_SWIM2">
+          <filename>ini_HorotiuCloseSWIMSoil.xml</filename>
+        </ini>
+      </SWIM2ui>
+      <AgPastureSWIM>
+        <Nspecies type="text" description="Number of species">2</Nspecies>
+        <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
+        <cropName type="text" description="Species names">ryegrass whiteclover paspalum</cropName>
+        <micrometType type="text" description="Crop type for MicroMet">grass grass grass</micrometType>
+        <isAnnual type="text" description="Annual species? no=0, yes=1">0 0 0</isAnnual>
+        <isLegume type="text" description="Legume species? no=0, yes=1">0 1 0</isLegume>
+        <photoPath type="text" description="C3 or C4 species? C3=3, C4=4">3 3 4</photoPath>
+        <rootDepth type="text" description="Root depth">850  325 1000</rootDepth>
+        <growthTmin type="text" description="Minimum temperature for growth">2 3 10</growthTmin>
+        <growthTmax type="text" description="Maximum temperature for growth">32 32 40</growthTmax>
+        <growthTopt type="text" description="Optimum temperature for growth">20 20 22</growthTopt>
+        <growthTq type="text" description="Curvature of growth response to temperature">1.5 1.5 1.2</growthTq>
+        <massFluxTmin type="text" description="Minimum temperature for mass flux">2 2 5</massFluxTmin>
+        <massFluxTopt type="text" description="Optimum temperature for mass flux">20 20 22</massFluxTopt>
+        <massFluxW0 type="text" description="Scale factor for response of mass flux to soil moisture">2 2 2</massFluxW0>
+        <massFluxWopt type="text" description="Optimum soil moisture for mass flux">0.5 0.5 0.5</massFluxWopt>
+        <heatOnsetT type="text" description="Heat effects- Onset temperature">28 28 35</heatOnsetT>
+        <heatFullT type="text" description="Heat effects- Full temperature">35 35 40</heatFullT>
+        <heatSumT type="text" description="Heat effects- Temperature sum for recovery">30 30 50</heatSumT>
+        <coldOnsetT type="text" description="Cold effects- Onset temperature">0 0 8</coldOnsetT>
+        <coldFullT type="text" description="Cold effects- Full temperature">-3 -3 3</coldFullT>
+        <coldSumT type="text" description="Cold effects- Temperature sum for recovery">20 20 50</coldSumT>
+        <Pm type="text" description="Reference CO2 assimilation rate (mg CO2/m2.s)">1 1 1.2</Pm>
+        <maintRespiration type="text" description="Maintenance respiration coefficient (%)">3 3 3</maintRespiration>
+        <growthEfficiency type="text" description="Growth efficiency">0.75 0.75 0.75</growthEfficiency>
+        <SLA type="text" description="Specific leaf area">20 20 20</SLA>
+        <lightExtCoeff type="text" description="Light extinction coefficient">0.5 0.8 0.6</lightExtCoeff>
+        <stockParameter type="text" description="Stock influence parameter">0.05 0.05 0.05</stockParameter>
+        <maxRootFraction type="text" description="Maximum biomass fraction allocated to root">0.2 0.2 0.2</maxRootFraction>
+        <leafRate type="text" description="Reference leaf appearance rate without stress">3 3 3.5</leafRate>
+        <fLeaf type="text" description="Reference growth partition to leaves">0.7 0.7 0.7</fLeaf>
+        <fStolon type="text" description="Reference growth partition to stolon">0.0 0.2 0.0</fStolon>
+        <digestLive type="text" description="Digestibility of live plant material">0.6 0.6 0.6</digestLive>
+        <digestDead type="text" description="Digestibility of dead plant material">0.2 0.2 0.2</digestDead>
+        <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1500 500 150</dmtotal>
+        <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250 50 10</dmlitter>
+        <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">300 100 25</dmgreenmin>
+        <NcleafOpt type="text" description="N concentration - leaf optimum">4.0 4.5 3.0</NcleafOpt>
+        <NcleafMax type="text" description="N concentration - leaf luxury">5.0 5.5 3.5</NcleafMax>
+        <NcleafMin type="text" description="N concentration - leaf scenescent">1.2 2.0 0.5</NcleafMin>
+        <NcstemFr type="text" description="Stem N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcstemFr>
+        <NcstolFr type="text" description="Stolon N concentration as fraction of leaf N concentration">0.0 0.5 0.0</NcstolFr>
+        <NcrootFr type="text" description="Root N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcrootFr>
+        <NMinFix type="text" description="Minimum N fixation (when soil N is sufficient)">0.0 0.2 0.0</NMinFix>
+        <NMaxFix type="text" description="Maximum N fixation (when soil N is unavailable)">0.0 0.6 0.0</NMaxFix>
+        <CO2PmaxScale type="text" description="CO2 - Scale factor for CO2 effect on photosynthesis">700 700 150</CO2PmaxScale>
+        <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600 600 600</CO2NScale>
+        <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7 0.7 0.7</CO2NMin>
+        <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2 2 2</CO2NCurvature>
+        <Frgr type="text" description="Relative growth factor">1 1 1</Frgr>
+        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.106  0.112  0.112  0.110  0.106  0.097  0.085  0.070  0.055  0.042  0.032  0.023  0.017  0.012  0.007  0.004  0.003  0.002  0.001  0.001  0.001  0.002</rlvp>
+        <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
+      </AgPastureSWIM>
+      <outputfile name="ForAnalysis">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="nh4()" />
+          <variable name="no3()" />
+          <variable name="dcd()" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" array="End of day" />
+        </events>
+      </outputfile>
+      <SoilTemp2 name="SoilTemp2 (withSWIM)">
+        <maxt_time_default type="text" description="hours">14</maxt_time_default>
+        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+        <clay type="text" description="The clay content for each soil layer (%):">21  21  21  21  21  21  21  21  21  21  21  21  21  22  23  24  24  24  24  24  24  22  21  19  19  19  19  19  19  19   19</clay>
+      </SoilTemp2>
+      <SoilNui>
+        <category type="category" description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">30</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">13</soil_cn>
+        <category type="category" description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">1.680  1.676  1.673  1.669  1.665  1.661  1.658  1.654  1.650  1.646  1.622  1.529  1.399  1.265  1.114  0.974  0.857  0.760  0.678  0.610  0.554  0.496  0.442  0.395  0.357  0.330  0.312  0.299  0.291  0.285  0.283</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.080  0.079  0.077  0.073  0.065  0.056  0.045  0.034  0.025  0.017  0.010  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category type="category" description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">20</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">100</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">30</opt_temp>
+      </SoilNui>
+    </area>
+    <area name="Pdk_noDCD">
+      <SoilN_dcd>
+        <category description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">50</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+        <category description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">7.7 7.1 7 6.8 6.6 6.4 6.2 5.8 5.1 4.4 4 3.5 3 2.5 1.8 1.5 1.1 0.9 0.8 0.7 0.5 0.4 0.3 0.2 0.2 0.1 0.1 0.1 0.1 0.1 0.1 </oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080 0.080 0.080 0.080 0.080 0.079 0.077 0.073 0.065 0.056 0.045 0.034 0.025 0.017 0.010 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.55 0.55 0.55 0.56 0.57 0.58 0.59 0.74 0.79 0.84 0.88 0.92 0.95 0.97 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 </finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77  1.53  1.32  1.17  1.02  0.90  0.78  0.63  0.60  0.60</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59  0.51  0.44  0.39  0.34  0.30  0.26  0.21  0.20  0.20</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil):">40</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
+      </SoilN_dcd>
+      <folder name="Manager folder">
+        <manager name="Cut or graze AgPasture">
+          <ui>
+            <category description="Cut or graze rotation" />
+            <CutPasture_start_date type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">1/01/1900</CutPasture_start_date>
+            <CutPasture_end_date type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">1/12/2010</CutPasture_end_date>
+            <AgPasture_type type="list" listvalues="AgPasture,AgPastureSWIM,ryegrass_clover,ryegrass,clover" description="Enter pasture type">AgPastureSWIM</AgPasture_type>
+            <rotation_type type="list" listvalues="Fixed intervals,Target mass" description="Enter the rotation type: ">Fixed intervals</rotation_type>
+            <cut_interval type="text" description="Enter the interval between cuts/grazings (days):">21</cut_interval>
+            <upper_threshold type="text" description="Enter the upper mass threshold (kg/ha):">2500</upper_threshold>
+            <lower_threshold type="text" description="Enter the lower mass threshold (kg/ha):">1250</lower_threshold>
+            <category description="Management of cut/grazed material" />
+            <treatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut/grazed material:">Return as residue</treatment_type>
+            <remove_dm_frac type="text" description="Enter fraction of dm that is removed from field (0-1):">0.98</remove_dm_frac>
+            <remove_n_frac type="text" description="Enter fraction of N that is removed from field (0-1):">0.98</remove_n_frac>
+            <dung_fraction type="text" description="Enter proportion of N in dung of the returned amount (0-1):">0</dung_fraction>
+          </ui>
+          <script name="init">
+            <text>Start_sim_date = today
+days_after_cut = [cut_interval] - 1
+Do_Cut = 'FALSE'
+Has_Cut = 'FALSE'</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[if today >= date('[CutPasture_start_date]') and today <= date('[CutPasture_end_date]') then
+
+   preharvest_dm = [AgPasture_type].AboveGroundWt
+   preharvest_n = [AgPasture_type].AboveGroundN
+   harvested_dm =0
+   harvested_n = 0
+   removed_dm = 0.0
+   removed_n = 0.0
+   return_dm = 0.0
+   return_n = 0.0
+   GrowthRateCalc = 0
+   n_conc_total = 0
+   days_after_cut = days_after_cut + 1
+   Has_Cut = 'FALSE'
+
+   if '[rotation_type]' = 'Fixed intervals' then
+      if days_after_cut = [cut_interval] then
+         Do_Cut = 'TRUE'
+      endif
+   elseif '[rotation_type]' = 'Target mass' then
+      if preharvest_dm >= [upper_threshold] then
+         Do_Cut = 'TRUE'
+      endif
+   endif
+
+endif   ! of today
+
+If Do_Cut = 'TRUE' then
+   
+!- Cut or graze ---------------------------------------------------------------------------------------
+
+   if preharvest_dm > [lower_threshold] then
+      [AgPasture_type] graze type = 'residue', amount = [lower_threshold]
+      Has_Cut = 'TRUE'
+      harvested_dm = [AgPasture_type].HarvestWt
+      harvested_n = [AgPasture_type].HarvestN
+      GrowthRateCalc = harvested_dm/days_after_cut
+      if harvested_dm > 0 then
+         n_conc_removed = harvested_n*100/harvested_dm
+      endif
+
+!- Residue management -------------------------------------------------------------------------
+      removed_dm =  harvested_dm* [remove_dm_frac]
+      removed_n = harvested_n* [remove_n_frac]
+      return_dm = harvested_dm - removed_dm 
+      return_n = harvested_n - removed_n 
+
+      if '[treatment_type]' = 'Return as residue' and [remove_dm_frac] < 1 then
+         'surface organic matter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+      elseif '[treatment_type]' = 'Return as dung & urine' then
+         ! Is advised that dung and urine return should be done using other manager, 'Urine_patch' or 'Apply or return N and water'
+         N_on_dung = return_n * [dung_fraction]
+         N_on_urine = return_n - N_on_dung
+         'surface organic matter' add_surfaceom name = dung, type = manure, mass =  return_dm (kg/ha), n = N_on_dung (kg/ha), cpr = 0
+         if N_on_urine > 0 then
+            fertiliser apply amount = N_on_urine (kg/ha), depth = 20 (mm), type = urea_n ()
+         endif
+      endif
+   endif
+   days_after_cut = 0
+   Do_Cut = 'FALSE'
+
+endif  ! of Do_Cut
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager2 name="Apply_DCD">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyDCD_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">05/07/1940</ApplyDCD_start_date>
+            <ApplyDCD_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_end_date>
+            <ApplyDCD_interval type="text" description="Type the interval between applications (days):">5000</ApplyDCD_interval>
+            <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">0</DCD_to_add>
+            <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script
+   Inherits Instance
+   
+   'Parameter variables:
+   <param> Private ApplyDCD_start_date As String
+   <param> Private ApplyDCD_end_date As String
+   <param> Private ApplyDCD_interval As Integer
+   <param> Private DCD_to_add As Single
+   <param> Private Depth_for_DCD As Single
+
+   'Variables read from other modules
+   <Input> Private dd_mmm_yyyy As String
+   <Input> Private dlayer As Single()
+   <Input> Private dcd As Single()
+
+   'Output variables
+   <Output><Units("kg/ha")> Public dcd_added As Single       'The amount of dcd added
+
+   Private Ini_Date As Date                     'The date when DCD applications start (in date format)
+   Private End_Date As Date                     'The date when DCD applications finish (in date format)
+   Private Today_Date As Date                   'The date of today (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after a urine application
+   Private SoilDepth As Single                  'The soil depth (mm)
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+
+   <EventHandler()> Public Sub OnInit2()
+
+      'Put the dates into date format:
+      Ini_Date = ApplyDCD_start_date
+      End_Date = ApplyDCD_end_date
+        
+      
+      'Computes the layer at which dcd will be applied
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If Depth_from_surface <= Depth_for_DCD Then dcd_layer = z
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+      Next
+      
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim delta_dcd As Single()
+
+      'Re-set variables
+      Today_Date = dd_mmm_yyyy.Replace("_", "/")
+      ReDim delta_dcd(dlayer.Length - 1)
+      dcd_added = 0
+
+      'Decide whether it is time to apply DCD:
+      If Today_date >= Ini_date And Today_date <= End_date Then
+         If Today_date = Ini_date Then
+            delta_dcd(dcd_layer) = DCD_to_add
+            dcd_added += DCD_to_add
+            TimeAfterApplication = 1
+         Else
+            If TimeAfterApplication >= ApplyDCD_interval Then
+               delta_dcd(dcd_layer) = DCD_to_add
+               dcd_added += DCD_to_add
+               TimeAfterApplication = 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               dcd_added = 0
+            End If
+         End If
+
+         If TimeAfterApplication = 1 Then
+            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
+            Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+    ]]></text>
+        </manager2>
+        <manager2 name="DCD_action">
+          <ui>
+            <Dummy1 type="category" description="DCD effect function" />
+            <dcd_x type="text" description="Type the dcd concent. [ppm] (x values for dcd effect):">0.2  2.0  5  10</dcd_x>
+            <dcd_y type="text" description="Type the inhibition factor [0-1] (y values for dcd effect):">0.0  0.1  0.7  1.0</dcd_y>
+            <Dummy2 type="category" description="DCD degradation functions" />
+            <dcd_degrad_pot type="text" description="Type the dcd degradation rate at optimum cond. (%/day):">70</dcd_degrad_pot>
+            <sw_dcd_x type="text" description="Type the water content [% of WP-SAT] (x values for sw effect on dcd):">0.0  0.2  0.4  0.5  0.8  0.9  1.0</sw_dcd_x>
+            <sw_dcd_y type="text" description="Type the dcd degradation (y values for sw effect on dcd):">0.0  0.2  0.8  1.0  1.0  0.7  0.0</sw_dcd_y>
+            <temp_dcd_x type="text" description="Type the soil temp. (x values for temp. effect on dcd):">0  10  20  30</temp_dcd_x>
+            <temp_dcd_y type="text" description="Type the dcd degrad. (y values for temp. effect on dcd):">0.0  0.1  0.3  1.0</temp_dcd_y>
+            <ph_dcd_x type="text" description="Type the soil pH (x values for pH effect on dcd):">4.0  5.0  7.5  9.0</ph_dcd_x>
+            <ph_dcd_y type="text" description="Type the dcd degrad. (y values for pH effect on dcd):">0.0  1.0  1.0  0.0</ph_dcd_y>
+            <carbon_dcd_x type="text" description="Type the soil org. carbon[%] (x values for C effect on dcd):">0.1  0.5  1.0  2.0  3.0  4.0</carbon_dcd_x>
+            <carbon_dcd_y type="text" description="Type the dcd degrad. (y values for C effect on dcd):">0.00  0.03  0.15  0.55  0.90  1.00</carbon_dcd_y>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script 
+   Inherits Instance
+   
+   'Parameter variables:   
+   <param> Private dcd_x As String
+   <param> Private dcd_y As String
+   <param> Private dcd_degrad_pot As Single
+   <param> Private sw_dcd_x As String
+   <param> Private sw_dcd_y As String
+   <param> Private temp_dcd_x As String
+   <param> Private temp_dcd_y As String
+   <param> Private ph_dcd_x As String
+   <param> Private ph_dcd_y As String
+   <param> Private carbon_dcd_x As String
+   <param> Private carbon_dcd_y As String
+
+   'Variables read from other modules
+   <Input> Private dlayer As Single()
+   <Input> Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
+   <Input(True)> Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+
+   'Output variables
+   <Output><Units(" ")> Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
+   <Output><Units(" ")> Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
+   <Output><Units("kg/ha")> Public dcd_degraded As Single
+   
+   Private SoilTemp As Single()                 'The soil temperature (oC)
+
+   Private SoilCarbon As Single()               'Total soil carbon (%)
+   Private SoilPH As Single()                   'The soil pH
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+   Private delta_dcd As Single()                'The changes in dcd content for each layer
+   Private sw_fraction As Single()              'The sw fractioin between LL15 and SAT (100)
+
+   Private x_dcd_effect_function As Single()    'The values of x of the function describing the dcd effect
+   Private y_dcd_effect_function As Single()    'The values of y of the function describing the dcd effect
+   Private x_sw_effect_function As Single()     'The values of x of the function describing the effect of soil water on dcd degradation
+   Private y_sw_effect_function As Single()     'The values of y of the function describing the effect of soil water on dcd degradation
+   Private x_temp_effect_function As Single()   'The values of x of the function describing the effect of temperature on dcd degradation
+   Private y_temp_effect_function As Single()   'The values of y of the function describing the effect of temperature on dcd degradation
+   Private x_ph_effect_function As Single()     'The values of x of the function describing the effect of soil pH on dcd degradation
+   Private y_ph_effect_function As Single()     'The values of y of the function describing the effect of soil pH on dcd degradation
+   Private x_carbon_effect_function As Single() 'The values of x of the function describing the effect of soil organic carbon on dcd degradation
+   Private y_carbon_effect_function As Single() 'The values of y of the function describing the effect of soil organic carbon on dcd degradation
+
+   <EventHandler()> Public Sub OnInit2()
+
+      'Initialise the inhibition factor:
+      ReDim dcd_inhibition_effect(dlayer.Length - 1)
+      ReDim dcd_degradation(dlayer.Length - 1)
+      ReDim SoilCarbon(dlayer.Length - 1)
+      ReDim SoilPH(dlayer.Length - 1)
+
+      'Set base ph
+      For z As Integer = 0 To dlayer.length - 1
+         SoilPH(z) = 6  'Soil pH is not simulated so assumed as a constant
+      Next
+      
+      'Get the dcd effect coefficients:
+      x_dcd_effect_function = makeArray(dcd_x)
+      y_dcd_effect_function = makeArray(dcd_y)
+      Call checkArray(x_dcd_effect_function, y_dcd_effect_function)
+      '  This represents the response curve for nitrification inhibition due to the
+      '    presence of dcd. It varies between 0 (no effect) and 1 (total inhibition).
+      '  The x vakues represent the dcd amount in the soil and y the correspondent inhibiton effect.
+
+      'Get the coefficients for the sw effect on dcd degradation:
+      x_sw_effect_function = makeArray(sw_dcd_x)
+      y_sw_effect_function = makeArray(sw_dcd_y)
+      Call checkArray(x_sw_effect_function, y_sw_effect_function)
+      '  This is the effect of water content on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil water content and y the correspondent water effect.
+      
+      'Get the coefficients for the temp effect on dcd degradation:
+      x_temp_effect_function = makeArray(temp_dcd_x)
+      y_temp_effect_function = makeArray(temp_dcd_y)
+      Call checkArray(x_temp_effect_function, y_temp_effect_function)
+      '  This is the effect of soil temperature on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil temperature and y the correspondent effect.
+
+      'Get the coefficients for the pH effect on dcd degradation:
+      x_ph_effect_function = makeArray(ph_dcd_x)
+      y_ph_effect_function = makeArray(ph_dcd_y)
+      Call checkArray(x_ph_effect_function, y_ph_effect_function)
+      '  This is the effect of soil pH on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil pH and y the correspondent pH effect.
+
+      'Get the coefficients for the carbon effect on dcd degradation:
+      x_carbon_effect_function = makeArray(carbon_dcd_x)
+      y_carbon_effect_function = makeArray(carbon_dcd_y)
+      Call checkArray(x_carbon_effect_function, y_carbon_effect_function)
+      '  This is the effect of soil carbon on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil carbon content and y the correspondent effect.
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim MySoilN As ComponentType = MyPaddock.Component("SoilN")
+      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim SoilWater As Single() = MyPaddock.SoilWater.sw                         'Soil water content ()
+      Dim SoilCarb_tot As Single() = MyPaddock.SoilNitrogen.carbon_tot           'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = MyPaddock.SoilWater.bd                       'Soil bulk density (g/cm3)
+      Dim delta_urea As Single()
+      
+      Try
+         ReDim SoilTemp(ave_soil_temp.Length - 1)
+         ave_soil_temp.CopyTo(SoilTemp, 0) 
+      Catch
+         Dim st As Single() = MyPaddock.SoilNitrogen.st   'Soil temperature from SoilN (oC)
+         ReDim SoilTemp(st.Length - 1)
+         st.CopyTo(SoilTemp, 0) 
+      End Try
+
+      ReDim delta_dcd(dlayer.Length - 1)
+      ReDim delta_urea(dlayer.Length - 1)
+      Dim SWFraction As Single() = CalcSW_Frac(SoilWater)
+      
+      dcd_degraded = 0
+      For z As Integer = 0 To dlayer.length - 1
+         'calculate the dcd_inhibition factor
+         If dcd(z) > 0 Then
+            'Transform dcd from kg/ha to ppm
+            Dim dcd_ppm As Single = dcd(z) * 10 / dlayer(z)    'g/L_soil
+            dcd_ppm = dcd_ppm * 1000 / SoilDensity(z)          'ppm
+            
+            'interpolated value based on the function given in the UI, bounds it between 0 and 1.
+            dcd_inhibition_effect(z) = math.Max(0, math.Min(1, InterpolateVals(dcd_ppm, x_dcd_effect_function, y_dcd_effect_function)))
+
+            'Calculate the dcd degradation factor
+            '       * all factor vary between 0 and 1, except f_temp
+            Dim f_water As Single = math.Max(0, math.Min(1, InterpolateVals(SWFraction(z), x_sw_effect_function, y_sw_effect_function)))
+            Dim f_temp As Single = math.Max(0, math.Min(1, InterpolateVals(SoilTemp(z), x_temp_effect_function, y_temp_effect_function)))
+            Dim f_ph As Single = math.Max(0, math.Min(1, InterpolateVals(Soilph(z), x_ph_effect_function, y_pH_effect_function)))
+            SoilCarbon(z) = SoilCarb_tot(z) / (SoilDensity(z) * dlayer(z) * 100)   'Transform soil carbon from kg/ha into %
+            Dim f_carbon As Single = math.Max(0, math.Min(1, InterpolateVals(SoilCarbon(z), x_carbon_effect_function, y_carbon_effect_function)))
+            dcd_degradation(z) = dcd_degrad_pot * f_water * f_temp * f_ph * f_carbon   '(%)
+            dcd_degradation(z) = Math.Max(0, Math.Min(1, dcd_degradation(z) / 100))    'make sure degradation is 0-1
+            delta_dcd(z) = -dcd(z) * dcd_degradation(z)       '(kg/ha)
+            delta_urea(z) = -delta_dcd(z)    'dcd_degrade into urea
+            
+            dcd_degraded += delta_dcd(z)
+         Else
+            dcd_inhibition_effect(z) = 0
+            dcd_degradation(z) = 0
+         End If
+      Next
+      MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
+      MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+      MyPaddock.SoilNitrogen.dlt_urea = delta_urea
+
+   End Sub
+   
+   Sub checkArray(ByRef MyArray_x As Single(), ByRef MyArray_y As Single()) 
+      
+      'make sure that both x and y arrays have the same length (the smallest is chosen if not)
+      
+      If MyArray_x.Length > MyArray_y.Length Then
+         ReDim Preserve MyArray_x(MyArray_y.Length - 1)
+      ElseIf MyArray_x.Length < MyArray_y.Length Then
+         ReDim Preserve MyArray_y(MyArray_x.Length - 1)
+      End If
+      
+   End Sub
+   
+   Function makeArray(ByVal ArrayString As String) As Single()
+      
+      'Get the string with values from the user interface and put the values in an numeric array
+      
+      Dim MyArray_string As String()
+      Dim MyArray_single As Single()
+      Dim Separator As Char() = " "
+      
+      '1-Split string into array
+      MyArray_string = ArrayString.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+      
+      '2-convert array into type single
+      ReDim MyArray_single(MyArray_string.Length - 1)      
+      For i As Integer = 0 To MyArray_single.length - 1
+         MyArray_single(i) = MyArray_string(i)
+      Next
+      Return MyArray_single
+      
+   End Function
+
+   
+   Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
+      
+      Dim MyPaddock As New PaddockType(Me)
+      Dim SAT As Single() = MyPaddock.SoilWater.sat                       'Soil water content at saturation ()
+      Dim WP As Single() = MyPaddock.SoilWater.ll15                       'Soil water content at lower limit/wilting point ()
+      Dim WFraction(SoilWater.Length -1) As Single
+      
+      For z As Integer = 0 To SoilWater.Length - 1
+         WFraction(z) = (SoilWater(z) - WP(z)) / (SAT(z) - WP(z))
+      Next
+      Return WFraction
+      
+   End Function
+
+   Function InterpolateVals(ByVal my_x As Single, ByVal x_array As Single(), ByVal y_array As Single()) As Single
+      
+      'Find out the value correspondig to my_x in the function described by the x and y arrays
+      
+      If my_x <= x_array(0) Then
+         InterpolateVals = y_array(0)
+      ElseIf my_x >= x_array(x_array.length - 1)
+         InterpolateVals = y_array(y_array.length - 1)
+      Else
+         For i As Integer = 1 To x_array.length - 1
+            If my_x <= x_array(i) Then
+               InterpolateVals = y_array(i - 1) + ((my_x - x_array(i - 1)) * (y_array(i) - y_array(i - 1)) / (x_array(i) - x_array(i - 1)))
+               i = x_array.length 
+            End If
+         Next
+      End If
+
+   End Function
+
+End Class
+    ]]></text>
+        </manager2>
+        <manager2 name="CentrePivotIrrigation">
+          <ui>
+            <Dummy type="category" description="Central Pivot Irrigation Manager" />
+            <DoIrrigate type="yesno" description="Turn irrigation on?">no</DoIrrigate>
+            <Dummy type="category" description="Parameters for all soils" />
+            <Irrigation_start_date type="ddmmmdate" description="Start of irrigation season (dd-mmm):">1-oct</Irrigation_start_date>
+            <Irrigation_end_date type="ddmmmdate" description="End of irrigation season (dd-mmm):">30-apr</Irrigation_end_date>
+            <PAW_depth type="text" description="Enter the depth to which water deficit is computed (mm):">500</PAW_depth>
+            <CritPAWForShallow type="text" description="PAW below which soil is considered &quot;shallow&quot; (mm):">30</CritPAWForShallow>
+            <CritRainToPause type="text" description="Amount of rainfall over the last 3 days to cause pause to irrigator (mm):">30</CritRainToPause>
+            <DaysToPauseOnCritRain type="text" description="Number of days to pause irrigator after critical rainfall (days):">3</DaysToPauseOnCritRain>
+            <Dummy type="category" description="Shallow Soils" />
+            <PercPAWIrrigDeficitShallow type="text" description="Percentage of PAW at which irrigation starts (%):">30</PercPAWIrrigDeficitShallow>
+            <IrrigReturnShallow type="text" description="Irrigation return period (days):">2</IrrigReturnShallow>
+            <IrrigAmtShallow type="text" description="Effective irrigation amount (mm):">10</IrrigAmtShallow>
+            <IrrigEffShallow type="text" description="Irrigation efficiency (%):">75</IrrigEffShallow>
+            <Dummy type="category" description="Deep Soils" />
+            <IrrigDeficitDeep type="text" description="Deficit at which irrigation starts (mm):">40</IrrigDeficitDeep>
+            <PercPAWIrrigDeficitDeep type="text" description="Minimum percentage of PAW to force irrigation to start (%):">30</PercPAWIrrigDeficitDeep>
+            <IrrigReturnDeep type="text" description="Irrigation return period (days):">4</IrrigReturnDeep>
+            <IrrigAmtDeep type="text" description="Effective irrigation amount (mm):">20</IrrigAmtDeep>
+            <IrrigEffDeep type="text" description="Irrigation efficiency for deep soils (%):">85</IrrigEffDeep>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+Public Class Script 
+   Inherits Instance
+   
+   'Parameter variables:
+   <param> Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
+   <param> Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
+   <param> Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
+   <param> Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
+   <param> Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
+
+   <param> Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
+   <param> Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   
+   <param> Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
+   <param> Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
+   <param> Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
+   <param> Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
+   <param> Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
+   <param> Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
+   <param> Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
+   <param> Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
+   <param> Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
+
+   'Variables read from other modules
+   <Input> Private dd_mmm_yyyy As String                    'Today's date
+   <Input> Private dlayer As Single()                       'Thickness of soil layers (mm)
+   <Input> Private rain As Single                           'Rainfall (mm)
+
+   'Output variables
+   <Output><Units("mm")> Public SoilWaterDeficit As Single  'Soil water deficit (mm)
+   <Output><Units("")> Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
+   <Output><Units("")> Public SoilPAW As Single             'The potencial plant available water (mm)
+   <Output><Units("")> Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
+   <Output><Units("")> Public IrrigReturn As Single         'The return period for irrigation
+   <Output><Units("")> Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
+   <Output><Units("")> Public IrrigEff As Single            'The irrigaton efficiency (%)
+   <Output><Units("mm")> Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
+   <Output><Units("")> Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
+
+   'Internal variables
+   Private StartDate As Date                                'The date when irrigation start (in date format)
+   Private EndDate As Date                                  'The date when irrigation finish (in date format)
+   Private RainOnPreviousDays(2) As Single                  'Record the rain of the previous 3 days (mm)
+   
+   <EventHandler()> Public Sub OnInit2()
+
+      'Put the dates into date format:
+      StartDate = Date.Parse(Irrigation_start_date)
+      EndDate = Date.Parse(Irrigation_end_date)
+
+      DaysAfterIrrigation = 5000  'so will reset to 1 on first day
+
+      'Zero rain on previous 3 days
+      RainOnPrevious3Days = 0.0
+      Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim sw_DUL As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
+      Dim sw_LL15 As Single() = MyPaddock.SoilWater.ll15_dep        'sw at LL15 
+      Dim DepthFromSurface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         DepthFromSurface += dlayer(z)
+         If DepthFromSurface <= PAW_depth Then
+            SoilPAW += sw_dul(z) - sw_LL15(z)
+         Else
+            z = dlayer.Length - 1
+         End If
+      Next
+      
+      Console.WriteLine("------- Irrigation Manager Initialisation ------------------------------------")
+      Console.WriteLine("")
+      Console.WriteLine("   Irrigation season between " & StartDate.ToString("dd MMMM") & " and " & EndDate.ToString("dd MMMM"))
+      Console.WriteLine("   Soil Layer to calculate irrigation is  " & PAW_depth & " mm")
+      Console.WriteLine("   With plant available water of " & SoilPAW & " mm")
+      If SoilPAW <= CritPAWForShallow Then
+         Console.WriteLine("   Soil is considered shallow")
+      Else
+         Console.WriteLine("   Soil is considered Deep")
+      End If
+      Console.WriteLine("")
+
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim sw_dul As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
+      Dim sw_sw As Single() = MyPaddock.SoilWater.sw_dep          'sw at LL 
+      
+      'Calc the amount of rain today plus the previous two days
+      RainOnPreviousDays(2) = RainOnPreviousDays(1)
+      RainOnPreviousDays(1) = RainOnPreviousDays(0)
+      RainOnPreviousDays(0) = rain
+      RainOnPrevious3Days = RainOnPreviousDays(0) + RainOnPreviousDays(1) + RainOnPreviousDays(2)
+      
+      'Calc the number of days paused after large rainfal
+      If RainOnPrevious3Days >= CritRainToPause Then
+         Days2Pause = DaysToPauseOnCritRain
+      Else
+         Days2Pause = Days2Pause - 1   'Can go negative, thats OK
+      End If
+      
+      'Calc the soil water deficit     
+      Dim DepthFromSurface As Integer = 0
+      SoilWaterDeficit = 0.0         
+      For z As Integer = 0 To dlayer.length - 1
+         DepthFromSurface += dlayer(z)
+         If DepthFromSurface <= PAW_depth Then
+            SoilWaterDeficit += Math.Min(0, sw_sw(z) - sw_dul(z))
+         Else
+            z = dlayer.Length - 1
+         End If
+      Next
+      '      SoilWaterDeficit_nve = -1 * SoilWaterDeficit 
+
+      If DoIrrigate = "yes" Then
+         Dim Today As Date = Date.Parse(dd_mmm_yyyy.Replace("_", "/"))
+         If isBetween(today, StartDate, EndDate) Then
+                  
+            'Decide whether irrigation is needed
+            If SoilPAW <= CritPAWForShallow Then
+               'Use shallow soil parameters
+               IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
+               IrrigReturn = IrrigReturnShallow
+               IrrigAmt = IrrigAmtShallow
+               IrrigEff = IrrigEffShallow            
+            Else
+               'Use deep soil parameters
+               'IrrigDeficit = IrrigDeficitDeep
+               IrrigDeficit = Math.Min(IrrigDeficitDeep, PercPAWIrrigDeficitShallow / 100 * SoilPAW)
+               IrrigReturn = IrrigReturnDeep
+               IrrigAmt = IrrigAmtDeep
+               IrrigEff = IrrigEffDeep
+            End If
+         
+            'Check whether irrigation is paused
+            DaysAfterIrrigation = DaysAfterIrrigation + 1
+            If Days2Pause < 0.5 Then
+               'Irrigation is not paused, check return
+               If DaysAfterIrrigation > IrrigReturn Then
+                  DaysAfterIrrigation = 1  'irrigation is allowed
+
+                  'Check whether soil needs irrigation
+                  If SoilWaterDeficit <= -IrrigDeficit Then
+                     MyPaddock.Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01))
+                  End If
+               End If
+            End If
+            
+         End If  'Today
+      End If  'DoIrrigate
+         
+   End Sub
+
+   Private Function isBetween(ByVal today As Date, ByVal startdate As Date, ByVal enddate As Date) As Boolean
+      
+      'Check whether today is between the start and the end dates.  This is needed because start and end dates don't have year
+      
+      Dim date1 As Date = New Date(today.Year, startdate.Month, startdate.Day)
+      Dim date2 As Date = New Date(today.Year, enddate.Month, enddate.Day)
+
+      If (date1 > date2) Then
+         'Irrigation in the middle of the year - ex: summer in the northern hemisphere
+         Return (today >= date1 Or today <= date2)
+      Else
+         'Irrigation in the end of the year - ex: summer in the southern hemisphere
+         Return (today >= date1 And today <= date2)
+      End If
+      
+   End Function
+   
+End Class
+]]></text>
+        </manager2>
+        <operations>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 1 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 20 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 40 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 50 (mm), type = urea_n</action>
+          </operation>
+        </operations>
+      </folder>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">0.8</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <DCD>
+        <d0 type="text" description="dcd diffusivity in water (mm2/d)">108</d0>
+        <layers type="text" description="dcd in each layer (kg/ha)">0 0 0 0 0 0 0 0 0 0 0 0</layers>
+      </DCD>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">20</mass>
+        <cnr type="text" description="C:N ratio of initial residue">17</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <SWIM2ui>
+        <ini name="Ini_SWIM2">
+          <filename>ini_HorotiuCloseSWIMSoil.xml</filename>
+        </ini>
+      </SWIM2ui>
+      <AgPastureSWIM>
+        <Nspecies type="text" description="Number of species">2</Nspecies>
+        <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
+        <cropName type="text" description="Species names">ryegrass whiteclover paspalum</cropName>
+        <micrometType type="text" description="Crop type for MicroMet">grass grass grass</micrometType>
+        <isAnnual type="text" description="Annual species? no=0, yes=1">0 0 0</isAnnual>
+        <isLegume type="text" description="Legume species? no=0, yes=1">0 1 0</isLegume>
+        <photoPath type="text" description="C3 or C4 species? C3=3, C4=4">3 3 4</photoPath>
+        <rootDepth type="text" description="Root depth">850  325 1000</rootDepth>
+        <growthTmin type="text" description="Minimum temperature for growth">2 3 10</growthTmin>
+        <growthTmax type="text" description="Maximum temperature for growth">32 32 40</growthTmax>
+        <growthTopt type="text" description="Optimum temperature for growth">20 20 22</growthTopt>
+        <growthTq type="text" description="Curvature of growth response to temperature">1.5 1.5 1.2</growthTq>
+        <massFluxTmin type="text" description="Minimum temperature for mass flux">2 2 5</massFluxTmin>
+        <massFluxTopt type="text" description="Optimum temperature for mass flux">20 20 22</massFluxTopt>
+        <massFluxW0 type="text" description="Scale factor for response of mass flux to soil moisture">2 2 2</massFluxW0>
+        <massFluxWopt type="text" description="Optimum soil moisture for mass flux">0.5 0.5 0.5</massFluxWopt>
+        <heatOnsetT type="text" description="Heat effects- Onset temperature">28 28 35</heatOnsetT>
+        <heatFullT type="text" description="Heat effects- Full temperature">35 35 40</heatFullT>
+        <heatSumT type="text" description="Heat effects- Temperature sum for recovery">30 30 50</heatSumT>
+        <coldOnsetT type="text" description="Cold effects- Onset temperature">0 0 8</coldOnsetT>
+        <coldFullT type="text" description="Cold effects- Full temperature">-3 -3 3</coldFullT>
+        <coldSumT type="text" description="Cold effects- Temperature sum for recovery">20 20 50</coldSumT>
+        <Pm type="text" description="Reference CO2 assimilation rate (mg CO2/m2.s)">1 1 1.2</Pm>
+        <maintRespiration type="text" description="Maintenance respiration coefficient (%)">3 3 3</maintRespiration>
+        <growthEfficiency type="text" description="Growth efficiency">0.75 0.75 0.75</growthEfficiency>
+        <SLA type="text" description="Specific leaf area">20 20 20</SLA>
+        <lightExtCoeff type="text" description="Light extinction coefficient">0.5 0.8 0.6</lightExtCoeff>
+        <stockParameter type="text" description="Stock influence parameter">0.05 0.05 0.05</stockParameter>
+        <maxRootFraction type="text" description="Maximum biomass fraction allocated to root">0.2 0.2 0.2</maxRootFraction>
+        <leafRate type="text" description="Reference leaf appearance rate without stress">3 3 3.5</leafRate>
+        <fLeaf type="text" description="Reference growth partition to leaves">0.7 0.7 0.7</fLeaf>
+        <fStolon type="text" description="Reference growth partition to stolon">0.0 0.2 0.0</fStolon>
+        <digestLive type="text" description="Digestibility of live plant material">0.6 0.6 0.6</digestLive>
+        <digestDead type="text" description="Digestibility of dead plant material">0.2 0.2 0.2</digestDead>
+        <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1500 500 150</dmtotal>
+        <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250 50 10</dmlitter>
+        <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">300 100 25</dmgreenmin>
+        <NcleafOpt type="text" description="N concentration - leaf optimum">4.0 4.5 3.0</NcleafOpt>
+        <NcleafMax type="text" description="N concentration - leaf luxury">5.0 5.5 3.5</NcleafMax>
+        <NcleafMin type="text" description="N concentration - leaf scenescent">1.2 2.0 0.5</NcleafMin>
+        <NcstemFr type="text" description="Stem N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcstemFr>
+        <NcstolFr type="text" description="Stolon N concentration as fraction of leaf N concentration">0.0 0.5 0.0</NcstolFr>
+        <NcrootFr type="text" description="Root N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcrootFr>
+        <NMinFix type="text" description="Minimum N fixation (when soil N is sufficient)">0.0 0.2 0.0</NMinFix>
+        <NMaxFix type="text" description="Maximum N fixation (when soil N is unavailable)">0.0 0.6 0.0</NMaxFix>
+        <CO2PmaxScale type="text" description="CO2 - Scale factor for CO2 effect on photosynthesis">700 700 150</CO2PmaxScale>
+        <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600 600 600</CO2NScale>
+        <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7 0.7 0.7</CO2NMin>
+        <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2 2 2</CO2NCurvature>
+        <Frgr type="text" description="Relative growth factor">1 1 1</Frgr>
+        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.106  0.112  0.112  0.110  0.106  0.097  0.085  0.070  0.055  0.042  0.032  0.023  0.017  0.012  0.007  0.004  0.003  0.002  0.001  0.001  0.001  0.002</rlvp>
+        <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
+      </AgPastureSWIM>
+      <outputfile name="ForAnalysis">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="nh4()" />
+          <variable name="no3()" />
+          <variable name="dcd()" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" array="End of day" />
+        </events>
+      </outputfile>
+      <SoilTemp2 name="SoilTemp2 (withSWIM)">
+        <maxt_time_default type="text" description="hours">14</maxt_time_default>
+        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+        <clay type="text" description="The clay content for each soil layer (%):">21  21  21  21  21  21  21  21  21  21  21  21  21  22  23  24  24  24  24  24  24  22  21  19  19  19  19  19  19  19   19</clay>
+      </SoilTemp2>
+      <SoilNui>
+        <category type="category" description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">30</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">13</soil_cn>
+        <category type="category" description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">1.680  1.676  1.673  1.669  1.665  1.661  1.658  1.654  1.650  1.646  1.622  1.529  1.399  1.265  1.114  0.974  0.857  0.760  0.678  0.610  0.554  0.496  0.442  0.395  0.357  0.330  0.312  0.299  0.291  0.285  0.283</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.080  0.079  0.077  0.073  0.065  0.056  0.045  0.034  0.025  0.017  0.010  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category type="category" description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">20</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">100</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">30</opt_temp>
+      </SoilNui>
+    </area>
+    <area name="Pdk_earlyDCD">
+      <SoilN_dcd>
+        <category description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">50</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+        <category description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">7.7 7.1 7 6.8 6.6 6.4 6.2 5.8 5.1 4.4 4 3.5 3 2.5 1.8 1.5 1.1 0.9 0.8 0.7 0.5 0.4 0.3 0.2 0.2 0.1 0.1 0.1 0.1 0.1 0.1 </oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080 0.080 0.080 0.080 0.080 0.079 0.077 0.073 0.065 0.056 0.045 0.034 0.025 0.017 0.010 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.55 0.55 0.55 0.56 0.57 0.58 0.59 0.74 0.79 0.84 0.88 0.92 0.95 0.97 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 </finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77  1.53  1.32  1.17  1.02  0.90  0.78  0.63  0.60  0.60</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59  0.51  0.44  0.39  0.34  0.30  0.26  0.21  0.20  0.20</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil):">40</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
+      </SoilN_dcd>
+      <folder name="Manager folder">
+        <manager name="Cut or graze AgPasture">
+          <ui>
+            <category description="Cut or graze rotation" />
+            <CutPasture_start_date type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">1/01/1900</CutPasture_start_date>
+            <CutPasture_end_date type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">1/12/2010</CutPasture_end_date>
+            <AgPasture_type type="list" listvalues="AgPasture,AgPastureSWIM,ryegrass_clover,ryegrass,clover" description="Enter pasture type">AgPastureSWIM</AgPasture_type>
+            <rotation_type type="list" listvalues="Fixed intervals,Target mass" description="Enter the rotation type: ">Fixed intervals</rotation_type>
+            <cut_interval type="text" description="Enter the interval between cuts/grazings (days):">21</cut_interval>
+            <upper_threshold type="text" description="Enter the upper mass threshold (kg/ha):">2500</upper_threshold>
+            <lower_threshold type="text" description="Enter the lower mass threshold (kg/ha):">1250</lower_threshold>
+            <category description="Management of cut/grazed material" />
+            <treatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut/grazed material:">Return as residue</treatment_type>
+            <remove_dm_frac type="text" description="Enter fraction of dm that is removed from field (0-1):">0.98</remove_dm_frac>
+            <remove_n_frac type="text" description="Enter fraction of N that is removed from field (0-1):">0.98</remove_n_frac>
+            <dung_fraction type="text" description="Enter proportion of N in dung of the returned amount (0-1):">0</dung_fraction>
+          </ui>
+          <script name="init">
+            <text>Start_sim_date = today
+days_after_cut = [cut_interval] - 1
+Do_Cut = 'FALSE'
+Has_Cut = 'FALSE'</text>
+            <event>init</event>
+          </script>
+          <script name="start_of_day">
+            <text><![CDATA[if today >= date('[CutPasture_start_date]') and today <= date('[CutPasture_end_date]') then
+
+   preharvest_dm = [AgPasture_type].AboveGroundWt
+   preharvest_n = [AgPasture_type].AboveGroundN
+   harvested_dm =0
+   harvested_n = 0
+   removed_dm = 0.0
+   removed_n = 0.0
+   return_dm = 0.0
+   return_n = 0.0
+   GrowthRateCalc = 0
+   n_conc_total = 0
+   days_after_cut = days_after_cut + 1
+   Has_Cut = 'FALSE'
+
+   if '[rotation_type]' = 'Fixed intervals' then
+      if days_after_cut = [cut_interval] then
+         Do_Cut = 'TRUE'
+      endif
+   elseif '[rotation_type]' = 'Target mass' then
+      if preharvest_dm >= [upper_threshold] then
+         Do_Cut = 'TRUE'
+      endif
+   endif
+
+endif   ! of today
+
+If Do_Cut = 'TRUE' then
+   
+!- Cut or graze ---------------------------------------------------------------------------------------
+
+   if preharvest_dm > [lower_threshold] then
+      [AgPasture_type] graze type = 'residue', amount = [lower_threshold]
+      Has_Cut = 'TRUE'
+      harvested_dm = [AgPasture_type].HarvestWt
+      harvested_n = [AgPasture_type].HarvestN
+      GrowthRateCalc = harvested_dm/days_after_cut
+      if harvested_dm > 0 then
+         n_conc_removed = harvested_n*100/harvested_dm
+      endif
+
+!- Residue management -------------------------------------------------------------------------
+      removed_dm =  harvested_dm* [remove_dm_frac]
+      removed_n = harvested_n* [remove_n_frac]
+      return_dm = harvested_dm - removed_dm 
+      return_n = harvested_n - removed_n 
+
+      if '[treatment_type]' = 'Return as residue' and [remove_dm_frac] < 1 then
+         'surface organic matter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+      elseif '[treatment_type]' = 'Return as dung & urine' then
+         ! Is advised that dung and urine return should be done using other manager, 'Urine_patch' or 'Apply or return N and water'
+         N_on_dung = return_n * [dung_fraction]
+         N_on_urine = return_n - N_on_dung
+         'surface organic matter' add_surfaceom name = dung, type = manure, mass =  return_dm (kg/ha), n = N_on_dung (kg/ha), cpr = 0
+         if N_on_urine > 0 then
+            fertiliser apply amount = N_on_urine (kg/ha), depth = 20 (mm), type = urea_n ()
+         endif
+      endif
+   endif
+   days_after_cut = 0
+   Do_Cut = 'FALSE'
+
+endif  ! of Do_Cut
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager2 name="Apply_DCD">
+          <ui>
+            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
+            <ApplyDCD_start_date type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">02/07/1940</ApplyDCD_start_date>
+            <ApplyDCD_end_date type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2010</ApplyDCD_end_date>
+            <ApplyDCD_interval type="text" description="Type the interval between applications (days):">5000</ApplyDCD_interval>
+            <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
+            <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script
+   Inherits Instance
+   
+   'Parameter variables:
+   <param> Private ApplyDCD_start_date As String
+   <param> Private ApplyDCD_end_date As String
+   <param> Private ApplyDCD_interval As Integer
+   <param> Private DCD_to_add As Single
+   <param> Private Depth_for_DCD As Single
+
+   'Variables read from other modules
+   <Input> Private dd_mmm_yyyy As String
+   <Input> Private dlayer As Single()
+   <Input> Private dcd As Single()
+
+   'Output variables
+   <Output><Units("kg/ha")> Public dcd_added As Single       'The amount of dcd added
+
+   Private Ini_Date As Date                     'The date when DCD applications start (in date format)
+   Private End_Date As Date                     'The date when DCD applications finish (in date format)
+   Private Today_Date As Date                   'The date of today (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after a urine application
+   Private SoilDepth As Single                  'The soil depth (mm)
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+
+   <EventHandler()> Public Sub OnInit2()
+
+      'Put the dates into date format:
+      Ini_Date = ApplyDCD_start_date
+      End_Date = ApplyDCD_end_date
+        
+      
+      'Computes the layer at which dcd will be applied
+      Dim Depth_from_surface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         If Depth_from_surface <= Depth_for_DCD Then dcd_layer = z
+         Depth_from_surface = Depth_from_surface + dlayer(z)
+      Next
+      
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim delta_dcd As Single()
+
+      'Re-set variables
+      Today_Date = dd_mmm_yyyy.Replace("_", "/")
+      ReDim delta_dcd(dlayer.Length - 1)
+      dcd_added = 0
+
+      'Decide whether it is time to apply DCD:
+      If Today_date >= Ini_date And Today_date <= End_date Then
+         If Today_date = Ini_date Then
+            delta_dcd(dcd_layer) = DCD_to_add
+            dcd_added += DCD_to_add
+            TimeAfterApplication = 1
+         Else
+            If TimeAfterApplication >= ApplyDCD_interval Then
+               delta_dcd(dcd_layer) = DCD_to_add
+               dcd_added += DCD_to_add
+               TimeAfterApplication = 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               dcd_added = 0
+            End If
+         End If
+
+         If TimeAfterApplication = 1 Then
+            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
+            Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+    ]]></text>
+        </manager2>
+        <manager2 name="DCD_action">
+          <ui>
+            <Dummy1 type="category" description="DCD effect function" />
+            <dcd_x type="text" description="Type the dcd concent. [ppm] (x values for dcd effect):">0.2  2.0  5  10</dcd_x>
+            <dcd_y type="text" description="Type the inhibition factor [0-1] (y values for dcd effect):">0.0  0.1  0.7  1.0</dcd_y>
+            <Dummy2 type="category" description="DCD degradation functions" />
+            <dcd_degrad_pot type="text" description="Type the dcd degradation rate at optimum cond. (%/day):">70</dcd_degrad_pot>
+            <sw_dcd_x type="text" description="Type the water content [% of WP-SAT] (x values for sw effect on dcd):">0.0  0.2  0.4  0.5  0.8  0.9  1.0</sw_dcd_x>
+            <sw_dcd_y type="text" description="Type the dcd degradation (y values for sw effect on dcd):">0.0  0.2  0.8  1.0  1.0  0.7  0.0</sw_dcd_y>
+            <temp_dcd_x type="text" description="Type the soil temp. (x values for temp. effect on dcd):">0  10  20  30</temp_dcd_x>
+            <temp_dcd_y type="text" description="Type the dcd degrad. (y values for temp. effect on dcd):">0.0  0.1  0.3  1.0</temp_dcd_y>
+            <ph_dcd_x type="text" description="Type the soil pH (x values for pH effect on dcd):">4.0  5.0  7.5  9.0</ph_dcd_x>
+            <ph_dcd_y type="text" description="Type the dcd degrad. (y values for pH effect on dcd):">0.0  1.0  1.0  0.0</ph_dcd_y>
+            <carbon_dcd_x type="text" description="Type the soil org. carbon[%] (x values for C effect on dcd):">0.1  0.5  1.0  2.0  3.0  4.0</carbon_dcd_x>
+            <carbon_dcd_y type="text" description="Type the dcd degrad. (y values for C effect on dcd):">0.00  0.03  0.15  0.55  0.90  1.00</carbon_dcd_y>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
+'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
+
+Public Class Script 
+   Inherits Instance
+   
+   'Parameter variables:   
+   <param> Private dcd_x As String
+   <param> Private dcd_y As String
+   <param> Private dcd_degrad_pot As Single
+   <param> Private sw_dcd_x As String
+   <param> Private sw_dcd_y As String
+   <param> Private temp_dcd_x As String
+   <param> Private temp_dcd_y As String
+   <param> Private ph_dcd_x As String
+   <param> Private ph_dcd_y As String
+   <param> Private carbon_dcd_x As String
+   <param> Private carbon_dcd_y As String
+
+   'Variables read from other modules
+   <Input> Private dlayer As Single()
+   <Input> Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
+   <Input(True)> Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+
+   'Output variables
+   <Output><Units(" ")> Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
+   <Output><Units(" ")> Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
+   <Output><Units("kg/ha")> Public dcd_degraded As Single
+   
+   Private SoilTemp As Single()                 'The soil temperature (oC)
+
+   Private SoilCarbon As Single()               'Total soil carbon (%)
+   Private SoilPH As Single()                   'The soil pH
+   Private dcd_layer As Integer                 'The layer at which dcd will be applied
+   Private delta_dcd As Single()                'The changes in dcd content for each layer
+   Private sw_fraction As Single()              'The sw fractioin between LL15 and SAT (100)
+
+   Private x_dcd_effect_function As Single()    'The values of x of the function describing the dcd effect
+   Private y_dcd_effect_function As Single()    'The values of y of the function describing the dcd effect
+   Private x_sw_effect_function As Single()     'The values of x of the function describing the effect of soil water on dcd degradation
+   Private y_sw_effect_function As Single()     'The values of y of the function describing the effect of soil water on dcd degradation
+   Private x_temp_effect_function As Single()   'The values of x of the function describing the effect of temperature on dcd degradation
+   Private y_temp_effect_function As Single()   'The values of y of the function describing the effect of temperature on dcd degradation
+   Private x_ph_effect_function As Single()     'The values of x of the function describing the effect of soil pH on dcd degradation
+   Private y_ph_effect_function As Single()     'The values of y of the function describing the effect of soil pH on dcd degradation
+   Private x_carbon_effect_function As Single() 'The values of x of the function describing the effect of soil organic carbon on dcd degradation
+   Private y_carbon_effect_function As Single() 'The values of y of the function describing the effect of soil organic carbon on dcd degradation
+
+   <EventHandler()> Public Sub OnInit2()
+
+      'Initialise the inhibition factor:
+      ReDim dcd_inhibition_effect(dlayer.Length - 1)
+      ReDim dcd_degradation(dlayer.Length - 1)
+      ReDim SoilCarbon(dlayer.Length - 1)
+      ReDim SoilPH(dlayer.Length - 1)
+
+      'Set base ph
+      For z As Integer = 0 To dlayer.length - 1
+         SoilPH(z) = 6  'Soil pH is not simulated so assumed as a constant
+      Next
+      
+      'Get the dcd effect coefficients:
+      x_dcd_effect_function = makeArray(dcd_x)
+      y_dcd_effect_function = makeArray(dcd_y)
+      Call checkArray(x_dcd_effect_function, y_dcd_effect_function)
+      '  This represents the response curve for nitrification inhibition due to the
+      '    presence of dcd. It varies between 0 (no effect) and 1 (total inhibition).
+      '  The x vakues represent the dcd amount in the soil and y the correspondent inhibiton effect.
+
+      'Get the coefficients for the sw effect on dcd degradation:
+      x_sw_effect_function = makeArray(sw_dcd_x)
+      y_sw_effect_function = makeArray(sw_dcd_y)
+      Call checkArray(x_sw_effect_function, y_sw_effect_function)
+      '  This is the effect of water content on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil water content and y the correspondent water effect.
+      
+      'Get the coefficients for the temp effect on dcd degradation:
+      x_temp_effect_function = makeArray(temp_dcd_x)
+      y_temp_effect_function = makeArray(temp_dcd_y)
+      Call checkArray(x_temp_effect_function, y_temp_effect_function)
+      '  This is the effect of soil temperature on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil temperature and y the correspondent effect.
+
+      'Get the coefficients for the pH effect on dcd degradation:
+      x_ph_effect_function = makeArray(ph_dcd_x)
+      y_ph_effect_function = makeArray(ph_dcd_y)
+      Call checkArray(x_ph_effect_function, y_ph_effect_function)
+      '  This is the effect of soil pH on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil pH and y the correspondent pH effect.
+
+      'Get the coefficients for the carbon effect on dcd degradation:
+      x_carbon_effect_function = makeArray(carbon_dcd_x)
+      y_carbon_effect_function = makeArray(carbon_dcd_y)
+      Call checkArray(x_carbon_effect_function, y_carbon_effect_function)
+      '  This is the effect of soil carbon on dcd degradation, it varies between 0 (no degradation) 
+      '    and 1(potential degradation).
+      '  The x vakues represent the soil carbon content and y the correspondent effect.
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim MySoilN As ComponentType = MyPaddock.Component("SoilN")
+      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim SoilWater As Single() = MyPaddock.SoilWater.sw                         'Soil water content ()
+      Dim SoilCarb_tot As Single() = MyPaddock.SoilNitrogen.carbon_tot           'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = MyPaddock.SoilWater.bd                       'Soil bulk density (g/cm3)
+      Dim delta_urea As Single()
+      
+      Try
+         ReDim SoilTemp(ave_soil_temp.Length - 1)
+         ave_soil_temp.CopyTo(SoilTemp, 0) 
+      Catch
+         Dim st As Single() = MyPaddock.SoilNitrogen.st   'Soil temperature from SoilN (oC)
+         ReDim SoilTemp(st.Length - 1)
+         st.CopyTo(SoilTemp, 0) 
+      End Try
+
+      ReDim delta_dcd(dlayer.Length - 1)
+      ReDim delta_urea(dlayer.Length - 1)
+      Dim SWFraction As Single() = CalcSW_Frac(SoilWater)
+      
+      dcd_degraded = 0
+      For z As Integer = 0 To dlayer.length - 1
+         'calculate the dcd_inhibition factor
+         If dcd(z) > 0 Then
+            'Transform dcd from kg/ha to ppm
+            Dim dcd_ppm As Single = dcd(z) * 10 / dlayer(z)    'g/L_soil
+            dcd_ppm = dcd_ppm * 1000 / SoilDensity(z)          'ppm
+            
+            'interpolated value based on the function given in the UI, bounds it between 0 and 1.
+            dcd_inhibition_effect(z) = math.Max(0, math.Min(1, InterpolateVals(dcd_ppm, x_dcd_effect_function, y_dcd_effect_function)))
+
+            'Calculate the dcd degradation factor
+            '       * all factor vary between 0 and 1, except f_temp
+            Dim f_water As Single = math.Max(0, math.Min(1, InterpolateVals(SWFraction(z), x_sw_effect_function, y_sw_effect_function)))
+            Dim f_temp As Single = math.Max(0, math.Min(1, InterpolateVals(SoilTemp(z), x_temp_effect_function, y_temp_effect_function)))
+            Dim f_ph As Single = math.Max(0, math.Min(1, InterpolateVals(Soilph(z), x_ph_effect_function, y_pH_effect_function)))
+            SoilCarbon(z) = SoilCarb_tot(z) / (SoilDensity(z) * dlayer(z) * 100)   'Transform soil carbon from kg/ha into %
+            Dim f_carbon As Single = math.Max(0, math.Min(1, InterpolateVals(SoilCarbon(z), x_carbon_effect_function, y_carbon_effect_function)))
+            dcd_degradation(z) = dcd_degrad_pot * f_water * f_temp * f_ph * f_carbon   '(%)
+            dcd_degradation(z) = Math.Max(0, Math.Min(1, dcd_degradation(z) / 100))    'make sure degradation is 0-1
+            delta_dcd(z) = -dcd(z) * dcd_degradation(z)       '(kg/ha)
+            delta_urea(z) = -delta_dcd(z)    'dcd_degrade into urea
+            
+            dcd_degraded += delta_dcd(z)
+         Else
+            dcd_inhibition_effect(z) = 0
+            dcd_degradation(z) = 0
+         End If
+      Next
+      MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
+      MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+      MyPaddock.SoilNitrogen.dlt_urea = delta_urea
+
+   End Sub
+   
+   Sub checkArray(ByRef MyArray_x As Single(), ByRef MyArray_y As Single()) 
+      
+      'make sure that both x and y arrays have the same length (the smallest is chosen if not)
+      
+      If MyArray_x.Length > MyArray_y.Length Then
+         ReDim Preserve MyArray_x(MyArray_y.Length - 1)
+      ElseIf MyArray_x.Length < MyArray_y.Length Then
+         ReDim Preserve MyArray_y(MyArray_x.Length - 1)
+      End If
+      
+   End Sub
+   
+   Function makeArray(ByVal ArrayString As String) As Single()
+      
+      'Get the string with values from the user interface and put the values in an numeric array
+      
+      Dim MyArray_string As String()
+      Dim MyArray_single As Single()
+      Dim Separator As Char() = " "
+      
+      '1-Split string into array
+      MyArray_string = ArrayString.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+      
+      '2-convert array into type single
+      ReDim MyArray_single(MyArray_string.Length - 1)      
+      For i As Integer = 0 To MyArray_single.length - 1
+         MyArray_single(i) = MyArray_string(i)
+      Next
+      Return MyArray_single
+      
+   End Function
+
+   
+   Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
+      
+      Dim MyPaddock As New PaddockType(Me)
+      Dim SAT As Single() = MyPaddock.SoilWater.sat                       'Soil water content at saturation ()
+      Dim WP As Single() = MyPaddock.SoilWater.ll15                       'Soil water content at lower limit/wilting point ()
+      Dim WFraction(SoilWater.Length -1) As Single
+      
+      For z As Integer = 0 To SoilWater.Length - 1
+         WFraction(z) = (SoilWater(z) - WP(z)) / (SAT(z) - WP(z))
+      Next
+      Return WFraction
+      
+   End Function
+
+   Function InterpolateVals(ByVal my_x As Single, ByVal x_array As Single(), ByVal y_array As Single()) As Single
+      
+      'Find out the value correspondig to my_x in the function described by the x and y arrays
+      
+      If my_x <= x_array(0) Then
+         InterpolateVals = y_array(0)
+      ElseIf my_x >= x_array(x_array.length - 1)
+         InterpolateVals = y_array(y_array.length - 1)
+      Else
+         For i As Integer = 1 To x_array.length - 1
+            If my_x <= x_array(i) Then
+               InterpolateVals = y_array(i - 1) + ((my_x - x_array(i - 1)) * (y_array(i) - y_array(i - 1)) / (x_array(i) - x_array(i - 1)))
+               i = x_array.length 
+            End If
+         Next
+      End If
+
+   End Function
+
+End Class
+    ]]></text>
+        </manager2>
+        <manager2 name="CentrePivotIrrigation">
+          <ui>
+            <Dummy type="category" description="Central Pivot Irrigation Manager" />
+            <DoIrrigate type="yesno" description="Turn irrigation on?">no</DoIrrigate>
+            <Dummy type="category" description="Parameters for all soils" />
+            <Irrigation_start_date type="ddmmmdate" description="Start of irrigation season (dd-mmm):">1-oct</Irrigation_start_date>
+            <Irrigation_end_date type="ddmmmdate" description="End of irrigation season (dd-mmm):">30-apr</Irrigation_end_date>
+            <PAW_depth type="text" description="Enter the depth to which water deficit is computed (mm):">500</PAW_depth>
+            <CritPAWForShallow type="text" description="PAW below which soil is considered &quot;shallow&quot; (mm):">30</CritPAWForShallow>
+            <CritRainToPause type="text" description="Amount of rainfall over the last 3 days to cause pause to irrigator (mm):">30</CritRainToPause>
+            <DaysToPauseOnCritRain type="text" description="Number of days to pause irrigator after critical rainfall (days):">3</DaysToPauseOnCritRain>
+            <Dummy type="category" description="Shallow Soils" />
+            <PercPAWIrrigDeficitShallow type="text" description="Percentage of PAW at which irrigation starts (%):">30</PercPAWIrrigDeficitShallow>
+            <IrrigReturnShallow type="text" description="Irrigation return period (days):">2</IrrigReturnShallow>
+            <IrrigAmtShallow type="text" description="Effective irrigation amount (mm):">10</IrrigAmtShallow>
+            <IrrigEffShallow type="text" description="Irrigation efficiency (%):">75</IrrigEffShallow>
+            <Dummy type="category" description="Deep Soils" />
+            <IrrigDeficitDeep type="text" description="Deficit at which irrigation starts (mm):">40</IrrigDeficitDeep>
+            <PercPAWIrrigDeficitDeep type="text" description="Minimum percentage of PAW to force irrigation to start (%):">30</PercPAWIrrigDeficitDeep>
+            <IrrigReturnDeep type="text" description="Irrigation return period (days):">4</IrrigReturnDeep>
+            <IrrigAmtDeep type="text" description="Effective irrigation amount (mm):">20</IrrigAmtDeep>
+            <IrrigEffDeep type="text" description="Irrigation efficiency for deep soils (%):">85</IrrigEffDeep>
+          </ui>
+          <text><![CDATA[Imports System
+Imports ModelFramework
+
+Public Class Script 
+   Inherits Instance
+   
+   'Parameter variables:
+   <param> Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
+   <param> Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
+   <param> Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
+   <param> Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
+   <param> Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
+
+   <param> Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
+   <param> Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   
+   <param> Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
+   <param> Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
+   <param> Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
+   <param> Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
+   <param> Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
+   <param> Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
+   <param> Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
+   <param> Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
+   <param> Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
+
+   'Variables read from other modules
+   <Input> Private dd_mmm_yyyy As String                    'Today's date
+   <Input> Private dlayer As Single()                       'Thickness of soil layers (mm)
+   <Input> Private rain As Single                           'Rainfall (mm)
+
+   'Output variables
+   <Output><Units("mm")> Public SoilWaterDeficit As Single  'Soil water deficit (mm)
+   <Output><Units("")> Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
+   <Output><Units("")> Public SoilPAW As Single             'The potencial plant available water (mm)
+   <Output><Units("")> Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
+   <Output><Units("")> Public IrrigReturn As Single         'The return period for irrigation
+   <Output><Units("")> Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
+   <Output><Units("")> Public IrrigEff As Single            'The irrigaton efficiency (%)
+   <Output><Units("mm")> Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
+   <Output><Units("")> Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
+
+   'Internal variables
+   Private StartDate As Date                                'The date when irrigation start (in date format)
+   Private EndDate As Date                                  'The date when irrigation finish (in date format)
+   Private RainOnPreviousDays(2) As Single                  'Record the rain of the previous 3 days (mm)
+   
+   <EventHandler()> Public Sub OnInit2()
+
+      'Put the dates into date format:
+      StartDate = Date.Parse(Irrigation_start_date)
+      EndDate = Date.Parse(Irrigation_end_date)
+
+      DaysAfterIrrigation = 5000  'so will reset to 1 on first day
+
+      'Zero rain on previous 3 days
+      RainOnPrevious3Days = 0.0
+      Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim sw_DUL As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
+      Dim sw_LL15 As Single() = MyPaddock.SoilWater.ll15_dep        'sw at LL15 
+      Dim DepthFromSurface As Single = 0
+      For z As Integer = 0 To dlayer.length - 1
+         DepthFromSurface += dlayer(z)
+         If DepthFromSurface <= PAW_depth Then
+            SoilPAW += sw_dul(z) - sw_LL15(z)
+         Else
+            z = dlayer.Length - 1
+         End If
+      Next
+      
+      Console.WriteLine("------- Irrigation Manager Initialisation ------------------------------------")
+      Console.WriteLine("")
+      Console.WriteLine("   Irrigation season between " & StartDate.ToString("dd MMMM") & " and " & EndDate.ToString("dd MMMM"))
+      Console.WriteLine("   Soil Layer to calculate irrigation is  " & PAW_depth & " mm")
+      Console.WriteLine("   With plant available water of " & SoilPAW & " mm")
+      If SoilPAW <= CritPAWForShallow Then
+         Console.WriteLine("   Soil is considered shallow")
+      Else
+         Console.WriteLine("   Soil is considered Deep")
+      End If
+      Console.WriteLine("")
+
+
+   End Sub
+
+   <EventHandler()> Public Sub OnPrepare()
+
+      Dim MyPaddock As New PaddockType(Me)
+      Dim sw_dul As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
+      Dim sw_sw As Single() = MyPaddock.SoilWater.sw_dep          'sw at LL 
+      
+      'Calc the amount of rain today plus the previous two days
+      RainOnPreviousDays(2) = RainOnPreviousDays(1)
+      RainOnPreviousDays(1) = RainOnPreviousDays(0)
+      RainOnPreviousDays(0) = rain
+      RainOnPrevious3Days = RainOnPreviousDays(0) + RainOnPreviousDays(1) + RainOnPreviousDays(2)
+      
+      'Calc the number of days paused after large rainfal
+      If RainOnPrevious3Days >= CritRainToPause Then
+         Days2Pause = DaysToPauseOnCritRain
+      Else
+         Days2Pause = Days2Pause - 1   'Can go negative, thats OK
+      End If
+      
+      'Calc the soil water deficit     
+      Dim DepthFromSurface As Integer = 0
+      SoilWaterDeficit = 0.0         
+      For z As Integer = 0 To dlayer.length - 1
+         DepthFromSurface += dlayer(z)
+         If DepthFromSurface <= PAW_depth Then
+            SoilWaterDeficit += Math.Min(0, sw_sw(z) - sw_dul(z))
+         Else
+            z = dlayer.Length - 1
+         End If
+      Next
+      '      SoilWaterDeficit_nve = -1 * SoilWaterDeficit 
+
+      If DoIrrigate = "yes" Then
+         Dim Today As Date = Date.Parse(dd_mmm_yyyy.Replace("_", "/"))
+         If isBetween(today, StartDate, EndDate) Then
+                  
+            'Decide whether irrigation is needed
+            If SoilPAW <= CritPAWForShallow Then
+               'Use shallow soil parameters
+               IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
+               IrrigReturn = IrrigReturnShallow
+               IrrigAmt = IrrigAmtShallow
+               IrrigEff = IrrigEffShallow            
+            Else
+               'Use deep soil parameters
+               'IrrigDeficit = IrrigDeficitDeep
+               IrrigDeficit = Math.Min(IrrigDeficitDeep, PercPAWIrrigDeficitShallow / 100 * SoilPAW)
+               IrrigReturn = IrrigReturnDeep
+               IrrigAmt = IrrigAmtDeep
+               IrrigEff = IrrigEffDeep
+            End If
+         
+            'Check whether irrigation is paused
+            DaysAfterIrrigation = DaysAfterIrrigation + 1
+            If Days2Pause < 0.5 Then
+               'Irrigation is not paused, check return
+               If DaysAfterIrrigation > IrrigReturn Then
+                  DaysAfterIrrigation = 1  'irrigation is allowed
+
+                  'Check whether soil needs irrigation
+                  If SoilWaterDeficit <= -IrrigDeficit Then
+                     MyPaddock.Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01))
+                  End If
+               End If
+            End If
+            
+         End If  'Today
+      End If  'DoIrrigate
+         
+   End Sub
+
+   Private Function isBetween(ByVal today As Date, ByVal startdate As Date, ByVal enddate As Date) As Boolean
+      
+      'Check whether today is between the start and the end dates.  This is needed because start and end dates don't have year
+      
+      Dim date1 As Date = New Date(today.Year, startdate.Month, startdate.Day)
+      Dim date2 As Date = New Date(today.Year, enddate.Month, enddate.Day)
+
+      If (date1 > date2) Then
+         'Irrigation in the middle of the year - ex: summer in the northern hemisphere
+         Return (today >= date1 Or today <= date2)
+      Else
+         'Irrigation in the end of the year - ex: summer in the southern hemisphere
+         Return (today >= date1 And today <= date2)
+      End If
+      
+   End Function
+   
+End Class
+]]></text>
+        </manager2>
+        <operations>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 1 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 10 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 20 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 40 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>02-Jul</date>
+            <action>fertiliser apply amount = 7, depth = 50 (mm), type = urea_n</action>
+          </operation>
+        </operations>
+      </folder>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">0.8</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <DCD>
+        <d0 type="text" description="dcd diffusivity in water (mm2/d)">108</d0>
+        <layers type="text" description="dcd in each layer (kg/ha)">0 0 0 0 0 0 0 0 0 0 0 0</layers>
+      </DCD>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">20</mass>
+        <cnr type="text" description="C:N ratio of initial residue">17</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <SWIM2ui>
+        <ini name="Ini_SWIM2">
+          <filename>ini_HorotiuCloseSWIMSoil.xml</filename>
+        </ini>
+      </SWIM2ui>
+      <AgPastureSWIM>
+        <Nspecies type="text" description="Number of species">2</Nspecies>
+        <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
+        <cropName type="text" description="Species names">ryegrass whiteclover paspalum</cropName>
+        <micrometType type="text" description="Crop type for MicroMet">grass grass grass</micrometType>
+        <isAnnual type="text" description="Annual species? no=0, yes=1">0 0 0</isAnnual>
+        <isLegume type="text" description="Legume species? no=0, yes=1">0 1 0</isLegume>
+        <photoPath type="text" description="C3 or C4 species? C3=3, C4=4">3 3 4</photoPath>
+        <rootDepth type="text" description="Root depth">850  325 1000</rootDepth>
+        <growthTmin type="text" description="Minimum temperature for growth">2 3 10</growthTmin>
+        <growthTmax type="text" description="Maximum temperature for growth">32 32 40</growthTmax>
+        <growthTopt type="text" description="Optimum temperature for growth">20 20 22</growthTopt>
+        <growthTq type="text" description="Curvature of growth response to temperature">1.5 1.5 1.2</growthTq>
+        <massFluxTmin type="text" description="Minimum temperature for mass flux">2 2 5</massFluxTmin>
+        <massFluxTopt type="text" description="Optimum temperature for mass flux">20 20 22</massFluxTopt>
+        <massFluxW0 type="text" description="Scale factor for response of mass flux to soil moisture">2 2 2</massFluxW0>
+        <massFluxWopt type="text" description="Optimum soil moisture for mass flux">0.5 0.5 0.5</massFluxWopt>
+        <heatOnsetT type="text" description="Heat effects- Onset temperature">28 28 35</heatOnsetT>
+        <heatFullT type="text" description="Heat effects- Full temperature">35 35 40</heatFullT>
+        <heatSumT type="text" description="Heat effects- Temperature sum for recovery">30 30 50</heatSumT>
+        <coldOnsetT type="text" description="Cold effects- Onset temperature">0 0 8</coldOnsetT>
+        <coldFullT type="text" description="Cold effects- Full temperature">-3 -3 3</coldFullT>
+        <coldSumT type="text" description="Cold effects- Temperature sum for recovery">20 20 50</coldSumT>
+        <Pm type="text" description="Reference CO2 assimilation rate (mg CO2/m2.s)">1 1 1.2</Pm>
+        <maintRespiration type="text" description="Maintenance respiration coefficient (%)">3 3 3</maintRespiration>
+        <growthEfficiency type="text" description="Growth efficiency">0.75 0.75 0.75</growthEfficiency>
+        <SLA type="text" description="Specific leaf area">20 20 20</SLA>
+        <lightExtCoeff type="text" description="Light extinction coefficient">0.5 0.8 0.6</lightExtCoeff>
+        <stockParameter type="text" description="Stock influence parameter">0.05 0.05 0.05</stockParameter>
+        <maxRootFraction type="text" description="Maximum biomass fraction allocated to root">0.2 0.2 0.2</maxRootFraction>
+        <leafRate type="text" description="Reference leaf appearance rate without stress">3 3 3.5</leafRate>
+        <fLeaf type="text" description="Reference growth partition to leaves">0.7 0.7 0.7</fLeaf>
+        <fStolon type="text" description="Reference growth partition to stolon">0.0 0.2 0.0</fStolon>
+        <digestLive type="text" description="Digestibility of live plant material">0.6 0.6 0.6</digestLive>
+        <digestDead type="text" description="Digestibility of dead plant material">0.2 0.2 0.2</digestDead>
+        <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1500 500 150</dmtotal>
+        <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250 50 10</dmlitter>
+        <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">300 100 25</dmgreenmin>
+        <NcleafOpt type="text" description="N concentration - leaf optimum">4.0 4.5 3.0</NcleafOpt>
+        <NcleafMax type="text" description="N concentration - leaf luxury">5.0 5.5 3.5</NcleafMax>
+        <NcleafMin type="text" description="N concentration - leaf scenescent">1.2 2.0 0.5</NcleafMin>
+        <NcstemFr type="text" description="Stem N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcstemFr>
+        <NcstolFr type="text" description="Stolon N concentration as fraction of leaf N concentration">0.0 0.5 0.0</NcstolFr>
+        <NcrootFr type="text" description="Root N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcrootFr>
+        <NMinFix type="text" description="Minimum N fixation (when soil N is sufficient)">0.0 0.2 0.0</NMinFix>
+        <NMaxFix type="text" description="Maximum N fixation (when soil N is unavailable)">0.0 0.6 0.0</NMaxFix>
+        <CO2PmaxScale type="text" description="CO2 - Scale factor for CO2 effect on photosynthesis">700 700 150</CO2PmaxScale>
+        <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600 600 600</CO2NScale>
+        <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7 0.7 0.7</CO2NMin>
+        <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2 2 2</CO2NCurvature>
+        <Frgr type="text" description="Relative growth factor">1 1 1</Frgr>
+        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.106  0.112  0.112  0.110  0.106  0.097  0.085  0.070  0.055  0.042  0.032  0.023  0.017  0.012  0.007  0.004  0.003  0.002  0.001  0.001  0.001  0.002</rlvp>
+        <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
+      </AgPastureSWIM>
+      <outputfile name="ForAnalysis">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="nh4()" />
+          <variable name="no3()" />
+          <variable name="dcd()" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" array="End of day" />
+        </events>
+      </outputfile>
+      <SoilTemp2 name="SoilTemp2 (withSWIM)">
+        <maxt_time_default type="text" description="hours">14</maxt_time_default>
+        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+        <clay type="text" description="The clay content for each soil layer (%):">21  21  21  21  21  21  21  21  21  21  21  21  21  22  23  24  24  24  24  24  24  22  21  19  19  19  19  19  19  19   19</clay>
+      </SoilTemp2>
+      <SoilNui>
+        <category type="category" description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">30</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">13</soil_cn>
+        <category type="category" description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">1.680  1.676  1.673  1.669  1.665  1.661  1.658  1.654  1.650  1.646  1.622  1.529  1.399  1.265  1.114  0.974  0.857  0.760  0.678  0.610  0.554  0.496  0.442  0.395  0.357  0.330  0.312  0.299  0.291  0.285  0.283</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.080  0.079  0.077  0.073  0.065  0.056  0.045  0.034  0.025  0.017  0.010  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category type="category" description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">20</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">100</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">30</opt_temp>
+      </SoilNui>
+    </area>
+  </simulation>
+  <GraphReport>
+    <Graph name="nh4">
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>nh4()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="no3">
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>no3()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="dcd">
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>dcd()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </GraphReport>
+</folder>

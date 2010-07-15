@@ -1,0 +1,353 @@
+<folder version="23" name="simulations">
+  <simulation name="Easy">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\Goond.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1970</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">14/07/1970</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">P21_Base.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <SWIM2uiForDean>
+        <ini name="Ini_SWIM2">
+          <filename>ini_SWIM(LUCI_Base).xml</filename>
+        </ini>
+      </SWIM2uiForDean>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
+        <cnr type="text" description="C:N ratio of initial residue">20</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <SoilNui>
+        <category description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the C:N ratio of dead roots:">30</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">13</soil_cn>
+        <category description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0  6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">1.680  1.676  1.673  1.669  1.665  1.661  1.658  1.654  1.650  1.646  1.622  1.529  1.399  1.265  1.114  0.974  0.857  0.760  0.678  0.610  0.554  0.496  0.442  0.395  0.357  0.330  0.312  0.299  0.291  0.285  0.283</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.080  0.079  0.077  0.073  0.065  0.056  0.045  0.034  0.025  0.017  0.010  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77  1.53  1.32  1.17  1.02  0.90  0.78  0.63  0.60  0.60</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59  0.51  0.44  0.39  0.34  0.30  0.26  0.21  0.20  0.20</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
+        <category description="Other parameters" />
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">20</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">100</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">30</opt_temp>
+      </SoilNui>
+      <AgPastureSWIM>
+        <Nspecies type="text" description="Number of species">2</Nspecies>
+        <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
+        <cropName type="text" description="Species names">ryegrass whiteclover paspalum</cropName>
+        <micrometType type="text" description="Crop type for MicroMet">grass grass grass</micrometType>
+        <isAnnual type="text" description="Annual species? no=0, yes=1">0 0 0</isAnnual>
+        <isLegume type="text" description="Legume species? no=0, yes=1">0 1 0</isLegume>
+        <photoPath type="text" description="C3 or C4 species? C3=3, C4=4">3 3 4</photoPath>
+        <rootDepth type="text" description="Root depth">850  325 1000</rootDepth>
+        <growthTmin type="text" description="Minimum temperature for growth">2 3 10</growthTmin>
+        <growthTmax type="text" description="Maximum temperature for growth">32 32 40</growthTmax>
+        <growthTopt type="text" description="Optimum temperature for growth">20 20 22</growthTopt>
+        <growthTq type="text" description="Curvature of growth response to temperature">1.5 1.5 1.2</growthTq>
+        <massFluxTmin type="text" description="Minimum temperature for mass flux">2 2 5</massFluxTmin>
+        <massFluxTopt type="text" description="Optimum temperature for mass flux">20 20 22</massFluxTopt>
+        <massFluxW0 type="text" description="Scale factor for response of mass flux to soil moisture">2 2 2</massFluxW0>
+        <massFluxWopt type="text" description="Optimum soil moisture for mass flux">0.5 0.5 0.5</massFluxWopt>
+        <heatOnsetT type="text" description="Heat effects- Onset temperature">28 28 35</heatOnsetT>
+        <heatFullT type="text" description="Heat effects- Full temperature">35 35 40</heatFullT>
+        <heatSumT type="text" description="Heat effects- Temperature sum for recovery">30 30 50</heatSumT>
+        <coldOnsetT type="text" description="Cold effects- Onset temperature">0 0 8</coldOnsetT>
+        <coldFullT type="text" description="Cold effects- Full temperature">-3 -3 3</coldFullT>
+        <coldSumT type="text" description="Cold effects- Temperature sum for recovery">20 20 50</coldSumT>
+        <Pm type="text" description="Reference CO2 assimilation rate (mg CO2/m2.s)">1 1 1.2</Pm>
+        <maintRespiration type="text" description="Maintenance respiration coefficient (%)">3 3 3</maintRespiration>
+        <growthEfficiency type="text" description="Growth efficiency">0.75 0.75 0.75</growthEfficiency>
+        <SLA type="text" description="Specific leaf area">20 20 20</SLA>
+        <lightExtCoeff type="text" description="Light extinction coefficient">0.5 0.8 0.6</lightExtCoeff>
+        <stockParameter type="text" description="Stock influence parameter">0.05 0.05 0.05</stockParameter>
+        <maxRootFraction type="text" description="Maximum biomass fraction allocated to root">0.2 0.2 0.2</maxRootFraction>
+        <leafRate type="text" description="Reference leaf appearance rate without stress">3 3 3.5</leafRate>
+        <fLeaf type="text" description="Reference growth partition to leaves">0.7 0.7 0.7</fLeaf>
+        <fStolon type="text" description="Reference growth partition to stolon">0.0 0.2 0.0</fStolon>
+        <digestLive type="text" description="Digestibility of live plant material">0.6 0.6 0.6</digestLive>
+        <digestDead type="text" description="Digestibility of dead plant material">0.2 0.2 0.2</digestDead>
+        <dmtotal type="text" description="Initial shoot dry matter (kg/ha)">1500 500 150</dmtotal>
+        <dmlitter type="text" description="Initial litter dry matter (kg/ha)">250 50 10</dmlitter>
+        <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">300 100 25</dmgreenmin>
+        <NcleafOpt type="text" description="N concentration - leaf optimum">4.0 4.5 3.0</NcleafOpt>
+        <NcleafMax type="text" description="N concentration - leaf luxury">5.0 5.5 3.5</NcleafMax>
+        <NcleafMin type="text" description="N concentration - leaf scenescent">1.2 2.0 0.5</NcleafMin>
+        <NcstemFr type="text" description="Stem N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcstemFr>
+        <NcstolFr type="text" description="Stolon N concentration as fraction of leaf N concentration">0.0 0.5 0.0</NcstolFr>
+        <NcrootFr type="text" description="Root N concentration as fraction of leaf N concentration">0.5 0.5 0.5</NcrootFr>
+        <NMinFix type="text" description="Minimum N fixation (when soil N is sufficient)">0.0 0.2 0.0</NMinFix>
+        <NMaxFix type="text" description="Maximum N fixation (when soil N is unavailable)">0.0 0.6 0.0</NMaxFix>
+        <CO2PmaxScale type="text" description="CO2 - Scale factor for CO2 effect on photosynthesis">700 700 150</CO2PmaxScale>
+        <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600 600 600</CO2NScale>
+        <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7 0.7 0.7</CO2NMin>
+        <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2 2 2</CO2NCurvature>
+        <Frgr type="text" description="Relative growth factor">1 1 1</Frgr>
+        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.106    0.112    0.112    0.110    0.106    0.097    0.085    0.070    0.055    0.042    0.032    0.023    0.017    0.012    0.007    0.004    0.003    0.002    0.001    0.001    0.001    0.001    0.001    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000</rlvp>
+        <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
+      </AgPastureSWIM>
+      <SWIM2ui>
+        <ini name="Ini_SWIM2">
+          <filename>Easy_SWIM_Soil.xml</filename>
+        </ini>
+      </SWIM2ui>
+      <SoilTemp2 name="SoilTemp2 (withSWIM)">
+        <maxt_time_default type="text" description="hours">14</maxt_time_default>
+        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+        <clay type="text" description="The clay content for each soil layer (%):">21  21  21  21  21  21  21  21  21  21  21  21  21  22  23  24  24  24  24  24  24  22  21  19  19  19  19  19  19  19   19</clay>
+      </SoilTemp2>
+      <outputfile name="Results">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="leach_no3 as NO3Flow(150cm)" />
+          <variable name="removed_n as RemovedN" />
+          <variable name="NitrogenUptake as UptakeN" />
+          <variable name="ave_soil_temp" array="Yes" description="Average soil surface temperature during the Apsim timestep. (oC)" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" array="End of day" />
+        </events>
+      </outputfile>
+      <manager name="Cut or graze AgPasture">
+        <ui>
+          <category description="Cut or graze rotation" />
+          <CutPasture_start_date type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">1/01/1900</CutPasture_start_date>
+          <CutPasture_end_date type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">1/12/2010</CutPasture_end_date>
+          <AgPasture_type type="list" listvalues="AgPasture,AgPastureSWIM,ryegrass_clover,ryegrass,clover" description="Enter pasture type">AgPastureSWIM</AgPasture_type>
+          <rotation_type type="list" listvalues="Fixed intervals,Target mass" description="Enter the rotation type: ">Fixed intervals</rotation_type>
+          <cut_interval type="text" description="Enter the interval between cuts/grazings (days):">21</cut_interval>
+          <upper_threshold type="text" description="Enter the upper mass threshold (kg/ha):">2500</upper_threshold>
+          <lower_threshold type="text" description="Enter the lower mass threshold (kg/ha):">1250</lower_threshold>
+          <category description="Management of cut/grazed material" />
+          <treatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut/grazed material:">Return as residue</treatment_type>
+          <remove_dm_frac type="text" description="Enter fraction of dm that is removed from field (0-1):">0.98</remove_dm_frac>
+          <remove_n_frac type="text" description="Enter fraction of N that is removed from field (0-1):">0.98</remove_n_frac>
+          <dung_fraction type="text" description="Enter proportion of N in dung of the returned amount (0-1):">0</dung_fraction>
+        </ui>
+        <script name="init">
+          <text>Start_sim_date = today
+days_after_cut = [cut_interval] - 1
+Do_Cut = 'FALSE'
+Has_Cut = 'FALSE'</text>
+          <event>init</event>
+        </script>
+        <script name="start_of_day">
+          <text><![CDATA[if today >= date('[CutPasture_start_date]') and today <= date('[CutPasture_end_date]') then
+
+   preharvest_dm = [AgPasture_type].AboveGroundWt
+   preharvest_n = [AgPasture_type].AboveGroundN
+   harvested_dm =0
+   harvested_n = 0
+   removed_dm = 0.0
+   removed_n = 0.0
+   return_dm = 0.0
+   return_n = 0.0
+   GrowthRateCalc = 0
+   n_conc_total = 0
+   days_after_cut = days_after_cut + 1
+   Has_Cut = 'FALSE'
+
+   if '[rotation_type]' = 'Fixed intervals' then
+      if days_after_cut = [cut_interval] then
+         Do_Cut = 'TRUE'
+      else
+         Do_Cut = 'FALSE'
+      endif
+   elseif '[rotation_type]' = 'Target mass' then
+      if preharvest_dm >= [upper_threshold] then
+         Do_Cut = 'TRUE'
+      else
+         Do_Cut = 'FALSE'
+      endif
+   endif
+
+endif   ! of today
+
+If Do_Cut = 'TRUE' then
+   
+!- Cut or graze ---------------------------------------------------------------------------------------
+
+   if preharvest_dm > [lower_threshold] then
+      [AgPasture_type] graze type = 'residue', amount = [lower_threshold]
+      Has_Cut = 'TRUE'
+      harvested_dm = [AgPasture_type].HarvestWt
+      harvested_n = [AgPasture_type].HarvestN
+      GrowthRateCalc = harvested_dm/days_after_cut
+      if harvested_dm > 0 then
+         n_conc_removed = harvested_n*100/harvested_dm
+      endif
+
+!- Residue management -------------------------------------------------------------------------
+      removed_dm =  harvested_dm* [remove_dm_frac]
+      removed_n = harvested_n* [remove_n_frac]
+      return_dm = harvested_dm - removed_dm 
+      return_n = harvested_n - removed_n 
+
+      if '[treatment_type]' = 'Return as residue' and [remove_dm_frac] < 1 then
+         'surface organic matter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+      elseif '[treatment_type]' = 'Return as dung & urine' then
+         ! Is advised that dung and urine return should be done using other manager, 'Urine_patch' or 'Apply or return N and water'
+         N_on_dung = return_n * [dung_fraction]
+         N_on_urine = return_n - N_on_dung
+         'surface organic matter' add_surfaceom name = dung, type = manure, mass =  return_dm (kg/ha), n = N_on_dung (kg/ha), cpr = 0
+         if N_on_urine > 0 then
+            fertiliser apply amount = N_on_urine (kg/ha), depth = 20 (mm), type = urea_n ()
+         endif
+      endif
+   endif
+   days_after_cut = 0
+
+endif  ! of Do_Cut
+]]></text>
+          <event>start_of_day</event>
+        </script>
+      </manager>
+      <operations name="Operations1">
+        <operation condition="start_of_day">
+          <date>20-Jan</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Jan</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Jan</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Feb</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Feb</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Feb</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Mar</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Mar</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Mar</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Apr</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Apr</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Apr</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-May</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-May</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-May</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Aug</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Aug</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Aug</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Sep</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Sep</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Sep</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Oct</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Oct</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Oct</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Nov</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Nov</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Nov</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Dec</date>
+          <action>fertiliser apply amount = 5, depth = 1 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Dec</date>
+          <action>fertiliser apply amount = 5, depth = 10 (mm), type = urea_n</action>
+        </operation>
+        <operation condition="start_of_day">
+          <date>20-Dec</date>
+          <action>fertiliser apply amount = 5, depth = 20 (mm), type = urea_n</action>
+        </operation>
+      </operations>
+    </area>
+  </simulation>
+</folder>

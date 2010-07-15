@@ -1,0 +1,1189 @@
+<!-- _________________________________________________________________________________________________________
+  This files is a copy of the SWIMs xml file rearranged by R Cichota.
+  It contains changes on the layering and description of horizons for a particular soil
+  It is to be used as an ini adding to SWIM for use in the graphic user interface.
+ _____________________________________________________________________________________________________________  
+  
+  This file describes the soil from Data2, P21 project (NZ)  -  prepared for apsim validation using lysimeters data
+ __________________________________________________________________________________________________________ -->  
+
+
+<Type name="SWIM2ui">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/apswim/docs/apswim_science.htm</Documentation>
+      <Documentation name="Technical specification">../apsim/apswim/docs/SWIMv21UserManual.pdf</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\note_pinned32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\note_pinned16.png</SmallIcon>
+      <drops>
+         <drop>toolbox</drop>
+         <drop>area</drop>
+         <drop>simulation</drop>
+         <drop>folder</drop>
+      </drops>
+      
+     <variables name="SWIM2ui" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+     <events name="SWIM events" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+     <ApsimToSim>
+        <component name="[SWIM2ui.name]" executable="%apsim%\Model\SWIM2.dll">
+           <executable>%apsim%\Model\SWIM2.dll</executable>
+           <initdata>
+              [ModeL]
+           </initdata>
+        </component>
+     </ApsimToSim>
+   </MetaData>
+   <Model>
+      <!-- * * * * *  These are the General Paramenters (arranged by Rogerio) * * * * *   -->
+      <!-- ***  Convergence  ***  -->
+      <max_iterations description="number of iterations before timestep is halved">50</max_iterations>
+      <!-- ***  solute balance  ****************
+      Numerical Error can result in negative solute concentration
+      We allert the user according to the level of loss of solute
+      balance due to trucation of negative values.            -->
+      <negative_conc_fatal units="kg/ha">0.001</negative_conc_fatal>
+      <negative_conc_warn units="kg/ha">0.0000000001</negative_conc_warn>
+      <!-- ****  soilwat_eeq_fac  **************** -->
+      <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+      <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+      <!-- *** soilwat_pot_evapotranspiration  ************** -->
+      <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+      <!-- Bare soil albedo must not exceed this value.       -->
+      <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+      <!-- max_bitesize = .02                                 -->
+      <max_bitesize>0.1</max_bitesize>
+      <extra_supply_fraction>0.5</extra_supply_fraction>
+      <trf_fasw>0 1</trf_fasw>
+      <trf_value>1  1</trf_value>
+      <!-- trf_fasw = 0.0  0.5  1.0 
+           trf_value= 0.0  1.0  1.0                           -->
+      <min_total_root_length>0.01</min_total_root_length>
+      <!-- ***  Residue and Crop Cover Effects    **************
+      The effect of residue and canopy cover is implemented as in the soilwat model.
+      These can be turn off for compatibility with SWIM standalone. -->
+      <cover_effects>on</cover_effects>
+      <A_to_evap_fact description="converts residue specfic area 'A' to">0.44</A_to_evap_fact>
+      <!--    a coef. in exp effect on reducing pot. soil evap for wt. of mixed residues.
+      0.44 = 0.00022/0.0005 DMS 1st approx. 6/95              -->
+      <canopy_eos_coef description="coef. in exp effect of canopy on">1.7</canopy_eos_coef>
+      <!-- reducing pot. soil evap. = 1.7 Adams, Arkin & Ritchie 1976
+      Set the default rainfall and evaporation daily time courses these are used
+      if the user does not specify them in the met file       -->
+      <default_rain_time>0:00</default_rain_time>
+      <default_rain_duration>1440.0</default_rain_duration>
+      <default_evap_time>6:00</default_evap_time>
+      <default_evap_duration>720.</default_evap_duration>
+      <!-- ***  Bounds  ***                                   -->
+      <lb_exco>0</lb_exco>
+      <ub_exco>15000</ub_exco>
+      <lb_fip>0</lb_fip>
+      <ub_fip>100</ub_fip>
+      <lb_dis>0</lb_dis>
+      <ub_dis>30</ub_dis>
+      <lb_slupf>0</lb_slupf>
+      <ub_slupf>1</ub_slupf>
+      <lb_slos>0</lb_slos>
+      <ub_slos>10</ub_slos>
+      <lb_d0>0</lb_d0>
+      <ub_d0>1</ub_d0>
+      <lb_a>0</lb_a>
+      <ub_a>100</ub_a>
+      <lb_dthc>0</lb_dthc>
+      <ub_dthc>1</ub_dthc>
+      <lb_dthp>0</lb_dthp>
+      <ub_dthp>10</ub_dthp>
+      <lb_disp>0</lb_disp>
+      <ub_disp>5</ub_disp>
+      <lb_solute>0</lb_solute>
+      <ub_solute>100000</ub_solute>
+      
+      <!-- * * * * *  These are the Soil Specific Paramenters (arranged by RCichota) * * * * *   -->
+      <init>
+         <slmin>-3.0</slmin>
+         <slmax>7.0</slmax>
+         <bypass_flow>off</bypass_flow>
+         <runoff>1</runoff>
+         <top_boundary_condition>0</top_boundary_condition>
+         <bottom_boundary_condition>0</bottom_boundary_condition>
+         <vapour_conductivity>on</vapour_conductivity>
+         <run_solutes>urea no3 nh4 dcd</run_solutes>
+         <extra_solute_supply>on</extra_solute_supply>
+         <solute_exclusion>on</solute_exclusion>
+         <subsurface_drain>off</subsurface_drain>
+
+          <!--  This describes the whole profile (link layers with horizons) and initial water status  -->
+
+         <layer_no>  (0)      (1)      (2)      (3)      (4)      (5)      (6)      (7)      (8)      (9)      (10)     (11)     (12)     (13)     (14)     (15)     (16)     (17)     (18)     (19)     (20)     (21)     (22)     (23)     (24)     (25)     (26)     (27)     (28)     (29)     (30)     </layer_no>
+         <x>         0        10       20       30       50       70       90       110      140      160      190      210      250      270      330      370      430      470      530      570      630      670      780      820      980      1020     1180     1220     1380     1420     1500      </x>
+         <soil_type> H1_HortC H1_HortC H1_HortC H1_HortC H1_HortC H1_HortC H1_HortC H1_HortC H1_HortC H1_HortC -        H2_HortC H2_HortC H2_HortC H2_HortC -        H3_HortC -        H4_HortC H4_HortC -        H5_HortC H5_HortC H5_HortC -        H6_HortC -        H7_HortC H7_HortC H7_HortC H7_HortC  </soil_type>
+         <psi>      -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0       </psi>
+
+      </init>
+      <solute>
+         <solute_name>      no3      nh4      urea     dcd      br       cl       orgn    </solute_name>
+         <slupf>            1.0      1.0      0.0      0.0      0.0      0.0      0.0     </slupf>
+         <slos>             0.0      0.0      0.0      0.0      0.0      0.0      0.0     </slos>
+         <d0>               0.06840  0.07056  0.07150  0.07700  0.06000  0.06000  0.07900 </d0>
+         <a>                0.0      0.0      0.0      0.0      0.0      0.0      0.0     </a>
+         <dthc>             0.0      0.0      0.0      0.0      0.0      0.0      0.0     </dthc>
+         <dthp>             1.0      1.0      1.0      1.0      1.0      1.0      1.0     </dthp>
+         <disp>             1.0      1.0      1.0      1.0      1.0      1.0      1.0     </disp>
+         <ground_water_conc>0.0      0.0      0.0      0.0      0.0      0.0      0.0     </ground_water_conc>
+         
+         <!--  Where:
+          - slupf: factor for solute uptake (1 = free uptake, 0 = no uptake);
+          - slos: factor for osmotic effect at soil-root interface (0 = no effect);
+          - d0: molecular diffusion coefficient in free water (cm2/h);
+          - a: empirical constant to calculate tortuosity;
+          - dthc: empirical constant to calculate tortuosity;
+          - dthp: empirical constant to calculate tortuosity;
+          - disp: empirical constant to calculate hydrodynamic dispersion;
+          - ground_water_conc: solute concentration in the ground water (ppm);
+          -->
+      </solute>
+      <calc>
+         <dtmin>0.0</dtmin>
+         <dtmax>30.0</dtmax>
+         <ersoil>0.0001</ersoil>
+         <ernode>0.0001</ernode>
+         <slcerr>0.0001</slcerr>
+         <errex>0.01</errex>
+         <dppl>2</dppl>
+         <dpnl>1</dpnl>
+         <max_water_increment>0.5</max_water_increment>
+         <swt>0</swt>
+         <slswt>0.0</slswt>
+
+         <!--  Where:
+          - dtmin: the mininum dt (time step) for calculations (min);
+          - dtmax: the maximum allowed dt for calculations (min);
+          - ersoil: the maximum allowed water balance error for the whole soil (cm/h) - recomended values 10E-4 to 10E-6. Larger values may be used for unstable sims;
+          - ernode: the maximum allowed water balance error for each soil node (cm/h)- recomended values 10E-4 to 10E-6. Larger values may be used for unstable sims;
+          - errex: relative fraction of water uptake from which the rate becomes constant () - recomended value around 10E-2, and not much smaller;
+          - dppl and dpnl: upper and lower limits for the tranformed variable 'p'. Ross (1990) recomends 2 and 1;
+          - max_water_increment: a value used to calculate the value of dt for each step (mm), also called dw. dt = dw/max(qw);
+          - swt: spatial weighting factor for calculations of Richards eq. (should vary between 0.5 (central differences) and 1 (fully upstream). Use zero to allow SWIM to decide, central diffs are preffered);
+          - slswt: spatial weighting factor for calculations of solute's ADE (should vary similarly to swt);
+          -->
+      </calc>
+      <climate>
+         <rainfall_source>apsim</rainfall_source>
+         <evap_source>calc</evap_source>
+         <salb>0.23</salb>
+      </climate>
+      <runoff>
+         <maximum_surface_storage>20</maximum_surface_storage>
+         <minimum_surface_storage>10</minimum_surface_storage>
+         <initial_surface_storage>15</initial_surface_storage>
+         <precipitation_constant>50</precipitation_constant>
+         <runoff_rate_factor>0.2</runoff_rate_factor>
+         <runoff_rate_power>2</runoff_rate_power>
+      </runoff>
+      <bottom_boundary>
+         <constant_gradient>0</constant_gradient>
+         <constant_potential>100.</constant_potential>
+      </bottom_boundary>
+      <top_boundary>
+         <maximum_conductance>4.0</maximum_conductance>
+         <minimum_conductance>0.02</minimum_conductance>
+         <initial_conductance>4.0</initial_conductance>
+         <precipitation_constant>25</precipitation_constant>
+      </top_boundary>
+      <bypass_flow>
+         <depth>11</depth>
+         <conductance>0.10</conductance>
+         <storage>0.10</storage>
+      </bypass_flow>
+      <crop>
+         <crop_name>           AgPasture  grass    ryegrass  clover  paspalum  wheat   lucerne  </crop_name>
+         <min_xylem_potential> -15000     -15000   -1500     -1500   -15000    -15000  -1500  (cm)</min_xylem_potential>
+         <root_radius>         0.25       0.25     0.25      0.25    0.25      0.25    0.25   (mm)</root_radius>
+         <root_conductance>    1.4D-7     1.4D-7   1.4D-7    1.4D-7  1.4D-7    1.4D-7  1.4D-7  </root_conductance>
+      </crop>
+      <drain>
+         <drain_depth>450. (mm)</drain_depth>
+         <drain_spacing>2000 (mm)</drain_spacing>
+         <drain_radius>35 (mm)</drain_radius>
+         <klat>1000. (mm/d)</klat>
+         <imperm_depth>800.</imperm_depth>
+      </drain>
+
+      <H1_Lsmr>
+         <!-- Lismore , Ap - depth range: 0.00-0.17 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -6.326270D-02 +1.375214D-01 +2.875214D-01 +9.375214D-01 +1.305829D+00 +1.466051D+00 +3.714980D+00 +6.641797D+00 +7.000000D+00</sl>
+         <wc>+4.750000D-01 +4.750000D-01 +4.750000D-01 +4.749993D-01 +4.749929D-01 +4.749666D-01 +4.749158D-01 +4.748320D-01 +4.716483D-01 +4.567240D-01 +4.368176D-01 +1.910434D-01 +7.821416D-02 +7.159800D-02</wc>
+         <wcd>-2.058105D-10 -5.169727D-09 -1.298577D-07 -3.261877D-06 -3.261877D-05 -1.537950D-04 -3.877131D-04 -7.735893D-04 -1.543514D-02 -8.416391D-02 -1.676328D-01 -6.635936D-02 -1.986707D-02 -1.714083D-02</wcd>
+         <hkl>+1.958419D+00 +1.958391D+00 +1.957691D+00 +1.940101D+00 +1.777108D+00 +1.171848D+00 +6.531173D-01 +6.055173D-01 +5.369755D-01 +2.101846D-01 -2.439537D-01 -9.053332D+00 -2.051810D+01 -2.192123D+01</hkl>
+         <hkld>-5.328412D-06 -1.338433D-04 -3.361738D-03 -8.428027D-02 -8.241156D-01 -3.031744D+00 -1.065903D+00 -2.907688D-02 -3.322340D-01 -1.874947D+00 -3.917144D+00 -3.917144D+00 -3.917144D+00 -3.917144D+00</hkld>
+         <bulk_density>1.2</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 40.97 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>6.49 6.49 6.49 6.49 6.49 6.49 6.49 1</dis>
+      </H1_Lsmr>
+      <H2_Lsmr>
+         <!-- Lismore , Bw1 - depth range: 0.17-0.28 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -5.000000D-02 +1.443554D-01 +2.943554D-01 +9.943554D-01 +1.363282D+00 +1.567524D+00 +4.079654D+00 +7.000000D+00</sl>
+         <wc>+4.360000D-01 +4.360000D-01 +4.360000D-01 +4.359996D-01 +4.359963D-01 +4.359812D-01 +4.359540D-01 +4.359082D-01 +4.336946D-01 +4.233935D-01 +4.037094D-01 +1.671852D-01 +7.279142D-02</wc>
+         <wcd>-1.089618D-10 -2.736996D-09 -6.875023D-08 -1.726928D-06 -1.726928D-05 -8.655141D-05 -2.118288D-04 -4.226540D-04 -1.061659D-02 -5.805488D-02 -1.487037D-01 -5.472636D-02 -1.707049D-02</wcd>
+         <hkl>+1.770247D+00 +1.770225D+00 +1.769677D+00 +1.755923D+00 +1.628226D+00 +1.104545D+00 +5.653862D-01 +4.604109D-01 +3.908879D-01 +7.037018D-02 -5.661454D-01 -1.299274D+01 -2.743864D+01</hkl>
+         <hkld>-4.166010D-06 -1.046452D-04 -2.628397D-03 -6.591292D-02 -6.471267D-01 -2.690588D+00 -1.839744D+00 -7.993668D-02 -3.261016D-01 -1.829921D+00 -4.934108D+00 -4.946639D+00 -4.946639D+00</hkld>
+         <bulk_density>1.35</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 47.63 0 0 0 0 0 0</exco>
+         <fip>1 0.43 1 1 1 1 1 1</fip>
+         <dis>6.81 6.81 6.81 6.81 6.81 6.81 6.81 1</dis>
+      </H2_Lsmr>
+      <H3_Lsmr>
+         <!-- Lismore , Bw2 - depth range: 0.28-0.36 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.500000D-01 -2.296699D-01 -3.938127D-02 +1.106187D-01 +7.606187D-01 +1.124616D+00 +1.259648D+00 +4.064974D+00 +7.000000D+00</sl>
+         <wc>+4.180000D-01 +4.180000D-01 +4.179999D-01 +4.179986D-01 +4.179890D-01 +4.179696D-01 +4.179269D-01 +4.178542D-01 +4.150911D-01 +4.024503D-01 +3.891307D-01 +1.677898D-01 +8.057630D-02</wc>
+         <wcd>-4.034007D-10 -1.013297D-08 -2.545286D-07 -6.393470D-06 -5.078514D-05 -1.400867D-04 -3.364915D-04 -6.713888D-04 -1.339597D-02 -7.160902D-02 -1.226352D-01 -4.705217D-02 -1.727069D-02</wcd>
+         <hkl>+1.340957D+00 +1.340896D+00 +1.339375D+00 +1.301267D+00 +1.033526D+00 +5.687767D-01 +1.363421D-01 +9.369917D-02 +2.731935D-02 -2.813260D-01 -6.180929D-01 -9.476734D+00 -1.874494D+01</hkl>
+         <hkld>-1.156615D-05 -2.905261D-04 -7.296145D-03 -1.822560D-01 -1.365849D+00 -2.826911D+00 -9.336370D-01 -2.845296D-02 -3.216857D-01 -1.777954D+00 -3.157793D+00 -3.157793D+00 -3.157793D+00</hkld>
+         <bulk_density>1.42</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 46.02 0 0 0 0 0 0</exco>
+         <fip>1 0.44 1 1 1 1 1 1</fip>
+         <dis>7.36 7.36 7.36 7.36 7.36 7.36 7.36 1</dis>
+      </H3_Lsmr>
+      <H4_Lsmr>
+         <!-- Lismore , 2Bw3 - depth range: 0.36-0.47 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.500000D-01 -2.044216D-01 -2.977552D-02 +1.702245D-01 +6.807645D-01 +9.308995D-01 +3.341824D+00 +6.885848D+00 +7.000000D+00</sl>
+         <wc>+1.530000D-01 +1.530000D-01 +1.529999D-01 +1.529965D-01 +1.529719D-01 +1.529130D-01 +1.528056D-01 +1.525117D-01 +1.478736D-01 +1.368266D-01 +4.358561D-02 +1.336967D-02 +1.305235D-02</wc>
+         <wcd>-1.026894D-09 -2.579442D-08 -6.479266D-07 -1.627518D-05 -1.292783D-04 -4.005738D-04 -8.953127D-04 -2.248924D-03 -2.360776D-02 -6.874487D-02 -1.898931D-02 -2.865383D-03 -2.696051D-03</wcd>
+         <hkl>+1.459134D+00 +1.459079D+00 +1.457710D+00 +1.423409D+00 +1.182686D+00 +6.965316D-01 +3.282553D-01 +2.750236D-01 +1.209721D-01 -2.674895D-01 -6.342013D+00 -1.527148D+01 -1.555909D+01</hkl>
+         <hkld>-1.041238D-05 -2.615449D-04 -6.568232D-03 -1.640161D-01 -1.227402D+00 -2.666529D+00 -9.624269D-01 -7.507096D-02 -7.969162D-01 -2.519583D+00 -2.519583D+00 -2.519583D+00 -2.519583D+00</hkld>
+         <bulk_density>0.288</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 45.84 0 0 0 0 0 0</exco>
+         <fip>1 0.46 1 1 1 1 1 1</fip>
+         <dis>5.4 5.4 5.4 5.4 5.4 5.4 5.4 1</dis>
+      </H4_Lsmr>
+      <H5_Lsmr>
+         <!-- Lismore , 2Bw4 - depth range: 0.47-0.70 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.500000D-01 -2.515480D-01 -1.050537D-01 +4.494625D-02 +6.449463D-01 +9.702374D-01 +1.126008D+00 +3.216730D+00 +6.361760D+00 +7.000000D+00</sl>
+         <wc>+1.480000D-01 +1.480000D-01 +1.479999D-01 +1.479975D-01 +1.479802D-01 +1.479506D-01 +1.479031D-01 +1.478066D-01 +1.449350D-01 +1.342910D-01 +1.229580D-01 +4.019671D-02 +1.415022D-02 +1.277436D-02</wc>
+         <wcd>-7.240657D-10 -1.818771D-08 -4.568546D-07 -1.147567D-05 -9.115447D-05 -2.273432D-04 -4.463448D-04 -8.905750D-04 -1.411466D-02 -6.313246D-02 -7.127855D-02 -1.905467D-02 -2.618866D-03 -1.750673D-03</wcd>
+         <hkl>+1.664263D+00 +1.664186D+00 +1.662260D+00 +1.614069D+00 +1.279559D+00 +8.128491D-01 +4.884567D-01 +4.323208D-01 +3.360295D-01 -3.784429D-02 -4.728756D-01 -6.475751D+00 -1.550575D+01 -1.733827D+01</hkl>
+         <hkld>-1.464043D-05 -3.677469D-04 -9.234818D-03 -2.302582D-01 -1.678640D+00 -2.838301D+00 -1.126062D+00 -5.042241D-02 -4.759562D-01 -2.311184D+00 -2.871198D+00 -2.871198D+00 -2.871198D+00 -2.871198D+00</hkld>
+         <bulk_density>0.436</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 31.63 0 0 0 0 0 0</exco>
+         <fip>1 0.47 1 1 1 1 1 1</fip>
+         <dis>3.78 3.78 3.78 3.78 3.78 3.78 3.78 1</dis>
+      </H5_Lsmr>
+      <H6_Lsmr>
+         <!-- Lismore , 2BC1 - depth range: 0.70-0.95 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -1.509690D-01 +7.612116D-02 +2.761212D-01 +7.786203D-01 +1.058669D+00 +2.403975D+00 +4.577542D+00 +7.000000D+00</sl>
+         <wc>+1.020000D-01 +1.020000D-01 +1.019999D-01 +1.019976D-01 +1.019764D-01 +1.019258D-01 +1.017890D-01 +1.014699D-01 +9.663743D-02 +8.256284D-02 +2.406663D-02 +8.542296D-03 +7.105838D-03</wc>
+         <wcd>-6.845078D-10 -1.719406D-08 -4.318952D-07 -1.084872D-05 -1.084872D-04 -3.415391D-04 -9.718980D-04 -2.441297D-03 -2.469557D-02 -8.356862D-02 -1.887481D-02 -1.705700D-03 -1.170518D-04</wcd>
+         <hkl>+1.929974D+00 +1.929943D+00 +1.929164D+00 +1.909648D+00 +1.731719D+00 +1.361324D+00 +9.284216D-01 +8.789041D-01 +7.313022D-01 +2.512762D-01 -3.930029D+00 -1.068562D+01 -1.821479D+01</hkl>
+         <hkld>-5.920556D-06 -1.487166D-04 -3.734922D-03 -9.338547D-02 -8.840643D-01 -2.154604D+00 -8.457267D-01 -7.463353D-02 -7.742574D-01 -3.108069D+00 -3.108069D+00 -3.108069D+00 -3.108069D+00</hkld>
+         <bulk_density>0.336</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 17.26 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>1.84 1.84 1.84 1.84 1.84 1.84 1.84 1</dis>
+      </H6_Lsmr>
+      <H7_Lsmr>
+         <!-- Lismore , 2BC2 - depth range: 0.95-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -2.289835D-15 +2.000000D-01 +4.500000D-01 +8.765358D-01 +1.090121D+00 +2.263604D+00 +4.320807D+00 +6.658779D+00 +7.000000D+00</sl>
+         <wc>+7.100000D-02 +7.100000D-02 +7.099993D-02 +7.099827D-02 +7.097828D-02 +7.089114D-02 +7.072656D-02 +7.013532D-02 +6.483506D-02 +5.454993D-02 +1.487460D-02 +6.451139D-03 +6.015272D-03 +6.009317D-03</wc>
+         <wcd>-5.013061D-10 -1.259224D-08 -3.163028D-07 -7.945166D-06 -1.000237D-04 -5.013061D-04 -1.259224D-03 -3.982016D-03 -2.839060D-02 -7.030839D-02 -1.285191D-02 -6.533245D-04 -2.211600D-05 -1.349280D-05</wcd>
+         <hkl>+2.019078D+00 +2.019064D+00 +2.018701D+00 +2.009608D+00 +1.902150D+00 +1.503661D+00 +1.163327D+00 +1.087467D+00 +8.896621D-01 +4.490588D-01 -3.447790D+00 -1.027926D+01 -1.804309D+01 -1.917620D+01</hkl>
+         <hkld>-2.756218D-06 -6.923274D-05 -1.738844D-03 -4.354823D-02 -5.261225D-01 -1.876464D+00 -9.835297D-01 -1.429897D-01 -1.106513D+00 -3.320755D+00 -3.320755D+00 -3.320755D+00 -3.320755D+00 -3.320755D+00</hkld>
+         <bulk_density>0.295</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 13.13 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>1.25 1.25 1.25 1.25 1.25 1.25 1.25 1</dis>
+      </H7_Lsmr>
+      <H1_Hort1>
+         <!-- Horotiu-1, Ap1 - depth range: 0.00-0.06 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -1.416271D-02 +1.801414D-01 +3.301414D-01 +1.030141D+00 +1.389018D+00 +1.546338D+00 +4.352796D+00 +7.000000D+00</sl>
+         <wc>+5.980000D-01 +5.980000D-01 +5.980000D-01 +5.979995D-01 +5.979954D-01 +5.979729D-01 +5.979338D-01 +5.978679D-01 +5.946808D-01 +5.806707D-01 +5.622400D-01 +2.554279D-01 +1.302488D-01</wc>
+         <wcd>-1.330426D-10 -3.341878D-09 -8.394418D-08 -2.108582D-06 -2.108582D-05 -1.246422D-04 -3.049814D-04 -6.085178D-04 -1.528528D-02 -7.980441D-02 -1.629258D-01 -6.900649D-02 -3.068751D-02</wcd>
+         <hkl>+1.921399D+00 +1.921378D+00 +1.920843D+00 +1.907416D+00 +1.782724D+00 +1.169685D+00 +6.677617D-01 +6.079596D-01 +5.382966D-01 +2.294581D-01 -1.890152D-01 -1.074961D+01 -2.071094D+01</hkl>
+         <hkld>-4.066653D-06 -1.021494D-04 -2.565716D-03 -6.434425D-02 -6.321175D-01 -2.903690D+00 -1.248778D+00 -3.474309D-02 -3.327497D-01 -1.781486D+00 -3.762962D+00 -3.762962D+00 -3.762962D+00</hkld>
+         <bulk_density>0.865</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 16.98 0 0 0 0 0 0</exco>
+         <fip>1 0.71 1 1 1 1 1 1</fip>
+         <dis>7.79 7.79 7.79 7.79 7.79 7.79 7.79 1</dis>
+      </H1_Hort1>
+      <H2_Hort1>
+         <!-- Horotiu-1, Ap2 - depth range: 0.06-0.17 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -5.226597D-02 +1.980145D-01 +3.480145D-01 +9.980145D-01 +1.365024D+00 +1.525046D+00 +3.696912D+00 +6.472616D+00 +7.000000D+00</sl>
+         <wc>+5.870000D-01 +5.870000D-01 +5.870000D-01 +5.869993D-01 +5.869933D-01 +5.869668D-01 +5.868947D-01 +5.867900D-01 +5.828095D-01 +5.642865D-01 +5.396685D-01 +2.454807D-01 +1.017101D-01 +8.818255D-02</wc>
+         <wcd>-1.947521D-10 -4.891952D-09 -1.228803D-07 -3.086613D-06 -3.086613D-05 -1.530912D-04 -4.847425D-04 -9.671884D-04 -1.929795D-02 -1.045996D-01 -2.020236D-01 -8.541274D-02 -2.842461D-02 -2.306254D-02</wcd>
+         <hkl>+1.684548D+00 +1.684528D+00 +1.684021D+00 +1.671290D+00 +1.553222D+00 +1.076933D+00 +4.936676D-01 +4.517795D-01 +3.852840D-01 +7.066739D-02 -3.647906D-01 -8.311973D+00 -1.846869D+01 -2.039847D+01</hkl>
+         <hkld>-3.856391D-06 -9.686788D-05 -2.433034D-03 -6.100156D-02 -5.977389D-01 -2.454192D+00 -9.144786D-01 -2.840381D-02 -3.222563D-01 -1.807264D+00 -3.659150D+00 -3.659150D+00 -3.659150D+00 -3.659150D+00</hkld>
+         <bulk_density>0.835</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 24.53 0 0 0 0 0 0</exco>
+         <fip>1 0.62 1 1 1 1 1 1</fip>
+         <dis>6.21 6.21 6.21 6.21 6.21 6.21 6.21 1</dis>
+      </H2_Hort1>
+      <H3_Hort1>
+         <!-- Horotiu-1, B/A - depth range: 0.17-0.31 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -5.296151D-02 +1.539290D-01 +3.039290D-01 +1.003929D+00 +1.355660D+00 +1.508178D+00 +3.501923D+00 +6.027779D+00 +7.000000D+00</sl>
+         <wc>+6.000000D-01 +6.000000D-01 +6.000000D-01 +5.999992D-01 +5.999922D-01 +5.999614D-01 +5.998999D-01 +5.998003D-01 +5.949837D-01 +5.746577D-01 +5.488967D-01 +2.488647D-01 +1.033183D-01 +7.812772D-02</wc>
+         <wcd>-2.268672D-10 -5.698645D-09 -1.431435D-07 -3.595602D-06 -3.595602D-05 -1.777660D-04 -4.609243D-04 -9.196650D-04 -2.310094D-02 -1.167054D-01 -2.246716D-01 -9.476394D-02 -3.174532D-02 -2.083832D-02</wcd>
+         <hkl>+1.730070D+00 +1.730048D+00 +1.729485D+00 +1.715359D+00 +1.584318D+00 +1.059204D+00 +5.152256D-01 +4.393402D-01 +3.607127D-01 +2.504403D-02 -4.188533D-01 -8.327477D+00 -1.834683D+01 -2.220336D+01</hkl>
+         <hkld>-4.278770D-06 -1.074775D-04 -2.699524D-03 -6.768776D-02 -6.635303D-01 -2.684486D+00 -1.463394D+00 -5.079633D-02 -3.745912D-01 -1.963049D+00 -3.966717D+00 -3.966717D+00 -3.966717D+00 -3.966717D+00</hkld>
+         <bulk_density>0.805</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 29.28 0 0 0 0 0 0</exco>
+         <fip>1 0.58 1 1 1 1 1 1</fip>
+         <dis>5.79 5.79 5.79 5.79 5.79 5.79 5.79 1</dis>
+      </H3_Hort1>
+      <H4_Hort1>
+         <!-- Horotiu-1, Bw1 - depth range: 0.31-0.55 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -1.500000D-01 +5.000000D-02 +6.500000D-01 +9.815853D-01 +1.170499D+00 +3.985816D+00 +7.000000D+00</sl>
+         <wc>+6.060000D-01 +6.060000D-01 +6.059998D-01 +6.059956D-01 +6.059451D-01 +6.058622D-01 +6.056538D-01 +6.005130D-01 +5.807358D-01 +5.518575D-01 +2.510620D-01 +1.181304D-01</wc>
+         <wcd>-1.266426D-09 -3.181119D-08 -7.990610D-07 -2.007151D-05 -2.526853D-04 -6.347167D-04 -1.594336D-03 -2.526853D-02 -1.163457D-01 -1.592184D-01 -6.744588D-02 -2.688853D-02</wcd>
+         <hkl>+1.707976D+00 +1.707903D+00 +1.706075D+00 +1.660502D+00 +1.187480D+00 +8.415197D-01 +7.804611D-01 +6.788845D-01 +2.799861D-01 -3.289863D-01 -1.004065D+01 -2.043833D+01</hkl>
+         <hkld>-1.390209D-05 -3.491968D-04 -8.766414D-03 -2.168863D-01 -1.904068D+00 -9.879447D-01 -3.832257D-02 -5.007715D-01 -2.388539D+00 -3.449583D+00 -3.449583D+00 -3.449583D+00</hkld>
+         <bulk_density>0.83</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 51.55 0 0 0 0 0 0</exco>
+         <fip>1 0.43 1 1 1 1 1 1</fip>
+         <dis>8.61 8.61 8.61 8.61 8.61 8.61 8.61 1</dis>
+      </H4_Hort1>
+      <H5_Hort1>
+         <!-- Horotiu-1, Bw2 - depth range: 0.55-0.75 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -4.601631D-01 -2.426302D-01 -9.263021D-02 +6.073698D-01 +9.641851D-01 +1.189791D+00 +4.043525D+00 +7.000000D+00</sl>
+         <wc>+6.070000D-01 +6.070000D-01 +6.069998D-01 +6.069966D-01 +6.069672D-01 +6.069108D-01 +6.068220D-01 +6.025291D-01 +5.838781D-01 +5.502662D-01 +2.498181D-01 +1.200390D-01</wc>
+         <wcd>-1.255736D-09 -3.154267D-08 -7.923161D-07 -1.580878D-05 -1.508593D-04 -4.108072D-04 -8.196681D-04 -2.058913D-02 -1.064801D-01 -1.570679D-01 -6.636292D-02 -2.718271D-02</wcd>
+         <hkl>+1.751805D+00 +1.751674D+00 +1.748387D+00 +1.683865D+00 +1.152508D+00 +6.245044D-01 +5.484485D-01 +4.753844D-01 +1.562032D-01 -4.471392D-01 -8.750170D+00 -1.735213D+01</hkl>
+         <hkld>-2.499229D-05 -6.277652D-04 -1.576075D-02 -3.110770D-01 -2.405525D+00 -1.401721D+00 -5.662467D-02 -3.465785D-01 -1.852745D+00 -2.909532D+00 -2.909532D+00 -2.909532D+00</hkld>
+         <bulk_density>0.82</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 37.33 0 0 0 0 0 0</exco>
+         <fip>1 0.51 1 1 1 1 1 1</fip>
+         <dis>7.73 7.73 7.73 7.73 7.73 7.73 7.73 1</dis>
+      </H5_Hort1>
+      <H6_Hort1>
+         <!-- Horotiu-1, Bw3 - depth range: 0.75-0.95 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -5.500000D-01 -3.000000D-01 -1.500000D-01 +5.500000D-01 +8.894377D-01 +1.022605D+00 +4.099823D+00 +7.000000D+00</sl>
+         <wc>+6.130000D-01 +6.130000D-01 +6.129998D-01 +6.129959D-01 +6.129740D-01 +6.129176D-01 +6.128357D-01 +6.088727D-01 +5.932965D-01 +5.767868D-01 +2.634199D-01 +1.346469D-01</wc>
+         <wcd>-1.509776D-09 -3.792387D-08 -9.526045D-07 -1.900696D-05 -1.199258D-04 -3.792387D-04 -7.566807D-04 -1.900696D-02 -9.073774D-02 -1.512522D-01 -6.456861D-02 -2.894743D-02</wcd>
+         <hkl>+1.896503D+00 +1.896340D+00 +1.892250D+00 +1.812427D+00 +1.411513D+00 +9.378233D-01 +8.874389D-01 +7.990592D-01 +4.485132D-01 +6.621228D-02 -1.087336D+01 -2.118355D+01</hkl>
+         <hkld>-3.110932D-05 -7.813988D-04 -1.960762D-02 -3.825321D-01 -1.917966D+00 -9.380922D-01 -4.442330D-02 -4.219764D-01 -2.070187D+00 -3.555022D+00 -3.555022D+00 -3.555022D+00</hkld>
+         <bulk_density>0.815</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 56.51 0 0 0 0 0 0</exco>
+         <fip>1 0.4 1 1 1 1 1 1</fip>
+         <dis>9.58 9.58 9.58 9.58 9.58 9.58 9.58 1</dis>
+      </H6_Hort1>
+      <H7_Hort1>
+         <!-- Horotiu-1, 2Cg - depth range: 0.95-1.15 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -1.500000D-01 -2.289835D-15 +7.000000D-01 +1.084644D+00 +1.307747D+00 +3.831853D+00 +7.000000D+00</sl>
+         <wc>+5.220000D-01 +5.220000D-01 +5.219999D-01 +5.219986D-01 +5.219824D-01 +5.219557D-01 +5.219116D-01 +5.197805D-01 +5.089521D-01 +4.855733D-01 +2.163077D-01 +9.021630D-02</wc>
+         <wcd>-4.069106D-10 -1.022113D-08 -2.567433D-07 -6.449099D-06 -8.118935D-05 -2.039384D-04 -4.069106D-04 -1.022113D-02 -6.008786D-02 -1.611680D-01 -6.611866D-02 -2.160903D-02</wcd>
+         <hkl>+2.855395D+00 +2.855318D+00 +2.853380D+00 +2.805009D+00 +2.292499D+00 +1.899735D+00 +1.835469D+00 +1.773316D+00 +1.459388D+00 +7.567383D-01 -1.178021D+01 -2.751604D+01</hkl>
+         <hkld>-1.473546D-05 -3.701311D-04 -9.292879D-03 -2.305057D-01 -2.115332D+00 -1.127803D+00 -5.608837D-02 -2.930405D-01 -1.761590D+00 -4.966886D+00 -4.966886D+00 -4.966886D+00</hkld>
+         <bulk_density>0.944</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 34.12 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>6.08 6.08 6.08 6.08 6.08 6.08 6.08 1</dis>
+      </H7_Hort1>
+      <H8_Hort1>
+         <!-- Horotiu-1, 2C - depth range: 1.15-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -5.000000D-02 +1.352395D-01 +3.852395D-01 +8.132621D-01 +1.033849D+00 +1.919073D+00 +3.127870D+00 +5.087797D+00 +7.000000D+00</sl>
+         <wc>+2.970000D-01 +2.970000D-01 +2.969997D-01 +2.969916D-01 +2.968942D-01 +2.965788D-01 +2.960115D-01 +2.938741D-01 +2.745602D-01 +2.351356D-01 +9.239729D-02 +3.750961D-02 +2.333482D-02 +2.212195D-02</wc>
+         <wcd>-2.441971D-09 -6.133955D-08 -1.540780D-06 -3.870264D-05 -4.872373D-04 -1.939727D-03 -4.552180D-03 -1.439526D-02 -1.033391D-01 -2.667189D-01 -8.809552D-02 -1.940880D-02 -1.670402D-03 -1.526091D-04</wcd>
+         <hkl>+2.902293D+00 +2.902273D+00 +2.901784D+00 +2.889510D+00 +2.744644D+00 +2.337265D+00 +1.963461D+00 +1.864935D+00 +1.679938D+00 +1.253900D+00 -1.526858D+00 -5.324058D+00 -1.148079D+01 -1.748760D+01</hkl>
+         <hkld>-3.720223D-06 -9.344733D-05 -2.347011D-03 -5.877549D-02 -7.079044D-01 -2.117584D+00 -1.318893D+00 -1.340511D-01 -1.027098D+00 -3.141304D+00 -3.141304D+00 -3.141304D+00 -3.141304D+00 -3.141304D+00</hkld>
+         <bulk_density>1.063</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 14.52 0 0 0 0 0 0</exco>
+         <fip>1 0.47 1 1 1 1 1 1</fip>
+         <dis>1.27 1.27 1.27 1.27 1.27 1.27 1.27 1</dis>
+      </H8_Hort1>
+      <H1_Orop>
+         <!-- Oropi, Ap - depth range: 0.00-0.20 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -5.439393D-02 +1.169061D-01 +2.669061D-01 +9.669061D-01 +1.323660D+00 +1.478528D+00 +3.529621D+00 +6.157686D+00 +7.000000D+00</sl>
+         <wc>+5.400000D-01 +5.400000D-01 +5.400000D-01 +5.399992D-01 +5.399921D-01 +5.399611D-01 +5.399144D-01 +5.398291D-01 +5.357077D-01 +5.178080D-01 +4.947457D-01 +2.215360D-01 +9.151699D-02 +7.274675D-02</wc>
+         <wcd>-2.302093D-10 -5.782597D-09 -1.452523D-07 -3.648572D-06 -3.648572D-05 -1.791988D-04 -3.943983D-04 -7.869281D-04 -1.976674D-02 -1.021979D-01 -2.008477D-01 -8.277552D-02 -2.658560D-02 -1.847373D-02</wcd>
+         <hkl>+1.967589D+00 +1.967565D+00 +1.966964D+00 +1.951879D+00 +1.812424D+00 +1.275482D+00 +8.544377D-01 +7.650783D-01 +6.919116D-01 +3.739373D-01 -5.340134D-02 -7.874734D+00 -1.789620D+01 -2.110816D+01</hkl>
+         <hkld>-4.570651D-06 -1.148091D-04 -2.883608D-03 -7.226153D-02 -7.035952D-01 -2.624312D+00 -1.561827D+00 -7.297944D-02 -3.448890D-01 -1.848575D+00 -3.813251D+00 -3.813251D+00 -3.813251D+00 -3.813251D+00</hkld>
+         <bulk_density>0.91</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 18.43 0 0 0 0 0 0</exco>
+         <fip>1 0.62 1 1 1 1 1 1</fip>
+         <dis>4.85 4.85 4.85 4.85 4.85 4.85 4.85 1</dis>
+      </H1_Orop>
+      <H2_Orop>
+         <!-- Oropi, Bw - depth range: 0.20-0.35 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.500000D-01 -1.670893D-01 +2.784611D-02 +1.778461D-01 +8.278461D-01 +1.166977D+00 +1.348961D+00 +3.072961D+00 +5.302412D+00 +7.000000D+00</sl>
+         <wc>+5.420000D-01 +5.420000D-01 +5.419999D-01 +5.419971D-01 +5.419771D-01 +5.419157D-01 +5.417932D-01 +5.415875D-01 +5.337688D-01 +5.027605D-01 +4.616882D-01 +2.044066D-01 +8.402013D-02 +5.212985D-02</wc>
+         <wcd>-8.375568D-10 -2.103848D-08 -5.284626D-07 -1.327438D-05 -1.054422D-04 -3.880036D-04 -9.521524D-04 -1.899794D-03 -3.790587D-02 -1.807046D-01 -2.269404D-01 -9.168629D-02 -2.839862D-02 -1.163376D-02</wcd>
+         <hkl>+1.823746D+00 +1.823707D+00 +1.822726D+00 +1.798133D+00 +1.624141D+00 +1.159260D+00 +7.385655D-01 +6.833744D-01 +5.954046D-01 +2.349948D-01 -2.806147D-01 -5.422308D+00 -1.207147D+01 -1.713439D+01</hkl>
+         <hkld>-7.460383D-06 -1.873950D-04 -4.706317D-03 -1.176770D-01 -8.962948D-01 -2.476053D+00 -1.071401D+00 -4.617716D-02 -4.268767D-01 -2.168479D+00 -2.982420D+00 -2.982420D+00 -2.982420D+00 -2.982420D+00</hkld>
+         <bulk_density>0.93</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 24.52 0 0 0 0 0 0</exco>
+         <fip>1 0.55 1 1 1 1 1 1</fip>
+         <dis>3.8 3.8 3.8 3.8 3.8 3.8 3.8 1</dis>
+      </H2_Orop>
+      <H3_Orop>
+         <!-- Oropi, 2Bw - depth range: 0.35-0.65 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -1.500000D-01 -2.289835D-15 +1.500000D-01 +8.500000D-01 +1.206441D+00 +1.350130D+00 +3.570131D+00 +6.398522D+00 +7.000000D+00</sl>
+         <wc>+5.920000D-01 +5.920000D-01 +5.919999D-01 +5.919985D-01 +5.919853D-01 +5.919536D-01 +5.919073D-01 +5.918151D-01 +5.873558D-01 +5.680233D-01 +5.456294D-01 +2.482931D-01 +1.030198D-01 +8.784964D-02</wc>
+         <wcd>-4.267304D-10 -1.071898D-08 -2.692487D-07 -6.763221D-06 -6.763221D-05 -2.138718D-04 -4.267304D-04 -8.514391D-04 -2.138718D-02 -1.104168D-01 -1.996436D-01 -8.451965D-02 -2.827211D-02 -2.239847D-02</wcd>
+         <hkl>+1.589087D+00 +1.589048D+00 +1.588049D+00 +1.563053D+00 +1.339275D+00 +9.209237D-01 +6.758493D-01 +6.282911D-01 +5.562740D-01 +2.403692D-01 -1.400689D-01 -7.831869D+00 -1.763160D+01 -1.971558D+01</hkl>
+         <hkld>-7.593838D-06 -1.907464D-04 -4.789975D-03 -1.194383D-01 -1.088258D+00 -2.091311D+00 -8.783141D-01 -4.123516D-02 -3.433823D-01 -1.836500D+00 -3.464772D+00 -3.464772D+00 -3.464772D+00 -3.464772D+00</hkld>
+         <bulk_density>0.81</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 31.69 0 0 0 0 0 0</exco>
+         <fip>1 0.52 1 1 1 1 1 1</fip>
+         <dis>5.77 5.77 5.77 5.77 5.77 5.77 5.77 1</dis>
+      </H3_Orop>
+      <H4_Orop>
+         <!-- Oropi, 3Bw - depth range: 0.65-1.00 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -1.500000D-01 -2.289835D-15 +7.000000D-01 +1.050120D+00 +1.260421D+00 +3.624443D+00 +6.646252D+00 +7.000000D+00</sl>
+         <wc>+5.930000D-01 +5.930000D-01 +5.929999D-01 +5.929964D-01 +5.929640D-01 +5.928861D-01 +5.927727D-01 +5.872904D-01 +5.643682D-01 +5.271560D-01 +2.380020D-01 +9.828823D-02 +8.994032D-02</wc>
+         <wcd>-1.046777D-09 -2.629386D-08 -6.604719D-07 -1.659030D-05 -1.659030D-04 -5.246315D-04 -1.046777D-03 -2.629386D-02 -1.318543D-01 -1.832470D-01 -7.666757D-02 -2.517039D-02 -2.209343D-02</wcd>
+         <hkl>+1.389960D+00 +1.389878D+00 +1.387818D+00 +1.336609D+00 +9.237160D-01 +5.539379D-01 +5.245912D-01 +4.430680D-01 +9.462996D-02 -5.041783D-01 -7.732856D+00 -1.697291D+01 -1.805459D+01</hkl>
+         <hkld>-1.566249D-05 -3.934121D-04 -9.874615D-03 -2.430885D-01 -1.724256D+00 -5.756479D-01 -2.845447D-02 -3.914136D-01 -2.046995D+00 -3.057788D+00 -3.057788D+00 -3.057788D+00 -3.057788D+00</hkld>
+         <bulk_density>0.82</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 37.28 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>6.15 6.15 6.15 6.15 6.15 6.15 6.15 1</dis>
+      </H4_Orop>
+      <H5_Orop>
+         <!-- Oropi, 4Bw - depth range: 1.00-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 -5.000000D-02 +1.500000D-01 +3.000000D-01 +1.000000D+00 +1.350000D+00 +1.618372D+00 +4.092463D+00 +7.000000D+00</sl>
+         <wc>+6.220000D-01 +6.220000D-01 +6.220000D-01 +6.219996D-01 +6.219939D-01 +6.219807D-01 +6.219514D-01 +6.219030D-01 +6.195646D-01 +6.097939D-01 +5.800045D-01 +2.652254D-01 +1.166915D-01</wc>
+         <wcd>-1.121557D-10 -2.817224D-09 -7.076548D-08 -1.777548D-06 -2.817224D-05 -8.908846D-05 -2.237801D-04 -4.465000D-04 -1.121557D-02 -5.621102D-02 -1.888225D-01 -8.075542D-02 -2.976212D-02</wcd>
+         <hkl>+1.033905D+00 +1.033887D+00 +1.033432D+00 +1.022030D+00 +8.568859D-01 +5.743582D-01 +3.707656D-01 +3.489923D-01 +2.836064D-01 +8.742367D-03 -8.588068D-01 -1.482910D+01 -3.124691D+01</hkl>
+         <hkld>-3.463232D-06 -8.699151D-05 -2.184528D-03 -5.449051D-02 -7.554266D-01 -1.398209D+00 -4.121176D-01 -2.348583D-02 -3.128907D-01 -1.594595D+00 -5.646638D+00 -5.646638D+00 -5.646638D+00</hkld>
+         <bulk_density>0.74</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 45.26 0 0 0 0 0 0</exco>
+         <fip>1 0.45 1 1 1 1 1 1</fip>
+         <dis>7.55 7.55 7.55 7.55 7.55 7.55 7.55 1</dis>
+      </H5_Orop>
+      <H1_Hrhr>
+         <!-- Harihari, Apg1 - depth range: 0.00-0.15 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.500000D-01 +1.500000D-01 +3.500000D-01 +5.000000D-01 +6.000000D-01 +1.300000D+00 +1.641734D+00 +1.889280D+00 +1.988045D+00 +3.823996D+00 +6.149511D+00 +7.000000D+00</sl>
+         <wc>+6.200000D-01 +6.200000D-01 +6.200000D-01 +6.199999D-01 +6.199975D-01 +6.199844D-01 +6.199608D-01 +6.199218D-01 +6.198761D-01 +6.168880D-01 +6.049855D-01 +5.730535D-01 +5.490341D-01 +2.487641D-01 +1.032322D-01 +7.907774D-02</wc>
+         <wcd>-3.599890D-11 -9.042516D-10 -2.271377D-08 -5.705442D-07 -1.138385D-05 -7.182726D-05 -1.804219D-04 -3.599890D-04 -5.705442D-04 -1.433142D-02 -6.914450D-02 -2.161964D-01 -2.442510D-01 -1.029477D-01 -3.446217D-02 -2.309538D-02</wcd>
+         <hkl>+2.001621D+00 +2.001615D+00 +2.001472D+00 +1.997869D+00 +1.926983D+00 +1.542675D+00 +9.652473D-01 +5.871930D-01 +5.475309D-01 +4.615193D-01 +1.206860D-01 -8.297727D-01 -1.582302D+00 -1.595435D+01 -3.415876D+01 -4.081650D+01</hkl>
+         <hkld>-1.090561D-06 -2.739365D-05 -6.880891D-04 -1.727877D-02 -3.425095D-01 -2.027060D+00 -3.498880D+00 -1.002174D+00 -7.912107D-02 -4.062105D-01 -2.000405D+00 -6.622514D+00 -7.828122D+00 -7.828122D+00 -7.828122D+00 -7.828122D+00</hkld>
+         <bulk_density>0.9</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 24.42 0 0 0 0 0 0</exco>
+         <fip>1 0.6 1 1 1 1 1 1</fip>
+         <dis>5.62 5.62 5.62 5.62 5.62 5.62 5.62 1</dis>
+      </H1_Hrhr>
+      <H2_Hrhr>
+         <!-- Harihari, Apg2 - depth range: 0.15-0.25 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.500000D-01 +2.500000D-01 +4.500000D-01 +6.000000D-01 +1.300000D+00 +1.654324D+00 +1.878406D+00 +3.648989D+00 +5.912742D+00 +7.000000D+00</sl>
+         <wc>+5.780000D-01 +5.780000D-01 +5.780000D-01 +5.779998D-01 +5.779970D-01 +5.779698D-01 +5.779241D-01 +5.778485D-01 +5.741947D-01 +5.585447D-01 +5.234254D-01 +2.361403D-01 +9.753407D-02 +6.951439D-02</wc>
+         <wcd>-4.401856D-11 -1.105696D-09 -2.777384D-08 -6.976472D-07 -1.391989D-05 -1.391989D-04 -3.496519D-04 -6.976472D-04 -1.752411D-02 -8.959518D-02 -2.432357D-01 -1.016175D-01 -3.329115D-02 -1.947875D-02</wcd>
+         <hkl>+1.880430D+00 +1.880424D+00 +1.880268D+00 +1.876347D+00 +1.799261D+00 +1.124682D+00 +5.462520D-01 +4.727967D-01 +3.812276D-01 -1.547596D-02 -9.502196D-01 -1.281627D+01 -2.798744D+01 -3.527400D+01</hkl>
+         <hkld>-1.186893D-06 -2.981338D-05 -7.488672D-04 -1.880372D-02 -3.721787D-01 -3.032779D+00 -1.510846D+00 -4.408191D-02 -4.377899D-01 -2.304555D+00 -6.701777D+00 -6.701777D+00 -6.701777D+00 -6.701777D+00</hkld>
+         <bulk_density>0.94</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 21.28 0 0 0 0 0 0</exco>
+         <fip>1 0.61 1 1 1 1 1 1</fip>
+         <dis>4.9 4.9 4.9 4.9 4.9 4.9 4.9 1</dis>
+      </H2_Hrhr>
+      <H3_Hrhr>
+         <!-- Harihari, Bg1 - depth range: 0.25-0.35 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +4.500000D-01 +6.500000D-01 +8.000000D-01 +1.450000D+00 +1.787619D+00 +2.026704D+00 +2.147581D+00 +3.794870D+00 +5.933577D+00 +7.000000D+00</sl>
+         <wc>+5.300000D-01 +5.300000D-01 +5.300000D-01 +5.299999D-01 +5.299985D-01 +5.299884D-01 +5.299708D-01 +5.299266D-01 +5.298536D-01 +5.270793D-01 +5.161730D-01 +4.884187D-01 +4.605949D-01 +2.044873D-01 +8.400408D-02 +6.009234D-02</wc>
+         <wcd>-1.693304D-11 -4.253388D-10 -1.068403D-08 -2.683707D-07 -6.741166D-06 -5.354699D-05 -1.345040D-04 -3.378587D-04 -6.741166D-04 -1.345040D-02 -6.367549D-02 -1.914887D-01 -2.361232D-01 -9.568274D-02 -2.961395D-02 -1.650159D-02</wcd>
+         <hkl>+1.593020D+00 +1.593017D+00 +1.592951D+00 +1.591273D+00 +1.549234D+00 +1.252434D+00 +7.939164D-01 +2.637969D-01 +2.145183D-01 +1.279879D-01 -2.158873D-01 -1.127025D+00 -2.097588D+00 -1.609935D+01 -3.427810D+01 -4.334257D+01</hkl>
+         <hkld>-5.076666D-07 -1.275200D-05 -3.203137D-04 -8.044549D-03 -2.011642D-01 -1.521409D+00 -3.094391D+00 -1.100694D+00 -3.348298D-02 -4.194232D-01 -2.030133D+00 -6.474763D+00 -8.499881D+00 -8.499881D+00 -8.499881D+00 -8.499881D+00</hkld>
+         <bulk_density>1.09</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 27.31 0 0 0 0 0 0</exco>
+         <fip>1 0.55 1 1 1 1 1 1</fip>
+         <dis>5.03 5.03 5.03 5.03 5.03 5.03 5.03 1</dis>
+      </H3_Hrhr>
+      <H4_Hrhr>
+         <!-- Harihari, Bg2 - depth range: 0.35-0.75 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +4.500000D-01 +6.500000D-01 +8.000000D-01 +1.450000D+00 +1.810063D+00 +2.039674D+00 +2.137209D+00 +3.606468D+00 +5.516168D+00 +7.000000D+00</sl>
+         <wc>+4.900000D-01 +4.900000D-01 +4.900000D-01 +4.899999D-01 +4.899984D-01 +4.899877D-01 +4.899690D-01 +4.899222D-01 +4.898448D-01 +4.869024D-01 +4.737387D-01 +4.431861D-01 +4.191711D-01 +1.824558D-01 +7.509631D-02 +4.750279D-02</wc>
+         <wcd>-1.795863D-11 -4.511004D-10 -1.133113D-08 -2.846251D-07 -7.149460D-06 -5.679018D-05 -1.426505D-04 -3.583218D-04 -7.149460D-04 -1.426505D-02 -7.488592D-02 -2.155859D-01 -2.482271D-01 -9.724167D-02 -2.876401D-02 -1.116389D-02</wcd>
+         <hkl>+8.804705D-01 +8.804681D-01 +8.804074D-01 +8.788825D-01 +8.406856D-01 +5.720474D-01 +1.608004D-01 -3.281026D-01 -3.839103D-01 -4.698974D-01 -8.594388D-01 -1.810017D+00 -2.607905D+00 -1.509538D+01 -3.132625D+01 -4.393758D+01</hkl>
+         <hkld>-4.614818D-07 -1.159189D-05 -2.911729D-04 -7.312443D-03 -1.826994D-01 -1.371986D+00 -2.765655D+00 -1.149127D+00 -4.091674D-02 -4.160234D-01 -2.248748D+00 -6.952526D+00 -8.499169D+00 -8.499169D+00 -8.499169D+00 -8.499169D+00</hkld>
+         <bulk_density>1.34</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 31.05 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>4.26 4.26 4.26 4.26 4.26 4.26 4.26 1</dis>
+      </H4_Hrhr>
+      <H5_Hrhr>
+         <!-- Harihari, BCg - depth range: 0.75-1.00 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +4.500000D-01 +6.500000D-01 +8.000000D-01 +1.450000D+00 +1.782645D+00 +2.026907D+00 +2.149646D+00 +3.662973D+00 +5.626086D+00 +7.000000D+00</sl>
+         <wc>+5.350000D-01 +5.350000D-01 +5.350000D-01 +5.349999D-01 +5.349984D-01 +5.349872D-01 +5.349680D-01 +5.349195D-01 +5.348394D-01 +5.317963D-01 +5.201770D-01 +4.893478D-01 +4.584646D-01 +2.031955D-01 +8.348591D-02 +5.350176D-02</wc>
+         <wcd>-1.857351D-11 -4.665454D-10 -1.171909D-08 -2.943702D-07 -7.394246D-06 -5.873459D-05 -1.475346D-04 -3.705902D-04 -7.394246D-04 -1.475346D-02 -6.826262D-02 -2.102359D-01 -2.564534D-01 -1.036645D-01 -3.201348D-02 -1.406675D-02</wcd>
+         <hkl>+8.506461D-01 +8.506437D-01 +8.505816D-01 +8.490222D-01 +8.099876D-01 +5.374230D-01 +1.331618D-01 -2.913919D-01 -3.312330D-01 -4.173503D-01 -7.500287D-01 -1.672451D+00 -2.660773D+00 -1.552307D+01 -3.220825D+01 -4.388563D+01</hkl>
+         <hkld>-4.719436D-07 -1.185468D-05 -2.977731D-04 -7.477816D-03 -1.865769D-01 -1.380590D+00 -2.628332D+00 -8.517942D-01 -3.292136D-02 -4.175021D-01 -1.977526D+00 -6.499164D+00 -8.499350D+00 -8.499350D+00 -8.499350D+00 -8.499350D+00</hkld>
+         <bulk_density>1.17</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 31.88 0 0 0 0 0 0</exco>
+         <fip>1 0.5 1 1 1 1 1 1</fip>
+         <dis>4.64 4.64 4.64 4.64 4.64 4.64 4.64 1</dis>
+      </H5_Hrhr>
+      <H6_Hrhr>
+         <!-- Harihari, Cg1 - depth range: 1.00-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +4.500000D-01 +6.000000D-01 +7.500000D-01 +1.450000D+00 +1.788027D+00 +2.027624D+00 +2.148936D+00 +3.827940D+00 +5.985550D+00 +7.000000D+00</sl>
+         <wc>+5.250000D-01 +5.250000D-01 +5.250000D-01 +5.249999D-01 +5.249986D-01 +5.249886D-01 +5.249713D-01 +5.249427D-01 +5.248857D-01 +5.221279D-01 +5.113775D-01 +4.839370D-01 +4.564264D-01 +2.009317D-01 +8.279936D-02 +6.039130D-02</wc>
+         <wcd>-1.665131D-11 -4.182621D-10 -1.050627D-08 -2.639056D-07 -6.629008D-06 -5.265608D-05 -1.322661D-04 -2.639056D-04 -5.265608D-04 -1.322661D-02 -6.273380D-02 -1.891019D-01 -2.321786D-01 -9.306804D-02 -2.874794D-02 -1.654730D-02</wcd>
+         <hkl>+6.237659D-01 +6.237633D-01 +6.236981D-01 +6.220613D-01 +5.811007D-01 +2.961681D-01 -1.177847D-01 -4.602881D-01 -5.399020D-01 -6.284408D-01 -9.732212D-01 -1.889441D+00 -2.865375D+00 -1.713592D+01 -3.547433D+01 -4.409655D+01</hkl>
+         <hkld>-4.953962D-07 -1.244378D-05 -3.125703D-04 -7.849222D-03 -1.957181D-01 -1.436359D+00 -2.624279D+00 -1.411965D+00 -6.713330D-02 -4.195476D-01 -2.034354D+00 -6.502959D+00 -8.499409D+00 -8.499409D+00 -8.499409D+00 -8.499409D+00</hkld>
+         <bulk_density>1.22</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 39.04 0 0 0 0 0 0</exco>
+         <fip>1 0.46 1 1 1 1 1 1</fip>
+         <dis>5.5 5.5 5.5 5.5 5.5 5.5 5.5 1</dis>
+      </H6_Hrhr>
+      <H1_Mrmr>
+         <!-- Maramarua, A_ns - depth range: 0.00-0.14 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +3.000000D-01 +5.000000D-01 +6.500000D-01 +1.350000D+00 +1.700000D+00 +1.944098D+00 +2.018737D+00 +4.035988D+00 +6.631320D+00 +7.000000D+00</sl>
+         <wc>+5.490000D-01 +5.490000D-01 +5.490000D-01 +5.489999D-01 +5.489983D-01 +5.489825D-01 +5.489562D-01 +5.489125D-01 +5.468023D-01 +5.379855D-01 +5.151032D-01 +5.012738D-01 +2.239934D-01 +9.192014D-02 +8.264766D-02</wc>
+         <wcd>-2.019338D-11 -5.072347D-10 -1.274116D-08 -3.200435D-07 -8.039128D-06 -8.039128D-05 -2.019338D-04 -4.029109D-04 -1.012066D-02 -5.072347D-02 -1.561004D-01 -2.073663D-01 -8.535949D-02 -2.724563D-02 -2.316563D-02</wcd>
+         <hkl>+1.343211D+00 +1.343207D+00 +1.343102D+00 +1.340461D+00 +1.274435D+00 +7.042285D-01 +1.703273D-01 +6.994650D-02 -1.046384D-02 -3.428902D-01 -1.233315D+00 -1.792059D+00 -1.893965D+01 -4.100122D+01 -4.413517D+01</hkl>
+         <hkld>-7.993496D-07 -2.007874D-05 -5.043484D-04 -1.266431D-02 -3.151514D-01 -2.580994D+00 -1.750363D+00 -8.041776D-02 -3.783231D-01 -1.929017D+00 -6.216534D+00 -8.500478D+00 -8.500478D+00 -8.500478D+00 -8.500478D+00</hkld>
+         <bulk_density>1.01</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 43.57 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>7.06 7.06 7.06 7.06 7.06 7.06 7.06 1</dis>
+      </H1_Mrmr>
+      <H2_Mrmr>
+         <!-- Maramarua, AB_ns - depth range: 0.14-0.20 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 +9.849916D-03 +1.868059D-01 +3.739617D-01 +8.676247D-01 +1.080258D+00 +4.825787D+00 +7.000000D+00</sl>
+         <wc>+4.560000D-01 +4.560000D-01 +4.559999D-01 +4.559974D-01 +4.559673D-01 +4.558285D-01 +4.556126D-01 +4.550828D-01 +4.470916D-01 +4.323761D-01 +1.894808D-01 +1.231963D-01</wc>
+         <wcd>-7.547406D-10 -1.895823D-08 -4.762091D-07 -1.196183D-05 -1.505905D-04 -7.897644D-04 -1.784060D-03 -4.223973D-03 -4.102486D-02 -9.942111D-02 -3.940530D-02 -2.302741D-02</wcd>
+         <hkl>+5.400783D-01 +5.400595D-01 +5.395868D-01 +5.277219D-01 +3.859272D-01 -2.059006D-01 -6.958760D-01 -7.964834D-01 -9.676209D-01 -1.291117D+00 -9.626215D+00 -1.446459D+01</hkl>
+         <hkld>-3.593089D-06 -9.025412D-05 -2.266961D-03 -5.686689D-02 -7.020267D-01 -2.911909D+00 -1.705562D+00 -9.997315D-02 -8.858636D-01 -2.225346D+00 -2.225346D+00 -2.225346D+00</hkld>
+         <bulk_density>1.34</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 61 0 0 0 0 0 0</exco>
+         <fip>1 0.36 1 1 1 1 1 1</fip>
+         <dis>10.47 10.47 10.47 10.47 10.47 10.47 10.47 1</dis>
+      </H2_Mrmr>
+      <H3_Mrmr>
+         <!-- Maramarua, B1_ns - depth range: 0.20-0.40 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 +9.395944D-02 +2.858617D-01 +4.749247D-01 +9.749247D-01 +1.206700D+00 +6.729344D+00 +7.000000D+00</sl>
+         <wc>+4.470000D-01 +4.470000D-01 +4.470000D-01 +4.469990D-01 +4.469877D-01 +4.469052D-01 +4.467706D-01 +4.464521D-01 +4.415205D-01 +4.311233D-01 +1.890107D-01 +1.819611D-01</wc>
+         <wcd>-2.832263D-10 -7.114322D-09 -1.787037D-07 -4.488834D-06 -5.651107D-05 -4.365685D-04 -1.056470D-03 -2.523382D-03 -2.523382D-02 -6.720661D-02 -2.664162D-02 -2.546047D-02</wcd>
+         <hkl>+1.897704D-01 +1.897577D-01 +1.894378D-01 +1.814073D-01 +8.506360D-02 -5.579415D-01 -1.088915D+00 -1.171719D+00 -1.325124D+00 -1.654444D+00 -1.356211D+01 -1.414568D+01</hkl>
+         <hkld>-2.431288D-06 -6.107110D-05 -1.533985D-03 -3.849910D-02 -4.790484D-01 -2.949364D+00 -1.507402D+00 -8.346674D-02 -7.891085D-01 -2.156152D+00 -2.156152D+00 -2.156152D+00</hkld>
+         <bulk_density>1.37</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 72.59 0 0 0 0 0 0</exco>
+         <fip>1 0.31 1 1 1 1 1 1</fip>
+         <dis>15.15 15.15 15.15 15.15 15.15 15.15 15.15 1</dis>
+      </H3_Mrmr>
+      <H4_Mrmr>
+         <!-- Maramarua, B2_ns - depth range: 0.40-0.70 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.500000D-01 +2.500000D-01 +5.000000D-01 +6.000000D-01 +1.300000D+00 +1.700000D+00 +1.973065D+00 +2.091299D+00 +7.000000D+00</sl>
+         <wc>+5.080000D-01 +5.080000D-01 +5.080000D-01 +5.080000D-01 +5.079997D-01 +5.079970D-01 +5.079905D-01 +5.079849D-01 +5.076212D-01 +5.056098D-01 +4.995944D-01 +4.935119D-01 +2.604750D-01</wc>
+         <wcd>-4.382128D-12 -1.100741D-10 -2.764936D-09 -6.945205D-08 -1.385751D-06 -1.385751D-05 -4.382128D-05 -6.945205D-05 -1.744557D-03 -1.100741D-02 -3.870936D-02 -6.597488D-02 -3.280512D-02</wcd>
+         <hkl>+1.142771D-01 +1.142717D-01 +1.141373D-01 +1.107619D-01 +4.440534D-02 -5.411625D-01 -1.188914D+00 -1.229134D+00 -1.276493D+00 -1.528507D+00 -2.288603D+00 -3.067137D+00 -4.479034D+01</hkl>
+         <hkld>-1.021652D-06 -2.566273D-05 -6.446092D-04 -1.618586D-02 -3.204016D-01 -2.691154D+00 -9.787803D-01 -8.261817D-02 -2.181197D-01 -1.382062D+00 -4.922508D+00 -8.499845D+00 -8.499845D+00</hkld>
+         <bulk_density>1.2</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 93.18 0 0 0 0 0 0</exco>
+         <fip>1 0.24 1 1 1 1 1 1</fip>
+         <dis>20.27 20.27 20.27 20.27 20.27 20.27 20.27 1</dis>
+      </H4_Mrmr>
+      <H5_Mrmr>
+         <!-- Maramarua, B3_ns - depth range: 0.70-1.10 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.500000D-01 +2.500000D-01 +4.500000D-01 +6.000000D-01 +1.300000D+00 +1.700000D+00 +1.970892D+00 +2.088196D+00 +3.705931D+00 +7.000000D+00</sl>
+         <wc>+5.480000D-01 +5.480000D-01 +5.480000D-01 +5.480000D-01 +5.479997D-01 +5.479965D-01 +5.479913D-01 +5.479826D-01 +5.475630D-01 +5.452425D-01 +5.383996D-01 +5.315222D-01 +4.223982D-01 +2.680898D-01</wc>
+         <wcd>-5.055375D-12 -1.269853D-10 -3.189726D-09 -8.012229D-08 -1.598650D-06 -1.598650D-05 -4.015627D-05 -8.012229D-05 -2.012581D-03 -1.269853D-02 -4.421166D-02 -7.588329D-02 -5.951718D-02 -3.611238D-02</wcd>
+         <hkl>+2.978926D-02 +2.978417D-02 +2.965640D-02 +2.644766D-02 -3.654762D-02 -5.816183D-01 -1.079658D+00 -1.174037D+00 -1.221225D+00 -1.473038D+00 -2.222298D+00 -2.985558D+00 -1.673614D+01 -4.473540D+01</hkl>
+         <hkld>-9.712675D-07 -2.439712D-05 -6.128159D-04 -1.538563D-02 -3.037657D-01 -2.439968D+00 -1.623944D+00 -7.546416D-02 -2.179158D-01 -1.381148D+00 -4.873379D+00 -8.479194D+00 -8.499901D+00 -8.499901D+00</hkld>
+         <bulk_density>1.14</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 89.51 0 0 0 0 0 0</exco>
+         <fip>1 0.28 1 1 1 1 1 1</fip>
+         <dis>19.43 19.43 19.43 19.43 19.43 19.43 19.43 1</dis>
+      </H5_Mrmr>
+      <H6_Mrmr>
+         <!-- Maramarua, C_ns - depth range: 1.10-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.500000D-01 +2.500000D-01 +5.000000D-01 +6.500000D-01 +1.350000D+00 +1.750000D+00 +1.995043D+00 +2.081788D+00 +2.222849D+00 +7.000000D+00</sl>
+         <wc>+5.430000D-01 +5.430000D-01 +5.430000D-01 +5.430000D-01 +5.429996D-01 +5.429961D-01 +5.429876D-01 +5.429753D-01 +5.423806D-01 +5.390917D-01 +5.309198D-01 +5.249879D-01 +5.130755D-01 +2.415815D-01</wc>
+         <wcd>-5.691579D-12 -1.429660D-10 -3.591143D-09 -9.020545D-08 -1.799835D-06 -1.799835D-05 -5.691579D-05 -1.135619D-04 -2.852547D-03 -1.799835D-02 -5.563119D-02 -8.294864D-02 -8.348263D-02 -3.656443D-02</wcd>
+         <hkl>+1.670216D-01 +1.670169D-01 +1.668979D-01 +1.639093D-01 +1.052353D-01 -4.044733D-01 -9.645703D-01 -1.010753D+00 -1.068199D+00 -1.384929D+00 -2.180855D+00 -2.766788D+00 -3.964966D+00 -4.457075D+01</hkl>
+         <hkld>-9.046107D-07 -2.272278D-05 -5.707592D-04 -1.432976D-02 -2.829431D-01 -2.303961D+00 -9.669904D-01 -2.801802D-02 -2.738281D-01 -1.738900D+00 -5.462457D+00 -8.242378D+00 -8.500000D+00 -8.500000D+00</hkld>
+         <bulk_density>1.14</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 78.63 0 0 0 0 0 0</exco>
+         <fip>1 0.31 1 1 1 1 1 1</fip>
+         <dis>16.69 16.69 16.69 16.69 16.69 16.69 16.69 1</dis>
+      </H6_Mrmr>
+      <H1_Mtra>
+         <!-- Mataura, Ap1 - depth range: 0.00-0.20 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +3.000000D-01 +5.000000D-01 +6.500000D-01 +1.350000D+00 +1.694460D+00 +1.936540D+00 +2.058458D+00 +3.980246D+00 +6.480606D+00 +7.000000D+00</sl>
+         <wc>+4.930000D-01 +4.930000D-01 +4.930000D-01 +4.929999D-01 +4.929982D-01 +4.929818D-01 +4.929542D-01 +4.929086D-01 +4.907047D-01 +4.817861D-01 +4.588086D-01 +4.357306D-01 +1.915097D-01 +7.872188D-02 +6.798456D-02</wc>
+         <wcd>-2.109026D-11 -5.297633D-10 -1.330705D-08 -3.342581D-07 -8.396183D-06 -8.396183D-05 -2.109026D-04 -4.208060D-04 -1.057017D-02 -5.164185D-02 -1.574571D-01 -1.944691D-01 -7.741255D-02 -2.335268D-02 -1.820622D-02</wcd>
+         <hkl>+1.138239D+00 +1.138235D+00 +1.138126D+00 +1.135383D+00 +1.066785D+00 +4.707429D-01 -9.318164D-02 -1.951375D-01 -2.812753D-01 -6.279470D-01 -1.553628D+00 -2.534693D+00 -1.886989D+01 -4.012295D+01 -4.453780D+01</hkl>
+         <hkld>-8.300841D-07 -2.085076D-05 -5.237410D-04 -1.315172D-02 -3.275833D-01 -2.716876D+00 -1.825033D+00 -7.620040D-02 -4.068792D-01 -2.027100D+00 -6.511861D+00 -8.500000D+00 -8.500000D+00 -8.500000D+00 -8.500000D+00</hkld>
+         <bulk_density>1.17</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 48.73 0 0 0 0 0 0</exco>
+         <fip>1 0.4 1 1 1 1 1 1</fip>
+         <dis>6.31 6.31 6.31 6.31 6.31 6.31 6.31 1</dis>
+      </H1_Mtra>
+      <H2_Mtra>
+         <!-- Mataura, Ap2 - depth range: 0.20-0.30 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +4.500000D-01 +6.000000D-01 +7.500000D-01 +1.450000D+00 +1.789920D+00 +2.032216D+00 +2.145716D+00 +3.948782D+00 +6.326310D+00 +7.000000D+00</sl>
+         <wc>+4.470000D-01 +4.470000D-01 +4.470000D-01 +4.470000D-01 +4.469988D-01 +4.469907D-01 +4.469766D-01 +4.469534D-01 +4.469069D-01 +4.446620D-01 +4.358136D-01 +4.128586D-01 +3.917538D-01 +1.703536D-01 +7.027430D-02 +5.827437D-02</wc>
+         <wcd>-1.355488D-11 -3.404833D-10 -8.552553D-09 -2.148304D-07 -5.396296D-06 -4.286430D-05 -1.076703D-04 -2.148304D-04 -4.286430D-04 -1.076703D-02 -5.151531D-02 -1.572269D-01 -1.899587D-01 -7.370039D-02 -2.114823D-02 -1.484701D-02</wcd>
+         <hkl>+8.423595D-01 +8.423568D-01 +8.422889D-01 +8.405847D-01 +7.978943D-01 +4.979583D-01 +4.512846D-02 -3.642832D-01 -4.654813D-01 -5.544615D-01 -9.036394D-01 -1.846256D+00 -2.764163D+00 -1.809125D+01 -3.830160D+01 -4.402834D+01</hkl>
+         <hkld>-5.157763D-07 -1.295571D-05 -3.254301D-04 -8.172769D-03 -2.041871D-01 -1.528735D+00 -2.978320D+00 -1.791232D+00 -7.871094D-02 -4.203427D-01 -2.054999D+00 -6.647993D+00 -8.500570D+00 -8.500570D+00 -8.500570D+00 -8.500570D+00</hkld>
+         <bulk_density>1.33</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 44.14 0 0 0 0 0 0</exco>
+         <fip>1 0.43 1 1 1 1 1 1</fip>
+         <dis>5.9 5.9 5.9 5.9 5.9 5.9 5.9 1</dis>
+      </H2_Mtra>
+      <H3_Mtra>
+         <!-- Mataura, BC/A - depth range: 0.30-0.45 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +4.500000D-01 +6.500000D-01 +8.000000D-01 +1.450000D+00 +1.782454D+00 +2.026454D+00 +2.148979D+00 +3.728129D+00 +5.808634D+00 +7.000000D+00</sl>
+         <wc>+4.520000D-01 +4.520000D-01 +4.520000D-01 +4.519999D-01 +4.519987D-01 +4.519893D-01 +4.519731D-01 +4.519325D-01 +4.518654D-01 +4.493143D-01 +4.395846D-01 +4.138091D-01 +3.879877D-01 +1.686716D-01 +6.975041D-02 +4.943589D-02</wc>
+         <wcd>-1.557030D-11 -3.911082D-10 -9.824194D-09 -2.467726D-07 -6.198647D-06 -4.923761D-05 -1.236793D-04 -3.106683D-04 -6.198647D-04 -1.236793D-02 -5.717484D-02 -1.758754D-01 -2.149966D-01 -8.328199D-02 -2.387290D-02 -1.167261D-02</wcd>
+         <hkl>+8.882917D-01 +8.882892D-01 +8.882263D-01 +8.866445D-01 +8.470177D-01 +5.681478D-01 +1.413326D-01 -3.539443D-01 -4.053745D-01 -4.915730D-01 -8.238623D-01 -1.743824D+00 -2.729581D+00 -1.615277D+01 -3.383760D+01 -4.396453D+01</hkl>
+         <hkld>-4.787123D-07 -1.202471D-05 -3.020446D-04 -7.585525D-03 -1.895547D-01 -1.424871D+00 -2.863087D+00 -1.094993D+00 -3.698957D-02 -4.174706D-01 -1.975741D+00 -6.485725D+00 -8.500261D+00 -8.500261D+00 -8.500261D+00 -8.500261D+00</hkld>
+         <bulk_density>1.38</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 34 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>4.72 4.72 4.72 4.72 4.72 4.72 4.72 1</dis>
+      </H3_Mtra>
+      <H4_Mtra>
+         <!-- Mataura, BC - depth range: 0.45-0.60 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.500000D-01 +3.500000D-01 +5.500000D-01 +1.200000D+00 +1.546871D+00 +1.737322D+00 +3.299655D+00 +5.311946D+00 +7.000000D+00</sl>
+         <wc>+5.010000D-01 +5.010000D-01 +5.010000D-01 +5.009997D-01 +5.009955D-01 +5.009642D-01 +5.009101D-01 +5.007741D-01 +4.964931D-01 +4.787353D-01 +4.474803D-01 +1.966389D-01 +8.105562D-02 +4.892726D-02</wc>
+         <wcd>-8.262656D-11 -2.075485D-09 -5.213384D-08 -1.309543D-06 -2.075485D-05 -1.648617D-04 -4.141138D-04 -1.040207D-03 -2.075485D-02 -1.025327D-01 -2.454133D-01 -9.795769D-02 -3.001274D-02 -1.112628D-02</wcd>
+         <hkl>+8.994371D-01 +8.994291D-01 +8.992277D-01 +8.941700D-01 +8.165176D-01 +2.936035D-01 -1.919887D-01 -2.854836D-01 -3.654580D-01 -7.043618D-01 -1.334802D+00 -9.354671D+00 -1.968430D+01 -2.834953D+01</hkl>
+         <hkld>-1.531200D-06 -3.846195D-05 -9.660891D-04 -2.424707D-02 -3.789333D-01 -2.403313D+00 -1.562944D+00 -2.896838D-02 -3.885134D-01 -1.995279D+00 -5.133265D+00 -5.133265D+00 -5.133265D+00 -5.133265D+00</hkld>
+         <bulk_density>1.17</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 35.11 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>4.25 4.25 4.25 4.25 4.25 4.25 4.25 1</dis>
+      </H4_Mtra>
+      <H5_Mtra>
+         <!-- Mataura, BC(f) - depth range: 0.60-0.75 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.500000D-01 +3.464317D-01 +4.964317D-01 +1.196432D+00 +1.537689D+00 +1.694121D+00 +3.110079D+00 +4.947791D+00 +7.000000D+00</sl>
+         <wc>+4.820000D-01 +4.820000D-01 +4.820000D-01 +4.819996D-01 +4.819939D-01 +4.819514D-01 +4.818800D-01 +4.817606D-01 +4.759874D-01 +4.530547D-01 +4.226060D-01 +1.850779D-01 +7.644995D-02 +4.208678D-02</wc>
+         <wcd>-1.120585D-10 -2.814782D-09 -7.070412D-08 -1.776007D-06 -2.814782D-05 -2.235861D-04 -5.524694D-04 -1.102321D-03 -2.768906D-02 -1.332979D-01 -2.575523D-01 -1.017322D-01 -3.047150D-02 -7.929011D-03</wcd>
+         <hkl>+1.064083D+00 +1.064074D+00 +1.063858D+00 +1.058426D+00 +9.750355D-01 +4.169908D-01 -6.180708D-02 -1.410460D-01 -2.330255D-01 -6.057798D-01 -1.133216D+00 -7.692209D+00 -1.620485D+01 -2.571108D+01</hkl>
+         <hkld>-1.644629D-06 -4.131115D-05 -1.037655D-03 -2.604285D-02 -4.068510D-01 -2.529982D+00 -1.439318D+00 -6.329448D-02 -4.383932D-01 -2.224871D+00 -4.632194D+00 -4.632194D+00 -4.632194D+00 -4.632194D+00</hkld>
+         <bulk_density>1.24</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 33.88 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>3.76 3.76 3.76 3.76 3.76 3.76 3.76 1</dis>
+      </H5_Mtra>
+      <H6_Mtra>
+         <!-- Mataura, BCg - depth range: 0.75-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.500000D-01 +2.500000D-01 +4.500000D-01 +6.000000D-01 +1.300000D+00 +1.633202D+00 +1.861129D+00 +1.954122D+00 +3.385530D+00 +5.256255D+00 +7.000000D+00</sl>
+         <wc>+4.700000D-01 +4.700000D-01 +4.700000D-01 +4.699998D-01 +4.699969D-01 +4.699689D-01 +4.699218D-01 +4.698440D-01 +4.660805D-01 +4.518183D-01 +4.180618D-01 +3.948741D-01 +1.705151D-01 +7.037492D-02 +4.262594D-02</wc>
+         <wcd>-4.533933D-11 -1.138872D-09 -2.860718D-08 -7.185799D-07 -1.433755D-05 -1.433755D-04 -3.601431D-04 -7.185799D-04 -1.804991D-02 -8.372976D-02 -2.391844D-01 -2.432408D-01 -9.367339D-02 -2.691566D-02 -8.416993D-03</wcd>
+         <hkl>+9.811839D-01 +9.811786D-01 +9.810461D-01 +9.777181D-01 +9.123888D-01 +3.493252D-01 -1.459171D-01 -2.309391D-01 -3.258850D-01 -6.881148D-01 -1.596736D+00 -2.267901D+00 -1.266280D+01 -2.624804D+01 -3.891114D+01</hkl>
+         <hkld>-1.007379D-06 -2.530420D-05 -6.356001D-04 -1.595751D-02 -3.149797D-01 -2.500355D+00 -1.514813D+00 -7.010864D-02 -4.508916D-01 -2.162311D+00 -6.714225D+00 -7.262015D+00 -7.262015D+00 -7.262015D+00 -7.262015D+00</hkld>
+         <bulk_density>1.25</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 34 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>3.97 3.97 3.97 3.97 3.97 3.97 3.97 1</dis>
+      </H6_Mtra>
+      <H1_HortC>
+         <!-- Horotiu-Cl, Ap - depth range: 0.00-0.20 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -8.917572D-02 +1.216745D-01 +3.216745D-01 +8.007335D-01 +9.901067D-01 +3.808742D+00 +7.000000D+00</sl>
+         <wc>+5.930000D-01 +5.930000D-01 +5.929998D-01 +5.929939D-01 +5.929395D-01 +5.927467D-01 +5.923312D-01 +5.913201D-01 +5.777454D-01 +5.565484D-01 +2.531531D-01 +1.144265D-01</wc>
+         <wcd>-1.758652D-09 -4.417534D-08 -1.109634D-06 -2.787275D-05 -2.787275D-04 -1.166349D-03 -3.079845D-03 -7.736221D-03 -7.025010D-02 -1.603733D-01 -6.796680D-02 -2.571418D-02</wcd>
+         <hkl>+9.957218D-01 +9.956959D-01 +9.950440D-01 +9.786999D-01 +8.287165D-01 +3.712966D-01 -3.210866D-02 -8.280135D-02 -2.659096D-01 -5.610685D-01 -6.981293D+00 -1.425027D+01</hkl>
+         <hkld>-4.955558D-06 -1.244773D-04 -3.126288D-03 -7.824606D-02 -7.508049D-01 -2.291413D+00 -8.254185D-01 -1.046069D-01 -9.591481D-01 -2.277778D+00 -2.277778D+00 -2.277778D+00</hkld>
+         <bulk_density>0.88</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 42.5 0 0 0 0 0 0</exco>
+         <fip>1 0.55 1 1 1 1 1 1</fip>
+         <dis>8.96 8.96 8.96 8.96 8.96 8.96 8.96 1</dis>
+      </H1_HortC>
+      <H2_HortC>
+         <!-- Horotiu-Cl, Bw1 - depth range: 0.20-0.40 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -4.586046D-01 -2.561174D-01 -5.611735D-02 +4.438826D-01 +7.369534D-01 +2.984470D+00 +5.822714D+00 +7.000000D+00</sl>
+         <wc>+6.060000D-01 +6.060000D-01 +6.059990D-01 +6.059807D-01 +6.058149D-01 +6.055297D-01 +6.048186D-01 +5.941858D-01 +5.604660D-01 +2.544232D-01 +1.057330D-01 +7.826059D-02</wc>
+         <wcd>-7.045069D-09 -1.769641D-07 -4.445138D-06 -8.869217D-05 -8.524642D-04 -2.165961D-03 -5.440647D-03 -5.440647D-02 -2.030324D-01 -8.589653D-02 -2.898632D-02 -1.847143D-02</wcd>
+         <hkl>+1.999830D+00 +1.999702D+00 +1.996502D+00 +1.933878D+00 +1.436194D+00 +1.040364D+00 +9.718129D-01 +8.476134D-01 +4.380618D-01 -5.278609D+00 -1.249783D+01 -1.549231D+01</hkl>
+         <hkld>-2.433247D-05 -6.111853D-04 -1.534033D-02 -3.010369D-01 -2.117156D+00 -1.102096D+00 -6.872990D-02 -6.408567D-01 -2.543551D+00 -2.543551D+00 -2.543551D+00 -2.543551D+00</hkld>
+         <bulk_density>0.85</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 29.9 0 0 0 0 0 0</exco>
+         <fip>1 0.57 1 1 1 1 1 1</fip>
+         <dis>6.18 6.18 6.18 6.18 6.18 6.18 6.18 1</dis>
+      </H2_HortC>
+      <H3_HortC>
+         <!-- Horotiu-Cl, Bw2 - depth range: 0.40-0.53 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -5.000000D-01 -2.563664D-01 -5.636643D-02 +5.436336D-01 +8.878772D-01 +1.056833D+00 +3.252039D+00 +6.107677D+00 +7.000000D+00</sl>
+         <wc>+5.350000D-01 +5.350000D-01 +5.349997D-01 +5.349936D-01 +5.349489D-01 +5.348431D-01 +5.346058D-01 +5.287529D-01 +5.045092D-01 +4.745791D-01 +2.110771D-01 +8.583994D-02 +6.850612D-02</wc>
+         <wcd>-2.353206D-09 -5.910987D-08 -1.484773D-06 -2.962511D-05 -2.353206D-04 -7.226485D-04 -1.815211D-03 -2.876916D-02 -1.404153D-01 -1.816543D-01 -7.422945D-02 -2.317259D-02 -1.610592D-02</wcd>
+         <hkl>+2.179250D+00 +2.179119D+00 +2.175815D+00 +2.111147D+00 +1.683069D+00 +1.193649D+00 +1.131374D+00 +1.035193D+00 +6.248620D-01 +8.841336D-02 -7.296308D+00 -1.690274D+01 -1.990453D+01</hkl>
+         <hkld>-2.512119D-05 -6.309967D-04 -1.583790D-02 -3.109257D-01 -1.979368D+00 -1.081228D+00 -3.463322D-02 -4.750176D-01 -2.436652D+00 -3.364023D+00 -3.364023D+00 -3.364023D+00 -3.364023D+00</hkld>
+         <bulk_density>1.009</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 27.55 0 0 0 0 0 0</exco>
+         <fip>1 0.54 1 1 1 1 1 1</fip>
+         <dis>5.55 5.55 5.55 5.55 5.55 5.55 5.55 1</dis>
+      </H3_HortC>
+      <H4_HortC>
+         <!-- Horotiu-Cl, Bw3 - depth range: 0.53-0.67 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -5.000000D-01 -2.500000D-01 -1.000000D-01 +5.500000D-01 +9.017117D-01 +1.054109D+00 +3.079163D+00 +5.702809D+00 +7.000000D+00</sl>
+         <wc>+5.000000D-01 +5.000000D-01 +4.999998D-01 +4.999958D-01 +4.999663D-01 +4.998933D-01 +4.997872D-01 +4.957540D-01 +4.785514D-01 +4.567507D-01 +2.007507D-01 +8.165805D-02 +5.835022D-02</wc>
+         <wcd>-1.553176D-09 -3.901403D-08 -9.799880D-07 -1.955333D-05 -1.553176D-04 -4.911575D-04 -9.799880D-04 -1.955333D-02 -9.877434D-02 -1.927461D-01 -7.739149D-02 -2.372792D-02 -1.322532D-02</wcd>
+         <hkl>+2.389612D+00 +2.389477D+00 +2.386083D+00 +2.319629D+00 +1.879488D+00 +1.376146D+00 +1.325350D+00 +1.251528D+00 +9.319912D-01 +5.090051D-01 -7.255551D+00 -1.731526D+01 -2.228901D+01</hkl>
+         <hkld>-2.581049D-05 -6.483111D-04 -1.627273D-02 -3.195531D-01 -2.033995D+00 -9.714760D-01 -4.284319D-02 -3.564659D-01 -1.869606D+00 -3.834247D+00 -3.834247D+00 -3.834247D+00 -3.834247D+00</hkld>
+         <bulk_density>1.055</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 21.89 0 0 0 0 0 0</exco>
+         <fip>1 0.53 1 1 1 1 1 1</fip>
+         <dis>4.8 4.8 4.8 4.8 4.8 4.8 4.8 1</dis>
+      </H4_HortC>
+      <H5_HortC>
+         <!-- Horotiu-Cl, BC1 - depth range: 0.67-1.05 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -4.641624D-01 -2.720234D-01 -7.202336D-02 +3.681408D-01 +5.654734D-01 +2.142990D+00 +4.189233D+00 +7.000000D+00</sl>
+         <wc>+4.970000D-01 +4.969999D-01 +4.969973D-01 +4.969467D-01 +4.965007D-01 +4.957905D-01 +4.939619D-01 +4.739364D-01 +4.399793D-01 +1.924306D-01 +7.841405D-02 +3.855601D-02</wc>
+         <wcd>-1.949358D-08 -4.896566D-07 -1.229962D-05 -2.454096D-04 -2.299148D-03 -5.569868D-03 -1.399088D-02 -1.062119D-01 -2.402424D-01 -9.553515D-02 -2.888552D-02 -5.586071D-03</wcd>
+         <hkl>+2.751667D+00 +2.751527D+00 +2.748014D+00 +2.679230D+00 +2.144819D+00 +1.736486D+00 +1.651968D+00 +1.461067D+00 +1.117045D+00 -2.879008D+00 -8.062410D+00 -1.518245D+01</hkl>
+         <hkld>-2.671022D-05 -6.709112D-04 -1.684032D-02 -3.308132D-01 -2.288303D+00 -1.256750D+00 -1.365970D-01 -1.034435D+00 -2.533130D+00 -2.533130D+00 -2.533130D+00 -2.533130D+00</hkld>
+         <bulk_density>1.055</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 17.44 0 0 0 0 0 0</exco>
+         <fip>1 0.52 1 1 1 1 1 1</fip>
+         <dis>3.36 3.36 3.36 3.36 3.36 3.36 3.36 1</dis>
+      </H5_HortC>
+      <H6_HortC>
+         <!-- Horotiu-Cl, BC2 - depth range: 1.05-1.28 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.500000D-01 -2.472860D-01 -9.420534D-02 +1.057947D-01 +5.378697D-01 +7.470718D-01 +1.766712D+00 +3.093508D+00 +5.070721D+00 +7.000000D+00</sl>
+         <wc>+4.440000D-01 +4.439999D-01 +4.439985D-01 +4.439625D-01 +4.437022D-01 +4.432424D-01 +4.424668D-01 +4.401489D-01 +4.158333D-01 +3.702366D-01 +1.564865D-01 +6.195707D-02 +2.989231D-02 +2.495696D-02</wc>
+         <wcd>-1.089536D-08 -2.736791D-07 -6.874507D-06 -1.726798D-04 -1.371644D-03 -3.488747D-03 -7.060426D-03 -1.773499D-02 -1.297122D-01 -3.262027D-01 -1.248205D-01 -3.576080D-02 -5.551371D-03 -9.015841D-04</wcd>
+         <hkl>+3.096179D+00 +3.096102D+00 +3.094180D+00 +3.046053D+00 +2.711658D+00 +2.231096D+00 +1.901548D+00 +1.841848D+00 +1.659110D+00 +1.283656D+00 -1.631749D+00 -5.425385D+00 -1.107873D+01 -1.659501D+01</hkl>
+         <hkld>-1.461920D-05 -3.672139D-04 -9.221507D-03 -2.299737D-01 -1.679880D+00 -2.859037D+00 -1.000185D+00 -1.305668D-01 -1.004654D+00 -2.859247D+00 -2.859247D+00 -2.859247D+00 -2.859247D+00 -2.859247D+00</hkld>
+         <bulk_density>0.839</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 13.6 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>1.73 1.73 1.73 1.73 1.73 1.73 1.73 1</dis>
+      </H6_HortC>
+      <H7_HortC>
+         <!-- Horotiu-Cl, BC3 - depth range: 1.28-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -4.672537D-01 -2.480487D-01 -4.804866D-02 +3.619304D-01 +5.402198D-01 +1.813966D+00 +3.500666D+00 +6.074426D+00 +7.000000D+00</sl>
+         <wc>+3.690000D-01 +3.689999D-01 +3.689971D-01 +3.689419D-01 +3.684638D-01 +3.675285D-01 +3.653039D-01 +3.445823D-01 +3.136705D-01 +1.262936D-01 +4.767354D-02 +2.355023D-02 +2.169646D-02</wc>
+         <wcd>-2.123686D-08 -5.334457D-07 -1.339955D-05 -2.673562D-04 -2.469352D-03 -6.776305D-03 -1.702131D-02 -1.124478D-01 -2.343040D-01 -8.480596D-02 -2.207924D-02 -2.832536D-03 -1.353517D-03</wcd>
+         <hkl>+3.095159D+00 +3.095009D+00 +3.091240D+00 +3.017280D+00 +2.435315D+00 +1.912265D+00 +1.840910D+00 +1.629306D+00 +1.287154D+00 -2.187179D+00 -6.787909D+00 -1.380823D+01 -1.633287D+01</hkl>
+         <hkld>-2.865830D-05 -7.198488D-04 -1.807213D-02 -3.564382D-01 -2.593021D+00 -1.117436D+00 -1.702813D-01 -1.184392D+00 -2.727651D+00 -2.727651D+00 -2.727651D+00 -2.727651D+00 -2.727651D+00</hkld>
+         <bulk_density>0.695</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 12.47 0 0 0 0 0 0</exco>
+         <fip>1 0.47 1 1 1 1 1 1</fip>
+         <dis>2.07 2.07 2.07 2.07 2.07 2.07 2.07 1</dis>
+      </H7_HortC>
+      <H1_HortG>
+         <!-- Horotiu-gn, A1 - depth range: 0.00-0.10 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +5.280663D-01 +7.107818D-01 +8.607818D-01 +1.320529D+00 +1.550055D+00 +3.325766D+00 +5.585799D+00 +7.000000D+00</sl>
+         <wc>+6.080000D-01 +6.080000D-01 +6.080000D-01 +6.079993D-01 +6.079819D-01 +6.078561D-01 +6.074821D-01 +6.067987D-01 +6.056031D-01 +5.880870D-01 +5.507498D-01 +2.505874D-01 +1.039237D-01 +6.729776D-02</wc>
+         <wcd>-2.095677D-10 -5.264103D-09 -1.322283D-07 -3.321425D-06 -8.343041D-05 -6.627113D-04 -2.384828D-03 -5.532074D-03 -1.103794D-02 -9.170270D-02 -2.519056D-01 -1.067062D-01 -3.575960D-02 -1.804229D-02</wcd>
+         <hkl>+1.354934D+00 +1.354932D+00 +1.354884D+00 +1.353667D+00 +1.323156D+00 +1.106362D+00 +5.380505D-01 +7.367428D-02 +1.211320D-02 -1.698990D-01 -5.770244D-01 -5.627354D+00 -1.205515D+01 -1.607731D+01</hkl>
+         <hkld>-3.682645D-07 -9.250383D-06 -2.323579D-04 -5.835778D-03 -1.460725D-01 -1.120929D+00 -3.050274D+00 -1.163034D+00 -1.277059D-01 -9.660932D-01 -2.844118D+00 -2.844118D+00 -2.844118D+00 -2.844118D+00</hkld>
+         <bulk_density>0.765</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 16.4 0 0 0 0 0 0</exco>
+         <fip>1 0.73 1 1 1 1 1 1</fip>
+         <dis>5.67 5.67 5.67 5.67 5.67 5.67 5.67 1</dis>
+      </H1_HortG>
+      <H2_HortG>
+         <!-- Horotiu-gn, A2 - depth range: 0.10-0.20 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -4.481822D-02 +1.551338D-01 +3.457622D-01 +8.235488D-01 +1.050013D+00 +3.248162D+00 +6.046516D+00 +7.000000D+00</sl>
+         <wc>+6.180000D-01 +6.180000D-01 +6.179998D-01 +6.179938D-01 +6.179383D-01 +6.176833D-01 +6.172047D-01 +6.160867D-01 +6.007277D-01 +5.691012D-01 +2.588796D-01 +1.069046D-01 +8.303511D-02</wc>
+         <wcd>-1.792661D-09 -4.502961D-08 -1.131093D-06 -2.841176D-05 -2.841176D-04 -1.458350D-03 -3.662400D-03 -8.810948D-03 -7.954186D-02 -2.101094D-01 -8.920359D-02 -2.997280D-02 -2.066992D-02</wcd>
+         <hkl>+1.087035D+00 +1.087014D+00 +1.086496D+00 +1.073493D+00 +9.528649D-01 +4.469962D-01 -7.019209D-02 -1.712715D-01 -3.320004D-01 -6.765416D-01 -5.854173D+00 -1.244556D+01 -1.469144D+01</hkl>
+         <hkld>-3.938695D-06 -9.893527D-05 -2.484967D-03 -6.230743D-02 -6.108636D-01 -2.560166D+00 -1.636090D+00 -1.021808D-01 -8.422975D-01 -2.355450D+00 -2.355450D+00 -2.355450D+00 -2.355450D+00</hkld>
+         <bulk_density>0.8</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 27.76 0 0 0 0 0 0</exco>
+         <fip>1 0.61 1 1 1 1 1 1</fip>
+         <dis>6.41 6.41 6.41 6.41 6.41 6.41 6.41 1</dis>
+      </H2_HortG>
+      <H3_HortG>
+         <!-- Horotiu-gn, B1 - depth range: 0.20-0.40 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -8.360829D-02 +1.175115D-01 +3.175115D-01 +7.867249D-01 +1.003264D+00 +3.050528D+00 +5.658426D+00 +7.000000D+00</sl>
+         <wc>+6.160000D-01 +6.160000D-01 +6.159997D-01 +6.159921D-01 +6.159206D-01 +6.156593D-01 +6.151397D-01 +6.138389D-01 +5.972461D-01 +5.652326D-01 +2.593655D-01 +1.079354D-01 +7.472750D-02</wc>
+         <wcd>-2.306155D-09 -5.792800D-08 -1.455086D-06 -3.655010D-05 -3.655010D-04 -1.569177D-03 -3.961974D-03 -9.952029D-03 -8.636512D-02 -2.215385D-01 -9.493685D-02 -3.225829D-02 -1.851319D-02</wcd>
+         <hkl>+1.199946D+00 +1.199921D+00 +1.199304D+00 +1.183823D+00 +1.041252D+00 +5.814566D-01 +1.477476D-01 +7.507479D-02 -9.061766D-02 -4.242951D-01 -5.291654D+00 -1.149192D+01 -1.468150D+01</hkl>
+         <hkld>-4.692470D-06 -1.178690D-04 -2.960385D-03 -7.413721D-02 -7.164152D-01 -2.351147D+00 -1.169940D+00 -1.021165D-01 -8.745401D-01 -2.377494D+00 -2.377494D+00 -2.377494D+00 -2.377494D+00</hkld>
+         <bulk_density>0.82</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 35.97 0 0 0 0 0 0</exco>
+         <fip>1 0.53 1 1 1 1 1 1</fip>
+         <dis>6.11 6.11 6.11 6.11 6.11 6.11 6.11 1</dis>
+      </H3_HortG>
+      <H4_HortG>
+         <!-- Horotiu-gn, B2 - depth range: 0.40-0.65 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.033300D-01 -1.476062D-01 +2.393790D-03 +6.023938D-01 +9.408793D-01 +1.092765D+00 +3.017315D+00 +5.474680D+00 +7.000000D+00</sl>
+         <wc>+5.980000D-01 +5.980000D-01 +5.979996D-01 +5.979911D-01 +5.979122D-01 +5.977149D-01 +5.974311D-01 +5.889836D-01 +5.551449D-01 +5.208912D-01 +2.348281D-01 +9.709687D-02 +6.356218D-02</wc>
+         <wcd>-2.591134D-09 -6.508634D-08 -1.634895D-06 -4.106671D-05 -4.044175D-04 -1.313038D-03 -2.619856D-03 -4.152192D-02 -1.973552D-01 -2.229426D-01 -9.302449D-02 -3.047263D-02 -1.524256D-02</wcd>
+         <hkl>+1.420002D+00 +1.419914D+00 +1.417722D+00 +1.363092D+00 +9.156234D-01 +4.621303D-01 +4.265187D-01 +3.393524D-01 -2.223804D-02 -4.128131D-01 -5.473963D+00 -1.193630D+01 -1.594756D+01</hkl>
+         <hkld>-1.666721D-05 -4.186519D-04 -1.051001D-02 -2.599511D-01 -1.951598D+00 -7.032124D-01 -4.036663D-02 -4.301209D-01 -2.176113D+00 -2.629783D+00 -2.629783D+00 -2.629783D+00 -2.629783D+00</hkld>
+         <bulk_density>0.847</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 41.66 0 0 0 0 0 0</exco>
+         <fip>1 0.47 1 1 1 1 1 1</fip>
+         <dis>5.69 5.69 5.69 5.69 5.69 5.69 5.69 1</dis>
+      </H4_HortG>
+      <H5_HortG>
+         <!-- Horotiu-gn, B3 - depth range: 0.65-0.85 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -5.000000D-01 -2.600587D-01 -6.005865D-02 +5.399413D-01 +8.804611D-01 +1.064903D+00 +2.911299D+00 +5.289791D+00 +7.000000D+00</sl>
+         <wc>+5.730000D-01 +5.730000D-01 +5.729996D-01 +5.729896D-01 +5.729342D-01 +5.728015D-01 +5.725014D-01 +5.650971D-01 +5.350836D-01 +4.942525D-01 +2.198824D-01 +8.958140D-02 +5.554332D-02</wc>
+         <wcd>-3.027962D-09 -7.605898D-08 -1.910515D-06 -4.798997D-05 -3.027962D-04 -9.141831D-04 -2.296324D-03 -3.639428D-02 -1.746114D-01 -2.244936D-01 -9.210458D-02 -2.923173D-02 -1.280768D-02</wcd>
+         <hkl>+1.734339D+00 +1.734217D+00 +1.731170D+00 +1.655512D+00 +1.279633D+00 +8.303611D-01 +7.608436D-01 +6.756270D-01 +3.185000D-01 -2.029430D-01 -5.725492D+00 -1.283954D+01 -1.795475D+01</hkl>
+         <hkld>-2.317497D-05 -5.821095D-04 -1.460959D-02 -3.585358D-01 -1.803580D+00 -1.120284D+00 -3.480585D-02 -4.208132D-01 -2.138700D+00 -2.990989D+00 -2.990989D+00 -2.990989D+00 -2.990989D+00</hkld>
+         <bulk_density>0.837</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 44.18 0 0 0 0 0 0</exco>
+         <fip>1 0.45 1 1 1 1 1 1</fip>
+         <dis>5.43 5.43 5.43 5.43 5.43 5.43 5.43 1</dis>
+      </H5_HortG>
+      <H6_HortG>
+         <!-- Horotiu-gn, BC - depth range: 0.85-1.10 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.500000D-01 -5.000000D-01 -2.592027D-01 -5.920268D-02 +5.407973D-01 +8.715477D-01 +1.056634D+00 +2.749248D+00 +4.982299D+00 +7.000000D+00</sl>
+         <wc>+4.430000D-01 +4.430000D-01 +4.429996D-01 +4.429925D-01 +4.429404D-01 +4.428194D-01 +4.425463D-01 +4.358097D-01 +4.100200D-01 +3.739853D-01 +1.588835D-01 +6.282649D-02 +3.707265D-02</wc>
+         <wcd>-2.744105D-09 -6.892880D-08 -1.731413D-06 -3.454623D-05 -2.744105D-04 -8.317549D-04 -2.089274D-03 -3.311276D-02 -1.518785D-01 -1.975340D-01 -7.578125D-02 -2.141070D-02 -6.833410D-03</wcd>
+         <hkl>+1.989934D+00 +1.989806D+00 +1.986605D+00 +1.923950D+00 +1.508981D+00 +1.028434D+00 +9.590231D-01 +8.662080D-01 +4.968400D-01 -6.298616D-02 -5.521125D+00 -1.272200D+01 -1.922844D+01</hkl>
+         <hkld>-2.434121D-05 -6.114050D-04 -1.534603D-02 -3.012299D-01 -1.922882D+00 -1.157327D+00 -3.555503D-02 -4.592050D-01 -2.247319D+00 -3.224680D+00 -3.224680D+00 -3.224680D+00 -3.224680D+00</hkld>
+         <bulk_density>0.811</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 36.99 0 0 0 0 0 0</exco>
+         <fip>1 0.45 1 1 1 1 1 1</fip>
+         <dis>4.36 4.36 4.36 4.36 4.36 4.36 4.36 1</dis>
+      </H6_HortG>
+      <H7_HortG>
+         <!-- Horotiu-gn, C1 - depth range: 1.10-1.30 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.500000D-01 -2.229350D-01 -5.095842D-02 +9.904158D-02 +6.844152D-01 +1.000418D+00 +1.146070D+00 +2.518669D+00 +4.452955D+00 +7.000000D+00</sl>
+         <wc>+2.580000D-01 +2.580000D-01 +2.579998D-01 +2.579952D-01 +2.579617D-01 +2.578911D-01 +2.577597D-01 +2.575205D-01 +2.508952D-01 +2.275519D-01 +2.042183D-01 +7.785818D-02 +3.131295D-02 +2.131902D-02</wc>
+         <wcd>-1.399490D-09 -3.515359D-08 -8.830182D-07 -2.218041D-05 -1.761853D-04 -5.013024D-04 -1.106758D-03 -2.208273D-03 -3.271900D-02 -1.402185D-01 -1.554336D-01 -4.881766D-02 -9.545263D-03 -1.112916D-03</wcd>
+         <hkl>+2.212526D+00 +2.212463D+00 +2.210883D+00 +2.171341D+00 +1.896119D+00 +1.423526D+00 +1.095078D+00 +1.058766D+00 +9.532655D-01 +5.565769D-01 +1.127026D-01 -4.197734D+00 -1.027206D+01 -1.827065D+01</hkl>
+         <hkld>-1.201259D-05 -3.017392D-04 -7.577243D-03 -1.889456D-01 -1.388775D+00 -2.613056D+00 -7.613653D-01 -4.438232D-02 -5.274123D-01 -2.514455D+00 -3.140344D+00 -3.140344D+00 -3.140344D+00 -3.140344D+00</hkld>
+         <bulk_density>1.063</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 20.42 0 0 0 0 0 0</exco>
+         <fip>1 0.45 1 1 1 1 1 1</fip>
+         <dis>2.38 2.38 2.38 2.38 2.38 2.38 2.38 1</dis>
+      </H7_HortG>
+      <H8_HortG>
+         <!-- Horotiu-gn, C2 - depth range: 1.30-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -1.184828D-01 +6.271128D-02 +2.627113D-01 +7.713312D-01 +1.057282D+00 +2.335015D+00 +4.151108D+00 +7.000000D+00</sl>
+         <wc>+2.250000D-01 +2.250000D-01 +2.249998D-01 +2.249956D-01 +2.249561D-01 +2.248393D-01 +2.246299D-01 +2.240703D-01 +2.153269D-01 +1.889516D-01 +7.123987D-02 +2.876827D-02 +1.970391D-02</wc>
+         <wcd>-1.276883D-09 -3.207386D-08 -8.056589D-07 -2.023724D-05 -2.023724D-04 -7.399213D-04 -1.704409D-03 -4.281281D-03 -4.454650D-02 -1.569077D-01 -4.823045D-02 -9.018549D-03 -6.498877D-04</wcd>
+         <hkl>+2.269131D+00 +2.269100D+00 +2.268324D+00 +2.248864D+00 +2.069892D+00 +1.601479D+00 +1.162706D+00 +1.070418D+00 +9.327300D-01 +4.773567D-01 -3.246207D+00 -8.538653D+00 -1.684088D+01</hkl>
+         <hkld>-5.898858D-06 -1.481719D-04 -3.721454D-03 -9.318467D-02 -8.975472D-01 -2.558589D+00 -1.506187D+00 -7.349308D-02 -7.161980D-01 -2.914194D+00 -2.914194D+00 -2.914194D+00 -2.914194D+00</hkld>
+         <bulk_density>1.031</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 17.46 0 0 0 0 0 0</exco>
+         <fip>1 0.45 1 1 1 1 1 1</fip>
+         <dis>2.05 2.05 2.05 2.05 2.05 2.05 2.05 1</dis>
+      </H8_HortG>
+      <H9_HortG>
+         <!-- Horotiu-gn, C3 - depth range: 1.50-2.00 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 +2.370168D-02 +2.337708D-01 +4.337708D-01 +8.823761D-01 +1.088801D+00 +2.408343D+00 +4.326999D+00 +7.000000D+00</sl>
+         <wc>+1.810000D-01 +1.810000D-01 +1.809999D-01 +1.809968D-01 +1.809596D-01 +1.807743D-01 +1.804062D-01 +1.795085D-01 +1.692285D-01 +1.506318D-01 +5.449998D-02 +2.290993D-02 +1.745044D-02</wc>
+         <wcd>-9.318089D-10 -2.340598D-08 -5.879316D-07 -1.476818D-05 -1.859203D-04 -1.039274D-03 -2.734440D-03 -6.868603D-03 -5.420995D-02 -1.286903D-01 -3.611330D-02 -5.691390D-03 -4.337859D-04</wcd>
+         <hkl>+2.279678D+00 +2.279661D+00 +2.279248D+00 +2.268868D+00 +2.144882D+00 +1.588498D+00 +1.082093D+00 +1.015497D+00 +8.201534D-01 +4.307285D-01 -3.367301D+00 -8.889754D+00 -1.658344D+01</hkl>
+         <hkld>-3.143488D-06 -7.896068D-05 -1.983291D-03 -4.974659D-02 -6.136504D-01 -2.684757D+00 -1.120647D+00 -1.280776D-01 -1.064344D+00 -2.878294D+00 -2.878294D+00 -2.878294D+00 -2.878294D+00</hkld>
+         <bulk_density>0.963</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 16.29 0 0 0 0 0 0</exco>
+         <fip>1 0.45 1 1 1 1 1 1</fip>
+         <dis>1.93 1.93 1.93 1.93 1.93 1.93 1.93 1</dis>
+      </H9_HortG>
+      <H1_LsmrA>
+         <!-- Lismore-Am, A - depth range: 0.00-0.15 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +5.000000D-01 +6.500000D-01 +1.300000D+00 +1.650000D+00 +1.906437D+00 +1.982462D+00 +4.113669D+00 +6.928358D+00 +7.000000D+00</sl>
+         <wc>+4.180000D-01 +4.180000D-01 +4.180000D-01 +4.179999D-01 +4.179985D-01 +4.179878D-01 +4.179615D-01 +4.179232D-01 +4.164676D-01 +4.103198D-01 +3.929824D-01 +3.825069D-01 +1.640443D-01 +6.591409D-02 +6.468690D-02</wc>
+         <wcd>-1.772622D-11 -4.452624D-10 -1.118449D-08 -2.809416D-07 -7.056934D-06 -5.605522D-05 -1.772622D-04 -3.536845D-04 -7.056934D-03 -3.536845D-02 -1.152101D-01 -1.590103D-01 -6.129682D-02 -1.740540D-02 -1.685651D-02</wcd>
+         <hkl>+1.270632D+00 +1.270627D+00 +1.270510D+00 +1.267568D+00 +1.194194D+00 +7.108776D-01 +1.726595D-01 +1.276291D-01 +5.635280D-02 -2.460101D-01 -1.125572D+00 -1.677444D+00 -1.979228D+01 -4.371659D+01 -4.432554D+01</hkl>
+         <hkld>-8.907093D-07 -2.237359D-05 -5.619873D-04 -1.410900D-02 -3.492803D-01 -2.239840D+00 -9.244874D-01 -3.419145D-02 -3.443314D-01 -1.753423D+00 -5.982219D+00 -8.499806D+00 -8.499806D+00 -8.499806D+00 -8.499806D+00</hkld>
+         <bulk_density>1.137</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 35.88 0 0 0 0 0 0</exco>
+         <fip>1 0.53 1 1 1 1 1 1</fip>
+         <dis>6.57 6.57 6.57 6.57 6.57 6.57 6.57 1</dis>
+      </H1_LsmrA>
+      <H2_LsmrA>
+         <!-- Lismore-Am, BA - depth range: 0.15-0.25 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.500000D-01 +2.000000D-01 +4.500000D-01 +6.000000D-01 +1.300000D+00 +1.646938D+00 +1.895241D+00 +1.999853D+00 +4.257424D+00 +7.000000D+00</sl>
+         <wc>+3.810000D-01 +3.810000D-01 +3.810000D-01 +3.809999D-01 +3.809987D-01 +3.809897D-01 +3.809673D-01 +3.809348D-01 +3.793630D-01 +3.729106D-01 +3.556182D-01 +3.413975D-01 +1.428678D-01 +6.098668D-02</wc>
+         <wcd>-1.893590D-11 -4.756482D-10 -1.194774D-08 -3.001138D-07 -5.988057D-06 -4.756482D-05 -1.504132D-04 -3.001138D-04 -7.538517D-03 -3.725313D-02 -1.168874D-01 -1.386993D-01 -5.139382D-02 -1.538575D-02</wcd>
+         <hkl>+1.163221D+00 +1.163215D+00 +1.163074D+00 +1.159536D+00 +1.090207D+00 +6.274293D-01 +9.042334D-02 +3.878765D-02 -4.754090D-02 -4.037233D-01 -1.391971D+00 -2.244334D+00 -2.143240D+01 -4.474272D+01</hkl>
+         <hkld>-1.071088D-06 -2.690448D-05 -6.757920D-04 -1.696380D-02 -3.336513D-01 -2.156616D+00 -1.016359D+00 -3.952471D-02 -4.123238D-01 -2.075481D+00 -6.853776D+00 -8.499427D+00 -8.499427D+00 -8.499427D+00</hkld>
+         <bulk_density>1.119</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 37.46 0 0 0 0 0 0</exco>
+         <fip>1 0.52 1 1 1 1 1 1</fip>
+         <dis>6.55 6.55 6.55 6.55 6.55 6.55 6.55 1</dis>
+      </H2_LsmrA>
+      <H3_LsmrA>
+         <!-- Lismore-Am, B1 - depth range: 0.25-0.35 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.500000D-01 +3.500000D-01 +5.000000D-01 +1.200000D+00 +1.544410D+00 +1.799299D+00 +1.905386D+00 +4.377309D+00 +7.000000D+00</sl>
+         <wc>+3.330000D-01 +3.330000D-01 +3.330000D-01 +3.329999D-01 +3.329985D-01 +3.329881D-01 +3.329702D-01 +3.329405D-01 +3.315051D-01 +3.256981D-01 +3.093837D-01 +2.971040D-01 +1.212265D-01 +5.650001D-02</wc>
+         <wcd>-2.740691D-11 -6.884303D-10 -1.729259D-08 -4.343702D-07 -6.884303D-06 -5.468396D-05 -1.373599D-04 -2.740691D-04 -6.884303D-03 -3.362638D-02 -1.087573D-01 -1.141073D-01 -4.062281D-02 -1.357903D-02</wcd>
+         <hkl>+8.565473D-01 +8.565395D-01 +8.563427D-01 +8.514017D-01 +7.757434D-01 +2.821559D-01 -1.238119D-01 -1.901037D-01 -2.604033D-01 -5.433621D-01 -1.368467D+00 -2.021245D+00 -1.735021D+01 -3.361414D+01</hkl>
+         <hkld>-1.496123D-06 -3.758084D-05 -9.439457D-04 -2.368402D-02 -3.682158D-01 -2.173285D+00 -1.168776D+00 -5.779138D-02 -3.322772D-01 -1.654247D+00 -5.656167D+00 -6.201234D+00 -6.201234D+00 -6.201234D+00</hkld>
+         <bulk_density>1.138</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 40.62 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>6.54 6.54 6.54 6.54 6.54 6.54 6.54 1</dis>
+      </H3_LsmrA>
+      <H4_LsmrA>
+         <!-- Lismore-Am, BC - depth range: 0.35-0.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -4.976054D-03 +1.977046D-01 +3.943895D-01 +8.943895D-01 +1.186698D+00 +4.308086D+00 +7.000000D+00</sl>
+         <wc>+2.320000D-01 +2.320000D-01 +2.320000D-01 +2.319989D-01 +2.319859D-01 +2.319311D-01 +2.318249D-01 +2.315668D-01 +2.276678D-01 +2.153804D-01 +8.011494D-02 +3.969872D-02</wc>
+         <wcd>-3.244741D-10 -8.150421D-09 -2.047293D-07 -5.142568D-06 -6.474110D-05 -3.171231D-04 -8.064717D-04 -1.995074D-03 -1.995074D-02 -7.216031D-02 -2.344897D-02 -8.894417D-03</wcd>
+         <hkl>+9.419080D-01 +9.418900D-01 +9.414379D-01 +9.300898D-01 +7.947658D-01 +2.781818D-01 -2.187211D-01 -2.936549D-01 -4.125919D-01 -8.019151D-01 -8.155290D+00 -1.449691D+01</hkl>
+         <hkld>-3.437154D-06 -8.633719D-05 -2.168551D-03 -5.438152D-02 -6.685222D-01 -2.597841D+00 -1.329514D+00 -6.480416D-02 -6.136957D-01 -2.355802D+00 -2.355802D+00 -2.355802D+00</hkld>
+         <bulk_density>0.646</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 42.36 0 0 0 0 0 0</exco>
+         <fip>1 0.47 1 1 1 1 1 1</fip>
+         <dis>6.94 6.94 6.94 6.94 6.94 6.94 6.94 1</dis>
+      </H4_LsmrA>
+      <H5_LsmrA>
+         <!-- Lismore-Am, C1 - depth range: 0.50-0.75 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -3.998574D-02 +1.754113D-01 +3.754113D-01 +8.471767D-01 +1.054092D+00 +4.466751D+00 +7.000000D+00</sl>
+         <wc>+1.540000D-01 +1.540000D-01 +1.539999D-01 +1.539986D-01 +1.539823D-01 +1.539261D-01 +1.538008D-01 +1.534997D-01 +1.496073D-01 +1.426298D-01 +4.775795D-02 +2.525967D-02</wc>
+         <wcd>-4.089020D-10 -1.027116D-08 -2.579997D-07 -6.480661D-06 -8.158668D-05 -3.401322D-04 -9.171534D-04 -2.303785D-03 -2.022892D-02 -4.920274D-02 -1.373998D-02 -5.330213D-03</wcd>
+         <hkl>+1.153997D+00 +1.153977D+00 +1.153476D+00 +1.140904D+00 +9.914385D-01 +5.286088D-01 +2.852057D-02 -4.325118D-02 -2.167510D-01 -5.402194D-01 -8.528944D+00 -1.445905D+01</hkl>
+         <hkld>-3.808513D-06 -9.566521D-05 -2.402810D-03 -6.023298D-02 -7.359393D-01 -2.454907D+00 -1.198769D+00 -1.043925D-01 -9.139786D-01 -2.340909D+00 -2.340909D+00 -2.340909D+00</hkld>
+         <bulk_density>0.48</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 38.72 0 0 0 0 0 0</exco>
+         <fip>1 0.48 1 1 1 1 1 1</fip>
+         <dis>6.24 6.24 6.24 6.24 6.24 6.24 6.24 1</dis>
+      </H5_LsmrA>
+      <H6_LsmrA>
+         <!-- Lismore-Am, C2 - depth range: 0.75-1.00 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -9.522926D-02 +8.863206D-02 +2.828758D-01 +7.571853D-01 +9.782185D-01 +4.403311D+00 +7.000000D+00</sl>
+         <wc>+1.060000D-01 +1.060000D-01 +1.059999D-01 +1.059985D-01 +1.059853D-01 +1.059400D-01 +1.058602D-01 +1.056580D-01 +1.029614D-01 +9.759557D-02 +2.944612D-02 +1.525426D-02</wc>
+         <wcd>-4.281075D-10 -1.075357D-08 -2.701176D-07 -6.785046D-06 -6.785046D-05 -2.761177D-04 -6.438978D-04 -1.575086D-03 -1.399340D-02 -3.740055D-02 -8.952415D-03 -3.028199D-03</wcd>
+         <hkl>+1.301072D+00 +1.301045D+00 +1.300356D+00 +1.283068D+00 +1.123671D+00 +6.396022D-01 +1.938207D-01 +9.918367D-02 -6.070818D-02 -3.924283D-01 -8.546583D+00 -1.472855D+01</hkl>
+         <hkld>-5.239267D-06 -1.316039D-04 -3.305383D-03 -8.279760D-02 -8.017588D-01 -2.546334D+00 -1.508239D+00 -1.014538D-01 -8.404107D-01 -2.380711D+00 -2.380711D+00 -2.380711D+00</hkld>
+         <bulk_density>0.353</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 35.66 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>5.37 5.37 5.37 5.37 5.37 5.37 5.37 1</dis>
+      </H6_LsmrA>
+      <H7_LsmrA>
+         <!-- Lismore-Am, C3 - depth range: 1.00-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.778974D-01 -1.412689D-01 +5.873109D-02 +5.223193D-01 +7.226547D-01 +4.736484D+00 +7.000000D+00</sl>
+         <wc>+7.800000D-02 +7.799999D-02 +7.799986D-02 +7.799660D-02 +7.796234D-02 +7.788801D-02 +7.771869D-02 +7.562119D-02 +7.202830D-02 +1.984029D-02 +1.173418D-02</wc>
+         <wcd>-9.884774D-10 -2.482943D-08 -6.236871D-07 -1.566631D-05 -1.734491D-04 -5.157378D-04 -1.295475D-03 -1.095483D-02 -2.570343D-02 -5.387735D-03 -2.232196D-03</wcd>
+         <hkl>+1.420249D+00 +1.420157D+00 +1.417852D+00 +1.360255D+00 +8.133080D-01 +2.963853D-01 +2.416302D-01 +6.203623D-02 -2.585119D-01 -9.711198D+00 -1.504185D+01</hkl>
+         <hkld>-1.752601D-05 -4.402267D-04 -1.105371D-02 -2.747666D-01 -2.386814D+00 -9.217834D-01 -1.106339D-01 -9.519178D-01 -2.355030D+00 -2.355030D+00 -2.355030D+00</hkld>
+         <bulk_density>0.289</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 33.91 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>5.5 5.5 5.5 5.5 5.5 5.5 5.5 1</dis>
+      </H7_LsmrA>
+      <H1_LsmrR>
+         <!-- Lismore-Ro, A - depth range: 0.00-0.15 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +5.000000D-02 +2.280003D-01 +3.685627D-01 +4.627586D-01 +5.627586D-01 +1.162759D+00 +1.510043D+00 +1.697213D+00 +4.232542D+00 +7.000000D+00</sl>
+         <wc>+3.100000D-01 +3.100000D-01 +3.100000D-01 +3.099998D-01 +3.099975D-01 +3.099875D-01 +3.099717D-01 +3.099459D-01 +3.099165D-01 +3.098676D-01 +3.079020D-01 +2.996159D-01 +2.854129D-01 +1.100665D-01 +4.815681D-02</wc>
+         <wcd>-4.565909D-11 -1.146905D-09 -2.880894D-08 -7.236478D-07 -1.146905D-05 -5.748139D-05 -1.304752D-04 -2.492601D-04 -3.846312D-04 -6.095994D-04 -9.661499D-03 -4.782043D-02 -1.132277D-01 -3.822614D-02 -1.165533D-02</wcd>
+         <hkl>+1.941973D+00 +1.941962D+00 +1.941683D+00 +1.934682D+00 +1.826585D+00 +1.369719D+00 +7.007167D-01 +8.612669D-02 -9.470898D-03 -1.587541D-02 -8.897755D-02 -4.026514D-01 -9.626662D-01 -1.260911D+01 -2.532188D+01</hkl>
+         <hkld>-2.118903D-06 -5.322443D-05 -1.336928D-03 -3.357604D-02 -5.304428D-01 -2.586022D+00 -4.939922D+00 -2.396553D+00 -2.052765D-01 -2.414078D-02 -3.604326D-01 -1.837049D+00 -4.583350D+00 -4.593663D+00 -4.593663D+00</hkld>
+         <bulk_density>0.932</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 33.65 0 0 0 0 0 0</exco>
+         <fip>1 0.54 1 1 1 1 1 1</fip>
+         <dis>6.15 6.15 6.15 6.15 6.15 6.15 6.15 1</dis>
+      </H1_LsmrR>
+      <H2_LsmrR>
+         <!-- Lismore-Ro, B1 - depth range: 0.15-0.25 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -2.289835D-15 +1.801221D-01 +3.236024D-01 +4.686401D-01 +1.168640D+00 +1.508891D+00 +1.657854D+00 +4.109333D+00 +7.000000D+00</sl>
+         <wc>+2.970000D-01 +2.970000D-01 +2.970000D-01 +2.969998D-01 +2.969976D-01 +2.969879D-01 +2.969722D-01 +2.969461D-01 +2.968949D-01 +2.943602D-01 +2.843508D-01 +2.719331D-01 +1.080586D-01 +4.549601D-02</wc>
+         <wcd>-5.591505D-11 -1.404523D-09 -3.528001D-08 -8.861938D-07 -1.115652D-05 -5.591505D-05 -1.281660D-04 -2.481610D-04 -4.839594D-04 -1.215651D-02 -5.825187D-02 -1.080256D-01 -3.775835D-02 -1.093235D-02</wcd>
+         <hkl>+1.827879D+00 +1.827866D+00 +1.827539D+00 +1.819337D+00 +1.720541D+00 +1.296708D+00 +6.716206D-01 +9.786064D-02 +1.511765D-03 -9.014356D-02 -4.584562D-01 -9.352663D-01 -1.135245D+01 -2.363590D+01</hkl>
+         <hkld>-2.482463D-06 -6.235662D-05 -1.566310D-03 -3.933260D-02 -4.932209D-01 -2.392335D+00 -4.538809D+00 -2.207521D+00 -4.350458D-02 -4.391053D-01 -2.183787D+00 -4.249348D+00 -4.249348D+00 -4.249348D+00</hkld>
+         <bulk_density>0.918</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 34.23 0 0 0 0 0 0</exco>
+         <fip>1 0.53 1 1 1 1 1 1</fip>
+         <dis>6.03 6.03 6.03 6.03 6.03 6.03 6.03 1</dis>
+      </H2_LsmrR>
+      <H3_LsmrR>
+         <!-- Lismore-Ro, B2 - depth range: 0.25-0.35 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 -6.588536D-03 +1.841242D-01 +3.341242D-01 +1.034124D+00 +1.384655D+00 +1.536939D+00 +4.125440D+00 +7.000000D+00</sl>
+         <wc>+2.550000D-01 +2.550000D-01 +2.550000D-01 +2.549997D-01 +2.549964D-01 +2.549826D-01 +2.549582D-01 +2.549166D-01 +2.529041D-01 +2.444699D-01 +2.337975D-01 +8.922687D-02 +3.879893D-02</wc>
+         <wcd>-8.248352D-11 -2.071892D-09 -5.204358D-08 -1.307276D-06 -1.645763D-05 -8.001844D-05 -1.925819D-04 -3.842515D-04 -9.651961D-03 -4.849277D-02 -9.241064D-02 -3.050138D-02 -8.906695D-03</wcd>
+         <hkl>+1.305437D+00 +1.305419D+00 +1.304969D+00 +1.293678D+00 +1.158844D+00 +6.419313D-01 +1.277790D-01 +2.526628D-02 -4.941798D-02 -3.620646D-01 -7.748078D-01 -1.025266D+01 -2.077792D+01</hkl>
+         <hkld>-3.419389D-06 -8.589097D-05 -2.157360D-03 -5.411150D-02 -6.671198D-01 -2.655224D+00 -1.782328D+00 -8.129478D-02 -3.513265D-01 -1.830848D+00 -3.661521D+00 -3.661521D+00 -3.661521D+00</hkld>
+         <bulk_density>0.832</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 35.38 0 0 0 0 0 0</exco>
+         <fip>1 0.51 1 1 1 1 1 1</fip>
+         <dis>5.82 5.82 5.82 5.82 5.82 5.82 5.82 1</dis>
+      </H3_LsmrR>
+      <H4_LsmrR>
+         <!-- Lismore-Ro, BC - depth range: 0.35-0.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -4.882039D-02 +1.663343D-01 +3.663343D-01 +8.310148D-01 +1.032100D+00 +4.008475D+00 +7.000000D+00</sl>
+         <wc>+2.130000D-01 +2.130000D-01 +2.129999D-01 +2.129978D-01 +2.129777D-01 +2.128878D-01 +2.126979D-01 +2.122410D-01 +2.065497D-01 +1.967392D-01 +7.158859D-02 +3.204215D-02</wc>
+         <wcd>-6.468385D-10 -1.624785D-08 -4.081275D-07 -1.025170D-05 -1.025170D-04 -5.166008D-04 -1.391440D-03 -3.495139D-03 -2.970472D-02 -7.089680D-02 -2.234248D-02 -6.999763D-03</wcd>
+         <hkl>+1.099921D+00 +1.099899D+00 +1.099348D+00 +1.085508D+00 +9.573578D-01 +4.408407D-01 -5.881711D-02 -1.222363D-01 -2.990008D-01 -6.162756D-01 -7.622165D+00 -1.466372D+01</hkl>
+         <hkld>-4.193003D-06 -1.053231D-04 -2.645378D-03 -6.630835D-02 -6.476538D-01 -2.562693D+00 -1.082498D+00 -1.088852D-01 -9.359731D-01 -2.353833D+00 -2.353833D+00 -2.353833D+00</hkld>
+         <bulk_density>0.571</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 38.87 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>6.31 6.31 6.31 6.31 6.31 6.31 6.31 1</dis>
+      </H4_LsmrR>
+      <H5_LsmrR>
+         <!-- Lismore-Ro, C1 - depth range: 0.50-0.75 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -8.522474D-02 +1.403699D-01 +3.403699D-01 +8.019521D-01 +1.012199D+00 +4.121330D+00 +7.000000D+00</sl>
+         <wc>+1.470000D-01 +1.470000D-01 +1.469999D-01 +1.469982D-01 +1.469818D-01 +1.469226D-01 +1.467813D-01 +1.464507D-01 +1.423973D-01 +1.349107D-01 +4.447497D-02 +2.046769D-02</wc>
+         <wcd>-5.276563D-10 -1.325413D-08 -3.329286D-07 -8.362789D-06 -8.362789D-05 -3.563704D-04 -1.007143D-03 -2.529828D-03 -2.119607D-02 -5.172048D-02 -1.427469D-02 -4.334246D-03</wcd>
+         <hkl>+1.277379D+00 +1.277355D+00 +1.276744D+00 +1.261436D+00 +1.120099D+00 +6.599139D-01 +1.553082D-01 +9.357201D-02 -7.962439D-02 -4.138701D-01 -7.806234D+00 -1.465065D+01</hkl>
+         <hkld>-4.638904D-06 -1.165235D-04 -2.926643D-03 -7.332423D-02 -7.121056D-01 -2.419215D+00 -1.037748D+00 -1.084658D-01 -9.193007D-01 -2.377630D+00 -2.377630D+00 -2.377630D+00</hkld>
+         <bulk_density>0.447</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 36.1 0 0 0 0 0 0</exco>
+         <fip>1 0.49 1 1 1 1 1 1</fip>
+         <dis>5.57 5.57 5.57 5.57 5.57 5.57 5.57 1</dis>
+      </H5_LsmrR>
+      <H6_LsmrR>
+         <!-- Lismore-Ro, C2 - depth range: 0.75-1.00 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -1.005088D-01 +9.870969D-02 +2.987097D-01 +7.488314D-01 +9.598704D-01 +3.986153D+00 +7.000000D+00</sl>
+         <wc>+1.080000D-01 +1.080000D-01 +1.079999D-01 +1.079981D-01 +1.079813D-01 +1.079258D-01 +1.078143D-01 +1.075335D-01 +1.042923D-01 +9.821779D-02 +2.976754D-02 +1.328280D-02</wc>
+         <wcd>-5.428572D-10 -1.363596D-08 -3.425198D-07 -8.603707D-06 -8.603707D-05 -3.417182D-04 -8.552735D-04 -2.148350D-03 -1.707452D-02 -4.238607D-02 -1.022682D-02 -2.481962D-03</wcd>
+         <hkl>+1.425924D+00 +1.425894D+00 +1.425130D+00 +1.405982D+00 +1.229894D+00 +7.228181D-01 +2.886536D-01 +2.316099D-01 +6.046238D-02 -2.763577D-01 -7.625637D+00 -1.494472D+01</hkl>
+         <hkld>-5.804470D-06 -1.458010D-04 -3.661903D-03 -9.169149D-02 -8.830078D-01 -2.606708D+00 -9.614360D-01 -1.130188D-01 -9.165604D-01 -2.428484D+00 -2.428484D+00 -2.428484D+00</hkld>
+         <bulk_density>0.348</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 33.02 0 0 0 0 0 0</exco>
+         <fip>1 0.5 1 1 1 1 1 1</fip>
+         <dis>4.69 4.69 4.69 4.69 4.69 4.69 4.69 1</dis>
+      </H6_LsmrR>
+      <H7_LsmrR>
+         <!-- Lismore-Ro, C3 - depth range: 1.00-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -4.000000D-01 -1.451612D-01 +2.151603D-02 +2.213395D-01 +7.039532D-01 +9.136015D-01 +3.901526D+00 +7.000000D+00</sl>
+         <wc>+8.300000D-02 +8.300000D-02 +8.299992D-02 +8.299804D-02 +8.298043D-02 +8.293671D-02 +8.286363D-02 +8.265774D-02 +7.984077D-02 +7.472367D-02 +2.071020D-02 +8.974133D-03</wc>
+         <wcd>-5.687482D-10 -1.428631D-08 -3.588559D-07 -9.014052D-06 -9.014052D-05 -2.914726D-04 -6.279891D-04 -1.576155D-03 -1.454878D-02 -3.545644D-02 -7.589397D-03 -1.534437D-03</wcd>
+         <hkl>+1.502412D+00 +1.502374D+00 +1.501427D+00 +1.477690D+00 +1.260921D+00 +7.981782D-01 +4.180721D-01 +3.325105D-01 +1.531115D-01 -1.907880D-01 -7.572562D+00 -1.522745D+01</hkl>
+         <hkld>-7.199287D-06 -1.808368D-04 -4.541680D-03 -1.136062D-01 -1.077923D+00 -2.570703D+00 -1.362740D+00 -1.043931D-01 -9.434796D-01 -2.470536D+00 -2.470536D+00 -2.470536D+00</hkld>
+         <bulk_density>0.286</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 31.27 0 0 0 0 0 0</exco>
+         <fip>1 0.5 1 1 1 1 1 1</fip>
+         <dis>4.19 4.19 4.19 4.19 4.19 4.19 4.19 1</dis>
+      </H7_LsmrR>
+      <H1_LsmrW>
+         <!-- Lismore-Wm, A - depth range: 0.00-0.15 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.500000D-01 +3.461227D-01 +4.961227D-01 +1.196123D+00 +1.554030D+00 +1.760438D+00 +3.885593D+00 +6.650688D+00 +7.000000D+00</sl>
+         <wc>+4.880000D-01 +4.880000D-01 +4.880000D-01 +4.879998D-01 +4.879970D-01 +4.879760D-01 +4.879407D-01 +4.878818D-01 +4.850299D-01 +4.725625D-01 +4.480721D-01 +1.979047D-01 +8.123555D-02 +7.410115D-02</wc>
+         <wcd>-5.543245D-11 -1.392400D-09 -3.497551D-08 -8.785451D-07 -1.392400D-05 -1.106023D-04 -2.729038D-04 -5.445146D-04 -1.367759D-02 -7.109239D-02 -1.794643D-01 -7.207583D-02 -2.199370D-02 -1.893114D-02</wcd>
+         <hkl>+1.722140D+00 +1.722130D+00 +1.721878D+00 +1.715560D+00 +1.618385D+00 +9.560862D-01 +3.922256D-01 +3.194160D-01 +2.366661D-01 -1.286618D-01 -8.772631D-01 -1.287345D+01 -2.848201D+01 -3.045383D+01</hkl>
+         <hkld>-1.912447D-06 -4.803846D-05 -1.206643D-03 -3.029115D-02 -4.750328D-01 -3.053542D+00 -1.499929D+00 -4.229830D-02 -3.952714D-01 -2.112391D+00 -5.644855D+00 -5.644855D+00 -5.644855D+00 -5.644855D+00</hkld>
+         <bulk_density>1.25</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 35.9 0 0 0 0 0 0</exco>
+         <fip>1 0.52 1 1 1 1 1 1</fip>
+         <dis>6.21 6.21 6.21 6.21 6.21 6.21 6.21 1</dis>
+      </H1_LsmrW>
+      <H2_LsmrW>
+         <!-- Lismore-Wm, B1 - depth range: 0.15-0.25 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.000000D-01 +2.989838D-01 +4.489838D-01 +1.148984D+00 +1.506327D+00 +1.723064D+00 +3.753345D+00 +6.391447D+00 +7.000000D+00</sl>
+         <wc>+4.530000D-01 +4.530000D-01 +4.530000D-01 +4.529998D-01 +4.529964D-01 +4.529775D-01 +4.529437D-01 +4.528877D-01 +4.501794D-01 +4.383772D-01 +4.133396D-01 +1.792956D-01 +7.337114D-02 +6.248703D-02</wc>
+         <wcd>-6.540671D-11 -1.642942D-09 -4.126885D-08 -1.036627D-06 -1.642942D-05 -1.036627D-04 -2.591732D-04 -5.171184D-04 -1.298943D-02 -6.734043D-02 -1.777414D-01 -6.950561D-02 -2.051985D-02 -1.548639D-02</wcd>
+         <hkl>+1.636467D+00 +1.636456D+00 +1.636176D+00 +1.629129D+00 +1.520901D+00 +9.530326D-01 +3.827092D-01 +2.826292D-01 +2.044135D-01 -1.363147D-01 -8.929001D-01 -1.214895D+01 -2.677481D+01 -3.014868D+01</hkl>
+         <hkld>-2.133172D-06 -5.358280D-05 -1.345899D-03 -3.378182D-02 -5.282608D-01 -2.781524D+00 -1.824025D+00 -7.038255D-02 -3.697254D-01 -1.972007D+00 -5.544085D+00 -5.544085D+00 -5.544085D+00 -5.544085D+00</hkld>
+         <bulk_density>1.235</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 37.92 0 0 0 0 0 0</exco>
+         <fip>1 0.5 1 1 1 1 1 1</fip>
+         <dis>5.84 5.84 5.84 5.84 5.84 5.84 5.84 1</dis>
+      </H2_LsmrW>
+      <H3_LsmrW>
+         <!-- Lismore-Wm, B2 - depth range: 0.25-0.35 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.000000D-01 +3.000000D-01 +4.500000D-01 +1.150000D+00 +1.490072D+00 +1.744784D+00 +4.210765D+00 +7.000000D+00</sl>
+         <wc>+3.660000D-01 +3.660000D-01 +3.660000D-01 +3.659999D-01 +3.659977D-01 +3.659856D-01 +3.659638D-01 +3.659278D-01 +3.641856D-01 +3.573126D-01 +3.379327D-01 +1.409731D-01 +6.318010D-02</wc>
+         <wcd>-4.187831D-11 -1.051936D-09 -2.642343D-08 -6.637265D-07 -1.051936D-05 -6.637265D-05 -1.667206D-04 -3.326512D-04 -8.355821D-03 -4.000675D-02 -1.262527D-01 -4.653459D-02 -1.504840D-02</wcd>
+         <hkl>+1.383653D+00 +1.383642D+00 +1.383352D+00 +1.376071D+00 +1.264304D+00 +6.824338D-01 +1.295335D-01 +4.702637D-02 -2.925414D-02 -3.303648D-01 -1.214312D+00 -1.585155D+01 -3.240752D+01</hkl>
+         <hkld>-2.204233D-06 -5.536775D-05 -1.390730D-03 -3.490499D-02 -5.452094D-01 -2.813043D+00 -1.587686D+00 -5.339291D-02 -3.623462D-01 -1.770863D+00 -5.935665D+00 -5.935665D+00 -5.935665D+00</hkld>
+         <bulk_density>1.19</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 43.75 0 0 0 0 0 0</exco>
+         <fip>1 0.47 1 1 1 1 1 1</fip>
+         <dis>6.83 6.83 6.83 6.83 6.83 6.83 6.83 1</dis>
+      </H3_LsmrW>
+      <H4_LsmrW>
+         <!-- Lismore-Wm, BC - depth range: 0.35-0.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.500000D-01 +8.703234D-02 +2.699285D-01 +4.199285D-01 +1.119929D+00 +1.472820D+00 +1.626176D+00 +4.289321D+00 +7.000000D+00</sl>
+         <wc>+2.510000D-01 +2.510000D-01 +2.510000D-01 +2.509998D-01 +2.509977D-01 +2.509830D-01 +2.509604D-01 +2.509211D-01 +2.490175D-01 +2.409306D-01 +2.306401D-01 +8.959347D-02 +4.254297D-02</wc>
+         <wcd>-5.255429D-11 -1.320104D-09 -3.315951D-08 -8.329294D-07 -1.048596D-05 -7.846443D-05 -1.821651D-04 -3.634672D-04 -9.129883D-03 -4.637124D-02 -8.759560D-02 -2.894074D-02 -9.374591D-03</wcd>
+         <hkl>+8.796687D-01 +8.796562D-01 +8.793413D-01 +8.714369D-01 +7.766479D-01 +1.663873D-01 -3.436889D-01 -4.428814D-01 -5.180753D-01 -8.383233D-01 -1.263225D+00 -1.112894D+01 -2.117074D+01</hkl>
+         <hkld>-2.393172D-06 -6.011368D-05 -1.509933D-03 -3.789302D-02 -4.711227D-01 -2.829244D+00 -1.784704D+00 -7.217021D-02 -3.551313D-01 -1.869757D+00 -3.704533D+00 -3.704533D+00 -3.704533D+00</hkld>
+         <bulk_density>0.975</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 40.85 0 0 0 0 0 0</exco>
+         <fip>1 0.46 1 1 1 1 1 1</fip>
+         <dis>6.12 6.12 6.12 6.12 6.12 6.12 6.12 1</dis>
+      </H4_LsmrW>
+      <H5_LsmrW>
+         <!-- Lismore-Wm, C1 - depth range: 0.50-0.75 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.273952D-01 +3.674185D-01 +5.674185D-01 +1.013965D+00 +1.230507D+00 +3.150197D+00 +5.913974D+00 +7.000000D+00</sl>
+         <wc>+1.870000D-01 +1.870000D-01 +1.870000D-01 +1.869988D-01 +1.869805D-01 +1.868602D-01 +1.865777D-01 +1.859392D-01 +1.787070D-01 +1.645839D-01 +5.901050D-02 +2.256141D-02 +1.878455D-02</wc>
+         <wcd>-3.581178D-10 -8.995514D-09 -2.259571D-07 -5.675785D-06 -8.995514D-05 -6.438970D-04 -1.944747D-03 -4.884983D-03 -3.819055D-02 -9.533064D-02 -2.804814D-02 -4.818927D-03 -2.411915D-03</wcd>
+         <hkl>+7.034630D-01 +7.034543D-01 +7.032356D-01 +6.977456D-01 +6.135522D-01 +1.123465D-01 -4.105565D-01 -4.675222D-01 -6.426392D-01 -1.008055D+00 -5.963225D+00 -1.309718D+01 -1.590047D+01</hkl>
+         <hkld>-1.662194D-06 -4.175236D-05 -1.048732D-03 -2.631799D-02 -4.103575D-01 -2.337572D+00 -9.421428D-01 -1.172610D-01 -9.448617D-01 -2.581234D+00 -2.581234D+00 -2.581234D+00 -2.581234D+00</hkld>
+         <bulk_density>0.75</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 26.46 0 0 0 0 0 0</exco>
+         <fip>1 0.53 1 1 1 1 1 1</fip>
+         <dis>3.54 3.54 3.54 3.54 3.54 3.54 3.54 1</dis>
+      </H5_LsmrW>
+      <H6_LsmrW>
+         <!-- Lismore-Wm, C2 - depth range: 0.75-1.00 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +1.789150D-01 +3.838937D-01 +5.838937D-01 +1.032769D+00 +1.253237D+00 +2.755103D+00 +5.097175D+00 +7.000000D+00</sl>
+         <wc>+1.190000D-01 +1.190000D-01 +1.190000D-01 +1.189991D-01 +1.189850D-01 +1.188635D-01 +1.186492D-01 +1.181187D-01 +1.120361D-01 +9.979742D-02 +3.235917D-02 +1.331514D-02 +1.138067D-02</wc>
+         <wcd>-2.757777D-10 -6.927223D-09 -1.740040D-07 -4.370782D-06 -6.927223D-05 -6.286213D-04 -1.615647D-03 -4.058322D-03 -3.206980D-02 -8.424542D-02 -2.026424D-02 -2.196460D-03 -3.611603D-04</wcd>
+         <hkl>+9.732199D-01 +9.732125D-01 +9.730248D-01 +9.683129D-01 +8.958843D-01 +3.288034D-01 -1.750311D-01 -2.612281D-01 -4.378697D-01 -8.278246D-01 -5.131071D+00 -1.184173D+01 -1.729383D+01</hkl>
+         <hkld>-1.426415D-06 -3.582989D-05 -8.999814D-04 -2.259088D-02 -3.538659D-01 -2.541609D+00 -1.397117D+00 -1.190167D-01 -9.586023D-01 -2.865266D+00 -2.865266D+00 -2.865266D+00 -2.865266D+00</hkld>
+         <bulk_density>0.56</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 18.62 0 0 0 0 0 0</exco>
+         <fip>1 0.52 1 1 1 1 1 1</fip>
+         <dis>2.01 2.01 2.01 2.01 2.01 2.01 2.01 1</dis>
+      </H6_LsmrW>
+      <H7_LsmrW>
+         <!-- Lismore-Wm, C3 - depth range: 1.00-1.50 -->
+         <sl>-3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +2.500000D-01 +5.454530D-01 +7.194298D-01 +9.110341D-01 +1.304679D+00 +1.462793D+00 +3.140166D+00 +6.061813D+00 +7.000000D+00</sl>
+         <wc>+7.200000D-02 +7.200000D-02 +7.199999D-02 +7.199977D-02 +7.199420D-02 +7.195396D-02 +7.182049D-02 +7.160003D-02 +7.103341D-02 +6.607716D-02 +5.976834D-02 +1.766248D-02 +8.519229D-03 +8.203062D-03</wc>
+         <wcd>-6.705308D-11 -1.684297D-09 -4.230763D-08 -1.062720D-06 -2.669431D-05 -2.120405D-04 -8.266560D-04 -1.841952D-03 -4.451302D-03 -2.727570D-02 -5.180400D-02 -9.669131D-03 -5.195869D-04 -2.032021D-04</wcd>
+         <hkl>+1.098297D+00 +1.098296D+00 +1.098254D+00 +1.097214D+00 +1.071125D+00 +8.848980D-01 +3.249325D-01 -1.789213D-01 -2.967275D-01 -5.352425D-01 -8.699481D-01 -5.755544D+00 -1.426527D+01 -1.699788D+01</hkl>
+         <hkld>-3.147522D-07 -7.906217D-06 -1.985944D-04 -4.987953D-03 -1.249582D-01 -9.679406D-01 -3.032969D+00 -1.816055D+00 -2.135351D-01 -1.366971D+00 -2.912647D+00 -2.912647D+00 -2.912647D+00 -2.912647D+00</hkld>
+         <bulk_density>0.45</bulk_density>
+         <solute_name>urea nh4 no3 dcd br orgc orgn Sol8</solute_name>
+         <exco>0 19.98 0 0 0 0 0 0</exco>
+         <fip>1 0.5 1 1 1 1 1 1</fip>
+         <dis>1.92 1.92 1.92 1.92 1.92 1.92 1.92 1</dis>
+      </H7_LsmrW>
+   </Model>
+</Type>
