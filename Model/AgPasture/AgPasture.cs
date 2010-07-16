@@ -1485,6 +1485,41 @@ public class AgPasture : Instance
                 else        return "Dead"; 
             }
     }
+    [Output][Units("")]
+    public int Stage
+    {
+        //An approximate of teh stages corresponding to that of other arable crops for management application settings. 
+        //Phenostage of the first species (ryegrass) is used for this approximation
+        get
+        {
+            int cropStage = 0; //default as "phase out"
+            if (p_Live)
+            {
+                if (SP[0].phenoStage == 0)
+                    cropStage = 1;    //"sowing & germination"; 
+                if (SP[0].phenoStage == 1)
+                    cropStage = 3;    //"emergence";                                   
+            }
+            return cropStage;
+        }
+    }
+    [Output][Units("")]
+    public String StageName
+    {
+        get
+        {
+            String name = "out";
+            if (p_Live)
+            {
+                if (SP[0].phenoStage == 0)
+                    name = "sowing";    //cropStage = 1 & 2
+                if (SP[0].phenoStage == 1)
+                    name = "emergence"; // cropStage = 3    
+            }
+            return name;
+        }
+    }
+
 
     [Output][Units("kg/ha")]
     public double TotalC            // total C in plant, kg/ha
@@ -2273,7 +2308,7 @@ public class AgPasture : Instance
     private void DoSurfaceOMReturn(Double amtDM, Double amtN, Double frac )
     {
         Single dDM = (Single) amtDM;
-
+        
         BiomassRemovedType BR = new BiomassRemovedType();
         String[] type = new String[1];
         Single[] dltdm = new Single[1];
@@ -2356,7 +2391,7 @@ public class AgPasture : Instance
         }
 
         FOMLayerType FomLayer = new FOMLayerType();
-        FomLayer.Type = "root";
+        FomLayer.Type = "agpasture";
         FomLayer.Layer = fomLL;
         IncorpFOM.Invoke(FomLayer);
     }
@@ -3029,7 +3064,7 @@ public class Species
 
         if (bSown && phenoStage == 0)            //  before emergence
         {
-            DDSfromSowing += meanT;
+            DDSfromSowing += meanT;             
             if (DDSfromSowing > DDSEmergence)
             {
                 phenoStage = 1;
@@ -4163,8 +4198,10 @@ public class Species
         //Reset N pools
         Nleaf1 = Nleaf2 = Nleaf3 = Nleaf4 = 0;	
         Nstem1 = Nstem2 = Nstem3 = Nstem4 = 0;	
-        Nstol1 = Nstol2 = Nstol3 = Nroot = Nlitter = 0;	
-        
+        Nstol1 = Nstol2 = Nstol3 = Nroot = Nlitter = 0;
+
+        phenoStage = 0;
+  
         if (updateAggregated() > 0.0)  //return totalLAI = 0 
         {
             Console.WriteLine("Plant is not completely killed.");
