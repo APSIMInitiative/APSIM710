@@ -8,5 +8,5 @@ module Infrastructure2
    use StringModule
    use ConvertModule
    use DataTypes
-   use ScienceAPI
+   use ScienceAPI2
 end module Infrastructure2

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-class ScienceAPI;
+class ScienceAPI2;
 
 // ------------------------------------------------------------------
 // Main component
@@ -12,14 +12,14 @@ class ScienceAPI;
 class grazComponent
    {
    public:
-      grazComponent(ScienceAPI& scienceAPI);
+      grazComponent(ScienceAPI2& scienceAPI);
       void onInit2(void);
 //      void onTick(protocol::TimeType &Tick);
       void onPrepare(void);
       void onProcess(void);
 
    private:
-      ScienceAPI& scienceAPI;
+      ScienceAPI2& scienceAPI;
       int jday;                 // julian day of year
       int month;
       // States

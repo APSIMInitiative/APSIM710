@@ -3,7 +3,7 @@
 #include <math.h>
 
 #include <ApsimShared/ApsimVersion.h>
-#include <ComponentInterface2/ScienceAPI.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 #include <ComponentInterface2/DataTypes.h>
 #include <General/math_functions.h>
 #include <General/stl_functions.h>
@@ -27,7 +27,7 @@ const float sm2ha = 1.0/10000.0;          // constant to convert m^2 to hectares
 // ------------------------------------------------------------------
 // Create an instance of the GRAZ module
 // ------------------------------------------------------------------
-extern "C" grazComponent EXPORT * STDCALL createComponent(ScienceAPI& scienceAPI)
+extern "C" grazComponent EXPORT * STDCALL createComponent(ScienceAPI2& scienceAPI)
    {
    return new grazComponent(scienceAPI);
    }
@@ -38,7 +38,7 @@ extern "C" void EXPORT STDCALL deleteComponent(grazComponent* component)
 // ------------------------------------------------------------------
 // initialise the GRAZ component.
 // ------------------------------------------------------------------
-grazComponent::grazComponent(ScienceAPI& scienceapi)
+grazComponent::grazComponent(ScienceAPI2& scienceapi)
    : scienceAPI(scienceapi)
    {
    scienceAPI.subscribe("init2", nullFunction(&grazComponent::onInit2));

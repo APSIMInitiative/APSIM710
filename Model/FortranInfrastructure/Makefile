@@ -4,7 +4,6 @@ PROJECT = FortranInfrastructure
 
 SRC = DataTypes.f90 \
       DataTypesInterface.f90 \
-      ScienceAPI.f90 \
       ScienceAPI2.f90 \
       ComponentInterfaceModule.f90 \
       ConvertModule.f90 \

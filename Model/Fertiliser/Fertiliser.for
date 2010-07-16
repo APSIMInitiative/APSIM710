@@ -369,7 +369,7 @@ c     include   'fertiliz.inc'
       ! ===========================================================
       subroutine OnInit1()
       Use infrastructure2
-      use ScienceAPI
+      use ScienceAPI2
       use FertilizModule
       implicit none
       ml_external OnInit1, OnTick, OnNewProfile, OnApply, OnProcess
