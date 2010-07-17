@@ -15,6 +15,7 @@ class Arbitrator : public plantThing
       plantInterface& plant;
       vector <string> PartitionParts;
       vector <string> PartitionRules;
+      virtual float ratioRootPlant(void){return 0.0;}
 
       virtual float ratioRootShoot(){return 0.0;}
       virtual float fracDMRemainingInPart(int partNumber) = 0;

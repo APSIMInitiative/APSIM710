@@ -40,6 +40,8 @@ void Arbitrator::partitionDM()
       Part.zeroDltDmGreen();
       if (PartitionRules[i] == "magic")
          Part.giveDmGreen(ratioRootShoot() * DMSupply());
+      else if (PartitionRules[i] == "seasonal")
+         Part.giveDmGreen(ratioRootPlant() * dm_remaining);
 
       else
          {

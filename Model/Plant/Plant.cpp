@@ -389,6 +389,7 @@ void Plant::onProcess()
          leaf().leaf_area_sen( swStress->swDef.photo);
 
          plant.doSenescence(leaf().senFract());
+         plant.doMaintenanceRespirationPFR ();    // Plant and Food implementation FIXME-EIT
          root().sen_length();
 
          plant.doNDemandGrain(nStress->nFact.grain, swStress->swDef.expansion);
@@ -1478,7 +1479,7 @@ void Plant::plant_read_species_const (void)
     scienceAPI.read("n_supply_preference", c.n_supply_preference);
 
     //    plant_phenology_init                           //FIXME - should be in leafPart
-    scienceAPI.read("leaf_no_pot_option", c.leaf_no_pot_option, 1, 2);
+    scienceAPI.read("leaf_no_pot_option", c.leaf_no_pot_option, 1, 3);
     scienceAPI.read("n_retrans_option", c.n_retrans_option, 1, 2);
 
     //    plant_n_senescence

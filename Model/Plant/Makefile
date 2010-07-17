@@ -67,6 +67,8 @@ SRC = PlantComponent.cpp \
       Arbitrators/GenericArbitrator.cpp \
       Arbitrators/GenericArbitratorXY.cpp \
       Arbitrators/WholePlantGenericArbitratorXY.cpp \
+      Arbitrators/WholePlantSeasonalArbitrator.cpp \
+      Arbitrators/WholePlantSeasonalPpArbitrator.cpp \
       Phenology/Phenology.cpp \
       Phenology/Phase.cpp \
       Phenology/CompositePhase.cpp \
@@ -86,6 +88,7 @@ SRC = PlantComponent.cpp \
       Phenology/Zadok.cpp \
       Photosynthesis/PhotosynthesisModel.cpp \
       Photosynthesis/RUEModel.cpp \
+      Photosynthesis/RUEWholePlantModel.cpp \
       Photosynthesis/Weather.cpp \
       Photosynthesis/SUCROSModel.cpp \
       ../ComponentInterface/EntryPoints.cpp

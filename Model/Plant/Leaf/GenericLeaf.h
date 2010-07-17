@@ -62,7 +62,9 @@ class GenericLeaf : public Leaf {
 
    void leaf_no_pot (int option, float, float);
    void leaf_area_potential(void);
+   void leaf_area_potential_pp(void);   // Leaf area expansion as function of photoperiod
    void leaf_area_actual(void);
+   void leaf_area_actual_pp(void);     // Leaf area delta (m2/m2) for photoperiod based calculation
    void leaf_no_actual (void);
    void initialiseAreas(void);
    void remove_detachment (float dlt_slai_detached, float dlt_lai_removed );
@@ -91,11 +93,17 @@ class GenericLeaf : public Leaf {
                                                       // light competition factor for
                                                       // determining leaf senesence rate.
    float cSenRateWater;                               // slope in linear eqn
+   float cNodeAppRatePostPhoto;                       //
+   float cNodeAppRatePrePhoto;                        //
+   string cLAIExpModelOption;                         // Option of leaf area expansion model selected from ini file
+
+   interpolationFunction cLAIRatePhoto;               // leaf area expansion rate (LAI/oCd)
                                                       // relating soil water
                                                       // stress during photosynthesis
                                                       // to leaf senesense rate
 
    interpolationFunction cNodeAppRate;
+   interpolationFunction cNodeAppRatePhoto;
    interpolationFunction cLeavesPerNode;
    interpolationFunction cLeafSize;
    interpolationFunction cSLAMax;
@@ -106,6 +114,7 @@ class GenericLeaf : public Leaf {
    float dltSLAI;                                     // area of leaf that senesces from plant
    float dltLAI_pot;                                  // potential change in live plant lai
    float dltLAI_stressed;                             // potential change in lai allowing for stress
+   float dltLAI_carbon;                               // potential change in lai allowing for growth
    float dltSLAI_detached;                            // senesced lai detached
    float dltSLAI_age;                                 // senesced lai from age
    float dltSLAI_light;                               // senesced lai from light

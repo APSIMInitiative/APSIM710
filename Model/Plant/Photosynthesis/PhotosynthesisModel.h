@@ -22,7 +22,7 @@ class PhotosynthesisModel
    PhotosynthesisModel (ScienceAPI& API, plantInterface& p) : scienceAPI(API), plant(p){}
    virtual ~PhotosynthesisModel() {};
 
-   virtual float Potential (float radiationInterceptedGreen) =0 ;
+   virtual float PotentialDM (float radiationInterceptedGreen) =0 ;
    virtual void  Read (void) = 0;
   protected:
      ScienceAPI&     scienceAPI;

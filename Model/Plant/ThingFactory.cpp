@@ -13,6 +13,8 @@
 #include "Arbitrators/GenericArbitrator.h"
 #include "Arbitrators/GenericArbitratorXY.h"
 #include "Arbitrators/WholePlantGenericArbitratorXY.h"
+#include "Arbitrators/WholePlantSeasonalArbitrator.h"
+#include "Arbitrators/WholePlantSeasonalPpArbitrator.h"
 #include "Leaf/GenericLeaf.h"
 #include "Leaf/CohortingLeaf.h"
 #include "Stem.h"
@@ -55,6 +57,10 @@ plantThing* createThing(XMLNode parameters, ScienceAPI& api, plantInterface& pla
       return new GenericArbitratorXY(api, plant);
    else if (typeLower == "wholeplantgenericxy")
      return new WholePlantGenericArbitratorXY(api, plant);
+   else if (typeLower == "wholeplantseasonalarbitrator")         // PFR (Plant and Food Research)
+     return new WholePlantSeasonalArbitrator(api, plant);
+   else if (typeLower == "wholeplantseasonalpparbitrator")      // PFR (Plant and Food Research)
+     return new WholePlantSeasonalPpArbitrator(api, plant); 
    else if (typeLower == "genericleaf")
       return new GenericLeaf(api, &plant, name);
    else if (typeLower == "cohortingleaf")

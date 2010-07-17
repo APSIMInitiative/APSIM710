@@ -1093,6 +1093,16 @@ void CompositePart::doSenescence (float sen_fr)       // (OUTPUT) actual biomass
       (*part)->doSenescence(sen_fr);
 }
 
+void CompositePart::doMaintenanceRespirationPFR (void)       //  (OUTPUT) actual biomass respired from plant parts (g/m^2)
+   //============================================================================
+{
+   //   Derives seneseced plant dry matter (g/m^2) for the day
+
+   vector <plantPart *>::iterator part;
+   for (part =  myParts.begin(); part != myParts.end(); part++)
+      (*part)->doMaintenanceRespirationPFR();
+}
+
 
 float CompositePart::availableRetranslocateN(void)
    //============================================================================

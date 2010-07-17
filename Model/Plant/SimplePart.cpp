@@ -290,6 +290,14 @@ void SimplePart::readSpeciesParameters (protocol::Component *, vector<string> &)
 
     scienceAPI.read(myName + "_n_sen_conc", c.n_sen_conc, 0.0f, 1.0f);
 
+    if (!c.MaintenanceRespiration20CBase.readOptional(scienceAPI                                     //Plant and Food Research implementation
+                        , "x_maintenancerespiration20C_pp_" + myName, "()", 5.0, 17.0                      // Photoperiod
+                        , ("y_maintenancerespiration20C_" + myName).c_str(), "()", 0.0, 1.0))       // maintenance respiration at 20oC (fractional)
+       c.MaintenanceRespiration20CBase.setDefaultValue(0.0);
+
+    if (!scienceAPI.readOptional("mr_scaling_factor_" + myName, c.MRScalingFactor, 0.0f, 1.0f))
+       c.MRScalingFactor = 0.0;
+
     c.fr_remain.readOptional(scienceAPI
                            , "fr_height_cut",  "(0-1)", 0.0, 1.0
                            , ("fr_"+myName+"_remain").c_str(), "(0-1)", 0.0, 1.0);
@@ -709,6 +717,32 @@ void SimplePart::doSenescence(float sen_fr)
    Senescing.SetNonStructuralDM((Green.NonStructuralDM()+Growth.NonStructuralDM()+Retranslocation.NonStructuralDM())* fraction_senescing);
 
    }
+
+void SimplePart::doMaintenanceRespirationPFR(void)
+//=======================================================================================
+   {
+   scienceAPI.getOptional("st(1)", "oC", SoilTempTopLayer, -15.0, 50.0);   // Retrieves soil temperature of top layer     FIXME-EIT    (to use soil temp module change st(1) by  ave_soil_temp
+   float photoperiod = plant->environment().dayLength();
+   float MRSeasonalAdjustment =  plant->environment().deltaDayLength() * c.MRScalingFactor;
+   float MaintenanceRespiration20C = c.MaintenanceRespiration20CBase.value(photoperiod) + MRSeasonalAdjustment;
+   float fraction_respiring =  MaintenanceRespiration20C * TemperatureAdjustmentQ10(SoilTempTopLayer);
+   fraction_respiring = bound (fraction_respiring, 0.0, 1.0);
+
+   // This is silly
+   Senescing.AddStructuralDM((Green.StructuralDM()+Growth.StructuralDM()+Retranslocation.StructuralDM())* fraction_respiring);
+   Senescing.AddNonStructuralDM((Green.NonStructuralDM()+Growth.NonStructuralDM()+Retranslocation.NonStructuralDM())* fraction_respiring);
+
+   }
+
+float SimplePart::TemperatureAdjustmentQ10(float Temp)
+//=======================================================================================
+   {
+    double Q10 = 1.8;                                                               // FIXME-EIT
+	float fTempRef = (float)20.0;
+	return (float)pow(Q10,(double)(Temp - fTempRef)/10.0);
+   }
+
+
 
 void SimplePart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTotal)
 //=======================================================================================

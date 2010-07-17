@@ -1,5 +1,5 @@
-#ifndef RUEModelH
-#define RUEModelH
+#ifndef RUEWholePlantModelH
+#define RUEWholePlantModelH
 #include <stdio.h>
 #include <math.h>
 #include <map>
@@ -16,16 +16,16 @@
 #include "../Utility/PlantUtility.h"
 #include "PhotosynthesisModel.h"
 
-class RUEModel : public PhotosynthesisModel {
+class RUEWholePlantModel : public PhotosynthesisModel {
 
   public:
-  RUEModel(ScienceAPI& scienceAPI, plantInterface& p);
+  RUEWholePlantModel(ScienceAPI& scienceAPI, plantInterface& p);
   float PotentialDM (float radiationInterceptedGreen);
   void  Read (void);
   float getRUE (void);
+
   private:
-  interpolationFunction RUE;                        // radiation use efficiency as f(stage number) (g dm/mj)
-  float Q0(float lat, int day);
+  float cRUEWholePlant;
 };
 
 #endif

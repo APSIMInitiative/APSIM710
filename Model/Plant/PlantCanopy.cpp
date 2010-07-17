@@ -193,7 +193,7 @@ void crop_leaf_area_sen_age1 (int emergence,                   //(INPUT)  emerge
    dying_leaf = int (leaf_no_dead);
 
    // get area senesced from highest leaf no.
-   area_sen_dying_leaf = (leaf_no_dead - fmod((double)leaf_no_dead, (double)1.0))
+   area_sen_dying_leaf = (leaf_no_dead - fmod(leaf_no_dead, 1.0f))
                         * g_leaf_area[dying_leaf];
 
    slai_age = (sum_real_array (g_leaf_area, dying_leaf) + area_sen_dying_leaf)  //XXX maybe?? check
@@ -463,6 +463,74 @@ void cproc_leaf_no_pot1 (interpolationFunction &node_app_rate_fn,          // (I
       *dlt_leaf_no_pot = 0.0;
       }
    }
+
+/*Purpose
+ *   Return the fractional increase in emergence of the oldest
+ *   expanding leaf and nodes.  Nodes can initiate from a user-defined
+ *   starting stage and leaves from emergence.  The initiation of both
+ *   leaves and nodes finishes at a user-defined end stage.
+ *   Note ! this does not take account of the other younger leaves
+ *   that are currently expanding
+ */
+void cproc_leaf_no_pot4 (interpolationFunction &node_app_rate_fn,          // (INPUT)
+                         interpolationFunction &leaves_per_node_fn,
+                         float cNodeAppRatePrePhoto,
+                         float cNodeAppRatePostPhoto,
+                         bool   inNodeFormationPhase,
+                         bool   inPrePhotoPhyllochronPhase,
+                         bool   inPhotoPhyllochronPhase,
+                         bool   inPostPhotoPhyllochronPhase,
+                         bool   inEmergenceDay,
+                         float  photoperiod,                // (INPUT)
+                         float  node_no_now,
+                         float  g_dlt_tt,                   // (input)
+                         float  *g_leaves_per_node,
+                         float *dlt_leaf_no_pot,            // (OUTPUT) new fraction of oldest expanding leaf
+                         float *dlt_node_no_pot)            // (OUTPUT) new fraction of oldest expanding node on main stem
+   {
+        // Potential node number increase
+   if (inNodeFormationPhase)
+      {
+      float node_app_rate = 0.0;
+      if( inPrePhotoPhyllochronPhase)
+         {
+         node_app_rate = cNodeAppRatePrePhoto;
+         }
+      else if (inPhotoPhyllochronPhase)
+         {
+         node_app_rate = node_app_rate_fn.value(photoperiod);
+         }
+      else if (inPostPhotoPhyllochronPhase)
+         {
+         node_app_rate = cNodeAppRatePostPhoto;
+         }
+      else
+         {
+         throw std::invalid_argument("PhotoPhyllochron phases do not align with NodeFormationPhase");
+         }
+      *dlt_node_no_pot = divide (g_dlt_tt, node_app_rate, 0.0);
+      }
+   else
+      {
+      *dlt_node_no_pot = 0.0;
+      }
+
+        // Potential leaf number increase
+   if (inEmergenceDay)
+      {
+      //no leaf growth on first day because initialised elsewhere ???
+      *dlt_leaf_no_pot = 0.0;
+      }
+   else if (inNodeFormationPhase)
+      {
+      *g_leaves_per_node = leaves_per_node_fn.value(node_no_now);
+      *dlt_leaf_no_pot = *dlt_node_no_pot * (*g_leaves_per_node);
+      }
+   else
+      {
+      *dlt_leaf_no_pot = 0.0;
+      }
+   }
 #if 0
 
 //===========================================================================
@@ -604,8 +672,8 @@ void cproc_tpla_max (float g_leaf_no_final,            //(INPUT)final leaf numbe
       }
    else
       {
-      *tpla_max = (pow((double)g_tiller_no_fertile + 1.0, (double)c_tiller_coef) *
-                   pow((double)g_leaf_no_final, (double)p_main_stem_coef)) * scm2smm;
+      *tpla_max = (pow(g_tiller_no_fertile + 1.0f, c_tiller_coef) *
+                   pow(g_leaf_no_final, p_main_stem_coef)) * scm2smm;
       }
    }
 
@@ -1313,3 +1381,5 @@ void plant_leaf_detachment (float *leaf_area           // OUT
 
     
     }
+
+

@@ -15,7 +15,7 @@ SUCROSModel::SUCROSModel(ScienceAPI& scienceAPI, plantInterface& p)
 //              "y_rue", "(g dm/mj)", 0.0, 1000.0);
    };
 
-float SUCROSModel::Potential (float radiationInterceptedGreen)
+float SUCROSModel::PotentialDM (float radiationInterceptedGreen)
    {
 //   double stress_factor = min(min(min(plant.getTempStressPhoto(), plant.getNfactPhoto())
 //                               , plant.getOxdefPhoto()), plant.getPfactPhoto());

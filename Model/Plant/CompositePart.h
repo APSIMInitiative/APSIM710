@@ -93,6 +93,7 @@ public:                                             // member functions
    virtual void  doPSenescence(void);
    virtual void  doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, bool c_remove_biomass_report);
    virtual void  doSenescence (float sen_fr);
+   virtual void  doMaintenanceRespirationPFR(void);         // Plant and Food implementation
    virtual void  doSoilNDemand(void);
    virtual void  doSWDemand(float SWDemandMaxFactor);     //(OUTPUT) crop water demand (mm)               //FIXME
    virtual float grainNo(void);

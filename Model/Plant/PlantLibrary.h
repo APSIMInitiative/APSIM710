@@ -522,12 +522,30 @@ void cproc_leaf_no_pot1 (interpolationFunction &,
                          float *dlt_leaf_no_pot,            // (OUTPUT) new fraction of oldest expanding leaf
                          float *dlt_node_no_pot);            // (OUTPUT) new fraction of oldest expanding node on main stem
 
+void cproc_leaf_no_pot4 (interpolationFunction &,
+                         interpolationFunction &,
+                         float cNodeAppRatePrePhoto,
+                         float cNodeAppRatePostPhoto,
+                         bool   inNodeFormationPhase,
+                         bool   inPrePhotoPhyllochronPhase,
+                         bool   inPhotoPhyllochronPhase,
+                         bool   inPostPhotoPhyllochronPhase,
+                         bool   inEmergenceDay,
+                         float  photoperiod,                // (INPUT)
+                         float  node_no_now,                // (INPUT) current number of nodes
+                         float  g_dlt_tt,                   // (input)
+                         float  *g_leaves_per_node,
+                         float *dlt_leaf_no_pot,            // (OUTPUT) new fraction of oldest expanding leaf
+                         float *dlt_node_no_pot);            // (OUTPUT) new fraction of oldest expanding node on main stem
+
 float cproc_leaf_area_pot1 (interpolationFunction &leaf_size_fn, //(INPUT)  leaf size for lookup
                            float g_node_no,                    //(INPUT)  node number
                            float c_node_no_correction,         //(INPUT)  corrects for other growing lea
                            float  g_dlt_leaf_no_pot,            //(INPUT)  potential fraction of oldest l
                            float  g_plants);                     //(INPUT)  Plant density (plants/m^2)
 
+float cproc_phyllochron(interpolationFunction &,
+                        float *dlt_node_no_pot);            // (OUTPUT) new fraction of oldest expanding node on main stem
 
 float cproc_leaf_area_stressed1 (float  g_dlt_lai_pot,         //(INPUT)
                                 float  g_swdef_expansion,     //(INPUT)

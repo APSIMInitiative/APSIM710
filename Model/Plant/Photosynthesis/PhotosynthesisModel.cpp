@@ -3,6 +3,7 @@
 #include "PhotosynthesisModel.h"
 #include "RUEModel.h"
 #include "SUCROSModel.h"
+#include "RUEWholePlantModel.h"
 using namespace std;
 
 // Return one of the PhotosynthesisModel objects we know about.
@@ -22,6 +23,10 @@ PhotosynthesisModel* constructPhotosynthesisModel (ScienceAPI& scienceAPI, plant
   else if (type == "sucros")
    {
     object = new SUCROSModel(scienceAPI, p);
+   }
+  else if (type == "rue_whole_plant_model")            //   Plant and Food Research
+   {
+    object = new RUEWholePlantModel(scienceAPI, p);
    }
   else
     throw std::invalid_argument("Unknown Photosynthesis Model '" + type + "'");
