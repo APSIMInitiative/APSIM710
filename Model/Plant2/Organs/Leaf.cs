@@ -545,15 +545,18 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                Demand += L.DMDemand(ThermalTime.Value);
 
-            double fraction = value / Demand;
-            if (fraction > 1)
-            { }
-
-            //Console.WriteLine(fraction.ToString());
-
-            foreach (LeafCohort L in Leaves)
+            if (Demand > 0)
                {
-               L.DMAllocation = L.DMDemand(ThermalTime.Value) * fraction;
+               double fraction = value / Demand;
+               if (fraction > 1)
+               { }
+
+               //Console.WriteLine(fraction.ToString());
+
+               foreach (LeafCohort L in Leaves)
+                  {
+                  L.DMAllocation = L.DMDemand(ThermalTime.Value) * fraction;
+                  }
                }
             }
 

@@ -4,13 +4,13 @@ using System.Text;
 
 public class Phenology : Instance
    {
-   public delegate void PhaseChangedDelegate(string OldPhaseName, string NewPhaseName);
-   public event PhaseChangedDelegate OnPhaseChanged;
+   [Event] public event ApsimTypeDelegate PhaseChanged;
+   [Event] public event NullTypeDelegate GrowthStage;
+
    private NamedList<Phase> Phases = new NamedList<Phase>();
    private int CurrentPhaseIndex;
    private string CurrentlyOnFirstDayOfPhase = "";
    private Plant Plant;
-   [Event] public event NullTypeDelegate GrowthStage;
 
    /// <summary>
    /// This property is used to retrieve or set the current phase name.
@@ -29,7 +29,22 @@ public class Phenology : Instance
          CurrentPhase = Phases[PhaseIndex];
          }
       }
-   
+
+   /// <summary>
+   /// Return current stage name.
+   /// </summary>
+   [Output]
+   public string CurrentStageName
+      {
+      get
+         {
+         if (OnDayOf(CurrentPhase.Start))
+            return CurrentPhase.Start;
+         else
+            return "?";
+         }
+      }
+
    /// <summary>
    /// Constructor
    /// </summary>
@@ -112,8 +127,16 @@ public class Phenology : Instance
          CurrentPhase.Initialising();
 
          // Send a PhaseChanged event.
-         if (OnPhaseChanged != null)
-            OnPhaseChanged.Invoke(OldPhaseName, CurrentPhase.Name);
+         if (PhaseChanged != null)
+            {
+            PhenologyChangedType PhaseChangedData = new PhenologyChangedType();
+            PhaseChangedData.OldPhaseName = OldPhaseName;
+            PhaseChangedData.NewPhaseName = CurrentPhase.Name;
+            PhaseChanged.Invoke(PhaseChangedData);
+
+            PaddockType MyPaddock = new PaddockType(this);
+            MyPaddock.Publish(CurrentPhase.Start, new NullType());
+            }
          }
       }
 

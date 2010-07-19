@@ -200,6 +200,17 @@ Public Class ApsimUIActions
         Utility.CheckProcessExitedProperly(P)
         Process.Start(HtmlFileName)
     End Sub
+
+    Public Shared Sub ProbeDLL(ByVal Controller As BaseController)
+        BaseActions.FileSave(Controller)
+        Dim XmlFileName As String = Controller.ApsimData.FileName
+
+        'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
+        Dim P As Process = Utility.RunProcess(Configuration.ApsimBinDirectory + "\ProbeDLL.exe", XmlFileName, Path.GetDirectoryName(XmlFileName))
+        Utility.CheckProcessExitedProperly(P)
+
+        MessageBox.Show("Finished writing to <info> section.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
 End Class
 
 

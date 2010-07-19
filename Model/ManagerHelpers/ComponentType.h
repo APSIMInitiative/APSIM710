@@ -96,7 +96,7 @@ public ref class ComponentType : public TypedItem
          
       void Publish(String^ EventName, ApsimType^ Data)
          {
-         ParentComponent->Publish(Name + "." + EventName, Data);
+         ParentComponent->Publish(EventName, Data);
          }
          
       void Subscribe(String^ EventName, RuntimeEventHandler::NullFunction^ F) 

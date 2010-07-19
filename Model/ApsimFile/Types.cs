@@ -111,44 +111,54 @@ public class Types
       }
    public string[] Cultivars(string TypeName)
       {
-      // Return a list of cultivar names to caller.
-      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
-
-
-      List<string> CultivarNames = new List<string>();
-
-      XmlNode ModelNode = XmlHelper.FindByType(TypeNode, "Model");
-
-      if (ModelNode != null)
+      if (TypeName != "")
          {
-         foreach (XmlNode Child in ModelNode.ChildNodes)
+         // Return a list of cultivar names to caller.
+         XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
+
+
+         List<string> CultivarNames = new List<string>();
+
+         XmlNode ModelNode = XmlHelper.FindByType(TypeNode, "Model");
+
+         if (ModelNode != null)
             {
-            if (XmlHelper.Attribute(Child, "cultivar").ToLower() == "yes")
-               CultivarNames.Add(Child.Name);
-            if (Child.Name.ToLower() == "cultivar")
-               CultivarNames.Add(XmlHelper.Name(Child));
+            foreach (XmlNode Child in ModelNode.ChildNodes)
+               {
+               if (XmlHelper.Attribute(Child, "cultivar").ToLower() == "yes")
+                  CultivarNames.Add(Child.Name);
+               if (Child.Name.ToLower() == "cultivar")
+                  CultivarNames.Add(XmlHelper.Name(Child));
+               }
             }
+         string[] ReturnValues = new string[CultivarNames.Count];
+         CultivarNames.CopyTo(ReturnValues);
+         Array.Sort(ReturnValues);
+         return ReturnValues;
          }
-      string[] ReturnValues = new string[CultivarNames.Count];
-      CultivarNames.CopyTo(ReturnValues);
-      Array.Sort(ReturnValues);
-      return ReturnValues;
+      else
+         return new string[0];
       }
    public string[] Classes(string TypeName)
       {
-      // Return a list of cultivar names to caller.
-      List<string> ClassNames = new List<string>();
-
-      XmlDocument ModelDoc = new XmlDocument();
-      ModelDoc.LoadXml("<Model>" + ModelContents(TypeName) + "</Model>");
-      foreach (XmlNode Child in ModelDoc.DocumentElement.ChildNodes)
+      if (TypeName != "")
          {
-         if (XmlHelper.Attribute(Child, "class").ToLower() == "yes")
-            ClassNames.Add(Child.Name);
+         // Return a list of cultivar names to caller.
+         List<string> ClassNames = new List<string>();
+
+         XmlDocument ModelDoc = new XmlDocument();
+         ModelDoc.LoadXml("<Model>" + ModelContents(TypeName) + "</Model>");
+         foreach (XmlNode Child in ModelDoc.DocumentElement.ChildNodes)
+            {
+            if (XmlHelper.Attribute(Child, "class").ToLower() == "yes")
+               ClassNames.Add(Child.Name);
+            }
+         string[] ReturnValues = new string[ClassNames.Count];
+         ClassNames.CopyTo(ReturnValues);
+         return ReturnValues;
          }
-      string[] ReturnValues = new string[ClassNames.Count];
-      ClassNames.CopyTo(ReturnValues);
-      return ReturnValues;
+      else
+         return new string[0];
       }
    public XmlNode ApsimToSim(string TypeName)
       {

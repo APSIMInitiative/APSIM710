@@ -139,8 +139,10 @@ class ProbeDll
                                               ModelDirectory);
                Utility.CheckProcessExitedProperly(P);
 
+               string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+
                // Now compile the manager helper.
-               P = Utility.RunProcess("C:\\Program Files\\Microsoft Visual Studio 9.0\\Common7\\IDE\\devenv.exe",
+               P = Utility.RunProcess(ProgramFiles + "\\Microsoft Visual Studio 9.0\\Common7\\IDE\\devenv.exe",
                                       ModelDirectory + "ManagerHelper.sln /build release",
                                       ModelDirectory);
                Utility.CheckProcessExitedProperly(P);

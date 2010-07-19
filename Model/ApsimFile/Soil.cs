@@ -330,6 +330,8 @@ namespace ApsimFile
 
                SoilUtility.SetVariableValue(LocationNode, Value);
 
+               RemoveEmptyLayers(LocationNode);
+
                // make sure we have thickness in this profile node. If not then add default ones.
                if (!SoilUtility.VariableExists(LocationNode, "Thickness") &&
                    !SoilUtility.VariableExists(LocationNode, "Depth"))
@@ -339,6 +341,27 @@ namespace ApsimFile
                   XmlHelper.SetAttribute(ThicknessNode, "units", "mm");
                   }
                }
+            }
+         }
+
+      /// <summary>
+      /// Remove any layer nodes at the bottom that don't have any data in them.
+      /// </summary>
+      private void RemoveEmptyLayers(XmlNode LocationNode)
+         {
+         List<XmlNode> Layers = XmlHelper.ChildNodes(LocationNode, "Layer");
+         for (int i = Layers.Count - 1; i >= 0; i--)
+            {
+            // See if we have any data in this layer.
+            bool DataFound = false;
+            foreach (XmlNode Child in XmlHelper.ChildNodes(Layers[i], ""))
+               DataFound = DataFound || Child.InnerText != "";
+
+            // Remove layer if no data found and then continue to next layer.
+            if (!DataFound)
+               LocationNode.RemoveChild(Layers[i]);
+            else
+               break;
             }
          }
 
@@ -620,12 +643,14 @@ namespace ApsimFile
             {
             if (VariableName == "Name")
                {
-               Table.Columns.Add(VariableName, typeof(string));
+               if (!Table.Columns.Contains(VariableName))
+                  Table.Columns.Add(VariableName, typeof(string));
                DataTableUtility.AddValue(Table, VariableName, Name, StartRow, TargetThickness.Length);
                }
             else if (SoilMetaData.Instance.IsProperty(VariableName))
                {
-               Table.Columns.Add(VariableName, typeof(string));
+               if (!Table.Columns.Contains(VariableName))
+                  Table.Columns.Add(VariableName, typeof(string));
                DataTableUtility.AddValue(Table, VariableName, Property(VariableName), StartRow, TargetThickness.Length);
                }
             else
@@ -634,12 +659,14 @@ namespace ApsimFile
                if (Value.Strings != null)
                   {
                   // strings
-                  Table.Columns.Add(VariableName, typeof(string));
+                  if (!Table.Columns.Contains(VariableName))
+                     Table.Columns.Add(VariableName, typeof(string));
                   DataTableUtility.AddColumn(Table, VariableName, Value.Strings, StartRow, TargetThickness.Length);
                   }
                else
                   {
-                  Table.Columns.Add(VariableName, typeof(double));
+                  if (!Table.Columns.Contains(VariableName))
+                     Table.Columns.Add(VariableName, typeof(double));
                   DataTableUtility.AddColumn(Table, VariableName, Value.Doubles, StartRow, TargetThickness.Length);
                   }
                }
@@ -786,6 +813,7 @@ namespace ApsimFile
             Value.Strings = DataTableUtility.GetColumnAsStrings(Table, VariableName, NumRows, StartRow);
          else
             Value.Doubles = DataTableUtility.GetColumnAsDoubles(Table, VariableName, NumRows, StartRow);
+         Value.ThicknessMM = GetThicknessMMFromTable(Table);
          if (SoilMetaData.Instance.IsProperty(Value.Name))
             {
             if (Value.Strings[0] != "")
@@ -797,6 +825,32 @@ namespace ApsimFile
                LocationName = SoilMetaData.Instance.GetVariablePath(Value.Name);
             SetVariable(LocationName, Value);
             }
+         }
+
+      private double[] GetThicknessMMFromTable(DataTable Table)
+         {
+         double[] ThicknessMM = null;
+         foreach (DataColumn Column in Table.Columns)
+            {
+            string RawVariableName = Column.ColumnName;
+            string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
+
+            if (RawVariableName == "Thickness")
+               ThicknessMM = DataTableUtility.GetColumnAsDoubles(Table, Column.ColumnName);
+            else if (RawVariableName == "Depth")
+               {
+               string[] DepthStrings = DataTableUtility.GetColumnAsStrings(Table, Column.ColumnName);
+               ThicknessMM = SoilUtility.ToThickness(DepthStrings);
+               }
+
+            if (ThicknessMM != null)
+               {
+               if (Units == "cm")
+                  ThicknessMM = MathUtility.Multiply_Value(ThicknessMM, 10);
+               return ThicknessMM;
+               }
+            }
+         throw new Exception("Cannot find depth or thickness in table.");
          }
 
       public void Read(DataTable Table, string VariableName, string LocationName)
@@ -1052,6 +1106,11 @@ namespace ApsimFile
             // Now we can set the values.
             Value.Name = CropVariableName;
             SoilUtility.SetVariableValue(CropNode, Value);
+
+            // Make sure we have depths for each crop layer.
+            SoilUtility.SetLayered(CropNode, "Thickness", Value.ThicknessMM);
+            XmlNode FirstThicknessNode = XmlHelper.Find(CropNode, "Layer/Thickness");
+            XmlHelper.SetAttribute(FirstThicknessNode, "units", "mm");
             }
          }
 

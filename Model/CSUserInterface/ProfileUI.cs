@@ -24,6 +24,7 @@ namespace CSUserInterface
       public ProfileUI()
          {
          InitializeComponent();
+
          }
 
       /// <summary>
@@ -49,7 +50,11 @@ namespace CSUserInterface
          string SplitterPositionString = Configuration.Instance.Setting("SoilSplitterPosition");
          if (SplitterPositionString != "")
             TopPanel.Height = Convert.ToInt32(SplitterPositionString);
+         Table = new DataTable();
+         Table.TableName = "Data";
+         Grid.DataSourceTable = null;
          }
+
 
       /// <summary>
       /// Called whenever the user interface wants us to refresh ourselves.
@@ -57,31 +62,29 @@ namespace CSUserInterface
       override public void OnRefresh()
          {
          this.Grid.ColumnWidthChanged -= new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
-         if (Table != null)
-             Table.ColumnChanged -= new DataColumnChangeEventHandler(OnTableColumnChanged);
-            //Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
+         Grid.TableColumnChangedEvent -= new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
 
          Properties.OnRefresh();
          Properties.Visible = !Properties.IsEmpty;
           
          // Create and fill a datatable from our soil
-         Table = new DataTable();
-         Table.TableName = "Data";
+         Table.Rows.Clear();
          if (XmlHelper.Name(Data) == "Water")
             _Soil.Write(Table, GetVariableNames());
          else if (Data.Name == "SoilCrop")
             _Soil.WriteUnMapped(Table, GetVariableNames());
          else
             _Soil.WriteUnMapped(Table, GetVariableNames(), XmlHelper.Name(Data));
+         Grid.DataSourceTable = Table;
+         Grid.AllowUserToAddRows = true;
 
          // Give data to grid.
          Grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-         Grid.DataSource = null;
-         Grid.DataSource = Table;
          foreach (DataGridViewColumn Col in Grid.Columns)
             {
             Col.SortMode = DataGridViewColumnSortMode.NotSortable;
             Col.HeaderText = Col.HeaderText.Replace(" (", "\n(");
+            Col.DefaultCellStyle.Format = "f3";
             }
          Grid.Columns[0].Visible = false; // hide the depthMidpoints column
          Grid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
@@ -102,8 +105,7 @@ namespace CSUserInterface
          Label.Visible = Label.Text != "";
 
          this.Grid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
-         Table.ColumnChanged += new DataColumnChangeEventHandler(OnTableColumnChanged);
-         //Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
+         Grid.TableColumnChangedEvent -= new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
          }
 
       /// <summary>
@@ -291,9 +293,11 @@ namespace CSUserInterface
          XmlDocument Doc = new XmlDocument();
          Doc.LoadXml(_Soil.XML);
 
-         // Copy the <Layer> nodes from the soil (Doc.DocumentElement) to our Data node, removing
+         // Copy the <SoilCrop> and <Layer> nodes from the soil (Doc.DocumentElement) to our Data node, removing
          // the existing ones first.
          foreach (XmlNode Child in XmlHelper.ChildNodes(Data, "Layer"))
+            Data.RemoveChild(Child);
+         foreach (XmlNode Child in XmlHelper.ChildNodes(Data, "SoilCrop"))
             Data.RemoveChild(Child);
 
          XmlNode ProfileNode = XmlHelper.Find(Doc.DocumentElement, XmlHelper.Name(Data));
@@ -301,6 +305,8 @@ namespace CSUserInterface
             ProfileNode = XmlHelper.Find(Doc.DocumentElement, "Water/" + XmlHelper.Name(Data));
          
          foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "Layer"))
+            Data.AppendChild(Data.OwnerDocument.ImportNode(Node, true));
+         foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "SoilCrop"))
             Data.AppendChild(Data.OwnerDocument.ImportNode(Node, true));
 
          Graph.OnSave();
@@ -376,74 +382,21 @@ namespace CSUserInterface
          Configuration.Instance.SetSetting("SoilSplitterPosition", TopPanel.Height.ToString());
          }
 
-
-
-
       /// <summary>
-      /// The value of a cell has changed.
+      /// One more more columns in our table have been changed by the user.
       /// </summary>
-      void OnTableColumnChanged(object sender, DataColumnChangeEventArgs e)
-      {
-          int ColIndex = Grid.CurrentCell.ColumnIndex;
-          int RowIndex = Grid.CurrentCell.RowIndex;
-
-          string VariableName = Table.Columns[ColIndex].ColumnName;
-
-          SaveTableColumn(VariableName);
-          //OnRefresh();
-          RefreshGraph();
-          Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
-      } 
-      ///// <summary>
-      ///// The value of a cell has changed.
-      ///// </summary>
-      //void OnTableRowChanged(object sender, DataRowChangeEventArgs e)
-      //   {
-      //   int ColIndex = Grid.CurrentCell.ColumnIndex;
-      //   int RowIndex = Grid.CurrentCell.RowIndex;
-
-      //   string VariableName = Table.Columns[ColIndex].ColumnName;
-
-      //   SaveTableColumn(VariableName);
-      //   OnRefresh();
-      //   Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
-      //   }
-
-      /// <summary>
-      /// Trap the delete key.
-      /// </summary>
-      private void OnKeyDown(object sender, KeyEventArgs e)
+      void OnTableColumnChanged(List<string> ColumnNames)
          {
-         if (e.KeyCode == Keys.Delete)
+         int ColIndex = Grid.CurrentCell.ColumnIndex;
+         int RowIndex = Grid.CurrentCell.RowIndex;
+
+         foreach (string VariableName in ColumnNames)
             {
-            // Turn off the cell value changed event.
-             Table.ColumnChanged -= new DataColumnChangeEventHandler(OnTableColumnChanged);
-            //Table.RowChanged -= new DataRowChangeEventHandler(OnTableRowChanged);
-
-            // Make the values in the grid null.
-            List<string> ColumnsChanged = new List<string>();
-            for (int i = 0; i < Grid.SelectedCells.Count; i++)
-               {
-               int ColIndex = Grid.SelectedCells[i].ColumnIndex;
-               Grid.SelectedCells[i].Value = DBNull.Value;
-               if (!ColumnsChanged.Contains(Grid.Columns[ColIndex].HeaderText))
-                  ColumnsChanged.Add(Grid.Columns[ColIndex].HeaderText);
-               }
-
-            int SavedRow = Grid.SelectedCells[0].RowIndex;
-            int SavedCol = Grid.SelectedCells[0].ColumnIndex;
-
-            // Give the data columns back to the soil.
-            foreach (string Col in ColumnsChanged)
-               SaveTableColumn(Col);
-
-            // Turn on the cell value changed event and refresh.
-            Table.ColumnChanged += new DataColumnChangeEventHandler(OnTableColumnChanged);
-            //Table.RowChanged += new DataRowChangeEventHandler(OnTableRowChanged);
-            //OnRefresh();
-            if (SavedRow < Grid.Columns.Count)
-               Grid.CurrentCell = Grid.Rows[SavedRow].Cells[SavedCol];
+            SaveTableColumn(VariableName);
             }
+         OnRefresh();
+         RefreshGraph();
+         Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
          }
 
       /// <summary>
