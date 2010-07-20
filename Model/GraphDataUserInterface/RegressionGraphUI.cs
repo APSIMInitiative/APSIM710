@@ -163,7 +163,7 @@ namespace GraphDataUserInterface
 
       private void OnClickLegend(object sender, MouseEventArgs e)
          {
-         CreateRegressionSeries();
+         //CreateRegressionSeries();
          }
       }
    }

@@ -454,7 +454,7 @@ public class DataProcessor
                   }
                // Handle pred/obs for checkpointed series.
                DataRow[] PredictedMatch;
-               if (Filter.ToLower().Contains("Title"))
+               if (Filter.ToLower().Contains("title"))
                   {
                   string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
                   CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");

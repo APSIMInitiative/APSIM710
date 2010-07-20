@@ -105,7 +105,7 @@ namespace CSUserInterface
          Label.Visible = Label.Text != "";
 
          this.Grid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
-         Grid.TableColumnChangedEvent -= new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
+         Grid.TableColumnChangedEvent += new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
          }
 
       /// <summary>
