@@ -850,7 +850,7 @@ namespace ApsimFile
                return ThicknessMM;
                }
             }
-         throw new Exception("Cannot find depth or thickness in table.");
+         return null;
          }
 
       public void Read(DataTable Table, string VariableName, string LocationName)
@@ -1108,9 +1108,12 @@ namespace ApsimFile
             SoilUtility.SetVariableValue(CropNode, Value);
 
             // Make sure we have depths for each crop layer.
-            SoilUtility.SetLayered(CropNode, "Thickness", Value.ThicknessMM);
-            XmlNode FirstThicknessNode = XmlHelper.Find(CropNode, "Layer/Thickness");
-            XmlHelper.SetAttribute(FirstThicknessNode, "units", "mm");
+            if (Value.ThicknessMM != null)
+               {
+               SoilUtility.SetLayered(CropNode, "Thickness", Value.ThicknessMM);
+               XmlNode FirstThicknessNode = XmlHelper.Find(CropNode, "Layer/Thickness");
+               XmlHelper.SetAttribute(FirstThicknessNode, "units", "mm");
+               }
             }
          }
 
@@ -1139,10 +1142,12 @@ namespace ApsimFile
 
             double[] dul = Variable("DUL (mm)");
             double[] sw = new double[ll.Length];
-            XmlNode PercentMethodNode = XmlHelper.Find(InitWaterNode, "PercentMethod");
-            if (PercentMethodNode != null)
+            if (XmlHelper.Value(InitWaterNode, "DepthWetSoilMethod/Depth") == "")
                {
-               double Percent = Convert.ToDouble(XmlHelper.Value(PercentMethodNode, "Percent")) * 100;
+               XmlNode PercentMethodNode = XmlHelper.Find(InitWaterNode, "PercentMethod");
+               double Percent = 0;
+               if (PercentMethodNode != null)
+                  Percent = Convert.ToDouble(XmlHelper.Value(PercentMethodNode, "Percent")) * 100;
                if (XmlHelper.Value(PercentMethodNode, "Distributed").ToLower() == "filled from top")
                   {
                   double AmountWater = MathUtility.Sum(pawc) * (Percent / 100.0);

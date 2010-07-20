@@ -380,8 +380,8 @@ namespace Test
          Assert.AreEqual(S2.Variable("Thickness(mm)"), new double[] { 150, 200, 200 });
          Assert.AreEqual(S2.Variable("BD (g/cc)"), new double[] { 1.4, 1.5, 1.6 });
          Assert.AreEqual(S2.Variable("OC (Walkley Black %)"), new double[] { 1.6, 0.6, 0.1 });
-         Assert.AreEqual(S2.Variable("Wheat LL(mm/mm)"), new double[] { 17, 16, 15 });
-         Assert.AreEqual(S2.Variable("Wheat KL(mm/mm)"), new double[] { 0.7, 0.6, 0.5 });
+         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat LL(mm/mm)"), new double[] { 16.66666668, 16, 15.25 }));
+         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat KL(mm/mm)"), new double[] { 0.6666666666, 0.6, 0.525 }));
 
          }
 

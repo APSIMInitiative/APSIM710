@@ -16,7 +16,7 @@ public ref class SoilNitrogenType
          
       void Publish(String^ EventName, ApsimType^ Data)
          {
-         Comp->Publish(EventName, Data);
+         Comp->Publish(Comp->Name + "." + EventName, Data);
          }
          
       property array<Single>^ biom_c

@@ -31,11 +31,11 @@ public ref class ComponentType : public TypedItem
    
    protected:
       static System::Text::StringBuilder^ Data = gcnew System::Text::StringBuilder(10000);
-      String^ Name;
       String^ TypeName;
       ModelFramework::ApsimComponent^ ParentComponent;
 
    public:
+      String^ Name;
       virtual bool IsOfType(String^ TypeNameToMatch) override
          {
          return TypeName->ToLower() == TypeNameToMatch->ToLower();         

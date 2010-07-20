@@ -386,7 +386,7 @@ namespace CSUserInterface
          PercentEdit.Text = Percent.ToString("f0");
          PAWEdit.Text = PAW.ToString("f0");
 
-         if (XmlHelper.Find(OurNode, "PercentMethod") != null)
+         if (XmlHelper.Value(OurNode, "DepthWetSoilMethod/Depth") == "")
             {
             FilledFromTopRadio.Checked = XmlHelper.Value(OurNode, "PercentMethod/Distributed").ToLower() == "filled from top";
             EvenlyDistributedRadio.Checked = !FilledFromTopRadio.Checked;
