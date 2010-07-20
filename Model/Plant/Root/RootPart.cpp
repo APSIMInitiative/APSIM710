@@ -177,8 +177,16 @@ void RootPart::read()
                         , (myName+"MaintenanceCoefficient").c_str(), "()", 0.0, 1.0);
    
    scienceAPI.readOptional("uptake_source", uptake_source);
-
    if (uptake_source == "")uptake_source = "calc";
+   float swim3=0.0;
+   scienceAPI.getOptional("swim3", "-", swim3,0.0,1.0);
+   if(swim3>0.0)
+   	 {
+   	 uptake_source = "swim3";
+     ostringstream msg;
+     msg << "Using SWIM3 for Soil Water Uptake."<<endl;
+   	 scienceAPI.write(msg.str());
+   	 }
 
    (*soil[0]).Read();
    }

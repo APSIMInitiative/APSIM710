@@ -11,7 +11,7 @@
       parameter (parameters_section = 'parameters')
 
       character runoff_section*(*)
-      parameter (runoff_section = 'runoff')
+      parameter (runoff_section = 'runoff')  
 
       character solute_section*(*)
       parameter (solute_section = 'solute')
@@ -42,9 +42,13 @@
 
       double precision psi_ll15
       parameter (psi_ll15 = -15000.d0)
-*
-      double precision psi_dul
-      parameter (psi_dul = -100.d0)
+
+      double precision psiad
+      parameter (psiad = -1d6)
+
+      double precision psi0
+      parameter (psi0 = -0.6d7)
+      !parameter (psi0 = -8d7)
 
       integer max_table
       parameter (max_table=20)
@@ -209,9 +213,11 @@
 
          double precision dlayer(0:M)
          double precision ll15(0:M),DUL(0:M),SAT(0:M),Ks(0:M)
+         double precision air_dry(0:M)
          
-         double precision Kd
-         double precision a(0:M), b(0:M), c(0:M), psii(0:M), psie(0:M)
+         double precision Kdul
+         double precision Psidul
+         double precision P(0:M),c(0:M),k(0:M)
          double precision psid(0:M)
 
          integer          ivap
@@ -369,7 +375,7 @@
 
       call apswim_register_solute_outputs()
 
-      ! calculate anything swim needs from input parameters
+      ! calculate anything swim needs from input parameters      
       call apswim_init_calc ()
 
       ! check all inputs for errors
@@ -550,6 +556,16 @@
 
             call Read_double_array (
      :              parameters_section,
+     :              'air_dry',
+     :              M+1,
+     :              '(mm/mm)',
+     :              p%air_dry(0),
+     :              numvals,  ! get number of nodes from here
+     :              0.0d0,
+     :              1.0d0)
+
+            call Read_double_array (
+     :              parameters_section,
      :              'll15',
      :              M+1,
      :              '(mm/mm)',
@@ -579,20 +595,29 @@
      :              parameters_section,
      :              'ks',
      :              M+1,
-     :              '(mm/h)',
+     :              '(mm/d)',
      :              p%ks(0),
      :              numvals,  ! get number of nodes from here
      :              0.0d0,
-     :              1.0d2)
+     :              1.0d3)
 
             call Read_double_var (
      :              parameters_section,
-     :              'kd',
-     :              '(mm/h)',
-     :              p%Kd,
+     :              'kdul',
+     :              '(mm/d)',
+     :              p%Kdul,
      :              numvals,
      :              0.0d0,
-     :              1.d0)  
+     :              1.d1)  
+
+            call Read_double_var (
+     :              parameters_section,
+     :              'psidul',
+     :              '(cm)',
+     :              p%Psidul,
+     :              numvals,
+     :              -1d3,
+     :              0d0)  
      
      
             call Read_double_array (
@@ -1404,6 +1429,11 @@ cnh added as per request by Dr Val Snow
      :            '(mm)',
      :            water_table)
 
+      else if (Variable_name .eq. 'swim3') then
+         call respond2Get_real_var (
+     :            Variable_name,
+     :            '(-)',
+     :            1.0)
       else
          call Message_Unused ()
       endif
@@ -1594,6 +1624,7 @@ cnh added as per request by Dr Val Snow
       call apswim_reset_daily_totals ()
 
       do 6 counter = 0,M
+         p%air_dry(counter) = 0d0
          p%LL15(counter) = 0d0
          p%DUL(counter) = 0d0
          p%SAT(counter) = 0d0
@@ -1678,17 +1709,17 @@ cnh      slbp0 = 0d0
 * =====================================================================
 
       do 211 counter = 0,M
+         p%air_dry(counter) = 0d0
          p%LL15(counter) = 0d0
          p%DUL(counter) = 0d0
          p%SAT(counter) = 0d0
          p%Ks(counter) = 0d0
-         p%a(counter) = 0d0
-         p%b(counter) = 0d0
+         p%P(counter) = 0d0
+         p%k(counter) = 0d0
          p%c(counter) = 0d0
-         p%psii(counter) = 0d0
-         p%psie(counter) = 0d0
   211 continue
-      p%Kd = 0d0
+      p%Kdul = 0d0
+      p%Psidul = 0d0
       p%ivap = 0
 
 * =====================================================================
@@ -1917,6 +1948,7 @@ c      eqr0 = 0d0
       integer          num_layers
       double precision suction
       double precision thd
+      double precision Rll, slope
 c      double precision tth
       double precision thetaj, thetak, dthetaj, dthetak
       double precision hklgj, hklgk, dhklgj, dhklgk
@@ -1993,21 +2025,21 @@ c     :             p%rhob)
 * ------- IF USING SIMPLE SOIL SPECIFICATION CALCULATE PROPERTIES -----
 
          do 26 i =0,p%n
-            p%psid(i) = psi_dul - (p%x(p%n) - p%x(i))
-            p%b(i) = -log(p%psid(i)/psi_ll15)
-     :                   /log(p%dul(i)/p%ll15(i))
-            p%psie(i) = p%psid(i)*(p%dul(i)/p%sat(i))
-     :                   **(p%b(i))
-            p%a(i) = (2.*p%b(i))/(2.*p%b(i)+1.)
-
-            p%psii(i) = p%psie(i)*p%a(i) **(-p%b(i))
-            p%psii(i) = min(p%psii(i), 0.0)
-            p%c(i) = (1.-p%a(i))/(p%psii(i)**2.)
+            p%psid(i) = p%Psidul !- (p%x(p%n) - p%x(i))
+            Rll = (Log10(-psiad) - Log10(-psi_ll15)) 
+     :          / (Log10(-psiad) - Log10(-p%psid(i)))
+            p%P(i) = Log10((p%ll15(i)-p%air_dry(i)) 
+     :                     / (p%dul(i)-p%air_dry(i))) / Log10(Rll)
+            slope = -p%dul(i)/p%sat(i)* p%P(i) 
+     :            / (Log10(-psiad)-Log10(-p%psid(i)))
+            p%c(i) = slope * Log10(-p%psid(i)) / (p%dul(i)/p%sat(i)-1d0)
+            p%k(i) = -1d0*slope 
+     :              / (p%c(i) * Log10(-p%psid(i))**(p%c(i) - 1d0))
 
    26    continue
          
 * ---------- NOW SET THE ACTUAL WATER BALANCE STATE VARIABLES ---------
-
+    
       if (g%th(1).ne.0) then
          ! water content was supplied in input file
          ! so calculate matric potential
@@ -2105,14 +2137,18 @@ c     :             p%rhob)
       double precision temp
 
 *- Implementation Section ----------------------------------
-         
+c         print*,'a'
          tth   = apswim_Simpletheta(node,tpsi)
+c         print*,'b'
          temp  = apswim_Simpletheta(node,tpsi+dpsi)
+c         print*,'c'
          thd   = (temp-tth)/log10((tpsi+dpsi)/tpsi)
+c         print*,'d'         
          hklg  = log10(apswim_SimpleK(node,tpsi))
+c         print*,'e'         
          temp  = log10(apswim_SimpleK(node,tpsi+dpsi))
+c         print*,'f'         
          hklgd = (temp-hklg)/log10((tpsi+dpsi)/tpsi)
-         
       return
       end subroutine
 
@@ -2128,36 +2164,17 @@ c     :             p%rhob)
 *+  Purpose
 *      Calculate S for a given node for a specified suction.
 
-*+  Constant Values
-
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'SimpleS')
-
-*+  Local Variables
-
+       double precision temp
 *- Implementation Section ----------------------------------
-
-      if (psi.ge. 0.0) then
-         Apswim_SimpleS = 1d0
-      elseif (psi.ge.p%psii(layer)) then
-         Apswim_SimpleS = 1d0 - p%c(layer)*psi**2d0
-      elseif (psi.ge.psi_ll15) then
-         Apswim_SimpleS =(psi/p%psie(layer))**(-1d0/p%b(layer))
-      else
-         wt = (Log(10**7d0) - Log(-psi))/(Log(10**7d0) - Log(15000d0))
-         S1 =(psi/p%psie(layer))**(-1d0/p%b(layer))
-         S2 = wt* (-15000d0 / p%psie(layer))**(-1d0 / p%b(layer))
-         apswim_simples = wt**0.5*S1+(1d0-wt**0.5)*S2
-         !print*,layer,log10(-psi),wt,s1,s2,Apswim_SimpleS
-         !apswim_simples = S1
-         Apswim_SimpleS = max(Apswim_SimpleS,1d-6)
-      endif
+      
+      Apswim_SimpleS = Apswim_SimpleTheta(layer,psi)/p%sat(layer)
+      
 
       return
       end function
 
 * ====================================================================
-       double precision function Apswim_Simpletheta (layer, psi)
+       double precision function Apswim_Simpletheta1 (layer, psi)
 * ====================================================================
 
       implicit none
@@ -2174,48 +2191,113 @@ c     :             p%rhob)
       character*(*) myname               ! name of current procedure
       parameter (myname = 'Apswim_Simpletheta')
 
-      double precision psi0
-      parameter (psi0 = -1d7)
-      !parameter (psi0 = -8d7)
 
 *+  Local Variables
       double precision S
-      double precision Psii, a,c,c1,c2,rossb,rosspsie
+      double precision Sdul,logpsi
 
 *- Implementation Section ----------------------------------
-  
 
-      c1 = 1d0/p%b(layer)
-      c2 = -1.1223 + 2.8667 * c1**0.25 - 1.9938 * c1**0.5 + 1.2313 * c1
-      rossb = 1/c2
+      if (psi.ge.0d0) then
 
-      rosspsie = -Abs(((Abs(p%psid(layer))**(-c2) - Abs(psi0)**(-c2))
-     :      / (p%dul(layer)/ p%sat(layer))+Abs(psi0)**(-c2)))**(-1/c2)
+         Apswim_Simpletheta1 = p%sat(layer)      
+      elseif (psi.le.psi0) then
+         apswim_Simpletheta1 = 0.0
+         
+      elseIf (psi.le.p%psid(layer)) Then
 
-      a = 1d0 / ((p%psie(layer) / psi0) ** (-1d0 / rossb) - 1)
-      Psii = rosspsie * (2d0*rossb/(2d0*rossb+1))
-     :          **(-rossb)
+         Apswim_Simpletheta1 = p%air_dry(layer)
+     :        + (p%dul(layer)-p%air_dry(layer))
+     :          * ((Log10(-psiad) - Log10(-psi)) 
+     :         / (Log10(-psiad) - Log10(-p%psid(layer))))**p%P(layer)
+      else
 
-      c = (1d0+a)/((1d0+2d0*rossb) * Psii**2d0)
-
-!      if (psi.lt.psi_ll15) then
-!
-!         S = (Log(10**7d0) - Log(-psi)) / (Log(10**7d0) - Log(15000d0))
-!     :          * (-15000d0 / p%psie(layer))**(-1d0 / p%b(layer))
-!
-!         if (S.lt.0) S = 0
-      If (psi.le. Psii) Then
-         S = (Abs(psi)**(-1d0/rossb)-Abs(psi0)**(-1d0/rossb))
-     :     / (Abs(rosspsie)**(-1d0/rossb)
-     :         -Abs(psi0)**(-1/rossb))
-      Else
-         S = 1d0 - c * psi**2
+         logpsi = max(Log10(-psi),0d0)
+         Apswim_Simpletheta1 = p%sat(layer) 
+     :       * (1d0 - p%k(layer) * logpsi**p%c(layer))
       EndIf
-      Apswim_Simpletheta = S * p%sat(layer)
+  
+      return
+      end function
+* ====================================================================
+       double precision function Apswim_Simpletheta (layer, psi)
+* ====================================================================
 
-      S = Apswim_SimpleS(layer,psi)
-      Apswim_Simpletheta = S * p%sat(layer)
+      implicit none
 
+*+  Sub-Program Arguments
+      integer layer
+      double precision    psi
+
+*+  Purpose
+*      Calculate Theta for a given node for a specified suction.
+
+*+  Local Variables
+      double precision S
+      double precision Sdul,logpsi
+      double precision DELk(4),Mk(4),Y,Y0,Y1,T,m0,M1,alpha,beta,phi,tau
+      
+*- Implementation Section ----------------------------------
+c      print*,'delk'
+      DELk(1) = (p%dul(layer) - p%sat(layer)) / (Log10(-p%psid(layer)))
+      DELk(2) = (p%ll15(layer) - p%dul(layer)) 
+     :        / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
+      DELk(3) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
+      DELk(4) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
+c      print*,'m'  
+      Mk(1) = 0d0
+      Mk(2) = (DELk(1) + DELk(2)) / 2d0
+      Mk(3) = (DELk(2) + DELk(3)) / 2d0
+      Mk(4) = DELk(4)
+
+c      print*,'mono'
+      ! First bit might not be monotonic so check and adjust
+      alpha = Mk(1) / DELk(1)
+      beta = Mk(2) / DELk(1)
+      phi = alpha-((2*alpha+beta-3)**2 /(3*(alpha + beta - 2)))
+      If (phi .le.0) Then
+         tau = 3 / ((alpha**2 + beta**2)**0.5)
+         Mk(1) = tau * alpha * DELk(1)
+         Mk(2) = tau * beta * DELk(1)
+      EndIf
+
+c      print*,'coeffs'
+      if (psi.ge.-1d0) then
+         m0 = 0
+         m1 = 0
+         Y0 = p%sat(layer)
+         Y1 = p%sat(layer)
+         T = 0    
+      elseIf (psi .gt. p%psid(layer)) Then
+         m0 = Mk(1) * (Log10(-p%psid(layer)) - 0d0)
+         M1 = Mk(2) * (Log10(-p%psid(layer)) - 0d0) 
+         Y0 = p%sat(layer)
+         Y1 = p%dul(layer)
+         T = (Log10(-psi) - 0d0) / (Log10(-p%psid(layer)) - 0d0)
+      ElseIf (psi .gt. psi_ll15) Then
+         m0 = Mk(2) * (Log10(-psi_ll15) - Log10(-p%psid(layer)))
+         M1 = Mk(3) * (Log10(-psi_ll15) - Log10(-p%psid(layer)))
+         Y0 = p%dul(layer)
+         Y1 = p%ll15(layer)
+         T = (Log10(-psi) - Log10(-p%psid(layer))) 
+     :         / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
+         
+      Else
+         m0 = Mk(3) * (Log10(-psi0) - Log10(-psi_ll15))
+         M1 = Mk(4) * (Log10(-psi0) - Log10(-psi_ll15))
+         Y0 = p%ll15(layer)
+         Y1 = 0d0
+         T = (Log10(-psi) - Log10(-psi_ll15)) 
+     :        / (Log10(-psi0) - Log10(-psi_ll15))
+      End If
+
+c      print*,'interp'
+      Y = (2 * T**3 - 3 * T**2 + 1) * Y0 
+     :  + (T**3 - 2 * T**2 + T) * m0 
+     :  + (-2 * T**3 + 3 * T**2) * Y1 
+     :  + (T**3 - T**2) * M1
+
+      Apswim_Simpletheta = Y
       return
       end function
 
@@ -2238,10 +2320,8 @@ c     :             p%rhob)
       character*(*) myname               ! name of current procedure
       parameter (myname = 'apswim_SimpleK')
 
-      double precision Kdul
-      parameter (Kdul = 0.01d0/24d0)
       double precision Kll
-      parameter (Kll = 6d-6/24d0)
+      parameter (Kll = 6d-6*10d0)
 
 
 *+  Local Variables
@@ -2262,33 +2342,44 @@ c     :             p%rhob)
 
 *- Implementation Section ----------------------------------
 
+c       print*,'SimpleK',psi
+       
        S = Apswim_SimpleS(layer,psi)
-!      apswim_SimpleK = p%Ks(layer)*S**(p%b(layer)*2d0+3d0)
+c       print*,'S',S
+       if (S.le.0d0) then
+          apswim_SimpleK = 1d-100
+       else
+       
+         sat = p%sat(layer)  ! no need to recalc this one
+         Kdula = min(0.99*p%Kdul,p%Ks(layer))
 
-      Sdul = Apswim_SimpleS(layer,p%psid(layer))
-      
-      Kdula = min(p%Kd,p%Ks(layer))
- 
+         ! use Kdul at psidul rather than at field DUL
+c         dul = Apswim_Simpletheta(layer,p%psid(layer))
+c         print*,layer,p%Psidul
+         dul = Apswim_Simpletheta(layer,p%Psidul) 
+         
+c         print*,'dul',dul,layer,p%Psidul
+         Sdul = dul/sat
+         ll = Apswim_Simpletheta(layer,psi_ll15)
+c         ll = Apswim_Simpletheta(layer,-20000.d0)
 
-!      PII = -3d0 !1d0 !-3d0
-!      Ksa = Kdula / (Sdul**(PII + 2. + 2. * p%b(layer)))
-!      MicroK = Ksa * s**(PII + 2. + 2. * p%b(layer))
+c         print*,sat,dul,ll
+         MicroP = log10(Kdula/Kll)/log10(dul/ll)
 
-      dul = Apswim_Simpletheta(layer,p%psid(layer))
-      ll = Apswim_Simpletheta(layer,-20000.d0)
-      sat = Apswim_Simpletheta(layer,0d0)
-      
-      MicroP = log10(Kdula/Kll)/log10(dul/ll)
-      MicroKs = Kdula/(dul/sat)**MicroP
-      MicroK = MicroKs*S**MicroP
-      if(MicroKs.ge.p%Ks(layer)) then
-         apswim_SimpleK = MicroK
-      else
-         MacroP = Log10(Kdula/100d0/(p%Ks(layer)-MicroKs))/Log10(Sdul)
-         MacroK = (p%Ks(layer)-MicroKs) * S**MacroP
-         apswim_SimpleK = (MicroK+MacroK)
+         MicroKs = Kdula/(dul/sat)**MicroP
+
+         MicroK = MicroKs*S**MicroP
+         
+         if(MicroKs.ge.p%Ks(layer)) then
+            apswim_SimpleK = MicroK
+         else
+            MacroP=Log10(Kdula/99d0/(p%Ks(layer)-MicroKs))/Log10(Sdul)
+            MacroK = (p%Ks(layer)-MicroKs) * S**MacroP
+            apswim_SimpleK = (MicroK+MacroK)
+         endif
       endif
-
+         
+      apswim_SimpleK = apswim_SimpleK/24d0/10d0
       return
       end function
 
@@ -2301,90 +2392,26 @@ c     :             p%rhob)
 
 *+  Sub-Program Arguments
       integer node
-      double precision theta
+      double precision theta, logpsi
 
 *+  Purpose
 *   Calculate the suction for a given water content for a given node.
 
-*+  Notes
-*   Here we solve for f(Z) = 0 where f is the curve between 2 known points
-*   on the moisture characteristic and Z is the fractional distance between
-*   those two points.  We use Newton's method to solve this.  To try and
-*   ensure that we converge to a solution we use initial z = the fractional
-*   distance for theta between two points on the moisture characteristic.
-*   The algorithm could be improved by putting a tolerance on the change
-*   in estimate for Z.
-
-*+  Changes
-*   15-7-94 NIH - programmed and specified
-
-*+  Constant Values
-      integer max_iterations
-      parameter (max_iterations = 1000)
-*
-      character myname*(*)               ! name of current procedure
-      parameter (myname = 'apswim_suction')
-*
-      double precision tolerance
-      parameter (tolerance = 1d-9)
-      double precision dpsi
-      parameter (dpsi = -0.001d0)
-
 
 *+  Local Variables
-      double precision a1,a2,a3
-      double precision deltasl
-      double precision deltawc
-      character        error_string*100
-      integer          iteration
-      double precision log_suction
-      double precision suction
-      double precision f
-      double precision dfdz
-      integer          i,j,k
-      logical          solved
-      double precision theta1
-      double precision z
-      double precision err
-      double precision dthdpsi
-      double precision thetai
-      
-*+  Initial Data Values
-      theta1 = theta
+      double precision psi
 
 *- Implementation Section ----------------------------------
 
-
-      thetai = apswim_simpletheta(node,p%psii(node)) 
-
-      if (theta.gt.thetai) then
-         suction = (p%SAT(node)-theta)/(p%c(node)*p%SAT(node))**0.5   
-         apswim_suction = suction
-      else   
-            
-         suction = p%psid(node)
-         solved = .false.
-         do 300 iteration = 1,max_iterations
-            
-            dthdpsi = (apswim_SimpleTheta(node,suction+dpsi)
-     :                -apswim_SimpleTheta(node,suction))
-     :              /dpsi
-            err = apswim_SimpleTheta(node,suction)-theta
-            
-            if (abs(err) .lt. tolerance) then
-               solved = .true.
-               goto 400
-            else
-               suction = suction - err/dthdpsi
-               suction = min(suction,0d0)
-            endif
-
-  300    continue
-  400    continue
-         apswim_suction = max(0d0,-suction)
-
+      if (theta.ge.p%dul(node)) then
+         psi =-10**((1d0-theta/p%sat(node))/p%k(node))**(1d0/p%c(node))
+      else
+         logpsi = log10(-psiad)-(log10(-psiad)-log10(-p%psid(node)))
+     :        * (theta-p%air_dry(node))**(1d0/p%P(node))
+     :         /(p%dul(node)-p%air_dry(node))
+        psi = -10d0**logpsi
       endif
-
+      apswim_suction = psi
       return
       end function
 
@@ -2837,7 +2864,7 @@ cnh
      
 
 *- Implementation Section ----------------------------------
-
+      
       string = New_Line//New_Line
      :      //'                      APSIM Soil Profile'//New_Line
      :      //'                      ------------------'//New_Line
@@ -2871,8 +2898,10 @@ cnh
          do 205 j=0,p%n
             call apswim_interp(j,psio(i),tho(j,i),thd,hklo(j,i),hklgd)
             hko(j,i) = 10d0**hklo(j,i)
+c            print*,i,j
   205    continue
   210 continue
+      
 
       string = New_Line//New_Line
      ://'                  Soil Moisture Characteristics'//New_Line
@@ -2929,7 +2958,7 @@ cnh
 
       do 225 j=0,p%n 
          write(string,'(f6.1,1x,''|'',7(1x,g8.3))')
-     :              p%x(j)*10., (hko(j,i),i=1,(num_psio-1))
+     :              p%x(j)*10., (hko(j,i)*24d0*10d0,i=1,(num_psio-1))
          call write_string (string)
   225 continue
 
@@ -3373,15 +3402,9 @@ c      eqr0  = 0.d0
 
       num_nodes = count_of_double_vals (p%dlayer(0),M+1)
 
-      do 200 i=0,num_nodes-1
-         p%ks(i) = p%ks(i)/10.
-  200 continue
-
       do 300 i=1,MV
          g%root_radius(i) = g%root_radius(i)/10d0
   300 continue
-
-      p%Kd = p%Kd/10d0
 
       return
       end subroutine
@@ -5387,12 +5410,13 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *- Implementation Section ----------------------------------
 
       do 25 i=0,p%n
+         
          if (wc_flag.eq.1) then
             ! water content was supplied in volumetric SW
             ! so calculate matric potential
             
             g%th (i) = water_content(i)
-            g%psi(i) = - apswim_suction (i,g%th(i))
+            g%psi(i) = apswim_suction (i,g%th(i))
 
          else if (wc_flag.eq.2) then
             ! matric potential was supplied

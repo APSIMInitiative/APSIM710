@@ -479,8 +479,13 @@ void Soil::doWaterUptakeExternal (string uptake_source, string crop_type)
    {
     int   layer;                                  // layer number of profile ()
     float ext_sw_supply[max_layer];
-
-     plant_get_ext_uptakes(uptake_source.c_str()
+    
+    // If uptake source is swim3 then use standard get from apsim
+    // otherwise use value of uptake source as it is.
+    string source = uptake_source;
+    if (uptake_source =="swim3") source = "apsim";
+    	
+     plant_get_ext_uptakes(source.c_str()
                           ,crop_type.c_str()
                           ,"water"
                           ,1.0
@@ -685,6 +690,17 @@ void Soil::UpdateOtherVariables(string uptake_source)
       scienceAPI.set("dlt_nh4", "kg/ha", dltNH4KgHa);
       scienceAPI.set("dlt_sw_dep", "mm", dltSwDep);
       }
+   else if (Str_i_Eq(uptake_source, "swim3"))
+      {
+      vector<float> dltNO3KgHa, dltNH4KgHa;
+      for (int layer = 0; layer< num_layers;layer++)
+         {
+         dltNO3KgHa.push_back(dlt_no3gsm[layer] * gm2kg /sm2ha);
+         dltNH4KgHa.push_back(dlt_nh4gsm[layer] * gm2kg /sm2ha);
+         }
+      scienceAPI.set("dlt_no3", "kg/ha", dltNO3KgHa);
+      scienceAPI.set("dlt_nh4", "kg/ha", dltNH4KgHa);
+      }
    else
       {
       // no need to send updates
@@ -766,6 +782,10 @@ void Soil::doWaterUptake (string uptake_source, string crop_type, float SWDemand
     doWaterSupply(root_depth);
 
     if (Str_i_Eq(uptake_source,"apsim"))
+        {
+        doWaterUptakeExternal(uptake_source, crop_type);
+        }
+    else if (Str_i_Eq(uptake_source,"swim3"))
         {
         doWaterUptakeExternal(uptake_source, crop_type);
         }

@@ -1587,6 +1587,7 @@ cnh                  g(i)=1./(g%rc(i,iveg)/thk(i)+1./(gr*g%rld(i,iveg)*p%dx(i)))
       thsat = p%sat(ix) ! NOTE: this assumes that the wettest p%wc is
                         ! first in the pairs of log suction vs p%wc
       if (thsat.eq.0.0) thsat = p%sat(ix)
+
       if(p%ivap.ne.0)then
 *        add vapour conductivity hkv
          phi=thsat/.93-tth
