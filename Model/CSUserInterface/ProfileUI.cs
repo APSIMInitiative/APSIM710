@@ -303,7 +303,10 @@ namespace CSUserInterface
          XmlNode ProfileNode = XmlHelper.Find(Doc.DocumentElement, XmlHelper.Name(Data));
          if (Data.Name == "SoilCrop")
             ProfileNode = XmlHelper.Find(Doc.DocumentElement, "Water/" + XmlHelper.Name(Data));
-         
+
+         if (Data.Name == "SwimSoluteParameters")
+            ProfileNode = XmlHelper.Find(Doc.DocumentElement, "Swim/" + XmlHelper.Name(Data));
+
          foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "Layer"))
             Data.AppendChild(Data.OwnerDocument.ImportNode(Node, true));
          foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "SoilCrop"))

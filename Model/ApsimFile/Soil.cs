@@ -542,6 +542,8 @@ namespace ApsimFile
          if (LocationNode == null)
             LocationNode = XmlHelper.Find(Data, LocationName);            // sample node
          if (LocationNode == null)
+            LocationNode = XmlHelper.Find(Data, "Swim/" + LocationName); // crop node
+         if (LocationNode == null)
             LocationNode = Data.AppendChild(Data.OwnerDocument.CreateElement(LocationName));  // go create it.
          return LocationNode;
          }

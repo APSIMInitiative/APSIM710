@@ -410,7 +410,8 @@
        integer num_theta
        integer point
        character bbc_switch*10
-
+       double precision temp
+       
 *- Implementation Section ----------------------------------
 
          ! ------------- Initial Soil Profile Info ---------------
@@ -454,33 +455,39 @@
 
          ! Read in bottom boundary conditions flag from parameter file
          ! -----------------------------------------------------------
-      call Read_char_var (
+cnh Try and use context in model parameterisation to determine the BBC
+cnh and its required parameters
+c      call Read_char_var (
+c     :              parameters_section,
+c     :              'bottom_boundary_condition',
+c     :              '()',
+c     :              bbc_switch,
+c     :              numvals)
+c      if (bbc_switch.eq.'gradient') then
+c         p%ibbc = 0
+c      elseif (bbc_switch.eq.'watertable') then
+c         p%ibbc = 1
+c      elseif (bbc_switch.eq.'zeroflux') then
+c         p%ibbc = 2
+c      elseif (bbc_switch.eq.'seepage') then
+c         p%ibbc = 3
+c      else
+c         call fatal_error (ERR_User,
+c     :         'Bad Bottom boundary condition switch.')
+c      endif
+
+         call Read_double_var_optional (
      :              parameters_section,
-     :              'bottom_boundary_condition',
+     :              'WaterTableDepth',
      :              '()',
-     :              bbc_switch,
-     :              numvals)
-      if (bbc_switch.eq.'gradient') then
-         p%ibbc = 0
-      elseif (bbc_switch.eq.'watertable') then
-         p%ibbc = 1
-      elseif (bbc_switch.eq.'zeroflux') then
-         p%ibbc = 2
-      elseif (bbc_switch.eq.'seepage') then
-         p%ibbc = 3
-      else
-         call fatal_error (ERR_User,
-     :         'Bad Bottom boundary condition switch.')
-      endif
-      
-         call Read_double_var (
-     :              parameters_section,
-     :              'bottom_boundary_value',
-     :              '()',
-     :              p%bbc_value,
+     :              temp,
      :              numvals,
      :              -10d6,
      :               10d6)
+       if (numvals.gt.0) then
+         p%ibbc = 1
+         p%bbc_value = temp
+         print*,p%bbc_value
 
          call Read_double_var (
      :              parameters_section,
@@ -491,7 +498,11 @@
      :             0d0,
      :              1d0)
 
-      
+       else
+          ! Assume constant gradient BBC
+          p%ibbc = 0
+          p%bbc_value = 0d0
+       endif
       
 
          ! Read in vapour conductivity flag from parameter file
@@ -530,17 +541,6 @@
      :              '(??)',
      :              p%echo_directives,
      :              numvals)
-
-      ! Read in flag for subsurface drainage
-      call Read_char_var_optional (
-     :              parameters_section,
-     :              'subsurface_drain',
-     :              '()',
-     :              p%subsurface_drain,
-     :              numvals)
-      if (numvals.eq.0) then
-         p%subsurface_drain = 'off'
-      endif
 
 
             call Read_double_array (
@@ -845,20 +845,21 @@
       ! Subsurface Drainage Parameters
       ! ==============================
 
-      If (p%subsurface_drain.eq.'on') then
-
-         call Read_double_var (
-     :              drain_section,
-     :              'drain_depth',
+      call Read_double_var_optional (
+     :              parameters_section,
+     :              'draindepth',
      :              '(mm)',
      :              p%drain_depth,
      :              numvals,
      :              1.0d0,
      :              p%x(p%n))
 
+      if (numvals.gt.0) then
+         p%subsurface_drain = 'on'
+
          call Read_double_var (
-     :              drain_section,
-     :              'drain_spacing',
+     :              parameters_section,
+     :              'drainspacing',
      :              '(mm)',
      :              p%drain_spacing,
      :              numvals,
@@ -866,8 +867,8 @@
      :              1.0d5)
 
          call Read_double_var (
-     :              drain_section,
-     :              'drain_radius',
+     :              parameters_section,
+     :              'drainradius',
      :              '(mm)',
      :              p%drain_radius,
      :              numvals,
@@ -875,8 +876,8 @@
      :              1.0d3)
 
          call Read_double_var (
-     :              drain_section,
-     :              'imperm_depth',
+     :              parameters_section,
+     :              'impermdepth',
      :              '(mm)',
      :              p%imperm_depth,
      :              numvals,
@@ -884,7 +885,7 @@
      :              p%x(p%n))
 
          call Read_double_var (
-     :              drain_section,
+     :              parameters_section,
      :              'Klat',
      :              '(mm/d)',
      :              p%Klat,
@@ -894,6 +895,7 @@
 
       else
          ! Do nothing
+          p%subsurface_drain = 'off'
       endif
 
       return
@@ -1422,7 +1424,7 @@ cnh added as per request by Dr Val Snow
 
          endif
 
-      else if (Variable_name .eq. 'water_table') then
+      else if (Variable_name .eq. 'watertable') then
          water_table = apswim_water_table()
          call respond2Get_double_var (
      :            Variable_name,
@@ -2058,6 +2060,13 @@ c     :             p%rhob)
             p%ex(solnum,node) = p%rhob(node)*p%exco(solnum)
    30    continue
    40 continue
+
+      ! Calculate Water Table If Required
+      if (p%ibbc.eq.1) then
+         print*,p%bbc_value
+         p%bbc_value = p%x(p%n) - p%bbc_value/10d0
+         print*, p%n, p%x(p%n), p%bbc_value
+      endif
 
       return
       end subroutine
@@ -2997,22 +3006,46 @@ c            print*,i,j
      :                 'bad bottom boundary conditions switch')
       endif
 
-      string = new_line
-      call write_string (string)
-
       if (p%ivap.eq.0) then
-         call write_string ('     vapour conductivity = off')
+         call write_string ('     vapour conductivity       = off')
       elseif (p%ivap.eq.1) then
-         call write_string ('     vapour conductivity = on')
+         call write_string ('     vapour conductivity       = on')
       else
          call fatal_error(err_user,
      :                 'bad vapour flag')
       endif
 
 
-      string = '     Evaporation Source: '//p%evap_source
+      string = '     Evaporation Source        = '//p%evap_source
      :               //new_line
       call write_string (string)
+
+      if (p%subsurface_drain.eq.'on') then
+      
+         call write_string (' Subsurface Drain Model')
+         call write_string (' ======================'//new_line)
+         
+         write(string,'(a,f10.3)')
+     :        '     Drain Depth (mm) =',
+     :         p%drain_depth
+         call write_string (string)      
+         write(string,'(a,f10.3)')
+     :        '     Drain Spacing (mm) =',
+     :         p%drain_spacing
+         call write_string (string)               
+         write(string,'(a,f10.3)')
+     :        '     Drain Radius (mm) =',
+     :         p%drain_radius
+         call write_string (string)      
+         write(string,'(a,f10.3)')
+     :        '     Imperm Layer Depth (mm) =',
+     :         p%imperm_depth
+         call write_string (string)      
+         write(string,'(a,f10.3)')
+     :        '     Lateral Conductivity (mm/d) =',
+     :         p%Klat
+         call write_string (string)                                 
+      endif
 
       return
       end subroutine
