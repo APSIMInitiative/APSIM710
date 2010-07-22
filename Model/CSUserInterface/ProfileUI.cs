@@ -297,8 +297,6 @@ namespace CSUserInterface
          // the existing ones first.
          foreach (XmlNode Child in XmlHelper.ChildNodes(Data, "Layer"))
             Data.RemoveChild(Child);
-         foreach (XmlNode Child in XmlHelper.ChildNodes(Data, "SoilCrop"))
-            Data.RemoveChild(Child);
 
          XmlNode ProfileNode = XmlHelper.Find(Doc.DocumentElement, XmlHelper.Name(Data));
          if (Data.Name == "SoilCrop")
@@ -307,6 +305,8 @@ namespace CSUserInterface
          if (Data.Name == "SwimSoluteParameters")
             ProfileNode = XmlHelper.Find(Doc.DocumentElement, "Swim/" + XmlHelper.Name(Data));
 
+         foreach (XmlNode Child in XmlHelper.ChildNodes(ProfileNode, "SoilCrop"))
+            ProfileNode.RemoveChild(Child);
          foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "Layer"))
             Data.AppendChild(Data.OwnerDocument.ImportNode(Node, true));
          foreach (XmlNode Node in XmlHelper.ChildNodes(ProfileNode, "SoilCrop"))

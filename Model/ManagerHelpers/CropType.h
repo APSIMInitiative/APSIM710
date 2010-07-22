@@ -17,7 +17,7 @@ public ref class CropType
          
       void Publish(String^ EventName, ApsimType^ Data)
          {
-         Comp->Publish(Comp + "." + EventName, Data);
+         Comp->Publish(Comp->Name + "." + EventName, Data);
          }
     
       property Single biomass

@@ -69,7 +69,7 @@ Public Class BaseActions
             Dim CompToDelete As ApsimFile.Component = Controller.ApsimData.Find(SelectedPath)
             CompToDelete.Parent.Delete(CompToDelete)
         Next
-        Controller.Explorer.CurrentView.OnRefresh()
+      Controller.Explorer.RefreshCurrentView()
     End Sub
     Public Shared Sub Rename(ByVal Controller As BaseController)
         ' --------------------------------------------------------
