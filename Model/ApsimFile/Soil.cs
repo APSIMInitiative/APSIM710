@@ -579,9 +579,9 @@ namespace ApsimFile
          if (MathUtility.ValuesInArray(Value.Doubles))
             {
             if (Value.Units == "" || ToUnits == "")
-               throw new Exception("Units not found");
+               { }
 
-            if (Value.Units == "mm/mm" && ToUnits == "mm")
+            else if (Value.Units == "mm/mm" && ToUnits == "mm")
                Value.Doubles = MathUtility.Multiply(Value.Doubles, Value.ThicknessMM);
 
             else if (Value.Units == "mm" && ToUnits == "mm/mm")
@@ -624,6 +624,12 @@ namespace ApsimFile
                for (int i = 0; i < Value.Doubles.Length; i++)
                   Value.Doubles[i] = Value.Doubles[i] / 100 * (BD.Doubles[i] * Value.ThicknessMM[i]);
                Value.Units = "ppm";
+               }
+
+            else if (Value.Units == "CaCl2" && ToUnits == "1:5 water")
+               {
+               // pH in water = (pH in CaCl X 1.1045) - 0.1375
+               Value.Doubles = MathUtility.Subtract_Value(MathUtility.Multiply_Value(Value.Doubles, 1.1045), 0.1375);
                }
 
             else if (Value.Units != ToUnits)
@@ -1130,6 +1136,7 @@ namespace ApsimFile
             {
             double[] ll;
             double[] pawc;
+            double[] xf = null;
             string RelativeTo = XmlHelper.Value(InitWaterNode, "RelativeTo");
             if (RelativeTo == "" || RelativeTo == "ll15")
                {
@@ -1139,6 +1146,7 @@ namespace ApsimFile
             else
                {
                ll = Variable(RelativeTo + " ll (mm)");
+               xf = Variable(RelativeTo + " xf (0-1)");
                pawc = Variable(RelativeTo + " PAWC (mm)");
                }
 
@@ -1155,7 +1163,9 @@ namespace ApsimFile
                   double AmountWater = MathUtility.Sum(pawc) * (Percent / 100.0);
                   for (int Layer = 0; Layer < ll.Length; Layer++)
                      {
-                     if (AmountWater >= pawc[Layer])
+                     if (AmountWater >= 0 && xf != null && xf[Layer] == 0)
+                        sw[Layer] = ll[Layer];
+                     else if (AmountWater >= pawc[Layer])
                         {
                         sw[Layer] = dul[Layer];
                         AmountWater = AmountWater - pawc[Layer];

@@ -179,6 +179,10 @@ void Factory::GetAllEvents(Instance^ Obj)
                Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
                Obj->Add(ChildInstance);   
                }
+            else if (Child->Name == "Memo")
+               {
+               // Ignore memo fields.
+               }
             else if (!Child->HasChildNodes && Child->InnerText == "")
                throw gcnew Exception("Cannot have a blank value for property: " + Child->Name);
             else if (Child->HasChildNodes)

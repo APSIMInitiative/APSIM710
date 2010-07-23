@@ -331,7 +331,18 @@ namespace ApsimFile
 
                   InitNitrogenNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("Sample"));
                   XmlHelper.SetName(InitNitrogenNode, "Initial nitrogen");
-                  InitNitrogenNode.InnerXml = "<Date type=\"date\" description=\"Sample date:\" />";
+                  InitNitrogenNode.InnerXml = "<Date type=\"date\" description=\"Sample date:\" />" +
+                                               "<Layer>" +
+                                               "   <Thickness>200</Thickness>" +
+                                               "   <no3 units=\"kg/ha\">30</no3>" +
+                                               "   <nh4 units=\"kg/ha\">5</nh4>" +
+                                               "</Layer>" +
+                                               "<Layer>" +
+                                               "   <Thickness>1800</Thickness>" +
+                                               "   <no3 units=\"kg/ha\">20</no3>" +
+                                               "   <nh4 units=\"kg/ha\">1</nh4>" +
+                                               "</Layer>";
+
                   }
                }
 
