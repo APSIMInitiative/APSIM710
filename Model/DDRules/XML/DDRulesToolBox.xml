@@ -1,0 +1,75 @@
+<folder version="23" name="DDRules ToolBox">
+  <DDRules />
+  <folder name="Manager folder">
+    <manager name="Dawn's Rules">
+      <ui>
+        <category description="Rotational Grazing" />
+        <sr type="text" description="Stocking Rate">2.5</sr>
+        <pme type="text" description="Pasture Quality">11.5</pme>
+        <tfd type="text" description="Total Feed Demand">80</tfd>
+        <category description="Grazing Rules [June-May]" />
+        <gr type="text" description="Grazing Residuals">1200</gr>
+        <mg type="text" description="Rotation Lengths">100</mg>
+      </ui>
+      <script name="start_of_day">
+        <text>
+        </text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Winter Off">
+      <ui>
+        <category description="When should cows be wintered off farm" />
+        <DCWO type="ddmmmdate" description="Date commence winter off (dd-mmm) : ">03-Nov</DCWO>
+        <DSWO type="ddmmmdate" description="Date stop winter off">03-Dec</DSWO>
+        <category description="Wintering off details" />
+        <module type="modulename" description="Module used to manage wintering off">DDRules</module>
+        <PropWO type="text" description="Proportion of herd wintered off-farm (range 0-1.0)">0.5</PropWO>
+      </ui>
+      <script name="start_of_day">
+        <text><![CDATA[
+          if ((today >= date('[DCWO]')) and (today <= date('[DSWO]'))) then
+            '[module]' set PWO = [PropWO]
+          else
+            '[module]' set PWO = 0.0
+          endif]]></text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Stand Off">
+      <ui>
+        <category description="When should cows be on a stand-off" />
+        <DCSO type="ddmmmdate" description="Date commence stand-off off (dd-mmm) : ">03-Nov</DCSO>
+        <DSSO type="ddmmmdate" description="Date stop stand-off (dd-mmm)">03-Dec</DSSO>
+        <category description="Stand-off off details" />
+        <module type="modulename" description="Module used to manage stand-off">DDRules</module>
+        <prop type="text" description="Proportion of herd on stand-off (range 0-1.0)">0.5</prop>
+        <hours type="text" description="Hours per day on stand-off (range 0-24.0)">2</hours>
+      </ui>
+      <script name="start_of_day">
+        <text><![CDATA[
+          if ((today >= date('[DCSO]')) and (today <= date('[DSSO]'))) then
+            '[module]' set PSO = [prop], 
+          else
+            '[module]' set PSO = 0.0
+          endif]]></text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Dry Stock Wintering">
+      <ui>
+        <module type="modulename" description="Module used to manage wintering off">DDRules</module>
+        <enable type="yesno" description="Dry stock wintered off farm">no</enable>
+      </ui>
+      <script name="init">
+        <text>if ('[enable]' = 'yes') then
+                  '[module]' set WinterOffDryStock = 1
+              else
+                  '[module]' set WinterOffDryStock = 0
+              endif
+        </text>
+        <event>init</event>
+      </script>
+    </manager>
+  </folder>
+</folder>

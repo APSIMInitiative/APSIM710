@@ -1,0 +1,124 @@
+<Type name="DDRules">
+	<MetaData>
+		<UItype>VBUserInterface.GenericUI</UItype>
+		<IsCrop>No</IsCrop>
+		<ShowInMainTree>Yes</ShowInMainTree>
+		<Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+		<Documentation>Grazing rules</Documentation>
+		<LargeIcon>%apsim%\UserInterface\Images\cubes32.png</LargeIcon>
+		<SmallIcon>%apsim%\UserInterface\Images\cubes16.png</SmallIcon>
+		<dll>%apsim%\Model\DDRules.dll</dll>
+		<drops>
+			<drop>toolbox</drop>
+			<drop>area</drop>
+			<drop>simulation</drop>
+			<drop>folder</drop>
+		</drops>
+		<ApsimToSim>
+			<component name="[DDRules.name]" executable="[dll]">
+				<componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+				<executable>[dll]</executable>
+				<initdata>
+					[Model]
+					[DDRules.innerxml]	     
+				</initdata>
+			</component>
+		</ApsimToSim>
+	</MetaData>
+	<Model>
+		<DDRules>
+      <!--CDM>3500</CDM>
+			<CR>1600</CR>
+			<PSO>0.0</PSO>
+			<HPD>0.0</HPD>
+			<SNC1>0.0</SNC1>
+			<SNC2>0.0</SNC2>
+			<EnableSilageStore>1</EnableSilageStore>
+			<SupplementWastage>0.1</SupplementWastage>
+			<SupplementME>12</SupplementME>
+			<SupplementN>2</SupplementN>
+			<SilageWastage>0.1</SilageWastage>
+			<SilageME>10.5</SilageME>
+			<WinterOffDryStock>0</WinterOffDryStock-->
+			<EnableFarmSim>1</EnableFarmSim>
+		</DDRules>
+	</Model>
+	<Info>
+		<variables>
+			<variable name="TotalFeedDemand" description="Total Feed Demand" read="T" write="F" kind="single" array="F" units="ME" />
+			<variable name="PastureHarvested" description="Pasture Eaten" read="T" write="F" kind="single" array="F" units="kgDM" />
+			<variable name="SupplementFed" description="Supplement Eaten" read="T" write="F" kind="single" array="F" units="kgDM" />
+			<variable name="BaseStockingRate" description="Base Stocking Rate (set by FarmSim)" read="T" write="F" array="F" units="" />
+			<variable name="sr" description="Current stocking rate on farm (i.e. excludes cows wintering off)" read="T" write="F" array="F" units="" />
+			<variable name="PWO" description="Percentage of stocking wintering off farm" read="T" write="F" array="F" units="%" />
+
+			<variable name="MilkProduction" description="Total milk production" read="T" write="F" array="F" units="kgMS/day" />
+			<variable name="Cow_LWt" description="Average per cow Live weight" read="T" write="F" array="F" units="kgLWt" />
+			<variable name="Cow_dLWt" description="Average change in per cow Live weight" read="T" write="F" array="F" units="kgLWt/day" />
+			<variable name="Cow_BC" description="Averge body condition score" read="T" write="F" array="F" units="" />
+			<variable name="Cow_IsDry" description="Is the herd currently dried off" read="T" write="F" array="F" units="" />
+			<variable name="SilageCut" description="Amount of silage made on farm" read="T" write="F" array="F" units="kgDM" />
+      
+
+      <!-- Highest Priority -->
+			<varible name="ME_Demand" description="Metabolisable energy demand [MJME/ha]" units="MJME/ha" array="F" />
+			<varible name="ME_Eaten" description="Metabolisable energy eaten [MJME/ha]" units="MJME/ha" array="F" />
+			<varible name="ME_Eaten_Pasture" description="Metabolisable energy from pasture eaten [MJME/ha]" units="MJME/ha" array="F" />
+			<varible name="ME_Eaten_Supplement" description="Metabolisable energy from supplements eaten [MJME/ha]" units="MJME/ha" array="F" />
+			<varible name="DM_Eaten" description="Dry matter eaten on a [kgDM/ha]" units="kgDM/ha" array="F" />
+			<varible name="DM_Eaten_Pasture" description="Dry matter eaten from pasture eaten [kgDM/ha]" units="kgDM/ha" array="F" />
+			<varible name="DM_Eaten_Supplement" description="Dry matter easten from supplements eaten [kgDM/ha]" units="kgDM/ha" array="F" />
+			<varible name="N_Eaten" description="N consumed [kgN/ha]" units="kgN/ha" array="F" />
+			<varible name="N_Eaten_Pasture" description="N consumed from pasture eaten [kgN/ha]" units="kgN/ha" array="F" />
+			<varible name="N_Eaten_Supplement" description="N consumed from supplements [kgN/ha]" units="kgN/ha" array="F" />
+			<varible name="N_to_milk" description="Amount of consumed N that was diverted to milk production [kgN/ha]" units="kgN/ha" array="F" />
+			<varible name="N_to_BC" description="Amount of consumed N that was diverted to change in body condition [kgN/ha] (-ve indicated release of N from reserves)" units="kgN/ha" array="F" />
+			<varible name="N_to_feaces" description="Amount of consumed N that was excreted as feaces [kgN/ha]" units="kgN/ha" array="F" />
+			<varible name="N_to_urine" description="Amount of consumed N that was excreted as urine [kgN/ha]" units="kgN/ha" array="F" />
+      <!-- Next Priority -->
+			<varible name="PaddockStatus" description="1=growing; 2=was grazed today; 3=was partially greazed today; 4=closed for conservation; 5=was harvested today" units="()" array="T" />
+      <!-- High Priority -->
+			<varible name="ME_Eaten_Pdks" description="Metabolisable energy eaten on a /ha basis by paddock" units="MJME/ha" array="T" />
+			<varible name="ME_Eaten_Pasture_Pdks" description="Metabolisable energy from pasture eaten on a /ha basis by paddock" units="MJME/ha" array="T" />
+			<varible name="ME_Eaten_Supplement_Pdks" description="Metabolisable energy from supplements eaten on a /ha basis by paddock" units="MJME/ha" array="T" />
+			<varible name="DM_Eaten_Pdks" description="Dry matter eaten on a /ha basis by paddock" units="kgDM/ha" array="T" />
+			<varible name="DM_Eaten_Pasture_Pdks" description="Dry matter eaten from pasture eaten on a /ha basis by paddock" units="kgDM/ha" array="T" />
+			<varible name="DM_Eaten_Supplement_Pdks" description="Dry matter easten from supplements eaten on a /ha basis by paddock" units="kgDM/ha" array="T" />
+			<varible name="N_Eaten_Pdks" description="N consumed on a /ha basis by paddock" units="kgN/ha" array="T" />
+			<varible name="N_Eaten_Pasture_Pdks" description="N consumed from pasture eaten on a /ha basis by paddock" units="kgN/ha" array="T" />
+			<varible name="N_Eaten_Supplement_Pdks" description="N consumed from supplements on a /ha basis by paddock" units="kgN/ha" array="T" />
+			<varible name="N_to_milk_Pdks" description="Amount of consumed N that was diverted to milk production on a /ha basis by paddock" units="kgN/ha" array="T" />
+			<varible name="N_to_BC_Pdks" description="Amount of consumed N that was diverted to change in body condition on a /ha basis (-ve indicated release of N from reserves) by paddock" units="kgN/ha" array="T" />
+			<varible name="N_to_feaces_Pdks" description="Amount of consumed N returned to the paddock as feaces" units="kgN/ha" array="T" />
+			<varible name="N_to_urine_Pdks" description="Amount of consumed N returned to the paddock as unrine" units="kgN/ha" array="T" />
+      <!-- Lowest Priority -->
+			<varible name="ME_Demand_Cow" description="Metabolisable energy demand on a /cow basis" units="MJME/cow" array="F" />
+			<varible name="ME_Eaten_Cow" description="Metabolisable energy eaten on a /cow basis by paddock" units="MJME/cow" array="F" />
+			<varible name="ME_Eaten_Pasture_Cow" description="Metabolisable energy from pasture eaten on a /cow basis by paddock" units="MJME/cow" array="F" />
+			<varible name="ME_Eaten_Supplement_Cow" description="Metabolisable energy from supplements eaten on a /cow basis by paddock" units="MJME/cow" array="F" />
+			<varible name="DM_Eaten_Cow" description="Dry matter eaten on a /cow basis by paddock" units="kgDM/cow" array="F" />
+			<varible name="DM_Eaten_Pasture_Cow" description="Dry matter eaten from pasture eaten on a /cow basis by paddock" units="kgDM/cow" array="F" />
+			<varible name="DM_Eaten_Supplement_Cow" description="Dry matter easten from supplements eaten on a /cow basis by paddock" units="kgDM/cow" array="F" />
+			<varible name="N_Eaten_Cow" description="N consumed on a /cow basis by paddock" units="kgN/cow" array="F" />
+			<varible name="N_Eaten_Pasture_Cow" description="N consumed from pasture eaten on a /cow basis by paddock" units="kgN/cow" array="F" />
+			<varible name="N_Eaten_Supplement_Cow" description="N consumed from supplements on a /cow basis by paddock" units="kgN/cow" array="F" />
+			<varible name="N_to_milk_Cow" description="Amount of consumed N that was diverted to milk production on a /cow basis by paddock" units="kgN/cow" array="F" />
+			<varible name="N_to_BC_Cow" description="Amount of consumed N that was diverted to change in body condition on a /cow basis (-ve indicated release of N from reserves) by paddock" units="kgN/cow" array="F" />
+			<varible name="N_to_feaces_Cow" description="Amount of consumed N that was excreted as feaces by paddock" units="kgN/cow" array="F" />
+			<varible name="N_to_urine_Cow" description="Amount of consumed N that was excreted as urine by paddock" units="kgN/cow" array="F" />
+      <!-- Do we require ME requirement broken down into lactation, maintance, live wt change, walking, and pregnency ? -->
+			<varible name="ME_Demand_Maintance" description="Metabolisable energy required for herd maintainence [MJME/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_Lactation" description="Metabolisable energy required for herd lactation [MJME/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_Pregnancy" description="Metabolisable energy required for herd pregnancy [MJME/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_Walking" description="Metabolisable energy required for herd walking [MJME/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_WeightChange" description="Metabolisable energy required for herd live weight change [MJME/day]" units="MJME" array="F" />
+			
+			<varible name="ME_Demand_Maintance_Cow" description="Metabolisable energy required for maintainence [MJME/cow/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_Lactation_Cow" description="Metabolisable energy required for lactation [MJME/cow/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_Pregnancy_Cow" description="Metabolisable energy required for pregnancy [MJME/cow/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_Walking_Cow" description="Metabolisable energy required for walking [MJME/cow/day]" units="MJME" array="F" />
+			<varible name="ME_Demand_WeightChange_Cow" description="Metabolisable energy required for live weight change [MJME/cow/day]" units="MJME" array="F" />
+		</variables>
+		<events></events>
+	</Info>
+</Type>
