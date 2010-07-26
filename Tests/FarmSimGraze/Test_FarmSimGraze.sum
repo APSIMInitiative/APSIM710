@@ -1,0 +1,286 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = Test_FarmSimGraze
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component               "FarmSimOptions" = %apsim%\Model\DotNetComponentInterface.dll
+Paddock:
+   Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component         "Canterbury_XL  Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component      "Canterbury_XL  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component              "ryegrass_clover" = %apsim%\Model\AgPasture.dll
+   Component      "Soil Temperature (.NET)" = %apsim%\Model\SoilTemp2.dll
+   Component                   "UrinePatch" = %apsim%\Model\UrinePatch.dll
+   Component                 "FarmSimGraze" = %apsim%\Model\FarmSimGraze.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1972
+     Simulation end date   = 28/02/1972
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\WinchmoreMet.met
+
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        DM_trigger
+        DryMatter
+        DryMatter_Intake
+        IsGrazable
+
+     Output file = Test_FarmSimGraze paddock1 Outputs.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.85
+           depth for calculating available soil water =     400.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_XL  Water Initialisation -----------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     1920.000
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_XL  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     1920.000
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_XL  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_XL  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     24000.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_XL  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     24000.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_XL  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-   80.  0.017  0.033  0.193  0.237  0.193  0.770  0.531  0.518*******
+           80.-  130.  0.014  0.027  0.158  0.194  0.158  0.630  0.179  0.581*******
+          130.-  330.  0.013  0.013  0.042  0.130  0.042  0.423  0.257  0.651*******
+          330.- 1000.  0.008  0.008  0.022  0.100  0.022  0.200  0.032  0.651*******
+         1000.- 1500.  0.008  0.008  0.022  0.100  0.022  0.200  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-   80.       2.64      12.80      12.80       3.52
+           80.-  130.       1.35       6.55       6.55       1.80
+          130.-  330.       2.60       5.80       5.80      17.60
+          330.- 1000.       5.36       9.38       9.38      52.26
+         1000.- 1500.       4.00       7.00       7.00      39.00
+          ---------------------------------------------------------
+               Totals      15.95      41.53      41.53     114.18
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Canterbury_XL  Nitrogen Initialisation --------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  3.18   25.00    1.00    0.00
+             2     6.00  3.18   20.00    1.00    0.00
+             3     6.00  1.54   15.02    1.00    0.00
+             4     6.00  0.22   10.00    1.00    0.00
+             5     6.00  0.20    1.00    0.20    0.00
+          ------------------------------------------------
+           Totals               71.02    4.20    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      19160.5  1741.9   434.5    54.3   146.6     3.7
+             2       9880.7   898.2   139.5    17.4   132.6     3.3
+             3      12938.8  1176.3    81.2    10.1    88.9     2.2
+             4       2905.1   264.1     2.7     0.3    23.3     0.6
+             5       1999.7   181.8     0.3     0.0     8.6     0.2
+          ---------------------------------------------------------
+           Totals   46884.7  4262.2   658.2    82.3   400.0    10.0
+          ---------------------------------------------------------
+Warning: Number of layers specified for root length density (rlvp) is different 
+from the number of soil layers.The simulation will run using the minimum of the two.
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+Initialising UrinePatch
+Finished Initialising UrinePatch
+Initialising FarmSimGraze
+Finished Initialising FarmSimGraze
+------- Start of simulation  --------------------------------------------------
+17 January 1972(Day of year=17), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.83 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+14 February 1972(Day of year=45), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.67 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+28 February 1972(Day of year=59), clock: 
+     Simulation is terminating due to end criteria being met.
