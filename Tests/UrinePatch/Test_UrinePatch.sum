@@ -1,0 +1,346 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = Test_UrinePatch
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component               "FarmSimOptions" = %apsim%\Model\DotNetComponentInterface.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                   "ApplyUrine" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component          "Canterbury_VL Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Canterbury_VL Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                   "UrinePatch" = %apsim%\Model\UrinePatch.dll
+   Component              "ryegrass_clover" = %apsim%\Model\AgPasture.dll
+   Component      "Soil Temperature (.NET)" = %apsim%\Model\SoilTemp2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1980
+     Simulation end date   = 30/01/1980
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\WinchmoreMet.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        UrineN_FromAnimal
+        UrineConcentration
+        UrineN_PropLeached
+        UrineN_Leached
+        UrineN_Retained
+        UP_AnimalType
+
+     Output file = Test_UrinePatch paddock01.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.75
+           depth for calculating available soil water =     400.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- ApplyUrine Initialisation ---------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     if day = 9 then
+      urinepatch applyurine amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = dairycow ()
+     elseif day = 11 then
+      urinepatch applyurine amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = sheep ()
+     elseif day = 13 then
+      urinepatch applyurine amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = beef ()
+     elseif day = 15 then
+      urinepatch applyurine amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = lamb ()
+     elseif day = 17 then
+      urinepatch applyurine amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = sheepbeef ()
+     endif
+     
+     SECTION:- end_of_day
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_VL Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     12000.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_VL Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     12000.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_VL Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     1920.000
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_VL Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_VL Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     24000.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_VL Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     24000.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_VL Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  180.  0.064  0.128  0.304  0.376  0.304  1.040  0.823  0.518*******
+          180.-  330.  0.120  0.120  0.285  0.353  0.285  0.975  0.144  0.581*******
+          330.-  530.  0.026  0.026  0.149  0.183  0.149  0.595  0.032  0.581*******
+          530.-  830.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+          830.- 1000.  0.008  0.008  0.022  0.100  0.022  0.200  0.000  0.651*******
+         1000.- 1500.  0.008  0.008  0.022  0.100  0.022  0.200  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  180.      23.04      31.68      31.68      12.96
+          180.-  330.      18.00      24.75      24.75      10.20
+          330.-  530.       5.20      24.60      24.60       6.80
+          530.-  830.       3.60       8.10       8.10      24.30
+          830.- 1000.       1.36       2.38       2.38      13.26
+         1000.- 1500.       4.00       7.00       7.00      39.00
+          ---------------------------------------------------------
+               Totals      55.20      98.51      98.51     106.52
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Canterbury_VL Nitrogen Initialisation ---------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.89   48.93    2.26    0.00
+             2     6.00  1.06   11.07    0.74    0.00
+             3     6.00  0.81    4.41    0.44    0.00
+             4     6.00  0.80    4.33    0.43    0.00
+             5     6.00  0.80    1.26    0.13    0.00
+             6     6.00  0.80    1.00    0.20    0.00
+          ------------------------------------------------
+           Totals               71.00    4.20    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      53198.6  4836.2   902.2   112.8   144.1     3.6
+             2      15352.4  1395.7    91.6    11.4   106.8     2.7
+             3       9592.0   872.0    23.2     2.9    71.6     1.8
+             4       9350.9   850.1     9.1     1.1    39.3     1.0
+             5       2718.8   247.2     1.2     0.1    28.0     0.7
+             6       7998.7   727.2     1.3     0.2    10.3     0.3
+          ---------------------------------------------------------
+           Totals   98211.5  8928.3  1028.5   128.6   400.0    10.0
+          ---------------------------------------------------------
+Initialising UrinePatch
+Finished Initialising UrinePatch
+Warning: Number of layers specified for root length density (rlvp) is different 
+from the number of soil layers.The simulation will run using the minimum of the two.
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+------- Start of simulation  --------------------------------------------------
+9 January 1980(Day of year=9), ApplyUrine: 
+     Manager sending message :- urinepatch applyurine  amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = dairycow
+9 January 1980(Day of year=9), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.03 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+11 January 1980(Day of year=11), ApplyUrine: 
+     Manager sending message :- urinepatch applyurine  amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = sheep
+11 January 1980(Day of year=11), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.12 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+13 January 1980(Day of year=13), ApplyUrine: 
+     Manager sending message :- urinepatch applyurine  amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = beef
+13 January 1980(Day of year=13), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.59 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+15 January 1980(Day of year=15), ApplyUrine: 
+     Manager sending message :- urinepatch applyurine  amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = lamb
+15 January 1980(Day of year=15), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.86 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+17 January 1980(Day of year=17), ApplyUrine: 
+     Manager sending message :- urinepatch applyurine  amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = sheepbeef
+17 January 1980(Day of year=17), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.56 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+30 January 1980(Day of year=30), clock: 
+     Simulation is terminating due to end criteria being met.

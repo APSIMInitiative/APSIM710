@@ -1,0 +1,39 @@
+﻿<Type name="UrinePatch">
+  <MetaData>
+    <UItype>VBUserInterface.GenericUI</UItype>
+    <IsCrop>No</IsCrop>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation>Urine Patch Model</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\cubes32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\cubes16.png</SmallIcon>
+    <dll>%apsim%\Model\UrinePatch.dll</dll>
+	  <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[UrinePatch.name]" executable="[dll]">
+        <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+        <executable>[dll]</executable>
+        <initdata>
+          [Model]
+          [UrinePatch.innerxml]
+        </initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <UrinePatch>
+    </UrinePatch>
+  </Model>
+  <Info>
+    <variables>
+      <variable name="UrineN_Applied" description="Amount of N applied as urine [kgN/ha]" read="T" write="F" kind="single" array="F" units="kgN/ha" />
+      <variable name="Apply_UrineN" description="(Write only) Amount of N to apply as urine [kgN/ha]" read="F" write="T" kind="single" array="F" units="kgN/ha" />
+    </variables>
+    <events></events>
+  </Info>
+</Type>
