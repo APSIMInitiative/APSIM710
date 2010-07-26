@@ -272,6 +272,12 @@ Public Class DDRules
                 End Set
         End Property
 
+        <Output()> <Units("kgDM")> Public ReadOnly Property SilageCut() As Double
+                Get
+                        Return myFarm.SilageCut
+                End Get
+        End Property
+
 #Region "2: Feeding Supplements"
         <Output()> <Units("MJME")> Public Property SupplementME() As Double
                 Get

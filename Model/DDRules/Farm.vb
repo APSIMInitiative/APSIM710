@@ -259,7 +259,7 @@
         <Output()> <Units("kgDM/ha")> Public CR As Integer = 1600 ' Conservation cutting residual pasture mass (Dawn default)
         <Output()> <Units("kgDM")> Public SilageStore As Double 'kgDM @ 10.5me fed on hand
         <Output()> <Units("MJME")> Public SilageME As Double = 10.5 ' ME content of the silage
-        <Output()> <Units("kgDM")> Public SilageCut As Double = 0.0 ' pasture harvested
+        <Units("kgDM")> Public SilageCut As Double
         <Output()> <Units("")> Public PaddocksClosed As Integer = 0 'number of paddocks currently close for conservation
         'should these be moved out to a management script?
         <Units("")> Public FCD As Integer = 9 'First Conservation Date - uing a month for the time being
