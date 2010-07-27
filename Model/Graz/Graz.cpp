@@ -11,7 +11,7 @@
 #include <General/date_class.h>
 #include <General/StringTokenizer.h>
 
-#include "graz.h"
+#include "Graz.h"
 using namespace std;
 
 const float gm2kg = 1.0/1000.0;           // constant to convert g to kg
