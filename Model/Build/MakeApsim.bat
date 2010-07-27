@@ -40,10 +40,8 @@ call MakeProject Clock
 call MakeProject ConToApsim
 call MakeProject ConToSim
 call MakeProject CropMod
-call MakeProject DDRules
 call MakeProject Eo
 call MakeProject Erosion
-call MakeProject FarmSimGraze
 call MakeProject Fertiliser
 call MakeProject Grasp
 call MakeProject Graz
@@ -94,6 +92,8 @@ call MakeProject UrinePatch
 call MakeProject VenLink
 call MakeProject WaterSupply
 call MakeProject YieldProphet
+call MakeProject DDRules
+call MakeProject FarmSimGraze
 
 call MakeProject SetXMLValue
 call MakeProject ProbeDll
