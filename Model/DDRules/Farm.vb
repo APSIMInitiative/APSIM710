@@ -227,11 +227,11 @@
         End Sub
 
         Private Sub PrintPaddocks()
-                'Dim pdk As LocalPaddockType
-                For Each pdk As LocalPaddockType In myPaddocks
-                        Console.WriteLine(pdk.ToString)
-                Next
-
+                If (debug) Then
+                        For Each pdk As LocalPaddockType In myPaddocks
+                                Console.WriteLine(pdk.ToString)
+                        Next
+                End If
         End Sub
 
         Public Function AverageCover() As Double

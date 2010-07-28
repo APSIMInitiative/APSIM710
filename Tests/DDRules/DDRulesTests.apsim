@@ -124,6 +124,34 @@ End Class
         </Plot>
       </Graph>
     </outputfile>
+    <outputfile name="Cow Model">
+      <variables name="Variables">
+        <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+        <variable name="ME_Demand_Maintance_Cow" array="No" description="Metabolisable energy required for maintainence [MJME/cow/day]" />
+        <variable name="ME_Demand_Lactation_Cow" array="No" description="Metabolisable energy required for lactation [MJME/cow/day]" />
+        <variable name="ME_Demand_Pregnancy_Cow" array="No" description="Metabolisable energy required for pregnancy [MJME/cow/day]" />
+        <variable name="ME_Demand_WeightChange_Cow" array="No" description="Metabolisable energy required for live weight change [MJME/cow/day]" />
+        <variable name="ME_Demand_Walking_Cow" array="No" description="Metabolisable energy required for walking [MJME/cow/day]" />
+      </variables>
+      <events name="Reporting Frequency">
+        <event name="Daily" description="End of daily simulation time step" />
+      </events>
+      <Graph name="Renergy Requirements">
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <X>Date</X>
+          <Y>ME_Demand_Maintance_Cow</Y>
+          <Y>ME_Demand_Lactation_Cow</Y>
+          <Y>ME_Demand_Pregnancy_Cow</Y>
+          <Y>ME_Demand_WeightChange_Cow</Y>
+          <Y>ME_Demand_Walking_Cow</Y>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+    </outputfile>
     <GraphReport name="Covers">
       <Graph name="Cover + SR">
         <Plot>
@@ -269,34 +297,6 @@ End Class
         </Plot>
       </Graph>
     </GraphReport>
-    <outputfile name="Cow Model">
-      <variables name="Variables">
-        <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-        <variable name="ME_Demand_Maintance_Cow" array="No" description="Metabolisable energy required for maintainence [MJME/cow/day]" />
-        <variable name="ME_Demand_Lactation_Cow" array="No" description="Metabolisable energy required for lactation [MJME/cow/day]" />
-        <variable name="ME_Demand_Pregnancy_Cow" array="No" description="Metabolisable energy required for pregnancy [MJME/cow/day]" />
-        <variable name="ME_Demand_WeightChange_Cow" array="No" description="Metabolisable energy required for live weight change [MJME/cow/day]" />
-        <variable name="ME_Demand_Walking_Cow" array="No" description="Metabolisable energy required for walking [MJME/cow/day]" />
-      </variables>
-      <events name="Reporting Frequency">
-        <event name="Daily" description="End of daily simulation time step" />
-      </events>
-      <Graph name="Renergy Requirements">
-        <Plot>
-          <SeriesType>Solid line</SeriesType>
-          <PointType>Circle</PointType>
-          <colour>
-          </colour>
-          <X>Date</X>
-          <Y>ME_Demand_Maintance_Cow</Y>
-          <Y>ME_Demand_Lactation_Cow</Y>
-          <Y>ME_Demand_Pregnancy_Cow</Y>
-          <Y>ME_Demand_WeightChange_Cow</Y>
-          <Y>ME_Demand_Walking_Cow</Y>
-          <GDApsimFileReader name="ApsimFileReader" />
-        </Plot>
-      </Graph>
-    </outputfile>
     <area name="paddock01">
       <AgPasture name="ryegrass_clover">
         <Nspecies type="text" description="Number of species">2</Nspecies>

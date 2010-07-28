@@ -381,15 +381,8 @@ Public Class DDRules
         <Output()> <Units("kgN/ha")> Public N_to_urine As Single
         <Output()> <Units("kgN/ha")> Public C_to_feaces As Single ' added
 
-        '<Output()> <Units("()")> Public PaddockStatus As Single
         <Output()> <Units("MJME/ha")> Public ReadOnly Property PaddockStatus() As String()
                 Get
-                        'Dim result(myPaddocks.Count - 1) As String
-                        ''sort by index
-                        'For i As Integer = 0 To (myPaddocks.Count - 1)
-                        '        result(i) = myPaddocks(i).status.ToString
-                        'Next
-                        'Return result
                         Return myFarm.PaddockStatus
                 End Get
         End Property
@@ -397,35 +390,17 @@ Public Class DDRules
         ' by paddock variables
         <Output()> <Units("MJME/ha")> Public ReadOnly Property DM_Eaten_Pdks() As Single()
                 Get
-                        'Dim result(myPaddocks.Count - 1) As Single
-                        ''sort by index here
-                        'For i As Integer = 0 To (myPaddocks.Count - 1)
-                        '        result(i) = myPaddocks(i).DM_Eaten()
-                        'Next
-                        'Return result
                         Return myFarm.DM_Eaten_Pdks
                 End Get
         End Property
         <Output()> <Units("MJME/ha")> Public ReadOnly Property ME_Eaten_Pasture_Pdks() As Single()
                 Get
-                        'Dim result(myPaddocks.Count - 1) As Single
-                        ''sort by index here
-                        'For i As Integer = 0 To (myPaddocks.Count - 1)
-                        '        result(i) = myPaddocks(i).ME_Eaten()
-                        'Next
-                        'Return result
                         Return myFarm.ME_Eaten_Pasture_Pdks
                 End Get
         End Property
         <Output()> <Units("MJME/ha")> Public ME_Eaten_Supplement_Pdks As Single()
         <Output()> <Units("MJME/ha")> Public ReadOnly Property ME_Eaten_Pdks() As Single()
                 Get
-                        'Dim result(myPaddocks.Count - 1) As Single
-                        ''sort by index
-                        'For i As Integer = 0 To (myPaddocks.Count - 1)
-                        '        result(i) = myPaddocks(i).ME_Eaten()
-                        'Next
-                        'Return result
                         Return myFarm.ME_Eaten_Pdks
                 End Get
         End Property
@@ -433,12 +408,6 @@ Public Class DDRules
         <Output()> <Units("kgDM/ha")> Public DM_Eaten_Supplement_Pdks As Single()
         <Output()> <Units("kgN/ha")> Public ReadOnly Property N_Eaten_Pdks() As Single()
                 Get
-                        'Dim result(myPaddocks.Count - 1) As Single
-                        ''sort by index
-                        'For i As Integer = 0 To (myPaddocks.Count - 1)
-                        '        result(i) = myPaddocks(i).N_Eaten()
-                        'Next
-                        'Return result
                         Return myFarm.N_Eaten_Pdks
                 End Get
         End Property
@@ -473,6 +442,14 @@ Public Class DDRules
         <Output()> <Units("kgN/cow")> Public ReadOnly Property LWt_Change_Cow() As Single
                 Get
                         Return myHerd.LWt_Change
+                End Get
+        End Property
+#End Region
+
+#Region "Dawn's outputs/parameters"
+        <Output()> <Units("%")> Public ReadOnly Property PWO() As Double
+                Get
+                        Return myFarm.StockingRate() / BaseStockingRate
                 End Get
         End Property
 #End Region
