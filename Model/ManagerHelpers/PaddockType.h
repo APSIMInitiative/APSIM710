@@ -104,6 +104,11 @@ public ref class PaddockType : public ComponentType
             }
          return nullptr;
          }
+
+      void Publish(String^ EventName, ApsimType^ Data)
+         {
+         ParentComponent->Publish(EventName, Data);
+         }
             
       property SoilWaterType^ SoilWater
          {

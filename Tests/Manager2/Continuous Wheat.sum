@@ -1,0 +1,650 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.2
+Title                  = Continuous Wheat
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "lucerne" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                       "Script" = %apsim%\Model\DotNetComponentInterface.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   = 31/12/1940
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        yield
+        grain_protein
+        grain_size
+        esw
+        flowering_count
+        stagename
+
+     Output file = Continuous Wheat.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sowing rule Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'lucerne')) then
+              if (date_within('15-may, 10-jul') = 1) then
+     if (rain[3] >= 30 and esw >= 200) or
+         ('yes' = 'yes' and today = date('10-jul'))) then
+        choosenextcrop = 'yes'
+        lucerne sow plants =100, sowing_depth = 30, cultivar = aquarius, row_spacing = 250, crop_class = plant
+     endif
+     if today = date('10-jul') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     
+     SECTION:- init
+     nextcrop = 0
+     fallowin = 0
+     END of rules
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+     Manager creating a new local real variable : fallowin = 0.00000
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.100000      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.085  0.169  0.362  0.515  0.100  1.205  0.613  0.400
+          100.-  200.  0.150  0.187  0.355  0.466  0.100  1.335  0.243  0.300
+          200.-  450.  0.215  0.215  0.347  0.465  0.250  1.338  0.144  0.300
+          450.-  700.  0.215  0.215  0.393  0.443  0.250  1.396  0.000  0.300
+          700.- 1050.  0.215  0.215  0.390  0.440  0.250  1.405  0.000  0.300
+         1050.- 1500.  0.215  0.215  0.393  0.443  0.250  1.396  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      16.90       0.00      19.30      15.30
+          100.-  200.      18.70       0.00      16.80      11.10
+          200.-  450.      53.75       8.75      33.00      29.50
+          450.-  700.      53.75       8.75      44.50      12.50
+          700.- 1050.      75.25      12.25      61.25      17.50
+         1050.- 1500.      96.75      15.75      80.10      22.50
+          ---------------------------------------------------------
+               Totals     315.10      45.50     254.95     108.40
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Clay loam over medium clay
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.30  1.00   14.23    2.37    0.00
+             2     8.60  0.92   15.77    2.63    0.00
+             3     8.90  0.55    2.68    0.13    0.00
+             4     9.10  0.35    2.79    0.14    0.00
+             5     8.80  0.27    3.93    0.20    0.00
+             6     8.40  0.16    5.03    0.25    0.00
+          ------------------------------------------------
+           Totals               44.43    5.72    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      11783.7   982.0   278.4    34.8   141.5     3.5
+             2      12085.1  1007.1   237.0    29.6   115.8     2.9
+             3      18120.5  1510.0   143.2    17.9    70.3     1.8
+             4      12177.8  1014.8    72.1     9.0    42.6     1.1
+             5      13398.2  1116.5    26.6     3.3    21.2     0.5
+             6       9799.9   816.7     0.0     0.0     8.6     0.2
+          ---------------------------------------------------------
+           Totals   77365.2  6447.1   757.2    94.7   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.101359      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 January 1940(Day of year=2): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.102687      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 January 1940(Day of year=3): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.103986      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 January 1940(Day of year=4): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.105255      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 January 1940(Day of year=5): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.106498      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 January 1940(Day of year=6): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.107713      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 January 1940(Day of year=7): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.108904      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 January 1940(Day of year=8): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.110934      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 January 1940(Day of year=9): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.112069      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 January 1940(Day of year=10): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.113181      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 January 1940(Day of year=11): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.114271      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 January 1940(Day of year=12): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.115340      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 January 1940(Day of year=13): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.116389      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 January 1940(Day of year=14): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.117418      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 January 1940(Day of year=15): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.118427      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 January 1940(Day of year=16): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.119419      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 January 1940(Day of year=17): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.120392      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 January 1940(Day of year=18): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.121348      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 January 1940(Day of year=19): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.122287      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 January 1940(Day of year=20): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.123210      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 January 1940(Day of year=21): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.124117      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 January 1940(Day of year=22): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.125008      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 January 1940(Day of year=23): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.125885      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 January 1940(Day of year=24): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.126747      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 January 1940(Day of year=25): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.127595      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 January 1940(Day of year=26): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.128430      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 January 1940(Day of year=27): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.129251      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 January 1940(Day of year=28): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.130058      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 January 1940(Day of year=29): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.130854      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 January 1940(Day of year=30): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.131637      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 January 1940(Day of year=31): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.132408      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 February 1940(Day of year=32): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.133167      in layer   2
+              is below air-dry value of     0.150000
+     Component name: Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 July 1940(Day of year=192), Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- lucerne sow  plants = 100, sowing_depth = 30, cultivar = aquarius, row_spacing = 250, crop_class = plant
+10 July 1940(Day of year=192), lucerne: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = aquarius
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     300     300 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    11.5      15 (h)
+              y_tt_end_of_juvenile       =     350     200 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     300     300 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     100     100 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =    9400    9400 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =     500 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0001     0.0001
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.169       1.000
+         100.0     0.060          0.187       1.000
+         250.0     0.060          0.215       1.000
+         250.0     0.050          0.246       1.000
+         350.0     0.040          0.292       1.000
+         450.0     0.020          0.354       1.000
+         -----------------------------------------------
+         Extractable SW:   158mm in  1500mm total depth ( 11%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            192   30.0  100.0  250.0   0.0   0.0 aquarius
+         ------------------------------------------------
+     
+11 July 1940(Day of year=193), lucerne: 
+      stage 2.0 germination
+23 July 1940(Day of year=205), lucerne: 
+      stage 3.0 emergence
+                     biomass =           0.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   11.06 (mm)
+23 August 1940(Day of year=236), lucerne: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.49 (g/m^2)   lai          =   0.053 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   37.50 (mm)
+15 September 1940(Day of year=259), lucerne: 
+      stage 5.0 floral_initiation
+                     biomass =          51.53 (g/m^2)   lai          =   0.595 (m^2/m^2)
+                     stover N conc =     4.37 (%)    extractable sw =   32.92 (mm)
+7 October 1940(Day of year=281), lucerne: 
+      stage 6.0 flowering
+                     biomass =         133.75 (g/m^2)   lai          =   1.106 (m^2/m^2)
+                     stover N conc =     2.87 (%)    extractable sw =   16.48 (mm)
+12 October 1940(Day of year=286), lucerne: 
+      stage 7.0 start_grain_fill
+                     biomass =         136.84 (g/m^2)   lai          =   1.094 (m^2/m^2)
+                     stover N conc =     2.82 (%)    extractable sw =   11.88 (mm)
+31 December 1940(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
