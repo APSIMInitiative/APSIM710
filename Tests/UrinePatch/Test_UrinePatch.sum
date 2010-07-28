@@ -22,11 +22,11 @@ Paddock:
    Component                   "ApplyUrine" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component          "Canterbury_VL Water" = %apsim%\Model\SoilWat.dll
+   Component      "Soil Temperature (.NET)" = %apsim%\Model\SoilTemp2.dll
+   Component                   "UrinePatch" = %apsim%\Model\UrinePatch.dll
    Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
    Component       "Canterbury_VL Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                   "UrinePatch" = %apsim%\Model\UrinePatch.dll
    Component              "ryegrass_clover" = %apsim%\Model\AgPasture.dll
-   Component      "Soil Temperature (.NET)" = %apsim%\Model\SoilTemp2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -233,6 +233,11 @@ Paddock:
                                   Winter        1-Apr
             Eo from priestly-taylor
 
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+Initialising UrinePatch
+Finished Initialising UrinePatch
+
 ------- Surface Organic Matter Initialisation ---------------------------------
      
          - Reading constants
@@ -299,13 +304,8 @@ Paddock:
           ---------------------------------------------------------
            Totals   98211.5  8928.3  1028.5   128.6   400.0    10.0
           ---------------------------------------------------------
-Initialising UrinePatch
-Finished Initialising UrinePatch
 Warning: Number of layers specified for root length density (rlvp) is different 
 from the number of soil layers.The simulation will run using the minimum of the two.
-
-------- soiltemp Initialisation -----------------------------------------------
-     Initialising :
 ------- Start of simulation  --------------------------------------------------
 9 January 1980(Day of year=9), ApplyUrine: 
      Manager sending message :- urinepatch applyurine  amounturine = 20.0 (kgn/ha), stockdensity = 40.0 (hd/ha), stocktype = dairycow
