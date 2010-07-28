@@ -283,6 +283,29 @@
      :               num_layers)
 
             found = .true.
+         elseif (strings_equal(Variable_name,
+     :                         trim(p%solute_names(solnum))//'_ppm'))
+     :   then
+            num_layers = count_of_real_vals(g%dlayer,max_layer)
+
+            if (num_layers.eq.0) then
+               ! water balance is not initialised yet
+               num_layers = 1
+            else
+            endif
+
+            do 101 layer = 1,max_layer
+               sol(layer) = g%solute(solnum,layer)
+     :                    *100/(g%bd(layer)*g%dlayer(layer))
+  101       continue
+
+            call respond2get_real_array (
+     :               Variable_name,
+     :               '(ppm)',
+     :               sol,
+     :               num_layers)
+
+            found = .true.            
          else
          endif
   200 continue
