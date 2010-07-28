@@ -50,6 +50,45 @@ namespace ApsimFile
 
             }
          }
+      private void EnsureManagerIsUnique()
+      {
+          // -------------------------------------------------------------
+          // If this is a manager component then make sure our name is not
+          // the same as any of the modules in apsim. Need to do this because 
+          // each management rule becomes its own manager module in apsim
+          // and the rule name is used as the module name.
+          // -------------------------------------------------------------
+
+          string BaseName = Name;
+          string UniqueChildName = BaseName;
+
+          Boolean Unique;
+          Component Simulation;
+          List<Component> AllChildNodes = new List<Component>();
+
+          if (this.Type == "manager")
+          {
+
+              Simulation = FindContainingSimulation();
+              Simulation.ChildNodesRecursively(AllChildNodes);
+
+              Unique = true;
+              foreach (Component Child in AllChildNodes)
+              {
+                  if (Child.Type.ToLower() == Name.ToLower())
+                  {
+                      Unique = false;
+                  }
+              }
+              if (Unique == false)
+              {
+                  UniqueChildName = "invalid name - " + BaseName;
+                  MyName = UniqueChildName;
+
+                  //throw new Exception("Cannot have manager rule with same name as an apsim module: " + BaseName);
+              }
+          }
+      }
       private int ChildNameToIndex(string Name)
          {
          // ---------------------------------------------------------------------
@@ -141,6 +180,7 @@ namespace ApsimFile
          set
             {
             MyName = value;
+            EnsureManagerIsUnique();
             EnsureNameIsUnique();
             MyFile.PublishComponentChanged(this.Parent);
             }
@@ -253,7 +293,7 @@ namespace ApsimFile
       public Component Find(string RelativePath)
          {
          // ------------------------------------------------------
-         // Will look for a child component using the relative
+         // Will look for a child or subchild component using the relative
          // path passed in. e.g. Child/SubChild
          // ------------------------------------------------------
          string ChildName, Remainder;
@@ -264,25 +304,25 @@ namespace ApsimFile
             Remainder = RelativePath.Substring(PosDelimiter + 1);
             }
          else
-            {
+            {   // you are allowed to have no subchild specified.
             ChildName = RelativePath;
             Remainder = "";
             }
-         if (ChildName == "..")
+         if (ChildName == "..")         //the child can even be the move up the directory path, in which case the subchild is then a sibling of the current component.
             {
-            if (Remainder == "")
-               return Parent;
+            if (Remainder == "")           //if no subchild specified.  
+               return Parent;                       //return the parent
             else
-               return Parent.Find(Remainder);
+               return Parent.Find(Remainder);       //return the sibling
             }
          foreach (Component Child in ChildNodes)
             {
             if (Child.Name.ToLower() == ChildName.ToLower())
                {
-               if (Remainder == "")
-                  return Child;
+               if (Remainder == "")       //if no subchild specified 
+                  return Child;                 //return the child that was specified
                else
-                  return Child.Find(Remainder);
+                  return Child.Find(Remainder); //return the subchild
                }
             }
          return null;
@@ -540,7 +580,22 @@ namespace ApsimFile
             Paddock = Paddock.Parent;
          return Paddock;
          }
+      public Component FindContainingSimulation()
+      {
+          // ------------------------------------------------------
+          // Find the root simulation component for the current component 
+          // ------------------------------------------------------  
 
+          Component Current;
+          Current = this;
+
+          // Current.Parent.Parent because heirarchy is, Simulations folder -> Simulation -> Paddock
+          while ((Current.Type != "Simulation") && (Current.Parent.Parent != null))
+          {
+              Current = Current.Parent;
+          }
+          return Current;
+      }
       public Component FindRecursively(string ComponentName, string ComponentType)
          {
          // ------------------------------------------------------
@@ -561,6 +616,7 @@ namespace ApsimFile
             }
          return null;
          }
+
       public void Replace(string Xml)
          {
          // -------------------------------------------------------
