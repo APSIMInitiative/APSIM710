@@ -7304,7 +7304,7 @@ c     :                          ,'runoff')
       end subroutine
 
 
-      include 'swim.for'
+      include 'Swim.for'
 
       end module APSwimModule
 
