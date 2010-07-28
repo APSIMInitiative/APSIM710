@@ -69,6 +69,7 @@ namespace CSUserInterface
           
          // Create and fill a datatable from our soil
          Table.Rows.Clear();
+         Table.Columns.Clear();
          if (XmlHelper.Name(Data) == "Water")
             _Soil.Write(Table, GetVariableNames());
          else if (Data.Name == "SoilCrop")

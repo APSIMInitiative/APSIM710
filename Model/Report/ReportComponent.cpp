@@ -7,6 +7,7 @@
 #include <General/path.h>
 #include <General/StringTokenizer.h>
 #include <ApsimShared/ApsimVersion.h>
+#include <ApsimShared/ApsimSettings.h>
 #include <ComponentInterface2/ScienceAPI2.h>
 
 #include "ReportComponent.h"
@@ -562,7 +563,13 @@ void ReportComponent::writeHeadings(void)
       }
 
    // output header
-   file << "ApsimVersion = " << getApsimVersion() << endl;
+   string versionString = getApsimVersion();
+   std::string IncludeBuildNumber;
+   ApsimSettings settings;
+   settings.read("apsimui|IncludeBuildNumberInOutSumFile", IncludeBuildNumber, false);
+   if (IncludeBuildNumber == "Yes")
+      versionString += " " + getApsimBuildNumber();
+   file << "ApsimVersion = " << versionString << endl;
 
    // write out all constants
    vector<string> names, values;

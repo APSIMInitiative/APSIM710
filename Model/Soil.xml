@@ -20,7 +20,9 @@
     </drops>
     <ApsimToSim>
       [foreach Soil.SoilWat]
-      <component name="[soil.Name] Water" executable="%apsim%\Model\SoilWat.dll"><executable>%apsim%\Model\SoilWat.dll</executable><initdata>
+      <component name="[soil.Name] Water" executable="%apsim%\Model\SoilWat.dll">
+      	<executable name="%apsim%\Model\SoilWat.dll" version="1.0"/>
+      	   <initdata>
                [Model SoilWat]
                <diffus_const>[soil.DiffusConst]</diffus_const><diffus_slope>[soil.DiffusSlope]</diffus_slope><cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><SummerCona>[soil.SummerCona]</SummerCona><WinterCona>[soil.WinterCona]</WinterCona><SummerU>[soil.SummerU]</SummerU><WinterU>[soil.WinterU]</WinterU><SummerDate>[soil.SummerDate]</SummerDate><WinterDate>[soil.WinterDate]</WinterDate><dlayer>[soil.Thickness(mm)]</dlayer><sat>[soil.Sat(mm/mm)]</sat><dul>[soil.Dul(mm/mm)]</dul><ll15>[soil.LL15(mm/mm)]</ll15><air_dry>[soil.AirDry(mm/mm)]</air_dry><swcon>[soil.SWCon(0-1)]</swcon><bd>[soil.BD(g/cc)]</bd><sw>[soil.SW(mm/mm)]</sw>
                [if [soil.MWCon(0-1)]]
@@ -47,7 +49,9 @@
          </initdata></component>
       [endfor]
       [foreach Soil.Swim]
-      <component name="SWIM" executable="%apsim%\Model\swim3.dll"><executable>%apsim%\Model\Swim3.dll</executable><initdata>
+      <component name="SWIM" executable="%apsim%\Model\swim3.dll">
+      	<executable name="%apsim%\Model\Swim3.dll" version="1.0"/>
+      	  <initdata>
                [Model Swim3]
                <cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb>
                <dlayer>[soil.Thickness]</dlayer>
@@ -97,7 +101,9 @@
                
                 <bottom_boundary_condition>[soil.BottomBoundaryCondition]</bottom_boundary_condition><bottom_boundary_value>[soil.BottomBoundaryValue]</bottom_boundary_value><water_table_conductance>[soil.WaterTableConductance]</water_table_conductance></initdata></component>
       [endfor]
-      <component name="[soil.Name] Nitrogen" executable="%apsim%\Model\SoilN.dll"><executable>%apsim%\Model\SoilN.dll</executable><initdata>
+      <component name="[soil.Name] Nitrogen" executable="%apsim%\Model\SoilN.dll">
+      	<executable name="%apsim%\Model\SoilN.dll" version="1.0"/>
+      	  <initdata>
                [Model SoilN]
                [if "[soil.SoilType]"]
                <soiltype>[soil.SoilType]</soiltype>
@@ -108,7 +114,9 @@
                [endif]
          </initdata></component>
       [if "[soil.RootCP]"]
-      <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll"><executable>%apsim%\Model\SoilP.dll</executable><initdata>
+      <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll">
+      	  <executable name="%apsim%\Model\SoilP.dll" version="1.0"/>
+      	    <initdata>
                [Model SoilP]
                <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption></initdata></component>
       [endif]

@@ -52,15 +52,19 @@ Public Class ApsimUIActions
         ' Go looking for simulations to run. Look at the
         ' currently selected nodes first and progressively
         ' their parents until some simulations are found.
-        ' ------------------------------------------------
-        BaseActions.FileSave(Controller)
-        Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
-        If RunPanels.Length = 1 Then
-            ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), _
-                                                Controller.ApsimData, _
-                                                Controller.SelectedPaths)
-        End If
-    End Sub
+      ' ------------------------------------------------
+      If Configuration.Instance.Setting("ReloadPlugInsBeforeRunningAPSIM") = "Yes" Then
+         PlugIns.LoadAll()
+      End If
+
+      BaseActions.FileSave(Controller)
+      Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
+      If RunPanels.Length = 1 Then
+         ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), _
+                                             Controller.ApsimData, _
+                                             Controller.SelectedPaths)
+      End If
+   End Sub
     Public Shared Sub CreateSIM(ByVal Controller As BaseController)
         ' ------------------------------------------------
         ' Create a .sim file.

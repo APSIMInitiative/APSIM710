@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 #include <General/IniFile.h>
 #include <General/platform.h>
 #include "ApsimDirectories.h"
@@ -16,4 +17,16 @@ std::string EXPORT getApsimVersion(void)
    ApsimSettings settings;
    settings.read("version|apsim", versionString, false);
    return versionString;
+   }
+
+//---------------------------------------------------------------------------
+// Return the APSIM build number
+//---------------------------------------------------------------------------
+std::string EXPORT getApsimBuildNumber(void)
+   {
+   std::string BuildNumber;
+   ApsimSettings settings;
+   settings.read("version|BuildNumber", BuildNumber, false);
+   
+   return BuildNumber;
    }

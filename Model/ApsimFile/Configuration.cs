@@ -55,6 +55,13 @@ namespace ApsimFile
             return Singleton;
             }
          }
+      public void RevertToDefaults()
+         {
+         string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                     "\\Apsim\\" + ApsimVersion() + "\\Apsim.xml";
+         File.Delete(SettingsFile);
+         Singleton = null;
+         }
       private void Save()
          {
          // The settings in the installation dir are read only. Save in a local (ie writeable) path.

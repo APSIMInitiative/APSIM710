@@ -195,6 +195,7 @@ module PublishEventsModule
    integer i
 
    call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
+   IncorpFOM%Type = ' '
 
    do while (NumValues > 0)
       if (strings_equal(KeyName, 'type')) then
@@ -203,7 +204,6 @@ module PublishEventsModule
       else
          if (IncorpFOM%num_layer == 0) then
             IncorpFOM%num_layer = NumValues
-            IncorpFOM%Type = ' '
             do i = 1, IncorpFOM%num_layer
                IncorpFOM%layer(i)%FOM%Amount = 0
                IncorpFOM%layer(i)%FOM%C = 0

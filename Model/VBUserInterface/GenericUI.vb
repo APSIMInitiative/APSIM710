@@ -399,10 +399,22 @@ Public Class GenericUI
       ' --------------------------------------------------------------
       ' Cell value has changed. Give value back to our editor class.
       ' --------------------------------------------------------------
-      If ColumnNames.Contains("Type") Then
-         ' User has changed the type. Need to recreate the row.
-         Grid.PopulateGrid()
-      End If
+      'If ColumnNames.Contains("Type") Or TypeOf Grid.CurrentCell Is DataGridViewComboBoxCell Then
+      ' User has changed the type. Need to recreate the row.
+      Dim CurrentCol As Integer = Grid.CurrentCell.ColumnIndex
+      Dim CurrentRow As Integer = Grid.CurrentCell.RowIndex
+      Grid.PopulateGrid()
+      'End If
+
+      ' Size the grid columns sensibly
+      Grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
+      For Col As Integer = 0 To Grid.Columns.Count - 1
+         Grid.Columns(Col).Width = Grid.Columns(Col).GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, True)
+         Grid.Columns(Col).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+      Next
+      Grid.Columns(4).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+
+      Grid.CurrentCell = Grid.Rows(CurrentRow).Cells(CurrentCol)
       IsDirty = True
    End Sub
 

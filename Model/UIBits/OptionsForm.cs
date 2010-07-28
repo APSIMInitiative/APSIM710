@@ -33,6 +33,9 @@ public class OptionsForm : System.Windows.Forms.Form
    internal LinkLabel AddPlugInLink;
    internal ListBox PlugInListBox;
    internal OpenFileDialog OpenPlugInDialog;
+   private CheckBox ReloadPlugInsCheckBox;
+   private CheckBox IncludesBuildNumberCheckBox;
+   internal Button button1;
    internal System.Windows.Forms.FolderBrowserDialog FolderBrowserDialog;
 
    #region " Windows Form Designer generated code "
@@ -79,12 +82,15 @@ public class OptionsForm : System.Windows.Forms.Form
       this.CreateLink = new System.Windows.Forms.LinkLabel();
       this.ToolBoxListBox = new System.Windows.Forms.ListBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.IncludesBuildNumberCheckBox = new System.Windows.Forms.CheckBox();
       this.ShowMainMenuCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.ReloadPlugInsCheckBox = new System.Windows.Forms.CheckBox();
       this.RemovePlugInLink = new System.Windows.Forms.LinkLabel();
       this.AddPlugInLink = new System.Windows.Forms.LinkLabel();
       this.PlugInListBox = new System.Windows.Forms.ListBox();
       this.OpenPlugInDialog = new System.Windows.Forms.OpenFileDialog();
+      this.button1 = new System.Windows.Forms.Button();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -93,7 +99,7 @@ public class OptionsForm : System.Windows.Forms.Form
       // OKButton
       // 
       this.OKButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.OKButton.Location = new System.Drawing.Point(301, 24);
+      this.OKButton.Location = new System.Drawing.Point(309, 10);
       this.OKButton.Name = "OKButton";
       this.OKButton.Size = new System.Drawing.Size(80, 29);
       this.OKButton.TabIndex = 1;
@@ -104,7 +110,7 @@ public class OptionsForm : System.Windows.Forms.Form
       // 
       this.OptionCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.OptionCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.OptionCancelButton.Location = new System.Drawing.Point(301, 64);
+      this.OptionCancelButton.Location = new System.Drawing.Point(309, 39);
       this.OptionCancelButton.Name = "OptionCancelButton";
       this.OptionCancelButton.Size = new System.Drawing.Size(80, 29);
       this.OptionCancelButton.TabIndex = 2;
@@ -131,9 +137,9 @@ public class OptionsForm : System.Windows.Forms.Form
       this.groupBox1.Controls.Add(this.AddToolBoxLink);
       this.groupBox1.Controls.Add(this.CreateLink);
       this.groupBox1.Controls.Add(this.ToolBoxListBox);
-      this.groupBox1.Location = new System.Drawing.Point(3, 64);
+      this.groupBox1.Location = new System.Drawing.Point(3, 93);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(283, 188);
+      this.groupBox1.Size = new System.Drawing.Size(283, 197);
       this.groupBox1.TabIndex = 13;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Toolbox management";
@@ -181,13 +187,24 @@ public class OptionsForm : System.Windows.Forms.Form
       // 
       // groupBox2
       // 
+      this.groupBox2.Controls.Add(this.IncludesBuildNumberCheckBox);
       this.groupBox2.Controls.Add(this.ShowMainMenuCheckBox);
       this.groupBox2.Location = new System.Drawing.Point(3, 4);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(283, 54);
+      this.groupBox2.Size = new System.Drawing.Size(283, 80);
       this.groupBox2.TabIndex = 14;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "General options";
+      // 
+      // IncludesBuildNumberCheckBox
+      // 
+      this.IncludesBuildNumberCheckBox.AutoSize = true;
+      this.IncludesBuildNumberCheckBox.Location = new System.Drawing.Point(10, 47);
+      this.IncludesBuildNumberCheckBox.Name = "IncludesBuildNumberCheckBox";
+      this.IncludesBuildNumberCheckBox.Size = new System.Drawing.Size(248, 17);
+      this.IncludesBuildNumberCheckBox.TabIndex = 1;
+      this.IncludesBuildNumberCheckBox.Text = "Include the revision number in .out / .sum files?";
+      this.IncludesBuildNumberCheckBox.UseVisualStyleBackColor = true;
       // 
       // ShowMainMenuCheckBox
       // 
@@ -201,15 +218,26 @@ public class OptionsForm : System.Windows.Forms.Form
       // 
       // groupBox3
       // 
+      this.groupBox3.Controls.Add(this.ReloadPlugInsCheckBox);
       this.groupBox3.Controls.Add(this.RemovePlugInLink);
       this.groupBox3.Controls.Add(this.AddPlugInLink);
       this.groupBox3.Controls.Add(this.PlugInListBox);
-      this.groupBox3.Location = new System.Drawing.Point(3, 258);
+      this.groupBox3.Location = new System.Drawing.Point(3, 296);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(283, 174);
+      this.groupBox3.Size = new System.Drawing.Size(283, 197);
       this.groupBox3.TabIndex = 15;
       this.groupBox3.TabStop = false;
-      this.groupBox3.Text = "Plug In management";
+      this.groupBox3.Text = "Plugin management";
+      // 
+      // ReloadPlugInsCheckBox
+      // 
+      this.ReloadPlugInsCheckBox.AutoSize = true;
+      this.ReloadPlugInsCheckBox.Location = new System.Drawing.Point(10, 171);
+      this.ReloadPlugInsCheckBox.Name = "ReloadPlugInsCheckBox";
+      this.ReloadPlugInsCheckBox.Size = new System.Drawing.Size(203, 17);
+      this.ReloadPlugInsCheckBox.TabIndex = 1;
+      this.ReloadPlugInsCheckBox.Text = "Reload plugins before running APSIM";
+      this.ReloadPlugInsCheckBox.UseVisualStyleBackColor = true;
       // 
       // RemovePlugInLink
       // 
@@ -248,11 +276,23 @@ public class OptionsForm : System.Windows.Forms.Form
       this.OpenPlugInDialog.RestoreDirectory = true;
       this.OpenPlugInDialog.Title = "Select a plugin to load";
       // 
+      // button1
+      // 
+      this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+      this.button1.Location = new System.Drawing.Point(307, 93);
+      this.button1.Name = "button1";
+      this.button1.Size = new System.Drawing.Size(80, 64);
+      this.button1.TabIndex = 16;
+      this.button1.Text = "Revert all options";
+      this.button1.Click += new System.EventHandler(this.OnRevertClick);
+      // 
       // OptionsForm
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
       this.CancelButton = this.OptionCancelButton;
-      this.ClientSize = new System.Drawing.Size(393, 441);
+      this.ClientSize = new System.Drawing.Size(399, 503);
+      this.Controls.Add(this.button1);
       this.Controls.Add(this.groupBox3);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.groupBox1);
@@ -282,6 +322,10 @@ public class OptionsForm : System.Windows.Forms.Form
       // Form has just been shown - load all controls 
       // ------------------------------------------------ 
       ShowMainMenuCheckBox.Checked = !(Configuration.Instance.Setting("HideMainMenu") == "Yes");
+      ReloadPlugInsCheckBox.Checked = Configuration.Instance.Setting("ReloadPlugInsBeforeRunningAPSIM") == "Yes";
+      IncludesBuildNumberCheckBox.Checked = Configuration.Instance.Setting("IncludeBuildNumberInOutSumFile") == "Yes";
+
+      
       foreach (string FileName in Toolboxes.Instance.UserToolBoxes)
          ToolBoxListBox.Items.Add(FileName);
 
@@ -299,6 +343,16 @@ public class OptionsForm : System.Windows.Forms.Form
          Configuration.Instance.SetSetting("HideMainMenu", "No");
       else
          Configuration.Instance.SetSetting("HideMainMenu", "Yes");
+
+      if (ReloadPlugInsCheckBox.Checked)
+         Configuration.Instance.SetSetting("ReloadPlugInsBeforeRunningAPSIM", "Yes");
+      else
+         Configuration.Instance.SetSetting("ReloadPlugInsBeforeRunningAPSIM", "No");
+
+      if (IncludesBuildNumberCheckBox.Checked)
+         Configuration.Instance.SetSetting("IncludeBuildNumberInOutSumFile", "Yes");
+      else
+         Configuration.Instance.SetSetting("IncludeBuildNumberInOutSumFile", "No");
 
       // Save toolbox paths.
       List<string> ToolBoxFileNames = new List<string>();
@@ -361,6 +415,15 @@ public class OptionsForm : System.Windows.Forms.Form
       // ----------------------------------- 
       if (PlugInListBox.SelectedIndex >= 0)
          PlugInListBox.Items.Remove(PlugInListBox.SelectedItem);
+      }
+
+   private void OnRevertClick(object sender, EventArgs e)
+      {
+      // User wants to revert to the options as first installed.
+
+      Configuration.Instance.RevertToDefaults();
+      Close();
+
       }
 
    }

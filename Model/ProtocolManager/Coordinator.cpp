@@ -108,7 +108,16 @@ Coordinator::~Coordinator(void)
 // ------------------------------------------------------------------
 void Coordinator::doInit1(const protocol::Init1Data &init1Data)
    {
-   if (componentID == parentID) {cout << "Version                = " + getApsimVersion() << endl;}
+   if (componentID == parentID) 
+      {
+      string versionString = getApsimVersion();
+      std::string IncludeBuildNumber;
+      ApsimSettings settings;
+      settings.read("apsimui|IncludeBuildNumberInOutSumFile", IncludeBuildNumber, false);
+      if (IncludeBuildNumber == "Yes")
+         versionString += " " + getApsimBuildNumber();
+      cout << "Version                = " + versionString << endl;
+      }
 
    protocol::Component::doInit1(init1Data);
 

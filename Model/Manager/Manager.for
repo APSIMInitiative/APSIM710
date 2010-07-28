@@ -3,7 +3,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !   Short description:
 !      Variables used in Manager
 
-!   Assumptions:
+!   Assumptions: 
 !      None
 
 !   Notes:
