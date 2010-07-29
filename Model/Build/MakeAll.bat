@@ -25,6 +25,4 @@ call MakeApsim
 
 call MakeGUI
 
-call EmbedManifests
-
 popd
