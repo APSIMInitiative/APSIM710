@@ -168,7 +168,7 @@
 
         Sub updateCovers()
                 For Each Paddock As LocalPaddockType In myPaddocks
-                        Paddock.updateCovers()
+                        Paddock.updateCoverData()
                 Next
         End Sub
 

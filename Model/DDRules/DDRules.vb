@@ -84,7 +84,6 @@ Public Class DDRules
         End Sub
 
         <EventHandler()> Sub OnPrepare()
-                debug = False
                 If (debug) Then
                         Console.WriteLine("Enter OnPrepare()")
                 End If
@@ -278,6 +277,12 @@ Public Class DDRules
                 End Get
         End Property
 
+        <Output()> <Units("kgDM/ha")> Public ReadOnly Property SilageCut_kgha() As Double
+                Get
+                        Return myFarm.SilageCut / myFarm.FarmArea
+                End Get
+        End Property
+
 #Region "2: Feeding Supplements"
         <Output()> <Units("MJME")> Public Property SupplementME() As Double
                 Get
@@ -449,7 +454,7 @@ Public Class DDRules
 #Region "Dawn's outputs/parameters"
         <Output()> <Units("%")> Public ReadOnly Property PWO() As Double
                 Get
-                        Return myFarm.StockingRate() / BaseStockingRate
+                        Return 1 - (myFarm.StockingRate() / BaseStockingRate)
                 End Get
         End Property
 #End Region

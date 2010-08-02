@@ -42,7 +42,9 @@ Public Class LocalPaddockType
         End Sub
 
         Function Graze(ByVal energyRequired As Double, ByVal GrazingResidual As Double) As BioMass
-                updateCovers()
+                'updateCoverData()
+                update(GrazingResidual)
+
                 Dim preGraze As New BioMass(DM_Cover)
 
                 If (debug) Then
@@ -81,7 +83,7 @@ Public Class LocalPaddockType
                         Next
                 End If
 
-                updateCovers()
+                updateCoverData()
                 If (debug) Then
                         Dim postGraze As New BioMass(DM_Cover)
                         Dim Removal As BioMass = preGraze.Subtract(postGraze)
@@ -177,8 +179,8 @@ Public Class LocalPaddockType
         End Sub
 
         ' to be call at the start of "OnProcess" to set up pasture covers etc
-        Sub update(ByVal GrazingResidual As Integer, ByVal PastureME As Integer)
-                updateCovers()
+        Sub update(ByVal GrazingResidual As Integer)
+                updateCoverData()
                 Me.GrazingResidual = GrazingResidual
                 updateStatus()
         End Sub
@@ -213,7 +215,7 @@ Public Class LocalPaddockType
                 For Each crop As CropType In ApSim_Pdk.Crops
                         crop.Publish("graze", GZ)
                 Next
-                updateCovers()
+                updateCoverData()
                 Closed = False
 
                 post = Cover()
@@ -259,7 +261,7 @@ Public Class LocalPaddockType
                                 'print(greenRemoved)
                                 'print(deadRemoved)
                                 crop.Publish("remove_crop_biomass", dmRemoved)
-                                updateCovers()
+                                updateCoverData()
                                 PastureMasses.TryGetValue(crop.name, b) 'this should really be checked, it should never fail but...
                                 If (debug) Then
                                         Console.WriteLine("Finish = " & crop.biomass)
@@ -281,13 +283,12 @@ Public Class LocalPaddockType
                 End If
         End Sub
 
-        Public Sub updateCovers()
+        Public Sub updateCoverData()
                 PastureMasses.Clear()
                 DM_Cover = New BioMass()
 
                 Dim gLeaf, gStem, dLeaf, dStem As VariableType
                 Dim tempStr As String
-
                 For Each Crop As CropType In ApSim_Pdk.Crops 'counting all crops, this could cause issues with grazing allocation
                         tempStr = Crop.name
                         gLeaf = Crop.Variable("leafgreenwt")
@@ -301,14 +302,18 @@ Public Class LocalPaddockType
                         mass.gStem = gStem.ToDouble * 10
                         mass.dLeaf = dLeaf.ToDouble * 10
                         mass.dStem = dStem.ToDouble * 10
-                        mass.N_Conc = Default_N_Conc
-
                         If (debug) Then
                                 Console.WriteLine("  " & ApSim_ID & ".Mass = " & mass.ToString)
-                                Dim tempCover As Double = Crop.Variable("AboveGroundWt").ToDouble()
+                        End If
+
+                        Dim isAgPasture As Boolean = False 'need to develop this test
+                        If (isAgPasture) Then
+                                Dim tempCover As Double = Crop.Variable("AboveGroundWt").ToDouble() 'this values is different from cover calculation above
                                 Dim tempN As Double = Crop.Variable("AboveGroundN").ToDouble()
                                 Dim concN As Double = tempN / tempCover
                                 mass.N_Conc = concN
+                        Else
+                                mass.N_Conc = Default_N_Conc
                         End If
                         PastureMasses.Add(mass.Name, mass)
                         DM_Cover = DM_Cover.Add(mass)
