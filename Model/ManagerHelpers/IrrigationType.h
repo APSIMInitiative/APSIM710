@@ -17,7 +17,7 @@ public ref class IrrigationType
          
       void Publish(String^ EventName, ApsimType^ Data)
          {
-         Comp->Publish(Comp->Name + "." + EventName, Data);
+         Comp->Publish(EventName, Data);
          }   
    
       property Single irrigation
@@ -67,6 +67,6 @@ public ref class IrrigationType
          {
          IrrigationApplicationType^ Irrigation = gcnew IrrigationApplicationType();
          Irrigation->Amount = (float) Amount;
-         Comp->Publish(Comp->Name + "." + "Apply2", Irrigation);
+         Comp->Publish("Apply2", Irrigation);
          }
    };

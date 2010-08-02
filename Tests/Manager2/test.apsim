@@ -488,10 +488,18 @@ Public Class Script
       Dim MyRemoveCropDM As New RemoveCropDmType
       MyRemoveCropDM.dm = dms
       
-      
+      ' Make sure we can send an event using the ComponentByName method.
       If Day = 300 Then
          MyPaddock.ComponentByName("lucerne").Publish("remove_crop_biomass", MyRemoveCropDM)
       End If
+      
+      ' Make sure we can send an event using the Crops method.
+      If Day = 305 Then
+         Dim c As CropType = MyPaddock.Crops(0)
+         c.Publish("remove_crop_biomass", MyRemoveCropDM)
+      End If
+      
+      
    End Sub
 End Class
     ]]></text>

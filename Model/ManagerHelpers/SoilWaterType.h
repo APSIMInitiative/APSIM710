@@ -17,7 +17,7 @@ public ref class SoilWaterType
          
       void Publish(String^ EventName, ApsimType^ Data)
          {
-         Comp->Publish(Comp->Name + "." + EventName, Data);
+         Comp->Publish(EventName, Data);
          }
             
       property array<Single>^ air_dry

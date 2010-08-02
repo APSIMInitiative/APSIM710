@@ -17,7 +17,7 @@ public ref class FertiliserType
          
       void Publish(String^ EventName, ApsimType^ Data)
          {
-         Comp->Publish(Comp->Name + "." + EventName, Data);
+         Comp->Publish(EventName, Data);
          }   
    
       property Single fertiliser
@@ -40,6 +40,6 @@ public ref class FertiliserType
          Fertiliser->Amount = (float) Amount;
          Fertiliser->Depth = (float) Depth;
          Fertiliser->Type = Type;
-         Comp->Publish(Comp->Name + ".Apply", Fertiliser);
+         Comp->Publish("Apply", Fertiliser);
          }
    };
