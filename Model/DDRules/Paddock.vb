@@ -135,7 +135,7 @@ Public Class LocalPaddockType
                 Else
                         '  use simple fertiliser and irrigation events
                         ApSim_Pdk.Fertiliser.Apply(kgN / Area, Default_Application_Depth, "urea_N")
-                        ApSim_Pdk.Irrigation.Apply(volume / Area)
+                        ApSim_Pdk.Irrigation.Apply(v / 10000) ' 20107003 - converting litres/ha to mm/ha
                         N_Urine = kgN / Area
                 End If
         End Sub
