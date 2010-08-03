@@ -1168,8 +1168,6 @@ namespace ApsimFile
                      XmlHelper.SetValue(SoilWatNode, "WinterU", UNode.InnerText);
                      Node.RemoveChild(UNode);
                      }
-                  XmlHelper.SetValue(SoilWatNode, "SummerDate", "1-Nov");
-                  XmlHelper.SetValue(SoilWatNode, "WinterDate", "1-Apr");
                   }
                else
                   {
@@ -1180,6 +1178,11 @@ namespace ApsimFile
                   MoveSoilNode(Node, "WinterU", SoilWatNode);
                   MoveSoilNode(Node, "WinterDate", SoilWatNode);
                   }
+               if (XmlHelper.Value(SoilWatNode, "SummerDate") == "")
+                  XmlHelper.SetValue(SoilWatNode, "SummerDate", "1-Nov");
+               if (XmlHelper.Value(SoilWatNode, "WinterDate") == "")
+                  XmlHelper.SetValue(SoilWatNode, "WinterDate", "1-Apr");
+
                MoveSoilNode(Node, "DiffusConst", SoilWatNode);
                MoveSoilNode(Node, "DiffusSlope", SoilWatNode);
                MoveSoilNode(Node, "SALB", SoilWatNode);

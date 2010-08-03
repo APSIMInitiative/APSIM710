@@ -711,15 +711,18 @@ namespace GraphDataUserInterface
                Chart.Axes.Bottom.Maximum = Max.ToOADate();
                }
 
-            DateTime LabelDate = Min;
-            do
+            if (Days > 0 || Months > 0 || Years > 0)
                {
-               Chart.Axes.Bottom.Labels.Items.Add(LabelDate.ToOADate(), LabelDate.ToString(Format));
-               LabelDate = LabelDate.AddDays(Days);
-               LabelDate = LabelDate.AddMonths(Months);
-               LabelDate = LabelDate.AddYears(Years);
+               DateTime LabelDate = Min;
+               do
+                  {
+                  Chart.Axes.Bottom.Labels.Items.Add(LabelDate.ToOADate(), LabelDate.ToString(Format));
+                  LabelDate = LabelDate.AddDays(Days);
+                  LabelDate = LabelDate.AddMonths(Months);
+                  LabelDate = LabelDate.AddYears(Years);
+                  }
+               while (LabelDate <= Max);
                }
-            while (LabelDate <= Max);
             }
          }
 
