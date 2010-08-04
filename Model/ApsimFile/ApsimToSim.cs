@@ -12,8 +12,10 @@ public class ApsimToSim
    /// <summary>
    /// Writes a sim file for the specified component. Will throw on error.
    /// </summary>
+   /// 
    public static string WriteSimFile(Component Child)
       {
+      TestUniqueNamesUnderPaddock(Child);           //test to see if the .apsim file was valid before writing sim file.
       string SimFileName = Child.Name + ".sim";
       XmlDocument SimXML = new XmlDocument();
       SimXML.LoadXml(WriteSimScript(Child));
@@ -275,4 +277,32 @@ public class ApsimToSim
          }
       }
    #endregion
+
+
+   #region Testing .apsim file is valid code
+
+
+   private static void TestUniqueNamesUnderPaddock(Component Simulation)
+   {
+       // -------------------------------------------------------------
+       // There should not be any two components with the same name under the paddock level.
+       // This will test to see if there is any with the same name and if so, return an error.
+       // -------------------------------------------------------------
+       string SameName;
+
+       List<Component> Paddocks;
+       Paddocks = ApsimFile.ComponentUtility.FindPaddsInSim(Simulation);
+
+       foreach (Component Paddock in Paddocks)
+       {
+           SameName = ApsimFile.ComponentUtility.FindSameNameRecursively(Paddock);
+           if (SameName != "")
+           {
+               throw new Exception("You can not have two components with the same name in a paddock." + "\r\n" + "Simulation: " + Simulation.Name + "\r\n" + "Component Name: " + SameName);
+           }
+       }
+   }
+
+   #endregion
+
    }

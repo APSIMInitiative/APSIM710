@@ -117,7 +117,23 @@ public class ApsimRunToolStrip
       foreach (string SimulationPath in SimsToRun)
          {
          Component Simulation = F.Find(SimulationPath);
-         string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+         string SimFileName;
+         try
+         {
+             SimFileName = ApsimToSim.WriteSimFile(Simulation);
+         }
+         catch (Exception err)
+         {
+             //catch any errors thrown when trying to write the sim file.
+             MessageBox.Show(err.Message, "Error");
+             //reset the buttons because we will not be doing a run.
+             RunButton.Enabled = true;
+             PauseButton.Enabled = false;
+             StopButton.Enabled = false;
+             ErrorsButton.Visible = false;
+             PercentLabel.Text = "";
+             return;
+         }
          RunApsimJob NewJob = new RunApsimJob(Simulation.Name, _JobRunner);
          NewJob.SimFileName = SimFileName;
          _JobRunner.Add(NewJob);

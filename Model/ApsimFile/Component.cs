@@ -143,6 +143,7 @@ namespace ApsimFile
             MyName = value;
             EnsureNameIsUnique();
             MyFile.PublishComponentChanged(this.Parent);
+
             }
          }
       public string Type
@@ -443,7 +444,7 @@ namespace ApsimFile
          else
             return AddShortCut(ComponentToDuplicate);
          }
-      private void ChildNodesRecursively(List<Component> AllChildNodes)
+      public void ChildNodesRecursively(List<Component> AllChildNodes)
          {
          // ---------------------------------------------------------------------
          // Fill the specified list will all child nodes recursively.
@@ -534,11 +535,11 @@ namespace ApsimFile
          }
       public Component FindContainingPaddock()
          {
-         Component Paddock = this;
-         while (Paddock != null && Paddock.Type != "area" && Paddock.Type != "simulation" &&
-                                   Paddock.Type != "folder")
-            Paddock = Paddock.Parent;
-         return Paddock;
+         Component Current = this;
+         while (Current != null && Current.Type != "area" && Current.Type != "simulation" &&
+                                   Current.Type != "folder")
+            Current = Current.Parent;
+         return Current;
          }
 
       public Component FindRecursively(string ComponentName, string ComponentType)

@@ -1,4 +1,8 @@
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Text;
 
 
 namespace ApsimFile
@@ -65,7 +69,57 @@ namespace ApsimFile
             return FileName;
         }
 
+
+        public static List<Component> FindPaddsInSim(Component Simulation)
+        {
+            //return a List of all the paddocks under a simulation. 
+            //Usually just one paddock but some people have multiple paddocks.
+            List<Component> Paddocks = new List<Component> ();
+            List<Component> Children;
+            Children = Simulation.ChildNodes;
+
+            foreach (Component Child in Children)
+            {
+                if (Child.Type.ToLower() == "area")
+                {
+                    Paddocks.Add(Child);
+                }
+            }
+            return Paddocks;
+        }
+
+
+        public static string FindSameNameRecursively(Component Start)
+        {
+            //If the same name is used in more then one component anywhere below the Start component
+            //then return the name of that has occured multiple times. If not return "".
+            string SameName;
+            List<Component> AllChildNodes = new List<Component>();
+            Start.ChildNodesRecursively(AllChildNodes);     //load AllChildNodes with all the child nodes (Recursively) under the Start node.
+
+            SameName = "";
+            foreach (Component SearchChild in AllChildNodes)
+            {
+                foreach (Component Child in AllChildNodes)
+                {
+                    //make sure the SearchChild did not find itself, also make sure either the SearchChild or Child's parent is not
+                    //"water". Because soils have a "water" child component. This water component has child components for each crop.
+                    // so it is allowed to have the same name as a crop module.
+                    if (!Child.Equals(SearchChild) && (Child.Name.ToLower() == SearchChild.Name.ToLower())
+                        && ((SearchChild.Parent.Name.ToLower() != "water") && (Child.Parent.Name.ToLower() != "water")))
+                    {
+                        SameName = SearchChild.Name.ToLower();
+                    }
+                }
+            }
+
+            return SameName;
+
+        }
+
+
     }
+
 
 }
 
