@@ -3842,7 +3842,7 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
    opt_rate = divide(opt_rate_ppm,soiln2_fac(layer),0.0)
 
    !-----Changes by VOS 13 Dec 09, Reviewed by RCichota (9/02/2010)----------------
-   opt_rate = divide(opt_rate_ppm,soiln2_fac(layer),0.0) * max(0,1-g%nitrification_inhibition(layer))
+   opt_rate = divide(opt_rate_ppm,soiln2_fac(layer),0.0) * max(0.0,1.0-g%nitrification_inhibition(layer))
    ! old code-> opt_rate = divide(opt_rate_ppm,soiln2_fac(layer),0.0)
    !--------------------------------------------------------------------------------
 
@@ -4532,7 +4532,7 @@ subroutine soiln2_check_data_supply ()
 
    call push_routine (my_name)
 
-   call get_real_var_optional (unknown_module, 'ave_soil_temp()', '(oC)', temp_var, numvals, -20.0, 80.0)
+   call get_real_var_optional (unknown_module, 'ave_soil_temp', '(oC)', temp_var, numvals, -20.0, 80.0)
 
    if(numvals .gt. 0.0)then
       ! another module owns soil temperature
@@ -4542,7 +4542,7 @@ subroutine soiln2_check_data_supply ()
       g%use_external_st = .false.
    endif
 
-   call get_real_var_optional (unknown_module, 'ph()', '()', temp_var, numvals, 3.5, 11.0)
+   call get_real_var_optional (unknown_module, 'ph', '()', temp_var, numvals, 3.5, 11.0)
 
    if(numvals .gt. 0.0)then
       ! another module owns soil ph
