@@ -88,6 +88,58 @@ namespace ApsimFile
             return Paddocks;
         }
 
+        private static bool DoesAllowSameName(Component Child)
+        {
+            bool DoesAllow = false;
+            //This component is allowed to have the same name;
+            //You may have two ini files in the one paddock, for example one for a crop and another for micromet.
+            switch (Child.Type.ToLower())
+            {
+                case "ini":
+                    DoesAllow = true;
+                    break;
+                case "outputfile":
+                    DoesAllow = true;
+                    break;
+                case "graph":
+                    DoesAllow = true;
+                    break;
+            }
+
+            //Based on the Parent the children are allowed to have the same name;
+            //Because soils have a "water" child component. This water component has child components for each crop.
+            // so it is allowed to have the same name as a crop module. 2 output files will have children with the same name
+            // reporting frequency and variables.
+            switch (Child.Parent.Type.ToLower())
+            {
+                case "water":
+                    DoesAllow = true;
+                    break;
+                case "outputfile":
+                    DoesAllow = true;
+                    break;
+            }
+
+            //Based on the Grandparent, Great Grandparent and higher are allowed to have the same name;
+            //in the case of a graph component, if two or graphs are under a paddock, chances are their chldren will have the same name.
+            //since graph components can have not just children, but grand children and great grand children etc. Can't just check one
+            //level up.
+            Component Current;
+            Current = Child;
+            while (Current.Parent != null)
+            {
+                if (Current.Parent.Type.ToLower() == "graph")
+                {
+                    DoesAllow = true;
+                    break;
+                }
+                Current = Current.Parent;
+            }
+
+
+            return DoesAllow;
+        }
+
 
         public static string FindSameNameRecursively(Component Start)
         {
@@ -103,10 +155,9 @@ namespace ApsimFile
                 foreach (Component Child in AllChildNodes)
                 {
                     //make sure the SearchChild did not find itself, also make sure either the SearchChild or Child's parent is not
-                    //"water". Because soils have a "water" child component. This water component has child components for each crop.
-                    // so it is allowed to have the same name as a crop module.
+                    //allowed to have the same name. 
                     if (!Child.Equals(SearchChild) && (Child.Name.ToLower() == SearchChild.Name.ToLower())
-                        && ((SearchChild.Parent.Name.ToLower() != "water") && (Child.Parent.Name.ToLower() != "water")))
+                        && !DoesAllowSameName(SearchChild) && !DoesAllowSameName(Child)) 
                     {
                         SameName = SearchChild.Name.ToLower();
                     }

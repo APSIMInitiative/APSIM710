@@ -126,12 +126,15 @@ public class ApsimRunToolStrip
          {
              //catch any errors thrown when trying to write the sim file.
              MessageBox.Show(err.Message, "Error");
-             //reset the buttons because we will not be doing a run.
-             RunButton.Enabled = true;
-             PauseButton.Enabled = false;
-             StopButton.Enabled = false;
-             ErrorsButton.Visible = false;
-             PercentLabel.Text = "";
+             //reset the buttons if there are no other simulations currently running because we will not be doing a run.
+             if (_JobRunner.Jobs.Count == 0)
+             {
+                 RunButton.Enabled = true;
+                 PauseButton.Enabled = false;
+                 StopButton.Enabled = false;
+                 ErrorsButton.Visible = false;
+                 PercentLabel.Text = "";
+             }
              return;
          }
          RunApsimJob NewJob = new RunApsimJob(Simulation.Name, _JobRunner);
