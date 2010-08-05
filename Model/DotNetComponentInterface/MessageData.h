@@ -198,7 +198,10 @@ void unpackArrayOfStructures(char* messageData, array<T^>^% values)
 template <class T>
 unsigned memorySize(array<T>^ values)
    {
-   return 4 + values->Length * ::memorySize(values[0]);
+   unsigned size = 4;
+   for (int i = 0; i < values->Length; i++)
+      size += ::memorySize(values[i]);
+   return size;
    }
 template <class T>
 #pragma warning(disable:4700)

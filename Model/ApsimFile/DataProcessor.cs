@@ -453,18 +453,23 @@ public class DataProcessor
                      Filter += FieldName + " = " + ObservedRow[FieldName].ToString();
                   }
                // Handle pred/obs for checkpointed series.
-               DataRow[] PredictedMatch;
-               if (Filter.ToLower().Contains("title"))
+               try
                   {
-                  string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
-                  CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
-                  PredictedMatch = Predicted.Select(CheckPointedFilter);
-                  if (PredictedMatch.Length > 0)
-                     WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed", FieldsToMatch);
+                  DataRow[] PredictedMatch;
+                  if (Filter.ToLower().Contains("title"))
+                     {
+                     string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
+                     CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
+                     PredictedMatch = Predicted.Select(CheckPointedFilter);
+                     if (PredictedMatch.Length > 0)
+                        WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed", FieldsToMatch);
+                     }
+                  // Handle pred/obs for noncheckpointed series.
+                  PredictedMatch = Predicted.Select(Filter);
+                  WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Predicted/Observed", FieldsToMatch);
                   }
-               // Handle pred/obs for noncheckpointed series.
-               PredictedMatch = Predicted.Select(Filter);
-               WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Predicted/Observed", FieldsToMatch);
+               catch (Exception)
+                  { }
                }
             return NewData;
             }
