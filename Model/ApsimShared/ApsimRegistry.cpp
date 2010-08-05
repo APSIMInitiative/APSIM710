@@ -293,7 +293,7 @@ ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
 	  if (i->second->getTypeCode() == type &&
 		  i->second->getComponentID() == ownerID &&
 		  i->second->getDestinationID() == destID &&
-		  i->second->getNameWithoutBrackets() == regName)
+		  i->second->getName() == regName)
 		 {
 		 return(i->second);
 		 }
