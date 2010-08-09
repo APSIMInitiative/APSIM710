@@ -775,6 +775,7 @@ subroutine soilp_read_constants ()
 
 !+  Local Variables
    integer    numvals               ! number of values read from file
+   integer num_crops_read           ! number of crops in table
 
 !- Implementation Section ----------------------------------
    call push_routine (myname)
@@ -805,11 +806,16 @@ subroutine soilp_read_constants ()
    !  read crop constants
    call read_real_var (section_name,'sorption_coeff','()',c%sorption_coeff,numvals,0.0,2.0)
 
-   call Read_char_array(section_name,'crop_name',max_crops,'()',c%crop_table_name,numvals)
+   call Read_char_array(section_name,'crop_name',max_crops,'()',c%crop_table_name,num_crops_read)
 
    call read_real_array (section_name,'p_supply_factor',max_crops,'()',c%p_supply_factor,numvals,0.0,10.0)
-
+   if (num_crops_read .ne. numvals) then
+      call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
+   endif
    call read_real_array (section_name,'crit_p_rlv',max_crops,'()',c%crit_p_rlv,numvals,0.0,100.0)
+   if (num_crops_read .ne. numvals) then
+      call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
+   endif
 
    ! read P pool bounds
    call read_real_var (section_name, 'lb_labile_p_ppm', '(ppm)', c%lb_labile_p_ppm, numvals, 0.0, 100.0)
