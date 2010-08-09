@@ -10,7 +10,7 @@ Public Class UrinePatch
     <Output()> Public Effective_StockDensity As Double       'stocking density on /ha 24 hour basis, units cows/ha
 
     <Input()> Private UI_FarmType As String
-    <Input()> Private UI_IrrigSeason As String
+    '<Input()> Private UI_IrrigSeason As String
     <Input()> Private UI_StockRate As String
     <Input()> Public UI_BeefPercentage As String
     Private SUBeefPercentatage As Double
@@ -19,6 +19,7 @@ Public Class UrinePatch
 
     <Input()> Private month As Integer
     <Input()> Private day As Integer
+    <Input()> Private annual_average_rainfall As Single
 
     <Output()> Public UrineN_PropLeached As Double = 0.0
     <Output()> Public UrineN_Retained As Double = 0.0
@@ -26,26 +27,28 @@ Public Class UrinePatch
     <Output()> Public UrineN_Retained_Patch As Double = 0.0
     <Output()> Public UrineN_Leached_Patch As Double = 0.0
     <Output()> Public UrineConcentration As Double = 0.0
-    <Output()> Public UP_AnimalType As String = ""
+    <Output()> Public UP_AnimalType As String = "None"
 
 
     <Input()> Private UI_SoilType As String
+    <Output()> Public SoilPAW As Single
     <Output()> Public SoilPAW_fac As Single
     <Output()> Public Animal_fac As Single
-
-    Private Day_x As Double() = {0, 15, 46, 75, 106, 136, 167, 197, 228, 259, 289, 320, 350, 366}
-    Private Day_y As Double() = {0.14, 0.15, 0.18, 0.21, 0.24, 0.26, 0.27, 0.26, 0.23, 0.19, 0.16, 0.13, 0.13, 0.14}
+    <Output()> Public Amount_fac As Double
+    <Output()> Public Rain_fac As Double
     <Output()> Public Day_fac As Double
 
     Private Amount_x As Double() = {0, 200, 400, 600, 800, 1000}
     Private Amount_y As Double() = {0, 0.2, 0.25, 0.4, 0.5, 0.6}
-    <Output()> Public Amount_fac As Double
+
+    Private PAW_x As Double() = {0, 40, 175, 500}
+    Private PAW_y As Double() = {1.0, 1.0, 0.3, 0.3}
 
     Private DrainPost2wk_x As Double() = {0, 50, 100, 150, 200, 250}
     Private DrainPost2wk_y As Double() = {0, 0.08, 0.16, 0.24, 0.32, 0.32}  'initially populate with dryland values
     Private DrainPost2wk_irrig_y As Double() = {0, 0, 0.06, 0.13, 0.19, 0.19}
     Private DrainPost2wk_dry_y As Double() = {0, 0.08, 0.16, 0.24, 0.32, 0.32}
-    <Output()> Public DrainPost2wk_fac As Double = 1.0
+    <Output()> Public DrainPost2wk_fac As Double = 0.0
 
 
     Private CowsPerHa As Single = 0.0
@@ -81,48 +84,48 @@ Public Class UrinePatch
         MyPaddock = New PaddockType(Me)
         TestModules()  'ensure that irrigation and fertiliser are in the simulation
 
-        If UI_SoilType = "ExtremelyLight" Then
-            SoilPAW_fac = 3.5
-        ElseIf UI_SoilType = "VeryLight" Then
-            SoilPAW_fac = 3.0
-        ElseIf UI_SoilType = "Light" Then
-            SoilPAW_fac = 2.5
-        ElseIf UI_SoilType = "Medium" Then
-            SoilPAW_fac = 1.0
-        ElseIf UI_SoilType = "Heavy" Then
-            SoilPAW_fac = 1.0
-        ElseIf UI_SoilType = "PoorlyDrained" Then
-            SoilPAW_fac = 1.0
-        ElseIf UI_SoilType = "PoorlyDrainedLight" Then
-            SoilPAW_fac = 2.0
+        If UI_SoilType.ToLower = "extremelylight" Then
+            SoilPAW = 42  'to 150 cm deep
+        ElseIf UI_SoilType.ToLower = "verylight" Then
+            SoilPAW = 99  'to 150 cm deep
+        ElseIf UI_SoilType.ToLower = "light" Then
+            SoilPAW = 104  'to 150 cm deep
+        ElseIf UI_SoilType.ToLower = "medium" Then
+            SoilPAW = 153  'to 150 cm deep
+        ElseIf UI_SoilType.ToLower = "heavy" Then
+            SoilPAW = 231  'to 150 cm deep
+        ElseIf UI_SoilType.ToLower = "poorlydrained" Then
+            SoilPAW = 242  'to 150 cm deep
+        ElseIf UI_SoilType.ToLower = "poorlydrainedlight" Then
+            SoilPAW = 93  'to 150 cm deep
         Else
-            Throw New Exception("Soil type not allowed")
+            Throw New Exception("Soil type - " & UI_SoilType & " - not allowed")
+        End If
+        SoilPAW_fac = LinearInterp(SoilPAW, PAW_x, PAW_y)
+
+        If UI_FarmType.ToLower = "dairy" Then
+        ElseIf UI_FarmType.ToLower = "sheepandbeef" Then
+        ElseIf UI_FarmType.ToLower = "traditionalarable" Then
+        ElseIf UI_FarmType.ToLower = "intensivearable" Then
+        Else
+            Throw New Exception("Farm type - " & UI_FarmType & " - not allowed")
         End If
 
-
-        If UI_FarmType = "Dairy" Then
-        ElseIf UI_FarmType = "SheepAndBeef" Then
-        ElseIf UI_FarmType = "TraditionalArable" Then
-        ElseIf UI_FarmType = "IntensiveArable" Then
-        Else
-            Throw New Exception("Farm type not allowed")
-        End If
-
-        If UI_IrrigSeason = "None" Then
-            For i As Integer = 0 To DrainPost2wk_y.Length - 1
-                DrainPost2wk_y(i) = DrainPost2wk_dry_y(i)
-            Next
-        ElseIf UI_IrrigSeason = "Short" Then
-            For i As Integer = 0 To DrainPost2wk_y.Length - 1
-                DrainPost2wk_y(i) = DrainPost2wk_irrig_y(i)
-            Next
-        ElseIf UI_IrrigSeason = "Long" Then
-            For i As Integer = 0 To DrainPost2wk_y.Length - 1
-                DrainPost2wk_y(i) = DrainPost2wk_irrig_y(i)
-            Next
-        Else
-            Throw New Exception("Irrigation type not allowed")
-        End If
+        'If UI_IrrigSeason = "None" Then
+        '    For i As Integer = 0 To DrainPost2wk_y.Length - 1
+        '        DrainPost2wk_y(i) = DrainPost2wk_dry_y(i)
+        '    Next
+        'ElseIf UI_IrrigSeason = "Short" Then
+        '    For i As Integer = 0 To DrainPost2wk_y.Length - 1
+        '        DrainPost2wk_y(i) = DrainPost2wk_irrig_y(i)
+        '    Next
+        'ElseIf UI_IrrigSeason = "Long" Then
+        '    For i As Integer = 0 To DrainPost2wk_y.Length - 1
+        '        DrainPost2wk_y(i) = DrainPost2wk_irrig_y(i)
+        '    Next
+        'Else
+        '    Throw New Exception("Irrigation type not allowed")
+        'End If
 
 
         Console.WriteLine("Finished Initialising UrinePatch")
@@ -138,8 +141,8 @@ Public Class UrinePatch
         UrineConcentration = 0.0
         Day_fac = 0.0
         Amount_fac = 0.0
-        DrainPost2wk_fac = 1.0
-        UP_AnimalType = ""
+        DrainPost2wk_fac = 0.0
+        UP_AnimalType = "None"
 
 
     End Sub
@@ -175,45 +178,84 @@ Public Class UrinePatch
             UrineConcentration = Amt_Urine / CowUrineAreaPerHa
             UrineApplication(UrineConcentration, CowUrineAreaPerHa)
         ElseIf UP_AnimalType = "Lamb".ToLower Then
-            Animal_fac = 0.3
+            Animal_fac = 0.1
             LambUrineAreaPerHa = StockDensity * LambUrinationsPerDay * LambAreaPerUrination / 10000.0
             UrineConcentration = Amt_Urine / LambUrineAreaPerHa
             UrineApplication(UrineConcentration, LambUrineAreaPerHa)
         ElseIf UP_AnimalType = "Sheep".ToLower Then
-            Animal_fac = 0.5
+            Animal_fac = 0.15
             SheepUrineAreaPerHa = StockDensity * SheepUrinationsPerDay * SheepAreaPerUrination / 10000.0
             UrineConcentration = Amt_Urine / SheepUrineAreaPerHa
             UrineApplication(UrineConcentration, SheepUrineAreaPerHa)
         ElseIf UP_AnimalType = "Beef".ToLower Then
-            Animal_fac = 0.9
+            Animal_fac = 1.0
             BeefUrineAreaPerHa = StockDensity * BeefUrinationsPerDay * BeefAreaPerUrination / 10000.0
             UrineConcentration = Amt_Urine / BeefUrineAreaPerHa
             UrineApplication(UrineConcentration, BeefUrineAreaPerHa)
         ElseIf UP_AnimalType = "SheepBeef".ToLower Then  ' this very FarmSIm special case until generalise this 
             'assume that the urine N is proprtional to the SUBeefPercentage (based on relative intake)
             SUBeefPercentatage = (UI_BeefPercentage * 6.0) / (UI_BeefPercentage * 6.0 + (100 - UI_BeefPercentage)) * 100
-            Animal_fac = (0.9 * SUBeefPercentatage + 0.5 * (100 - SUBeefPercentatage)) / 100.0
+            Animal_fac = (1.0 * SUBeefPercentatage + 0.15 * (100 - SUBeefPercentatage)) / 100.0
             Dim Amt_Urine_Beef As Double = Amt_Urine * SUBeefPercentatage / 100.0
             Dim Amt_Urine_Sheep As Double = Amt_Urine - Amt_Urine_Beef
+
+
+
             'decompose the stock desnity into sheep and beef based on head percentage using UI_BeefPercentage
             Dim StockDensity_Beef As Double = StockDensity * UI_BeefPercentage / 100.0
             Dim StockDensity_Sheep As Double = StockDensity - StockDensity_Beef
-            'calculate the urine patch properties and do fate
+
+            Dim UrineConcentration_Beef As Double = 0.0
+            Dim UrineN_PropLeached_Beef As Double = 0.0
+            Dim UrineN_Leached_Patch_Beef As Double = 0.0
+            Dim UrineN_Retained_Patch_Beef As Double = 0.0
+            Dim UrineN_Leached_Beef As Double = 0.0
+            Dim UrineN_Retained_Beef As Double = 0.0
+
+            Dim UrineConcentration_Sheep As Double = 0.0
+            Dim UrineN_PropLeached_Sheep As Double = 0.0
+            Dim UrineN_Leached_Patch_Sheep As Double = 0.0
+            Dim UrineN_Retained_Patch_Sheep As Double = 0.0
+            Dim UrineN_Leached_Sheep As Double = 0.0
+            Dim UrineN_Retained_Sheep As Double = 0.0
+
             BeefUrineAreaPerHa = StockDensity_Beef * BeefUrinationsPerDay * BeefAreaPerUrination / 10000.0
-            If StockDensity_Beef > 0.0 Then
-                UrineConcentration = Amt_Urine_Beef / BeefUrineAreaPerHa
-                UrineApplication(UrineConcentration, BeefUrineAreaPerHa)
-            Else
-                UrineConcentration = 0.0
-            End If
             SheepUrineAreaPerHa = StockDensity_Sheep * SheepUrinationsPerDay * SheepAreaPerUrination / 10000.0
-            If StockDensity_Sheep > 0.0 Then
-                UrineConcentration = Amt_Urine_Sheep / SheepUrineAreaPerHa
-                UrineApplication(UrineConcentration, SheepUrineAreaPerHa)
+
+            Dim BeefWeighting As Double = BeefUrineAreaPerHa / (BeefUrineAreaPerHa + SheepUrineAreaPerHa)
+            Dim SheepWeighting As Double = 1 - BeefWeighting
+
+
+            'calculate the urine patch properties and do fate
+            If StockDensity_Beef > 0.0 Then
+                UrineConcentration_Beef = Amt_Urine_Beef / BeefUrineAreaPerHa
+                UrineApplication(UrineConcentration_Beef, BeefUrineAreaPerHa)
+                UrineN_PropLeached_Beef = UrineN_PropLeached
+                UrineN_Leached_Patch_Beef = UrineN_Leached_Patch
+                UrineN_Retained_Patch_Beef = UrineN_Retained_Patch
+                UrineN_Leached_Beef = UrineN_Leached
+                UrineN_Retained_Beef = UrineN_Retained
             Else
-                UrineConcentration = 0.0
+                UrineConcentration_Beef = 0.0
+            End If
+            If StockDensity_Sheep > 0.0 Then
+                UrineConcentration_Sheep = Amt_Urine_Sheep / SheepUrineAreaPerHa
+                UrineApplication(UrineConcentration_Sheep, SheepUrineAreaPerHa)
+                UrineN_PropLeached_Sheep = UrineN_PropLeached
+                UrineN_Leached_Patch_Sheep = UrineN_Leached_Patch
+                UrineN_Retained_Patch_Sheep = UrineN_Retained_Patch
+                UrineN_Leached_Sheep = UrineN_Leached
+                UrineN_Retained_Sheep = UrineN_Retained
+            Else
+                UrineConcentration_Sheep = 0.0
             End If
 
+            UrineConcentration = UrineConcentration_Beef * BeefWeighting + UrineConcentration_Sheep * SheepWeighting
+            UrineN_PropLeached = UrineN_PropLeached_Beef * BeefWeighting + UrineN_PropLeached_Sheep * SheepWeighting
+            UrineN_Leached_Patch = UrineN_Leached_Patch_Beef + UrineN_Leached_Patch_Sheep
+            UrineN_Retained_Patch = UrineN_Retained_Patch_Beef + UrineN_Retained_Patch_Sheep
+            UrineN_Leached = UrineN_Leached_Beef + UrineN_Leached_Sheep
+            UrineN_Retained = UrineN_Retained_Beef + UrineN_Retained_Sheep
         Else
             Throw New Exception("Stock type " & Stock & " not allowed")
         End If
@@ -224,12 +266,19 @@ Public Class UrinePatch
     Private Sub UrineApplication(ByVal UrinePatchNitrogenConc As Double, ByVal UrinePatchArea As Double)
 
         'calculate the factors affecting leaching loss from the urine patch area
-        Day_fac = LinearInterp(day, Day_x, Day_y)
+
+        ' not useable   SoilPAW_fac = Math.Exp(SoilPAW * (0.0039 * Math.Log(UrinePatchNitrogenConc) - 0.0343)) * 0.5 ' need to get the PAW right
         Amount_fac = LinearInterp(UrinePatchNitrogenConc, Amount_x, Amount_y)
+
+        Day_fac = 0.5 + 0.35 * Math.Sin(2 * Math.PI * (day + 40.2) / 365.25)
+        Rain_fac = -0.1179 + 0.00014 * annual_average_rainfall
 
 
         'calculate proportion leached and distribute to appropriate locations
-        UrineN_PropLeached = Math.Min(MaxPropLeach, ((Day_fac + DrainPost2wk_fac) * Amount_fac * SoilPAW_fac * Animal_fac))
+        UrineN_PropLeached = Day_fac * SoilPAW_fac * Animal_fac   'rain_fac not used as can go -ve
+        UrineN_PropLeached = Math.Min(MaxPropLeach, UrineN_PropLeached)
+        UrineN_PropLeached = Math.Max(UrineN_PropLeached, 0.01)
+
         UrineN_Leached_Patch = UrinePatchNitrogenConc * UrineN_PropLeached
         UrineN_Retained_Patch = UrinePatchNitrogenConc - UrineN_Leached_Patch
         UrineN_Leached = UrineN_Leached_Patch * UrinePatchArea

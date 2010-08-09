@@ -7,7 +7,7 @@ Public Class LocalPaddockType
                 CL = 8  'Closed
         End Enum
 
-        Dim debug As Boolean = False
+    Dim debug As Boolean = False
         Private Default_N_Conc = 0.035
         Private index As Integer
         'Public TotalMass, TotalN As Double 'Pasture mass 
@@ -22,7 +22,8 @@ Public Class LocalPaddockType
         Public PastureMasses As Dictionary(Of String, BioMass) = New Dictionary(Of String, BioMass)
 
         '<[Event]()> Public Event BiomassRemoved(ByVal dung As BiomassRemovedType) 'testing event calling as per AgPasture
-        Private UseUrinePatchModel As Boolean = False
+    Private UseUrinePatchModel As Boolean = False
+    Private patch As ComponentType
 
         Public Sub New(ByVal index As Integer, ByRef paddock As PaddockType)
                 ApSim_Pdk = paddock                                 'store a local pointer to the ApSim "Subpaddock" - I'm unsure if this will work as the reference may change inside ApSim at runtime
@@ -30,7 +31,9 @@ Public Class LocalPaddockType
                 ApSim_ID = paddock.Name                             'this might fail under 7.1r648 - can't find any dll reference
                 status = PaddockStatus.GR              'all paddock grazable at initilisation time
                 Me.index = index
-                UseUrinePatchModel = Not (ApSim_Pdk.ComponentByName("UrinePatch") Is Nothing)
+        UseUrinePatchModel = Not (ApSim_Pdk.ComponentByName("UrinePatch") Is Nothing)
+        patch = ApSim_Pdk.ComponentByName("UrinePatch")
+
         End Sub
 
         Sub OnPrepare()
@@ -123,21 +126,21 @@ Public Class LocalPaddockType
                 Dim v As Double = volume / Area
                 If (debug) Then
                         Console.WriteLine("Urine: N = " & kgN.ToString & " V = " & volume.ToString & " A = " & Area.ToString)
-                End If
+        End If
 
-                If (UseUrinePatchModel) Then
-                        ' use Val's new urine patch model
-                        Dim urine As ApplyUrineType = New ApplyUrineType()
-                        urine.AmountUrine = kg
-                        urine.StockDensity = StockingDensity
-                        urine.StockType = "DairyCow"
-                        ApSim_Pdk.Publish("ApplyUrine", urine)
-                Else
-                        '  use simple fertiliser and irrigation events
-                        ApSim_Pdk.Fertiliser.Apply(kgN / Area, Default_Application_Depth, "urea_N")
-                        ApSim_Pdk.Irrigation.Apply(v / 10000) ' 20107003 - converting litres/ha to mm/ha
-                        N_Urine = kgN / Area
-                End If
+        If (UseUrinePatchModel) Then
+            ' use Val's new urine patch model
+            Dim urine As ApplyUrineType = New ApplyUrineType()
+            urine.AmountUrine = kg
+            urine.StockDensity = StockingDensity
+            urine.StockType = "DairyCow"
+            patch.Publish("ApplyUrine", urine)
+        Else
+            '  use simple fertiliser and irrigation events
+            ApSim_Pdk.Fertiliser.Apply(kgN / Area, Default_Application_Depth, "urea_N")
+            ApSim_Pdk.Irrigation.Apply(v / 10000) ' 20107003 - converting litres/ha to mm/ha
+            N_Urine = kgN / Area
+        End If
         End Sub
 
         ' this doesn't seems to be going on?

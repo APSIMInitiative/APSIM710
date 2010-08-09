@@ -9,7 +9,7 @@
  The Agricultural Production Systems Simulator
              Copyright(c) APSRU               
 
-Version                = 7.2
+Version                = 7.2 r695 
 Title                  = Test_FarmSimGraze
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
@@ -19,12 +19,12 @@ Paddock:
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "SetCrop2Graze" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
-   Component         "Canterbury_XL  Water" = %apsim%\Model\SoilWat.dll
+   Component          "Canterbury_M  Water" = %apsim%\Model\SoilWat.dll
    Component      "Soil Temperature (.NET)" = %apsim%\Model\SoilTemp2.dll
-   Component                   "UrinePatch" = %apsim%\Model\UrinePatch.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
-   Component      "Canterbury_XL  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component       "Canterbury_M  Nitrogen" = %apsim%\Model\SoilN.dll
    Component                 "FarmSimGraze" = %apsim%\Model\FarmSimGraze.dll
    Component              "ryegrass_clover" = %apsim%\Model\AgPasture.dll
 
@@ -52,7 +52,7 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         DM_trigger
-        DryMatter
+        DryMatter_Test
         DryMatter_Intake
         IsGrazable
 
@@ -74,6 +74,19 @@ Paddock:
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
+------- SetCrop2Graze Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     crop2graze = 'ryegrass_clover'
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local string variable : crop2graze = ryegrass_clover
+
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
      
@@ -81,7 +94,7 @@ Paddock:
      
         - Reading Parameters
 
-------- Canterbury_XL  Water Initialisation -----------------------------------
+------- Canterbury_M  Water Initialisation ------------------------------------
      
          - Reading constants
      
@@ -91,18 +104,9 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     ks =     1920.000
+     ks =     4832.039
              exceeds upper limit of    1000.000
-     Component name: Canterbury_XL  Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     ks =     1920.000
-             exceeds upper limit of    1000.000
-     Component name: Canterbury_XL  Water
+     Component name: Canterbury_M  Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -111,25 +115,16 @@ Paddock:
                       -------------------
      ks =     16800.00
              exceeds upper limit of    1000.000
-     Component name: Canterbury_XL  Water
+     Component name: Canterbury_M  Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     ks =     24000.00
+     ks =     16800.00
              exceeds upper limit of    1000.000
-     Component name: Canterbury_XL  Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     ks =     24000.00
-             exceeds upper limit of    1000.000
-     Component name: Canterbury_XL  Water
+     Component name: Canterbury_M  Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -142,11 +137,11 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
         ---------------------------------------------------------------------
-            0.-   80.  0.017  0.033  0.193  0.237  0.193  0.770  0.531  0.518*******
-           80.-  130.  0.014  0.027  0.158  0.194  0.158  0.630  0.179  0.581*******
-          130.-  330.  0.013  0.013  0.042  0.130  0.042  0.423  0.257  0.651*******
-          330.- 1000.  0.008  0.008  0.022  0.100  0.022  0.200  0.032  0.651*******
-         1000.- 1500.  0.008  0.008  0.022  0.100  0.022  0.200  0.000  0.651*******
+            0.-  250.  0.077  0.154  0.374  0.456  0.374  1.311  0.915  0.496*******
+          250.-  550.  0.201  0.201  0.332  0.394  0.332  1.524  0.085  0.366389.229
+          550.-  850.  0.201  0.201  0.338  0.359  0.338  1.650  0.000  0.097 16.362
+          850.- 1150.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+         1150.- 1500.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
         ---------------------------------------------------------------------
      
      
@@ -157,13 +152,13 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-   80.       2.64      12.80      12.80       3.52
-           80.-  130.       1.35       6.55       6.55       1.80
-          130.-  330.       2.60       5.80       5.80      17.60
-          330.- 1000.       5.36       9.38       9.38      52.26
-         1000.- 1500.       4.00       7.00       7.00      39.00
+            0.-  250.      38.50      55.00      55.00      20.50
+          250.-  550.      60.30      39.30      39.30      18.60
+          550.-  850.      60.30      41.10      41.10       6.30
+          850.- 1150.       3.60       8.10       8.10      24.30
+         1150.- 1500.       4.20       9.45       9.45      28.35
           ---------------------------------------------------------
-               Totals      15.95      41.53      41.53     114.18
+               Totals     166.90     152.95     152.95      98.05
           ---------------------------------------------------------
      
      
@@ -200,8 +195,6 @@ Paddock:
 
 ------- soiltemp Initialisation -----------------------------------------------
      Initialising :
-Initialising UrinePatch
-Finished Initialising UrinePatch
 
 ------- surface organic matter Initialisation ---------------------------------
      
@@ -222,7 +215,7 @@ Finished Initialising UrinePatch
                       Effective Cover from Surface Materials =   0.4
      
 
-------- Canterbury_XL  Nitrogen Initialisation --------------------------------
+------- Canterbury_M  Nitrogen Initialisation ---------------------------------
      
         - Reading Parameters
      
@@ -240,13 +233,13 @@ Finished Initialising UrinePatch
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.00  3.18   25.00    1.00    0.00
-             2     6.00  3.18   20.00    1.00    0.00
-             3     6.00  1.54   15.02    1.00    0.00
-             4     6.00  0.22   10.00    1.00    0.00
-             5     6.00  0.20    1.00    0.20    0.00
+             1     6.00  2.37   53.47    2.56    0.00
+             2     6.00  0.49   10.32    0.81    0.00
+             3     6.00  0.23    5.57    0.56    0.00
+             4     6.00  0.20    1.24    0.18    0.00
+             5     6.00  0.20    1.37    0.27    0.00
           ------------------------------------------------
-           Totals               71.02    4.20    0.00
+           Totals               71.97    4.39    0.00
           ------------------------------------------------
      
      
@@ -259,28 +252,18 @@ Finished Initialising UrinePatch
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      19160.5  1741.9   434.5    54.3   146.6     3.7
-             2       9880.7   898.2   139.5    17.4   132.6     3.3
-             3      12938.8  1176.3    81.2    10.1    88.9     2.2
-             4       2905.1   264.1     2.7     0.3    23.3     0.6
-             5       1999.7   181.8     0.3     0.0     8.6     0.2
+             1      76406.0  6946.0  1205.2   150.6   190.7     4.8
+             2      22465.0  2042.3    75.0     9.4   104.7     2.6
+             3      11224.5  1020.4    12.0     1.5    57.4     1.4
+             4       2362.5   214.8     0.9     0.1    31.5     0.8
+             5       2729.6   248.1     0.4     0.1    15.7     0.4
           ---------------------------------------------------------
-           Totals   46884.7  4262.2   658.2    82.3   400.0    10.0
+           Totals  115187.5 10471.6  1293.5   161.7   400.0    10.0
           ---------------------------------------------------------
 Initialising FarmSimGraze
 Finished Initialising FarmSimGraze
 Warning: Number of layers specified for root length density (rlvp) is different 
 from the number of soil layers.The simulation will run using the minimum of the two.
 ------- Start of simulation  --------------------------------------------------
-17 January 1972(Day of year=17), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        15.83 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-14 February 1972(Day of year=45), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        15.67 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
 28 February 1972(Day of year=59), clock: 
      Simulation is terminating due to end criteria being met.

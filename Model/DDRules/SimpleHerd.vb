@@ -183,7 +183,7 @@
 
         Public ReadOnly Property ME_Walking()
                 Get
-                        Return ReferenceCow.ME_Lactation * TotalCows
+            Return ReferenceCow.ME_Walking * TotalCows
                 End Get
         End Property
 
