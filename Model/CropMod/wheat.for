@@ -10551,7 +10551,8 @@ c      if (leaf_no_after_fi.le.0.0) then
           leaf_no_fi     = LFN
        else
           leaf_no        = INT(leaf_no_now - leaf_no_fi) +1
-          leaf_size(LFN) = increase2**(leaf_no-1)*leaf_size(leaf_no_fi)
+          leaf_size(LFN) = increase2**(leaf_no-1)*
+     .                      leaf_size(INT(leaf_no_fi)
        end if
 
        leaf_no_new = leaf_no_now + dlt_leaf_no

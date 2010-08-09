@@ -392,7 +392,7 @@ cjh      endif
 
       write (string,'(3x, a, f6.1, 1x, a)')
      :   '    Crop factor for bounding water use is set to '
-     :   , p.eo_crop_factor
+     :   , p%eo_crop_factor
      :   , ' times eo.'
       call write_string ( new_line//string)
 

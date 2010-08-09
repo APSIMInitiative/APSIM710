@@ -2479,7 +2479,7 @@ c     :        , g%dlt_dm_green)
 *+  Local Variables
       integer supply_pools(num_supply_pools)
       data    supply_pools /flower,stem,leaf/      !in nwheat no carbon from leaves to grain  ??????????????
-      save    /supply_pools/
+      save    supply_pools
 
 c      REAL grain_max
 c      REAL grain_now
@@ -5032,7 +5032,7 @@ c     :          )
 *+  Local Variables
       integer demand_parts(num_demand_parts)
       data demand_parts /root,leaf,stem,flower/
-      save /demand_parts/
+      save demand_parts
 
       INTEGER current_phase
       REAL    dlt_dm_pot_radn

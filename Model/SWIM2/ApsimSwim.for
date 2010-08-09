@@ -8424,7 +8424,7 @@ cRC   Make sure uptake is not larger than available solute  -  RCichota 10/Jun/2
      :                    g%psuptake(solnum,crop,layer) + uptake
 
                   solute_in_layer(layer) = max(solute_in_layer(layer)
-     :                            - uptake,0)
+     :                            - uptake,0.0)
 
                   g%csl(solnum,layer) = apswim_solute_conc
      :                                  (solnum
@@ -10223,7 +10223,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       return
       end function
 
-      include 'swim.for'
+      include 'Swim.for'
 
       end module APSwimModule
 

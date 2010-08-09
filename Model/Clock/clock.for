@@ -87,6 +87,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       g%end_current_run = .false.
       g%pause_current_run = .false.
       g%PercentDone = 0
+	  g%end_date = 0.0
 
       ! read in all parameters for clock module.
       call clock_read_timesteps ()

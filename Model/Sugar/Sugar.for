@@ -5166,7 +5166,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
 *+  Initial Data Values
       integer demand_parts(num_demand_parts)
       data demand_parts /root,leaf,cabbage,sstem/
-      save /demand_parts/
+      save demand_parts
 
 *- Implementation Section ----------------------------------
       call push_routine (my_name)

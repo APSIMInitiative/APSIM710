@@ -2438,7 +2438,7 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
 *+  Local Variables
       integer    supply_pools(num_supply_pools)
       data supply_pools /stem,leaf/
-      save /supply_pools/
+      save supply_pools
 
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
@@ -3155,7 +3155,7 @@ c     :                           , 'grain_no_fract')
 *
       integer    demand_parts(num_demand_parts)
       data demand_parts /root,leaf,stem,flower/
-      save /demand_parts/
+      save demand_parts
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
@@ -4374,7 +4374,7 @@ csc  true....
       integer    current_phase
       integer    demand_parts(num_demand_parts)
       data demand_parts /root,leaf,stem,flower/
-      save /demand_parts/
+      save demand_parts
 
 *- Implementation Section ----------------------------------
       call push_routine (my_name)

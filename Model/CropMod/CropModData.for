@@ -713,7 +713,7 @@
 ! ===========================================================================
 !      Sequence
 
-         character part_names*32(max_parts)
+         character part_names(max_parts)*32
          character crop_type*32
          logical    phosphorus_aware
 
