@@ -93,15 +93,17 @@ void FortranComponentWrapper::swapInstanceIn()
    // We also keep track of the previous wrappers, necessary when one instance of a FORTRAN
    // model calls into another instance of the same FORTRAN component interface.
    // -----------------------------------------------------------------------
+#ifdef __WIN32__
    if (!swapMutexInited) {
      InitializeCriticalSection(&swapMutex);
      swapMutexInited = true;
    }
    EnterCriticalSection(&swapMutex);
+#endif
+   savedCommonBlocks.push(*realCommonBlock);
+   *realCommonBlock = ourCommonBlock;
    callStack.push(currentWrapper);
-
    currentWrapper = this;
-   memcpy(realCommonBlock, &ourCommonBlock, sizeof(CommonBlock));
    }
 void FortranComponentWrapper::swapInstanceOut()
    {
@@ -109,10 +111,9 @@ void FortranComponentWrapper::swapInstanceOut()
    // Save the contents of the real FORTRAN common block back into our
    // stored common block.
    // -----------------------------------------------------------------------
-   if ((currentWrapper = callStack.top()) != NULL)
-      {
-      memcpy(currentWrapper->realCommonBlock, &(currentWrapper->ourCommonBlock), sizeof(CommonBlock));
-      }
+   *realCommonBlock = savedCommonBlocks.top();
+   savedCommonBlocks.pop();
+   currentWrapper = callStack.top();
    callStack.pop();
 #ifdef __WIN32__
    LeaveCriticalSection(&swapMutex);

@@ -309,7 +309,7 @@ class FortranWrapper : public protocol::Component
 
 	  void swapInstanceIn(void);
 	  void swapInstanceOut(void);
-      Instance saved;
+	  std::stack<Instance> instanceStack;
       std::stack<FortranWrapper *> callStack;
 
       void setup(void);

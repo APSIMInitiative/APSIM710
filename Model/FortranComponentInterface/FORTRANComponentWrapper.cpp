@@ -281,7 +281,7 @@ void FortranWrapper::swapInstanceIn(void)
    }
    EnterCriticalSection(&swapMutex);
 #endif
-   saved = *instance;
+   instanceStack.push(*instance);
    *instance = myInstance;
    callStack.push(currentInstance);
    currentInstance = this;
@@ -289,7 +289,8 @@ void FortranWrapper::swapInstanceIn(void)
 
 void FortranWrapper::swapInstanceOut(void)
 {
-   *instance = saved;
+   *instance = instanceStack.top();
+   instanceStack.pop();
    currentInstance = callStack.top();
    callStack.pop();
 #ifdef __WIN32__
@@ -1529,9 +1530,9 @@ extern "C" bool EXPORT STDCALL component_name_to_id(char* name, int* id,
    if (ok)
 	 *id = iid;
    else
-	 *id = -1;
+	 *id = 0; // -1;
 
-   return ok;
+   return true; // ok;
    }
 // ------------------------------------------------------------------
 // Module is reading a string from a file.
