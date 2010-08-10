@@ -443,7 +443,7 @@ namespace ApsimFile
          else
             return AddShortCut(ComponentToDuplicate);
          }
-      private void ChildNodesRecursively(List<Component> AllChildNodes)
+      public void ChildNodesRecursively(List<Component> AllChildNodes)
          {
          // ---------------------------------------------------------------------
          // Fill the specified list will all child nodes recursively.
