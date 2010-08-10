@@ -82,7 +82,7 @@ module PublishEventsModule
    ! Loop through each variable on data string and store in postbox.
    call Get_next_variable (DataString, KeyName, KeyValue)
 
-   if (KeyValue <> ' ') then
+   if (KeyValue /= ' ') then
       ! Found a variable all right.  Extract units and store variable.
 
       call Split_off_units(KeyValue, KeyUnits)
@@ -90,7 +90,7 @@ module PublishEventsModule
 
       ! Loop through all values and store in KeyValues.
       call Split_line_with_quotes(KeyValue, KeyValues(NumValues), KeyValue, ' ')
-      do while (KeyValue <> ' ')
+      do while (KeyValue /= ' ')
          NumValues = NumValues + 1
          call Split_line_with_quotes(KeyValue, KeyValues(NumValues), KeyValue, ' ')
       enddo
@@ -214,7 +214,7 @@ module PublishEventsModule
                IncorpFOM%layer(i)%LabileP = 0
             end do
          endif
-         if (NumValues <> IncorpFOM%num_layer) then
+         if (NumValues /= IncorpFOM%num_layer) then
             call fatal_error(1, 'Invalid number of values on line: ' // trim(DataString))
          endif
 
