@@ -2267,7 +2267,7 @@ subroutine soilp_currentFOMpoolCPratio (fom_cp_pool, fom_cp, fom_cp_tot)
 
    real fom_c_tot
    real fom_p_tot
-   character*20 fom_cp_layer_name
+   character*25 fom_cp_layer_name
 
 !- Implementation Section ----------------------------------
 
