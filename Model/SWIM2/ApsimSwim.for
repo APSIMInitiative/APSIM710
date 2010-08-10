@@ -773,7 +773,7 @@ c     :              1.0d0)
      :              'soil_type',
      :              M+1,
      :              '(?)',
-     :              p%soil_type(0),
+     :              p%soil_type,
      :              numvals)
 
          ! ---------------- Configuration Information --------------
