@@ -198,7 +198,7 @@ Public Class GenericUI
    ''' </summary>
    Public Overrides Sub OnSave()
       If Grid.IsCurrentCellInEditMode Then
-         Grid.EndEdit()
+         Grid.EndEditMode()
       End If
       If IsDirty Then
          ' Remove existing XML nodes that don't have any children.
@@ -264,8 +264,7 @@ Public Class GenericUI
                NewRow.Height = 80
                
             Case "filename"
-               Dim Button As New DataGridViewButtonCell()
-               NewRow.Cells.Add(Button)
+               Grid.CreateButtonInCell(NewRow.Cells(4))
 
             Case "category"
                NewRow.Cells(3).ReadOnly = True  ' Make listitems field readonly
@@ -308,7 +307,12 @@ Public Class GenericUI
                Next
                ' If we found a crop row then go and get all cultivars for that crop.
                If CropRow < Grid.RowCount AndAlso Not IsDBNull(Grid.Rows(CropRow).Cells(4).Value) Then
-                  Dim Cultivars() As String = Types.Instance.Cultivars(Grid.Rows(CropRow).Cells(4).Value)
+                  Dim CropName As String = Grid.Rows(CropRow).Cells(4).Value
+                  Dim CropComponent As Component = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName)
+                  If Not IsNothing(CropComponent) Then
+                     CropName = CropComponent.Type
+                  End If
+                  Dim Cultivars() As String = Types.Instance.Cultivars(CropName)
                   Grid.CreateComboInCell(NewRow.Cells(4), Cultivars)
                End If
 
@@ -322,7 +326,12 @@ Public Class GenericUI
                Next
                ' If we found a crop row then go and get all cultivars for that crop.
                If CropRow < Grid.RowCount AndAlso Not IsDBNull(Grid.Rows(CropRow).Cells(4).Value) Then
-                  Dim Classes() As String = Types.Instance.Classes(Grid.Rows(CropRow).Cells(4).Value)
+                  Dim CropName As String = Grid.Rows(CropRow).Cells(4).Value
+                  Dim CropComponent As Component = Controller.ApsimData.Find(NodePath).FindComponentInPaddock(Controller.ApsimData.Find(NodePath), CropName)
+                  If Not IsNothing(CropComponent) Then
+                     CropName = CropComponent.Type
+                  End If
+                  Dim Classes() As String = Types.Instance.Classes(CropName)
                   Grid.CreateComboInCell(NewRow.Cells(4), Classes)
                End If
 

@@ -11,6 +11,7 @@ ProbeDLL Chickpea.xml
 ProbeDLL Clock.xml
 ProbeDLL Cowpea.xml
 ProbeDLL eo.xml
+ProbeDLL Fababean.xml
 ProbeDLL Fertiliser.xml
 ProbeDLL Fieldpea.xml
 ProbeDLL Horsegram.xml

@@ -38,11 +38,6 @@ namespace UIBits
             ValueInserted = true;
             }
          }
-      //protected override void OnKeyDown(KeyEventArgs e, int rowIndex)
-      //   {
-      //   if (e.KeyCode != Keys.Enter)
-      //      base.OnKeyDown(e, rowIndex);
-      //   }
       }
 
 
@@ -52,7 +47,6 @@ namespace UIBits
       public delegate void AddingNewRowDelegate(DataGridViewRow NewRow);
       private DataTable _DataSourceTable = null;
       private bool InRefresh;
-      private Timer Timer = new Timer();
       private List<string> ChangedColumnNames = new List<string>();
       private List<Point> SavedSelections = new List<Point>();
       public ContextMenuStrip PopupMenu = new ContextMenuStrip();
@@ -81,11 +75,7 @@ namespace UIBits
          CellDoubleClick += new DataGridViewCellEventHandler(OnCellDoubleClick);
          CellClick += new DataGridViewCellEventHandler(OnCellClick);
          EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEditingControlShowing);
-         CellValidating += new DataGridViewCellValidatingEventHandler(OnCellValidating);
-         Timer.Interval = 10;
-         Timer.Tick += new EventHandler(OnTimerTick); 
          RowHeadersVisible = false;
-         AllowUserToAddRows = false;
 
          // Populate the context menu.
          ToolStripMenuItem CopyItem = (ToolStripMenuItem) PopupMenu.Items.Add("Copy");
@@ -111,7 +101,7 @@ namespace UIBits
          MoveUpItem.Click += new EventHandler(OnMoveUp);
          ContextMenuStrip = PopupMenu;
          }
-    
+
       /// <summary>
       /// The edit control (e.g. combo box) is about to be shown. If we added a temporary item
       /// to the combo control (so that the grid doesn't reject a value) then remove it now so
@@ -127,6 +117,8 @@ namespace UIBits
             Combo.AutoCompleteMode = AutoCompleteMode.None;
             Combo.KeyDown -= new KeyEventHandler(OnComboKeyDown);
             Combo.KeyDown += new KeyEventHandler(OnComboKeyDown);
+            Combo.Leave -= new EventHandler(OnComboLeave);
+            Combo.Leave += new EventHandler(OnComboLeave);
             MyDataGridViewComboBoxCell MyCombo = (MyDataGridViewComboBoxCell)CurrentCell;
             if (MyCombo.ValueInserted)
                {
@@ -134,6 +126,20 @@ namespace UIBits
                Combo.Items.RemoveAt(0);
                Combo.Text = SavedText;
                }
+            }
+         }
+
+      /// <summary>
+      /// Need to trap the case when the user clicks away on the ComboBox.
+      /// </summary>
+      void OnComboLeave(object sender, EventArgs e)
+         {
+         DataGridViewComboBoxEditingControl Combo = (DataGridViewComboBoxEditingControl)EditingControl;
+         if (Combo != null)
+            {
+            string SavedValue = Combo.Text;
+            EndEdit();
+            CurrentCell.Value = SavedValue;
             }
          }
 
@@ -147,6 +153,10 @@ namespace UIBits
             DataGridViewComboBoxEditingControl Combo = (DataGridViewComboBoxEditingControl)EditingControl;
             if (Combo != null)
                {
+               // An EndEdit will trigger a Leave event on the ComboBox. We don't want to trap that
+               // so disable the event.
+               Combo.Leave -= new EventHandler(OnComboLeave);
+
                string SavedValue = Combo.Text;
                EndEdit();
                CurrentCell.Value = SavedValue;
@@ -155,28 +165,7 @@ namespace UIBits
             }
          }
 
-
-      /// <summary>
-      /// Cell is being validated. If it's a combo cell then make sure we don't reject
-      /// a value that isn't in the combo items list.
-      /// </summary>
-      private void OnCellValidating(object sender, DataGridViewCellValidatingEventArgs e)
-         {
-         if (CurrentCell is MyDataGridViewComboBoxCell)
-            {
-            MyDataGridViewComboBoxCell MyCombo = (MyDataGridViewComboBoxCell)CurrentCell;
-            if (MyCombo.Value == null || MyCombo.Value.ToString() != e.FormattedValue.ToString())
-               {
-               InRefresh = true;
-               MyCombo.Value = "";
-               InRefresh = false;
-               MyCombo.InsertValueIntoList(e.FormattedValue);
-               MyCombo.Value = e.FormattedValue;
-               }
-            }        
-         }
-
-      
+     
       /// <summary>
       /// This property should be used instead of the DataSource property.
       /// </summary>
@@ -212,7 +201,7 @@ namespace UIBits
                Columns[Col].SortMode = DataGridViewColumnSortMode.NotSortable;
                }
 
-            // Populate the grid cells.
+            // Populate the grid cells with new rows.
             Rows.Clear();
             for (int Row = 0; Row < DataSourceTable.Rows.Count; Row++)
                {
@@ -229,10 +218,22 @@ namespace UIBits
 
                Rows.Add(NewRow);
                }
+
             InRefresh = false;
             }
          }
 
+      public void EndEditMode()
+         {
+         if (IsCurrentCellInEditMode)
+            {
+            if (EditingControl != null)
+               CurrentCell.DetachEditingControl();
+
+            if (IsCurrentCellInEditMode)
+               EndEdit();
+            }
+         }
       /// <summary>
       /// This method will create a combo drop down, with the specified ComboItems, in the specified cell.
       /// </summary>
@@ -253,6 +254,15 @@ namespace UIBits
          }
 
       /// <summary>
+      /// This method will create a date drop downin the specified cell.
+      /// </summary>
+      public void CreateButtonInCell(DataGridViewCell Cell)
+         {
+         DataGridViewButtonCell Button = new DataGridViewButtonCell();
+         ReplaceCell(Cell, Button);
+         }
+
+      /// <summary>
       /// Replace the specified OldCell with the specified NewCell
       /// </summary>
       private static void ReplaceCell(DataGridViewCell OldCell, DataGridViewCell NewCell)
@@ -264,25 +274,6 @@ namespace UIBits
          OldCell.OwningRow.Cells[i].Value = OldValue;
          OldCell.OwningRow.Cells.RemoveAt(i + 1);
          }
-
-
-      /// <summary>
-      /// Unfortunatley, we need to invoke the TableColumnChanged event from a 
-      /// Timer tick! Otherwise, whoever subscribes to the TableColumnChanged
-      /// event cannot do a Rows.Clear() as the grid control whinges about
-      /// re-enterent code.
-      /// </summary>
-      void OnTimerTick(object sender, EventArgs e)
-         {
-         Timer.Enabled = false;
-         if (ChangedColumnNames.Count > 0)
-            {
-            if (TableColumnChangedEvent != null)
-               TableColumnChangedEvent.Invoke(ChangedColumnNames);
-            ChangedColumnNames.Clear();
-            }
-         }
-
 
       /// <summary>
       /// We need to trap the end of an edit and write the data back to the 
@@ -301,7 +292,10 @@ namespace UIBits
 
             DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
             ChangedColumnNames.Add(DataSourceTable.Columns[Col].ColumnName);
-            Timer.Enabled = true;
+
+            if (TableColumnChangedEvent != null)
+               TableColumnChangedEvent.Invoke(ChangedColumnNames);
+            ChangedColumnNames.Clear();
             }
          }
       
@@ -337,21 +331,29 @@ namespace UIBits
          {
          try
             {
-            // Make the values in the grid & table null.
+            InRefresh = true;
+
             List<string> ColumnsChanged = new List<string>();
-            for (int i = 0; i < SelectedCells.Count; i++)
+            SaveSelection();
+
+            // Make the values in the grid & table null.
+            foreach (Point Cell in SavedSelections)
                {
-               int Col = SelectedCells[i].ColumnIndex;
-               int Row = SelectedCells[i].RowIndex;
-               if (SelectedCells[i].Value.GetType() == typeof(string))
-                  SelectedCells[i].Value = "";
-               else
-                  SelectedCells[i].Value = DBNull.Value;
-               if (DataSourceTable != null)
-                  DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
-               if (!ColumnsChanged.Contains(Columns[Col].HeaderText))
-                  ColumnsChanged.Add(Columns[Col].HeaderText);
+               int Col = Cell.X;
+               int Row = Cell.Y;
+               if (Row < Rows.Count - 1)
+                  {
+                  if (Rows[Row].Cells[Col].Value.GetType() == typeof(string))
+                     Rows[Row].Cells[Col].Value = "";
+                  else
+                     Rows[Row].Cells[Col].Value = DBNull.Value;
+                  if (DataSourceTable != null)
+                     DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
+                  if (!ColumnsChanged.Contains(Columns[Col].HeaderText))
+                     ColumnsChanged.Add(Columns[Col].HeaderText);
+                  }
                }
+            InRefresh = false;
 
             // Now invoke the table column changed event.
             if (TableColumnChangedEvent != null)
@@ -413,7 +415,7 @@ namespace UIBits
             DataGridViewCell Cell;
             foreach (string Line in Lines)
                {
-               if (Line.Length > 0)
+              // if (Line.Length > 0)
                   {
                   string[] LineBits = Line.Split('\t');
                   for (int i = 0; i < LineBits.GetLength(0); ++i)
@@ -454,8 +456,8 @@ namespace UIBits
                      }
                   Row++;
                   }
-               else
-                  break; 
+               //else
+              //    break; 
                }
             }
          catch (Exception err)

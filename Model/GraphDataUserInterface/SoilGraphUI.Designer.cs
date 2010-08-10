@@ -543,7 +543,7 @@
          // 
          this.Chart.Zoom.Animated = true;
          this.Chart.Zoom.AnimatedSteps = 4;
-         this.Chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseClick);
+         this.Chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMouseClick);
          // 
          // MyHelpLabel
          // 

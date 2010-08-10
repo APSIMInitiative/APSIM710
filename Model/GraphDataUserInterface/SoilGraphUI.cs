@@ -16,10 +16,11 @@ namespace GraphDataUserInterface
    {
    public partial class SoilGraphUI : GraphDataUserInterface.GraphUI2
       {
-      private DataTable DataSource;
       private string FileName;
       private XmlNode OurData;
       private bool AdjustTopAxisTitle = false;
+      private Soil _Soil;
+      private string CurrentChartType;
 
       /// <summary>
       /// Constructor
@@ -29,11 +30,24 @@ namespace GraphDataUserInterface
          InitializeComponent();
          }
 
-      protected override void  OnLoad()
+      /// <summary>
+      /// UI has been loaded. Set ourselves up.
+      /// </summary>
+      protected override void OnLoad()
          {
  	      base.OnLoad();
          OurData = Data;
          Chart.Series.Clear();
+         CurrentChartType = OurData.Name;
+         }
+
+      /// <summary>
+      /// A property to allow the parent to give us a soil object.
+      /// </summary>
+      public Soil Soil
+         {
+         get { return _Soil; }
+         set { _Soil = value; }
          }
 
       /// <summary>
@@ -41,9 +55,13 @@ namespace GraphDataUserInterface
       /// </summary>
       public override void OnRefresh()
          {
-         Chart.Series.Clear();
+         Chart.Axes.Left.Automatic = true;
+         Chart.Axes.Top.Automatic = true;
+         Chart.Axes.Right.Automatic = true;
+         Chart.Axes.Bottom.Automatic = true;
+
          // Try and load an appropriate template.
-         FileName = Configuration.ApsimDirectory() + "\\UserInterface\\" + OurData.Name + ".xml";
+         FileName = Configuration.ApsimDirectory() + "\\UserInterface\\" + CurrentChartType + ".xml";
          XmlDocument Doc = new XmlDocument();
          if (File.Exists(FileName))
             Doc.Load(FileName);
@@ -58,19 +76,37 @@ namespace GraphDataUserInterface
          base.OnRefresh();
 
          // Get our data.
-         DataSource = GetDataSourceWithName("Data");
-         
+         DataTable DataSource = GetDataSourceWithName(CurrentChartType);
+
+         if (DataSource == null && CurrentChartType == "Water")
+            {
+            // Create a minimal water table. This happens for soil samples when the user
+            // clicks on the SW legend checkbox.
+            // Get our data.
+            List<string> VariableNames = new List<string>();
+            VariableNames.Add("DepthMidPoints (mm)");
+            VariableNames.Add("Airdry (mm/mm)");
+            VariableNames.Add("LL15 (mm/mm)");
+            VariableNames.Add("DUL (mm/mm)");
+            VariableNames.Add("SAT (mm/mm)");
+
+            DataTable Table = new DataTable();
+            _Soil.Write(Table, VariableNames);
+            Table.TableName = "Water";
+            AddDataSource(Table);
+            }
+
          AdjustTopAxisTitle = false;
          if (DataSource != null)
             {
-            if (XmlHelper.Name(OurData) == "Water" || XmlHelper.Name(OurData) == "InitWater")
-               AddLLSeries();
+            if (CurrentChartType == "Water" || CurrentChartType == "InitWater")
+               AddLLSeries(DataSource);
 
             else if (Chart.Series.Count == 0)
                {
                AdjustTopAxisTitle = true;
                for (int Col = 1; Col < DataSource.Columns.Count; Col++)
-                  AddSeries(DataSource.Columns[Col].ColumnName);
+                  AddSeries(DataSource, DataSource.Columns[Col].ColumnName);
                FormatTopAxis();
                }
             }
@@ -78,10 +114,23 @@ namespace GraphDataUserInterface
          // up some default chart settings.
          Chart.Axes.Left.Inverted = true;
 
+         // If this is a water chart AND the node the user is on is a sample node then
+         // the user has clicked on the "SW" in the legend. In this case we want to
+         // not only show the water chart but also overlay a SW series on top of it.
+         if (CurrentChartType == "Water" && OurData.Name == "Sample")
+            {
+            DataTable SampleDataSource = GetDataSourceWithName(OurData.Name);
+            Series SWSeries = AddSeries(SampleDataSource, "SW (mm/mm)");
+            SWSeries.Active = true;
+            }
+
          // Now we can populate all series as we've created our series.
          PopulateSeries();
          }
 
+      /// <summary>
+      /// If the chart is dirty then save it to XML file.
+      /// </summary>
       override public void OnSave()
          {
          if (UserHasChangedProperties)
@@ -98,42 +147,50 @@ namespace GraphDataUserInterface
             }
          }
 
-      private void AddLLSeries()
+      /// <summary>
+      /// Add all LL series found in the specified table to the chart.
+      /// </summary>
+      private void AddLLSeries(DataTable Table)
          {
          // Assumes that col 0 is the y axis variable.
-         for (int Col = 1; Col < DataSource.Columns.Count; Col++)
+         for (int Col = 1; Col < Table.Columns.Count; Col++)
             {
-            string ColumnName = DataSource.Columns[Col].ColumnName;
+            string ColumnName = Table.Columns[Col].ColumnName;
             // If this is a water chart then we only want to add crop LL series. Otherwise
             // we want to add all series.
             if (ColumnName.Contains(" LL"))
-               AddSeries(ColumnName);
+               AddSeries(Table, ColumnName);
             }
-         //ColorPalettes.ApplyPalette(Chart.Chart, Steema.TeeChart.Themes.Theme.ModernPalette);
-         //Chart.Refresh();
-         //FormatTopAxis();
          }
 
-      private void AddSeries(string ColumnName)
+      /// <summary>
+      /// A helper method to add a series to the chart.
+      /// </summary>
+      private Series AddSeries(DataTable Table, string ColumnName)
          {
-         if (DataSource.Columns[ColumnName].DataType != typeof(string))
+         if (Table.Columns[ColumnName].DataType != typeof(string))
             {
-            double[] x = DataTableUtility.GetColumnAsDoubles(DataSource, ColumnName);
+            double[] x = DataTableUtility.GetColumnAsDoubles(Table, ColumnName);
 
             // go add series if necessary.
             if (MathUtility.ValuesInArray(x))
                {
                Line Line = new Line();
-               Line.DataSource = DataSource;
+               Line.DataSource = Table;
                Line.Active = NoSeriesIsActive;
                Line.HorizAxis = HorizontalAxis.Top;
                Line.LinePen.Width = 2;
                Line.Title = ColumnName;
-               AddSeries(Line, "Data", ColumnName, DataSource.Columns[0].ColumnName);
+               AddSeries(Line, Table.TableName, ColumnName, Table.Columns[0].ColumnName);
+               return Line;
                }
             }
+         return null;
          }
 
+      /// <summary>
+      /// Helper property to return true if at least one chart series is active.
+      /// </summary>
       private bool NoSeriesIsActive
          {
          get
@@ -149,10 +206,40 @@ namespace GraphDataUserInterface
       /// The user has clicked on something. If they've clicked on the legend then go update
       /// the top axis title as they may have turned a series on/off.
       /// </summary>
-      private void Chart_MouseClick(object sender, MouseEventArgs e)
+      private void OnMouseClick(object sender, MouseEventArgs e)
          {
-         if (AdjustTopAxisTitle && Chart.Legend.ShapeBounds.Contains(e.Location))
+         if (AdjustTopAxisTitle)
             FormatTopAxis();
+         
+         if (Chart.Legend.ShapeBounds.Contains(e.Location))
+            {
+            bool SWSelected = false;
+            foreach (Series s in Chart.Series)
+               {
+               if (s.Active)
+                  {
+                  if (s.Title.Contains("SW "))
+                     SWSelected = true;
+                  else
+                     {
+                     SWSelected = false;
+                     break;
+                     }
+                  }
+               }
+            if (SWSelected)
+               {
+               Chart.Series.Clear();
+               CurrentChartType = "Water";
+               OnRefresh();
+               }
+            else if (FileName.Contains("Water.xml"))
+               {
+               Chart.Series.Clear();
+               CurrentChartType = OurData.Name;
+               OnRefresh();
+               }
+            }
          }
 
       /// <summary>

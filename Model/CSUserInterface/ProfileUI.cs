@@ -40,6 +40,7 @@ namespace CSUserInterface
          Properties.OnLoad(Controller, NodePath, Data.OuterXml);
 
          // Call OnLoad in our graph
+         Graph.Soil = _Soil;
          Graph.OnLoad(Controller, NodePath, Controller.ApsimData.Find(NodePath).Contents);
          Graph.Parent = this;
          Graph.Visible = true;
@@ -51,7 +52,7 @@ namespace CSUserInterface
          if (SplitterPositionString != "")
             TopPanel.Height = Convert.ToInt32(SplitterPositionString);
          Table = new DataTable();
-         Table.TableName = "Data";
+         Table.TableName = Data.Name;
          Grid.DataSourceTable = null;
          }
 
@@ -321,13 +322,19 @@ namespace CSUserInterface
       /// </summary>
       private void UpdateTotalGrid()
          {
+         this.TotalGrid.CellValueChanged -= new System.Windows.Forms.DataGridViewCellEventHandler(this.OnTotalGridCellValueChanged);
+
          bool TotalsFound = false;
+         TotalGrid.RowCount = 1;
          TotalGrid.ColumnCount = Grid.Columns.Count;
          for (int Col = 0; Col < Grid.Columns.Count; Col++)
             {
             TotalGrid.Columns[Col].Visible = Grid.Columns[Col].Visible;
             TotalGrid.Columns[Col].Width = Grid.Columns[Col].Width;
             TotalGrid.Columns[Col].Frozen = Grid.Columns[Col].Frozen;
+            TotalGrid.Columns[Col].ReadOnly = !Grid.Columns[Col].HeaderText.Contains("NO3") &&
+                                              !Grid.Columns[Col].HeaderText.Contains("NH4");
+
             if (Grid.RowCount > 1 && 
                (Grid.Columns[Col].HeaderText.Contains("NO3") || 
                 Grid.Columns[Col].HeaderText.Contains("NH4") ||
@@ -354,7 +361,7 @@ namespace CSUserInterface
                }
             TotalGrid.HorizontalScrollingOffset = Grid.HorizontalScrollingOffset;
             }
-
+         this.TotalGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnTotalGridCellValueChanged);
          }
 
       /// <summary>
@@ -400,7 +407,8 @@ namespace CSUserInterface
             }
          OnRefresh();
          RefreshGraph();
-         Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
+         if (RowIndex < Grid.Rows.Count-1 && ColIndex < Grid.Columns.Count-1)
+            Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
          }
 
       /// <summary>
@@ -446,6 +454,27 @@ namespace CSUserInterface
          Table.Columns[OldColumnName].ColumnName = NewColumnName;
          SaveTableColumn(NewColumnName);
          OnRefresh();         
+         }
+
+      /// <summary>
+      /// User has changed a total value.
+      /// </summary>
+      private void OnTotalGridCellValueChanged(object sender, DataGridViewCellEventArgs e)
+         {
+         double[] Values = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+         double OldSum = MathUtility.Sum(Values);
+         double NewSum = Convert.ToDouble(TotalGrid.CurrentCell.Value);
+         double Scale = NewSum / OldSum;
+         for (int i = 0; i < Values.Length; i++)
+            Values[i] *= Scale;
+
+         _Soil.SetVariable(Grid.Columns[e.ColumnIndex].HeaderText, Values);
+         OnRefresh();
+         }
+
+      private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+         {
+         TotalGrid.BeginEdit(true);
          }
 
 

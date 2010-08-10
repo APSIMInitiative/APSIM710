@@ -59,6 +59,7 @@ namespace GraphDataUserInterface
          Chart.Export.Template.Save(St);
          byte[] byteArray = St.ToArray();
          XmlHelper.SetValue(Data, "TeeChartFormat", Convert.ToBase64String(byteArray));
+         IsDirty = false;
          }
 
       public bool UserHasChangedProperties

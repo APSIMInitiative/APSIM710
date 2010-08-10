@@ -25,7 +25,7 @@ TrackerVariable::TrackerVariable(protocol::Component* p, const string& fullName)
    startPeriodComponentID = endPeriodComponentID = eventComponentID = -1;
    inWindow = false;
    parse(fullName);
-   sampleDate = "?";
+   sampleDate = 0;
    }
 // ------------------------------------------------------------------
 // Parse the name passed in.
@@ -178,6 +178,7 @@ void TrackerVariable::doRegistrations(void)
    {
    static const char* nullDDML = "<type/>";
    static const char* stringDDML = "<type kind=\"string\"/>";
+   static const char* doubleDDML = "<type kind=\"double\"/>";
    static const char* singleArrayDDML = "<type kind=\"single\" array=\"T\"/>";
    string typeString = singleArrayDDML;
 
@@ -242,7 +243,7 @@ void TrackerVariable::doRegistrations(void)
       nameID = parent->addRegistration(::respondToGet,
                                        -1,
                                        name,
-                                       stringDDML);
+                                       doubleDDML);
       }
    else
       {
@@ -309,7 +310,7 @@ void TrackerVariable::doSample(void)
                                                  "today",
                                                  protocol::DDML(today).c_str());
       parent->getVariable(todayID, today, -1.0E12, 1.0E12);
-      sampleDate = to_dmy(date(today));
+      sampleDate = today;
       }
    else if (inWindow)
       {

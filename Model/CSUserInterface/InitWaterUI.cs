@@ -501,7 +501,7 @@ namespace CSUserInterface
 
          DataTable Table = new DataTable();
          _Soil.Write(Table, Names);
-         Table.TableName = "Data";
+         Table.TableName = "InitWater";
 
          SoilGraph.AddDataSource(Table);
          SoilGraph.OnRefresh();

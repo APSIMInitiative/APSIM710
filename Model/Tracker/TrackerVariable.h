@@ -42,7 +42,7 @@ class TrackerVariable
       int endPeriodComponentID;
 
       unsigned last;
-      std::string sampleDate;
+      double sampleDate;
 
       unsigned startPeriodID;
       unsigned endPeriodID;

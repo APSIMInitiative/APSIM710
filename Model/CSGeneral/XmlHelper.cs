@@ -353,6 +353,12 @@ namespace CSGeneral
             i++;
             }
          }
+      public static void SetValues(XmlNode Node, string NamePath, string[] Values)
+         {
+         List<string> Vals = new List<string>();
+         Vals.AddRange(Values);
+         SetValues(Node, NamePath, Vals);
+         }
       public static string Attribute(XmlNode Node, string AttributeName)
          {
          // -----------------------------------------------------------------

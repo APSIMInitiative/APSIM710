@@ -143,7 +143,6 @@ namespace ApsimFile
             MyName = value;
             EnsureNameIsUnique();
             MyFile.PublishComponentChanged(this.Parent);
-
             }
          }
       public string Type
@@ -444,7 +443,7 @@ namespace ApsimFile
          else
             return AddShortCut(ComponentToDuplicate);
          }
-      public void ChildNodesRecursively(List<Component> AllChildNodes)
+      private void ChildNodesRecursively(List<Component> AllChildNodes)
          {
          // ---------------------------------------------------------------------
          // Fill the specified list will all child nodes recursively.
@@ -535,11 +534,10 @@ namespace ApsimFile
          }
       public Component FindContainingPaddock()
          {
-         Component Current = this;
-         while (Current != null && Current.Type != "area" && Current.Type != "simulation" &&
-                                   Current.Type != "folder")
-            Current = Current.Parent;
-         return Current;
+         Component Paddock = this;
+         while (Paddock != null && Paddock.Type != "area" && Paddock.Type != "simulation")
+            Paddock = Paddock.Parent;
+         return Paddock;
          }
 
       public Component FindRecursively(string ComponentName, string ComponentType)
@@ -642,10 +640,10 @@ namespace ApsimFile
          // outside the paddock.
          Component Paddock = FindContainingPaddock();
          List<Component> ComponentsInPaddock = new List<Component>();
-         ChildNodesRecursively(ComponentsInPaddock);
+         Paddock.ChildNodesRecursively(ComponentsInPaddock);
          foreach (Component ChildComponent in ComponentsInPaddock)
             {
-            if (ChildComponent.Name.ToLower() == Name.ToLower())
+            if (ChildComponent.Name.ToLower() == Name.ToLower() && ChildComponent.Type != "SoilCrop")
                return ChildComponent;
             }
          return null;

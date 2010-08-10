@@ -66,6 +66,7 @@ namespace ApsimFile
 
          XmlDocument Doc = new XmlDocument();
          XmlNode AllSoils = Doc.CreateElement("AllSoils");
+         Doc.AppendChild(AllSoils);
          
          // Loop through all blocks of rows in datatable from XLS, create a
          // soil and store soil in correct location in the AllSoils XML.
@@ -78,8 +79,9 @@ namespace ApsimFile
             AddSoilToXML(NewSoil, AllSoils);
 
             Row += NewSoil.Variable("Thickness (mm)").Length;
+            NewSoil = null;
+            GC.Collect();
             }
-
          return AllSoils.InnerXml;
          }
 

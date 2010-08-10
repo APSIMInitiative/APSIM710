@@ -63,14 +63,16 @@ namespace CSUserInterface
             // 
             this.Grid.AllowUserToAddRows = false;
             this.Grid.AllowUserToDeleteRows = false;
+            this.Grid.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Grid.DataSourceTable = null;
             this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Grid.Location = new System.Drawing.Point(270, 23);
+            this.Grid.Location = new System.Drawing.Point(270, 25);
             this.Grid.Name = "Grid";
             this.Grid.RowHeadersVisible = false;
-            this.Grid.Size = new System.Drawing.Size(385, 251);
+            this.Grid.Size = new System.Drawing.Size(385, 241);
             this.Grid.TabIndex = 25;
+            this.Grid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.OnGridScroll);
             // 
             // Label
             // 
@@ -79,7 +81,7 @@ namespace CSUserInterface
             this.Label.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.Label.Location = new System.Drawing.Point(270, 0);
             this.Label.Name = "Label";
-            this.Label.Size = new System.Drawing.Size(385, 23);
+            this.Label.Size = new System.Drawing.Size(385, 25);
             this.Label.TabIndex = 24;
             // 
             // TotalPanel
@@ -87,42 +89,47 @@ namespace CSUserInterface
             this.TotalPanel.Controls.Add(this.TotalGrid);
             this.TotalPanel.Controls.Add(this.DummyScrollBar);
             this.TotalPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.TotalPanel.Location = new System.Drawing.Point(270, 274);
+            this.TotalPanel.Location = new System.Drawing.Point(270, 266);
             this.TotalPanel.Name = "TotalPanel";
-            this.TotalPanel.Size = new System.Drawing.Size(385, 24);
+            this.TotalPanel.Size = new System.Drawing.Size(385, 32);
             this.TotalPanel.TabIndex = 23;
             // 
             // TotalGrid
             // 
+            this.TotalGrid.AllowUserToAddRows = false;
+            this.TotalGrid.AllowUserToDeleteRows = false;
             this.TotalGrid.AllowUserToResizeColumns = false;
             this.TotalGrid.AllowUserToResizeRows = false;
-            this.TotalGrid.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.TotalGrid.BackgroundColor = System.Drawing.SystemColors.Info;
             this.TotalGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.TotalGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.TotalGrid.ColumnHeadersVisible = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.Format = "N3";
             dataGridViewCellStyle1.NullValue = null;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.TotalGrid.DefaultCellStyle = dataGridViewCellStyle1;
-            this.TotalGrid.Location = new System.Drawing.Point(0, 0);
+            this.TotalGrid.Location = new System.Drawing.Point(0, 3);
             this.TotalGrid.Name = "TotalGrid";
             this.TotalGrid.RowHeadersVisible = false;
             this.TotalGrid.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.TotalGrid.Size = new System.Drawing.Size(368, 24);
+            this.TotalGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.TotalGrid.Size = new System.Drawing.Size(368, 27);
             this.TotalGrid.TabIndex = 23;
+            this.TotalGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
+            this.TotalGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
             // 
             // DummyScrollBar
             // 
             this.DummyScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
             this.DummyScrollBar.Location = new System.Drawing.Point(368, 0);
             this.DummyScrollBar.Name = "DummyScrollBar";
-            this.DummyScrollBar.Size = new System.Drawing.Size(17, 24);
+            this.DummyScrollBar.Size = new System.Drawing.Size(17, 32);
             this.DummyScrollBar.TabIndex = 24;
             this.DummyScrollBar.Visible = false;
             // 

@@ -44,32 +44,32 @@ Public Class BaseView
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.MyHelpLabel = New System.Windows.Forms.Label
-        Me.SuspendLayout()
-        '
-        'MyHelpLabel
-        '
-        Me.MyHelpLabel.BackColor = System.Drawing.SystemColors.Highlight
-        Me.MyHelpLabel.Dock = System.Windows.Forms.DockStyle.Top
-        Me.MyHelpLabel.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MyHelpLabel.ForeColor = System.Drawing.SystemColors.HighlightText
-        Me.MyHelpLabel.Location = New System.Drawing.Point(0, 0)
-        Me.MyHelpLabel.Name = "MyHelpLabel"
-        Me.MyHelpLabel.Size = New System.Drawing.Size(655, 40)
-        Me.MyHelpLabel.TabIndex = 1
-        Me.MyHelpLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.MyHelpLabel.Visible = False
-        '
-        'BaseView
-        '
-        Me.AutoScroll = True
-        Me.BackColor = System.Drawing.SystemColors.Window
-        Me.Controls.Add(Me.MyHelpLabel)
-        Me.Name = "BaseView"
-        Me.Size = New System.Drawing.Size(655, 541)
-        Me.ResumeLayout(False)
+      Me.MyHelpLabel = New System.Windows.Forms.Label
+      Me.SuspendLayout()
+      '
+      'MyHelpLabel
+      '
+      Me.MyHelpLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
+      Me.MyHelpLabel.Dock = System.Windows.Forms.DockStyle.Top
+      Me.MyHelpLabel.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+      Me.MyHelpLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+      Me.MyHelpLabel.Location = New System.Drawing.Point(0, 0)
+      Me.MyHelpLabel.Name = "MyHelpLabel"
+      Me.MyHelpLabel.Size = New System.Drawing.Size(655, 40)
+      Me.MyHelpLabel.TabIndex = 1
+      Me.MyHelpLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+      Me.MyHelpLabel.Visible = False
+      '
+      'BaseView
+      '
+      Me.AutoScroll = True
+      Me.BackColor = System.Drawing.SystemColors.Window
+      Me.Controls.Add(Me.MyHelpLabel)
+      Me.Name = "BaseView"
+      Me.Size = New System.Drawing.Size(655, 541)
+      Me.ResumeLayout(False)
 
-    End Sub
+   End Sub
 #End Region
 
     Public Overloads Sub OnLoad(ByVal Controller As BaseController, _
