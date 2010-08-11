@@ -128,15 +128,25 @@ namespace ApsimFile
             Current = Child;
             while (Current.Parent != null)
             {
-                if (Current.Parent.Type.ToLower() == "graph")
+                switch (Current.Parent.Type.ToLower())
                 {
-                    DoesAllow = true;
+                    case "graph":
+                        DoesAllow = true;
+                        break;
+                    case "ausfarmpasture":
+                        DoesAllow = true;
+                        break;
+                }
+                if (DoesAllow == true)
+                {
+                    //break out of the while loop.
                     break;
                 }
                 Current = Current.Parent;
             }
 
 
+            //Return the result
             return DoesAllow;
         }
 
