@@ -237,7 +237,14 @@ Public Class BaseController
             ' The strings returned contain data paths to all
             ' selected nodes.
             ' --------------------------------------------------------
-            Dim ReturnValues As New StringCollection        'temporary collection used to store selected paths  
+            Dim ReturnValues As New StringCollection        'temporary collection used to store selected paths
+
+            'if the selected path is nothing, then set it to the root component in the .apsim file.
+            If (IsNothing(MySelectedData)) Then
+                Dim temp As New StringCollection
+                temp.Add(ApsimData.RootComponent.FullPath)
+                SelectedPaths = temp
+            End If
 
             For Each FullPath As String In MySelectedData   'store selected paths in temporary collection
                 ReturnValues.Add(FullPath)

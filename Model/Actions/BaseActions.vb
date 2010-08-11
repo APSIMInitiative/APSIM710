@@ -84,7 +84,10 @@ Public Class BaseActions
             If NewName <> "" Then
 
                 If Not CSGeneral.Utility.CheckForInvalidChars(NewName) Then
-                    Controller.Selection.Name = NewName
+                    Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(SelectedPath)
+                    Comp.Name = NewName
+                    ' Now tell the base controller about the new selections.
+                    Controller.SelectedPath = Comp.FullPath
                 Else
                     MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! in the name")
                 End If

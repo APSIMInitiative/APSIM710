@@ -373,7 +373,7 @@ Public Class DataTree
                         Comp.Name = e.Label
 
                         ' Now tell the base controller about the new selections.
-                        Controller.SelectedPath = GetPathFromNode(e.Node.Parent) + "/" + e.Label
+                        Controller.SelectedPath = Comp.FullPath
 
                     Else
 
