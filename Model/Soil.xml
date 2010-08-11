@@ -20,7 +20,7 @@
     </drops>
     <ApsimToSim>
       [foreach Soil.SoilWat]
-      <component name="[soil.Name] Water" executable="%apsim%\Model\SoilWat.dll"><executable>%apsim%\Model\SoilWat.dll</executable><initdata>
+      <component name="[soil.Name] Water" executable="%apsim%\Model\SoilWat.dll"><executable name="%apsim%\Model\SoilWat.dll" version="1.0" /><initdata>
                [Model SoilWat]
                <diffus_const>[soil.DiffusConst]</diffus_const><diffus_slope>[soil.DiffusSlope]</diffus_slope><cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><SummerCona>[soil.SummerCona]</SummerCona><WinterCona>[soil.WinterCona]</WinterCona><SummerU>[soil.SummerU]</SummerU><WinterU>[soil.WinterU]</WinterU><SummerDate>[soil.SummerDate]</SummerDate><WinterDate>[soil.WinterDate]</WinterDate><dlayer>[soil.Thickness(mm)]</dlayer><sat>[soil.Sat(mm/mm)]</sat><dul>[soil.Dul(mm/mm)]</dul><ll15>[soil.LL15(mm/mm)]</ll15><air_dry>[soil.AirDry(mm/mm)]</air_dry><swcon>[soil.SWCon(0-1)]</swcon><bd>[soil.BD(g/cc)]</bd><sw>[soil.SW(mm/mm)]</sw>
                [if [soil.MWCon(0-1)]]
@@ -47,7 +47,7 @@
          </initdata></component>
       [endfor]
       [foreach Soil.Swim]
-      <component name="SWIM" executable="%apsim%\Model\swim3.dll"><executable>%apsim%\Model\Swim3.dll</executable><initdata>
+      <component name="SWIM" executable="%apsim%\Model\swim3.dll"><executable name="%apsim%\Model\Swim3.dll" version="1.0" /><initdata>
                [Model Swim3]
                <cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb>
                <dlayer>[soil.Thickness (mm)]</dlayer>
@@ -103,7 +103,7 @@
              </initdata>
           </component>
       [endfor]
-      <component name="[soil.Name] Nitrogen" executable="%apsim%\Model\SoilN.dll"><executable>%apsim%\Model\SoilN.dll</executable><initdata>
+      <component name="[soil.Name] Nitrogen" executable="%apsim%\Model\SoilN.dll"><executable name="%apsim%\Model\SoilN.dll" version="1.0" /><initdata>
                [Model SoilN]
                [if "[soil.SoilType]"]
                <soiltype>[soil.SoilType]</soiltype>
@@ -114,7 +114,7 @@
                [endif]
          </initdata></component>
       [if "[soil.RootCP]"]
-      <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll"><executable>%apsim%\Model\SoilP.dll</executable><initdata>
+      <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll"><executable name="%apsim%\Model\SoilP.dll" version="1.0" /><initdata>
                [Model SoilP]
                <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption></initdata></component>
       [endif]
@@ -550,17 +550,15 @@
     <!--  Note that sorption_coeff and p_supply_factor will need to be varied together
       provision for other crops, but only maize has been tested against measured data
       -->
-    <crop_name description="name of crop">maize   wheat  navybean  cowpea  pigeonpea  soybean  peanut  mungbean weed sorghum butterflypea centro lablab</crop_name>
-    <!--  **************************************************
-      -->
-    <p_supply_factor units="??" description="used with sorpt_coeff = 0.7">0.45   0.4    0.4       0.4     0.6        0.4      0.4          0.4      0.4   0.4</p_supply_factor>
+    <crop_name description="name of crop">                               maize wheat navybean cowpea pigeonpea soybean peanut mungbean weed sorghum butterflypea centro lablab</crop_name>
+    <p_supply_factor units="??" description="used with sorpt_coeff = 0.7">0.45   0.4      0.4    0.4       0.6     0.4    0.4      0.4  0.4     0.4          0.4    0.4    0.4</p_supply_factor>
     <!-- ! FIXME - navybean reduced because of correction to P demand in Plant - switched off in code
       !p_supply_factor =   0.45   0.4    0.24       0.4     0.6        0.4      0.4          0.4      0.4   0.4   (??)        ! used with sorpt_coeff = 0.7
       p_supply_factor =   0.1    0.1                                      (??)   ! used with sorpt_coeff = 1
       p_supply_factor =   4      4.0                                         (??)   ! used with sorpt_coeff = 0.5
       **************************************************
       -->
-    <crit_p_rlv units="mm/mm^3" description="critical P rlv">0.00001  0.00001  0.00001  0.00001  0.00001  0.00001  0.00001</crit_p_rlv>
+    <crit_p_rlv units="mm/mm^3" description="critical P rlv">          0.00001 0.00001 0.00001 0.00001  0.00001 0.00001 0.00001 0.00001 0.00001 0.00001  0.00001  0.00001 0.00001 </crit_p_rlv>
     <!-- upper and lower bounds for soil P pools
       -->
     <lb_labile_p_ppm>0</lb_labile_p_ppm>
@@ -720,6 +718,7 @@
       <variable name="ll15_dep" description="" read="T" write="T" kind="single" array="T" units="mm" />
       <variable name="max_pond" description="" read="F" write="T" kind="single" array="" units="mm" />
       <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="outflow_lat" description="" read="T" write="F" kind="single" array="T" units="mm" />
       <variable name="pond" description="" read="T" write="F" kind="single" array="" units="mm" />
       <variable name="pond_evap" description="" read="T" write="F" kind="single" array="" units="mm" />
       <variable name="profile_esw_depth" description="" read="F" write="T" kind="single" array="" units="mm" />
