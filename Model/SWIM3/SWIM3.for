@@ -244,25 +244,25 @@
          double precision g1
          double precision grc
 
-         double precision dis(nsol)
+         double precision dis
          double precision ex(nsol,0:M)
          double precision cslgw(nsol)
          double precision slupf (nsol)
-         double precision slos (nsol)
          double precision slsci (nsol)
          double precision slscr (nsol)
          double precision dcon (nsol)
-         double precision dthc (nsol)
-         double precision dthp (nsol)
-         double precision disp (nsol)
-         double precision fip(nsol)
+         double precision a
+         double precision dthc 
+         double precision dthp 
+         double precision disp
+         double precision fip(nsol,0:M)
 
          double precision bbc_value
          double precision water_table_conductance
 
          double precision init_psi  (0:M)
          double precision rhob(0:M)
-         double precision exco(nsol)
+         double precision exco(nsol,0:M)
 
          integer          n
          double precision x(0:M)
@@ -329,6 +329,9 @@
 
          double precision  hydrol_effective_depth
 
+         double precision slos (nsol)
+         double precision d0 (nsol)
+         
       End Type APSwimConstants
 
       ! instance variables.
@@ -362,12 +365,12 @@
 
       call apswim_get_other_variables ()
 
-      ! Get all constants from constants file
-      call apswim_read_constants ()
-
       ! set swim defaults - params that are not to be set by user
       call apswim_init_defaults ()
       
+      ! Get all constants from constants file
+      call apswim_read_constants ()
+     
       ! Get all parameters from parameter file
       call apswim_read_param ()
 
@@ -478,7 +481,7 @@ c      endif
 
          call Read_double_var_optional (
      :              parameters_section,
-     :              'WaterTableDepth',
+     :              'watertabledepth',
      :              '()',
      :              temp,
      :              numvals,
@@ -487,16 +490,15 @@ c      endif
        if (numvals.gt.0) then
          p%ibbc = 1
          p%bbc_value = temp
-         print*,p%bbc_value
 
-         call Read_double_var (
-     :              parameters_section,
-     :              'water_table_conductance',
-     :              '(/h)',
-     :              p%water_table_conductance,
-     :              numvals,
-     :             0d0,
-     :              1d0)
+c         call Read_double_var (
+c     :              parameters_section,
+c     :              'watertableconductance',
+c     :              '(/h)',
+c     :              p%water_table_conductance,
+c     :              numvals,
+c     :             0d0,
+c     :              1d0)
 
        else
           ! Assume constant gradient BBC
@@ -517,20 +519,6 @@ c      endif
          p%ivap = 1
       else
          p%ivap = 0
-      endif
-
-      call Read_char_array (
-     :           parameters_section,
-     :           'run_solutes',
-     :           nsol,
-     :           '()',
-     :           p%solute_names,
-     :           p%num_solutes)
-
-      if ((p%num_solutes.eq.1).and.(p%solute_names(1).eq.'none')) then
-         ! user wants no solutes
-         p%num_solutes = 0
-         p%solute_names(1) = ' '
       endif
 
 
@@ -1368,19 +1356,6 @@ cnh added as per request by Dr Val Snow
      :            dble_exco(0),
      :            p%n+1)
 
-      else if (index(Variable_name,'dis_').eq.1) then
-
-         solnum = apswim_solute_number (Variable_name(5:))
-         do 300 node=0,p%n
-            dble_dis(node) = p%dis(solnum)
-  300    continue
-
-         call respond2Get_double_array (
-     :            Variable_name,
-     :            '()',
-     :            dble_dis(0),
-     :            p%n+1)
-
       else if (index(Variable_name,'conc_water_').eq.1) then
 
          solname = Variable_name(12:)
@@ -1430,6 +1405,12 @@ cnh added as per request by Dr Val Snow
      :            Variable_name,
      :            '(mm)',
      :            water_table)
+
+      else if (Variable_name .eq. 'work') then
+         call respond2Get_double_var (
+     :            Variable_name,
+     :            '()',
+     :            g%work)
 
       else if (Variable_name .eq. 'swim3') then
          call respond2Get_real_var (
@@ -1514,22 +1495,6 @@ cnh added as per request by Dr Val Snow
          do 300 node=0,numvals-1
             p%ex(solnum,node) = sol_exco(node)*p%rhob(node)
   300    continue
-
-      else if (index(Variable_name,'dis_').eq.1) then
-
-         solnum = apswim_solute_number (Variable_name(5:))
-         call collect_double_array (
-     :              Variable_name,
-     :              p%n+1,
-     :              '()',
-     :              sol_dis(0),
-     :              numvals,
-     :              0d0,
-     :              20d0)
-
-         do 400 node=0,numvals-1
-            p%dis(solnum) = sol_dis(node)
-  400    continue
 
       elseif (Variable_name .eq. 'scon') then
          call collect_double_var (
@@ -1768,9 +1733,8 @@ cnh      slbp0 = 0d0
 * =====================================================================
       do 32 counter = 1, nsol
          do 30 counter2 = 0,M
-            p%dis(counter)=0d0
             p%ex(counter,counter2)=0d0
-            p%fip(counter)=0d0
+            p%fip(counter,counter2)=0d0
    30    continue
 
          do 31 counter2 = 0,M
@@ -1778,17 +1742,17 @@ c            indxsl(counter,counter2)=0
    31    continue
 
          p%slupf(counter) = 0d0
-         p%slos(counter) = 0d0
+         c%slos(counter) = 0d0
+         c%d0(counter) = 0d0
          p%slsci(counter) = 0d0
          p%slscr(counter) = 0d0
          p%dcon(counter) = 0d0
-         p%dthc(counter) = 0d0
-         p%dthp(counter) = 0d0
-         p%disp(counter) = 0d0
-
    32 continue
-
-
+         p%dthc = 0d0
+         p%dthp = 0d0
+         p%a    = 0d0
+         p%dis=0d0         
+         p%disp = 0d0
 * =====================================================================
 *      common/itern/p%ersoil,p%ernode,p%errex,p%dppl,p%dpnl,g%work,p%slcerr,g%slwork
 * =====================================================================
@@ -2057,15 +2021,28 @@ c     :             p%rhob)
 
       do 40 node = 0,p%n
          do 30 solnum = 1,p%num_solutes
-            p%ex(solnum,node) = p%rhob(node)*p%exco(solnum)
+            p%ex(solnum,node) = p%rhob(node)*p%exco(solnum,node)
    30    continue
    40 continue
 
       ! Calculate Water Table If Required
       if (p%ibbc.eq.1) then
-         print*,p%bbc_value
          p%bbc_value = p%x(p%n) - p%bbc_value/10d0
-         print*, p%n, p%x(p%n), p%bbc_value
+      else if (p%ibbc.eq.4) then
+         !p%bbc_value = p%x(p%n) - p%bbc_value/10d0
+         ! Now reset theta to saturated below the water table
+c         do 50 node = 0,p%n
+c            if (p%x(node).gt.(p%bbc_value/10d0 - 100d0))then
+c               g%psi(node) = p%x(node)-p%bbc_value/10d0
+c               g%th(node) = apswim_Simpletheta(node,g%psi(node))
+c               g%p(node)=apswim_pf(g%psi(node))
+c            endif
+c   50    continue
+   
+         g%psi(p%n) = p%x(p%n)-p%bbc_value/10d0
+         g%th(p%n) = apswim_Simpletheta(p%n,g%psi(p%n))
+         g%p(p%n)=apswim_pf(g%psi(p%n))
+            
       endif
 
       return
@@ -2146,17 +2123,11 @@ c     :             p%rhob)
       double precision temp
 
 *- Implementation Section ----------------------------------
-c         print*,'a'
          tth   = apswim_Simpletheta(node,tpsi)
-c         print*,'b'
          temp  = apswim_Simpletheta(node,tpsi+dpsi)
-c         print*,'c'
          thd   = (temp-tth)/log10((tpsi+dpsi)/tpsi)
-c         print*,'d'         
          hklg  = log10(apswim_SimpleK(node,tpsi))
-c         print*,'e'         
          temp  = log10(apswim_SimpleK(node,tpsi+dpsi))
-c         print*,'f'         
          hklgd = (temp-hklg)/log10((tpsi+dpsi)/tpsi)
       return
       end subroutine
@@ -2247,19 +2218,16 @@ c         print*,'f'
       double precision DELk(4),Mk(4),Y,Y0,Y1,T,m0,M1,alpha,beta,phi,tau
       
 *- Implementation Section ----------------------------------
-c      print*,'delk'
       DELk(1) = (p%dul(layer) - p%sat(layer)) / (Log10(-p%psid(layer)))
       DELk(2) = (p%ll15(layer) - p%dul(layer)) 
      :        / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
       DELk(3) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
       DELk(4) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
-c      print*,'m'  
       Mk(1) = 0d0
       Mk(2) = (DELk(1) + DELk(2)) / 2d0
       Mk(3) = (DELk(2) + DELk(3)) / 2d0
       Mk(4) = DELk(4)
 
-c      print*,'mono'
       ! First bit might not be monotonic so check and adjust
       alpha = Mk(1) / DELk(1)
       beta = Mk(2) / DELk(1)
@@ -2270,7 +2238,6 @@ c      print*,'mono'
          Mk(2) = tau * beta * DELk(1)
       EndIf
 
-c      print*,'coeffs'
       if (psi.ge.-1d0) then
          m0 = 0
          m1 = 0
@@ -2291,16 +2258,21 @@ c      print*,'coeffs'
          T = (Log10(-psi) - Log10(-p%psid(layer))) 
      :         / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
          
-      Else
+      Elseif (psi .gt. psi0) then
          m0 = Mk(3) * (Log10(-psi0) - Log10(-psi_ll15))
          M1 = Mk(4) * (Log10(-psi0) - Log10(-psi_ll15))
          Y0 = p%ll15(layer)
          Y1 = 0d0
          T = (Log10(-psi) - Log10(-psi_ll15)) 
      :        / (Log10(-psi0) - Log10(-psi_ll15))
+      else
+         m0 = 0
+         M1 = 0
+         Y0 = 0
+         Y1 = 0
+         T = 0
       End If
 
-c      print*,'interp'
       Y = (2 * T**3 - 3 * T**2 + 1) * Y0 
      :  + (T**3 - 2 * T**2 + T) * m0 
      :  + (-2 * T**3 + 3 * T**2) * Y1 
@@ -2346,15 +2318,13 @@ c      print*,'interp'
       double precision dul
       double precision ll
       double precision sat
-
+      double precision b
 !      double precision PII
 
 *- Implementation Section ----------------------------------
 
-c       print*,'SimpleK',psi
-       
+      
        S = Apswim_SimpleS(layer,psi)
-c       print*,'S',S
        if (S.le.0d0) then
           apswim_SimpleK = 1d-100
        else
@@ -2364,16 +2334,15 @@ c       print*,'S',S
 
          ! use Kdul at psidul rather than at field DUL
 c         dul = Apswim_Simpletheta(layer,p%psid(layer))
-c         print*,layer,p%Psidul
          dul = Apswim_Simpletheta(layer,p%Psidul) 
          
-c         print*,'dul',dul,layer,p%Psidul
          Sdul = dul/sat
          ll = Apswim_Simpletheta(layer,psi_ll15)
 c         ll = Apswim_Simpletheta(layer,-20000.d0)
 
-c         print*,sat,dul,ll
-         MicroP = log10(Kdula/Kll)/log10(dul/ll)
+c         MicroP = log10(Kdula/Kll)/log10(dul/ll)
+         b = -log(p%Psidul/psi_ll15)/log(dul/ll)
+         MicroP = b*2d0+3d0
 
          MicroKs = Kdula/(dul/sat)**MicroP
 
@@ -2500,7 +2469,6 @@ cnh
       call event_send(unknown_module,'swim_timestep_preparation')
 
 *        calculate next step size_of g%dt
-c         print*,g%t
 
          ! Start with first guess as largest size_of possible
          g%dt = p%dtmax
@@ -2907,7 +2875,6 @@ cnh
          do 205 j=0,p%n
             call apswim_interp(j,psio(i),tho(j,i),thd,hklo(j,i),hklgd)
             hko(j,i) = 10d0**hklo(j,i)
-c            print*,i,j
   205    continue
   210 continue
       
@@ -3115,6 +3082,8 @@ c            print*,i,j
 * ====================================================================
       Use infrastructure
       implicit none
+      real temp(0:M)
+      integer numvals
 
 *- Implementation Section ----------------------------------
 
@@ -3146,6 +3115,26 @@ c      eqr0  = 0.d0
       p%itbc = 0
       ! No storage of water on soil surface
       p%isbc = 0
+
+
+      p%solute_names(1) = 'no3'
+      p%solute_names(2) = 'nh4'
+      p%solute_names(3) = 'urea'
+      p%num_solutes = 3
+      
+      call get_real_array_optional (
+     :           unknown_module,
+     :           'cl',
+     :           M+1,
+     :           '()',
+     :           temp,
+     :           numvals,
+     :           0e0,
+     :           1e6)      
+      if (numvals.gt.0) then
+         p%solute_names(4) = 'cl'      
+         p%num_solutes = 4
+      endif
 
       return
       end subroutine
@@ -3473,141 +3462,62 @@ c      eqr0  = 0.d0
       implicit none
 
 *+  Local Variables
-       character table_name (nsol)*(strsize)
-       double precision table_d0(nsol)
-       double precision table_disp(nsol)
-       double precision table_slos(nsol)
-cnh       double precision table_slsci(nsol)
-cnh       double precision table_slscr(nsol)
-       double precision table_a(nsol)
-       double precision table_dthp(nsol)
-       double precision table_dthc(nsol)
-       double precision table_exco(nsol)
-       double precision table_fip(nsol)
-       double precision table_dis(nsol)
-       double precision table_cslgw(nsol)
+       double precision temp(0:M)
        integer numvals
        integer solnum
-       integer solnum2
-       logical found
+
+
 
 *- Implementation Section ----------------------------------
 
       ! First - Read in solute information
             ! ----------------------------------
-       numvals = 0
 
-      call Read_char_array(
-     :           solute_section,
-     :           'solute_name',
-     :           nsol,
-     :           '()',
-     :           table_name,
-     :           numvals)
-
-
-      call Read_double_array(
-     :           solute_section,
-     :           'slos',
-     :           nsol,
-     :           '()',
-     :           table_slos,
-     :           numvals,
-     :           0d0,
-     :           10d0)
-
-      call Read_double_array(
-     :           solute_section,
-     :           'd0',
-     :           nsol,
-     :           '()',
-     :           table_d0,
-     :           numvals,
-     :           0d0,
-     :           1d0)
-
-      call Read_double_array(
-     :           solute_section,
-     :           'a',
-     :           nsol,
-     :           '()',
-     :           table_a,
-     :           numvals,
-     :           0d0,
-     :           100d0)
-
-
-      call Read_double_array(
-     :           solute_section,
-     :           'dthc',
-     :           nsol,
-     :           '()',
-     :           table_dthc,
-     :           numvals,
-     :           0d0,
-     :           1d0)
-
-
-      call Read_double_array(
-     :           solute_section,
-     :           'dthp',
-     :           nsol,
-     :           '()',
-     :           table_dthp,
-     :           numvals,
-     :           0d0,
-     :           10d0)
-
-      call Read_double_array(
-     :           solute_section,
-     :           'disp',
-     :           nsol,
-     :           '()',
-     :           table_disp,
-     :           numvals,
-     :           0d0,
-     :           5d0)
-
-      call Read_double_array(
-     :           solute_section,
-     :           'exco',
-     :           nsol,
-     :           '()',
-     :           table_exco,
-     :           numvals,
-     :           0d0,
-     :           15000d0)
-
-
-      call Read_double_array(
-     :           solute_section,
-     :           'fip',
-     :           nsol,
-     :           '()',
-     :           table_fip,
-     :           numvals,
-     :           0d0,
-     :           100d0)
-
-      call Read_double_array(
+      call Read_double_var(
      :           solute_section,
      :           'dis',
-     :           nsol,
      :           '()',
-     :           table_dis,
+     :           p%dis,
      :           numvals,
      :           0d0,
      :           20d0)
 
-      call Read_double_array(
+      call Read_double_var(
      :           solute_section,
-     :           'ground_water_conc',
-     :           nsol,
-     :           '(ppm)',
-     :           table_cslgw,
+     :           'disp',
+     :           '()',
+     :           p%disp,
      :           numvals,
      :           0d0,
-     :           1000d0)
+     :           5d0)
+     
+      call Read_double_var(
+     :           solute_section,
+     :           'a',
+     :           '()',
+     :           p%a,
+     :           numvals,
+     :           0d0,
+     :           1d0)
+
+      call Read_double_var(
+     :           solute_section,
+     :           'dthc',
+     :           '(mm/mm)',
+     :           p%dthc,
+     :           numvals,
+     :           0d0,
+     :           1d0)
+
+      call Read_double_var(
+     :           solute_section,
+     :           'dthp',
+     :           '()',
+     :           p%dthp,
+     :           numvals,
+     :           0d0,
+     :           10d0)
+     
 
       ! Now find what solutes are out there and assign them the relevant
       ! ----------------------------------------------------------------
@@ -3615,32 +3525,42 @@ cnh       double precision table_slscr(nsol)
       !                --------------------------
 
       do 200 solnum = 1, p%num_solutes
-         found = .false.
 
-         do 150 solnum2 = 1,nsol
-            if (table_name(solnum2).eq.p%solute_names(solnum)) then
-               
-               p%slos(solnum)  = table_slos(solnum2)
-cnh               g%slsci(solnum) = table_slsci(solnum2)
-cnh               g%slscr(solnum) = table_slscr(solnum2)
-               p%dthc(solnum) = table_dthc(solnum2)
-               p%dthp(solnum) = table_dthp(solnum2)
-               p%disp(solnum) = table_disp(solnum2)
-               p%exco(solnum) = table_exco(solnum2)
-               p%fip(solnum) = table_fip(solnum2)
-               p%dis(solnum) = table_dis(solnum2)
-               p%cslgw(solnum) = table_cslgw(solnum2)
-               p%dcon(solnum) = table_d0(solnum2)*table_a(solnum2)
-               found = .true.
-            else
-            endif
-  150    continue
+         temp(:)=0d0
+         call Read_double_array(
+     :           solute_section,
+     :           Trim(p%solute_names(solnum))//'Exco',
+     :           M+1,
+     :           '()',
+     :           temp,
+     :           numvals,
+     :           0d0,
+     :           15000d0)
+         p%exco(solnum,0:M)=temp(0:M)
+         temp(:)=0d0
+         call Read_double_array(
+     :           solute_section,
+     :           Trim(p%solute_names(solnum))//'FIP',
+     :           M+1,
+     :           '()',
+     :           temp,
+     :           numvals,
+     :           0d0,
+     :           15000d0)
+         p%fip(solnum,0:M)=temp(0:M)
 
-         if (.not.found) then
-            call fatal_error (Err_User,
-     :            'no params for '//p%solute_names(solnum))
-         else
-         endif
+
+         call Read_double_var(
+     :           solute_section,
+     :           'WaterTable'//Trim(p%solute_names(solnum)),
+     :           '(ppm)',
+     :           p%cslgw(solnum),
+     :           numvals,
+     :           0d0,
+     :           10d0)
+     
+           
+               p%dcon(solnum) = c%d0(solnum)*p%a
 
   200 continue
 
@@ -4864,6 +4784,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
 *+  Local Variables
        integer numvals                 ! number of values read from file
+       integer solnum
 
 *- Implementation Section ----------------------------------
 
@@ -5153,6 +5074,30 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              numvals,
      :               0d0,
      :               1d4)
+     
+      ! Solute Constants
+      ! ================
+      
+      do 100 solnum = 1, p%num_solutes
+         call Read_double_var (
+     :              section_name,
+     :              Trim(p%solute_names(solnum))//'slos',
+     :              '()',
+     :              c%slos(solnum),
+     :              numvals,
+     :               0d0,
+     :               1d4)
+         call Read_double_var (
+     :              section_name,
+     :              Trim(p%solute_names(solnum))//'d0',
+     :              '()',
+     :              c%d0(solnum),
+     :              numvals,
+     :               0d0,
+     :               1d4)
+      
+  100 continue
+
      
       return
       end subroutine
@@ -5752,11 +5697,11 @@ cnh      end if
       else
 
          Ctot = g%th(node) * Cw
-     :        + p%ex(solnum,node) * Cw ** p%fip(solnum)
+     :        + p%ex(solnum,node) * Cw ** p%fip(solnum,node)
          dCtot = g%th(node)
      :         + p%ex(solnum,node)
-     :         *p%fip(solnum)
-     :         *Cw**(p%fip(solnum)-1d0)
+     :         *p%fip(solnum,node)
+     :         *Cw**(p%fip(solnum,node)-1d0)
       endif
 
       return
@@ -5811,7 +5756,7 @@ cnh      end if
          ! Take intital guess at Cw
 
          Cw = (ddivide (Ctot, (g%th(node)+p%ex(solnum,node))
-     :        , 0.d0))**(1.0/p%fip(solnum))
+     :        , 0.d0))**(1.0/p%fip(solnum,node))
      
          ! calculate value of isotherm function and the derivative.
 
@@ -6492,7 +6437,7 @@ cnh      end if
 
                   conc_adsorb_solute(node) =
      :                      p%ex(solnum,node)
-     :                     * conc_water_solute ** p%fip(solnum)
+     :                     * conc_water_solute ** p%fip(solnum,node)
 
 
                endif
@@ -6952,8 +6897,9 @@ cnh      end if
 *- Implementation Section ----------------------------------
 
       ! set default value to bottom of soil profile.
+      
       water_table = p%x(p%n)*10d0
-
+      
       loop: do i=0,p%n
          if (g%psi(i).gt.0) then
             water_table = (p%x(i)-g%psi(i))*10d0

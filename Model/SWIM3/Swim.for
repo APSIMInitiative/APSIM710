@@ -109,7 +109,7 @@ C     Last change:  DSG  15 Jun 2000    3:40 pm
 10    continue
          it=it+1
 *        get balance eqns
-         call apswim_baleq(it,iroots,p%slos,g%csl,i1,i2,a,b,c_
+         call apswim_baleq(it,iroots,c%slos,g%csl,i1,i2,a,b,c_
      :                    ,rhs)
 *        test for convergence to soln
 cnh hey - wpf has no arguments !
@@ -692,7 +692,7 @@ cnh added to allow seepage to user potential at bbc
          end if
       else if(p%ibbc.eq.4)then
 **       flux calculated according to head difference from water table
-         headdiff = g%psi(p%n) - p%x(p%n) + p%bbc_value/10d0   ! cm
+         headdiff = g%psi(p%n) - p%x(p%n) + p%bbc_value/10d0
      :
          g%q(p%n+1)= headdiff*p%water_table_conductance
          qp1(p%n+1)=psip(p%n)*p%water_table_conductance
@@ -913,7 +913,7 @@ cnh         j=indxsl(solnum,i)
 *Peter's CHANGE 21/10/98 to ensure zero exchange is treated as linear
 *         if (p%fip(solnum,j).eq.1.) then
          if ((Doubles_are_equal(p%ex(solnum,j),0.0d0)).or.
-     :    (Doubles_are_equal(p%fip(solnum),1.0d0))) then
+     :    (Doubles_are_equal(p%fip(solnum,j),1.0d0))) then
 *           linear exchange isotherm
             c2(i)=1.
             exco1=p%ex(solnum,j)
@@ -921,8 +921,8 @@ cnh         j=indxsl(solnum,i)
 *           nonlinear Freundlich exchange isotherm
             nonlin=.TRUE.
             c2(i)=0.
-            if(c1(i).gt.0.)c2(i)=c1(i)**(p%fip(solnum)-1.)
-            exco1=p%ex(solnum,j)*p%fip(solnum)*c2(i)
+            if(c1(i).gt.0.)c2(i)=c1(i)**(p%fip(solnum,i)-1.)
+            exco1=p%ex(solnum,j)*p%fip(solnum,j)*c2(i)
          end if
          b(i)=(-(thi+exco1)/g%dt)*p%dx(i)
 cnh     1        apswim_slupf(1,solnum)*g%qex(i)-g%qssof(i)
@@ -946,11 +946,11 @@ cnh     1        p%slupf(solnum)*g%qex(i)
             thav=0.5*(g%th(i-1)+g%th(i))
             aq=abs(g%q(i))
             g%dc(solnum,i)=p%dcon(solnum)
-     :                    *(thav-p%dthc(solnum))**p%dthp(solnum)
+     :                    *(thav-p%dthc)**p%dthp
 cnh     1            +0.5*(p%dis(solnum,indxsl(solnum,i-1))
-     1            +0.5*(p%dis(solnum)
+     1            +0.5*(p%dis
 cnh     :            +p%dis(solnum,indxsl(solnum,i)))*(aq/thav)**p%disp(solnum)
-     :            +p%dis(solnum))*(aq/thav)**p%disp(solnum)
+     :            +p%dis)*(aq/thav)**p%disp
             dfac=thav*g%dc(solnum,i)/(p%x(i)-p%x(i-1))
             if(p%slswt.ge..5.and.p%slswt.le.1.)then
 *              use fixed space weighting on convection
@@ -1091,13 +1091,13 @@ cnh end subroutine
                   END if
 cnh               kk=indxsl(solnum,i)
                kk = i
-               if(.not.Doubles_are_equal(p%fip(solnum),1.0d0))then
+               if(.not.Doubles_are_equal(p%fip(solnum,i),1.0d0))then
                   cp=0.
                   if(g%csl(solnum,i).gt.0.)then
-                     cp=g%csl(solnum,i)**(p%fip(solnum)-1.)
+                     cp=g%csl(solnum,i)**(p%fip(solnum,i)-1.)
                   endif
-                  d1=p%fip(solnum)*(cp-c2(i))
-                  d2=(1.-p%fip(solnum))
+                  d1=p%fip(solnum,i)*(cp-c2(i))
+                  d2=(1.-p%fip(solnum,i))
      :              *(g%csl(solnum,i)*cp-c1(i)*c2(i))
                   c1(i)=g%csl(solnum,i)
                   c2(i)=cp
@@ -1179,10 +1179,10 @@ cnh               kk=indxsl(solnum,i)
 cnh         j=indxsl(solnum,i)
          j = i
          cp=1.
-         if(.not.Doubles_are_equal(p%fip(solnum),1.0d0))then
+         if(.not.Doubles_are_equal(p%fip(solnum,i),1.0d0))then
             cp=0.
             if(g%csl(solnum,i).gt.0.)
-     :            cp=g%csl(solnum,i)**(p%fip(solnum)-1.)
+     :            cp=g%csl(solnum,i)**(p%fip(solnum,i)-1.)
          end if
          g%cslt(solnum,i)=(g%th(i)+p%ex(solnum,j)*cp)*g%csl(solnum,i)
 
