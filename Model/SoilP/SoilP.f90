@@ -129,9 +129,6 @@ module SoilPModule
       real         p_supply_factor (max_crops)
                                        !  factor to calc potential P supply from soil P status
 
-      real         crit_p_rlv (max_crops)
-                                       ! critical rlv above which p status is maximum
-
       real         lb_labile_p_ppm         ! lower bound for labile P (ppm)
       real         ub_labile_p_ppm         ! upper bound for labile P (ppm)
       real         lb_unavail_p        ! lower bound for unavailable P (kg/ha)
@@ -366,7 +363,6 @@ subroutine soilp_zero_variables ()
    call fill_real_array (g%banded_p, 0.0, max_layer)
    call fill_real_array (g%effective_p, 0.0, max_layer)
    call fill_real_array (p%sorption, 0.0, max_layer)
-   call fill_real_array (c%crit_p_rlv, 0.0, max_crops)
    call fill_real_array (c%p_supply_factor, 0.0, max_crops)
    call fill_real_array (g%dlt_fom_c_hum, 0.0, max_layer)
    call fill_real_array (g%dlt_fom_c_biom, 0.0, max_layer)
@@ -792,6 +788,7 @@ subroutine soilp_read_constants ()
    call read_real_var (section_name, 'eff_band', '()', c%eff_band, numvals, 0.0, 100.0)
 
    call read_real_var (section_name, 'biom_cp', '()', c%biom_cp, numvals, 0.0, 100.0)
+   
 
    call read_real_var (section_name, 'hum_cp', '()', c%hum_cp, numvals, 0.0, 100.0)
 
@@ -809,10 +806,6 @@ subroutine soilp_read_constants ()
    call Read_char_array(section_name,'crop_name',max_crops,'()',c%crop_table_name,num_crops_read)
 
    call read_real_array (section_name,'p_supply_factor',max_crops,'()',c%p_supply_factor,numvals,0.0,10.0)
-   if (num_crops_read .ne. numvals) then
-      call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
-   endif
-   call read_real_array (section_name,'crit_p_rlv',max_crops,'()',c%crit_p_rlv,numvals,0.0,100.0)
    if (num_crops_read .ne. numvals) then
       call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
    endif
