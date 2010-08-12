@@ -438,19 +438,22 @@ Public Class OutputFileDescUI
       End If
 
    End Sub
-   Private Sub PopulateConstants()
-      Dim ConstantsNode As XmlNode = XmlHelper.Find(Data, "constants")
-      If Not IsNothing(ConstantsNode) Then
-         Dim NumConstants As Integer = XmlHelper.ChildNodes(ConstantsNode, "").Count
-         Dim Lines(NumConstants) As String
-         Dim Index As Integer = 0
-         For Each Constant As XmlNode In XmlHelper.ChildNodes(ConstantsNode, "")
-            Lines(Index) = Constant.Name + " = " + Constant.InnerText
-            Index = Index + 1
-         Next
-         ConstantsBox.Lines = Lines
-      End If
-   End Sub
+    Private Sub PopulateConstants()
+        'Clear out all the old stuff because these UI's are reused by other nodes of the same type.
+        ConstantsBox.Clear()
+        'Fill it in with the new stuff from this node.
+        Dim ConstantsNode As XmlNode = XmlHelper.Find(Data, "constants")
+        If Not IsNothing(ConstantsNode) Then
+            Dim NumConstants As Integer = XmlHelper.ChildNodes(ConstantsNode, "").Count
+            Dim Lines(NumConstants) As String
+            Dim Index As Integer = 0
+            For Each Constant As XmlNode In XmlHelper.ChildNodes(ConstantsNode, "")
+                Lines(Index) = Constant.Name + " = " + Constant.InnerText
+                Index = Index + 1
+            Next
+            ConstantsBox.Lines = Lines
+        End If
+    End Sub
    Private Sub PopulateVariableListView()
       ' ----------------------------------------------
       ' Populate the variable list view box
