@@ -3114,7 +3114,8 @@ c+!!!!!!!!! check order dependency of deltas
      :                       ,g%sw_supply
      :                       )
 
-         if (g%uptake_source.eq.'apsim') then
+         if ((g%uptake_source.eq.'apsim').or. 
+     :       (g%uptake_source.eq.'swim3')) then
             ! Use the water uptake values given by some other
             ! module in the APSIM system. (eg APSWIM)
             ! KEEP other variables calculated above.

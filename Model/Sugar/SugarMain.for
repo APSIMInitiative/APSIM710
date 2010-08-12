@@ -2080,7 +2080,8 @@ cnh     :                 ' Initialising')
       integer    numvals               !
       character  string*200            ! output string
       real       rlv (max_layer)
-
+      real       swim3
+      
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -2105,6 +2106,17 @@ cnh     :                 ' Initialising')
      :                     , '()'
      :                     , g%uptake_source
      :                     , numvals)
+
+      call get_real_var_optional (unknown_module
+     :                           , 'swim3'
+     :                           , '()'
+     :                           , swim3
+     :                           , numvals
+     :                           , 0.0
+     :                           , 1.0)
+      if (numvals.gt.0) then
+         g%uptake_source = 'swim3'
+      endif
 
       call read_real_array (section_name
      :                     , 'xf', max_layer, '()'
@@ -2170,6 +2182,15 @@ cnh     :                 ' Initialising')
          call write_string
      :      ('Sugar module is using uptakes'//
      :       ' provided from another module')
+         call write_string (new_line//new_line)
+
+      else if (g%uptake_source .eq. 'swim3') then
+
+          ! report
+         call write_string (new_line//new_line)
+         call write_string
+     :      ('Sugar module is using water uptake'//
+     :       ' provided from Swim3')
          call write_string (new_line//new_line)
 
       else
@@ -2701,6 +2722,19 @@ c      call sugar_update_other_variables ()
      :                    , dlt_NH4, num_layers)
          call set_real_array (unknown_module, 'dlt_sw_dep', '(mm)'
      :                    , g%dlt_sw_dep, num_layers)
+
+      elseif (g%uptake_source.eq.'swim3') then
+         num_layers = count_of_real_vals (g%dlayer, max_layer)
+
+         do 2000 layer = 1, num_layers
+            dlt_NO3(layer) = g%dlt_NO3gsm(layer) * gm2kg /sm2ha
+            dlt_NH4(layer) = g%dlt_NH4gsm(layer) * gm2kg /sm2ha
+2000     continue
+
+         call set_real_array (unknown_module, 'dlt_no3', '(kg/ha)'
+     :                    , dlt_NO3, num_layers)
+         call set_real_array (unknown_module, 'dlt_nh4', '(kg/ha)'
+     :                    , dlt_NH4, num_layers)
 
       else
          ! assume that the module that calculated uptake has also
