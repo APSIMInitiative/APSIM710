@@ -30,14 +30,11 @@ Phosphorus::~Phosphorus()
 //--------------------------------------------------------------------------------------------------
 void Phosphorus::doRegistrations(void)
    {
-   float p_dead = 0.0;
    scienceAPI.expose("pfact_pheno",     "",     "Phosphorus stress factor for phenology",      false, phenoStress);
    scienceAPI.expose("pfact_expansion", "",     "Phosphorus stress factor for leaf expansion", false, expansionStress);
    scienceAPI.expose("pfact_photo",     "",     "Phosphorus stress factor for photosynthesis", false, photoStress);
    scienceAPI.expose("pfact_grain",     "",     "Phosphorus stress factor for grain",          false, grainStress);
    scienceAPI.expose("p_total_uptake",  "g/m2", "Today's P uptake",                            false, pUptakeTotal);
-   scienceAPI.expose("p_dead",          "g/m2", "p_dead",                                      false, p_dead);
-
 
    scienceAPI.expose("BiomassP",        "g/m2", "BiomassP",                                    false, pBiomass);
 
