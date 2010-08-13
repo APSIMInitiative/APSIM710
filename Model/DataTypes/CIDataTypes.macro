@@ -249,7 +249,7 @@ namespace protocol {
       messageData >> data.num_[field.name];
       for (unsigned i = 0; i != data.num_[field.name]; i++)
          {
-         FString [field.name]String(&data.[field.name][i*max_array_size], max_array_size, FORString);
+         FString [field.name]String(&data.[field.name][i*max_array_size], max_array_size, EmptyString);
          FString [field.name]Alias;
          messageData >> [field.name]Alias;
          [field.name]String = [field.name]Alias;
@@ -259,7 +259,7 @@ namespace protocol {
       for (unsigned i = 0; i != data.num_[field.name]; i++)
          messageData >> data.[field.name][i];
       [elseif [field.rawcpptype] = std::string]
-      FString [field.name]String(data.[field.name], max_array_size, FORString);
+      FString [field.name]String(data.[field.name], max_array_size, EmptyString);
       FString [field.name]Alias;
       messageData >> [field.name]Alias;
       [field.name]String = [field.name]Alias;

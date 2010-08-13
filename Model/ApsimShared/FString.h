@@ -7,7 +7,10 @@
 #ifdef __WIN32__
    #include <memory.h>
 #endif
-enum StringType {CString, FORString};
+
+// This enumeration tells the constructor of an alias how to determine
+// the initial "real" length of the string.
+enum StringType {CString, FORString, EmptyString};
 
 // ------------------------------------------------------------------
 //  Short description:
@@ -46,6 +49,8 @@ class FString
          aliasTo(t, tLength);
          if (stringType == CString)
             realLen = strlen(t);
+         else if (stringType == EmptyString)
+            realLen = 0;
          else
             calcRealLength();
          }
@@ -57,7 +62,9 @@ class FString
          aliasTo(t, tLength);
          if (stringType == CString)
             realLen = strlen(t);
-         else
+         else if (stringType == EmptyString)
+            realLen = 0;
+		 else
             calcRealLength();
          }
       // copy constructor
@@ -113,7 +120,8 @@ class FString
                      "to hold the string:\n", rhs);
             else
                {
-               memcpy(text, rhs.f_str(), rhsLength);
+               if (text != rhs.text)
+                  memcpy(text, rhs.f_str(), rhsLength);
                memset(&text[rhsLength], ' ', len - rhsLength);
                realLen = rhsLength;
                }
