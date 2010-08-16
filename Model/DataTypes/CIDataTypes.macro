@@ -328,21 +328,34 @@ proc unpack_Variant {data} {
       if {$nchar > 0} {
          set name [string range $data 4 [expr 4+$nchar-1]]         ;# Name
          set data [string range $data [expr 4+$nchar] end]
-         binary scan $data iic nchar5 typeCode isArray             ;# type & array flag
+         binary scan $data iic nchar typeCode isArray              ;# type & array flag
          set data [string range $data 9 end]
+         if {$isArray} {binary scan $data i nelem; set data [string range $data 4 end]} else {set nelem 1}
+         set value {}
          if {$typeCode == 8} {
-            binary scan $data i nchar                              ;# string value
-            set value [string range $data 4 [expr 4+$nchar-1]]
-            set data [string range $data [expr 4+$nchar] end]
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data i nchar                              ;# string value
+               lappend value [string range $data 4 [expr 4+$nchar-1]]
+               set data [string range $data [expr 4+$nchar] end]
+            }  
          } elseif {$typeCode == 2} {
-            binary scan $data i value                              ;# integer
-            set data [string range $data 4 end]
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data i datum                              ;# integer
+               lappend value $datum
+               set data [string range $data 4 end]
+            }   
          } elseif {$typeCode == 4} {
-            binary scan $data f value                              ;# float
-            set data [string range $data 4 end]
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data f datum                              ;# float
+               lappend value $datum
+               set data [string range $data 4 end]
+            }   
          } elseif {$typeCode == 5} {
-            binary scan $data d value                              ;# double
-            set data [string range $data 8 end]
+            for {set i 0} {$i < $nelem} {incr i} {
+               binary scan $data d datum                              ;# double
+               lappend value $datum
+               set data [string range $data 8 end]
+            }   
          } else {
             ;#set value "<undef>"
             error "Unhandled variant typecode $typeCode"
@@ -355,6 +368,7 @@ proc unpack_Variant {data} {
    }
    return [array get result]
 }
+
 
 proc unpack_MessageData {data} {
    binary scan $data ii result(id) result(publishedByID)  ;# id, publishedByID
@@ -437,6 +451,37 @@ proc unpack_[type.name] {data} {
       array set result [process_ddml $result(ddml) $data]
    }
    return [array get result]
+}
+
+proc pack_[type.name] {args} {
+   foreach {_name _value} $args { set ${_name} ${_value} }
+[foreach type.field]
+[if [field.array] = T]
+   append _msg [binary format d [llength $[field.name]]
+   for {set i 0} {$i < [llength $[field.name]]} {incr i} {
+     set _field [lindex $[field.name] $i]
+[else]
+     set _field $[field.name]
+[endif]
+ [if [field.rawcpptype] = double]
+     append _msg [binary format d ${_field}]
+ [elseif [field.rawcpptype] = bool]
+     append _msg [binary format i ${_field}] 
+ [elseif [field.rawcpptype] = int]
+     append _msg [binary format i ${_field}] 
+ [elseif [field.rawcpptype] = float]
+     append _msg [binary format f ${_field}]
+ [elseif [field.rawcpptype] = std::string]
+     append _msg [binary format i [string length ${_field}]]
+     append _msg [binary format a[string length ${_field}] ${_field}]
+ [else]
+     error "cant deal with [field.rawcpptype] yet"
+ [endif]
+[if [field.array] = T]
+   }
+[endif]
+[endfor]
+   return ${_msg}
 }
 [endfor]
 

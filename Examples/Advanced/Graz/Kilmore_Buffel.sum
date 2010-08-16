@@ -1,3 +1,4 @@
+Written C:\r993pdev\Examples\Advanced\Graz\Kilmore_Buffel.sim
      ###     ######     #####   #   #     #   
     #   #    #     #   #        #   ##   ##   
    #     #   #     #   #        #   ##   ##   
@@ -100,243 +101,247 @@ Paddock:
   Initial Stocking rate: 0
   Initial Live Weight: 0
 
-
-------- Farm Manager Initialisation -------------------------------------------
+Farm Manager: 
      Copyright (C) 1991-1994 The Regents of the University of California.
      Copyright (C) 1996-1997 Sun Microsystems, Inc.
      Copyright (C) 2001      ActiveState.
      --->Section: init
-     
-     
-     ## Grazing stuff here
-     set config(p1,state)  "off"
-     set config(p1,area)   100.0
-     set config(p2,state)  "off"
-     set config(p2,area)   100.0
-     set config(p3,state)  "off"
-     set config(p3,area)   100.0
-     set config(p4,state)  "off"
-     set config(p4,area)   100.0
-     set config(BCS,state) "off"
-     set config(BCS,area)  100.0
-     
-     set config(cull_cows,state) "off"
-     set config(bollocks,state) "off"
-     
-     set config(paddocks) [list p1 p2 p3 p4 BCS]
-     set config(animals)  [list cull_cows bollocks]
-     
-     set grass_in 0
-     
-     #Move stock somewhere.
-     # which   = name of the animal module
-     # paddock = the paddock they're going to
-     # crop    = The name of the crop they'll eat
-     proc moveStockTo {which paddock crop} {
-        global config
-        if {$crop == "feedlot"} {
-           apsimSet .masterpm.$which.pasture_source ".masterpm.farm manager"
-        } else {
-           apsimSet .masterpm.$which.pasture_source ".masterpm.$paddock.$crop"
-           set newSr [expr $config($which,number) / $config($paddock,area)]
-           apsimSet .masterpm.$which.stocking_rate $newSr
-           apsimSet .masterpm.$which.alw $config($which,alw)
-           apsimSet .masterpm.$which.acc_eaten 0.0
-           apsimSet .masterpm.$which.acc_growth 100.0
-        }
-        set config($which,state) "$paddock.$crop"
-     }
-     
-     # This "dlt_dm" variable is accumulated by the grazing module - it uses
-     # the ratio of (grass eaten / grass growth) internlly. Here's it's requested, but not used.
-     proc doPrepareAnimals {} {
-        global config
-        foreach animal $config(animals) {
-           if {$config($animal,state) == "feedlot"} {
-              uplevel #0 set dlt_dm 100.0
-           }
-        }
-     }
-     
-     # Keep track of each animals alw. When on pasture, lwg is calculated,
-     # when in the feedlot, we provide a book value of lwg.
-     proc doProcessAnimals {} {
-        global config
-        foreach animal $config(animals) {
-           if {$config($animal,state) == "feedlot"} {
-              set config($animal,alw) [expr $config($animal,alw) + 2.0]      ;# 2.0 kg/hd/day
-           } else {
-              set config($animal,alw) [apsimGet .masterpm.$animal.alw]
-           }
-        }
-     }
-     
-     # Kick off the animals
-     proc animalsOn {which number liveWeight} {
-        global config
-     
-        # initial live weight & stocking rate isn't set until we have a paddock with area
-        apsimSet .masterpm.$which.stocking_rate 0.0
-        apsimSet .masterpm.$which.alw 0.0
-     
-        set config($which,state)   on
-        set config($which,alw)     $liveWeight
-        set config($which,number)  $number
-        set config($which,annLwg) 0.0
-        # send an economics event here
-     }
-     
-     # Kill off the animals (taking animals out the system)
-     proc animalsOff {which } {
-        global config
-        set config($which,state)  off
-        set config($which,alw)    0.0
-        set config($which,number) 0.0
-        set config($which,annLwg) 0.0
-     
-        apsimSet .masterpm.$which.stocking_rate 0.0
-        apsimSet .masterpm.$which.alw 0.0
-     
-        # send econ event here
-     }
-     
-     # Extra bits (needed to fool animals talking to top level when in feedlot)
-     set dlt_dm         100.0
-     set leafgreenwt    0.0
-     set stemgreenwt    0.0
-     set leafsenescedwt 0.0
-     set stemsenescedwt 0.0
-     
-     
-     # Utility functions##############################
-     proc dateWithin {t0 t1} {
-        set d0 [date2day $t0]
-        set d1 [date2day $t1]
-        return dayWithin $d0 $d1
-     }
-     proc dateIs {t} {
-        set d [date2day $t]
-        return [dayIs $d]
-     }
-     
-     proc dayWithin {t0 t1} {
-        set t [apsimGet day]
-        if {$t0 > $t1} {
-           return [expr $t >= $t0 || $t <= $t1]
-        } else {
-           return [expr $t >= $t0 && $t <= $t1]
-        }
-        # notreached
-     }
-     
-     proc dayIs {t} {
-        return [expr $t == [apsimGet day]]
-     }
-     
-     proc date2day {d} {
-        set year [apsimGet year]
-        return [string trimleft [clock format [clock scan "$d-$year"] -format %j] "0"]
-     }
-     
+
+
+## Grazing stuff here
+set config(p1,state)  "off"
+set config(p1,area)   100.0
+set config(p2,state)  "off"
+set config(p2,area)   100.0
+set config(p3,state)  "off"
+set config(p3,area)   100.0
+set config(p4,state)  "off"
+set config(p4,area)   100.0
+set config(BCS,state) "off"
+set config(BCS,area)  100.0      
+
+set config(cull_cows,state) "off"
+set config(bollocks,state) "off"
+
+set config(paddocks) [list p1 p2 p3 p4 BCS]
+set config(animals)  [list cull_cows bollocks]
+
+set grass_in 0
+
+#Move stock somewhere. 
+# which   = name of the animal module
+# paddock = the paddock they're going to
+# crop    = The name of the crop they'll eat
+proc moveStockTo {which paddock crop} {
+   global config
+   if {$crop == "feedlot"} {
+      apsimSet .masterpm.$which.pasture_source ".masterpm.farm manager"
+   } else {
+      apsimSet .masterpm.$which.pasture_source ".masterpm.$paddock.$crop"
+      set newSr [expr $config($which,number) / $config($paddock,area)]
+      apsimSet .masterpm.$which.stocking_rate $newSr
+      apsimSet .masterpm.$which.alw $config($which,alw)
+      apsimSet .masterpm.$which.acc_eaten 0.0
+      apsimSet .masterpm.$which.acc_growth 100.0
+   }
+   set config($which,state) "$paddock.$crop"
+}
+
+# This "dlt_dm" variable is accumulated by the grazing module - it uses 
+# the ratio of (grass eaten / grass growth) internlly. Here's it's requested, but not used.
+proc doPrepareAnimals {} {
+   global config
+   foreach animal $config(animals) {
+      if {$config($animal,state) == "feedlot"} {
+         uplevel #0 set dlt_dm 100.0
+      } 
+   } 
+}
+
+# Keep track of each animals alw. When on pasture, lwg is calculated,
+# when in the feedlot, we provide a book value of lwg.
+proc doProcessAnimals {} {
+   global config
+   foreach animal $config(animals) {
+      if {$config($animal,state) == "feedlot"} {
+         set config($animal,alw) [expr $config($animal,alw) + 2.0]      ;# 2.0 kg/hd/day
+      } else {
+         set config($animal,alw) [apsimGet .masterpm.$animal.alw]
+      }
+   } 
+}
+
+# Kick off the animals
+proc animalsOn {which number liveWeight} {
+   global config
+
+   # initial live weight & stocking rate isn't set until we have a paddock with area
+   apsimSet .masterpm.$which.stocking_rate 0.0
+   apsimSet .masterpm.$which.alw 0.0
+
+   set config($which,state)   on
+   set config($which,alw)     $liveWeight
+   set config($which,number)  $number
+   set config($which,annLwg) 0.0
+   # send an economics event here
+}
+
+# Kill off the animals (taking animals out the system)
+proc animalsOff {which } {
+   global config
+   set config($which,state)  off
+   set config($which,alw)    0.0
+   set config($which,number) 0.0
+   set config($which,annLwg) 0.0
+
+   apsimSet .masterpm.$which.stocking_rate 0.0
+   apsimSet .masterpm.$which.alw 0.0
+
+   # send econ event here
+}
+
+# Extra bits (needed to fool animals talking to top level when in feedlot)
+apsimRegisterGetSet dlt_dm
+set dlt_dm         100.0
+apsimRegisterGetSet leafgreenwt
+set leafgreenwt    0.0
+apsimRegisterGetSet stemgreenwt
+set stemgreenwt    0.0
+apsimRegisterGetSet leafsenescedwt
+set leafsenescedwt 0.0
+apsimRegisterGetSet stemsenescedwt
+set stemsenescedwt 0.0
+
+
+# Utility functions##############################
+proc dateWithin {t0 t1} {
+   set d0 [date2day $t0]
+   set d1 [date2day $t1]
+   return dayWithin $d0 $d1
+}
+proc dateIs {t} {
+   set d [date2day $t]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc date2day {d} {
+   set year [apsimGet year]
+   return [string trimleft [clock format [clock scan "$d-$year"] -format %j] "0"]
+}
+
      --->Section: post
-     
-     
+
+          
      --->Section: prepare
-     # Establish grass if it isn't there.
-     
-     if {!$grass_in} {
-        apsimSendMessage .masterpm.p1.Buffel_AVG establish {init_section establishment}
-        apsimSendMessage .masterpm.p2.Native_grass establish {init_section establishment}
-        apsimSendMessage .masterpm.p3.Buffel_AVG establish {init_section establishment}
-        apsimSendMessage .masterpm.p4.Native_grass establish {init_section establishment}
-        apsimSendMessage .masterpm.BCS.Buffel_BCS establish {init_section establishment}
-     
-        set grass_in 1 ;# Do this once only. grass never dies.. :)
-     
-        foreach animal $config(animals) {
-           apsimSet .masterpm.$animal.pasture_source ".masterpm.farm manager"
-     
-           set config($animal,state) off
-           set config($animal,alw) 0.0
-           set config($animal,number) 0.0
-           set config($animal,annLwg) 0.0
-     
-           apsimSet .masterpm.$animal.stocking_rate 0.0
-           apsimSet .masterpm.$animal.alw 0.0
-        }
-     }
-     
-     doPrepareAnimals
-     
-     
+# Establish grass if it isn't there.
+
+if {!$grass_in} {
+   apsimSendMessage .masterpm.p1.Buffel_AVG establish {init_section establishment}
+   apsimSendMessage .masterpm.p2.Native_grass establish {init_section establishment}
+   apsimSendMessage .masterpm.p3.Buffel_AVG establish {init_section establishment}
+   apsimSendMessage .masterpm.p4.Native_grass establish {init_section establishment}
+   apsimSendMessage .masterpm.BCS.Buffel_BCS establish {init_section establishment}
+
+   set grass_in 1 ;# Do this once only. grass never dies.. :)
+
+   foreach animal $config(animals) {
+      apsimSet .masterpm.$animal.pasture_source ".masterpm.farm manager"
+   
+      set config($animal,state) off
+      set config($animal,alw) 0.0
+      set config($animal,number) 0.0
+      set config($animal,annLwg) 0.0
+
+      apsimSet .masterpm.$animal.stocking_rate 0.0
+      apsimSet .masterpm.$animal.alw 0.0
+   }
+}
+
+doPrepareAnimals
+
+
      --->Section: process
-     
-     doProcessAnimals
-     
-     # Native grass
-     set animal "cull_cows"
-     set paddock "p4"
-     set pasture "native_grass"
-     
-     if {[dateIs 1-jun]} {                            ;# p081
-        if {$config($animal,state) == "off"} {
-         animalsOn $animal 20 400              ;# p84
-         moveStockTo $animal $paddock $pasture
-        } else {
-         set avgDailyIntake [expr ( $config($animal,annLwg) / 365.25 + 1.058) / 0.304 ]
-         set targetUtil [expr 20.0 / 100.0]            ;# p083 = 20%
-         set annualIntake [expr $avgDailyIntake * 365.5]
-     
-         set tsdm  [apsimGet .masterpm.$paddock.$pasture.tsdm]
-     
-         set stock_equiv_ratio [expr $targetUtil * \
-                                   $tsdm/  \
-                                    $annualIntake]
-         set alw [apsimGet .masterpm.$animal.alw]
-         set weight_ratio [expr $alw / 200.0]
-         set factor [expr pow($weight_ratio , 0.75)]
-         set beasts_ha [expr $stock_equiv_ratio / $factor]
-         set nBeasts [expr $beasts_ha * $config($paddock,area)]
-     
-         animalsOff $animal
-         animalsOn $animal $nBeasts 400              ;# p84
-         moveStockTo $animal $paddock $pasture
-        }
-        set config($animal,annLwg) 0.0
-     }
-     
-     set animal "bollocks"
-     set paddock "p3"
-     set pasture "buffel_avg"
-     
-     if {[dateIs 1-sep]} {                            ;# p081
-        if {$config($animal,state) == "off"} {
-         animalsOn $animal 20 400              ;# p84
-         moveStockTo $animal $paddock $pasture
-        } else {
-         set avgDailyIntake [expr ( $config($animal,annLwg) / 365.25 + 1.058) / 0.304 ]
-         set targetUtil [expr 20.0 / 100.0]            ;# p083 = 20%
-         set annualIntake [expr $avgDailyIntake * 365.5]
-     
-         set tsdm  [apsimGet .masterpm.$paddock.$pasture.tsdm]
-     
-         set stock_equiv_ratio [expr $targetUtil * \
-                                   $tsdm/  \
-                                    $annualIntake]
-         set alw [apsimGet .masterpm.$animal.alw]
-         set weight_ratio [expr $alw / 200.0]
-         set factor [expr pow($weight_ratio , 0.75)]
-         set beasts_ha [expr $stock_equiv_ratio / $factor]
-         set nBeasts [expr $beasts_ha * $config($paddock,area)]
-     
-         animalsOff $animal
-         animalsOn $animal $nBeasts 400              ;# p84
-         moveStockTo $animal $paddock $pasture
-        }
-        set config($animal,annLwg) 0.0
-     }
-     
-     
+
+doProcessAnimals
+
+# Native grass
+set animal "cull_cows"
+set paddock "p4"
+set pasture "native_grass"
+
+if {[dateIs 1-jun]} {                            ;# p081
+   if {$config($animal,state) == "off"} {
+    animalsOn $animal 20 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   } else {
+    set avgDailyIntake [expr ( $config($animal,annLwg) / 365.25 + 1.058) / 0.304 ]
+    set targetUtil [expr 20.0 / 100.0]            ;# p083 = 20%
+    set annualIntake [expr $avgDailyIntake * 365.5]
+
+    set tsdm  [apsimGet .masterpm.$paddock.$pasture.tsdm] 
+ 
+    set stock_equiv_ratio [expr $targetUtil * \
+                              $tsdm/  \
+                               $annualIntake]
+    set alw [apsimGet .masterpm.$animal.alw]
+    set weight_ratio [expr $alw / 200.0]
+    set factor [expr pow($weight_ratio , 0.75)]
+    set beasts_ha [expr $stock_equiv_ratio / $factor]
+    set nBeasts [expr $beasts_ha * $config($paddock,area)]
+
+    animalsOff $animal
+    animalsOn $animal $nBeasts 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   }
+   set config($animal,annLwg) 0.0
+}
+
+set animal "bollocks"
+set paddock "p3"
+set pasture "buffel_avg"
+
+if {[dateIs 1-sep]} {                            ;# p081
+   if {$config($animal,state) == "off"} {
+    animalsOn $animal 20 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   } else {
+    set avgDailyIntake [expr ( $config($animal,annLwg) / 365.25 + 1.058) / 0.304 ]
+    set targetUtil [expr 20.0 / 100.0]            ;# p083 = 20%
+    set annualIntake [expr $avgDailyIntake * 365.5]
+
+    set tsdm  [apsimGet .masterpm.$paddock.$pasture.tsdm] 
+ 
+    set stock_equiv_ratio [expr $targetUtil * \
+                              $tsdm/  \
+                               $annualIntake]
+    set alw [apsimGet .masterpm.$animal.alw]
+    set weight_ratio [expr $alw / 200.0]
+    set factor [expr pow($weight_ratio , 0.75)]
+    set beasts_ha [expr $stock_equiv_ratio / $factor]
+    set nBeasts [expr $beasts_ha * $config($paddock,area)]
+
+    animalsOff $animal
+    animalsOn $animal $nBeasts 400              ;# p84
+    moveStockTo $animal $paddock $pasture
+   }
+   set config($animal,annLwg) 0.0
+}
+
+
      --->End
 
 ------- accum Initialisation --------------------------------------------------

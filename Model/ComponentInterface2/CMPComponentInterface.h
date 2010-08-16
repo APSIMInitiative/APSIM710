@@ -31,6 +31,7 @@ class EXPORT CMPComponentInterface
       void getSearchOrder(std::vector<std::string> &list) {list = simSectionsToSearch;};
       bool readFiltered(const std::string& filterName, std::vector<std::string> &values);
       bool readAll(std::vector<std::string> &names, std::vector<std::string> &values);
+      bool readScripts(std::map<std::string, std::string> &scripts);
 
       // Export a variable. The variable passed in is stored directly
       // in our map so the assumption is that we are now owners.
@@ -120,6 +121,9 @@ class EXPORT CMPComponentInterface
                            XMLNode::iterator sectionData,
                            const std::string& parName,
                            Convertable* value);
+      void readAndDemangleScripts(std::map<std::string, std::string> &scripts, XMLNode::iterator &data);
+      void replaceManagerMacros(std::string& contents, XMLNode ui);
+
       void terminate();
       std::string getPropertyDescription(NameToRegMap::iterator reg, const string& access);
       std::string getEventDescription(NameToRegMap::iterator reg, const string& published);

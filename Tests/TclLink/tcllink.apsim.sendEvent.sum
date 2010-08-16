@@ -14,7 +14,6 @@ Title                  =
    Component                        "clock" = %apsim%\Model\clock.dll
    Component                       "report" = %apsim%\Model\report.dll
    Component                          "met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
    Component                      "soilwat" = %apsim%\Model\soilwat.dll
    Component                        "soiln" = %apsim%\Model\soiln.dll
    Component                      "sorghum" = %apsim%\Model\sorghum.dll
@@ -48,29 +47,6 @@ Title                  =
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\dalby.met
-
-------- manager Initialisation ------------------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-     if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
-        sorghum harvest
-        sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
-     endif
-     
-     SECTION:- init
-     harvest = 0
-     
-     SECTION:- start_of_day
-     if day = 305 and year = 1989 then
-        sorghum sow cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0 (), row_spacing = 1.0 (m)
-     endif
-     
-     SECTION:- end_of_day
-     report do_end_day_output
-     END of rules
-     
-     Manager creating a new local real variable : harvest = 0.00000
 
 ------- soilwat Initialisation ------------------------------------------------
      
@@ -198,6 +174,21 @@ tcllink:
      Copyright (C) 2001      ActiveState.
      --->Section: init
 
+            source $apsuite/Model/TclLink/CIDataTypes.tcl
+            proc sendEventHandler {args} {
+                apsimWriteToSummaryFile "got event"
+                apsimWriteToSummaryFile "args = $args"
+                global incomingVariant
+                puts "incomingVariant:length=[string bytelength $incomingVariant] bytes"
+                foreach {name value} [unpack_Variant $incomingVariant] {
+                   regsub -all "'" $name {} name
+                   regsub -all "'" $value {} value
+                   puts "name=[string tolower $name] value=[string tolower $value]"
+                }   
+            }
+            apsimRegisterEvent blork "sendEventHandler"
+            
+            
             # Demonstrates catching events at the "event" level
             # The event handler procedure
             proc eventHandler {args} {
@@ -209,10 +200,25 @@ tcllink:
             apsimRegisterEvent harvesting "eventHandler harvesting"
             
             
+     --->Section: process
+
+            if {[apsimGet day] == 305 && [apsimGet year] == 1989 } {
+               apsimSendMessage sorghum sow {cultivar early} {plants 10} {sowing_depth 30} {tiller_no_fertile 0} {row_spacing 1.0}
+            }
+            if {[apsimGet sorghum.StageName] == "harvest_ripe" || [apsimGet sorghum.plant_status] == "dead" } {
+               # Send a "kill crop" message (ie a non-variant argument)
+               apsimSendRawMessage sorghum kill_crop [pack_KillCrop KillFraction 0.5]
+               # These are "null argument" messages
+               apsimSendMessage sorghum harvest
+               apsimSendMessage sorghum end_crop
+               # By default, tcl messages are Apsim Variants - no fixed structure 
+               # I'm gonna sit right down and write myself a message...
+               apsimSendMessage tcllink blork {a a} {b 2} {c defg} {d {2.3 bb 42}}
+            }
+            
+            
      --->End
 ------- Start of simulation  --------------------------------------------------
-1 November 1989(Day of year=305), manager: 
-     Manager sending message :- sorghum sow  cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
 1 November 1989(Day of year=305), sorghum: 
      Sowing initiate
      
@@ -256,64 +262,63 @@ tcllink:
 1 November 1989(Day of year=305), tcllink: 
      got event
      args = sowing
-2 November 1989(Day of year=306), sorghum: 
+3 November 1989(Day of year=307), sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-6 November 1989(Day of year=310), sorghum: 
+7 November 1989(Day of year=311), sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
-     		Stover N Conc =   0.00 		 Extractable SW =  25.00
-15 November 1989(Day of year=319), sorghum: 
+     		Stover N Conc =   0.00 		 Extractable SW =  25.13
+16 November 1989(Day of year=320), sorghum: 
      Stage 4 EndOfJuvenile  DAS = 14
-     		Biomass       =   3.26 		 LAI            =   0.04
-     		Stover N Conc =   0.09 		 Extractable SW =  73.59
-28 November 1989(Day of year=332), sorghum: 
+     		Biomass       =   3.31 		 LAI            =   0.04
+     		Stover N Conc =   0.09 		 Extractable SW =  72.63
+29 November 1989(Day of year=333), sorghum: 
      Stage 5 FloralInitiation  DAS = 27
-     		Biomass       =  23.40 		 LAI            =   0.40
-     		Stover N Conc =   0.60 		 Extractable SW = 143.39
-20 December 1989(Day of year=354), sorghum: 
+     		Biomass       =  23.80 		 LAI            =   0.39
+     		Stover N Conc =   0.59 		 Extractable SW = 142.72
+21 December 1989(Day of year=355), sorghum: 
      Stage 6 FlagLeaf  DAS = 49
-     		Biomass       = 292.26 		 LAI            =   2.43
-     		Stover N Conc =   5.04 		 Extractable SW = 219.93
+     		Biomass       = 298.16 		 LAI            =   2.43
+     		Stover N Conc =   5.14 		 Extractable SW = 215.66
 3 January 1990(Day of year=3), sorghum: 
-     Stage 7 Flowering  DAS = 63
-     		Biomass       = 572.32 		 LAI            =   2.45
-     		Stover N Conc =   7.70 		 Extractable SW = 236.02
-7 January 1990(Day of year=7), sorghum: 
+     Stage 7 Flowering  DAS = 62
+     		Biomass       = 556.99 		 LAI            =   2.45
+     		Stover N Conc =   7.61 		 Extractable SW = 234.50
+8 January 1990(Day of year=8), sorghum: 
      Stage 8 StartGrainFill  DAS = 67
-     		Biomass       = 653.93 		 LAI            =   2.45
-     		Stover N Conc =   8.16 		 Extractable SW = 224.32
-12 February 1990(Day of year=43), sorghum: 
+     		Biomass       = 658.75 		 LAI            =   2.45
+     		Stover N Conc =   8.19 		 Extractable SW = 220.84
+13 February 1990(Day of year=44), sorghum: 
      Stage 9 EndGrainFill  DAS = 103
-     		Biomass       = 1152.88 		 LAI            =   0.99
-     		Stover N Conc =   2.95 		 Extractable SW = 223.43
+     		Biomass       = 1148.76 		 LAI            =   0.95
+     		Stover N Conc =   2.92 		 Extractable SW = 221.35
 15 February 1990(Day of year=46), sorghum: 
-     Stage 10 Maturity  DAS = 106
-     		Biomass       = 1160.26 		 LAI            =   0.89
-     		Stover N Conc =   2.85 		 Extractable SW = 230.48
+     Stage 10 Maturity  DAS = 105
+     		Biomass       = 1152.83 		 LAI            =   0.90
+     		Stover N Conc =   2.85 		 Extractable SW = 230.45
 16 February 1990(Day of year=47), sorghum: 
-     Stage 11 HarvestRipe  DAS = 107
-     		Biomass       = 1161.86 		 LAI            =   0.88
-     		Stover N Conc =   2.82 		 Extractable SW = 231.15
-17 February 1990(Day of year=48), manager: 
-     Manager sending message :- sorghum harvest
-17 February 1990(Day of year=48), sorghum: 
+     Stage 11 HarvestRipe  DAS = 106
+     		Biomass       = 1154.56 		 LAI            =   0.88
+     		Stover N Conc =   2.82 		 Extractable SW = 231.10
+     Kill Crop
+     Crop kill. Standing above-ground dm = 11559.2 kg/ha
      
      Harvest
-     Flowering (DAS)       = 63 		 Maturity (DAS)          = 106
+     Flowering (DAS)       = 62 		 Maturity (DAS)          = 105
      Flowering day         = 3 		 Maturity day            = 46
      Maximum LAI           = 2.4 		 Number of leaves        = 15.0
-     Total above ground biomass    (kg/ha) = 11631.1
-     Green above ground biomass    (kg/ha) = 10576.4
-     Senesced above ground biomass (kg/ha) = 1054.7
-     Stover (kg/ha)        = 5402.9 	 Grain yield (kg/ha)     = 6228.2
-     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 7158.9
-     Weight 1000 grains(g) = 25.3 		 Grains/m^2              = 24597.6
-     Grains/head           = 2459.8
-     Grain N percent    (%)     =      1.40 	 Grain N            (kg/ha) =    87.21
-     Total N content    (kg/ha) =    115.40 	 Senesced N content (kg/ha) =    14.42
-     Green N content    (kg/ha) =     18.17
+     Total above ground biomass    (kg/ha) = 11559.2
+     Green above ground biomass    (kg/ha) = 10516.5
+     Senesced above ground biomass (kg/ha) = 1042.7
+     Stover (kg/ha)        = 5293.9 	 Grain yield (kg/ha)     = 6265.4
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 7201.6
+     Weight 1000 grains(g) = 25.3 		 Grains/m^2              = 24795.7
+     Grains/head           = 2479.6
+     Grain N percent    (%)     =      1.40 	 Grain N            (kg/ha) =    87.92
+     Total N content    (kg/ha) =    116.13 	 Senesced N content (kg/ha) =    14.43
+     Green N content    (kg/ha) =     18.13
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        0.9
@@ -325,20 +330,24 @@ tcllink:
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               6228.24		    0.00
-                         N  (kg/ha) =                 87.21		    0.00
-17 February 1990(Day of year=48), tcllink: 
+                         DM (kg/ha) =               6265.36		    0.00
+                         N  (kg/ha) =                 87.92		    0.00
+16 February 1990(Day of year=47), tcllink: 
      got event
      args = harvesting
-     Manager sending message :- sorghum sow  cultivar = early, plants = 10, sowing_depth = 30 (mm), tiller_no_fertile = 0, row_spacing = 1.0 (m)
-17 February 1990(Day of year=48): 
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               5293.86		 2177.19
+                         N  (kg/ha) =                 28.20		    4.35
+                         P  (kg/ha) =                  0.00		    0.00
+     got event
+     args = 
+16 February 1990(Day of year=47): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
-     Crop is still in the ground -
-      unable to sow until it is
-      taken out by "end_crop" action.
-     Component name: sorghum
+     can't read "incomingVariant": no such variable
+     Component name: tcllink
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      

@@ -30,6 +30,15 @@ module = soiln           %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/M
 module = sorghum         %apsim%/Tests/Sorghum/testsorghum.par [all] %apsim%/Model/sorghum.xml [standard]
 module = tcllink         tcllink.par [catchEvent]
 
+[apsim.sendEvent]
+module = clock           %apsim%/Tests/Sorghum/testsorghum.par [all] %apsim%/Model/clock.xml [standard]
+module = input(met)      %apsim%/Examples/MetFiles/dalby.met [weather]
+module = report          %apsim%/Tests/Sorghum/testsorghum.par [test1] %apsim%/Tests/Sorghum/testsorghum.par [all]
+module = soilwat         %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/Soil.xml [SoilWat]
+module = soiln           %apsim%/Examples/Soils/Soil.par [black_earth] %apsim%/Model/Soil.xml [SoilN]
+module = sorghum         %apsim%/Tests/Sorghum/testsorghum.par [all] %apsim%/Model/sorghum.xml [standard]
+module = tcllink         tcllink.par [sendEvent] tcllink.par [catchEvent]
+
 ! This one is broken until every message has proper xml 
 ![apsim.catchEvent2]
 !module = clock           %apsuite/apsim/sorghum/sample/sorghum.par [sample] %apsuite/apsim/clock/clock.ini[standard]

@@ -176,55 +176,54 @@ Paddock:
              .masterpm.paddock2.fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
      END of rules
      
-
-------- Irrigation management Initialisation ----------------------------------
+Irrigation management: 
      Copyright (C) 1991-1994 The Regents of the University of California.
      Copyright (C) 1996-1997 Sun Microsystems, Inc.
      Copyright (C) 2001      ActiveState.
      --->Section: init
-     
-     set paddock              ".MasterPM.paddock1"
-     set paddockName          "P1"
-     set waterBalanceModule   ".MasterPM.paddock1.Soil Water"
-     set paddockArea          "20.0"
-     set dam_module           ".masterpm.dam"
-     set irrigate_module      ".masterpm.paddock1.Irrigation1"
-     set irrigate_threshold   "30"
-     set irrigate_efficiency  "0.8"
-     
-     set paddock              ".MasterPM.paddock2"
-     set paddockName          "P2"
-     set waterBalanceModule   ".MasterPM.paddock2.Soil Water"
-     set paddockArea          "50.0"
-     set dam_module           ".masterpm.dam"
-     set irrigate_module      ".masterpm.paddock2.Irrigation2"
-     set irrigate_threshold   "50"
-     set irrigate_efficiency  "0.6"
-     
+
+set paddock              ".MasterPM.paddock1"
+set paddockName          "P1"
+set waterBalanceModule   ".MasterPM.paddock1.Soil Water"
+set paddockArea          "20.0"
+set dam_module           ".masterpm.dam"
+set irrigate_module      ".masterpm.paddock1.Irrigation1"
+set irrigate_threshold   "30"
+set irrigate_efficiency  "0.8"
+            
+set paddock              ".MasterPM.paddock2"
+set paddockName          "P2"
+set waterBalanceModule   ".MasterPM.paddock2.Soil Water"
+set paddockArea          "50.0"
+set dam_module           ".masterpm.dam"
+set irrigate_module      ".masterpm.paddock2.Irrigation2"
+set irrigate_threshold   "50"
+set irrigate_efficiency  "0.6"
+            
      --->Section: prepare
-     
-     
-     if {[apsimGet ${paddockName}InCrop] == "yes" } {
-        set dul [apsimGet ${waterBalanceModule}.dul_dep()]
-        set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
-        set capacity [expr $dul - $sw]
-        if {($capacity - $irrigate_threshold) > 0} {
-           apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
-           apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
-        }
-     }
-     
-     
-     if {[apsimGet ${paddockName}InCrop] == "yes" } {
-        set dul [apsimGet ${waterBalanceModule}.dul_dep()]
-        set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
-        set capacity [expr $dul - $sw]
-        if {($capacity - $irrigate_threshold) > 0} {
-           apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
-           apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
-        }
-     }
-     
+
+
+if {[apsimGet ${paddockName}InCrop] == "yes" } {
+   set dul [apsimGet ${waterBalanceModule}.dul_dep()]
+   set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
+   set capacity [expr $dul - $sw]
+   if {($capacity - $irrigate_threshold) > 0} {
+      apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
+      apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
+   }
+}
+          
+
+if {[apsimGet ${paddockName}InCrop] == "yes" } {
+   set dul [apsimGet ${waterBalanceModule}.dul_dep()]
+   set sw  [apsimGet ${waterBalanceModule}.sw_dep()]
+   set capacity [expr $dul - $sw]
+   if {($capacity - $irrigate_threshold) > 0} {
+      apsimSet ${irrigate_module}.irrigation_efficiency $irrigate_efficiency
+      apsimSendMessage $irrigate_module apply "amount $capacity" "source $dam_module" "crop_area $paddockArea"
+   }
+}
+          
      --->End
 
 ------- dam Initialisation ----------------------------------------------------

@@ -329,6 +329,37 @@ class NullMethod : public Packable
          }
    };
 
+class NamedNullMethod : public Packable
+   {
+   private:
+      std::string apsimName;
+      boost::function1<void, const std::string &> fn;
+      Null null;
+   public:
+      NamedNullMethod(const std::string &name, boost::function1<void, const std::string &>& fn)
+         {
+         this->fn = fn;
+         apsimName = name;
+         }
+      virtual unsigned memorySize()
+         {
+         return 0;
+         }
+      virtual void pack(MessageData& messageData)
+         {
+         throw std::runtime_error("Cannot call pack on a NullMethod");
+         }
+      virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
+         {
+         fn(apsimName);
+         }
+      virtual std::string ddml()
+         {
+         return DDML(null);
+         }
+   };
+
+
 // -------------------------------------------------------------------
 // A wrapper class for CMP gets and sets that has a name associated
 // -------------------------------------------------------------------

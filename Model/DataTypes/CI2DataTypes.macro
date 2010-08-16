@@ -92,6 +92,7 @@ ScienceAPI2::~ScienceAPI2() {} ;
 #include <General/platform.h>
 #include <string>
 #include <vector>
+#include <map>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <ComponentInterface2/DataTypes.h>
@@ -119,6 +120,7 @@ class EXPORT ScienceAPI2
       virtual std::string name(void) = 0;
       virtual std::string FQName(void) = 0;
       virtual std::string getExecutableFileName(void) = 0;
+      virtual const std::string getInitData(void) = 0;
       virtual void notifyFutureEvent(const std::string& name) = 0;
 
       // -----------------------------------------------------------------------
@@ -137,15 +139,19 @@ class EXPORT ScienceAPI2
       // Methods for reading raw strings
       virtual bool readFiltered(const std::string& filterName, std::vector<std::string> &values) = 0;
       virtual bool readAll(std::vector<std::string>& names, std::vector<std::string> &values) = 0;
+      virtual bool readScripts(std::map<std::string, std::string> &scripts) = 0;
 
       // null
       #define nullFunction(address) boost::function0<void>(boost::bind(address, this))
+      #define namedNullFunction(name, address) boost::function1<void, const std::string &>(boost::bind(address, this, _1))
       virtual void subscribe(const std::string& name, boost::function0<void> handler) = 0;
+      virtual void subscribe(const std::string& name, boost::function1<void, const std::string &> handler) = 0;
       virtual void publish(const std::string& name) = 0;
 
       [foreach types.builtin]
       // [builtin.cpptype]
       #define [builtin.name]Function(address) boost::function1<void, [builtin.cpptype]& >(boost::bind(address, this, _1))
+      #define [builtin.name]Function2(name, address) boost::function2<void, const std::string &, [builtin.cpptype]& >(boost::bind(address, this, _1, _2))
 [if [builtin.boundable] = T]
       virtual bool read(const std::string& name, const std::string& units, bool optional, [builtin.cpptype]& data) = 0;
 [endif]
@@ -159,6 +165,12 @@ class EXPORT ScienceAPI2
       virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> fn) = 0;
       virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> getter,
                                   boost::function1<void, [builtin.cpptype]&> setter) = 0;
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+                                  boost::function2<void, const std::string &, [builtin.cpptype]&> fn) = 0;
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+                                  boost::function2<void, const std::string &, [builtin.cpptype]&> getter,
+                                  boost::function2<void, const std::string &, [builtin.cpptype]&> setter) = 0;
+
       virtual void subscribe(const std::string& name, boost::function1<void, [builtin.cpptype]&> handler) = 0;
       virtual void publish(const std::string& name, [builtin.cpptype]& data) = 0;
 
@@ -173,6 +185,10 @@ class EXPORT ScienceAPI2
 
       #define VariantFunction(address) boost::function1<void, Variant& >(boost::bind(address, this, _1))
       virtual void subscribe(const std::string& name, boost::function1<void, Variant&> handler) = 0;
+      
+      #define VariantFunction2(name, address) boost::function2<void, const std::string &, Variant& >(boost::bind(address, this, _1, _2))
+      virtual void subscribe(const std::string& name, boost::function2<void, const std::string &, Variant&> handler) = 0;
+
       virtual void publish(const std::string& name, Variant& data) = 0;
    };
 #endif
@@ -203,6 +219,8 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       virtual std::string name(void);
       virtual std::string FQName(void);
       virtual std::string getExecutableFileName(void);
+      virtual const std::string getInitData(void);
+
 
       virtual void setSearchOrder(const std::vector<std::string> &list);
       virtual void getSearchOrder(std::vector<std::string> &list);
@@ -212,11 +230,13 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       // Methods for reading raw strings
       virtual bool readFiltered(const std::string& filterName, std::vector<std::string> &values);
       virtual bool readAll(std::vector<std::string>& names, std::vector<std::string> &values);
+      virtual bool readScripts(std::map<std::string, std::string> &scripts);
 
       virtual void notifyFutureEvent(const std::string& name);
 
       // null
       virtual void subscribe(const std::string& name, boost::function0<void> handler);
+      virtual void subscribe(const std::string& name, boost::function1<void, const std::string &> handler);
       virtual void publish(const std::string& name);
 
       [foreach types.builtin]
@@ -235,6 +255,11 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description,
                                   boost::function1<void, [builtin.cpptype]&> getter,
                                   boost::function1<void, [builtin.cpptype]&> setter);
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+                                   boost::function2<void, const std::string&, [builtin.cpptype]&> method);
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
+                                   boost::function2<void, const std::string&, [builtin.cpptype]&> getter,
+                                   boost::function2<void, const std::string&, [builtin.cpptype]&> setter);
       virtual void subscribe(const std::string& name, boost::function1<void, [builtin.cpptype]&> handler);
       virtual void publish(const std::string& name, [builtin.cpptype]& data);
 
@@ -245,6 +270,7 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
 
       [endfor]
       void subscribe(const std::string& name, boost::function1<void, Variant&> handler);
+      void subscribe(const std::string& name, boost::function2<void, const std::string &, Variant&> handler);
       void publish(const std::string& name, Variant& data);
    };
 #endif
@@ -275,6 +301,8 @@ string ScienceAPI2Impl::FQName(void)
    {return componentInterface.getFQName();}
 string ScienceAPI2Impl::getExecutableFileName(void)
    {return componentInterface.getExecutableFileName();}
+const std::string ScienceAPI2Impl::getInitData(void) 
+   {return componentInterface.getInitData();}
 void ScienceAPI2Impl::write(const string& msg)
    {
    componentInterface.write(msg);
@@ -292,6 +320,8 @@ bool ScienceAPI2Impl::readFiltered(const string& filterName, vector<string> &val
    {return componentInterface.readFiltered(filterName, values);}
 bool ScienceAPI2Impl::readAll(std::vector<std::string>& names, std::vector<std::string> &values)
    {return componentInterface.readAll(names, values);}
+bool ScienceAPI2Impl::readScripts(std::map<std::string, std::string> &scripts)
+   {return componentInterface.readScripts(scripts);}
 
 void ScienceAPI2Impl::notifyFutureEvent(const std::string& name)
    {
@@ -301,6 +331,8 @@ void ScienceAPI2Impl::notifyFutureEvent(const std::string& name)
 // null
 void ScienceAPI2Impl::subscribe(const std::string& name, boost::function0<void> handler)
    {componentInterface.subscribe(name, new NullMethod(handler));}
+void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, const std::string &> handler)
+   {componentInterface.subscribe(name, new NamedNullMethod(name, handler));}
 void ScienceAPI2Impl::publish(const std::string& name)
    {
    Null dummy;
@@ -358,6 +390,20 @@ void ScienceAPI2Impl::exposeFunction(const std::string& name, const std::string&
    componentInterface.expose(name, units, description, true,
                              new DualMethod<boost::function1<void, [builtin.cpptype]&>, [builtin.cpptype] > (getter, setter));
    }
+void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string& units, const std::string& description, 
+                                     boost::function2<void, const std::string &, [builtin.cpptype]&> fn)
+   {
+   componentInterface.expose(name, units, description, false, 
+                             new NamedMethod<boost::function2<void, const std::string &, [builtin.cpptype]&>, [builtin.cpptype] >(name, fn));
+   }
+void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
+                                     boost::function2<void, const std::string&, [builtin.cpptype]&> getter,
+                                     boost::function2<void, const std::string&, [builtin.cpptype]&> setter)
+   {
+   componentInterface.expose(name, units, description, true,
+                             new NamedDualMethod<boost::function2<void, const std::string&, [builtin.cpptype]&>, [builtin.cpptype] > (name, getter, setter));
+   }
+   
 void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, [builtin.cpptype]&> handler)
    {componentInterface.subscribe(name, new Method<boost::function1<void, [builtin.cpptype]&>, [builtin.cpptype] > (handler));}
 void ScienceAPI2Impl::publish(const std::string& name, [builtin.cpptype]& data)
@@ -374,6 +420,8 @@ void ScienceAPI2Impl::publish(const std::string& name, [type.name]Type& data)
 
 void ScienceAPI2Impl::subscribe(const string& name, boost::function1<void, Variant&> handler)
      {componentInterface.subscribe(name, new Method<boost::function1<void, Variant&>, Variant > (handler));}
+void ScienceAPI2Impl::subscribe(const string& name, boost::function2<void, const std::string&, Variant&> handler)
+     {componentInterface.subscribe(name, new NamedMethod<boost::function2<void, const std::string &, Variant&>, Variant > (name, handler));}
 void ScienceAPI2Impl::publish(const string& name, Variant& data)
      {componentInterface.publish(name, new PackableWrapper< Variant& >(data));}
 [endfile]

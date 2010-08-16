@@ -204,258 +204,257 @@ Paddock:
      
      
      
-
-------- Manager Initialisation ------------------------------------------------
+Manager: 
      Copyright (C) 1991-1994 The Regents of the University of California.
      Copyright (C) 1996-1997 Sun Microsystems, Inc.
      Copyright (C) 2001      ActiveState.
      --->Section: exit
-     exit
-     
+exit
+
      --->Section: init
-     source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
-     set state "WinterFallow"
-     package require struct
-     ::struct::graph stateGraph
-     stateGraph node insert "SummerFallow2"
-     set colour(SummerFallow2) "gray"
-     stateGraph node insert "Chickpea"
-     set colour(Chickpea) "lightgreen"
-     stateGraph node insert "Wheat"
-     set colour(Wheat) "darkgreen"
-     stateGraph node insert "WinterFallow"
-     set colour(WinterFallow) "gray"
-     stateGraph node insert "SummerFallow1"
-     set colour(SummerFallow1) "maroon"
-     stateGraph node insert "F1"
-     set colour(F1) "gray"
-     stateGraph node insert "Cotton"
-     set colour(Cotton) "purple"
-     stateGraph arc insert "SummerFallow1" "WinterFallow" "arc2"
-     stateGraph arc lappend "arc2" rules {[apsimGet day]  == 192}
-     stateGraph arc lappend "arc2" actions {}
-     stateGraph arc insert "WinterFallow" "Cotton" "arc6"
-     stateGraph arc lappend "arc6" actions {sow_cotton}
-     stateGraph arc lappend "arc6" rules {[canPlant_cotton]}
-     stateGraph arc lappend "arc6" actions {}
-     stateGraph arc insert "Wheat" "SummerFallow2" "arc3"
-     stateGraph arc lappend "arc3" actions {apsimSendMessage wheat harvest}
-     stateGraph arc lappend "arc3" actions {apsimSendMessage wheat end_crop}
-     stateGraph arc lappend "arc3" rules {{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.plant_status] == "dead"}}
-     stateGraph arc lappend "arc3" actions {}
-     stateGraph arc insert "F1" "SummerFallow1" "arc7"
-     stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
-     stateGraph arc lappend "arc7" actions {}
-     stateGraph arc insert "F1" "Chickpea" "arc0"
-     stateGraph arc lappend "arc0" actions {sow_chickpea}
-     stateGraph arc lappend "arc0" rules {[canPlant_chickpea]}
-     stateGraph arc lappend "arc0" actions {}
-     stateGraph arc insert "Chickpea" "SummerFallow1" "arc8"
-     stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea harvest}
-     stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea end_crop}
-     stateGraph arc lappend "arc8" rules {{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.plant_status] == "dead"}}
-     stateGraph arc lappend "arc8" actions {}
-     stateGraph arc insert "SummerFallow1" "Wheat" "arc1"
-     stateGraph arc lappend "arc1" actions {sow_wheat}
-     stateGraph arc lappend "arc1" rules {[canPlant_wheat]}
-     stateGraph arc lappend "arc1" actions {}
-     stateGraph arc insert "Cotton" "F1" "arc5"
-     stateGraph arc lappend "arc5" actions {apsimSendMessage cotton harvest}
-     stateGraph arc lappend "arc5" rules {[apsimGet ozcot_status] > 0}
-     stateGraph arc lappend "arc5" actions {}
-     stateGraph arc insert "SummerFallow2" "WinterFallow" "arc9"
-     stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
-     stateGraph arc lappend "arc9" actions {}
-     
-     # Support procedures
-     # Can we plant a crop today?
-     proc canPlant_cotton {} {
-       if {"variable" == "variable"} {
-          set year [apsimGet year]; set day [apsimGet day]
-          set d1 [clock format [clock scan "15-oct-$year"] -format %j]
-          set d2 [clock format [clock scan "15-dec-$year"] -format %j]
-     
-          if {"yes" == "yes" && $day == $d2} {return 1}
-     
-          if {$d1 > $d2} {
-             set dateOK [expr $day >= $d1 || $day <= $d2]
-          } else {
-             set dateOK [expr $day >= $d1 && $day <= $d2]
-          }
-          set rainOK [expr [apsimGet rain\[3\]] >= 10]
-          set eswOK [expr [apsimGet esw] >= 100]
-          return [expr $dateOK && $rainOK && $eswOK]
-       } elseif {"variable" == "fixed"} {
-          set year [apsimGet year]; set day [apsimGet day]
-          set d1 [clock format [clock scan "15-oct-$year"] -format %j]
-          return [expr $day == $d1]
-       } else {
-          error "Unknown sowing criteria \"variable\"."
-       }
-       return "notreached"
+source $apsuite/UserInterface/APSFarm/RotationInitialisation.tcl
+set state "WinterFallow"
+package require struct
+::struct::graph stateGraph
+stateGraph node insert "SummerFallow2"
+set colour(SummerFallow2) "gray"
+stateGraph node insert "Chickpea"
+set colour(Chickpea) "lightgreen"
+stateGraph node insert "Wheat"
+set colour(Wheat) "darkgreen"
+stateGraph node insert "WinterFallow"
+set colour(WinterFallow) "gray"
+stateGraph node insert "SummerFallow1"
+set colour(SummerFallow1) "maroon"
+stateGraph node insert "F1"
+set colour(F1) "gray"
+stateGraph node insert "Cotton"
+set colour(Cotton) "purple"
+stateGraph arc insert "SummerFallow1" "WinterFallow" "arc2"
+stateGraph arc lappend "arc2" rules {[apsimGet day]  == 192}
+stateGraph arc lappend "arc2" actions {}
+stateGraph arc insert "WinterFallow" "Cotton" "arc6"
+stateGraph arc lappend "arc6" actions {sow_cotton}
+stateGraph arc lappend "arc6" rules {[canPlant_cotton]}
+stateGraph arc lappend "arc6" actions {}
+stateGraph arc insert "Wheat" "SummerFallow2" "arc3"
+stateGraph arc lappend "arc3" actions {apsimSendMessage wheat harvest}
+stateGraph arc lappend "arc3" actions {apsimSendMessage wheat end_crop}
+stateGraph arc lappend "arc3" rules {{[apsimGet wheat.stageName] == "harvest_ripe" || [apsimGet wheat.plant_status] == "dead"}}
+stateGraph arc lappend "arc3" actions {}
+stateGraph arc insert "F1" "SummerFallow1" "arc7"
+stateGraph arc lappend "arc7" rules {[apsimGet day]  == 192}
+stateGraph arc lappend "arc7" actions {}
+stateGraph arc insert "F1" "Chickpea" "arc0"
+stateGraph arc lappend "arc0" actions {sow_chickpea}
+stateGraph arc lappend "arc0" rules {[canPlant_chickpea]}
+stateGraph arc lappend "arc0" actions {}
+stateGraph arc insert "Chickpea" "SummerFallow1" "arc8"
+stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea harvest}
+stateGraph arc lappend "arc8" actions {apsimSendMessage chickpea end_crop}
+stateGraph arc lappend "arc8" rules {{[apsimGet chickpea.stageName] == "harvest_ripe" || [apsimGet chickpea.plant_status] == "dead"}}
+stateGraph arc lappend "arc8" actions {}
+stateGraph arc insert "SummerFallow1" "Wheat" "arc1"
+stateGraph arc lappend "arc1" actions {sow_wheat}
+stateGraph arc lappend "arc1" rules {[canPlant_wheat]}
+stateGraph arc lappend "arc1" actions {}
+stateGraph arc insert "Cotton" "F1" "arc5"
+stateGraph arc lappend "arc5" actions {apsimSendMessage cotton harvest}
+stateGraph arc lappend "arc5" rules {[apsimGet ozcot_status] > 0}
+stateGraph arc lappend "arc5" actions {}
+stateGraph arc insert "SummerFallow2" "WinterFallow" "arc9"
+stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
+stateGraph arc lappend "arc9" actions {}
+
+# Support procedures
+# Can we plant a crop today?
+proc canPlant_cotton {} {
+  if {"variable" == "variable"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-oct-$year"] -format %j]
+     set d2 [clock format [clock scan "15-dec-$year"] -format %j]
+
+     if {"yes" == "yes" && $day == $d2} {return 1}
+
+     if {$d1 > $d2} {
+        set dateOK [expr $day >= $d1 || $day <= $d2]
+     } else {
+        set dateOK [expr $day >= $d1 && $day <= $d2]
      }
-     
-     # Plant a crop now
-     proc sow_cotton {} {
-       if {"ozcot" == "plant"} {
-          apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
-                  {cultivar Siok} {row_spacing 1000} \
-                  {skipplant 0} {skiprow 0} {crop_class plant}
-       } elseif {"ozcot" == "cropmod"} {
-          apsimSendMessage cotton sow {plants [density]} {sowing_depth [depth]} \
-                  {cultivar Siok} {row_spacing 1000} {skiprow 0}
-       } elseif {"ozcot" == "growth"} {
-          apsimSendMessage cotton ???
-       } elseif {"ozcot" == "ozcot"} {
-          apsimSendMessage cotton sow {plants_pm 10} {sowing_depth 30} \
-                  {row_spacing 1000} {skiprow 0} {cultivar Siok}
-       } elseif {"ozcot" == "oryza"} {
-          apsimSendMessage cotton sow {cultivar Siok}
-       } elseif {"ozcot" == "sorghum"} {
-          apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
-                  {cultivar Siok} {row_spacing 1000} {skiprow 0} \
-                  {tiller_no_fertile [tiller_no_fertile]}
-       } elseif {"ozcot" == "sugar"} {
-          apsimSendMessage cotton sow {plants 100} {cultivar Siok} {sowing_depth 30}
-       } else {
-         error "Unknown crop module \"ozcot\"."
-       }
+     set rainOK [expr [apsimGet rain\[3\]] >= 10]
+     set eswOK [expr [apsimGet esw] >= 100]
+     return [expr $dateOK && $rainOK && $eswOK]
+  } elseif {"variable" == "fixed"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-oct-$year"] -format %j]
+     return [expr $day == $d1]
+  } else {
+     error "Unknown sowing criteria \"variable\"."
+  }
+  return "notreached"
+}
+
+# Plant a crop now
+proc sow_cotton {} {
+  if {"ozcot" == "plant"} {
+     apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
+             {cultivar Siok} {row_spacing 1000} \
+             {skipplant 0} {skiprow 0} {crop_class plant}
+  } elseif {"ozcot" == "cropmod"} {
+     apsimSendMessage cotton sow {plants [density]} {sowing_depth [depth]} \
+             {cultivar Siok} {row_spacing 1000} {skiprow 0}
+  } elseif {"ozcot" == "growth"} {
+     apsimSendMessage cotton ???
+  } elseif {"ozcot" == "ozcot"} {
+     apsimSendMessage cotton sow {plants_pm 10} {sowing_depth 30} \
+             {row_spacing 1000} {skiprow 0} {cultivar Siok}
+  } elseif {"ozcot" == "oryza"} {
+     apsimSendMessage cotton sow {cultivar Siok}
+  } elseif {"ozcot" == "sorghum"} {
+     apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
+             {cultivar Siok} {row_spacing 1000} {skiprow 0} \
+             {tiller_no_fertile [tiller_no_fertile]}
+  } elseif {"ozcot" == "sugar"} {
+     apsimSendMessage cotton sow {plants 100} {cultivar Siok} {sowing_depth 30}
+  } else {
+    error "Unknown crop module \"ozcot\"."
+  }
+}
+
+
+
+
+
+
+
+
+# Support procedures
+# Can we plant a crop today?
+proc canPlant_chickpea {} {
+  if {"variable" == "variable"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-may-$year"] -format %j]
+     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
+
+     if {"no" == "yes" && $day == $d2} {return 1}
+
+     if {$d1 > $d2} {
+        set dateOK [expr $day >= $d1 || $day <= $d2]
+     } else {
+        set dateOK [expr $day >= $d1 && $day <= $d2]
      }
-     
-     
-     
-     
-     
-     
-     
-     
-     # Support procedures
-     # Can we plant a crop today?
-     proc canPlant_chickpea {} {
-       if {"variable" == "variable"} {
-          set year [apsimGet year]; set day [apsimGet day]
-          set d1 [clock format [clock scan "15-may-$year"] -format %j]
-          set d2 [clock format [clock scan "10-jul-$year"] -format %j]
-     
-          if {"no" == "yes" && $day == $d2} {return 1}
-     
-          if {$d1 > $d2} {
-             set dateOK [expr $day >= $d1 || $day <= $d2]
-          } else {
-             set dateOK [expr $day >= $d1 && $day <= $d2]
-          }
-          set rainOK [expr [apsimGet rain\[3\]] >= 15]
-          set eswOK [expr [apsimGet esw] >= 50]
-          return [expr $dateOK && $rainOK && $eswOK]
-       } elseif {"variable" == "fixed"} {
-          set year [apsimGet year]; set day [apsimGet day]
-          set d1 [clock format [clock scan "15-may-$year"] -format %j]
-          return [expr $day == $d1]
-       } else {
-          error "Unknown sowing criteria \"variable\"."
-       }
-       return "notreached"
+     set rainOK [expr [apsimGet rain\[3\]] >= 15]
+     set eswOK [expr [apsimGet esw] >= 50]
+     return [expr $dateOK && $rainOK && $eswOK]
+  } elseif {"variable" == "fixed"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-may-$year"] -format %j]
+     return [expr $day == $d1]
+  } else {
+     error "Unknown sowing criteria \"variable\"."
+  }
+  return "notreached"
+}
+
+# Plant a crop now
+proc sow_chickpea {} {
+  if {"plant" == "plant"} {
+     apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
+             {cultivar amethyst} {row_spacing 500} \
+             {skipplant 0} {skiprow 0} {crop_class plant}
+  } elseif {"plant" == "cropmod"} {
+     apsimSendMessage chickpea sow {plants [density]} {sowing_depth [depth]} \
+             {cultivar amethyst} {row_spacing 500} {skiprow 0}
+  } elseif {"plant" == "growth"} {
+     apsimSendMessage chickpea ???
+  } elseif {"plant" == "ozcot"} {
+     apsimSendMessage chickpea sow {plants_pm } {sowing_depth 30} \
+             {row_spacing 500} {skiprow 0} {cultivar amethyst}
+  } elseif {"plant" == "oryza"} {
+     apsimSendMessage chickpea sow {cultivar amethyst}
+  } elseif {"plant" == "sorghum"} {
+     apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
+             {cultivar amethyst} {row_spacing 500} {skiprow 0} \
+             {tiller_no_fertile [tiller_no_fertile]}
+  } elseif {"plant" == "sugar"} {
+     apsimSendMessage chickpea sow {plants 25} {cultivar amethyst} {sowing_depth 30}
+  } else {
+    error "Unknown crop module \"plant\"."
+  }
+}
+
+
+
+
+
+
+
+# Support procedures
+# Can we plant a crop today?
+proc canPlant_wheat {} {
+  if {"variable" == "variable"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-may-$year"] -format %j]
+     set d2 [clock format [clock scan "10-jul-$year"] -format %j]
+
+     if {"no" == "yes" && $day == $d2} {return 1}
+
+     if {$d1 > $d2} {
+        set dateOK [expr $day >= $d1 || $day <= $d2]
+     } else {
+        set dateOK [expr $day >= $d1 && $day <= $d2]
      }
-     
-     # Plant a crop now
-     proc sow_chickpea {} {
-       if {"plant" == "plant"} {
-          apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
-                  {cultivar amethyst} {row_spacing 500} \
-                  {skipplant 0} {skiprow 0} {crop_class plant}
-       } elseif {"plant" == "cropmod"} {
-          apsimSendMessage chickpea sow {plants [density]} {sowing_depth [depth]} \
-                  {cultivar amethyst} {row_spacing 500} {skiprow 0}
-       } elseif {"plant" == "growth"} {
-          apsimSendMessage chickpea ???
-       } elseif {"plant" == "ozcot"} {
-          apsimSendMessage chickpea sow {plants_pm } {sowing_depth 30} \
-                  {row_spacing 500} {skiprow 0} {cultivar amethyst}
-       } elseif {"plant" == "oryza"} {
-          apsimSendMessage chickpea sow {cultivar amethyst}
-       } elseif {"plant" == "sorghum"} {
-          apsimSendMessage chickpea sow {plants 25} {sowing_depth 30} \
-                  {cultivar amethyst} {row_spacing 500} {skiprow 0} \
-                  {tiller_no_fertile [tiller_no_fertile]}
-       } elseif {"plant" == "sugar"} {
-          apsimSendMessage chickpea sow {plants 25} {cultivar amethyst} {sowing_depth 30}
-       } else {
-         error "Unknown crop module \"plant\"."
-       }
-     }
-     
-     
-     
-     
-     
-     
-     
-     # Support procedures
-     # Can we plant a crop today?
-     proc canPlant_wheat {} {
-       if {"variable" == "variable"} {
-          set year [apsimGet year]; set day [apsimGet day]
-          set d1 [clock format [clock scan "15-may-$year"] -format %j]
-          set d2 [clock format [clock scan "10-jul-$year"] -format %j]
-     
-          if {"no" == "yes" && $day == $d2} {return 1}
-     
-          if {$d1 > $d2} {
-             set dateOK [expr $day >= $d1 || $day <= $d2]
-          } else {
-             set dateOK [expr $day >= $d1 && $day <= $d2]
-          }
-          set rainOK [expr [apsimGet rain\[3\]] >= 25]
-          set eswOK [expr [apsimGet esw] >= 50]
-          return [expr $dateOK && $rainOK && $eswOK]
-       } elseif {"variable" == "fixed"} {
-          set year [apsimGet year]; set day [apsimGet day]
-          set d1 [clock format [clock scan "15-may-$year"] -format %j]
-          return [expr $day == $d1]
-       } else {
-          error "Unknown sowing criteria \"variable\"."
-       }
-       return "notreached"
-     }
-     
-     # Plant a crop now
-     proc sow_wheat {} {
-       if {"plant" == "plant"} {
-          apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
-                  {cultivar hartog} {row_spacing 250} \
-                  {skipplant 0} {skiprow 0} {crop_class plant}
-       } elseif {"plant" == "cropmod"} {
-          apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
-                  {cultivar hartog} {row_spacing 250} {skiprow 0}
-       } elseif {"plant" == "growth"} {
-          apsimSendMessage wheat ???
-       } elseif {"plant" == "ozcot"} {
-          apsimSendMessage wheat sow {plants_pm [plants_pm]} {sowing_depth 30} \
-                  {row_spacing 250} {skiprow 0} {cultivar hartog}
-       } elseif {"plant" == "oryza"} {
-          apsimSendMessage wheat sow {cultivar hartog}
-       } elseif {"plant" == "sorghum"} {
-          apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
-                  {cultivar hartog} {row_spacing 250} {skiprow 0} \
-                  {tiller_no_fertile [tiller_no_fertile]}
-       } elseif {"plant" == "sugar"} {
-          apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
-       } else {
-         error "Unknown crop module \"plant\"."
-       }
-     }
-     
-     
-     
-     
-     
-     
-     
-     
+     set rainOK [expr [apsimGet rain\[3\]] >= 25]
+     set eswOK [expr [apsimGet esw] >= 50]
+     return [expr $dateOK && $rainOK && $eswOK]
+  } elseif {"variable" == "fixed"} {
+     set year [apsimGet year]; set day [apsimGet day]
+     set d1 [clock format [clock scan "15-may-$year"] -format %j]
+     return [expr $day == $d1]
+  } else {
+     error "Unknown sowing criteria \"variable\"."
+  }
+  return "notreached"
+}
+
+# Plant a crop now
+proc sow_wheat {} {
+  if {"plant" == "plant"} {
+     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+             {cultivar hartog} {row_spacing 250} \
+             {skipplant 0} {skiprow 0} {crop_class plant}
+  } elseif {"plant" == "cropmod"} {
+     apsimSendMessage wheat sow {plants [density]} {sowing_depth [depth]} \
+             {cultivar hartog} {row_spacing 250} {skiprow 0}
+  } elseif {"plant" == "growth"} {
+     apsimSendMessage wheat ???
+  } elseif {"plant" == "ozcot"} {
+     apsimSendMessage wheat sow {plants_pm [plants_pm]} {sowing_depth 30} \
+             {row_spacing 250} {skiprow 0} {cultivar hartog}
+  } elseif {"plant" == "oryza"} {
+     apsimSendMessage wheat sow {cultivar hartog}
+  } elseif {"plant" == "sorghum"} {
+     apsimSendMessage wheat sow {plants 100} {sowing_depth 30} \
+             {cultivar hartog} {row_spacing 250} {skiprow 0} \
+             {tiller_no_fertile [tiller_no_fertile]}
+  } elseif {"plant" == "sugar"} {
+     apsimSendMessage wheat sow {plants 100} {cultivar hartog} {sowing_depth 30}
+  } else {
+    error "Unknown crop module \"plant\"."
+  }
+}
+
+
+
+
+
+
+
+
      --->Section: process
-     checkSetup
-     doProcess
-     
+checkSetup
+doProcess
+
      --->End
 ------- Start of simulation  --------------------------------------------------
 1 December 1940(Day of year=336), cotton: 

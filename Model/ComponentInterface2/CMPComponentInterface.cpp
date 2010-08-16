@@ -198,10 +198,11 @@ bool CMPComponentInterface::readFiltered(const string& parName, vector<string> &
 
    return (values.size() > 0);
    }
+
 bool CMPComponentInterface::readAll(std::vector<std::string> &names, std::vector<std::string> &values)
    {
    // -----------------------------------------------------------------------
-   // return the raw data for this component. Used to discover manager rules etc.
+   // return the raw data for this component. Used for 'flat' structures like report variable lists.
    // -----------------------------------------------------------------------
    XMLNode::iterator initData = find_if(simScript->documentElement().begin(),
                                         simScript->documentElement().end(),
@@ -217,6 +218,78 @@ bool CMPComponentInterface::readAll(std::vector<std::string> &names, std::vector
 
    return (names.size() > 0);
    }
+
+bool CMPComponentInterface::readScripts(std::map<std::string, std::string> &scripts)
+   {
+   // -----------------------------------------------------------------------
+   // return any script (or rule) elements
+   // -----------------------------------------------------------------------
+   XMLNode::iterator initData = find_if(simScript->documentElement().begin(),
+                                        simScript->documentElement().end(),
+                                        EqualToName<XMLNode>("initdata"));
+
+   scripts.clear();
+
+   readAndDemangleScripts(scripts, initData);
+   
+   return (scripts.size() > 0);
+   }
+
+void CMPComponentInterface::readAndDemangleScripts(std::map<std::string, std::string> &scripts, 
+	                                              XMLNode::iterator &data)
+   {
+   XMLNode ui;
+   for (XMLNode::iterator i = data->begin();
+                          i != data->end();
+                          i++)
+      {
+      if (i->getName() == "ui") 
+      	 {
+      	 ui = *i; 
+         } 
+      else if (i->getName() == "rule") 
+         { 
+         string eventName = i->getAttribute("condition");
+         if (eventName != "") 
+         	  {
+            replaceManagerMacros(eventName, ui);
+            string script = i->getValue();
+            replaceManagerMacros(script, ui);
+            scripts[eventName] += script;
+            }
+         readAndDemangleScripts(scripts, i); 
+         } 
+      else if (i->getName() == "script") 
+         {
+         string eventName = findNodeValue(*i, "event");
+         replaceManagerMacros(eventName, ui);
+         string script = findNodeValue(*i, "text");
+         replaceManagerMacros(script, ui);
+
+         scripts[eventName] += script;
+         }
+      }
+   }
+
+// ------------------------------------------------------------------
+// Replace all manager macros found in the specified contents
+// by using the nodes under <ui>
+// ------------------------------------------------------------------
+void CMPComponentInterface::replaceManagerMacros(std::string& contents, XMLNode ui) 
+   {
+   if (ui.isValid())
+      {
+      replaceAll(contents, "[name]", getName());
+      for (XMLNode::iterator child = ui.begin(); child != ui.end(); child++)
+         {
+         if (child->getName() != "category")
+            {
+            replaceAll(contents, "[" + child->getName() + "]", child->getValue());
+            }
+         }
+      }
+   }
+
 
 
 bool CMPComponentInterface::read(const std::string& parName, Convertable* value, bool optional)
@@ -613,7 +686,11 @@ void CMPComponentInterface::onInit2(const Message& message)
       MessageData Data(message);
       init2[i]->unpack(Data, "");
       }
-   tickID = nameToRegistrationID("tick", respondToEventReg);
+   if ((tickID = nameToRegistrationID("tick", respondToEventReg)) == 0) 
+   	  {
+   	  // We need a tick to determine when to write the "day = ..." heading to a summary file. 
+   	  tickID = RegisterWithPM("tick", "", "", respondToEventReg, new PackableWrapper< Null >(*new Null));
+   	  }
    }
 
 void CMPComponentInterface::onQueryValue(const Message& message)

@@ -1,105 +1,66 @@
 #include <string.h>
 
-#include <map>
+#include <General/platform.h>
 #include <General/string_functions.h>
 #include <General/stristr.h>
 
 #include <ApsimShared/ApsimDirectories.h>
-#include <ApsimShared/FStringExt.h>
 
-#include <ComponentInterface/MessageDataExt.h>
-#include <ComponentInterface/Component.h>
-#include <ComponentInterface/ApsimVariant.h>
-#include <ComponentInterface/Variants.h>
-#include <ComponentInterface/MessageTypes.h>
-#include <Protocol/Transport.h>
+#include <ComponentInterface2/ScienceAPI2.h>
 
 #include <tcl.h>
-#include <tclInt.h>
+
 #include "TclComponent.h"
 
 using namespace std;
-using namespace protocol;
 
+// Tcl related forward definitions (defined below, and in tclXtras.cpp)
 extern void StartTcl (const char *);
 extern Tcl_Interp *NewInterp (Tcl_Interp *, ClientData, const char *);
 extern void StopTcl(Tcl_Interp *);
 
 static int initialisationState = 0;
 
-#define nullDDML       "<type/>"
-#define intString      "<type kind=\"integer4\" array=\"F\"/>"
-#define intStringArray "<type kind=\"integer4\" array=\"T\"/>"
-#define fltString      "<type kind=\"single\" array=\"F\"/>"
-#define fltStringArray "<type kind=\"single\" array=\"T\"/>"
-#define dblString      "<type kind=\"double\" array=\"F\"/>"
-#define dblStringArray "<type kind=\"double\" array=\"T\"/>"
-#define strString      "<type kind=\"string\" array=\"F\"/>"
-#define strStringArray "<type kind=\"string\" array=\"T\"/>"
-
-static const char* messageNames[45] =
-     {"ActivateComponent", "AddComponent", "Checkpoint", "Commence",
-      "Complete", "DeactivateComponent", "DeleteComponent", "Deregister",
-      "Event", "GetValue", "Init1", "Init2",
-      "NotifyAboutToDelete", "NotifyRegistrationChange", "NotifySetValueSuccess",
-      "NotifyTermination", "PauseSimulation", "PublishEvent", "QueryInfo",
-      "QuerySetValue", "QueryValue", "Register", "ReinstateCheckpoint",
-      "ReplySetValueSuccess", "ReplyValue",
-      "RequestComponentID", "RequestSetValue", "ResumeSimulation",
-      "ReturnComponentID", "ReturnInfo", "ReturnValue",
-      "TerminateSimulation", "<unused>", "<unused>", "<unused>", "<unused>", "<unused>", "<unused>", "<unused>",
-      "ApsimGetQuery", "ApsimSetQuery", "ApsimChangeOrder"};
-
-int apsimGetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
-int apsimSetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
-int apsimRegisterGetSetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
-int apsimSendEventProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
-int apsimRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
-int apsimCatchMessages(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
-int apsimGetComponentXML(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
-
-// ------------------------------------------------------------------
-//  Short description:
-//     Return a blank string when requested to indicate that we
-//     don't need a wrapper DLL.
-
-//  Notes:
-
-//  Changes:
-//    DPH 7/6/2001
-
-// ------------------------------------------------------------------
-extern "C" EXPORT void STDCALL wrapperDLL(char* wrapperDll)
+extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
    {
-   strcpy(wrapperDll, "");
+   return new TclComponent(scienceAPI);
    }
-extern "C" void STDCALL getDescriptionInternal(char* initScript,
-                                                 char* description);
-// ------------------------------------------------------------------
-// Return component description info.
-// ------------------------------------------------------------------
-extern "C" EXPORT void STDCALL getDescription(char* initScript, char* description)
+
+extern "C" void EXPORT STDCALL deleteComponent(TclComponent* component)
    {
-   getDescriptionInternal(initScript, description);
+   if (component)
+     delete component;
    }
-// ------------------------------------------------------------------
-// Create an instance of the TclLink module
-// ------------------------------------------------------------------
-protocol::Component* createComponent(void)
+
+// These are called from EntryPoints.cpp:createInstance(). We bypass the wrapping code 
+class CMPComponentInterface;
+unsigned CreateComponent(ScienceAPI2* scienceAPI, CMPComponentInterface*, const char* dllFileName, void* dllHandle)
    {
-   return new TclComponent;
+   return (unsigned) createComponent(*scienceAPI);
    }
+
+void DeleteComponent(unsigned component, void* dllHandle)
+   {
+   deleteComponent((TclComponent *)component);
+   }
+
 // ------------------------------------------------------------------
-// Initialises the Tcl component.
+// Initialise and destroy the Tcl component.
 // ------------------------------------------------------------------
-TclComponent::TclComponent()
+TclComponent::TclComponent(ScienceAPI2 & api) : apsimAPI(api)
    {
    Interp = NULL;
    hasFatalError = false;
+
+   if (initialisationState == 0) {
+     StartTcl(apsimAPI.getExecutableFileName().c_str());
+     initialisationState = 1;
    }
-// ------------------------------------------------------------------
-// Destructor
-// ------------------------------------------------------------------
+
+   apsimAPI.subscribe("error", nullFunction(&TclComponent::onError));
+   apsimAPI.subscribe("init2", nullFunction(&TclComponent::onInit2));
+   }
+
 TclComponent::~TclComponent(void)
    {
    if (Interp != NULL) 
@@ -108,189 +69,153 @@ TclComponent::~TclComponent(void)
       Interp = NULL;
       }
    }
-// ------------------------------------------------------------------
-// Stage 1 initialisation. We can initialise the TCL world now that we know where we are..
-// ------------------------------------------------------------------
-void TclComponent::doInit1(const protocol::Init1Data& initData)
-   {
-   protocol::Component::doInit1(initData);
-
-   if (initialisationState == 0) {
-     StartTcl(Component::componentData->getExecutableFileName().c_str());
-     initialisationState = 1;
-   }
-   //MessageBox(0,  Component::componentData->getExecutableFileName().c_str(), "Init", MB_ICONSTOP);
-
-   errorID = addRegistration(::respondToEvent,
-                             -1,
-                             string("error"),
-                             DDML(ErrorType()));
-
-   }
 
 // ------------------------------------------------------------------
 // Initialise the Tcl component.
 // ------------------------------------------------------------------
-void TclComponent::doInit2(void)
+void TclComponent::onInit2(void)
    {
-   protocol::Component::doInit2();
 
    if (initialisationState == 1) {
       // write copyright notice(s).
-      writeString("Copyright (C) 1991-1994 The Regents of the University of California.");
-      writeString("Copyright (C) 1996-1997 Sun Microsystems, Inc.");
-      writeString("Copyright (C) 2001      ActiveState.");
-      Interp = NewInterp(NULL, this, getName().c_str());
+      apsimAPI.write("Copyright (C) 1991-1994 The Regents of the University of California.\n");
+      apsimAPI.write("Copyright (C) 1996-1997 Sun Microsystems, Inc.\n");
+      apsimAPI.write("Copyright (C) 2001      ActiveState.\n");
+      Interp = NewInterp(NULL, this, apsimAPI.name().c_str());
    } 
 
    Tcl_SetVar(Interp, "apsuite", getApsimDirectory().c_str(), TCL_GLOBAL_ONLY);
    Tcl_SetVar(Interp, "apsim", getApsimDirectory().c_str(), TCL_GLOBAL_ONLY);
    
-   std::string initRule;
-   std::vector<string> ruleNames;
-   std::map<string,string> ruleContents;
-   
-   componentData->getRuleNames(ruleNames);
    rules.clear();
-
-   for (unsigned int i = 0; i != ruleNames.size(); i++)
-      {
-      string condition, rule;
-      componentData->getRule(ruleNames[i], condition, rule);
-      if (condition != "") 
-          {
-          ruleContents[condition] += rule;
-          }
-      }
+   apsimAPI.readScripts(rules);
  
-    for (std::map<string,string>::iterator i = ruleContents.begin();
-         i != ruleContents.end(); i++) 
-      {
-         unsigned id = addRegistration(::respondToEvent, -1, i->first, "");
-         rules.insert(UInt2StringMap::value_type(id, i->second));
-         
-         string msg = "--->Section: " + i->first;
-         writeString(msg.c_str());
-         writeString(i->second.c_str());
-         if (i->first == string("init")) {initRule += i->second;}
-      }
-   writeString("--->End");
+   for (map<string,string>::iterator i = rules.begin(); i != rules.end(); i++) 
+       {
+       string msg;
+       msg = "--->Section: "; msg += i->first; msg += "\n";
+       msg += i->second; msg += "\n";
+       apsimAPI.write(msg);
+       if (i->first != "init") 
+          apsimAPI.subscribe(i->first, namedNullFunction(i->first, &TclComponent::onNullEventCallback));
+       }
+
+   apsimAPI.write("--->End\n");
 
    // Do the init rule if specified..
-   if (!initRule.empty())
-      {
-      int result = Tcl_Eval(Interp, initRule.c_str());
-      if (result != TCL_OK)
-          {
+   if (rules["init"] != "")
+      if (Tcl_Eval(Interp, rules["init"].c_str()) != TCL_OK)
           throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
-          }
-      }
-      //char buf[80]; sprintf(buf, "this=%x", this);
-      //MessageBox(0,  buf, "Init", MB_ICONSTOP);
+
+   //char buf[80]; sprintf(buf, "this=%x", this);
+   //MessageBox(0,  buf, "Init", MB_ICONSTOP);
    }
-// ------------------------------------------------------------------
-// Look for messages.
-// ------------------------------------------------------------------
-void TclComponent::respondToEvent(unsigned int& /*fromID*/, unsigned int& eventID, protocol::Variant &variant)
+
+void TclComponent::onError(void)
    {
-   UInt2StringMap::iterator ip, ip1, ip2;
-
-   if (eventID == errorID) hasFatalError = true;
-
-   ip1 = rules.lower_bound(eventID);
-   ip2 = rules.upper_bound(eventID);
-
-   for (ip = ip1; ip != ip2; ip++)
-     {
-     string rule = ip->second;
-     if (rule != "")
-        {
-        // Set the global variable "incomingApsimVariant" to the variant's binary data
-        MessageData *message = variant.getMessageData();
-        Tcl_ObjSetVar2(Interp, Tcl_NewStringObj("incomingApsimVariant",-1), NULL, 
-                       Tcl_NewByteArrayObj((const unsigned char *)message->start(), message->totalBytes()), TCL_GLOBAL_ONLY);
-
-        int result = Tcl_Eval(Interp, rule.c_str());
-        if (result != TCL_OK)
-           throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
-        }
-     }  
+   hasFatalError = true;
    }
-// ------------------------------------------------------------------
-// Return a variable to caller.
-// ------------------------------------------------------------------
-void TclComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData& queryData)
-   {
-   string variableName = getRegistration(fromID, queryData.ID)->getName();   
-   string infoCmd, getCmd;
-
-   infoCmd = "array exists " + variableName;
-   if (Tcl_Eval(Interp, infoCmd.c_str()) != TCL_OK)
-       throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
-
-   int isArray = 0;
-   if (Tcl_GetIntFromObj(Interp, Tcl_GetObjResult(Interp), &isArray) != TCL_OK)
-       throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
    
-   if (isArray) 
-      getCmd = "array get " + variableName;
-   else 
-      getCmd = "set " + variableName;
+// Allow apsim to read (and/ or write) one of our variables. 
+void TclComponent::exposeReadable(const std::string &variableName)
+  {
+  apsimAPI.exposeFunction2(variableName, "", "", StringArrayFunction2(variableName, &TclComponent::respondToGet));
+  }
 
-   if (Tcl_Eval(Interp, getCmd.c_str()) != TCL_OK)
-       throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
+void TclComponent::exposeReadWrite(const std::string &variableName)
+  {
+  apsimAPI.exposeFunction2(variableName, "", "", 
+                           StringArrayFunction2(variableName, &TclComponent::respondToGet),
+                           StringArrayFunction2(variableName, &TclComponent::respondToSet));
+  }
 
-   const char *result = Tcl_GetStringFromObj(Tcl_GetObjResult(Interp), NULL);
+// Subscribe to an event. Append to the event->script map so we can run it later.
+void TclComponent::subscribeVariant(const std::string &event, const std::string &script) 
+	{
+    rules[event] += script;
+    apsimAPI.subscribe(event, VariantFunction2(event, &TclComponent::onVariantEventCallback));
+	}
 
-   if (result != NULL)
-      sendVariable(queryData, string(result));
-   }
-// ------------------------------------------------------------------
-// Something is asking whether we know about a variable. If we do, register it.
-// ------------------------------------------------------------------
-void TclComponent::onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQueryData& apsimGetQueryData)
-   {
-   if (Interp != NULL) 
-      {
-// FIXME -- case of variable name?
-      string varCmd = "info exists " + asString(apsimGetQueryData.name);
+void TclComponent::subscribeNull(const std::string &event, const std::string &script) 
+	{
+    rules[event] += script;
+    apsimAPI.subscribe(event, namedNullFunction(event, &TclComponent::onNullEventCallback));
+	}
 
-      int result = Tcl_Eval(Interp, varCmd.c_str());
-      if (result == TCL_OK)
-         if (Str_i_Eq("1", Tcl_GetStringFromObj(Tcl_GetObjResult(Interp), NULL)))
-            registerApsimVariable(Interp, asString(apsimGetQueryData.name));
+// Deal with an event coming from the system to us
+void TclComponent::onNullEventCallback(const std::string &s)
+{
+   string rule = rules[s];
+
+   if (rule != "") 
+   	  {
+      if (Tcl_Eval(Interp, rule.c_str()) != TCL_OK)
+           throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
       }
-   }   
+}
+
+void TclComponent::onVariantEventCallback(const std::string &s, Variant &v)
+{
+   string rule = rules[s];
+   // Do something with Variant args here, eg {sow hartog} {plants 100} etc
+   if (rule != "") 
+   	  {
+      // Expose the raw message 
+   	  Tcl_ObjSetVar2(Interp, Tcl_NewStringObj("incomingVariant",-1), NULL, 
+                     Tcl_NewByteArrayObj((const unsigned char *)v.bufStart, v.bufLen), TCL_GLOBAL_ONLY);
+
+      if (Tcl_Eval(Interp, rule.c_str()) != TCL_OK)
+           throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
+      }
+}
+
 // ------------------------------------------------------------------
-// Set the value of a variable for the specified
-// variable name.  If this module owns the variable and does
-// change it's value, return true.
+// Return a variable to caller. Everything is a string.
 // ------------------------------------------------------------------
-bool TclComponent::respondToSet(unsigned int& fromID, protocol::QuerySetValueData& setValueData)
+void TclComponent::respondToGet(const std::string &variableName, std::vector<std::string> &result)
    {
-   string newValue;
-   setValueData.variant.unpack(newValue);
+   result.clear();
+   Tcl_Obj *var = Tcl_GetVar2Ex(Interp, variableName.c_str(), NULL, TCL_LEAVE_ERR_MSG );
 
-   ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-   ApsimRegistration *reg = registry.find(::respondToSet, fromID, setValueData.ID);
-   if (reg == NULL)
-        {
-        string msg = "Invalid registration ID in TclComponent::respondToSet. from=";
-                     msg += itoa(fromID);
-                     msg += ", id=";
-                     msg += itoa(setValueData.ID);
-        throw std::runtime_error(msg);
-        }
+   if (var != NULL) 
+      {
+      // Find what we have. Is it a list? (APSIM arrays <=> TCL lists)
+      Tcl_ObjType *listType = Tcl_GetObjType("list");
+      if (var->typePtr == listType) 
+         {
+      	 Tcl_Obj **list = NULL; int len = 0;
+         if (Tcl_ListObjGetElements(Interp, var, &len, &list) != TCL_OK) 
+            throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
 
-   string name = reg->getName();
-
-   const char *result = Tcl_SetVar(Interp, name.c_str(), newValue.c_str(), TCL_GLOBAL_ONLY);
-   if (result != NULL)
-      return true;
-   return false;
+         for (int i = 0; i < len; i++)
+            result.push_back(Tcl_GetStringFromObj(list[i], NULL));
+         }
+      else 
+         { 
+      	 // Scalar. 
+         result.push_back(Tcl_GetStringFromObj(var, NULL));
+         }  
+      }
    }
 
-// (Called from TCL interpreter). Find component() and ask protoman for a variable
+// ------------------------------------------------------------------
+// Set the value of a variable for the specified variable name.
+// ------------------------------------------------------------------
+void TclComponent::respondToSet(const std::string &variableName, std::vector<std::string> &value)
+   {
+   if (value.size() > 1) 
+      {	
+      Tcl_Obj *result = Tcl_GetObjResult(Interp);
+      Tcl_SetListObj(result, 0, NULL);
+
+      for (std::vector<string>::iterator p = value.begin(); p != value.end(); p++)
+          Tcl_ListObjAppendElement(Interp, result, Tcl_NewStringObj((char *)(*p).c_str(), -1));
+      }
+   else    
+      Tcl_SetVar(Interp, variableName.c_str(), value[0].c_str(), TCL_GLOBAL_ONLY);
+   }
+
+// (Called from TCL interpreter). Find component() and ask apsim for a variable
 int apsimGetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
    if (objc == 2)
@@ -299,7 +224,7 @@ int apsimGetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST ob
       string apsimName(Tcl_GetStringFromObj(objv[1], NULL));
       return (component->apsimGet(interp, apsimName, false));
       }
-   Tcl_SetResult(interp,"Wrong num args: apsimGet <variableName>", NULL);
+   Tcl_SetResult(interp, "Wrong num args: apsimGet <variableName>", NULL);
    return TCL_ERROR;
    }
    
@@ -316,56 +241,32 @@ int apsimGetOptionalProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * 
    }
 
 // Get an apsim variable into interp->result. 
-int TclComponent::apsimGet(Tcl_Interp *interp, const string &varname, bool optional)
+int TclComponent::apsimGet(Tcl_Interp *interp, const string &varName, bool optional)
    {
+   vector<string> resultArray;
 
-   int destID;
-   string regName;
-   ApsimRegistry::getApsimRegistry().unCrackPath(componentID, varname, destID, regName);
+   apsimAPI.get(varName, "", optional, resultArray);
 
-   ApsimRegistration *regItem = (ApsimRegistration *)
-       addRegistration(::get,
-                       destID, 
-                       regName,
-                       strStringArray);
-
-   protocol::Variant* variant = NULL;
-
-   if (getVariable((unsigned int)regItem, &variant, optional)) 
+   if (optional || resultArray.size() > 0) 
       {
-      Tcl_Obj *result = Tcl_GetObjResult(interp);
-      Tcl_SetListObj(result, 0, NULL);
-
-      std::vector<string> scratch; 
-      protocol::TypeConverter* typeConverter = NULL;
-      getTypeConverter(regItem->getName().c_str(),
-                       variant->getType(),
-                       regItem->getDDML().c_str(),
-                       typeConverter);
-
-      protocol::ArraySpecifier* arraySpec = protocol::ArraySpecifier::create(regItem);
-
-      bool ok = variant->unpack(typeConverter, 
-                                arraySpec, 
-                                scratch);
-
-      if (arraySpec) delete arraySpec;
-
-      if (!ok)
-         {
-         string msg= "Unpack failed.";
-         msg += "\nVariableName: ";
-         msg += regItem->getName();
-         throw std::runtime_error(msg);
+      if (resultArray.size() > 1) 
+      	 {
+         Tcl_Obj *result = Tcl_GetObjResult(interp);
+         Tcl_SetListObj(result, 0, NULL);
+         for (std::vector<string>::iterator p = resultArray.begin(); p != resultArray.end(); p++)
+            Tcl_ListObjAppendElement(interp, result, Tcl_NewStringObj((char *)(*p).c_str(), -1));
          }
-
-      for (std::vector<string>::iterator p = scratch.begin(); p != scratch.end(); p++)
-          Tcl_ListObjAppendElement(interp, result, Tcl_NewStringObj((char *)(*p).c_str(), -1));
+      else if (resultArray.size() == 1) 
+      	 {
+         string s = resultArray[0];
+         Tcl_SetObjResult(interp, Tcl_NewStringObj((char *)s.c_str(),-1));
+      	 }    
+      return TCL_OK;
       }    
-   return TCL_OK;
+   return TCL_ERROR;
    }
 
-// (Called from TCL interpreter.) Find component() and set apsim value
+// (Called from TCL interpreter.) Set an apsim value
 int apsimSetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
    if (objc == 3)
@@ -373,9 +274,7 @@ int apsimSetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST ob
       TclComponent *component = (TclComponent *) cd;
       string apsimName = Tcl_GetStringFromObj(objv[1], NULL);
       if (component->apsimSet(interp, apsimName, objv[2]))
-         {
          return TCL_OK;
-         }
       Tcl_AppendResult(interp, "Can't set the apsim variable ", apsimName.c_str(), NULL);
       return TCL_ERROR;
       }
@@ -384,99 +283,80 @@ int apsimSetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST ob
    }
 
 // Set an apsim variable
-bool TclComponent::apsimSet(Tcl_Interp *interp, const string &varname, Tcl_Obj *value)
+bool TclComponent::apsimSet(Tcl_Interp *interp, const string &varName, Tcl_Obj *value)
    {
    Tcl_ObjType *listType = Tcl_GetObjType("list");
 
-   // Find what we have. Is it an array?
-   bool isArray = false;
+   // Find what we have. Is it an array (ie tcl list.)?
    if (value->typePtr==listType)
       {
-      isArray = true;
-      }
-
-   int destID;
-   string regName;
-   ApsimRegistry::getApsimRegistry().unCrackPath(componentID, varname, destID, regName);
-
-   unsigned variableID = addRegistration(::set,
-                                         destID,
-                                         regName, 
-                                         isArray?strStringArray:strString);
-   if (isArray)
-       {
-       std::vector<string> outValue;
-       Tcl_Obj *listElement;
-       int      listLength;
-       Tcl_ListObjLength(interp, value, &listLength);
-       for (int idx = 0; idx < listLength; idx++)
+      std::vector<string> outValue;
+      Tcl_Obj *listElement;
+      int      listLength;
+      Tcl_ListObjLength(interp, value, &listLength);
+      for (int idx = 0; idx < listLength; idx++)
            {
            Tcl_ListObjIndex(interp, value, idx, &listElement);
            string scratch = string(Tcl_GetStringFromObj(listElement, NULL));
            outValue.push_back(scratch);
            }
-       return (setVariable(variableID, outValue));
-       }
-   else
-       {
-       string outValue = string(Tcl_GetStringFromObj(value, NULL));
-       return (setVariable(variableID, outValue));
-       }
-   /* notreached*/
-   }
-
-void TclComponent::registerApsimVariable(Tcl_Interp *interp, const string &name)
-   {
-   // Find what we have. Is it an array?
-   bool varExists = false;
-
-   string varCmd = "info exists " + name;
-   int result = Tcl_Eval(interp, varCmd.c_str());
-   if (result != TCL_OK) throw std::runtime_error(string(Tcl_GetStringResult(interp)));
-   if (Str_i_Eq("1", Tcl_GetStringFromObj(Tcl_GetObjResult(interp), NULL)))
-       varExists = true;
-
-   if (varExists)
-      {
-      addRegistration(::respondToSet, -1, name, strString);
-      addRegistration(::respondToGet, -1, name, strString);
+      apsimAPI.set(varName, "", outValue);
       }
+   else
+      {
+      string outValue = string(Tcl_GetStringFromObj(value, NULL));
+      apsimAPI.set(varName, "", outValue);
+      }
+
+   return(hasFatalError ==  false);
    }
 
-// Called from TCL script. Tell protoman of something we own
+// Called from TCL script. Tell apsim of something we own
+int apsimRegisterGetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
+   {
+   if (objc == 2)
+      {
+      TclComponent *component = (TclComponent *) cd;
+      string name = Tcl_GetStringFromObj(objv[1], NULL);
+      component->exposeReadable(name);
+      return TCL_OK;
+      }
+   Tcl_SetResult(interp, "Wrong num args: apsimRegisterGet <variableName>", NULL);
+   return TCL_ERROR;
+   }
+
 int apsimRegisterGetSetProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
    if (objc == 2)
       {
       TclComponent *component = (TclComponent *) cd;
-      string name(Tcl_GetStringFromObj(objv[1], NULL));
-      component->registerApsimVariable(interp, name);
+      string name = Tcl_GetStringFromObj(objv[1], NULL);
+      component->exposeReadWrite(name);
       return TCL_OK;
       }
    Tcl_SetResult(interp, "Wrong num args: apsimRegisterGetSet <variableName>", NULL);
    return TCL_ERROR;
    }
 
-// Called from TCL script. Send a message to the system, eg:
+// Called from TCL script. Send a Variant message to the system, eg:
 // apsimSendMessage wheat sow {plants 100} {depth 20}
+// Todo: work out how to send other data structures FIXME!
 int apsimSendMessageProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
    {
       TclComponent *component = (TclComponent *) cd;
 
       if (objc < 3)
          {
-         Tcl_SetResult(interp,"Wrong num args: apsimSendEvent <moduleName> <message> {<name> <value>} ...]", NULL);
+         Tcl_SetResult(interp,"Wrong num args: apsimSendMessage <moduleName> <message> {<name> <value>} ...]", NULL);
          return TCL_ERROR;
          }
 
       // 1. destination
-      const char *moduleName = Tcl_GetStringFromObj(objv[1], NULL);
-      const char *actionName = Tcl_GetStringFromObj(objv[2], NULL);
+      string moduleName = Tcl_GetStringFromObj(objv[1], NULL);
+      string actionName = Tcl_GetStringFromObj(objv[2], NULL);
 
       // 2. build variant
-      protocol::ApsimVariant outgoingApsimVariant(component);
-      outgoingApsimVariant.store(FString("sender"), protocol::DTstring, false, FString(component->getName().c_str()));
-      outgoingApsimVariant.store(FString("sender_id"), protocol::DTint4, false, (int)component->getId());
+      Variant outgoingVariant;
 
       for (int i = 3; i < objc; i++)
          {
@@ -501,33 +381,68 @@ int apsimSendMessageProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * 
             return TCL_ERROR;
             }
 
-         const char *v1 = Tcl_GetStringFromObj(firstListElement,NULL);
-         FString variableName = FString(v1);
+         const string variableName = Tcl_GetStringFromObj(firstListElement,NULL);
 
-         const char *v2 = Tcl_GetStringFromObj(secondListElement,NULL);
-         FString variableValue = FString(v2);
+         std::vector<std::string> variableValue;
+         int numInList = 0;
+         Tcl_ListObjLength(interp, secondListElement, &numInList);
 
-         if (Tcl_ListObjLength(interp, secondListElement, &check) != TCL_OK) {
-            check = 0;
+         for (int j = 0; j < numInList; j++)  
+            {
+            Tcl_Obj *datum;
+            Tcl_ListObjIndex(interp, secondListElement, j, &datum);
+            variableValue.push_back(Tcl_GetStringFromObj(datum,NULL));
+            }   
+
+         outgoingVariant.pack(variableName, variableValue);
          }
 
-         bool isArray = check > 1;
+      string destination;
+      if (moduleName != "") 
+      	 destination = moduleName + "." + actionName;
+      else 
+      	 destination = actionName;
 
-         outgoingApsimVariant.store(variableName, protocol::DTstring, isArray, variableValue);
+      component->apsimAPI.publish(destination, outgoingVariant);
+      return TCL_OK;         
+   }
+
+// Send a raw message (created by tcl's binary command). [de]constructors for apsim data structures can be found in
+// %apsim/Model/TclLink/CIDataTypes.tcl
+// Onus is on the user to get it right.
+int apsimSendRawMessageProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
+   {
+      TclComponent *component = (TclComponent *) cd;
+
+      if (objc != 4)
+         {
+         Tcl_SetResult(interp,"Wrong num args: apsimSendRawMessage <moduleName> <message> ", NULL);
+         return TCL_ERROR;
          }
 
-      // Send it
-      int destID;
-      if (! component->componentNameToID(moduleName, destID)) {
-         //Tcl_SetStringObj(Tcl_GetObjResult(interp), "Unknown module", -1);
-         //return TCL_ERROR;         
-         destID = 0;
+      // 1. destination
+      string moduleName = Tcl_GetStringFromObj(objv[1], NULL);
+      string actionName = Tcl_GetStringFromObj(objv[2], NULL);
+
+      // 2. build variant from raw byte array. This is highly dangerous, not for the faint hearted!!
+      Variant outgoingVariant;
+      unsigned char *buf;
+      int bufLen;
+      buf = Tcl_GetByteArrayFromObj(objv[3], &bufLen);
+      if (buf != NULL) {
+         outgoingVariant.bufStart = (char *) malloc(bufLen);
+         if (outgoingVariant.bufStart == NULL) throw std::runtime_error("Out of memory");
+         memcpy(buf, outgoingVariant.bufStart, bufLen);
+         outgoingVariant.bufLen = bufLen;
+
+         string destination;
+         if (moduleName != "") 
+           destination = moduleName + "." + actionName;
+         else 
+      	   destination = actionName;
+
+         component->apsimAPI.publish(destination, outgoingVariant);
       }
-      unsigned int eventID = component->addRegistration(::event,
-                                                        destID,
-                                                        actionName,
-                                                        (const char *)"<variant/>");
-      component->publish(eventID, outgoingApsimVariant);
       return TCL_OK;         
    }
 
@@ -539,204 +454,52 @@ int apsimWriteToSummaryFileProc(ClientData cd, Tcl_Interp *interp, int objc, Tcl
          Tcl_SetResult(interp,"Wrong num args: apsimWriteToSummaryFile <message>", NULL);
          return TCL_ERROR;
          }
-   const char *message = Tcl_GetStringFromObj(objv[1], NULL);
-   component->writeString(message);
+   string message = Tcl_GetStringFromObj(objv[1], NULL);
+   component->apsimAPI.write(message + "\n");
+   return TCL_OK;
+}
+
+// Tell apsim we are interested in an event
+int apsimSubscribeNull(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
+{
+   TclComponent *component = (TclComponent *) cd;
+   if (objc != 3)
+         {
+         Tcl_SetResult(interp, "Wrong num args: apsimSubscribeNull <eventName> <script>", NULL);
+         return TCL_ERROR;
+         }
+
+   component->subscribeNull(string(Tcl_GetStringFromObj(objv[1], NULL)),
+                            string(Tcl_GetStringFromObj(objv[2], NULL)));
+
+   return TCL_OK;
+}
+
+// Same deal; but we'll expect a Variant structure inside the message
+int apsimSubscribeVariant(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
+{
+   TclComponent *component = (TclComponent *) cd;
+   if (objc != 3)
+         {
+         Tcl_SetResult(interp, "Wrong num args: apsimSubscribeVariant <eventName> <script>", NULL);
+         return TCL_ERROR;
+         }
+
+   component->subscribeVariant(string(Tcl_GetStringFromObj(objv[1], NULL)),
+                               string(Tcl_GetStringFromObj(objv[2], NULL)));
+
    return TCL_OK;
 }
 
 int apsimRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
 {
-   TclComponent *component = (TclComponent *) cd;
-   if (objc != 3)
-         {
-         Tcl_SetResult(interp, "Wrong num args: apsimRegisterEvent <eventName> <script>", NULL);
-         return TCL_ERROR;
-         }
-   string eventName = string(Tcl_GetStringFromObj(objv[1], NULL));
-   string script = string(Tcl_GetStringFromObj(objv[2], NULL));
-   
-   unsigned int id = component->registerEvent(eventName, script);
-   Tcl_SetObjResult(interp, Tcl_NewIntObj((int) id));
-   return TCL_OK;
+	 return (apsimSubscribeNull(cd, interp, objc, objv));
 }
-
-int apsimUnRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
-{
-   TclComponent *component = (TclComponent *) cd;
-   if (objc != 2)
-         {
-         Tcl_SetResult(interp, "Wrong num args: apsimUnRegisterEvent <id>", NULL);
-         return TCL_ERROR;
-         }
-   unsigned int id = Tcl_GetIntFromObj(interp, objv[1], NULL);
-   
-   component->unRegisterEvent(id);
-   return TCL_OK;
-}
-
-int apsimCatchMessages(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
-{
-   TclComponent *component = (TclComponent *) cd;
-   if (objc != 2)
-         {
-         Tcl_SetResult(interp, "Wrong num args: apsimCatchMessages <command>", NULL);
-         return TCL_ERROR;
-         }
-   string command = string(Tcl_GetStringFromObj(objv[1], NULL));
-   
-   component->catchMessages(command);
-   return TCL_OK;
-}
-
-unsigned int TclComponent::registerEvent(string &eventName, string &script)
-   {
-   unsigned id = addRegistration(::respondToEvent, 
-                                 -1,
-                                 eventName, 
-                                 "<variant/>");
-   rules.insert(UInt2StringMap::value_type(id, script));
-
-   return id;
-   }
-
-void TclComponent::unRegisterEvent(unsigned int id) 
-   {
-   throw("TclComponent::unRegisterEvent not implemented");
-   }
-
-void TclComponent::catchMessages(string &command)
-   {
-   messageCallbackCommand = command;
-   if (command == "")
-      setMessageHook(NULL);
-   else
-      setMessageHook(this);
-   }
-
-void TclComponent::callback(const protocol::Message* message)
-   {
-   if (messageCallbackCommand != "") 
-      {
-      int ncmd = 1;
-      Tcl_Obj **cmd = (Tcl_Obj**)malloc(100*sizeof(Tcl_Obj*));
-      cmd[0] = Tcl_NewStringObj(messageCallbackCommand.c_str(), -1);
-
-      string toName;
-      componentIDToName(message->to, toName);
-
-      if (toName != "")
-         {
-         cmd[ncmd] = Tcl_NewListObj(0, NULL);
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("toName",-1));
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj(toName.c_str(),-1));
-         ncmd++;
-         } 
-
-      if (message != NULL) 
-         {
-         cmd[ncmd] = Tcl_NewListObj(0, NULL);
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("from",-1));
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewIntObj(message->from));
-         ncmd++;
-
-         cmd[ncmd] = Tcl_NewListObj(0, NULL);
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("to",-1));
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewIntObj(message->to));
-         ncmd++;
-
-         cmd[ncmd] = Tcl_NewListObj(0, NULL);
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("id",-1));
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewIntObj(message->messageID));
-         ncmd++;
-
-         if (message->messageType >= 45) {throw "messageType oob in TclComponent::callback";}
-         if (message->messageType > 0) 
-            {
-            cmd[ncmd] = Tcl_NewListObj(0, NULL);
-            Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("type",-1));
-            Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj(messageNames[message->messageType-1],-1));
-            ncmd++;
-            }
-    
-         switch(message->messageType)
-            {
-            case protocol::Event:
-               {
-               protocol::MessageData messageData(message->dataPtr, message->nDataBytes);
-               protocol::EventData eventData;
-               messageData >> eventData;
-
-               ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-               ApsimRegistration *reg = registry.find(::event, eventData.publishedByID, eventData.ID);
-               if (reg == NULL)
-                  {
-                  string msg = "Invalid registration ID in TclComponent::callback ";
-                               msg += itoa(eventData.publishedByID);
-                               msg += ".";
-                               msg += itoa(eventData.ID);
-                  cout << msg << endl;
-                  }
-               else 
-                  {
-                  string name = reg->getName();
-                  cmd[ncmd] = Tcl_NewListObj(0, NULL);
-                  Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("name",-1));
-                  Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj(name.c_str(),-1));
-                  ncmd++;
-                  break;
-                  }
-               }
-            case protocol::GetValue:
-               {
-               protocol::MessageData messageData(message->dataPtr, message->nDataBytes);
-               protocol::GetValueData getValueData;
-               messageData >> getValueData;
-               ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
-               ApsimRegistration *reg = registry.find(::get, message->from, getValueData.ID); // fixme!!
-               if (reg == NULL)
-                   {
-                   string msg = "Invalid registration ID in TclComponent::callback ";
-                                msg += itoa(message->from);
-                                msg += ".";
-                                msg += itoa(getValueData.ID);
-                   throw std::runtime_error(msg);
-                   }
-               else
-                   {
-                   string name = reg->getName();
-                   cmd[ncmd] = Tcl_NewListObj(0, NULL);
-                   Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("name",-1));
-                   Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj(name.c_str(),-1));
-                   ncmd++;
-                   break;
-                   }
-               }
-            }
-
-         cmd[ncmd] = Tcl_NewListObj(0, NULL);
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewStringObj("data",-1));
-         Tcl_ListObjAppendElement(Interp, cmd[ncmd], Tcl_NewByteArrayObj((const unsigned char *)message->dataPtr,message->nDataBytes));
-         ncmd++;
-         }
-
-      int res = Tcl_EvalObjv(Interp, ncmd, cmd, TCL_EVAL_GLOBAL);
-
-      if (res != TCL_OK) 
-         fprintf(stdout, "messageHook error, result=%s\n", Tcl_GetStringResult(Interp));
-
-      //for (int obj = 0; obj < ncmd; obj++)
-      //  Tcl_DecrRefCount(cmd[obj]);
-
-      free(cmd);
-      }
-   }
-
 
 int apsimGetComponentXML(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
 {
    TclComponent *component = (TclComponent *) cd;
-   string xml = component->getXML();
-   Tcl_SetObjResult(interp, Tcl_NewStringObj(xml.c_str(), -1));
+   Tcl_SetObjResult(interp, Tcl_NewStringObj(component->apsimAPI.getInitData().c_str(), -1));
    return TCL_OK;
 } 
 

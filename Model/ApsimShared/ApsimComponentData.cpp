@@ -325,6 +325,7 @@ void ApsimComponentData::getRuleNames(vector<string>& names) const
 // Some are "rules", some are "scripts". 
 // "rules" are found in both .con files and .apsim files.
 // "scripts" are only in .apsim files
+// each rule has it's own <ui> 
 // ------------------------------------------------------------------
 void ApsimComponentData::getRule(const std::string& name,
                                  std::string& condition,
@@ -342,23 +343,31 @@ void ApsimComponentData::getRule(const std::string& name,
          scriptName = script->childValue("event");
       if (scriptName == name)
          {
+         string chunk;
          if (script->getName() == "rule")
             {
+            XMLNode::iterator localui = find_if(initData.begin(), initData.end(),
+                                                EqualToName<XMLNode>("ui"));
+            if (localui != initData.end()) { ui = localui; } // This is not pretty. 
+            // It only works by chance that 'script's under this node find this ui -
+            // I'd prefer that we parsed 'rule/script's differently than scripts.
+            	
             condition = script->getAttribute("condition");
             replaceManagerMacros(condition, *ui);
 
-            contents += script->getValue();
+            chunk = script->getValue();
             }
          else
             {
             condition = findNodeValue(*script, "event");
             replaceManagerMacros(condition, *ui);
 
-            contents += findNodeValue(*script, "text");
+            chunk = findNodeValue(*script, "text");
             }
+         replaceManagerMacros(chunk, *ui);
+         contents += chunk;
          }
       }
-   replaceManagerMacros(contents, *ui);
    Replace_all(contents, "[cr]", "\n");
    }
 // ------------------------------------------------------------------

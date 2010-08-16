@@ -2,45 +2,45 @@
 #ifndef TclComponentH
 #define TclComponentH
 
+#include <string>
+#include <map>
+
+class Variant;
+
 // ------------------------------------------------------------------
 // This component acts as the interface between an instance of a
 // Tcl interpreter and an APSIM simulation.
 // ------------------------------------------------------------------
-struct ApsimGetQueryData;
+typedef std::map<std::string, std::string >   Name2RuleMap;
 
-class TclComponent : public protocol::Component,
-                     public protocol::IMessageHook
-   {
+class TclComponent {
    public:
-      TclComponent(void);
+      TclComponent(ScienceAPI2& scienceapi);
       ~TclComponent(void);
-      virtual void doInit1(const protocol::Init1Data&);
-      virtual void doInit2(void);
-      virtual void respondToEvent(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant);
-      virtual void respondToGet(unsigned int& fromID, protocol::QueryValueData& queryData);
-      virtual bool respondToSet(unsigned int& fromID, protocol::QuerySetValueData& setValueData);
-      virtual void onApsimGetQuery(unsigned int fromID,protocol::ApsimGetQueryData& apsimGetQueryData);
-      
-      int apsimGet( Tcl_Interp *interp, const string &varname, bool optional);
-      bool apsimSet(Tcl_Interp *interp, const string &varname, Tcl_Obj *obj);
+      virtual void onError(void);
+      virtual void onInit2(void);
 
-      void registerApsimVariable(Tcl_Interp *interp, const string &name) ;
-      unsigned int registerEvent(string &eventName, string &script);
-      void unRegisterEvent(unsigned int id);
-      void catchMessages(string &command);
+      void exposeReadable(const std::string &variableName);
+      void exposeReadWrite(const std::string &variableName);
+      	
+      void respondToGet(const std::string &variableName, std::vector<std::string> &result);
+      void respondToSet(const std::string &variableName, std::vector<std::string> &value);
 
-      std::string getXML(void) {return componentData->getXML();};
-      
+      void subscribeNull(const std::string &event, const std::string &script);
+      void subscribeVariant(const std::string &event, const std::string &script);
+      void onNullEventCallback(const std::string &);
+      void onVariantEventCallback(const std::string &, Variant &);
+
+      int apsimGet( Tcl_Interp *interp, const std::string &varname, bool optional);
+      bool apsimSet(Tcl_Interp *interp, const std::string &varname, Tcl_Obj *obj);
+
+      ScienceAPI2& apsimAPI;
+
    private:
-
-      typedef std::multimap<unsigned, std::string, std::less<unsigned> >   UInt2StringMap;
-      UInt2StringMap rules;
       Tcl_Interp *Interp;
-
-      void callback(const protocol::Message* message);
-      std::string messageCallbackCommand;
-
+      Name2RuleMap rules;
       bool hasFatalError;
-      unsigned errorID;
    };
+
 #endif
+

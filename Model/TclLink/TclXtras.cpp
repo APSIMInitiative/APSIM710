@@ -4,6 +4,7 @@
 #include <windows.h>
 #endif
 
+#include <string.h>
 #include <tcl.h>
 #include <tk.h>
 #include <stdexcept>
@@ -19,10 +20,13 @@ extern int apsimGetOptionalProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST
 extern int apsimSetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
 extern int apsimRegisterGetSetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
 extern int apsimSendMessageProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+extern int apsimSendRawMessageProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
 extern int apsimWriteToSummaryFileProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
 extern int apsimRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
-extern int apsimUnRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
-extern int apsimCatchMessages(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+extern int apsimSubscribeNull(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+extern int apsimSubscribeVariant(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+//extern int apsimUnRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+//extern int apsimCatchMessages(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 extern int apsimGetComponentXML(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 
 static char GlobalDllName[4096];
@@ -83,10 +87,13 @@ Tcl_Interp *NewInterp (Tcl_Interp *topLevel, ClientData cd, const char *interpNa
    Tcl_CreateObjCommand(interp, "apsimSet", apsimSetProc, cd, NULL);
    Tcl_CreateObjCommand(interp, "apsimRegisterGetSet", apsimRegisterGetSetProc, cd, NULL);
    Tcl_CreateObjCommand(interp, "apsimSendMessage", apsimSendMessageProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSendRawMessage", apsimSendRawMessageProc, cd, NULL);
    Tcl_CreateObjCommand(interp, "apsimWriteToSummaryFile", apsimWriteToSummaryFileProc, cd, NULL);
    Tcl_CreateObjCommand(interp, "apsimRegisterEvent", apsimRegisterEvent, cd, NULL);
-   Tcl_CreateObjCommand(interp, "apsimUnRegisterEvent", apsimUnRegisterEvent, cd, NULL);
-   Tcl_CreateObjCommand(interp, "apsimCatchMessages", apsimCatchMessages, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSubscribeNull", apsimSubscribeNull, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSubscribeVariant", apsimSubscribeVariant, cd, NULL);
+//   Tcl_CreateObjCommand(interp, "apsimUnRegisterEvent", apsimUnRegisterEvent, cd, NULL);
+//   Tcl_CreateObjCommand(interp, "apsimCatchMessages", apsimCatchMessages, cd, NULL);
    Tcl_CreateObjCommand(interp, "apsimGetComponentXML", apsimGetComponentXML, cd, NULL);
 
    return interp;

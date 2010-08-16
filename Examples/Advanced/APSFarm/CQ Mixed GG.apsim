@@ -1,5 +1,5 @@
 <folder version="19" name="Grazing simulations">
-  <memo name="notes for Echo Hills simulations"><![CDATA[* 4000 ha property size
+  <memo name="notes for CQ Mixed GG simulations"><![CDATA[* 4000 ha property size
 * cattle numbers: 1100 to 1500
 * all cattle are on adjistment
 * one class of stock on each pasture type
@@ -667,7 +667,7 @@ proc setupLogging {} {
      }
   }
   foreach graph $config(graphs) {
-    puts "deleting $simName.$graph.\[xml,nc\]"
+    apsimWriteToSummaryFile "deleting $simName.$graph.\[xml,nc\]"
     file delete -force $simName.$graph.xml
     file delete -force $simName.$graph.nc
     foreach paddock $config(paddocks) {
@@ -713,10 +713,7 @@ proc closeLogging {} {
    set config(xmldoc) [dom parse [apsimGetComponentXML]]
    set config(docroot) [$config(xmldoc) documentElement]
 
-puts "graphs = $config(graphs)"
-
    foreach graph $config(graphs) {
-puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
       set ncfp [ncdf create $simName.$graph.nc] 
       ncdfdim $ncfp create index [llength $config(historyDays)]
       ncdfdim $ncfp create time -1
@@ -742,8 +739,7 @@ puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
       foreach p $config(paddocks) {
          set pid($p) $id; incr id
       }   
-	  puts "writing rules"
-      catch {unset pos}
+	    catch {unset pos}
       set i 0
       foreach day $config(historyDays) {
          foreach paddock $config(paddocks) {
@@ -762,8 +758,7 @@ puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
          }
       }
 
-	  puts "writing positions"
-      #Positions
+	    #Positions
       for {set i 0} {$i < [llength $config(historyDays)]} {incr i} {
          set day [lindex $config(historyDays) $i]
          set f 0
@@ -784,7 +779,6 @@ puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
       }   
 
       ncdf close $ncfp
-puts "finished nc, opening $simName.$graph.xml"
 
       set fp [open $simName.$graph.xml w]
       puts $fp "<?xml version=\"1.0\" encoding=\"UTF-8\"?><simulation>"
@@ -826,7 +820,6 @@ puts "finished nc, opening $simName.$graph.xml"
 
       puts $fp "</simulation>"
       close $fp
-puts "finished $simName.$graph.xml"
    }  
    # $config(xmldoc) delete
 }
@@ -1127,7 +1120,7 @@ closeLogging
             <rules>[getEsw $paddock] &gt; 183</rules>
             <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
             <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+            <rules>[machineryAvailable tractor1_planter]</rules>
             <rules>[areaPlanted wheat]  &lt;=1</rules>
             <rules>[getEsw $paddock]</rules>
             <rules />
@@ -1155,7 +1148,7 @@ closeLogging
             <rules>[getEsw $paddock] &gt; 183</rules>
             <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
             <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+            <rules>[machineryAvailable tractor1_planter]</rules>
             <rules>[areaPlanted wheat]  &lt;=1</rules>
             <rules>[getEsw $paddock]</rules>
             <rules />
@@ -1175,7 +1168,7 @@ closeLogging
             <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
             <rules>[areaPlanted Chickpea] &lt;0.2</rules>
             <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
-            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+            <rules>[machineryAvailable tractor1_planter]</rules>
             <rules>[getEsw $paddock]</rules>
             <rules />
             <actions />
@@ -1191,7 +1184,7 @@ closeLogging
             <rules>[getEsw $paddock] &gt; 183</rules>
             <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
             <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+            <rules>[machineryAvailable tractor1_planter]</rules>
             <rules>[areaPlanted wheat]  &lt;=1</rules>
             <rules>[getEsw $paddock]</rules>
             <rules />
@@ -1208,7 +1201,7 @@ closeLogging
             <rules>[getEsw $paddock] &gt; 183</rules>
             <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
             <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-            <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+            <rules>[machineryAvailable tractor1_planter]</rules>
             <rules>[areaPlanted wheat]  &lt;=1</rules>
             <rules>[getEsw $paddock]</rules>
             <rules />
@@ -1418,7 +1411,7 @@ GrainCrops arc lappend "arc3" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc3" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc3" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc3" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc3" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc3" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc3" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc3" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc3" actions {}
@@ -1432,7 +1425,7 @@ GrainCrops arc lappend "arc5" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc5" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc5" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc5" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc5" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc5" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc5" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc5" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc5" actions {}
@@ -1445,7 +1438,7 @@ GrainCrops arc lappend "arc6" rules {[getEsw $paddock] > 183                 ;# 
 GrainCrops arc lappend "arc6" rules {$daysSinceLastHarvest($paddock) >30}
 GrainCrops arc lappend "arc6" rules {[areaPlanted Chickpea] <0.2}
 GrainCrops arc lappend "arc6" rules {[getMSeek2 $paddock] > 0.65}
-GrainCrops arc lappend "arc6" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc6" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc6" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc6" actions {}
 GrainCrops arc insert "Fallow_4" "Wheat" "arc7"
@@ -1454,7 +1447,7 @@ GrainCrops arc lappend "arc7" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc7" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc7" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc7" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc7" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc7" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc7" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc7" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc7" actions {}
@@ -1464,7 +1457,7 @@ GrainCrops arc lappend "arc8" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc8" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc8" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc8" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc8" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc8" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc8" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc8" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc8" actions {}
@@ -1510,10 +1503,10 @@ set config(p5,initialState) "Fallow"
    set defaults(chickpea,sow,plants)           30
    set defaults(chickpea,fertiliser,amount)    0
 
-   set defaults(sow,tractor)                   'tractor_1'
+   set defaults(sow,tractor)                   'tractor1'
    set defaults(sow,implement)                 'planter'
-   set defaults(spray,tractor)                 'tractor_1'
-   set defaults(spray,implement)               'spray_rig'  ;# this is spray rig
+   set defaults(spray,tractor)                 'tractor1'
+   set defaults(spray,implement)               'sprayrig'  ;# this is spray rig
    set defaults(herbicide,spray,name)          "Roundup"
 
 
@@ -1643,9 +1636,7 @@ proc areaPlanted {what} {
 }
 
 proc machineryAvailable {what} {
-   # Arrays are returned as stringified lists
-   eval array set result [apsimGet available($what)]
-   return $result($what)
+   return [apsimGet available_$what]
 }
 
 #############################
@@ -1895,10 +1886,10 @@ foreach p {p8 p9 p10} {
    set defaults(weed,sow,crop_class)           summer_grass
    set defaults(weed,fertiliser,amount)        0
 
-   set defaults(sow,tractor)                   'tractor_1'
+   set defaults(sow,tractor)                   'tractor1'
    set defaults(sow,implement)                 'planter'
-   set defaults(spray,tractor)                 'tractor_1'
-   set defaults(spray,implement)               'spray_rig'  ;# this is spray rig
+   set defaults(spray,tractor)                 'tractor1'
+   set defaults(spray,implement)               'sprayrig'  ;# this is spray rig
    set defaults(herbicide,spray,name)          "Roundup"
 
    set config(CoverCrop,alias) wheat
@@ -2333,7 +2324,6 @@ proc harvestAndEndCrop {paddock crop} {
       reportEvent $paddock "fail-crop=$crop"
    }
    apsimSendMessage .masterpm.$paddock.$realCrop harvest
-   apsimSendMessage .masterpm.$paddock.$realCrop kill_crop
    apsimSendMessage .masterpm.$paddock.$realCrop end_crop
    set daysSinceLastHarvest($paddock) 0
 }
@@ -2499,7 +2489,7 @@ foreach paddock $config(paddocks) {
 
 proc open_annual_stuff {} {
    global annual config
-   puts "open_annual_stuff called"
+
    set year [expr [apsimGet year] - 1 ]
    set annual(years) $year
    set annual(accRain) 0.0
@@ -2515,7 +2505,6 @@ set annual(states) {}
 
 proc do_end_year {} {
    global config annual
-   puts "do_end_year called"
 
    set year [apsimGet year]
 
@@ -2535,7 +2524,6 @@ proc do_end_year {} {
 
 proc close_annual_stuff {} {
    global simName config annual
-   puts "close_annual_stuff called"
 
    # Heading
    set fp [open $simName.annual.csv w]
@@ -2872,7 +2860,7 @@ do_end_year</text>
           <rules>[getEsw $paddock] &gt; 183</rules>
           <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
           <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[machineryAvailable tractor1_planter]</rules>
           <rules>[areaPlanted wheat]  &lt;=1</rules>
           <rules>[getEsw $paddock]</rules>
           <rules />
@@ -2900,7 +2888,7 @@ do_end_year</text>
           <rules>[getEsw $paddock] &gt; 183</rules>
           <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
           <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[machineryAvailable tractor1_planter]</rules>
           <rules>[areaPlanted wheat]  &lt;=1</rules>
           <rules>[getEsw $paddock]</rules>
           <rules />
@@ -2920,7 +2908,7 @@ do_end_year</text>
           <rules>$daysSinceLastHarvest($paddock) &gt;30</rules>
           <rules>[areaPlanted Chickpea] &lt;0.2</rules>
           <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
-          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[machineryAvailable tractor1_planter]</rules>
           <rules>[getEsw $paddock]</rules>
           <rules />
           <actions />
@@ -2936,7 +2924,7 @@ do_end_year</text>
           <rules>[getEsw $paddock] &gt; 183</rules>
           <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
           <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[machineryAvailable tractor1_planter]</rules>
           <rules>[areaPlanted wheat]  &lt;=1</rules>
           <rules>[getEsw $paddock]</rules>
           <rules />
@@ -2953,7 +2941,7 @@ do_end_year</text>
           <rules>[getEsw $paddock] &gt; 183</rules>
           <rules>[getMSeek2 $paddock] &gt; 0.65</rules>
           <rules>$daysSinceLastHarvest($paddock) &gt; 30</rules>
-          <rules>[machineryAvailable tractor=tractor_1,implement=planter]</rules>
+          <rules>[machineryAvailable tractor1_planter]</rules>
           <rules>[areaPlanted wheat]  &lt;=1</rules>
           <rules>[getEsw $paddock]</rules>
           <rules />
@@ -3157,7 +3145,7 @@ GrainCrops arc lappend "arc3" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc3" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc3" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc3" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc3" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc3" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc3" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc3" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc3" actions {}
@@ -3171,7 +3159,7 @@ GrainCrops arc lappend "arc5" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc5" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc5" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc5" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc5" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc5" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc5" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc5" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc5" actions {}
@@ -3184,7 +3172,7 @@ GrainCrops arc lappend "arc6" rules {[getEsw $paddock] > 183                 ;# 
 GrainCrops arc lappend "arc6" rules {$daysSinceLastHarvest($paddock) >30}
 GrainCrops arc lappend "arc6" rules {[areaPlanted Chickpea] <0.2}
 GrainCrops arc lappend "arc6" rules {[getMSeek2 $paddock] > 0.65}
-GrainCrops arc lappend "arc6" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc6" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc6" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc6" actions {}
 GrainCrops arc insert "Fallow_4" "Wheat" "arc7"
@@ -3193,7 +3181,7 @@ GrainCrops arc lappend "arc7" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc7" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc7" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc7" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc7" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc7" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc7" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc7" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc7" actions {}
@@ -3203,7 +3191,7 @@ GrainCrops arc lappend "arc8" rules {[dayWithin 129 152]}
 GrainCrops arc lappend "arc8" rules {[getEsw $paddock] > 183}
 GrainCrops arc lappend "arc8" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc8" rules {$daysSinceLastHarvest($paddock) > 30}
-GrainCrops arc lappend "arc8" rules {[machineryAvailable tractor=tractor_1,implement=planter]}
+GrainCrops arc lappend "arc8" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc8" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc8" rules {[getEsw $paddock]}
 GrainCrops arc lappend "arc8" actions {}
@@ -3260,9 +3248,9 @@ set animals(heifers,price)     2.0   ;# $/kg live at gate
 set animals(breeders,price)    2.0   ;# $/kg live at gate
 set animals(weaners,price)     1.5   ;# $/kg live at gate
 
-set animals(stock,price)     1.0   ;# $/kg live at gate for backgrounding at Echo Hills
+set animals(stock,price)     1.0   ;# $/kg live at gate for backgrounding at CQ Mixed GG
 set animals(inCost)            0.0  ;# $/head handling cost
-set animals(outCost)          0.15  ;# $/head stock handling cost at Echo Hills
+set animals(outCost)          0.15  ;# $/head stock handling cost at CQ Mixed GG
 
 proc OatsAreReady {} {
    set status [apsimGetOptional ".masterpm.OatsPaddock.oats.plant_status"]
@@ -3274,8 +3262,6 @@ proc SorghumIsReady {} {
    return [string match $status "alive"]
 }
 
-
-puts "Done Init 2"
 </text>
           <event>init</event>
         </script>
@@ -3292,7 +3278,7 @@ if {[apsimGet "OatsPaddock.oats.biomass"] > 1500 &&
     set heaviest [heaviestMobNotIn OatsPaddock]
     if {$heaviest != {}} {
        moveStockTo $heaviest  OatsPaddock oats  ;# move onto oats paddock
-    } else {puts "trying to move empty mob onto oats"}
+    } else {apsimWriteToSummaryFile "trying to move empty mob onto oats"}
 }
 
 # If the oats are flogged, move any animals out.
@@ -3308,7 +3294,7 @@ if {[apsimGet "SorghumPaddock.SweetSorghum.biomass"] > 2500 &&
     set heaviest [heaviestMobNotIn SorghumPaddock]
     if {$heaviest != {}} {
        moveStockTo $heaviest  SorghumPaddock SweetSorghum
-    } else {puts "trying to move empty mob onto sorg"}
+    } else {apsimWriteToSummaryFile "trying to move empty mob onto sorg"}
 }
 
 
@@ -3327,7 +3313,7 @@ if {[anyAnimalsIn SorghumPaddock] &&
      [apsimGet "BuffelPaddock.buffel.tsdm"] < 1000 &&
      [numAnimalsIn LeucaenaGrassPaddock] < $config(LeucaenaGrassPaddock,numAnimals) &&
      [apsimGet "LeucaenaGrassPaddock.leucaena.tsdm"] > 1000 } {
-     puts "Buffel is scarce!!"
+     apsimWriteToSummaryFile "Buffel is scarce!!"
      set mob [lightestMobIn BuffelPaddock ] 
      if {$mob != {}} {
         moveStockTo $mob LeucaenaGrassPaddock leucaena   
@@ -3337,7 +3323,7 @@ if {[anyAnimalsIn SorghumPaddock] &&
 # Sell animals if buffel is finished
 if {[anyAnimalsIn BuffelPaddock ] &&
      [apsimGet "BuffelPaddock.buffel.tsdm"] < 800 } {
-     puts "Buffel is flogged!!"
+     apsimWriteToSummaryFile "Buffel is flogged!!"
      foreach mob [listAnimalsIn BuffelPaddock ] {
         sell $mob   
      }
@@ -3346,7 +3332,7 @@ if {[anyAnimalsIn BuffelPaddock ] &&
 # Sell if everything gone
 if {[anyAnimalsIn LeucaenaGrassPaddock ] &&
      [apsimGet "LeucaenaGrassPaddock.leucaena.tsdm"] < 800 } {
-puts "Leucaena is flogged!!"
+apsimWriteToSummaryFile "Leucaena is flogged!!"
      foreach mob [listAnimalsIn LeucaenaGrassPaddock] {
         sell $mob
      }
@@ -3354,12 +3340,12 @@ puts "Leucaena is flogged!!"
 
 # Replace stock if pasture becomes available
 if { [llength [mobsOnFarm]] < [llength $mobs] } {
-puts "Only have  [llength [mobsOnFarm]] mobs on farm"
+apsimWriteToSummaryFile "Only have  [llength [mobsOnFarm]] mobs on farm"
         foreach {paddock pasture} {LeucaenaGrassPaddock leucaena BuffelPaddock buffel} {
              set n [numAnimalsIn $paddock]
-puts "there are $n animals on $paddock.$pasture, which is [apsimGet $paddock.$pasture.tsdm]kg/ha"
+apsimWriteToSummaryFile "there are $n animals on $paddock.$pasture, which is [apsimGet $paddock.$pasture.tsdm]kg/ha"
              if {$n <  $config($paddock,numAnimals) && [apsimGet "$paddock.$pasture.tsdm"]  > 1000} {
-puts "trying to bring 200 animals into $paddock  $pasture"
+apsimWriteToSummaryFile "trying to bring 200 animals into $paddock  $pasture"
                  set mob [animalsIn 200 steers 250]       ;# replace sold animals @ 250Kg 
                  moveStockTo $mob $paddock $pasture
              }
@@ -3384,7 +3370,7 @@ foreach mob $mobs {
           <text>
 # Housekeeping
 if {[catch {doProcess } msg]} {
-   puts "$errorInfo"
+   apsimWriteToSummaryFile "$errorInfo"
    error "$msg\n$errorInfo"
 }
 
@@ -3399,7 +3385,6 @@ if {[catch {doProcess } msg]} {
         </script>
         <script name="end_simulation">
           <text>
-puts "End sim called"
 
 closeAnimals
 
@@ -3415,11 +3400,7 @@ closeAnimals
 apsimSendMessage ".masterpm.BuffelPaddock.buffel" establish {init_section establishment}
 apsimSendMessage ".masterpm.LeucaenaGrassPaddock.leucaena" establish {init_section establishment}
 
-puts "about to setupanimals sim"
-
 setupAnimals
-
-puts "about to Start sim"
 
 # Start simulation in Jan 1978 with 4 mobs of cattle at different growth stages
 foreach {mob size num paddock crop} {
@@ -3437,7 +3418,7 @@ foreach {mob size num paddock crop} {
      moveStockTo $mob  $paddock $crop
 }
 
-puts "Done Start sim"
+apsimWriteToSummaryFile "Done Start sim"
 
 </text>
           <event>start_simulation</event>
@@ -3462,7 +3443,7 @@ proc SorghumIsReady {} {
 # Dummy economic values
 set animals(steers,price)     0.0  ;# $/kg live at gate
 set animals(inCost)           0.0  ;# $/head handling cost
-set animals(outCost)          0.0  ;# $/head stock handling cost at Echo Hills
+set animals(outCost)          0.0  ;# $/head stock handling cost at CQ Mixed GG
 
 proc setupAnimals {nMobs} {
    global config animals simName
@@ -3521,7 +3502,7 @@ proc animalsIn { number class initialWeight } {
              "cost [expr $number * $animals(inCost)]" \
              [list comment "in costs of $number $class"]
 
-   puts "[apsimGet dd/mm/yyyy]: animals:In: mob $mob is class $class, weight=$initialWeight"
+   apsimWriteToSummaryFile "[apsimGet dd/mm/yyyy]: animals:In: mob $mob is class $class, weight=$initialWeight"
    # initial stocking rate isn't set until we have a paddock with an area
    return $mob
 }
@@ -3530,7 +3511,7 @@ proc animalsIn { number class initialWeight } {
 proc animalsOut { mob number } {
    global animals
 
-   if {![info exists animals($mob,state)]} {puts "Trying to remove non-existent mob $mob"; return}
+   if {![info exists animals($mob,state)]} {apsimWriteToSummaryFile "Trying to remove non-existent mob $mob"; return}
    
    if {$number == "all"} { set number $animals($mob,number) }
 
@@ -3548,7 +3529,7 @@ proc animalsOut { mob number } {
        "amount [expr $number * $animals(${mob},alw) * $animals($animals(${mob},class),price)]" \
        [list comment "sale of $number $animals(${mob},class) at $animals(${mob},alw) kg"]
 
-   puts "[apsimGet dd/mm/yyyy]: animals:Out: removing $number of mob $mob ($animals(${mob},class))  at [format %.0f $animals(${mob},alw)] kg"
+   apsimWriteToSummaryFile "[apsimGet dd/mm/yyyy]: animals:Out: removing $number of mob $mob ($animals(${mob},class))  at [format %.0f $animals(${mob},alw)] kg"
 
    if {$animals(${mob},number) <= 0} {
       set animals(${mob},state)  off
@@ -3561,7 +3542,7 @@ proc animalsOut { mob number } {
       apsimSet $animals($mob,id).stocking_rate  0.0
       apsimSet $animals($mob,id).alw            0.0
       apsimSet $animals($mob,id).allow_supplements 0
-      puts "[apsimGet dd/mm/yyyy]: animals:Out: mob $mob is gone"
+      apsimWriteToSummaryFile "[apsimGet dd/mm/yyyy]: animals:Out: mob $mob is gone"
    } else {
       error "Adjust stocking rate here.."
    }
@@ -3641,7 +3622,7 @@ proc moveStockTo {mob paddock crop} {
    set animals($mob,age)    0
    set animals($mob,supplemented) 0
    apsimSet $animals($mob,id).allow_supplements 0
-   puts "[apsimGet dd/mm/yyyy]: animals:moveStockTo mob=$mob from=$from to=$paddock.$crop wt=[format %.0f $animals($mob,alw)] sr=[format %.2f [apsimGet $animals($mob,id).stocking_rate]]"
+   apsimWriteToSummaryFile "[apsimGet dd/mm/yyyy]: animals:moveStockTo mob=$mob from=$from to=$paddock.$crop wt=[format %.0f $animals($mob,alw)] sr=[format %.2f [apsimGet $animals($mob,id).stocking_rate]]"
    lappend animals(report) "[apsimGet dd/mm/yyyy],$mob,$animals($mob,number),$from,$paddock.$crop,$animals($mob,alw)"
 }
 
@@ -3649,7 +3630,7 @@ proc moveStockTo {mob paddock crop} {
 proc splitMob { mob num paddock crop } {
    global config animals
 
-   puts "[apsimGet dd/mm/yyyy]: animals:split $animals($mob,class) old =$animals($mob,number), new =[expr $animals($mob,number) - $num]"
+   apsimWriteToSummaryFile "[apsimGet dd/mm/yyyy]: animals:split $animals($mob,class) old =$animals($mob,number), new =[expr $animals($mob,number) - $num]"
 
    foreach newmob $animals(mobs) {
       if {$animals(${newmob},state) == "off"} {break}
@@ -3863,7 +3844,7 @@ if {[apsimGet "OatsPaddock.oats.biomass"] > 1500 &&
     set heaviest [heaviestMobNotIn OatsPaddock]
     if {$heaviest != {}} {
        moveStockTo $heaviest  OatsPaddock oats  ;# move onto oats paddock
-    } else {puts "animals: whoops! trying to move empty mob onto oats"}
+    } else {apsimWriteToSummaryFile "animals: whoops! trying to move empty mob onto oats"}
 }
 
 # If the oats are flogged, move any animals there out.
@@ -3880,7 +3861,7 @@ if {[apsimGet "SorghumPaddock.SweetSorghum.biomass"] > 2500 &&
     set heaviest [heaviestMobNotIn SorghumPaddock]
     if {$heaviest != {}} {
        moveStockTo $heaviest  SorghumPaddock SweetSorghum
-    } else {puts "animals: whoops! trying to move empty mob onto sorg"}
+    } else {apsimWriteToSummaryFile "animals: whoops! trying to move empty mob onto sorg"}
 }
 
 if {[anyAnimalsIn SorghumPaddock] &&
@@ -3899,7 +3880,7 @@ if {[anyAnimalsIn BuffelPaddock ] &&
      [apsimGet "BuffelPaddock.buffel.tsdm"] < 1000 &&
      [numAnimalsIn LeucaenaGrassPaddock] < $config(LeucaenaGrassPaddock,numAnimals) &&
      [apsimGet "LeucaenaGrassPaddock.leucaena.tsdm"] > 1000 } {
-   puts "animals: Buffel is scarce - tsdm=[apsimGet BuffelPaddock.buffel.tsdm]"
+   apsimWriteToSummaryFile "animals: Buffel is scarce - tsdm=[apsimGet BuffelPaddock.buffel.tsdm]"
    set mob [lightestMobIn BuffelPaddock ] 
    if {$mob != {}} {
        moveStockTo $mob LeucaenaGrassPaddock leucaena   
@@ -3909,7 +3890,7 @@ if {[anyAnimalsIn BuffelPaddock ] &&
 # Sell animals if buffel is finished
 if {[anyAnimalsIn BuffelPaddock ] &&
     [apsimGet "BuffelPaddock.buffel.tsdm"] < 800 } {
-   puts "animals: Buffel is flogged - tsdm=[apsimGet BuffelPaddock.buffel.tsdm]"
+   apsimWriteToSummaryFile "animals: Buffel is flogged - tsdm=[apsimGet BuffelPaddock.buffel.tsdm]"
    foreach mob [listAnimalsIn BuffelPaddock ] {
       sell $mob   
    }
@@ -3918,7 +3899,7 @@ if {[anyAnimalsIn BuffelPaddock ] &&
 # Sell if everything gone - nowhere left to go
 if {[anyAnimalsIn LeucaenaGrassPaddock ] &&
     [apsimGet "LeucaenaGrassPaddock.leucaena.tsdm"] < 800 } {
-   puts "animals: Leucaena is flogged - tsdm=[apsimGet LeucaenaGrassPaddock.leucaena.tsdm]"
+   apsimWriteToSummaryFile "animals: Leucaena is flogged - tsdm=[apsimGet LeucaenaGrassPaddock.leucaena.tsdm]"
    foreach mob [listAnimalsIn LeucaenaGrassPaddock] {
       sell $mob
    }
@@ -4055,7 +4036,6 @@ proc harvestAndEndCrop {paddock crop} {
       reportEvent $paddock "fail-crop=$crop"
    }
    apsimSendMessage .masterpm.$paddock.$realCrop harvest
-   apsimSendMessage .masterpm.$paddock.$realCrop kill_crop
    apsimSendMessage .masterpm.$paddock.$realCrop end_crop
    set daysSinceLastHarvest($paddock) 0
 }
@@ -4125,16 +4105,16 @@ proc reportCSV {from evt args} {
    append line ",[apsimGet $config($from,watBal).esw]"
    append line ",[apsimGet $config($from,nModule).no3()]"
 
-   if {$evt == "harvest"} {append line ",[apsimGet .masterpm.$from.tracker.incroprain]"} else {append line ","}
-   if {$evt == "sow"} {append line ",[apsimGet .masterpm.$from.tracker.fallowrain]"} else  {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.tracker.incroprain]"} else {append line ","}
+   if {$evt == "sow"} {append line ",[apsimGetOptional $from.tracker.fallowrain]"} else  {append line ","}
 
-   append line ",[apsimGet .masterpm.$from.tracker.es_sum]"
-   append line ",[apsimGet .masterpm.$from.tracker.runoff_sum]"
-   append line ",[apsimGet .masterpm.$from.tracker.drainage_sum]"
-   append line ",[apsimGet .masterpm.$from.tracker.soil_loss_sum]"
-   append line ,[apsimGet ".masterpm.$from.surface organic matter.surfaceom_wt"]
+   append line ",[apsimGet $from.tracker.es_sum]"
+   append line ",[apsimGet $from.tracker.runoff_sum]"
+   append line ",[apsimGet $from.tracker.drainage_sum]"
+   append line ",[apsimGet $from.tracker.soil_loss_sum]"
+   append line ,[apsimGet "$from.surface organic matter.surfaceom_wt"]
    append line ",[apsimGet $config($from,watBal).cover_surface_runoff]"
-   append line ",[apsimGet .masterpm.$from.tracker.n_mineralisation_sum]"
+   append line ",[apsimGet $from.tracker.n_mineralisation_sum]"
    
    apsimSendMessage $from.tracker blork
 
@@ -4239,16 +4219,16 @@ proc reportCSV {from evt args} {
    append line ",[apsimGet $config($from,watBal).esw]"
    append line ",[apsimGet $config($from,nModule).no3()]"
 
-   if {$evt == "harvest"} {append line ",[apsimGet .masterpm.$from.tracker.incroprain]"} else {append line ","}
-   if {$evt == "sow"} {append line ",[apsimGet .masterpm.$from.tracker.fallowrain]"} else  {append line ","}
+   if {$evt == "harvest"} {append line ",[apsimGetOptional $from.tracker.incroprain]"} else {append line ","}
+   if {$evt == "sow"} {append line ",[apsimGetOptional $from.tracker.fallowrain]"} else  {append line ","}
 
-   append line ",[apsimGet .masterpm.$from.tracker.es_sum]"
-   append line ",[apsimGet .masterpm.$from.tracker.runoff_sum]"
-   append line ",[apsimGet .masterpm.$from.tracker.drainage_sum]"
-   append line ",[apsimGet .masterpm.$from.tracker.soil_loss_sum]"
-   append line ,[apsimGet ".masterpm.$from.surface organic matter.surfaceom_wt"]
+   append line ",[apsimGet $from.tracker.es_sum]"
+   append line ",[apsimGet $from.tracker.runoff_sum]"
+   append line ",[apsimGet $from.tracker.drainage_sum]"
+   append line ",[apsimGet $from.tracker.soil_loss_sum]"
+   append line ,[apsimGet "$from.surface organic matter.surfaceom_wt"]
    append line ",[apsimGet $config($from,watBal).cover_surface_runoff]"
-   append line ",[apsimGet .masterpm.$from.tracker.n_mineralisation_sum]"
+   append line ",[apsimGet $from.tracker.n_mineralisation_sum]"
    append line ",[apsimGet $config($from,nModule).oc(1)]"
    append line ",[apsimGet $config($from,nModule).oc(2)]"
    
@@ -4352,10 +4332,151 @@ foreach paddock $config(paddocks) {
         <script name="init">
           <text><![CDATA[
 
-source $apsuite/UserInterface/APSFarm/Cashbook.tcl
-source $apsuite/UserInterface/APSFarm/Machinery.tcl
+#Nothing to see here..
 
-# Hacks to write out hours worked per year. Overrides routine in above files
+]]></text>
+          <event>init</event>
+        </script>
+      </rule>
+    </tclmanager>
+    <tclmanager name="Machinery">
+      <rule name="Initialisation logic">
+        <script name="init">
+          <text><![CDATA[
+# Apsim Machinery (sub)Module
+# Contains Tractors, Implements & Labour.
+
+# Operations: 
+# bool available(<config>)    ; See if a configuration can be used today (read)
+# operate <config> <area>     ; Operate a configuration over an area until finished (event)
+
+########################## Apsim interface code here
+source $apsuite/Model/TclLink/CIDataTypes.tcl
+
+# A trace handler for status. This handler is called whenever another module 
+# asks us whether machinery is available.
+#    NB. Careful! Errors in trace routines are not caught!!!
+proc machinery:maProc {name1 name2 op} {
+   if {$op == "read" } {
+      global config $name1
+      foreach {junk tractor implement} [split $name1 "_"] { break }
+
+      # Check they are known to us
+      if {[lsearch $config(tractors) $tractor] < 0} {
+         set msg "tractor \"$tractor\" is unknown - I only know about $config(tractors)"
+         error $msg
+      }
+      if {[lsearch $config(implements) $implement] < 0} {
+         set msg "implement \"$implement\" is unknown - I only know about $config(implements)"
+         error $msg
+      }
+      
+      # Now see if they are busy
+      set avail 1
+      catch {
+         global machinery:jobs
+         foreach job ${machinery:jobs} {
+            foreach {tid iid area paddock costtype} [split $job ","] {break}
+            if {"$tractor" == "$tid" || "$implement" == "$iid"} {set avail 0}
+         }
+      } msg
+      if {$msg != ""} {apsimWriteToSummaryFile $msg; error $msg}
+           
+      # Set the variable - this is what is returned to apsim.
+      set $name1 $avail
+   }  
+}
+
+# An event handler. 
+proc machinery:operateHandler {args} {
+  global incomingVariant
+  foreach {name value} [unpack_Variant $incomingVariant] {
+     regsub -all "'" $name {} name
+     regsub -all "'" $value {} value
+     set [string tolower $name] [string tolower $value]
+  }
+  if {![info exists tractor] || ![info exists implement] || ![info exists area]} {
+     error "Must specify a tractor, implement, and area to operate over."
+  }
+  if { ![info exists paddock] } {set paddock {}}
+  if { ![info exists costtype] } {set costtype unknown}
+  machinery:operate $tractor $implement $area $paddock $costtype
+}
+
+# Now register the event handlers. 
+apsimSubscribeVariant operate            "machinery:operateHandler"
+apsimSubscribeNull process            "machinery:process"
+apsimSubscribeNull end_financial_year "machinery:end_year"
+########################## End apsim interface code
+
+########################## Machinery configuration code
+# Read in our configuration
+proc machinery:initialise {} {
+   global config
+   if {![info exists config(tractors)]} {set config(tractors) {}}
+   if {![info exists config(implements)]} {set config(implements) {}}
+} 
+
+
+# return the work rate for this combo can cover per hour
+proc getCombo {tractor implement thing} {
+   global config
+   if {![info exists config(machinery,$tractor,$implement,$thing)]} {
+      error "No $thing specified for $tractor and $implement"
+   }
+   return $config(machinery,$tractor,$implement,$thing)
+}
+
+proc getRate {tid iid} {
+   return [getCombo $tid $iid fuelrate]
+}
+
+proc getValue {id thing} {
+   global config
+   if {![info exists config(machinery,$id,$thing)]} {
+      error "No $thing for $id specified (get)"
+   }
+   return $config(machinery,$id,$thing)
+}
+
+# Return the cost of fuel per liter
+proc fuelCost {} {
+   global config
+   if {![info exists config(machinery,fuelcost)]} {
+      error "No fuelcost specified"
+   }
+   return $config(machinery,fuelcost)
+}
+
+# return the fuel cost this combo uses per hour 
+proc getFuelCost {tid iid} {
+   return [expr [getCombo $tid $iid fuelrate] * [fuelCost]]
+}
+
+# Return the number of hours worked per day
+proc getHoursPerDay {tid iid} {
+   return [getCombo $tid $iid hoursperday]
+}
+
+proc setValue {id thing value} {
+   global config
+   if {![info exists config(machinery,$id,$thing)]} {
+      error "No $thing for $id specified (set)"
+   }
+   set config(machinery,$id,$thing) $value
+}
+
+##############
+# Operate a configuration over an area. Just add it to the job queue 
+# and let process look after it.
+proc machinery:operate {tractor implement area paddock costtype} {
+   if {![string is double -strict $area]} {
+      error "Area should be a number (not $area)"
+   }
+   global machinery:jobs
+   lappend machinery:jobs $tractor,$implement,$area,$paddock,$costtype
+   apsimWriteToSummaryFile "Machinery job \"$tractor + $implement\" is queued"
+}
 
 # The daily process routine. Manages the job queue
 proc machinery:process {} {
@@ -4384,28 +4505,23 @@ proc machinery:process {} {
         }   
         #apsimWriteToSummaryFile "hours='$hours', rate='$rate',cost='[getFuelCost $tid $iid]',oil='[getValue $tid oil]',paddock='$paddock',costtype=$costtype"
         set cost [expr $hours * [getFuelCost $tid $iid] * (1.0 + [getValue $tid oil]/100.0)]
-        setValue $tid annualCost [expr [getValue $tid annualCost] + $cost]
-        apsimSendMessage "" expenditure [list cost $cost] [list comment "fuel & oil costs of [getName $tid] + [getName $iid]"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
+        apsimSendMessage "" expenditure [list cost $cost] [list comment "fuel & oil costs of $tid + $iid"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
 
         set cost [expr $hours * [getValue $tid newPrice] * ([getValue $tid repairs]/100.0)/ [getValue $tid lifeOfEquipment]] 
-        setValue $tid annualCost [expr [getValue $tid annualCost] + $cost]
-        apsimSendMessage "" expenditure [list cost $cost] [list comment "Repairs & maintenance of [getName $tid]"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
+        apsimSendMessage "" expenditure [list cost $cost] [list comment "Repairs & maintenance of $tid"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
 
         set cost [expr $hours * [getValue $iid newPrice] * ([getValue $iid repairs]/100.0)/ [getValue $iid lifeOfEquipment]] 
-        setValue $iid annualCost [expr [getValue $iid annualCost] + $cost]
-        apsimSendMessage "" expenditure [list cost $cost] [list comment "Repairs & maintenance of [getName $iid]"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
+        apsimSendMessage "" expenditure [list cost $cost] [list comment "Repairs & maintenance of $iid"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
 
         set rate [expr $hours * [getRate $tid $iid]]
         set area [expr $area - $rate]
         setValue $tid age [expr $hours + [getValue $tid age]]
-        setValue $tid hoursWorked [expr [getValue $tid hoursWorked] + $hours]
         setValue $iid age [expr $hours + [getValue $iid age]]
-        setValue $iid hoursWorked [expr [getValue $iid hoursWorked] + $hours]
 
         if {$area > 0} {
            lappend tomorrowsJobs $tid,$iid,$area,$paddock,$costtype
         } else {
-           apsimWriteToSummaryFile "Machinery job '[getName $tid] + [getName $iid]' in $paddock has finished"
+           apsimWriteToSummaryFile "Machinery job '$tid + $iid' in $paddock has finished"
         }
       } else {
         lappend tomorrowsJobs $job
@@ -4416,35 +4532,29 @@ proc machinery:process {} {
 
 # The "end_year" routine. Do loan payments and replacement
 proc machinery:end_year {} {
-   set fp [open "MCA_100_sw_con_fallow_red fallow.hoursWorked.csv" a]
-   puts -nonewline $fp "[apsimGet year]"
-
-   foreach id [concat [getTractorIds] [getImplementIds]] {   
-     puts -nonewline $fp ",[getValue $id hoursWorked],[getValue $id annualCost]"
-     setValue $id hoursWorked 0
-     setValue $id annualCost 0.0
-     if {[getValue $id loanInterestRate] > 0.0} {
-        if {[getValue $id loanDuration] > 0} {
-           if {[getValue $id age] >= [getValue $id lifeOfEquipment]} {
-              set newPrice [getValue $id newPrice]
-              set salvage [expr [getValue $id tradeInValue]/100.0 * $newPrice]
+   foreach id [concat $config(tractors) $config(implements)] {
+     if {$config(machinery,$id,loanInterestRate) > 0.0} {
+        if {$config(machinery,$id,loanDuration] > 0} {
+           if {$config(machinery,$id,age) >= $config(machinery,$id,lifeOfEquipment)} {
+              set newPrice $config(machniery,$id,newPrice)
+              set salvage [expr $config(machinery,$id,tradeInValue)/100.0 * $newPrice]
               set loanValue [expr $newPrice - $salvage]
-              apsimWriteToSummaryFile "Establishing new loan of \$$loanValue for [getName $id] (new price \$$newPrice, salvage \$$salvage)"
-              setValue $id loanValue $loanValue
-              setValue $id age 0
-              setValue $id loanPeriod 1
+              apsimWriteToSummaryFile "Establishing new loan of \$$loanValue for $id (new price \$$newPrice, salvage \$$salvage)"
+              set config(machinery,$id,loanValue) $loanValue
+              set config(machinery,$id,age) 0
+              set config(machinery,$id,loanPeriod) 1
            } else {
-              if {[getValue $id loanPeriod] <=  [getValue $id loanDuration]} {
+              if {config(machinery,$id,loanPeriod) <=  $config(machinery,$id,loanDuration)} {
                  #A = P(i(1+i)^n)/((1+i)^n - 1)
-                 set P [getValue $id newPrice] 
-                 set i [expr [getValue $id loanInterestRate]/100.0]
-                 set n [getValue $id loanDuration]
+                 set P $config(machinery,$id,newPrice) 
+                 set i [expr $config(machinery,$id,loanInterestRate)/100.0]
+                 set n $config(machinery,$id,loanDuration)
                  set A [expr $P * ($i*pow(1+$i,$n))/(pow(1.0+$i,$n) - 1.0) ]
-                 apsimSendMessage "" expenditure [list cost $A] [list interest_paid $A] [list comment "Loan repayments for [getName $id]"]
+                 apsimSendMessage "" expenditure [list cost $A] [list interest_paid $A] [list comment "Loan repayments for $id"]
                  
-                 setValue $id loanPeriod [expr 1 + [getValue $id loanPeriod]]
-                 if { [getValue $id loanPeriod] >  [getValue $id loanDuration] } {
-                     apsimWriteToSummaryFile "Loan for [getName $id] is finished"
+                 set config(machinery,$id,loanPeriod) [expr 1 + $config(machinery,$id,loanPeriod)]
+                 if { $config(machinery,$id,loanPeriod) >  $config(machinery,$id,loanDuration) } {
+                     apsimWriteToSummaryFile "Loan for $id is finished"
                  }
               }
               
@@ -4452,736 +4562,221 @@ proc machinery:end_year {} {
         }
      }    
    }  
-   puts $fp ""
-   close $fp
+}
+]]></text>
+       <event>init</event>
+      </script>
+
+       <script name="start_simulation">
+          <text><![CDATA[
+
+# Finally, load our configuration database and initialise states
+machinery:initialise 
+set machinery:jobs {}
+
+# Set the current period of the loan to 1 past its end
+foreach id [concat $config(tractors) $config(implements)] {
+   set config(machinery,$id,loanPeriod) [expr 1 + $config(machinery,$id,loanDuration)]
 }
 
-set fp [open "MCA_100_sw_con_fallow_red fallow.hoursWorked.csv" w]
-puts -nonewline $fp "Year"
-foreach id [concat [getTractorIds] [getImplementIds]] {
-   setValue $id hoursWorked 0
-   setValue $id annualCost 0.0
-   puts -nonewline $fp ",[getName $id] hours, [getName $id] cost"
+# Now tell apsim we own it, set up the trace variable we use to trigger when the variable is read
+foreach tid $config(tractors) {
+  foreach iid $config(implements) {
+     set v available_${tid}_${iid}
+     set $v 0
+     apsimRegisterGetSet $v
+     trace add variable $v read "machinery:maProc"
+  }
 }
-puts $fp ""
-close $fp
+
+apsimWriteToSummaryFile "Machinery:\nTractors=$config(tractors)\nImplements=$config(implements)"
 
 ]]></text>
-          <event>init</event>
+          <event>start_simulation</event>
         </script>
       </rule>
-      <tclui name="Initial Capital Assets">
-        <uiscript>source $apsuite/UserInterface/APSFarm/CapitalUI.tcl</uiscript>
-        <category>icapital</category>
-        <icapital>
-          <ivalue>2000000</ivalue>
-          <loanRate>7</loanRate>
-          <loanDuration>20</loanDuration>
-        </icapital>
-      </tclui>
-      <tclui name="Cash Journal">
-        <uiscript>source $apsuite/UserInterface/APSFarm/CashbookUI.tcl</uiscript>
-        <balance>42000</balance>
-        <outputfilename>MCA_100_sw_con_fallow_red fallow.Cashbook.farm.csv</outputfilename>
-        <summaryfilename>MCA_100_sw_con_fallow_red fallow.Cashbook.Summary.csv</summaryfilename>
-      </tclui>
-      <tclui name="Machinery - 250kwFWA">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>tractor</category>
-        <tractor>
-          <fuelrate implement="SprayRig" units="lts/hour">25.0</fuelrate>
-          <fuelrate implement="DeepPlanter" units="lts/hour">60.0</fuelrate>
-          <workrate implement="DeepPlanter" units="ha/hour">100.0</workrate>
-          <workrate implement="SprayRig" units="ha/hour">500.0</workrate>
-          <workrate implement="PrecisionPlanter">20</workrate>
-          <fuelrate implement="PrecisionPlanter">15</fuelrate>
-          <hoursperday implement="PrecisionPlanter">8</hoursperday>
-          <workrate implement="p1">10</workrate>
-          <fuelrate implement="p1">10</fuelrate>
-          <hoursperday implement="p1">8</hoursperday>
-          <workrate implement="p2" />
-          <fuelrate implement="p2" />
-          <hoursperday implement="p2" />
-          <image>$apsuite/UserInterface/APSFarm/choofer.gif</image>
-          <name>tractor_1</name>
-          <newPrice>160000.0</newPrice>
-          <tradeInValue>45</tradeInValue>
-          <lifeOfEquipment>5000</lifeOfEquipment>
-          <insuranceRate>6.2</insuranceRate>
-          <repairs>15</repairs>
-          <oil>15</oil>
-          <loanInterestRate>8</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-          <workrate implement="planter">14</workrate>
-          <fuelrate implement="planter">40</fuelrate>
-          <hoursperday implement="planter">24</hoursperday>
-          <workrate implement="spray_rig">30</workrate>
-          <fuelrate implement="spray_rig">30</fuelrate>
-          <hoursperday implement="spray_rig">12</hoursperday>
-        </tractor>
-      </tclui>
-      <tclui name="Machinery - 170kwTractor ">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>tractor</category>
-        <tractor>
-          <fuelrate implement="SprayRig" units="lts/hour">25.0</fuelrate>
-          <fuelrate implement="DeepPlanter" units="lts/hour">60.0</fuelrate>
-          <workrate implement="DeepPlanter" units="ha/hour">100.0</workrate>
-          <workrate implement="SprayRig" units="ha/hour">500.0</workrate>
-          <workrate implement="PrecisionPlanter">20</workrate>
-          <fuelrate implement="PrecisionPlanter">15</fuelrate>
-          <hoursperday implement="PrecisionPlanter">8</hoursperday>
-          <workrate implement="p1">10</workrate>
-          <fuelrate implement="p1">10</fuelrate>
-          <hoursperday implement="p1">8</hoursperday>
-          <workrate implement="p2" />
-          <fuelrate implement="p2" />
-          <hoursperday implement="p2" />
-          <image>%apsuite/apsim/Economics/lib/choofer.gif</image>
-          <name>tractor_2</name>
-          <newPrice>47000.0</newPrice>
-          <tradeInValue>45</tradeInValue>
-          <lifeOfEquipment>8000</lifeOfEquipment>
-          <insuranceRate>6.2</insuranceRate>
-          <repairs>10</repairs>
-          <oil>15</oil>
-          <loanInterestRate>7</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-          <workrate implement="planter">9.5</workrate>
-          <fuelrate implement="planter">45</fuelrate>
-          <hoursperday implement="planter">24</hoursperday>
-          <workrate implement="spray_rig">30</workrate>
-          <fuelrate implement="spray_rig">15</fuelrate>
-          <hoursperday implement="spray_rig">12</hoursperday>
-        </tractor>
-      </tclui>
-      <tclui name="Machinery - Precision Planter">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>implement</category>
-        <implement>
-          <image>$apsuite/UserInterface/APSFarm/precisionPlanter.gif</image>
-          <name>planter</name>
-          <newPrice>20000</newPrice>
-          <tradeInValue>35</tradeInValue>
-          <lifeOfEquipment>1000</lifeOfEquipment>
-          <insuranceRate>2.3</insuranceRate>
-          <repairs>20</repairs>
-          <oil>0</oil>
-          <loanInterestRate>8</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-        </implement>
-      </tclui>
-      <tclui name="Machinery - spray rig">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>implement</category>
-        <implement>
-          <image>$apsuite/UserInterface/APSFarm/sprayRig.gif</image>
-          <name>spray_rig</name>
-          <newPrice>30000.0</newPrice>
-          <tradeInValue>20</tradeInValue>
-          <lifeOfEquipment>3000</lifeOfEquipment>
-          <insuranceRate>2.3</insuranceRate>
-          <repairs>45</repairs>
-          <oil>0</oil>
-          <loanInterestRate>8</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-        </implement>
-      </tclui>
-      <tclui name="Prices">
-        <uiscript>source $apsuite/UserInterface/APSFarm/PricesUI.tcl</uiscript>
-        <category>cropprice</category>
-        <cropprice>
-          <name>wheat</name>
-          <price>280</price>
-          <protein>12.0</protein>
-          <units>$/tonne</units>
-          <updated>03/02/2009</updated>
-        </cropprice>
-        <cropprice>
-          <name>sorghum</name>
-          <price>160</price>
-          <protein>
-          </protein>
-          <units>$/tonne</units>
-          <updated>03/02/2009</updated>
-        </cropprice>
-        <cropprice>
-          <name>chickpea</name>
-          <price>500</price>
-          <protein>
-          </protein>
-          <units>$/tonne</units>
-          <updated>03/02/2009</updated>
-        </cropprice>
-        <cropprice>
-          <name>weed</name>
-          <price>0.0</price>
-          <protein>
-          </protein>
-          <units>$/tonne</units>
-          <updated>28/11/2006</updated>
-        </cropprice>
-        <cropprice>
-          <name>maize</name>
-          <price>0.0</price>
-          <protein>
-          </protein>
-          <units>$/tonne</units>
-          <updated>28/11/2007</updated>
-        </cropprice>
-      </tclui>
-      <tclui name="Costs - Farm Overheads">
-        <uiscript>source $apsuite/UserInterface/APSFarm/OverheadsUI.tcl</uiscript>
-        <category>overhead</category>
-        <overhead>
-          <name>accountancy</name>
-          <value>6000</value>
-          <description>Accountant/Consultancy fees</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>administration</name>
-          <value>3000</value>
-          <description>Administration</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>bankcharges</name>
-          <value>3000</value>
-          <description>Bank Charges other than interest</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>electricity</name>
-          <value>5000</value>
-          <description>Electricity - Farm</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>freight</name>
-          <value>2200</value>
-          <description>Freight &amp; Cartage (sundry)</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>fuels</name>
-          <value>4500</value>
-          <description>Fuel &amp; Oil (other than farming)</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>insurance</name>
-          <value>12000</value>
-          <description>Insurance - Farm</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>vehicleexpenses</name>
-          <value>15000</value>
-          <description>Motor Vehicle Expenses - Farm</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>rates</name>
-          <value>8200</value>
-          <description>Rates and Rents - Farm</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>repairs</name>
-          <value>20000</value>
-          <description>Repairs &amp; Maintenance (extra)</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>subs</name>
-          <value>2000</value>
-          <description>Subscriptions</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>telephone</name>
-          <value>9500</value>
-          <description>Telephone - Farm</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>wages</name>
-          <value>22000</value>
-          <description>Wages (other than casual included in activity budgets)</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-        <overhead>
-          <name>other</name>
-          <value>0.0</value>
-          <description>Other Overhead Expenses</description>
-          <updated>
-          </updated>
-        </overhead>
-        <overhead>
-          <name>operator</name>
-          <value>60000</value>
-          <description>Operators labour and management</description>
-          <updated>11/10/2009</updated>
-        </overhead>
-      </tclui>
-      <tclui name="Costs - Fuel">
-        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
-        <category>fuelcosts</category>
-        <fuelcosts>
-          <desc>Cost of fuel (net)</desc>
-          <name>fuelcosts</name>
-          <price>0.0</price>
-          <units>$/litre</units>
-          <updated>08/02/2010</updated>
-        </fuelcosts>
-      </tclui>
-      <tclui name="Costs - Fertilisers">
-        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
-        <category>fertilisercost</category>
-        <fertilisercost>
-          <desc>MAP (starterphos - 10n;21.9p;1.5s)</desc>
-          <name>map</name>
-          <price>0.9</price>
-          <units>$/kg</units>
-          <updated>03/02/2009</updated>
-        </fertilisercost>
-        <fertilisercost>
-          <desc>starter z</desc>
-          <name>starter_z</name>
-          <price>1.0</price>
-          <units>$/kg</units>
-          <updated>03/02/2009</updated>
-        </fertilisercost>
-        <fertilisercost>
-          <desc>Urea</desc>
-          <name>urea</name>
-          <price>0.9</price>
-          <units>
-          </units>
-          <updated>03/02/2009</updated>
-        </fertilisercost>
-      </tclui>
-      <tclui name="Costs - Herbicides">
-        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
-        <category>herbicide</category>
-        <herbicide>
-          <desc>Ally (metsulfuron)</desc>
-          <name>Ally</name>
-          <price>0.2</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </herbicide>
-        <herbicide>
-          <desc>Amicide 625</desc>
-          <name>Amicide625</name>
-          <price>5.5</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </herbicide>
-        <herbicide>
-          <desc>Gesagard 500SC (prometryn)</desc>
-          <name>Gesagard 500SC</name>
-          <price>14.23</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </herbicide>
-        <herbicide>
-          <desc>Gesaprim (atrazine)</desc>
-          <name>Gesaprim</name>
-          <price>6.23</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </herbicide>
-        <herbicide>
-          <desc>Glean (chlorsulfuron)</desc>
-          <name>Glean</name>
-          <price>0.18</price>
-          <units>
-          </units>
-          <updated>
-          </updated>
-        </herbicide>
-        <herbicide>
-          <desc>Glyphosate 450 CT (glyphosate IPA salt)</desc>
-          <name>Glyphosate 450 CT</name>
-          <price>4.64</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </herbicide>
-        <herbicide>
-          <desc>MCPA LVE (MCPA ester)</desc>
-          <name>MCPA LVE</name>
-          <price>5.0</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </herbicide>
-        <herbicide>
-          <desc>Roundup POWERMAX (glyphosate MEA salt)</desc>
-          <name>Roundup</name>
-          <price>7.64</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </herbicide>
-        <herbicide>
-          <desc>Simazine 900DF</desc>
-          <name>simazine</name>
-          <price>5.50</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </herbicide>
-      </tclui>
-      <tclui name="Costs - Insecticides">
-        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
-        <category>insecticide</category>
-        <insecticide>
-          <desc>Larvin LV</desc>
-          <name>Larvin LV</name>
-          <price>27.97</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </insecticide>
-        <insecticide>
-          <desc>Steward (indoxacarb)</desc>
-          <name>Steward</name>
-          <price>60.36</price>
-          <units>
-          </units>
-          <updated>18/05/2009</updated>
-        </insecticide>
-        <insecticide>
-          <desc>mancozeb</desc>
-          <name>mancozeb</name>
-          <price>10</price>
-          <units>kg/ha</units>
-          <updated>18/05/2009</updated>
-        </insecticide>
-      </tclui>
-      <tclui name="Costs - Seed">
-        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
-        <category>seedcost</category>
-        <seedcost>
-          <desc>Barley (Tallon)</desc>
-          <name>Barley</name>
-          <price>0.78</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Chickpea (Amethyst)</desc>
-          <name>Chickpea</name>
-          <price>1.1</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Cotton </desc>
-          <name>Cotton</name>
-          <price>5.6</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Forage Sorghum (Jumbo)</desc>
-          <name>Forage Sorghum</name>
-          <price>3.96</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Lucerne (sequel)</desc>
-          <name>Lucerne</name>
-          <price>5.45</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Maize</desc>
-          <name>Maize</name>
-          <price>8.4</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Millet (White frend)</desc>
-          <name>Millet</name>
-          <price>1</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Millet (weeds)</desc>
-          <name>weed</name>
-          <price>1</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Mungbean (Emerald)</desc>
-          <name>Mungbean</name>
-          <price>1.45</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Navy Bean (Spearfeld)</desc>
-          <name>NavyBean</name>
-          <price>1.49</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Peanut Streeton (20-23 weeks)</desc>
-          <name>PeanutC</name>
-          <price>2.91</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Peanut Conder (17-19 weeks)</desc>
-          <name>PeanutS</name>
-          <price>2.7</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Peanut VB97 (20-23 weeks)</desc>
-          <name>PeanutVB</name>
-          <price>2.7</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Peanut NC7 (20-23 weeks)</desc>
-          <name>PeanutNC7</name>
-          <price>2.7</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Sorghum (Buster)</desc>
-          <name>Sorghum</name>
-          <price>5.8</price>
-          <units>
-          </units>
-          <updated>15/10/2007</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Soybean (Soya791)</desc>
-          <name>Soybean</name>
-          <price>1.31</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Sunflower (Sunolei 04)</desc>
-          <name>Sunflower</name>
-          <price>11.82</price>
-          <units>
-          </units>
-          <updated>30/03/2004</updated>
-        </seedcost>
-        <seedcost>
-          <desc>Wheat (Kennedy)</desc>
-          <name>Wheat</name>
-          <price>0.6</price>
-          <units>
-          </units>
-          <updated>04/12/2007</updated>
-        </seedcost>
-      </tclui>
-      <tclui name="Costs - Defoliants">
-        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
-        <category>defoliant</category>
-        <defoliant>
-          <desc>dropp (thidiazuron + diuron)</desc>
-          <name>dropp</name>
-          <price>147</price>
-          <units>kg</units>
-          <updated>
-          </updated>
-        </defoliant>
-        <defoliant>
-          <desc>Salt Defoliant</desc>
-          <name>salt defoliant</name>
-          <price>1.55</price>
-          <units>kg</units>
-          <updated>
-          </updated>
-        </defoliant>
-      </tclui>
-      <tclui name="Costs - Contractors">
-        <uiscript>source $apsuite/UserInterface/APSFarm/TreatmentsUI.tcl</uiscript>
-        <category>contract</category>
-        <contract>
-          <desc>aerial spraying-cotton ec</desc>
-          <name>aerial_spraying_cotton_ec</name>
-          <price>12.5</price>
-          <units>$/ha</units>
-          <updated>20/12/2002</updated>
-        </contract>
-        <contract>
-          <desc>Harvesting</desc>
-          <name>generic</name>
-          <price>250</price>
-          <units>$/ha</units>
-          <updated>15/10/2007</updated>
-        </contract>
-        <contract>
-          <desc>chickpea scouting</desc>
-          <name>chickpea_scouting</name>
-          <price>0</price>
-          <units>$/ha</units>
-          <updated>11/10/2009</updated>
-        </contract>
-      </tclui>
-    </tclmanager>
-    <tclmanager name="Machinery">
-      <rule name="Initialisation logic">
+      <rule name="Machinery - 250kwFWA">
+        <ui>
+          <category description="Tractor" />
+          <apsimname type="text" description="Apsim name">tractor1</apsimname>
+          <newPrice type="text" description="New price ($)">160000.0</newPrice>
+          <tradeInValue type="text" description="Trade In Value (% of new)">45</tradeInValue>
+          <lifeOfEquipment type="text" description="Life of Equipment (hrs)">5000</lifeOfEquipment>
+          <insuranceRate type="text" description="Insurance cost ($/$1000 insured)">6.2</insuranceRate>
+          <repairs type="text" description="Repairs &amp; Maintenance (% of new value over lifetime)">15</repairs>
+          <oil type="text" description="Oil &amp; Tyre costs (%age of fuel costs)">15</oil>
+          <loanInterestRate type="text" description="Loan Interest Rate (%)">8</loanInterestRate>
+          <loanDuration type="text" description="Loan Duration (years)">5</loanDuration>
+          <age type="text" description="Age at start of simulation (hrs)">0</age>
+          <category description="Implement 1" />
+          <implement1name type="text" description="Name">sprayrig</implement1name>
+          <implement1fuelrate type="text" description="Fuel Rate (lts/hour)">30.0</implement1fuelrate>
+          <implement1workrate type="text" description="Work Rate (ha/hour)">30.0</implement1workrate>
+          <implement1hoursperday type="text" description="Daily Hours (hours)">12</implement1hoursperday>
+          <category description="Implement 2" />
+          <implement2name type="text" description="Name">planter</implement2name>
+          <implement2fuelrate type="text" description="Fuel Rate (lts/hour)">40.0</implement2fuelrate>
+          <implement2workrate type="text" description="Work Rate (ha/hour)">14.0</implement2workrate>
+          <implement2hoursperday type="text" description="Daily Hours (hours)">12</implement2hoursperday>
+          <category description="Implement 3" />
+          <implement3name type="text" description="Name">deepplanter</implement3name>
+          <implement3fuelrate type="text" description="Fuel Rate (lts/hour)">60.0</implement3fuelrate>
+          <implement3workrate type="text" description="Work Rate (ha/hour)">100.0</implement3workrate>
+          <implement3hoursperday type="text" description="Daily Hours (hours)">8</implement3hoursperday>
+        </ui>
         <script name="init">
           <text>
-source $apsuite/UserInterface/APSFarm/Machinery.tcl
+lappend config(tractors) "[apsimname]"
+set config(machinery,[apsimname],newPrice) "[newPrice]"
+set config(machinery,[apsimname],tradeInValue) "[tradeInValue]"
+set config(machinery,[apsimname],lifeOfEquipment) "[lifeOfEquipment]"
+set config(machinery,[apsimname],insuranceRate) "[insuranceRate]"
+set config(machinery,[apsimname],repairs) "[repairs]"
+set config(machinery,[apsimname],oil) "[oil]"
+set config(machinery,[apsimname],loanInterestRate) "[loanInterestRate]"
+set config(machinery,[apsimname],loanDuration) "[loanDuration]"
+set config(machinery,[apsimname],age) "[age]"
+
+set config(machinery,[apsimname],[implement1name],fuelrate) "[implement1fuelrate]"
+set config(machinery,[apsimname],[implement1name],workrate) "[implement1workrate]"
+set config(machinery,[apsimname],[implement1name],hoursperday) "[implement1hoursperday]"
+
+set config(machinery,[apsimname],[implement2name],fuelrate) "[implement2fuelrate]"
+set config(machinery,[apsimname],[implement2name],workrate) "[implement2workrate]"
+set config(machinery,[apsimname],[implement2name],hoursperday) "[implement2hoursperday]"
+
+set config(machinery,[apsimname],[implement3name],fuelrate) "[implement3fuelrate]"
+set config(machinery,[apsimname],[implement3name],workrate) "[implement3workrate]"
+set config(machinery,[apsimname],[implement3name],hoursperday) "[implement3hoursperday]"
+
 </text>
           <event>init</event>
         </script>
       </rule>
-      <tclui name="Machinery - 250kwFWA">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>tractor</category>
-        <tractor>
-          <fuelrate implement="SprayRig" units="lts/hour">25.0</fuelrate>
-          <fuelrate implement="DeepPlanter" units="lts/hour">60.0</fuelrate>
-          <workrate implement="DeepPlanter" units="ha/hour">100.0</workrate>
-          <workrate implement="SprayRig" units="ha/hour">500.0</workrate>
-          <workrate implement="PrecisionPlanter">20</workrate>
-          <fuelrate implement="PrecisionPlanter">15</fuelrate>
-          <hoursperday implement="PrecisionPlanter">8</hoursperday>
-          <workrate implement="p1">10</workrate>
-          <fuelrate implement="p1">10</fuelrate>
-          <hoursperday implement="p1">8</hoursperday>
-          <workrate implement="p2" />
-          <fuelrate implement="p2" />
-          <hoursperday implement="p2" />
-          <image>$apsuite/UserInterface/APSFarm/choofer.gif</image>
-          <name>tractor_1</name>
-          <newPrice>160000.0</newPrice>
-          <tradeInValue>45</tradeInValue>
-          <lifeOfEquipment>5000</lifeOfEquipment>
-          <insuranceRate>6.2</insuranceRate>
-          <repairs>15</repairs>
-          <oil>15</oil>
-          <loanInterestRate>8</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-          <workrate implement="planter">14</workrate>
-          <fuelrate implement="planter">40</fuelrate>
-          <hoursperday implement="planter">24</hoursperday>
-          <workrate implement="spray_rig">30</workrate>
-          <fuelrate implement="spray_rig">30</fuelrate>
-          <hoursperday implement="spray_rig">12</hoursperday>
-        </tractor>
-      </tclui>
-      <tclui name="Machinery - 170kwTractor ">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>tractor</category>
-        <tractor>
-          <fuelrate implement="SprayRig" units="lts/hour">25.0</fuelrate>
-          <fuelrate implement="DeepPlanter" units="lts/hour">60.0</fuelrate>
-          <workrate implement="DeepPlanter" units="ha/hour">100.0</workrate>
-          <workrate implement="SprayRig" units="ha/hour">500.0</workrate>
-          <workrate implement="PrecisionPlanter">20</workrate>
-          <fuelrate implement="PrecisionPlanter">15</fuelrate>
-          <hoursperday implement="PrecisionPlanter">8</hoursperday>
-          <workrate implement="p1">10</workrate>
-          <fuelrate implement="p1">10</fuelrate>
-          <hoursperday implement="p1">8</hoursperday>
-          <workrate implement="p2" />
-          <fuelrate implement="p2" />
-          <hoursperday implement="p2" />
-          <image>%apsuite/apsim/Economics/lib/choofer.gif</image>
-          <name>tractor_2</name>
-          <newPrice>47000.0</newPrice>
-          <tradeInValue>45</tradeInValue>
-          <lifeOfEquipment>8000</lifeOfEquipment>
-          <insuranceRate>6.2</insuranceRate>
-          <repairs>10</repairs>
-          <oil>15</oil>
-          <loanInterestRate>7</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-          <workrate implement="planter">9.5</workrate>
-          <fuelrate implement="planter">45</fuelrate>
-          <hoursperday implement="planter">24</hoursperday>
-          <workrate implement="spray_rig">30</workrate>
-          <fuelrate implement="spray_rig">15</fuelrate>
-          <hoursperday implement="spray_rig">12</hoursperday>
-        </tractor>
-      </tclui>
-      <tclui name="Machinery - Precision Planter">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>implement</category>
-        <implement>
-          <image>$apsuite/UserInterface/APSFarm/precisionPlanter.gif</image>
-          <name>planter</name>
-          <newPrice>20000</newPrice>
-          <tradeInValue>35</tradeInValue>
-          <lifeOfEquipment>1000</lifeOfEquipment>
-          <insuranceRate>2.3</insuranceRate>
-          <repairs>20</repairs>
-          <oil>0</oil>
-          <loanInterestRate>8</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-        </implement>
-      </tclui>
-      <tclui name="Machinery - spray rig">
-        <uiscript>source $apsuite/UserInterface/APSFarm/MachineryUI.tcl</uiscript>
-        <category>implement</category>
-        <implement>
-          <image>$apsuite/UserInterface/APSFarm/sprayRig.gif</image>
-          <name>spray_rig</name>
-          <newPrice>30000.0</newPrice>
-          <tradeInValue>20</tradeInValue>
-          <lifeOfEquipment>3000</lifeOfEquipment>
-          <insuranceRate>2.3</insuranceRate>
-          <repairs>45</repairs>
-          <oil>0</oil>
-          <loanInterestRate>8</loanInterestRate>
-          <loanDuration>5</loanDuration>
-          <age>0</age>
-        </implement>
-      </tclui>
+      <rule name="Machinery - 170kwTractor">
+        <ui>
+          <category description="Tractor" />
+          <apsimname type="text" description="Apsim name">tractor_2</apsimname>
+          <newPrice type="text" description="New price ($)">47000.0</newPrice>
+          <tradeInValue type="text" description="Trade In Value (% of new)">45</tradeInValue>
+          <lifeOfEquipment type="text" description="Life of Equipment (hrs)">8000</lifeOfEquipment>
+          <insuranceRate type="text" description="Insurance cost ($/$1000 insured)">6.2</insuranceRate>
+          <repairs type="text" description="Repairs &amp; Maintenance (% of new value over lifetime)">10</repairs>
+          <oil type="text" description="Oil &amp; Tyre costs (%age of fuel costs)">15</oil>
+          <loanInterestRate type="text" description="Loan Interest Rate (%)">7</loanInterestRate>
+          <loanDuration type="text" description="Loan Duration (years)">5</loanDuration>
+          <age type="text" description="Age at start of simulation (hrs)">0</age>
+          <category description="Implement 1" />
+          <implement1name type="text" description="Name">sprayrig</implement1name>
+          <implement1fuelrate type="text" description="Fuel Rate (lts/hour)">15.0</implement1fuelrate>
+          <implement1workrate type="text" description="Work Rate (ha/hour)">30.0</implement1workrate>
+          <implement1hoursperday type="text" description="Daily Hours (hours)">12</implement1hoursperday>
+          <category description="Implement 2" />
+          <implement2name type="text" description="Name">planter</implement2name>
+          <implement2fuelrate type="text" description="Fuel Rate (lts/hour)">45.0</implement2fuelrate>
+          <implement2workrate type="text" description="Work Rate (ha/hour)">9.5</implement2workrate>
+          <implement2hoursperday type="text" description="Daily Hours (hours)">24</implement2hoursperday>
+        </ui>
+        <script name="init">
+          <text>
+lappend config(tractors) "[apsimname]"
+set config(machinery,[apsimname],newPrice) "[newPrice]"
+set config(machinery,[apsimname],tradeInValue) "[tradeInValue]"
+set config(machinery,[apsimname],lifeOfEquipment) "[lifeOfEquipment]"
+set config(machinery,[apsimname],insuranceRate) "[insuranceRate]"
+set config(machinery,[apsimname],repairs) "[repairs]"
+set config(machinery,[apsimname],oil) "[oil]"
+set config(machinery,[apsimname],loanInterestRate) "[loanInterestRate]"
+set config(machinery,[apsimname],loanDuration) "[loanDuration]"
+set config(machinery,[apsimname],age) "[age]"
+set config(machinery,[apsimname],[implement1name],fuelrate) "[implement1fuelrate]"
+set config(machinery,[apsimname],[implement1name],workrate) "[implement1workrate]"
+set config(machinery,[apsimname],[implement1name],hoursperday) "[implement1hoursperday]"
+set config(machinery,[apsimname],[implement2name],fuelrate) "[implement2fuelrate]"
+set config(machinery,[apsimname],[implement2name],workrate) "[implement2workrate]"
+set config(machinery,[apsimname],[implement2name],hoursperday) "[implement2hoursperday]"
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Machinery - Precision Planter">
+        <ui>
+          <category description="Implement" />
+          <apsimname type="text" description="Apsim name">planter</apsimname>
+          <newPrice type="text" description="New price ($)">20000.0</newPrice>
+          <tradeInValue type="text" description="Trade In Value (% of new)">35</tradeInValue>
+          <lifeOfEquipment type="text" description="Life of Equipment (hrs)">1000</lifeOfEquipment>
+          <insuranceRate type="text" description="Insurance cost ($/$1000 insured)">2.3</insuranceRate>
+          <repairs type="text" description="Repairs &amp; Maintenance (% of new value over lifetime)">20</repairs>
+          <oil type="text" description="Oil &amp; Tyre costs (%age of fuel costs)">0</oil>
+          <loanInterestRate type="text" description="Loan Interest Rate (%)">8</loanInterestRate>
+          <loanDuration type="text" description="Loan Duration (years)">5</loanDuration>
+          <age type="text" description="Age at start of simulation (hrs)">0</age>
+        </ui>
+        <script name="init">
+          <text>
+lappend config(implements) "[apsimname]"
+set config(machinery,[apsimname],newPrice) "[newPrice]"
+set config(machinery,[apsimname],tradeInValue) "[tradeInValue]"
+set config(machinery,[apsimname],lifeOfEquipment) "[lifeOfEquipment]"
+set config(machinery,[apsimname],insuranceRate) "[insuranceRate]"
+set config(machinery,[apsimname],repairs) "[repairs]"
+set config(machinery,[apsimname],oil) "[oil]"
+set config(machinery,[apsimname],loanInterestRate) "[loanInterestRate]"
+set config(machinery,[apsimname],loanDuration) "[loanDuration]"
+set config(machinery,[apsimname],age) "[age]"
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Machinery - Spray Rig">
+        <ui>
+          <category description="Implement" />
+          <apsimname type="text" description="Apsim name">sprayrig</apsimname>
+          <newPrice type="text" description="New price ($)">30000.0</newPrice>
+          <tradeInValue type="text" description="Trade In Value (% of new)">20</tradeInValue>
+          <lifeOfEquipment type="text" description="Life of Equipment (hrs)">3000</lifeOfEquipment>
+          <insuranceRate type="text" description="Insurance cost ($/$1000 insured)">2.3</insuranceRate>
+          <repairs type="text" description="Repairs &amp; Maintenance (% of new value over lifetime)">45</repairs>
+          <oil type="text" description="Oil &amp; Tyre costs (%age of fuel costs)">0</oil>
+          <loanInterestRate type="text" description="Loan Interest Rate (%)">8</loanInterestRate>
+          <loanDuration type="text" description="Loan Duration (years)">5</loanDuration>
+          <age type="text" description="Age at start of simulation (hrs)">0</age>
+        </ui>
+        <script name="init">
+          <text>
+lappend config(implements) "[apsimname]"
+set config(machinery,[apsimname],newPrice) "[newPrice]"
+set config(machinery,[apsimname],tradeInValue) "[tradeInValue]"
+set config(machinery,[apsimname],lifeOfEquipment) "[lifeOfEquipment]"
+set config(machinery,[apsimname],insuranceRate) "[insuranceRate]"
+set config(machinery,[apsimname],repairs) "[repairs]"
+set config(machinery,[apsimname],oil) "[oil]"
+set config(machinery,[apsimname],loanInterestRate) "[loanInterestRate]"
+set config(machinery,[apsimname],loanDuration) "[loanDuration]"
+set config(machinery,[apsimname],age) "[age]"
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Costs - Fuel">
+        <ui>
+          <category description="Costs" />
+          <fuelcost type="text" description="Cost of fuel ($/litre net)">0.0</fuelcost>
+        </ui>
+        <script name="init">
+          <text>
+set config(machinery,fuelcost) "[fuelcost]"
+          </text>
+          <event>init</event>
+        </script>
+      </rule>
     </tclmanager>
   </folder>
-  <simulation name="Echo Hills">
+  <simulation name="CQ Mixed GG">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/1/1980</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1989</end_date>
@@ -5194,7 +4789,7 @@ source $apsuite/UserInterface/APSFarm/Machinery.tcl
       <rule name="Initialisation logic">
         <script name="init">
           <text>
-set simName "Echo Hills"
+set simName "CQ Mixed GG"
 
 ############ Structural - what's here and what it's connected to:
 set config(paddocks)  [list "BuffelPaddock" \
@@ -5251,8 +4846,8 @@ foreach paddock $config(cropPaddocks) {
 set config(foragePaddocks)  [list "OatsPaddock" "SorghumPaddock" ]
 set config(pasturePaddocks) [list "BuffelPaddock" "LeucaenaGrassPaddock" ]
 
-set config(BuffelPaddock,area)         2000.0                         ;# 2000ha of buffel at Echo Hills
-set config(LeucaenaGrassPaddock,area)  600.0                          ;# area of Leucaena-Grass at Echo Hills
+set config(BuffelPaddock,area)         2000.0                         ;# 2000ha of buffel at CQ Mixed GG
+set config(LeucaenaGrassPaddock,area)  600.0                          ;# area of Leucaena-Grass at CQ Mixed GG
 
 # These paddocks are "managed" by in-paddock management rules
 set config(OatsPaddock,graphNames)           {} ;# ForageOats 
@@ -5292,8 +4887,8 @@ set config(LeucaenaGrassPaddock,numAnimals)  200
 set config(OatsPaddock,numAnimals)           300
 set config(SorghumPaddock,numAnimals)        100
 
-set config(OatsPaddock,area)           300.0                          ;# Area of Oats paddock at Echo Hills
-set config(SorghumPaddock,area)        100.0                          ;# Area of Forage sorghum paddock at Echo Hills - 250ha
+set config(OatsPaddock,area)           300.0                          ;# Area of Oats paddock at CQ Mixed GG
+set config(SorghumPaddock,area)        100.0                          ;# Area of Forage sorghum paddock at CQ Mixed GG - 250ha
 
 # Potential growth rates for each pasture type by season
 set config(buffel,summer_lwg)  80
@@ -5355,11 +4950,13 @@ foreach {mob size num paddock crop} {
     </tclmanager>
     <tclmanager name="Machinery" shortcut="/Grazing simulations/common stuff/Machinery">
       <rule name="Initialisation logic" shortcut="/Grazing simulations/common stuff/Machinery/Initialisation logic" />
-      <tclui name="Machinery - 250kwFWA" shortcut="/Grazing simulations/common stuff/Machinery/Machinery - 250kwFWA" />
-      <tclui name="Machinery - 170kwTractor " shortcut="/Grazing simulations/common stuff/Machinery/Machinery - 170kwTractor " />
-      <tclui name="Machinery - Precision Planter" shortcut="/Grazing simulations/common stuff/Machinery/Machinery - Precision Planter" />
-      <tclui name="Machinery - spray rig" shortcut="/Grazing simulations/common stuff/Machinery/Machinery - spray rig" />
-      <tclui name="Costs - Fuel" shortcut="/Grazing simulations/common stuff/Economics/Costs - Fuel" />
+      <rule name="Machinery - 250kwFWA" shortcut="/Grazing simulations/common stuff/Machinery/Machinery - 250kwFWA" />
+      <rule name="Machinery - 170kwTractor " shortcut="/Grazing simulations/common stuff/Machinery/Machinery - 170kwTractor " />
+      <rule name="Machinery - Precision Planter" shortcut="/Grazing simulations/common stuff/Machinery/Machinery - Precision Planter" />
+      <rule name="Machinery - spray rig" shortcut="/Grazing simulations/common stuff/Machinery/Machinery - Spray Rig" />
+      <rule name="Costs - Fuel" shortcut="/Grazing simulations/common stuff/Machinery/Costs - Fuel" />
+    </tclmanager>
+    <tclmanager name="Economics" shortcut="/Grazing simulations/common stuff/Economics">
     </tclmanager>
     <area name="BuffelPaddock">
       <soil shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)">
@@ -5602,6 +5199,7 @@ Use 0.5 for kl - in GRASP GMK uses p106:
         <profile_layer_merge type="text" description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
         <minimum_depth type="text" description="If the profile erodes to this depth, the simulation is stopped (mm)">100</minimum_depth>
       </erosion>
+      <tracker shortcut="/Grazing simulations/common stuff/Crop Paddock/tracker" />
     </area>
     <area name="LeucaenaGrassPaddock">
       <soil shortcut="/Grazing simulations/common stuff/Grey Vertosol-Belah-Brigalow (Inglestone No093)">
@@ -5641,10 +5239,7 @@ endif</text>
           </script>
         </manager>
       </folder>
-      <tracker>
-        <variable name="sum of  growth on end_of_day from reported to now as TotalGrowthMonthly" />
-        <variable name="sum of rain on end_of_day from start_month to end_month as TotalRain" />
-      </tracker>
+      <tracker shortcut="/Grazing simulations/common stuff/Crop Paddock/tracker" />
       <grasp name="leucaena">
         <category description="Initial values at establishment" />
         <root_depth_init type="text" description="Initial depth of roots (mm)">750</root_depth_init>
@@ -5709,7 +5304,7 @@ endif</text>
       </grasp>
       <memo name="notes on Leucaena">At th emoment I'm just using buffel parameters for the Leucaena paddock - to be changed later when we know what sort of yields we get off the Leucaena
 
-At Echo Hills, the pasture under the Leucaena is: silk sorghum ,green panic and buffel
+At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and buffel
 
 
 </memo>
@@ -5831,6 +5426,7 @@ At Echo Hills, the pasture under the Leucaena is: silk sorghum ,green panic and 
         <profile_layer_merge type="text" description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
         <minimum_depth type="text" description="If the profile erodes to this depth, the simulation is stopped (mm)">100</minimum_depth>
       </erosion>
+      <tracker shortcut="/Grazing simulations/common stuff/Crop Paddock/tracker" />
     </area>
     <area name="CropPaddock1" shortcut="/Grazing simulations/common stuff/Crop Paddock">
       <wheat shortcut="/Grazing simulations/common stuff/Crop Paddock/wheat" />
