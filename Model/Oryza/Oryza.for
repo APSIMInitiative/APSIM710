@@ -868,7 +868,19 @@
      :          ,numvals)             ! Number of values returned
 
       if (numvals .eq. 0) then
-         p%uptake_source = 'calc'
+         ! nothing in our parameters - see if swim3 is plugged in
+         call get_real_var_optional(unknown_module
+     :                              ,'swim3'
+     :                              ,'()'
+     :                              ,dummy(1)
+     :                              ,numvals
+     :                              ,0.0
+     :                              ,1.0)
+         if (numvals .gt. 0) then
+           p%uptake_source = 'swim3'
+         else
+           p%uptake_source = 'calc'
+         endif  
       endif
 
       if (p%uptake_source .eq. 'calc') then
@@ -888,7 +900,8 @@
          else
            p%PRODENV=env_limited
          endif
-      elseif (p%uptake_source .eq. 'apsim') then
+      elseif (p%uptake_source .eq. 'apsim' .or.
+     :        p%uptake_source .eq. 'swim3') then
          p%PRODENV=env_limited 
       else
          call fatal_error(err_user, 
@@ -4720,7 +4733,8 @@
             END IF
          END DO
 
-         elseif (p%uptake_source .eq. 'apsim') then
+         elseif (p%uptake_source .eq. 'apsim' .or.
+     :           p%uptake_source .eq. 'swim3' ) then
             
            !    dsg  230507   get the water uptake from apswim
            call get_real_array(unknown_module, 
