@@ -306,6 +306,7 @@ namespace ConToApsim
          string Tav = XmlHelper.Value(Child, "initdata/tav");
          string Amp = XmlHelper.Value(Child, "initdata/amp");
          string MetFileName = XmlHelper.Value(SimNode, "met/filename");
+         MetFileName = Configuration.RemoveMacros(MetFileName);
          if (Tav != "" && Amp != "" && MetFileName != "")
             {
             string TempFileName = Path.GetTempFileName();

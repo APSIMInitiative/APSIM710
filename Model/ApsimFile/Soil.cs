@@ -42,10 +42,14 @@ namespace ApsimFile
       /// </summary>
       public static Soil Create(string Name)
          {
-         XmlDocument Doc = new XmlDocument();
-         Doc.AppendChild(Doc.CreateElement("soil"));
-         XmlHelper.SetName(Doc.DocumentElement, Name);
-         return new Soil(Doc.DocumentElement);
+         System.Reflection.Assembly thisExe = System.Reflection.Assembly.GetExecutingAssembly();
+         System.IO.Stream file = thisExe.GetManifestResourceStream("ApsimFile.Resources.Blank.soil");
+         StreamReader In = new StreamReader(file);
+         string XML = In.ReadToEnd();
+         In.Close();
+         Soil NewSoil = Soil.CreateFromXML(XML);
+         NewSoil.Name = Name;
+         return NewSoil;
          }
 
 
@@ -68,6 +72,10 @@ namespace ApsimFile
          return new Soil(Node);
          }
 
+      public void UseNode(XmlNode Node)
+         {
+         Data = Node;
+         }
 
       /// <summary>
       /// Return the XML for the soil
@@ -97,6 +105,8 @@ namespace ApsimFile
       /// </summary>
       public string ReplaceSoilMacros(string Str)
          {
+         string ErrorMessages = "";
+
          // Replace the [Soil.] macros will values.         
          string ReturnString = Str;
 
@@ -114,39 +124,49 @@ namespace ApsimFile
             // Split macro name into bits.
             string[] MacroBits = MacroName.Split(".".ToCharArray());
 
-            string MacroValue = "";
-            if (MacroBits.Length == 2 && MacroBits[0].ToLower() == "soil")
+            try
                {
-               // See if the macro is a variable (i.e. an array of numbers)
-               if (MacroBits[1] == "Name")
-                  MacroValue = Name;
-
-               else if (SoilMetaData.Instance.IsProperty(MacroBits[1]))
-                  MacroValue = Property(MacroBits[1]);
-
-               else
+               string MacroValue = "";
+               if (MacroBits.Length == 2 && MacroBits[0].ToLower() == "soil")
                   {
-                  double[] DoubleValues = Variable(MacroBits[1]);
-                  if (MathUtility.ValuesInArray(DoubleValues))
+                  // See if the macro is a variable (i.e. an array of numbers)
+                  if (MacroBits[1] == "Name")
+                     MacroValue = Name;
+
+                  else if (SoilMetaData.Instance.IsProperty(MacroBits[1]))
+                     MacroValue = Property(MacroBits[1]);
+
+                  else
                      {
-                     foreach (double Value in DoubleValues)
+                     double[] DoubleValues = Variable(MacroBits[1]);
+                     if (MathUtility.ValuesInArray(DoubleValues))
                         {
-                        string StringValue;
-                        if (Value == MathUtility.MissingValue)
-                           StringValue = "0.000";
-                        else
-                           StringValue = Value.ToString("f3");
-                        MacroValue += new string(' ', 10 - StringValue.Length) + StringValue;
+                        foreach (double Value in DoubleValues)
+                           {
+                           string StringValue;
+                           if (Value == MathUtility.MissingValue)
+                              StringValue = "0.000";
+                           else
+                              StringValue = Value.ToString("f3");
+                           MacroValue += new string(' ', 10 - StringValue.Length) + StringValue;
+                           }
                         }
                      }
+                  ReturnString = ReturnString.Remove(PosMacro, PosEndMacro - PosMacro + 1);
+                  ReturnString = ReturnString.Insert(PosMacro, MacroValue);
                   }
+               }
+            catch (Exception err)
+               {
                ReturnString = ReturnString.Remove(PosMacro, PosEndMacro - PosMacro + 1);
-               ReturnString = ReturnString.Insert(PosMacro, MacroValue);
+               ErrorMessages += err.Message + "\r\n";
                }
 
             // Find next macro.
             PosMacro = ReturnString.IndexOf("[soil.", PosMacro);
             }
+         if (ErrorMessages != "")
+            throw new Exception(ErrorMessages);
          return ReturnString;
          }
 
@@ -307,6 +327,11 @@ namespace ApsimFile
                {
                string NameWithoutCode = Value.Name.Replace("Code", "");
                LocationName = SoilMetaData.Instance.GetVariablePath(NameWithoutCode);
+               if (LocationName != "")
+                  {
+                  XmlNode LocationNode = FindProfileNode(LocationName);
+                  SoilUtility.SetVariableValue(LocationNode, Value);
+                  }
                }
             else if (Value.Name.Contains("Method"))
                {
@@ -821,7 +846,8 @@ namespace ApsimFile
             Value.Strings = DataTableUtility.GetColumnAsStrings(Table, VariableName, NumRows, StartRow);
          else
             Value.Doubles = DataTableUtility.GetColumnAsDoubles(Table, VariableName, NumRows, StartRow);
-         Value.ThicknessMM = GetThicknessMMFromTable(Table);
+
+         Value.ThicknessMM = GetThicknessMMFromTable(Table, StartRow, NumRows);
          if (SoilMetaData.Instance.IsProperty(Value.Name))
             {
             if (Value.Strings[0] != "")
@@ -835,7 +861,7 @@ namespace ApsimFile
             }
          }
 
-      private double[] GetThicknessMMFromTable(DataTable Table)
+      private double[] GetThicknessMMFromTable(DataTable Table, int StartRow, int NumRows)
          {
          double[] ThicknessMM = null;
          foreach (DataColumn Column in Table.Columns)
@@ -844,10 +870,10 @@ namespace ApsimFile
             string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
 
             if (RawVariableName == "Thickness")
-               ThicknessMM = DataTableUtility.GetColumnAsDoubles(Table, Column.ColumnName);
+               ThicknessMM = DataTableUtility.GetColumnAsDoubles(Table, Column.ColumnName, NumRows, StartRow);
             else if (RawVariableName == "Depth")
                {
-               string[] DepthStrings = DataTableUtility.GetColumnAsStrings(Table, Column.ColumnName);
+               string[] DepthStrings = DataTableUtility.GetColumnAsStrings(Table, Column.ColumnName, NumRows, StartRow);
                ThicknessMM = SoilUtility.ToThickness(DepthStrings);
                }
 
@@ -1740,225 +1766,184 @@ namespace ApsimFile
 
 
       //#region Error checking
-      public string CheckForErrors()
+      /// <summary>
+      /// Check that the soil is a valid one.
+      /// </summary>
+      /// <returns></returns>
+      public string CheckForErrors(bool IgnoreWaterAndNitrogen)
          {
+         string ApsimToSim = Types.Instance.ApsimToSim("soil").InnerText;
+         if (IgnoreWaterAndNitrogen)
+            {
+            ApsimToSim = ApsimToSim.Replace("[soil.SW(mm/mm)]", "");
+            ApsimToSim = ApsimToSim.Replace("[soil.NO3(ppm)]", "");
+            ApsimToSim = ApsimToSim.Replace("[soil.NH4(ppm)]", "");
+            }
+
          string ErrorMessages = "";
-      //   ErrorMessages += CheckForMissing(this.Thickness, "THICKNESS");
-      //   ErrorMessages += CheckForMissing(this.Airdry, "AIRDRY");
-      //   ErrorMessages += CheckForMissing(this.DUL, "DUL");
-      //   ErrorMessages += CheckForMissing(this.SAT, "SAT");
-      //   ErrorMessages += CheckForMissing(this.SWCON, "SWCON");
-      //   ErrorMessages += CheckForMissing(this.BD, "BD");
-      //   ErrorMessages += CheckForMissing(this.OC, "OC");
-      //   ErrorMessages += CheckForMissing(this.PH, "PH");
-      //   ErrorMessages += CheckForMissing(this.FBIOM, "FBIOM");
-      //   ErrorMessages += CheckForMissing(this.FINERT, "FINERT");
-      //   ErrorMessages += CheckForMissing(this.Salb, "SALB");
-      //   ErrorMessages += CheckForMissing(this.CN2Bare, "CN2BARE");
-      //   ErrorMessages += CheckForMissing(this.CNRed, "CNRED");
-      //   ErrorMessages += CheckForMissing(this.CNCov, "CNCOV");
-      //   ErrorMessages += CheckForMissing(this.DiffusConst, "DIFFUSCONST");
-      //   ErrorMessages += CheckForMissing(this.DiffusSlope, "DIFFUSSLOPE");
-      //   ErrorMessages += CheckForMissing(this.RootCN, "ROOTCN");
-      //   ErrorMessages += CheckForMissing(this.RootWT, "ROOTWT");
-      //   ErrorMessages += CheckForMissing(this.SoilCN, "SOILCN");
-      //   ErrorMessages += CheckForMissing(this.EnrACoeff, "ENRACOEFF");
-      //   ErrorMessages += CheckForMissing(this.EnrBCoeff, "ENRBCOEFF");
+         try
+            {
+            string NewApsimToSim = ReplaceSoilMacros(ApsimToSim);
+            }
+         catch (Exception err)
+            {
+            ErrorMessages = err.Message;
+            }
 
-      //   foreach (string Crop in this.Crops)
-      //      {
-      //      ErrorMessages += CheckForMissing(this.LL(Crop), "LL-" + Crop);
-      //      if (Crop.ToLower() != "ozcot")
-      //         {
-      //         ErrorMessages += CheckForMissing(this.KL(Crop), "KL-" + Crop);
-      //         ErrorMessages += CheckForMissing(this.XF(Crop), "XF-" + Crop);
-      //         }
-      //      }
-
-      //   // Do some more rigorous checks.
-      //   if (ErrorMessages == "")
-      //      ErrorMessages += CheckProfile();
+         // Do some more rigorous checks.
+         if (ErrorMessages == "")
+            ErrorMessages += CheckProfile();
+         if (ErrorMessages == "" && !IgnoreWaterAndNitrogen)
+            ErrorMessages += CheckSW();
 
          return ErrorMessages;
          }
-      //public string CheckThatSimulationWillRun()
-      //   {
-      //   //-------------------------------------------------------------------------
-      //   // This checks the soil for errors and returns an error message if a
-      //   // problem was found. A blank string returned indicates no problems.
-      //   //-------------------------------------------------------------------------
-      //   string ErrorMessages = CheckForErrors();
 
-      //   //ErrorMessages += CheckForMissing(this.InitialSW, "SW");
-      //   //ErrorMessages += CheckForMissing(this.InitialNO3, "NO3");
-      //   //ErrorMessages += CheckForMissing(this.InitialNH4, "NH4");
-      //   ErrorMessages += CheckSW();
-      //   return ErrorMessages;
-      //   }
-      //private string CheckForMissing(double[] Values, string PropertyName)
-      //   {
-      //   // -----------------------------------------------------
-      //   // Checks the specified array for missing values.
-      //   // Returns an error message if a problem was found.
-      //   // -----------------------------------------------------
-      //   bool AllMissing = true;
-      //   for (int i = 0; i != Values.Length; i++)
-      //      AllMissing = (AllMissing && Values[i] == MathUtility.MissingValue);
-      //   if (AllMissing)
-      //      return "There are no values for " + PropertyName + "\r\n";
+      /// <summary>
+      /// Checks validity of soil water parameters for a soil profile layer
+      /// This is a port of the soilwat2_check_profile routine.
+      /// </summary>
+      private string CheckProfile()
+         {
+         string errorMessages = "";
+         const double min_sw = 0.0;
+         const double specific_bd = 2.65; // (g/cc)
 
-      //   for (int i = 0; i != Values.Length; i++)
-      //      {
-      //      int RealLayerNumber = i + 1;
-      //      if (Values[i] == MathUtility.MissingValue)
-      //         return "A missing value was found in layer " + RealLayerNumber.ToString() + " for " + PropertyName + "\r\n";
-      //      }
-      //   return "";
-      //   }
-      //private string CheckForMissing(double Value, string PropertyName)
-      //   {
-      //   // -----------------------------------------------------
-      //   // Checks the specified value for missing number.
-      //   // Returns an error message if a problem was found.
-      //   // -----------------------------------------------------
-      //   if (Value == MathUtility.MissingValue)
-      //      return "Missing a value for " + PropertyName + "\r\n";
-      //   return "";
-      //   }
-      //private string CheckProfile()
-      //   {
-      //   // ------------------------------------------------------------------
-      //   // Checks validity of soil water parameters for a soil profile layer
-      //   // This is a port of the soilwat2_check_profile routine.
-      //   // ------------------------------------------------------------------
-      //   string errorMessages = "";
-      //   const double min_sw = 0.0;
-      //   const double specific_bd = 2.65; // (g/cc)
+         double[] thickness = Variable("Thickness(mm)");
+         double[] airdry = Variable("AirDry(mm/mm)");
+         double[] ll15 = Variable("LL15(mm/mm)");
+         double[] dul = Variable("DUL(mm/mm)");
+         double[] sat = Variable("SAT(mm/mm)");
+         double[] bd = Variable("BD(g/cc)");
+         double[] oc = Variable("OC(Total %)");
+         double[] ph = Variable("PH(1:5 water)");
 
-      //   double[] thickness = this.Thickness;
-      //   double[] airdry = this.Airdry;
-      //   double[] ll15 = this.LL15;
-      //   double[] dul = this.DUL;
-      //   double[] sat = this.SAT;
-      //   double[] bd = this.BD;
-      //   //double[] sw = this.InitialSW;
+         // Check crop variables.
+         foreach (string Crop in Crops)
+            {
+            double[] ll = Variable(Crop + " LL(mm/mm)");
+            double[] kl = Variable(Crop + " KL(/day)");
+            double[] xf = Variable(Crop + " XF(0-1)");
+            if (!MathUtility.ValuesInArray(ll) || !MathUtility.ValuesInArray(kl) ||
+                !MathUtility.ValuesInArray(xf))
+               errorMessages += "Values for LL, KL or XF are missing for crop " + Crop + "\r\n";
 
-      //   for (int layer = 0; layer != thickness.Length; layer++)
-      //      {
-      //      double max_sw = MathUtility.Round(1.0 - bd[layer] / specific_bd, 3);
-      //      int RealLayerNumber = layer + 1;
+            else
+               {
+               for (int layer = 0; layer != thickness.Length; layer++)
+                  {
+                  int RealLayerNumber = layer + 1;
 
-      //      if (airdry[layer] < min_sw)
-      //         errorMessages += " Air dry lower limit of " + airdry[layer].ToString("f3")
-      //                            + " in layer " + RealLayerNumber.ToString() + " is below acceptable value of " + min_sw.ToString("f3")
-      //                    + "\r\n";
+                  if (kl[layer] > 1)
+                     errorMessages += Crop + " KL value of " + kl[layer].ToString("f3")
+                              + " in layer " + RealLayerNumber.ToString() + " is greater than 1"
+                              + "\r\n";
 
-      //      if (ll15[layer] < airdry[layer])
-      //         errorMessages += "15 bar lower limit of " + ll15[layer].ToString("f3")
-      //                      + " in layer " + RealLayerNumber.ToString() + " is below air dry value of " + airdry[layer].ToString("f3")
-      //                    + "\r\n";
+                  if (xf[layer] > 1)
+                     errorMessages += Crop + " XF value of " + xf[layer].ToString("f3")
+                              + " in layer " + RealLayerNumber.ToString() + " is greater than 1"
+                              + "\r\n";
 
-      //      foreach (string Crop in Crops)
-      //         {
-      //         double[] ll = LL(Crop);
-      //         double[] kl = KL(Crop);
-      //         double[] xf = XF(Crop);
+                  if (ll[layer] < airdry[layer])
+                     errorMessages += Crop + " LL of " + ll[layer].ToString("f3")
+                                  + " in layer " + RealLayerNumber.ToString() + " is below air dry value of " + airdry[layer].ToString("f3")
+                                + "\r\n";
 
-      //         if (kl[layer] > 1)
-      //            errorMessages += "KL value of " + kl[layer].ToString("f3")
-      //                     + " in layer " + RealLayerNumber.ToString() + " is greater than 1"
-      //                     + "\r\n";
+                  if (ll[layer] > dul[layer])
+                     errorMessages += Crop + " LL of " + ll[layer].ToString("f3")
+                                  + " in layer " + RealLayerNumber.ToString() + " is above drained upper limit of " + dul[layer].ToString("f3")
+                                + "\r\n";
+                  }
+               }
+            }
 
-      //         if (xf[layer] > 1)
-      //            errorMessages += "XF value of " + xf[layer].ToString("f3")
-      //                     + " in layer " + RealLayerNumber.ToString() + " is greater than 1"
-      //                     + "\r\n";
+         // Check other profile variables.
+         for (int layer = 0; layer != thickness.Length; layer++)
+            {
+            double max_sw = MathUtility.Round(1.0 - bd[layer] / specific_bd, 3);
+            int RealLayerNumber = layer + 1;
 
-      //         if (ll[layer] < airdry[layer])
-      //            errorMessages += "Crop lower limit of " + ll[layer].ToString("f3")
-      //                       + " for crop " + Crop
-      //                         + " in layer " + RealLayerNumber.ToString() + " is below air dry value of " + airdry[layer].ToString("f3")
-      //                       + "\r\n";
+            if (airdry[layer] < min_sw)
+               errorMessages += " Air dry lower limit of " + airdry[layer].ToString("f3")
+                                  + " in layer " + RealLayerNumber.ToString() + " is below acceptable value of " + min_sw.ToString("f3")
+                          + "\r\n";
 
-      //         if (ll[layer] > DUL[layer])
-      //            errorMessages += "Crop lower limit of " + ll[layer].ToString("f3")
-      //                       + " for crop " + Crop
-      //                         + " in layer " + RealLayerNumber.ToString() + " is above drained upper limit of " + dul[layer].ToString("f3")
-      //                       + "\r\n";
+            if (ll15[layer] < airdry[layer])
+               errorMessages += "15 bar lower limit of " + ll15[layer].ToString("f3")
+                            + " in layer " + RealLayerNumber.ToString() + " is below air dry value of " + airdry[layer].ToString("f3")
+                          + "\r\n";
 
-      //         }
+            if (dul[layer] < ll15[layer])
+               errorMessages += "Drained upper limit of " + dul[layer].ToString("f3")
+                            + " in layer " + RealLayerNumber.ToString() + " is at or below lower limit of " + ll15[layer].ToString("f3")
+                          + "\r\n";
 
-      //      if (dul[layer] < ll15[layer])
-      //         errorMessages += "Drained upper limit of " + dul[layer].ToString("f3")
-      //                      + " in layer " + RealLayerNumber.ToString() + " is at or below lower limit of " + ll15[layer].ToString("f3")
-      //                    + "\r\n";
+            if (sat[layer] < dul[layer])
+               errorMessages += "Saturation of " + sat[layer].ToString("f3")
+                            + " in layer " + RealLayerNumber.ToString() + " is at or below drained upper limit of " + dul[layer].ToString("f3")
+                          + "\r\n";
 
-      //      if (sat[layer] < dul[layer])
-      //         errorMessages += "Saturation of " + sat[layer].ToString("f3")
-      //                      + " in layer " + RealLayerNumber.ToString() + " is at or below drained upper limit of " + dul[layer].ToString("f3")
-      //                    + "\r\n";
+            if (sat[layer] > max_sw)
+               {
+               double max_bd = (1.0 - sat[layer]) * specific_bd;
+               errorMessages += "Saturation of " + sat[layer].ToString("f3")
+                            + " in layer " + RealLayerNumber.ToString() + " is above acceptable value of  " + max_sw.ToString("f3")
+                          + ". You must adjust bulk density to below " + max_bd.ToString("f3")
+                          + " OR saturation to below " + max_sw.ToString("f3")
+                          + "\r\n";
+               }
 
-      //      if (sat[layer] > max_sw)
-      //         {
-      //         double max_bd = (1.0 - sat[layer]) * specific_bd;
-      //         errorMessages += "Saturation of " + sat[layer].ToString("f3")
-      //                      + " in layer " + RealLayerNumber.ToString() + " is above acceptable value of  " + max_sw.ToString("f3")
-      //                    + ". You must adjust bulk density to below " + max_bd.ToString("f3")
-      //                    + " OR saturation to below " + max_sw.ToString("f3")
-      //                    + "\r\n";
-      //         }
+            if (bd[layer] > 2.65)
+               errorMessages += "BD value of " + bd[layer].ToString("f3")
+                            + " in layer " + RealLayerNumber.ToString() + " is greater than the theoretical maximum of 2.65"
+                          + "\r\n";
+            if (oc[layer] < 0.01)
+               errorMessages += "OC value of " + oc[layer].ToString("f3")
+                             + " in layer " + RealLayerNumber.ToString() + " is less than 0.01"
+                             + "\r\n";
+            if (ph[layer] < 3.5)
+               errorMessages += "PH value of " + ph[layer].ToString("f3")
+                             + " in layer " + RealLayerNumber.ToString() + " is less than 3.5"
+                             + "\r\n";
+            if (ph[layer] > 11)
+               errorMessages += "PH value of " + ph[layer].ToString("f3")
+                             + " in layer " + RealLayerNumber.ToString() + " is greater than 11"
+                             + "\r\n";
+            }
+         return errorMessages;
+         }
 
-      //      if (bd[layer] > 2.65)
-      //         errorMessages += "BD value of " + bd[layer].ToString("f3")
-      //                      + " in layer " + RealLayerNumber.ToString() + " is greater than the theoretical maximum of 2.65"
-      //                    + "\r\n";
-      //      if (OC[layer] < 0.01)
-      //         errorMessages += "OC value of " + OC[layer].ToString("f3")
-      //                       + " in layer " + RealLayerNumber.ToString() + " is less than 0.01"
-      //                       + "\r\n";
-      //      if (PH[layer] < 3.5)
-      //         errorMessages += "PH value of " + PH[layer].ToString("f3")
-      //                       + " in layer " + RealLayerNumber.ToString() + " is less than 3.5"
-      //                       + "\r\n";
-      //      if (PH[layer] > 11)
-      //         errorMessages += "PH value of " + PH[layer].ToString("f3")
-      //                       + " in layer " + RealLayerNumber.ToString() + " is greater than 11"
-      //                       + "\r\n";
-      //      }
-      //   return errorMessages;
-      //   }
-      //private string CheckSW()
-      //   {
-      //   // ------------------------------------------------------------------
-      //   // Checks validity of initial soil water 
-      //   // ------------------------------------------------------------------
-      //   string errorMessages = "";
+      /// <summary>
+      /// Check the validity of initial soil water.
+      /// </summary>
+      /// <returns></returns>
+      private string CheckSW()
+         {
+         string errorMessages = "";
 
-      //   double[] thickness = this.Thickness;
-      //   double[] airdry = this.Airdry;
-      //   double[] sat = this.SAT;
-      //   //double[] sw = this.InitialSW;
-      //   //if (sw.Length > 0)
-      //   //    {
-      //   //    for (int layer = 0; layer != thickness.Length; layer++)
-      //   //        {
-      //   //        int RealLayerNumber = layer + 1;
+         double[] thickness = Variable("Thickness(mm)");
+         double[] airdry = Variable("AirDry(mm/mm)");
+         double[] sat = Variable("SAT(mm/mm)");
+         double[] sw = Variable("SW(mm/mm)");
+         if (sw.Length > 0)
+            {
+            for (int layer = 0; layer != thickness.Length; layer++)
+               {
+               int RealLayerNumber = layer + 1;
 
-      //   //        if (sw[layer] > sat[layer])
-      //   //            errorMessages += "Soil water of " + sw[layer].ToString("f3")
-      //   //                          + " in layer " + RealLayerNumber.ToString() + " is above saturation of " + sat[layer].ToString("f3")
-      //   //                          + "\r\n";
+               if (sw[layer] > sat[layer])
+                  errorMessages += "Soil water of " + sw[layer].ToString("f3")
+                                + " in layer " + RealLayerNumber.ToString() + " is above saturation of " + sat[layer].ToString("f3")
+                                + "\r\n";
 
-      //   //        if (sw[layer] < airdry[layer])
-      //   //            errorMessages += "Soil water of " + sw[layer].ToString("f3")
-      //   //                          + " in layer " + RealLayerNumber.ToString() + " is below air-dry value of " + airdry[layer].ToString("f3")
-      //   //                          + "\r\n";
-      //   //        }
-      //   //    }
-      //   return errorMessages;
-      //   }
-
-      //#endregion
+               if (sw[layer] < airdry[layer])
+                  errorMessages += "Soil water of " + sw[layer].ToString("f3")
+                                + " in layer " + RealLayerNumber.ToString() + " is below air-dry value of " + airdry[layer].ToString("f3")
+                                + "\r\n";
+               }
+            }
+         return errorMessages;
+         }
 
       //#region Manipulation / fudges
       //public void ApplyMaxWaterCapacity(int maxWaterCapacity)
@@ -2044,35 +2029,6 @@ namespace ApsimFile
       //   LL15 = localLL15;
       //   }
       //#endregion
-
-      //#region Add/Delete layer
-      //public void AddLayerToBottom()
-      //   {
-      //   // ----------------------------------
-      //   // Add another layer to the profile.
-      //   // ----------------------------------
-      //   XmlNode Profile = XmlHelper.Find(Data, "profile");
-      //   if (Profile != null)
-      //      {
-      //      List<XmlNode> Layers = XmlHelper.ChildNodes(Profile, "layer");
-      //      Profile.AppendChild(Layers[Thickness.Length - 1]);
-      //      }
-      //   }
-      //public void DeleteLayerFromBottom()
-      //   {
-      //   // ----------------------------------
-      //   // Add another layer to the profile.
-      //   // ----------------------------------
-      //   XmlNode Profile = XmlHelper.Find(Data, "profile");
-      //   if (Profile != null)
-      //      {
-      //      List<XmlNode> Layers = XmlHelper.ChildNodes(Profile, "layer");
-
-      //      Profile.RemoveChild(Layers[Thickness.Length - 1]);
-      //      }
-      //   }
-      //#endregion
-
 
 
 

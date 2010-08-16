@@ -16,6 +16,9 @@ namespace ApsimFile
    {
    public class SoilSpreadsheet
       {
+      public delegate void ProgressNotifier(int Percent);
+
+
       private static string[] VarNames = {"Name", "Country", "State", "Region", "NearestTown", "Site", 
                                   "ApsoilNumber", "SoilType", "Latitude", "Longitude",
                                   "LocationAccuracy", "DataSource", "Comments", "NaturalVegetation",
@@ -51,12 +54,12 @@ namespace ApsimFile
          }
 
 
-      static public string Import(string FileName)
+      static public string OpenXLS(string FileName, ProgressNotifier Notifier)
          {
          // --------------------------------------------------------------
          // Read through all rows and columns in the specified XLS file
-         // and create and return the XML associated with all the 
-         // soils found in the spreadsheet.
+         // and create a temporaty .soils file with all the 
+         // soils found in the spreadsheet. Return the temporary file to caller
          // --------------------------------------------------------------
          
          DataTable Table = ExcelHelper.GetDataFromSheet(FileName, "SoilData");
@@ -67,28 +70,42 @@ namespace ApsimFile
          XmlDocument Doc = new XmlDocument();
          XmlNode AllSoils = Doc.CreateElement("AllSoils");
          Doc.AppendChild(AllSoils);
+         XmlHelper.SetAttribute(AllSoils, "version", APSIMChangeTool.CurrentVersion.ToString());
          
          // Loop through all blocks of rows in datatable from XLS, create a
          // soil and store soil in correct location in the AllSoils XML.
          int Row = 0;
+         int counter = 0;
+         Soil NewSoil = Soil.Create("Dummy");
          while (Row < Table.Rows.Count)
             {
-            Soil NewSoil = Soil.Create("NewSoil");
+            XmlNode NewSoilNode = AllSoils.AppendChild(Doc.CreateElement("soil"));
+
+            NewSoil.UseNode(NewSoilNode);
             NewSoil.Read(Table, Row);
 
-            AddSoilToXML(NewSoil, AllSoils);
+            AddSoilToXML(NewSoil, AllSoils, NewSoilNode);
 
             Row += NewSoil.Variable("Thickness (mm)").Length;
-            NewSoil = null;
-            GC.Collect();
+
+            Notifier.Invoke(Convert.ToInt32(Row * 100.0 / Table.Rows.Count));
+            counter++;
+            if (counter == 50)
+               {
+               GC.Collect();
+               counter = 0;
+               }
+
             }
-         return AllSoils.InnerXml;
+         string TempFileName = Path.GetTempFileName();
+         Doc.Save(TempFileName);
+         return TempFileName;
          }
 
       /// <summary>
       /// Add the specified soil the the AllSoils node.
       /// </summary>
-      private static void AddSoilToXML(Soil NewSoil, XmlNode AllSoils)
+      private static void AddSoilToXML(Soil NewSoil, XmlNode AllSoils, XmlNode NewSoilNode)
          {
          string SoilPath = CalcPathFromSoil(NewSoil);
          XmlNode ParentNode;
@@ -97,9 +114,7 @@ namespace ApsimFile
          else
             ParentNode = EnsureNodeExists(AllSoils, SoilPath);
 
-         XmlDocument NewSoilDoc = new XmlDocument();
-         NewSoilDoc.LoadXml(NewSoil.XML);
-         ParentNode.AppendChild(AllSoils.OwnerDocument.ImportNode(NewSoilDoc.DocumentElement, true));
+         ParentNode.AppendChild(NewSoilNode);
          }
 
       /// <summary>

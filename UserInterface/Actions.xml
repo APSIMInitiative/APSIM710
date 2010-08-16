@@ -368,7 +368,7 @@
       </GraphWizard>
       <Options>
          <text>Options...</text>
-         <SmallIcon>%apsim%\UserInterface\Images\wrench16.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\wrench24.png</MediumIcon>
          <Description>Modify user interface options</Description>
          <DisabledWhen>InToolbox</DisabledWhen>
          <OnInvoke>
@@ -396,7 +396,7 @@
          </OnInvoke>
       </Print>
       <Export>
-         <Text>Export to...</Text>
+         <Text>Export</Text>
          <Description>Export the currently selected graph(s)</Description>
          <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
          <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
@@ -407,7 +407,7 @@
          <AppliesTo>Area</AppliesTo>
       </Export>
       <ExportBMP>
-         <Text>Export to BMP...</Text>
+         <Text>To BMP...</Text>
          <Description>Export the currently selected graph(s) to a .bmp file</Description>
          <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
          <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
@@ -424,7 +424,7 @@
          </OnInvoke>
       </ExportBMP>
       <ExportJPG>
-         <Text>Export to JPG...</Text>
+         <Text>To JPG...</Text>
          <Description>Export the currently selected graph(s) to a .jpg file</Description>
          <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
          <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
@@ -441,7 +441,7 @@
          </OnInvoke>
       </ExportJPG>
       <ExportGIF>
-         <Text>Export to GIF...</Text>
+         <Text>To GIF...</Text>
          <Description>Export the currently selected graph(s) to a .gif file</Description>
          <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
          <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
@@ -458,7 +458,7 @@
          </OnInvoke>
       </ExportGIF>
       <ExportPNG>
-         <Text>Export to PNG...</Text>
+         <Text>To PNG...</Text>
          <Description>Export the currently selected graph(s) to a .png file</Description>
          <SmallIcon>%apsim%\UserInterface\Images\export116.png</SmallIcon>
          <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
@@ -476,7 +476,11 @@
       </ExportPNG>
 
       <Checkpoint>
-         <Text>Checkpoint simulation</Text>
+         <Text>Checkpoint</Text>
+         <MediumIcon>%apsim%\UserInterface\Images\disk_yellow24.png</MediumIcon>
+      </Checkpoint>
+      <CreateCheckpoint>
+         <Text>Create a checkpoint</Text>
          <Description>Save all simulation, output and summary files to a checkpoint folder.</Description>
          <SmallIcon>%apsim%\UserInterface\Images\disk_yellow_into16.png</SmallIcon>
          <OnInvoke>
@@ -485,11 +489,11 @@
                <method>CheckPoint</method>
             </call>
          </OnInvoke>
-      </Checkpoint>
+      </CreateCheckpoint>
       <RevertFromCheckPoint>
          <Text>Revert from checkpoint</Text>
          <Description>Revert all simulation changes, output and summary files from the checkpoint folder.</Description>
-         <SmallIcon>%apsim%\UserInterface\Images\disk_yellow_out16.png</SmallIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\disk_yellow_revert16.png</SmallIcon>
          <OnInvoke>
             <call>
                <class>Actions.ApsimUIActions</class>
@@ -497,8 +501,8 @@
             </call>
          </OnInvoke>
       </RevertFromCheckPoint>
-      <ImportConFile>
-         <Text>Import a .con file</Text>
+      <OpenConFile>
+         <Text>Open .con file</Text>
          <Description>Convert and import a .con file into the user interface</Description>
          <SmallIcon>%apsim%\UserInterface\Images\gear_con16.png</SmallIcon>
          <OnInvoke>
@@ -507,8 +511,20 @@
                <method>ImportConFile</method>
             </call>
          </OnInvoke>
-      </ImportConFile>
-
+      </OpenConFile>
+      <CheckSoil>
+         <text>Check soil</text>
+         <Description>Check the soil to make sure it's valid for APSIM.</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\check216.png</SmallIcon>
+         <MediumIcon>%apsim%\UserInterface\Images\check224.png</MediumIcon>
+         <AppliesTo>Soil</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>CheckSoils</method>
+            </call>
+         </OnInvoke>
+      </CheckSoil>
    </Actions>
 
 
@@ -517,15 +533,26 @@
       <Item>FileNew</Item>
       <DropDownItem action="Open">
          <Item>FileOpen</Item>
+         <Item>OpenConFile</Item>
          <Separator/>
          <RecentFileList/>
       </DropDownItem>
       <Item>FileSave</Item>
       <Item>FileSaveAs</Item>
+      <DropDownItem action="Export">
+         <Item>ExportBMP</Item>
+         <Item>ExportGIF</Item>
+         <Item>ExportJPG</Item>
+         <Item>ExportPNG</Item>
+      </DropDownItem>
       <Separator/>
+      <DropDownItem action="Checkpoint">
+         <Item>CreateCheckpoint</Item>
+         <Item>RevertFromCheckPoint</Item>
+      </DropDownItem>
       <Item>GraphWizard</Item>
       <Item>Excel</Item>
-      <Separator/>
+      <Item>Options</Item>
       <DropDownItem action="Help">
          <Item>HelpDocumentation</Item>
          <Item>ApsimSearchEngine</Item>
@@ -536,58 +563,23 @@
 
    <ContextMenu>
       <ImageSize>SmallIcon</ImageSize>
-      <Item>FileNew</Item>
-      <DropDownItem action="Open">
-         <Item>FileOpen</Item>
-         <Separator/>
-         <RecentFileList/>
-      </DropDownItem>
-      <Item>FileSave</Item>
-      <Item>FileSaveAs</Item>
-      <Item>ImportConFile</Item>
-      <Item>Checkpoint</Item>
-      <Item>RevertFromCheckPoint</Item>
-      <Separator/>
-      <Item>AddFolder</Item>
-      <Item>Run</Item>
-      <Item>CreateSIM</Item>
-      <Item>GraphWizard</Item>
-      <Item>Excel</Item>
-      <Item>Print</Item>
-      <DropDownItem action="Export">
-         <Item>ExportBMP</Item>
-         <Item>ExportGIF</Item>
-         <Item>ExportJPG</Item>
-         <Item>ExportPNG</Item>
-      </DropDownItem>
-      <Separator/>
-      <Item>Delete</Item>
-      <Item>Rename</Item>
-      <Item>MakeConcrete</Item>
-      <Separator/>
       <Item>Cut</Item>
       <Item>Copy</Item>
       <Item>Paste</Item>
+      <Item>Delete</Item>
+      <Item>Rename</Item>
       <Item>MoveUp</Item>
       <Item>MoveDown</Item>
-      <Separator/>
       <Item>CollapseAll</Item>
       <Item>ExpandAll</Item>
-      <Separator/>
       <Item>Enable</Item>
       <Item>Disable</Item>
+      <Item>MakeConcrete</Item>
       <Separator/>
-      <Item>Options</Item>
+      <Item>AddFolder</Item>
+      <Item>Print</Item>
+      <Item>CheckSoil</Item>
    </ContextMenu>
-
-   <ContextMenu_SoilUI_Management>
-      <ImageSize>SmallIcon</ImageSize>
-      <Item>SoilCropManagement</Item>
-   </ContextMenu_SoilUI_Management>
-   <ContextMenu_SoilUI_PH>
-      <ImageSize>SmallIcon</ImageSize>
-      <Item>ChangePHUnits</Item>
-   </ContextMenu_SoilUI_PH>
 
 
 </Folder>

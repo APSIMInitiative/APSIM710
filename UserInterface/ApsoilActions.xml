@@ -4,7 +4,7 @@
    <Actions>
       <FileNew>
          <Text>New...</Text>
-         <Description>Open a new file</Description>
+         <Description>Create a new file</Description>
          <MediumIcon>%apsim%\UserInterface\Images\document_new24.png</MediumIcon>
          <OnInvoke>
             <call>
@@ -20,7 +20,7 @@
       <FileOpen>
          <Text>Open...</Text>
          <Description>Open an existing file</Description>
-         <MediumIcon>%apsim%\UserInterface\Images\folder_document24.png</MediumIcon>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_document16.png</SmallIcon>
          <OnInvoke>
             <call>
                <class>Actions.BaseActions</class>
@@ -28,12 +28,33 @@
             </call>
          </OnInvoke>
       </FileOpen>
+      <FileOpenXLS>
+         <Text>Open APSoil XLS file...</Text>
+         <Description>Open an APSoil spreadsheet</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\excel16.bmp</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>FileOpenXLS</method>
+            </call>
+         </OnInvoke>
+      </FileOpenXLS> 
+      <FileOpenWeb>
+         <text>Open latest version from web</text>
+         <Description>Open the latest version of the database from www.apsim.info</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\client_network16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.SoilActions</class>
+               <method>OpenLatestVersionOfSoilsDatabase</method>
+            </call>
+         </OnInvoke>
+      </FileOpenWeb>
       <FileSave>
          <Text>Save</Text>
          <Description>Save all soils to disk</Description>
          <MediumIcon>%apsim%\UserInterface\Images\disk_blue24.png</MediumIcon>
          <DisabledWhen>ReadOnly</DisabledWhen>
-         <DisabledWhen>NothingLoaded</DisabledWhen>
          <OnInvoke>
             <call>
                <class>Actions.BaseActions</class>
@@ -252,34 +273,6 @@
             </call>
          </OnInvoke>
       </ImportFromParFile>
-      <ImportFromSpreadsheet>
-         <text>From a spreadsheet</text>
-         <Description>Import all soils from a spreadsheet to the selected folder</Description>
-         <DisabledWhen>ReadOnly</DisabledWhen>
-         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
-         <DisabledWhen>NothingLoaded</DisabledWhen>
-         <AppliesTo>folder</AppliesTo>
-         <OnInvoke>
-            <call>
-               <class>Actions.SoilActions</class>
-               <method>ImportFromSpreadsheet</method>
-            </call>
-         </OnInvoke>
-      </ImportFromSpreadsheet>
-      <ImportFromW2N2>
-         <text>From .w2/.n2</text>
-         <Description>Import all soils from a .W2/.N2 files to the selected folder</Description>
-         <DisabledWhen>ReadOnly</DisabledWhen>
-         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
-         <DisabledWhen>NothingLoaded</DisabledWhen>
-         <AppliesTo>folder</AppliesTo>
-         <OnInvoke>
-            <call>
-               <class>Actions.SoilActions</class>
-               <method>ImportFromW2N2</method>
-            </call>
-         </OnInvoke>
-      </ImportFromW2N2>
       <Export>
          <text>Export</text>
          <MediumIcon>%apsim%\UserInterface\Images\export124.png</MediumIcon>
@@ -299,19 +292,6 @@
             </call>
          </OnInvoke>
       </ExportToSoilsFile>
-      <ExportToParFile>
-         <text>To a .par file</text>
-         <Description>Export selected soils to a .par file</Description>
-         <AppliesTo>folder</AppliesTo>
-         <AppliesTo>soil</AppliesTo>
-         <DisabledWhen>NothingLoaded</DisabledWhen>
-         <OnInvoke>
-            <call>
-               <class>Actions.SoilActions</class>
-               <method>ExportToPar</method>
-            </call>
-         </OnInvoke>
-      </ExportToParFile>
       <ExportToSpreadsheet>
          <text>To a spreadsheet</text>
          <Description>Export selected soils to a spreadsheet</Description>
@@ -405,32 +385,6 @@
             </call>
          </OnInvoke>
       </PHUnitChange>
-      <SoilCropManagement>
-         <text>Manage Crops</text>
-         <Description>Add, delete and reorder crops</Description>
-         <MediumIcon>%apsim%\UserInterface\Images\leaf24.png</MediumIcon>
-         <SmallIcon>%apsim%\UserInterface\Images\leaf16.png</SmallIcon>
-         <DisabledWhen>NothingLoaded</DisabledWhen>
-         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
-         <AppliesTo>soil</AppliesTo>
-         <OnInvoke>
-            <call>
-               <class>Actions.SoilActions</class>
-               <method>SoilCropManagement</method>
-            </call>
-         </OnInvoke>
-      </SoilCropManagement>
-      <CheckWebForNewSoilData>
-         <text>Get latest data</text>
-         <Description>Check www.apsim.info for the latest soil data</Description>
-         <MediumIcon>%apsim%\UserInterface\Images\client_network24.png</MediumIcon>
-         <OnInvoke>
-            <call>
-               <class>Actions.SoilActions</class>
-               <method>CheckWebForDataUpdate</method>
-            </call>
-         </OnInvoke>
-      </CheckWebForNewSoilData>
    </Actions>
 
    <MainToolBar ImageAboveText="yes">
@@ -438,6 +392,8 @@
       <Item>FileNew</Item>
       <DropDownItem action="Open">
          <Item>FileOpen</Item>
+         <Item>FileOpenXLS</Item>
+         <Item>FileOpenWeb</Item>
          <Separator/>
          <RecentFileList/>
       </DropDownItem>
@@ -451,8 +407,6 @@
       <DropDownItem action="Import">
          <Item>ImportFromSoilsFile</Item>
          <Item>ImportFromParFile</Item>
-         <Item>ImportFromSpreadsheet</Item>
-         <Item>ImportFromW2N2</Item>
       </DropDownItem>
       <DropDownItem action="Export">
          <Item>ExportToSoilsFile</Item>
@@ -464,7 +418,6 @@
       <Separator/>
       <Item>Version</Item>
       <Item>ReleaseNotes</Item>
-      <Item>CheckWebForNewSoilData</Item>
    </MainToolBar>
 
    <ContextMenu>
@@ -476,17 +429,12 @@
       <DropDownItem action="Import">
          <Item>ImportFromSoilsFile</Item>
          <Item>ImportFromParFile</Item>
-         <Item>ImportFromSpreadsheet</Item>
-         <Item>ImportFromW2N2</Item>
       </DropDownItem>
       <DropDownItem action="Export">
          <Item>ExportToSoilsFile</Item>
-         <Item>ExportToParFile</Item>
          <Item>ExportToSpreadsheet</Item>
       </DropDownItem>
       <Item>Check</Item>
-      <Item>SoilCropManagement</Item>
-      <Item>PrintSoil</Item>
       <Separator/>
       <Item>Delete</Item>
       <Item>Rename</Item>
@@ -502,9 +450,5 @@
       <Item>ExpandAll</Item>
    </ContextMenu>
 
-   <SoilToolBar ImageAboveText="yes">
-      <ImageSize>MediumIcon</ImageSize>
-      <Item>PHUnitChange</Item>
-   </SoilToolBar>
 
 </Folder>

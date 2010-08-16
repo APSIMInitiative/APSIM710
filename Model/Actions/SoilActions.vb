@@ -33,9 +33,10 @@ Public Class SoilActions
             End If
         End If
     End Sub
-    Public Shared Sub AddSoil(ByVal Controller As BaseController)
-        Controller.Selection.Add("<soil name=""NewSoil""/>")
-    End Sub
+   Public Shared Sub AddSoil(ByVal Controller As BaseController)
+      Dim NewSoil As Soil = Soil.Create("Soil")
+      Controller.Selection.Add(NewSoil.XML)
+   End Sub
 
 
 
@@ -69,18 +70,33 @@ Public Class SoilActions
                 Cursor.Current = Cursors.Default
             Next
         End If
-    End Sub
-    Public Shared Sub ImportFromSpreadsheet(ByVal Controller As BaseController)
-        Dim Dialog As New OpenFileDialog()
-        Dialog.Filter = "Spreadsheet files (*.xls)|*.xls|All files (*.*)|*.*"
-        Dialog.Title = "Select a spreadsheet to import from"
-        Dialog.RestoreDirectory = True
-        If Dialog.ShowDialog() = DialogResult.OK Then
-            Cursor.Current = Cursors.WaitCursor
-            Controller.Selection.Add(SoilSpreadsheet.Import(Dialog.FileName), False)
-            Cursor.Current = Cursors.Default
-        End If
-    End Sub
+   End Sub
+
+   Private Shared ProgressBar As ToolStripProgressBar
+
+   Public Shared Sub FileOpenXLS(ByVal Controller As BaseController)
+      Dim StatusBar As StatusStrip = Controller.MainForm.Controls.Find("StatusStrip1", True)(0)
+      ProgressBar = StatusBar.Items(0)
+      StatusBar.Visible = True
+
+      Dim Dialog As New OpenFileDialog()
+      Dialog.Filter = "Spreadsheet files (*.xls)|*.xls|All files (*.*)|*.*"
+      Dialog.Title = "Select a spreadsheet to open"
+      Dialog.RestoreDirectory = True
+      If Dialog.ShowDialog() = DialogResult.OK Then
+         Cursor.Current = Cursors.WaitCursor
+         Dim TempFileName As String = SoilSpreadsheet.OpenXLS(Dialog.FileName, AddressOf UpdateProgress)
+         Controller.ApsimData.NewFromFile(TempFileName)
+         File.Delete(TempFileName)
+         Cursor.Current = Cursors.Default
+      End If
+      StatusBar.Visible = False
+   End Sub
+
+   Private Shared Sub UpdateProgress(ByVal Percent As Integer)
+      ProgressBar.Value = Percent
+      Application.DoEvents()
+   End Sub
 
 #End Region
 
@@ -104,7 +120,7 @@ Public Class SoilActions
             For Each SelectedPath As String In Controller.SelectedPaths
                 Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(SelectedPath)
                 Dim NodeDoc As New XmlDocument()
-                NodeDoc.LoadXml(Comp.Contents)
+            NodeDoc.LoadXml(Comp.FullXML())
                 Doc.DocumentElement.AppendChild(Doc.ImportNode(NodeDoc.DocumentElement, True))
             Next
             XmlHelper.SetAttribute(Doc.DocumentElement, "version", ApsimFile.APSIMChangeTool.CurrentVersion.ToString())
@@ -112,41 +128,18 @@ Public Class SoilActions
             MessageBox.Show("Soils have been successfully exported to '" + Dialog.FileName + "'. It is suggested that you rename soils within the new file to avoid confusion.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
     End Sub
-    Public Shared Sub ExportToPar(ByVal Controller As BaseController)
-        Dim Dialog As New SaveFileDialog()
-        Dialog.Filter = "Par files (*.par)|*.par|All files (*.*)|*.*"
-        Dialog.Title = "Enter a .par file to export to"
-        Dialog.DefaultExt = "par"
-        If Dialog.ShowDialog() = DialogResult.OK Then
-            File.Delete(Dialog.FileName)
-            For Each SelectedPath As String In Controller.SelectedPaths
-                ExportToPar(Controller.ApsimData.Find(SelectedPath), Dialog.FileName, Controller)
-            Next
-            MessageBox.Show("Soils have been exported to '" + Dialog.FileName + "'", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        End If
-    End Sub
-    Private Shared Sub ExportToPar(ByVal Data As ApsimFile.Component, ByVal FileName As String, ByVal Controller As BaseController)
-        If Data.Type.ToLower() = "folder" Then
-            For Each Child As ApsimFile.Component In Data.ChildNodes
-                ExportToPar(Child, FileName, Controller)
-            Next
-        Else
-            Dim SoilToExport As Soil = Soil.CreateFromXML(Data.FullXML())
-            'SoilToExport.ExportToPar(FileName, SoilToExport.Name, True)
-        End If
-    End Sub
-    Public Shared Sub ExportToSpreadsheet(ByVal Controller As BaseController)
-        Dim Dialog As New SaveFileDialog()
-        Dialog.Filter = "Spreadsheet files (*.xls)|*.xls|All files (*.*)|*.*"
-        Dialog.Title = "Enter a spreadsheet file to export to"
-        Dialog.DefaultExt = "xls"
-        If Dialog.ShowDialog() = DialogResult.OK Then
-            Dim Doc As New XmlDocument
-            Doc.LoadXml(Controller.ApsimData.RootComponent.FullXML())
-            SoilSpreadsheet.Export(Dialog.FileName, Doc.DocumentElement, Controller.SelectedPaths)
-            MessageBox.Show("Soils have been successfully exported to '" + Dialog.FileName + "'. It is suggested that you rename soils within the new file to avoid confusion.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        End If
-    End Sub
+   Public Shared Sub ExportToSpreadsheet(ByVal Controller As BaseController)
+      Dim Dialog As New SaveFileDialog()
+      Dialog.Filter = "Spreadsheet files (*.xls)|*.xls|All files (*.*)|*.*"
+      Dialog.Title = "Enter a spreadsheet file to export to"
+      Dialog.DefaultExt = "xls"
+      If Dialog.ShowDialog() = DialogResult.OK Then
+         Dim Doc As New XmlDocument
+         Doc.LoadXml(Controller.ApsimData.RootComponent.FullXML())
+         SoilSpreadsheet.Export(Dialog.FileName, Doc.DocumentElement, Controller.SelectedPaths)
+         MessageBox.Show("Soils have been successfully exported to '" + Dialog.FileName + "'. It is suggested that you rename soils within the new file to avoid confusion.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+      End If
+   End Sub
 
 #End Region
 
@@ -170,8 +163,8 @@ Public Class SoilActions
     End Sub
     Private Shared Sub CheckSoils(ByVal Data As ApsimFile.Component, ByRef ErrorMessage As String)
         If Data.Type.ToLower() = "soil" Then
-            Dim ThisSoil As Soil = Soil.CreateFromXML(Data.Contents)
-            Dim Errors As String = ThisSoil.CheckForErrors()
+         Dim ThisSoil As Soil = Soil.CreateFromXML(Data.FullXML())
+         Dim Errors As String = ThisSoil.CheckForErrors(True)
             If Errors <> "" Then
                 ErrorMessage += vbCr + vbLf + ThisSoil.Name + vbCr + vbLf + StringManip.IndentText(Errors, 6)
             End If
@@ -195,28 +188,32 @@ Public Class SoilActions
     Public Shared Function VersionString() As String
         Return "Version " + Configuration.Instance.ApsimVersion()
     End Function
-    Public Shared Sub CheckWebForDataUpdate(ByVal Controller As BaseController)
-        Cursor.Current = Cursors.WaitCursor
-        Dim request As WebRequest = WebRequest.Create("http://www.apsim.info/apsim/downloads/APSRU-Australia-Soils.soils")
-        Dim response As HttpWebResponse = DirectCast(request.GetResponse(), HttpWebResponse)
-        If response.StatusDescription = "OK" Then
+   Public Shared Sub OpenLatestVersionOfSoilsDatabase(ByVal Controller As BaseController)
+      If Controller.FileSaveAfterPrompt() Then
+
+         Cursor.Current = Cursors.WaitCursor
+         Dim request As WebRequest = WebRequest.Create("http://www.apsim.info/Wiki/public/Upload/ApSoil/APSRU-Australia-Soils.soils")
+         Dim response As HttpWebResponse = DirectCast(request.GetResponse(), HttpWebResponse)
+         If response.StatusDescription = "OK" Then
             Dim dataStream As Stream = response.GetResponseStream()
             Dim reader As New StreamReader(dataStream)
             Dim responseFromServer As String = reader.ReadToEnd()
 
-            Dim SoilsFileName As String = Configuration.Instance.Setting("FileNameToUpdateFromWeb")
+            Dim SoilsFileName As String = Path.GetTempFileName()
             Dim SoilsFile As New StreamWriter(SoilsFileName)
             SoilsFile.Write(responseFromServer)
             SoilsFile.Close()
             reader.Close()
             dataStream.Close()
-            MessageBox.Show("The file: " + SoilsFileName + " has been updated to the latest version.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        Else
+            Controller.ApsimData.NewFromFile(SoilsFileName)
+            File.Delete(SoilsFileName)
+         Else
             MessageBox.Show("Cannot connection to www.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.[Error])
-        End If
-        response.Close()
-        Cursor.Current = Cursors.[Default]
-    End Sub
+         End If
+         response.Close()
+         Cursor.Current = Cursors.[Default]
+      End If
+   End Sub
     Public Shared Sub ReleaseNotes(ByVal Controller As BaseController)
         Dim URL As String = Configuration.Instance.Setting("ReleaseNotes")
         System.Diagnostics.Process.Start(URL)
@@ -251,5 +248,7 @@ Public Class SoilActions
 
 
 End Class
+
+
 
 

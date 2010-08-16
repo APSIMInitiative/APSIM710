@@ -350,6 +350,7 @@
          // 
          this.Chart.Axes.Top.Labels.Shadow.Visible = false;
          this.Chart.Axes.Top.Labels.ValueFormat = "###0.###";
+         this.Chart.Axes.Top.MaximumOffset = 10;
          // 
          // 
          // 

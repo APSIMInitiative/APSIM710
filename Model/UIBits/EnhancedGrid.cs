@@ -74,6 +74,7 @@ namespace UIBits
          InitializeComponent();
          CellDoubleClick += new DataGridViewCellEventHandler(OnCellDoubleClick);
          CellClick += new DataGridViewCellEventHandler(OnCellClick);
+         CellValidating += new DataGridViewCellValidatingEventHandler(OnCellValidating);
          EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEditingControlShowing);
          RowHeadersVisible = false;
 
@@ -221,6 +222,8 @@ namespace UIBits
 
             InRefresh = false;
             }
+         else
+            Columns.Clear();
          }
 
       public void EndEditMode()
@@ -275,6 +278,22 @@ namespace UIBits
          OldCell.OwningRow.Cells.RemoveAt(i + 1);
          }
 
+
+      /// <summary>
+      /// Validate the cell contents to make sure it is ok.
+      /// </summary>
+      void OnCellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+         {
+         if (e.FormattedValue != "" && 
+             DataSourceTable != null && DataSourceTable.Columns[e.ColumnIndex].DataType == typeof(double))
+            {
+            double Value;
+            e.Cancel = !double.TryParse(e.FormattedValue.ToString(), out Value);
+            if (e.Cancel)
+               MessageBox.Show("Cannot convert " + e.FormattedValue + " to a real number.");
+            }
+         }
+
       /// <summary>
       /// We need to trap the end of an edit and write the data back to the 
       /// table.
@@ -284,18 +303,23 @@ namespace UIBits
          base.OnCellValueChanged(e);
          if (DataSourceTable != null && !InRefresh && e.RowIndex != -1 && e.ColumnIndex != -1)
             {
-            int Col = e.ColumnIndex;
-            int Row = e.RowIndex;
+            try
+               {
+               int Col = e.ColumnIndex;
+               int Row = e.RowIndex;
 
-            if (Row > DataSourceTable.Rows.Count - 1)
-               DataSourceTable.Rows.Add(DataSourceTable.NewRow());
+               if (Row > DataSourceTable.Rows.Count - 1)
+                  DataSourceTable.Rows.Add(DataSourceTable.NewRow());
 
-            DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
-            ChangedColumnNames.Add(DataSourceTable.Columns[Col].ColumnName);
+               DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
+               ChangedColumnNames.Add(DataSourceTable.Columns[Col].ColumnName);
 
-            if (TableColumnChangedEvent != null)
-               TableColumnChangedEvent.Invoke(ChangedColumnNames);
-            ChangedColumnNames.Clear();
+               if (TableColumnChangedEvent != null)
+                  TableColumnChangedEvent.Invoke(ChangedColumnNames);
+               ChangedColumnNames.Clear();
+               }
+            catch (Exception )
+               { }  // This can happen when the user puts a text value into a numeric column.
             }
          }
       

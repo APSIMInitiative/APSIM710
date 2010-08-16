@@ -336,7 +336,7 @@ Public Class GenericUI
                End If
 
             Case "date"
-               If NewRow.Cells(4).Value <> "" Then
+               If Not IsDBNull(NewRow.Cells(4).Value) AndAlso NewRow.Cells(4).Value <> "" Then
                   Try
                      Dim Value As DateTime = DateTime.ParseExact(NewRow.Cells(4).Value, "d/M/yyyy", Nothing)
                      NewRow.Cells(4).Value = Value.ToShortDateString()

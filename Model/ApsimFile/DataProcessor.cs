@@ -184,31 +184,34 @@ public class DataProcessor
       Data.TableName = "Data";
       foreach (string FileSpec in FileNames)
          {
-         string FileSpecNoMacros = Configuration.RemoveMacros(FileSpec);
-         string Dir = Path.GetDirectoryName(FileSpecNoMacros);
-         if (Dir == "")
-            Dir = Directory.GetCurrentDirectory();
-
-         foreach (string FileName in Directory.GetFiles(Dir, 
-                                                        Path.GetFileName(FileSpecNoMacros)))
+         if (FileSpec != "")
             {
-            if (FileName != "" && File.Exists(FileName))
+            string FileSpecNoMacros = Configuration.RemoveMacros(FileSpec);
+            string Dir = Path.GetDirectoryName(FileSpecNoMacros);
+            if (Dir == "")
+               Dir = Directory.GetCurrentDirectory();
+
+            foreach (string FileName in Directory.GetFiles(Dir,
+                                                           Path.GetFileName(FileSpecNoMacros)))
                {
-               string CheckPointFile = Path.GetDirectoryName(Path.GetFullPath(FileName)) + "\\CheckPoint\\" + Path.GetFileName(FileName);
-               if (File.Exists(CheckPointFile))
+               if (FileName != "" && File.Exists(FileName))
                   {
-                  int StartRow = Data.Rows.Count;
-                  APSIMInputFile InFile = new APSIMInputFile();
-                  InFile.ReadFromFile(CheckPointFile, Data);
-                  InFile.SetConstant("title", "Checkpointed " + InFile.Constant("title").Value);
-                  InFile.AddConstantsToData(Data, StartRow);
-                  }
-               if (File.Exists(FileName))
-                  {
-                  int StartRow = Data.Rows.Count;
-                  APSIMInputFile InFile = new APSIMInputFile();
-                  InFile.ReadFromFile(FileName, Data);
-                  InFile.AddConstantsToData(Data, StartRow);
+                  string CheckPointFile = Path.GetDirectoryName(Path.GetFullPath(FileName)) + "\\CheckPoint\\" + Path.GetFileName(FileName);
+                  if (File.Exists(CheckPointFile))
+                     {
+                     int StartRow = Data.Rows.Count;
+                     APSIMInputFile InFile = new APSIMInputFile();
+                     InFile.ReadFromFile(CheckPointFile, Data);
+                     InFile.SetConstant("title", "Checkpointed " + InFile.Constant("title").Value);
+                     InFile.AddConstantsToData(Data, StartRow);
+                     }
+                  if (File.Exists(FileName))
+                     {
+                     int StartRow = Data.Rows.Count;
+                     APSIMInputFile InFile = new APSIMInputFile();
+                     InFile.ReadFromFile(FileName, Data);
+                     InFile.AddConstantsToData(Data, StartRow);
+                     }
                   }
                }
             }

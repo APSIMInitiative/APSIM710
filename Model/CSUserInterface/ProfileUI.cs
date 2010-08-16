@@ -215,7 +215,7 @@ namespace CSUserInterface
       /// </summary>
       private void ColourCropColumns()
          {
-         Color[] CropColors = { Color.FromArgb(229, 245, 224), Color.FromArgb(199, 233, 192) };
+         Color[] CropColors = { Color.FromArgb(173, 221, 142), Color.FromArgb(247, 252, 185) };
          int CropIndex = 0;
          bool DoingCrops = false;
          foreach (DataGridViewColumn Col in Grid.Columns)
@@ -284,6 +284,9 @@ namespace CSUserInterface
       /// </summary>
       public override void OnSave()
          {
+         if (Grid.IsCurrentCellInEditMode)
+            Grid.EndEditMode();
+
          // Make sure we save the properties.
          if (Properties.Visible)
             {

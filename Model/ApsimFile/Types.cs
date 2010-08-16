@@ -53,6 +53,21 @@ public class Types
       string MetaDataValue = XmlHelper.Value(TypesDoc.DocumentElement, TypeName + "/MetaData/" + MetaDataName);
       return Configuration.RemoveMacros(MetaDataValue);
       }
+   public void Documentation(string TypeName, out List<string> Names, out List<string> Urls)
+      {
+      // Return all documentation nodes for the specified type.
+      Names = new List<string>();
+      Urls = new List<string>();
+      XmlNode MetaDataNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName + "/MetaData");
+      if (MetaDataNode != null)
+         {
+         foreach (XmlNode DocNode in XmlHelper.ChildNodes(MetaDataNode, "Documentation"))
+            {
+            Names.Add(XmlHelper.Name(DocNode));
+            Urls.Add(Configuration.RemoveMacros(DocNode.InnerText));
+            }
+         }
+      }
    public bool IsVisible(string TypeName)
       {
       // Return true if the specified type is visible in the user interface

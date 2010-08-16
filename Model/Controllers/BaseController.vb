@@ -200,7 +200,8 @@ Public Class BaseController
     Private Sub OnFileNameChanged(ByVal FileName As String)
         If FileName.ToLower <> "untitled" Then
             Configuration.Instance.AddFileToFrequentList(FileName)
-        End If
+      End If
+      RefreshToolStrips()
     End Sub
     Public Function ToRelativePath(ByVal FileName As String) As String
         Dim st As String = Configuration.AddMacros(FileName)
@@ -383,9 +384,9 @@ Public Class BaseController
                 ItemIndex = ItemIndex + 1
             ElseIf XmlHelper.Type(ChildDescriptor) = "RecentFileList" Then       'If you find one, Refresh 
                 ' strip off all old ones.
-                While Strip.Items.Count > 2
-                    Strip.Items.RemoveAt(Strip.Items.Count - 1)
-                End While
+            While Not TypeOf Strip.Items(Strip.Items.Count - 1) Is ToolStripSeparator
+               Strip.Items.RemoveAt(Strip.Items.Count - 1)
+            End While
                 For Each FileName As String In Configuration.Instance.GetFrequentList()
                     Dim Item As ToolStripItem = Strip.Items.Add(FileName)
                     Item.ImageIndex = -1
@@ -514,52 +515,54 @@ Public Class BaseController
     Private Function IsActionAllowed(ByVal Action As XmlNode) As Boolean
         'need to pass the strip so you can get the parent, to see if toolstrip belongs to an apsim toolbox (needed for "InToolbox" test)
         Dim Allowed As Boolean = True
-        If Not IsNothing(Action) Then
-            For Each DisabledWhen As XmlNode In XmlHelper.ChildNodes(Action, "DisabledWhen")
-                Dim DisabledWhenFlag As String = DisabledWhen.InnerText
-                If DisabledWhenFlag = "ReadOnly" AndAlso ApsimData.IsReadOnly Then
-                    Allowed = False
-                End If
-                If DisabledWhenFlag = "RootNode" AndAlso MySelectedData.Count > 0 AndAlso MySelectedData(0).LastIndexOf("/") = 0 Then
-                    Allowed = False
-                End If
-                If DisabledWhenFlag = "MultipleNodesSelected" AndAlso MySelectedData.Count > 1 Then
-                    Allowed = False
-                End If
-                If DisabledWhenFlag = "NothingLoaded" AndAlso ApsimData.FileName = "Untitled" Then
-                    Allowed = False
-                End If
-                If DisabledWhenFlag = "NotShortcut" AndAlso MySelectedData.Count = 1 AndAlso Selection.ShortCutTo Is Nothing Then
-                    Allowed = False
-                End If
-                If DisabledWhenFlag = "Enabled" AndAlso MySelectedData.Count = 1 AndAlso Selection.Enabled Then
-                    Allowed = False
-                End If
-                If DisabledWhenFlag = "Disabled" AndAlso MySelectedData.Count = 1 AndAlso Not Selection.Enabled Then
-                    Allowed = False
-                End If
-                If DisabledWhenFlag = "InToolbox" AndAlso Not IsNothing(Me.Explorer) AndAlso (Me.Explorer().Name = "ToolboxExplorer") Then 'check if the explorerUI for this controller is the explorerUI for the toolbox.
-                    Allowed = False
-                End If
-                'I think this is to disable once you have clicked on it. 
-                'Eg. Once you click the "Run" button disable it, while it is running to stop them clicking on it again. Once it is finished you can enable it again.
-                If Not IsNothing(XmlHelper.Find(DisabledWhen, "call")) Then
-                    Dim Arguments As New List(Of Object)
-                    Arguments.Add(Me)
-                    Allowed = Not CSGeneral.CallDll.CallMethodOfClass(XmlHelper.Find(DisabledWhen, "call"), Arguments)
-                End If
-            Next
-
-            If Allowed And MySelectedData.Count = 1 And XmlHelper.ChildNodes(Action, "AppliesTo").Count > 0 Then
-                Allowed = False
-                Dim SelectedType As String = Selection.Type
-                For Each AppliesTo As XmlNode In XmlHelper.ChildNodes(Action, "AppliesTo")
-                    If AppliesTo.InnerText.ToLower = SelectedType.ToLower Then
-                        Allowed = True
-                    End If
-                Next
+      If Not IsNothing(Action) Then
+         For Each DisabledWhen As XmlNode In XmlHelper.ChildNodes(Action, "DisabledWhen")
+            Dim DisabledWhenFlag As String = DisabledWhen.InnerText
+            If DisabledWhenFlag = "ReadOnly" AndAlso ApsimData.IsReadOnly Then
+               Allowed = False
             End If
-        End If
+            If DisabledWhenFlag = "RootNode" AndAlso MySelectedData.Count > 0 AndAlso MySelectedData(0).LastIndexOf("/") = 0 Then
+               Allowed = False
+            End If
+            If DisabledWhenFlag = "MultipleNodesSelected" AndAlso MySelectedData.Count > 1 Then
+               Allowed = False
+            End If
+            If DisabledWhenFlag = "NothingLoaded" AndAlso ApsimData.FileName = "Untitled" Then
+               Allowed = False
+            End If
+            If DisabledWhenFlag = "NotShortcut" AndAlso MySelectedData.Count = 1 AndAlso Not IsNothing(Selection) AndAlso Selection.ShortCutTo Is Nothing Then
+               Allowed = False
+            End If
+            If DisabledWhenFlag = "Enabled" AndAlso MySelectedData.Count = 1 AndAlso Not IsNothing(Selection) AndAlso Selection.Enabled Then
+               Allowed = False
+            End If
+            If DisabledWhenFlag = "Disabled" AndAlso MySelectedData.Count = 1 AndAlso Not IsNothing(Selection) AndAlso Not Selection.Enabled Then
+               Allowed = False
+            End If
+            If DisabledWhenFlag = "InToolbox" AndAlso Not IsNothing(Me.Explorer) AndAlso (Me.Explorer().Name = "ToolboxExplorer") Then 'check if the explorerUI for this controller is the explorerUI for the toolbox.
+               Allowed = False
+            End If
+            'I think this is to disable once you have clicked on it. 
+            'Eg. Once you click the "Run" button disable it, while it is running to stop them clicking on it again. Once it is finished you can enable it again.
+            If Not IsNothing(XmlHelper.Find(DisabledWhen, "call")) Then
+               Dim Arguments As New List(Of Object)
+               Arguments.Add(Me)
+               Allowed = Not CSGeneral.CallDll.CallMethodOfClass(XmlHelper.Find(DisabledWhen, "call"), Arguments)
+            End If
+         Next
+
+         If Not IsNothing(MySelectedData) AndAlso Allowed AndAlso MySelectedData.Count = 1 AndAlso XmlHelper.ChildNodes(Action, "AppliesTo").Count > 0 Then
+            Allowed = False
+            If Not IsNothing(Selection) Then
+               Dim SelectedType As String = Selection.Type
+               For Each AppliesTo As XmlNode In XmlHelper.ChildNodes(Action, "AppliesTo")
+                  If AppliesTo.InnerText.ToLower = SelectedType.ToLower Then
+                     Allowed = True
+                  End If
+               Next
+            End If
+         End If
+      End If
         Return Allowed
     End Function
 

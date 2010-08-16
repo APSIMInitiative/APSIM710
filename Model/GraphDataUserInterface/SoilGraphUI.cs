@@ -233,7 +233,7 @@ namespace GraphDataUserInterface
                CurrentChartType = "Water";
                OnRefresh();
                }
-            else if (FileName.Contains("Water.xml"))
+            else if (OurData.Name != "Water" && FileName.Contains("Water.xml"))
                {
                Chart.Series.Clear();
                CurrentChartType = OurData.Name;
