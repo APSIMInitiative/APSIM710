@@ -377,7 +377,7 @@
       call apswim_read_solute_params()
 
       call apswim_register_solute_outputs()
-
+      
       ! calculate anything swim needs from input parameters      
       call apswim_init_calc ()
 
@@ -1045,7 +1045,7 @@ c     :              1d0)
        logical          flow_found
        double precision infiltration
        double precision water_table
-
+       double precision esw
 *- Implementation Section ----------------------------------
 
       if (Variable_name .eq. 'dlayer') then
@@ -1127,6 +1127,17 @@ c     :              1d0)
      :            '(mm)',
      :            dummy(0),
      :            p%n+1)
+
+      else if (Variable_name .eq. 'esw') then
+         esw = 0d0
+         do 15 node=0,p%n
+            esw = esw+max(0d0,(g%th(node)-p%ll15(node))*p%dlayer(node))
+   15    continue
+         call respond2Get_double_var (
+     :            Variable_name,
+     :            '(mm)',
+     :            esw)
+
       else if (Variable_name .eq. 'wp') then
          call respond2Get_double_var (
      :            Variable_name,
@@ -1931,6 +1942,7 @@ c      double precision tth
       g%t = apswim_time (g%year,g%day,time_mins)
 
 * ----------------- SET UP NODE SPECIFICATIONS -----------------------
+      
       ! safer to use number returned from read routine
       num_layers = count_of_double_vals (p%dlayer,M+1)
       p%n = num_layers -1
@@ -1992,18 +2004,18 @@ c     :             p%rhob)
 
          do 26 i =0,p%n
             p%psid(i) = p%Psidul !- (p%x(p%n) - p%x(i))
-            Rll = (Log10(-psiad) - Log10(-psi_ll15)) 
-     :          / (Log10(-psiad) - Log10(-p%psid(i)))
-            p%P(i) = Log10((p%ll15(i)-p%air_dry(i)) 
-     :                     / (p%dul(i)-p%air_dry(i))) / Log10(Rll)
-            slope = -p%dul(i)/p%sat(i)* p%P(i) 
-     :            / (Log10(-psiad)-Log10(-p%psid(i)))
-            p%c(i) = slope * Log10(-p%psid(i)) / (p%dul(i)/p%sat(i)-1d0)
-            p%k(i) = -1d0*slope 
-     :              / (p%c(i) * Log10(-p%psid(i))**(p%c(i) - 1d0))
-
+c            Rll = (Log10(-psiad) - Log10(-psi_ll15)) 
+c     :          / (Log10(-psiad) - Log10(-p%psid(i)))
+c            p%P(i) = Log10((p%ll15(i)-p%air_dry(i)) 
+c     :                     / (p%dul(i)-p%air_dry(i))) / Log10(Rll)
+c            slope = -p%dul(i)/p%sat(i)* p%P(i) 
+c     :            / (Log10(-psiad)-Log10(-p%psid(i)))
+c            p%c(i) = slope * Log10(-p%psid(i)) / (p%dul(i)/p%sat(i)-1d0)
+c            p%k(i) = -1d0*slope 
+c     :              / (p%c(i) * Log10(-p%psid(i))**(p%c(i) - 1d0))
+            
    26    continue
-         
+
 * ---------- NOW SET THE ACTUAL WATER BALANCE STATE VARIABLES ---------
     
       if (g%th(1).ne.0) then
@@ -2377,18 +2389,53 @@ c         MicroP = log10(Kdula/Kll)/log10(dul/ll)
 
 
 *+  Local Variables
-      double precision psi
+      integer max_iterations
+      parameter (max_iterations = 1000)
+      double precision tolerance
+      parameter (tolerance = 1d-9)
+      double precision dpsi
+      parameter (dpsi = 0.01d0)
 
+
+      double precision psi
+      double precision est,m
+      logical          solved
+      integer          iteration
+      
 *- Implementation Section ----------------------------------
 
-      if (theta.ge.p%dul(node)) then
-         psi =-10**((1d0-theta/p%sat(node))/p%k(node))**(1d0/p%c(node))
+c      if (theta.ge.p%dul(node)) then
+c         psi =-10**((1d0-theta/p%sat(node))/p%k(node))**(1d0/p%c(node))
+c      else
+c         logpsi = log10(-psiad)-(log10(-psiad)-log10(-p%psid(node)))
+c     :        * (theta-p%air_dry(node))**(1d0/p%P(node))
+c     :         /(p%dul(node)-p%air_dry(node))
+c        psi = -10d0**logpsi
+c      endif
+
+      ! Use numerical solution in preparation for when various methods
+      ! are supported for describing the SMC
+ 
+      if (theta.eq.p%sat(node)) then
+          psi = 0d0
       else
-         logpsi = log10(-psiad)-(log10(-psiad)-log10(-p%psid(node)))
-     :        * (theta-p%air_dry(node))**(1d0/p%P(node))
-     :         /(p%dul(node)-p%air_dry(node))
-        psi = -10d0**logpsi
+      
+         psi = -100d0  ! Initial estimate
+         solved = .false.
+         do 100 iteration = 1,max_iterations
+            est = apswim_Simpletheta(node,psi)
+            m = (apswim_Simpletheta(node,psi+dpsi)-est)/dpsi
+
+            if (abs(est-theta) .lt. tolerance) then
+               solved = .true.
+               goto 200
+            else
+               psi = psi - (est-theta)/m
+            endif
+  100    continue
+  200    continue
       endif
+
       apswim_suction = psi
       return
       end function
