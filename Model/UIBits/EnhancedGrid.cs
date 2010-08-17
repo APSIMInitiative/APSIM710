@@ -111,6 +111,7 @@ namespace UIBits
       /// </summary>
       private void OnEditingControlShowing(object Sender, DataGridViewEditingControlShowingEventArgs e)
          {
+         ContextMenuStrip = null;
          if (CurrentCell is MyDataGridViewComboBoxCell && EditingControl is DataGridViewComboBoxEditingControl)
             {
             DataGridViewComboBoxEditingControl Combo = (DataGridViewComboBoxEditingControl)EditingControl;
@@ -355,33 +356,36 @@ namespace UIBits
          {
          try
             {
-            InRefresh = true;
-
-            List<string> ColumnsChanged = new List<string>();
-            SaveSelection();
-
-            // Make the values in the grid & table null.
-            foreach (Point Cell in SavedSelections)
+            if (!IsCurrentCellInEditMode)
                {
-               int Col = Cell.X;
-               int Row = Cell.Y;
-               if (Row < Rows.Count - 1)
-                  {
-                  if (Rows[Row].Cells[Col].Value.GetType() == typeof(string))
-                     Rows[Row].Cells[Col].Value = "";
-                  else
-                     Rows[Row].Cells[Col].Value = DBNull.Value;
-                  if (DataSourceTable != null)
-                     DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
-                  if (!ColumnsChanged.Contains(Columns[Col].HeaderText))
-                     ColumnsChanged.Add(Columns[Col].HeaderText);
-                  }
-               }
-            InRefresh = false;
+               InRefresh = true;
 
-            // Now invoke the table column changed event.
-            if (TableColumnChangedEvent != null)
-               TableColumnChangedEvent.Invoke(ColumnsChanged);
+               List<string> ColumnsChanged = new List<string>();
+               SaveSelection();
+
+               // Make the values in the grid & table null.
+               foreach (Point Cell in SavedSelections)
+                  {
+                  int Col = Cell.X;
+                  int Row = Cell.Y;
+                  if (Row < Rows.Count - 1)
+                     {
+                     if (Rows[Row].Cells[Col].Value.GetType() == typeof(string))
+                        Rows[Row].Cells[Col].Value = "";
+                     else
+                        Rows[Row].Cells[Col].Value = DBNull.Value;
+                     if (DataSourceTable != null)
+                        DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
+                     if (!ColumnsChanged.Contains(Columns[Col].HeaderText))
+                        ColumnsChanged.Add(Columns[Col].HeaderText);
+                     }
+                  }
+               InRefresh = false;
+
+               // Now invoke the table column changed event.
+               if (TableColumnChangedEvent != null)
+                  TableColumnChangedEvent.Invoke(ColumnsChanged);
+               }
             }
          catch (Exception err)
             {

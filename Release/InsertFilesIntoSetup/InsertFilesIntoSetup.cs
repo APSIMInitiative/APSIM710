@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 class InsertFilesIntoSetup
    {
    private int LastID = 0;
+   private string[] Exclusions;
 
    /// <summary>
    /// Main program. Returns 1 on error. Args:
@@ -22,8 +23,8 @@ class InsertFilesIntoSetup
       {
       try
          {
-         if (args.Length != 3)
-            throw new Exception("Args: SetupFileName  WildCard  TargetDirectory");
+         if (args.Length != 3 && args.Length != 4)
+            throw new Exception("Args: SetupFileName  [/WithExclusions] WildCard  TargetDirectory");
          if (!File.Exists(args[0]))
             throw new Exception("Cannot find file: " + args[0]);
 
@@ -46,6 +47,20 @@ class InsertFilesIntoSetup
    private void Go(string[] args)
       {
       string SourceFileName = args[0];
+      string ExclusionsFileName = "";
+      string WildCard;
+      string TargetDirectory;
+      if (args.Length == 4)
+         {
+         ExclusionsFileName = "Exclusions.txt";
+         WildCard = args[2];
+         TargetDirectory = args[3];
+         }
+      else
+         {
+         WildCard = args[1];
+         TargetDirectory = args[2];
+         }
 
       // read .vdproj into an XML document.
       StreamReader In = new StreamReader(SourceFileName);
@@ -54,11 +69,19 @@ class InsertFilesIntoSetup
       ReadObjectIntoXml(In, Doc, RootObjName);
       In.Close();
 
+      // Read in exclusions list.
+      if (ExclusionsFileName != "")
+         {
+         In = new StreamReader(ExclusionsFileName);
+         string Contents = In.ReadToEnd();
+         Exclusions = Contents.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+         }
+
       // Write to XML file - for debugging purposes.
       string XmlFileName = Path.ChangeExtension(SourceFileName, ".xml");
-      Doc.Save(Path.GetDirectoryName(args[0]) + "\\Test.xml");
+      Doc.Save("Test.xml");
 
-      InsertFilesIntoXML(args[1], Doc.DocumentElement, args[2]);
+      InsertFilesIntoXML(WildCard, Doc.DocumentElement, TargetDirectory);
 
       // write to .vdproj
       //string NewFileName = Path.ChangeExtension(SourceFileName, ".vdprojnew");
@@ -104,7 +127,20 @@ class InsertFilesIntoSetup
       if (FileNode == null)
          throw new Exception("Cannot find <File> node");
 
-      if (!FileAlreadyExists(FileName, RootNode, TargetDirectory) && 
+      // See if this file is in our exclusion list.
+      bool ExcludeFile = false;
+      if (Exclusions != null)
+         {
+         foreach (string ExcludeFileName in Exclusions)
+            {
+            ExcludeFile = FileName.Contains(ExcludeFileName);
+            if (ExcludeFile)
+               break;
+            }
+         }
+      
+      if (!ExcludeFile &&
+          !FileAlreadyExists(FileName, RootNode, TargetDirectory) && 
           Path.GetExtension(FileName) != ".out" &&
           Path.GetExtension(FileName) != ".sum")
          {

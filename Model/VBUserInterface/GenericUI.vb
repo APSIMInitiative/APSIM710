@@ -23,6 +23,7 @@ Public Class GenericUI
    Private TypeComboItems As String() = {"text", "date", "yesno", "crop", "cultivars", "classes", "modulename", _
                                          "list", "multilist", "category", "filename", "multiedit"}
    Private YesNoItems As String() = {"yes", "no"}
+   Private InRefresh As Boolean
 
    ''' <summary>
    ''' Constructor
@@ -119,6 +120,7 @@ Public Class GenericUI
    ''' Form is being refreshed.
    ''' </summary>
    Public Overrides Sub OnRefresh()
+      InRefresh = True
       Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
 
       ' set the banner image correctly.
@@ -149,6 +151,7 @@ Public Class GenericUI
 
       IsDirty = False
       GotoEditMode(False)
+      InRefresh = False
    End Sub
 
    ''' <summary>
@@ -336,7 +339,7 @@ Public Class GenericUI
                End If
 
             Case "date"
-               If Not IsDBNull(NewRow.Cells(4).Value) AndAlso NewRow.Cells(4).Value <> "" Then
+               If InRefresh AndAlso Not IsDBNull(NewRow.Cells(4).Value) AndAlso NewRow.Cells(4).Value <> "" Then
                   Try
                      Dim Value As DateTime = DateTime.ParseExact(NewRow.Cells(4).Value, "d/M/yyyy", Nothing)
                      NewRow.Cells(4).Value = Value.ToShortDateString()
@@ -412,6 +415,7 @@ Public Class GenericUI
       ' User has changed the type. Need to recreate the row.
       Dim CurrentCol As Integer = Grid.CurrentCell.ColumnIndex
       Dim CurrentRow As Integer = Grid.CurrentCell.RowIndex
+
       Grid.PopulateGrid()
       'End If
 
