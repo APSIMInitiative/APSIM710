@@ -772,69 +772,61 @@ proc getValue {id thing} {
 package require struct
 ::struct::graph GrainCrops
 GrainCrops node insert "Chickpea"
-set colour(Chickpea) "pink"
+set colour(Chickpea) "-16711872"
 GrainCrops node insert "Fallow_4"
-set colour(Fallow_4) "white"
+set colour(Fallow_4) "-657956"
 GrainCrops node insert "Wheat_1"
-set colour(Wheat_1) "green"
+set colour(Wheat_1) "-256"
 GrainCrops node insert "Wheat"
-set colour(Wheat) "green"
+set colour(Wheat) "-128"
 GrainCrops node insert "Fallow"
-set colour(Fallow) "white"
+set colour(Fallow) "-657956"
 GrainCrops node insert "Fallow_1"
-set colour(Fallow_1) "white"
+set colour(Fallow_1) "-657956"
 GrainCrops node insert "Fallow_2"
-set colour(Fallow_2) "white"
+set colour(Fallow_2) "-657956"
 GrainCrops node insert "Wheat_2"
-set colour(Wheat_2) "green"
+set colour(Wheat_2) "-32704"
 GrainCrops node insert "Spray"
-set colour(Spray) "palegreen"
+set colour(Spray) "-657956"
 GrainCrops node insert "Fallow_3"
-set colour(Fallow_3) "white"
+set colour(Fallow_3) "-657956"
 GrainCrops node insert "Wheat_3"
-set colour(Wheat_3) "green"
+set colour(Wheat_3) "-32768"
 GrainCrops arc insert "Fallow_1" "Fallow_2" "arc11"
 GrainCrops arc lappend "arc11" actions {set config($paddock,yr)   [apsimGet year]}
 GrainCrops arc lappend "arc11" rules {[apsimGet day] == 153}
 GrainCrops arc lappend "arc11" rules {[apsimGet year] > $config($paddock,yr) }
-GrainCrops arc lappend "arc11" actions {}
 GrainCrops arc insert "Fallow_2" "Fallow_3" "arc12"
 GrainCrops arc lappend "arc12" actions {set config($paddock,yr)   [apsimGet year]}
 GrainCrops arc lappend "arc12" rules {[apsimGet day] == 153}
 GrainCrops arc lappend "arc12" rules {[apsimGet year] > $config($paddock,yr) }
-GrainCrops arc lappend "arc12" actions {}
 GrainCrops arc insert "Fallow_4" "Fallow" "arc13"
 GrainCrops arc lappend "arc13" actions {set config($paddock,yr)   [apsimGet year]}
 GrainCrops arc lappend "arc13" rules {[apsimGet day] == 153}
 GrainCrops arc lappend "arc13" rules {[apsimGet year]  > $config($paddock,yr) }
-GrainCrops arc lappend "arc13" actions {}
 GrainCrops arc insert "Fallow_3" "Fallow_4" "arc14"
 GrainCrops arc lappend "arc14" actions {set config($paddock,yr)   [apsimGet year]}
 GrainCrops arc lappend "arc14" rules {[apsimGet day] == 153}
 GrainCrops arc lappend "arc14" rules {[apsimGet year] > $config($paddock,yr) }
-GrainCrops arc lappend "arc14" actions {}
 GrainCrops arc insert "Chickpea" "Spray" "arc16"
 GrainCrops arc lappend "arc16" actions {sprayChickpeas $paddock}
 GrainCrops arc lappend "arc16" actions {set numChickSprays($paddock) 1}
 GrainCrops arc lappend "arc16" rules {[set chickPeaRain($paddock) [expr $chickPeaRain($paddock) + [apsimGet rain]]] > 150}
 GrainCrops arc lappend "arc16" rules {$numChickSprays($paddock) == 0}
-GrainCrops arc lappend "arc16" actions {}
 GrainCrops arc insert "Wheat_1" "Fallow_1" "arc0"
 GrainCrops arc lappend "arc0" actions {harvestAndEndCrop $paddock wheat}
 GrainCrops arc lappend "arc0" rules {[canHarvestCrop $paddock wheat]}
-GrainCrops arc lappend "arc0" actions {}
 GrainCrops arc insert "Spray" "Chickpea" "arc17"
-GrainCrops arc lappend "arc17" rules {1}
 GrainCrops arc lappend "arc17" actions {}
+GrainCrops arc lappend "arc17" rules {1}
 GrainCrops arc insert "Chickpea" "Fallow_4" "arc1"
 GrainCrops arc lappend "arc1" actions {harvestAndEndCrop $paddock chickpea}
 GrainCrops arc lappend "arc1" actions {set config($paddock,yr)   [apsimGet year]}
 GrainCrops arc lappend "arc1" rules {[canHarvestCrop $paddock chickpea]}
-GrainCrops arc lappend "arc1" actions {}
 GrainCrops arc insert "Wheat" "Fallow" "arc2"
 GrainCrops arc lappend "arc2" actions {harvestAndEndCrop $paddock wheat}
 GrainCrops arc lappend "arc2" rules {[canHarvestCrop $paddock wheat]}
-GrainCrops arc lappend "arc2" actions {}
 GrainCrops arc insert "Fallow" "Wheat_1" "arc3"
 GrainCrops arc lappend "arc3" actions {sowCrop $paddock wheat}
 GrainCrops arc lappend "arc3" rules {[dayWithin 129 152]}
@@ -844,11 +836,9 @@ GrainCrops arc lappend "arc3" rules {$daysSinceLastHarvest($paddock) > 30}
 GrainCrops arc lappend "arc3" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc3" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc3" rules {[getEsw $paddock]}
-GrainCrops arc lappend "arc3" actions {}
 GrainCrops arc insert "Wheat_2" "Fallow_2" "arc4"
 GrainCrops arc lappend "arc4" actions {harvestAndEndCrop $paddock wheat}
 GrainCrops arc lappend "arc4" rules {[canHarvestCrop $paddock wheat]}
-GrainCrops arc lappend "arc4" actions {}
 GrainCrops arc insert "Fallow_1" "Wheat_2" "arc5"
 GrainCrops arc lappend "arc5" actions {sowCrop $paddock wheat}
 GrainCrops arc lappend "arc5" rules {[dayWithin 129 152]}
@@ -858,7 +848,6 @@ GrainCrops arc lappend "arc5" rules {$daysSinceLastHarvest($paddock) > 30}
 GrainCrops arc lappend "arc5" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc5" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc5" rules {[getEsw $paddock]}
-GrainCrops arc lappend "arc5" actions {}
 GrainCrops arc insert "Fallow_3" "Chickpea" "arc6"
 GrainCrops arc lappend "arc6" actions {sowCrop $paddock chickpea}
 GrainCrops arc lappend "arc6" actions {set chickPeaRain($paddock) 0.0}
@@ -870,7 +859,6 @@ GrainCrops arc lappend "arc6" rules {[areaPlanted Chickpea] <0.2}
 GrainCrops arc lappend "arc6" rules {[getMSeek2 $paddock] > 0.65}
 GrainCrops arc lappend "arc6" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc6" rules {[getEsw $paddock]}
-GrainCrops arc lappend "arc6" actions {}
 GrainCrops arc insert "Fallow_4" "Wheat" "arc7"
 GrainCrops arc lappend "arc7" actions {sowCrop $paddock wheat}
 GrainCrops arc lappend "arc7" rules {[dayWithin 129 152]}
@@ -880,7 +868,6 @@ GrainCrops arc lappend "arc7" rules {$daysSinceLastHarvest($paddock) > 30}
 GrainCrops arc lappend "arc7" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc7" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc7" rules {[getEsw $paddock]}
-GrainCrops arc lappend "arc7" actions {}
 GrainCrops arc insert "Fallow_2" "Wheat_3" "arc8"
 GrainCrops arc lappend "arc8" actions {sowCrop $paddock wheat}
 GrainCrops arc lappend "arc8" rules {[dayWithin 129 152]}
@@ -890,16 +877,13 @@ GrainCrops arc lappend "arc8" rules {$daysSinceLastHarvest($paddock) > 30}
 GrainCrops arc lappend "arc8" rules {[machineryAvailable tractor1_planter]}
 GrainCrops arc lappend "arc8" rules {[areaPlanted wheat]  <=1}
 GrainCrops arc lappend "arc8" rules {[getEsw $paddock]}
-GrainCrops arc lappend "arc8" actions {}
 GrainCrops arc insert "Wheat_3" "Fallow_3" "arc9"
 GrainCrops arc lappend "arc9" actions {harvestAndEndCrop $paddock wheat}
 GrainCrops arc lappend "arc9" rules {[canHarvestCrop $paddock wheat]}
-GrainCrops arc lappend "arc9" actions {}
 GrainCrops arc insert "Fallow" "Fallow_1" "arc10"
 GrainCrops arc lappend "arc10" actions {set config($paddock,yr)   [apsimGet year]}
 GrainCrops arc lappend "arc10" rules {[apsimGet day] == 153}
 GrainCrops arc lappend "arc10" rules {[apsimGet year] > $config($paddock,yr) }
-GrainCrops arc lappend "arc10" actions {}
 if {[info exists config(p1,graphNames)]} {lappend config(p1,graphNames) GrainCrops} else {set config(p1,graphNames) GrainCrops}
 set config(p1,initialState) "Fallow"
 if {[info exists config(p2,graphNames)]} {lappend config(p2,graphNames) GrainCrops} else {set config(p2,graphNames) GrainCrops}

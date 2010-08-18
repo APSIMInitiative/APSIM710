@@ -5,907 +5,1260 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Xml;
-
+using Curves;
 using CSGeneral;
-using ApsimFile;
-
 
 
 namespace CSUserInterface
 {
     public partial class RotPlotUI : Controllers.BaseView
     {
-        private List<string> paddocks = null;
-        private List<string> rotations = new List<string>();
-        private List<Color> colours = new List<Color>();
-
-        private int m_ColWidth = 45;
-        private int m_HeaderHeight = 20;
-        private int m_YearHeight = 0;
-        private int m_CustomYearHeight = 80;
-        private int m_DateWidth = 60;
-
-        private int m_LegendRowHeight = 18;
-        private int m_LegendTextWidth = 100;
-        private int m_LegendBoxHeight = 12;
-        private int m_LegendBoxWidth = 18;
-
-        private int m_Cols = 0;
-        private int m_Years = 10;
-        private int m_FirstYearHeight = 0;
-        private int m_LastYearHeight = 0;
-        private int m_Height = 0;
-        private double m_DayHeight = 0;
-        private XmlDocument DocStates = null;
-        private string m_FileName  = "";
-        private string FullFileName = "";
-        private DateTime m_StartDate;
-        private DateTime m_EndDate;
-        private DateTime m_FirstYear;
-        private DateTime m_LastYear;
-        private DateTime m_SelectedDate;
-        int m_SelectedColumn = -1;
-        private bool m_UpdatingSelectedDate = false;
-        //private bool m_Dragging = false;
-
-        float[] daynum;
-        int[] positions;
-        float[] day;
-        short[] paddock;
-        short[] rule;
-        float[] value;
-        int[] coords = new int[1];
-        int[] size = new int[1];
-        int m_DataSize = 0;
-        int _ncid; 
+        bool m_Loading = true;
+        bool m_OldVersion = false;
+        public string GraphName;
+        public List<GDPaddock> ManagedPaddocks = new List<GDPaddock>();
+        public List<GDPaddock> AvailablePaddocks = new List<GDPaddock>();
 
         public RotPlotUI()
         {
             InitializeComponent();
+            GraphDisplay.ChangeSelection += new EventHandler<GDChangeEventArgs>(OnChanging);
+            GraphDisplay.SelectObject += new EventHandler<GDSelectEventArgs>(OnSelected);
+            pnlHints.Dock = DockStyle.Fill;
+            lstHints.Dock = DockStyle.Fill;
+            lstHints.Visible = true;
         }
         protected override void OnLoad()
         {
-            //XmlNode scriptNode = XmlHelper.Find(Data, "RotScript");
-            //ruleUI1.OnLoad(Controller, NodePath, scriptNode.OuterXml);
-
-            XmlNode uiNode = XmlHelper.Find(Data, "Rotations");
-            tclUI1.OnLoad(Controller, NodePath, uiNode.OuterXml);
-
-            //temp component variable (set it to the parameter passed in [starting component]) 
-            m_FileName = "";
-            string simName = "";
-            FullFileName = "";
-
-            ApsimFile.Component thisComp = Controller.ApsimData.Find(NodePath);
-            //loop back up the component datastructure until you get to the parent simulation. 
-            while ((thisComp.Parent != null))
+            //if it is old version
+            //load all data using rotnode - save routine will look after it
+            //flag creation of subnode "RugPlot"
+            XmlNodeList nodes = Data.SelectNodes("//rotnode");
+            m_OldVersion = nodes.Count > 0;
+            BuildGraphDisplay();
+            GraphDisplay.Height = GraphDisplay.MaxHeight;
+            GraphDisplay.Width = GraphDisplay.MaxWidth;
+        }
+        public override void OnRefresh()
+        {
+            pnlFlowLayout.Controls.Clear();
+            List<string> states = new List<string>();
+            foreach (GDNode node in GraphDisplay.Nodes)
             {
-                thisComp = thisComp.Parent;
-                if (thisComp.Type.ToLower() == "simulation")
-                {
-                    simName = thisComp.Name;
-                    //store the paddock name for later 
-                }
+                states.Add(node.Name);
             }
-
-            XmlNode tmpNode = uiNode.SelectSingleNode("graph_name");
-            if (tmpNode != null)
+            foreach (GDPaddock paddock in ManagedPaddocks)
             {
-                m_FileName = simName + "." + tmpNode.InnerText + ".xml";
-                FullFileName = Configuration.RemoveMacros(m_FileName);
-                //' Add a path to filename if necessary.
-                if(Controller.ApsimData.FileName != "")
-                {
-                    FullFileName = Path.Combine(Path.GetDirectoryName(Controller.ApsimData.FileName), FullFileName);
-                }
+                PaddockState ps = new PaddockState();
+                ps.chkPaddock.Text = paddock.Name;
+                ps.chkPaddock.Checked = paddock.Managed;
+                ps.cboState.Items.AddRange(states.ToArray());
+                ps.cboState.Text = paddock.InitialState;
+                pnlFlowLayout.Controls.Add(ps);
             }
-
-            try
-            {
-                if (File.Exists(FullFileName))
-                {
-                    panel2.Visible = true;
-                    ReadXMLFile(FullFileName);
-                    ReadNetCDFFile(FullFileName);
-                    lblFileName.Text = m_FileName;
-                }
-                else
-                {
-                    //clear
-                    //reset values for drawing
-                    panel2.Visible = false;
-                    lblFileName.Text = m_FileName + " - (not found)";
-                    pnlLegend.Invalidate();
-                }
-                FillCurrentDateData(m_SelectedDate);
-                RefreshTree();
-            }
-            catch (Exception ex)
-            {
-                lblFileName.Text = m_FileName;
-            }
-            panel2.Invalidate();
         }
         public override void OnSave()
         {
-            //ruleUI1.OnSave();
-            //need to add the saved data into this component's xml 
-            //string savedData = ruleUI1.GetData();
-            //ReplaceNode("RotScript", savedData);
+            string graphName = XmlHelper.Name(Data);
+            Data.RemoveAll();
+            XmlHelper.SetName(Data, graphName);
+
+            WriteSettings();
+            WriteNodes();
+            WriteArcs();
+            WritePaddocks();
+            WriteGraphRule();
+        }
+        public string BuildRule()
+        {
+            string sRule = "package require struct\n";
+            sRule += "::struct::graph " + GraphName + "\n";
+
+            foreach(GDNode node in GraphDisplay.Nodes)
+            {
+                sRule += GraphName + " node insert \"" + node.Name + "\"\n";
+                //should be able to remove this line
+                sRule += "set colour(" + node.Name + ") \"" + node.Colour.ToArgb().ToString() + "\"\n";
+            }
+            foreach (GDArc arc in GraphDisplay.Arcs)
+            {
+                sRule += GraphName + " arc insert \"" + arc.SourceNode.Name + "\"";
+                sRule += " \"" + arc.TargetNode.Name + "\"";
+                sRule += " \"" + arc.Name + "\"\n";
+
+                foreach (string sAction in arc.Actions)
+                {
+                    if (sAction != "")
+                    {
+                        sRule += GraphName + " arc lappend \"" + arc.Name + "\" actions {";
+                        sRule += sAction;
+                        sRule += "}\n";
+                    }
+                }
+                if(arc.Actions.Count == 0)
+                    sRule += GraphName + " arc lappend \"" + arc.Name + "\" actions {}\n";
+
+                foreach (string rule in arc.Rules)
+                {
+                    if (rule != "")
+                    {
+                        sRule += GraphName + " arc lappend \"" + arc.Name + "\" rules {";
+                        sRule += rule;
+                        sRule += "}\n";
+                    }
+                }
+            }
+            foreach (GDPaddock paddock in ManagedPaddocks)
+            {
+                sRule += "if {[info exists config(" + paddock.Name + ",graphNames)]}";
+                sRule += " {lappend config(" + paddock.Name + ",graphNames) " + GraphName + "}";
+                sRule += " else {set config(" + paddock.Name + ",graphNames) " + GraphName + "}\n";
+
+                sRule += "set config(" + paddock.Name + ",initialState) \"" + paddock.InitialState + "\"\n";
+            }
+            return sRule;
+        }
+        public void WriteGraphRule()
+        {
+            //Data.RemoveAll();
+            XmlElement elem = Data.AppendChild(Data.OwnerDocument.CreateElement("rule")) as XmlElement;
+            XmlHelper.SetName(elem, GraphName + " Init rule");
+            elem.SetAttribute("invisible", "yes");
+            elem.SetAttribute("condition", "init");
+
+            string cdata = BuildRule();
+            elem.AppendChild(Data.OwnerDocument.CreateCDataSection(cdata));
+        }
+        private void WriteSettings()
+        {
+            XmlNode node = Data.AppendChild(Data.OwnerDocument.CreateElement("canvas_height"));
+            node.InnerText = panel1.Height.ToString();
+            node = Data.AppendChild(Data.OwnerDocument.CreateElement("rules_height"));
+            node.InnerText = pnlHints.Height.ToString();
+            node = Data.AppendChild(Data.OwnerDocument.CreateElement("graph_name"));
+            node.InnerText = GraphName;
+        }
+        private void WriteNodes()
+        {
+            foreach (GDNode node in GraphDisplay.Nodes)
+            {
+                XmlNode parentNode = Data.AppendChild(Data.OwnerDocument.CreateElement("node"));
+                XmlNode childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("name"));
+                childNode.InnerText = node.Name;
+
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("x1"));
+                childNode.InnerText = node.Left.ToString();
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("y1"));
+                childNode.InnerText = node.Top.ToString();
+
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("desc"));
+                childNode.InnerText = node.Description;
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("fill"));
+                childNode.InnerText = node.Colour.ToArgb().ToString();
+            }
+        }
+        private void WriteArcs()
+        {
+            foreach (GDArc arc in GraphDisplay.Arcs)
+            {
+                XmlNode parentNode = Data.AppendChild(Data.OwnerDocument.CreateElement("arc"));
+                XmlNode childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("name"));
+                childNode.InnerText = arc.Name;
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("source"));
+                childNode.InnerText = arc.SourceNode.Name;
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("target"));
+                childNode.InnerText = arc.TargetNode.Name;
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("x"));
+                childNode.InnerText = arc.Location.X.ToString();
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("y"));
+                childNode.InnerText = arc.Location.Y.ToString();
+
+                foreach (string action in arc.Actions)
+                {
+                    if (action != "")
+                    {
+                        childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("actions"));
+                        childNode.InnerText = action;
+                    }
+                }
+                foreach (string rule in arc.Rules)
+                {
+                    if (rule != "")
+                    {
+                        childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("rules"));
+                        childNode.InnerText = rule;
+                    }
+                }
+            }
+        }
+        private void WritePaddocks()
+        {
+            foreach (GDPaddock paddock in ManagedPaddocks)
+            {
+                XmlNode parentNode = Data.AppendChild(Data.OwnerDocument.CreateElement("paddock"));
+                XmlNode childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("name"));
+                childNode.InnerText = paddock.Name;
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("isManaged"));
+                childNode.InnerText = paddock.Managed ? "1" : "0";
+                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("initialState"));
+                childNode.InnerText = paddock.InitialState;
+            }
+        }
+
+        private void UpdateAvailablePaddocks()
+        {
+
+        }
+        private void BuildGraphDisplay()
+        {
+            //should only have to load it once.
+            if (GraphDisplay.Nodes.Count == 0)
+            {
+                XmlNodeList nodes = Data.SelectNodes("//node");
+                foreach (XmlNode tmpNode in nodes)
+                {
+                    GDNode tmpGDNode = ReadGDNode(tmpNode);
+                    GraphDisplay.AddNode(tmpGDNode);
+
+                }
+                nodes = Data.SelectNodes("//arc");
+                foreach (XmlNode tmpNode in nodes)
+                {
+                    GDArc tmpGArc = ReadGDArc(tmpNode);
+                    GraphDisplay.AddArc(tmpGArc);
+                }
+                nodes = Data.SelectNodes("//paddock");
+                foreach (XmlNode tmpNode in nodes)
+                {
+                    GDPaddock tmpPaddock = ReadGDPaddock(tmpNode);
+                    if (tmpPaddock != null)
+                        ManagedPaddocks.Add(tmpPaddock);    
+                }
+                nodes = Data.SelectNodes("//graph_name");
+                if (nodes.Count == 1)
+                {
+                    GraphName = nodes[0].InnerText;
+                }
+            }
+        }
+        public GDNode ReadGDNode(XmlNode tmpNode)
+        {
+            GDNode gd = new GDNode();
             
-            tclUI1.OnSave();
-            //need to add the saved data into this component's xml 
-            string savedData = tclUI1.GetData();
-            ReplaceNode("Rotations", savedData);
+            string sName = ReadChildNodeText(tmpNode, "name");
+            string sDesc = ReadChildNodeText(tmpNode, "desc");
+            int x1 = ReadChildNodeValue(tmpNode, "x1");
+            int y1 = ReadChildNodeValue(tmpNode, "y1");
+            gd.Name = sName;
+            gd.Description = sDesc;
 
-        }
+            gd.Start.X = x1;
+            gd.Start.Y = y1;
 
-        private void ReplaceNode(string sName, string savedData)
-        {
-            XmlDocument tmpDoc = new XmlDocument();
-            tmpDoc.LoadXml(savedData);
-
-            XmlNode NodeToUpdate = XmlHelper.Find(Data, sName);
-            NodeToUpdate.InnerXml = tmpDoc.DocumentElement.InnerXml;
-        }
-
-        public override void OnRefresh()
-        {
-            base.OnRefresh();
-            //ruleUI1.OnRefresh();
-            tclUI1.OnRefresh();
-
-            //panel1.Visible = DocStates != null;
-            //panel4.Visible = DocStates != null;
-            split1.Visible = DocStates != null;
-            panel5.Visible = DocStates != null;
-
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-            CalcHeights();
-            UpdateSizes();
-            DrawHeader(e);
-            DrawDates(e);
-            DrawRotations(e);
-            DrawCols(e);
-            DrawRows(e);
-            DrawSelectedDate(e);
-            pnlLegend.Invalidate();
-        }
-
-        private void CalcHeights()
-        {
-            m_YearHeight = m_CustomYearHeight;
-            double dDays = 0;
-            TimeSpan tmpDateSpan = m_EndDate - m_StartDate;
-            dDays = tmpDateSpan.Days;
-
-            double dAvailableHeight = panel1.Height - m_HeaderHeight - 24; //allow for the srollbar
-            if (dDays > 0)
+            int iColour = ReadChildNodeValue(tmpNode, "fill");
+            if(iColour != 0)
             {
-                m_DayHeight = dAvailableHeight / dDays;
-                if (chkFit.Checked)
-                {
-                    m_YearHeight = (int)(m_DayHeight * 365.25);
-                    m_DayHeight = m_YearHeight / 365.25;
-                }
-                else
-                {
-                    m_DayHeight = m_YearHeight / 365.25;
-                }
-                TimeSpan tmpSpan = m_FirstYear - m_StartDate;
-                m_FirstYearHeight = (int)(tmpSpan.Days * m_DayHeight);
-
-                tmpSpan = m_EndDate - m_LastYear;
-                m_LastYearHeight = (int)(tmpSpan.Days * m_DayHeight);
+                gd.Colour = Color.FromArgb(iColour);
             }
-
-            //Legend Height calcs
-            int iHeight = split2.Panel1.Height;
-            if (rotations != null && rotations.Count > 0)
-            {
-                iHeight = rotations.Count * m_LegendRowHeight + 8;
-            }
-            pnlLegend.Height = iHeight;
-
+            return gd;
         }
-        private void UpdateSizes()
+        public GDArc ReadGDArc(XmlNode tmpNode)
         {
-            panel2.Width = (int)(m_Cols * m_ColWidth + m_DateWidth + 5);
-            TimeSpan tmpDateSpan = m_EndDate - m_StartDate;
-            m_Height = (int)(tmpDateSpan.Days * m_DayHeight + m_HeaderHeight);
-            panel2.Height = m_Height;
-        }
-        private void DrawHeader(PaintEventArgs e)
-        {
-            if (paddocks != null)
+            GDArc ga = new GDArc();
+
+            string sName = ReadChildNodeText(tmpNode, "name");
+            string sSource = ReadChildNodeText(tmpNode, "source");
+            string sTarget = ReadChildNodeText(tmpNode, "target");
+            int x = ReadChildNodeValue(tmpNode, "x");
+            int y = ReadChildNodeValue(tmpNode, "y");
+
+            ga.Name = sName;
+            ga.Source = sSource;
+            ga.Target = sTarget;
+            ga.Location.X = x;
+            ga.Location.Y = y;
+            
+            //actions and rules
+            foreach (XmlNode node in tmpNode.ChildNodes)
             {
-                Font drawFont = new Font("Arial", 8);
-                SolidBrush drawBrush = new SolidBrush(Color.Black);
-
-                // Create point for upper-left corner of drawing.
-                PointF drawPoint = new PointF(0, 0);
-                StringFormat sf = new StringFormat();
-                sf.Alignment = StringAlignment.Center;
-                sf.LineAlignment = StringAlignment.Center;
-
-                Rectangle tmp = new System.Drawing.Rectangle();
-                tmp.X = m_DateWidth;
-                tmp.Y = 0;
-                tmp.Height = m_HeaderHeight; //1 years height
-                tmp.Width = m_ColWidth;
-
-                for (int i = 0; i < paddocks.Count; ++i)
+                if (node.Name == "actions")
                 {
-                    string paddock = paddocks[i];
-                    e.Graphics.DrawString(paddock, drawFont, drawBrush, tmp, sf);
-                    tmp.X += m_ColWidth;
+                    ga.Actions.Add(node.InnerText);
+                }
+                else if (node.Name == "rules")
+                {
+                    ga.Rules.Add(node.InnerText);
                 }
             }
+            return ga;
         }
-        private void DrawDates(PaintEventArgs e)
+        public GDPaddock ReadGDPaddock(XmlNode tmpNode)
         {
-            Rectangle tmp = new System.Drawing.Rectangle();
-            tmp.X = 0;
-            tmp.Y = 0;
+            GDPaddock gp = new GDPaddock();
 
-            tmp.Height = m_Height; //full height
-            tmp.Width = (int)m_DateWidth;
-            //e.Graphics.FillRectangle(System.Drawing.SystemBrushes.ButtonFace, tmp);
+            string sName = ReadChildNodeText(tmpNode, "name");
+            string sManaged = ReadChildNodeText(tmpNode, "isManaged");
+            string sInitial = ReadChildNodeText(tmpNode, "initialState");
 
-            //draw dates
-            if (paddocks != null) //paddocks not necessarily correct - but does indicate valid data
+            if(sManaged == "1")
             {
-                Font drawFont = new Font("Arial", 8);
-                SolidBrush drawBrush = new SolidBrush(Color.Black);
-
-                // Create point for upper-left corner of drawing.
-                StringFormat sf = new StringFormat();
-                sf.Alignment = StringAlignment.Center;
-                sf.LineAlignment = StringAlignment.Center;
-
-                Rectangle rectDate = new System.Drawing.Rectangle();
-                rectDate.X = 0;
-                rectDate.Y = 0 + m_FirstYearHeight - (m_YearHeight / 2) + m_HeaderHeight;
-                rectDate.Height = m_YearHeight; //1 years height
-                rectDate.Width = m_DateWidth;
-
-                DateTime tmpdate = m_FirstYear;
-                for (int i = 0; i < m_Years; ++i)
-                {
-                    string sDate = tmpdate.ToString("d");
-                    e.Graphics.DrawString(sDate, drawFont, drawBrush, rectDate, sf);
-                    rectDate.Y += m_YearHeight;
-                    tmpdate = tmpdate.AddYears(1);
-                }
+                gp.Name = sName;
+                gp.Managed = true;
+                gp.InitialState = sInitial;
+                return gp;
             }
+            return null;
         }
-        private void DrawLegend(PaintEventArgs e)
+        public int ReadChildNodeValue(XmlNode tmpNode, string sChild)
         {
-            Rectangle tmp = new System.Drawing.Rectangle();
-//            tmp.X = 0;// pnlLegend.Margin.All;
-//            tmp.Y = 0;// pnlLegend.Margin.All;
-//            tmp.Height = pnlLegend.Height - 1;// -pnlLegend.Margin.All - pnlLegend.Margin.All;
-//            tmp.Width = pnlLegend.Width - 1;// pnlLegend.Margin.All - pnlLegend.Margin.All;
-//            e.Graphics.DrawRectangle(System.Drawing.SystemPens.ControlDark, tmp);
-
-            if (rotations != null && rotations.Count > 0)
+            if (tmpNode != null)
             {
-                Font drawFont = new Font("Arial", 8);
-                SolidBrush drawBrush = new SolidBrush(Color.Black);
-                SolidBrush ColourBrush = new SolidBrush(Color.Black);
-
-                // Create point for upper-left corner of drawing.
-                PointF drawPoint = new PointF(0, 0);
-                StringFormat sf = new StringFormat();
-                sf.Alignment = StringAlignment.Near;
-                sf.LineAlignment = StringAlignment.Center;
-
-                tmp.X = pnlLegend.Margin.All + m_LegendBoxWidth + 8;
-                tmp.Y = pnlLegend.Margin.All;
-                tmp.Height = m_LegendRowHeight; //1 years height
-                tmp.Width = m_LegendTextWidth;
-
-                Rectangle tmpBox = new System.Drawing.Rectangle();
-                tmpBox.X = pnlLegend.Margin.All + 2;
-                tmpBox.Y = tmp.Y + (int)((m_LegendRowHeight - m_LegendBoxHeight) / 2.0) - 1;
-                tmpBox.Height = m_LegendBoxHeight; //1 years height
-                tmpBox.Width = m_LegendBoxWidth;
-                if (panel2.Visible)
+                return ReadNodeValue(tmpNode.SelectSingleNode(sChild));
+                //return ReadNodeValue(tmpNode.SelectSingleNode("//" + sChild));
+            }
+            return 0;
+        }
+        public string ReadChildNodeText(XmlNode tmpNode, string sChild)
+        {
+            if (tmpNode != null)
+            {
+                XmlNode chNode = tmpNode.SelectSingleNode(sChild);
+                if (chNode != null)
+                    return chNode.InnerText;
+            }
+            return "";
+        }
+        public int ReadNodeValue(XmlNode tmpNode)
+        {
+            if (tmpNode != null)
+            {
+                string sReturn = tmpNode.InnerText;
+                if (sReturn != "")
                 {
-                    for (int i = 0; i < rotations.Count; ++i)
+                    try
                     {
-                        string rotation = rotations[i];
-                        e.Graphics.DrawString(rotation, drawFont, drawBrush, tmp, sf);
-
-                        ColourBrush.Color = colours[i];
-                        e.Graphics.FillRectangle(ColourBrush, tmpBox);
-                        e.Graphics.DrawRectangle(System.Drawing.SystemPens.WindowText, tmpBox);
-
-                        tmp.Y += m_LegendRowHeight;
-                        tmpBox.Y += m_LegendRowHeight;
+                        return (int)Convert.ToSingle(sReturn);
                     }
-                }
-                else
-                {
-                    tmp.X = pnlLegend.Top;
-                    tmp.Y = pnlLegend.Left;
-                    tmp.Height = pnlLegend.Height; //1 years height
-                    tmp.Width = pnlLegend.Width;
-                    ColourBrush.Color = pnlLegend.BackColor;
-                    e.Graphics.FillRectangle(ColourBrush, tmp);
-                    //e.Graphics.DrawRectangle(System.Drawing.SystemPens.WindowText, tmp);
+                    catch (Exception ex) 
+                    {}
                 }
             }
+            return 0;
         }
-        private void DrawRows(PaintEventArgs e)
+        public int ReadAttValue(XmlNode tmpNode, string sAtt)
         {
-            Rectangle tmp = new System.Drawing.Rectangle();
-            tmp.X = m_DateWidth;
-            tmp.Y = m_HeaderHeight;
-            tmp.Height = m_FirstYearHeight;
-            tmp.Width = (int)(m_Cols * m_ColWidth);
-            e.Graphics.DrawRectangle(System.Drawing.Pens.LightGray, tmp);
-            tmp.Height = m_YearHeight;
-            tmp.Y = m_HeaderHeight + m_FirstYearHeight;
-            for (int i = 0; i < m_Years - 1; ++i)
-            {
-                e.Graphics.DrawRectangle(System.Drawing.Pens.LightGray, tmp);
-                tmp.Y += (int)(m_YearHeight);
-            }
-            tmp.Height = m_LastYearHeight;
-            e.Graphics.DrawRectangle(System.Drawing.Pens.LightGray, tmp);
-        }
-        private void DrawCols(PaintEventArgs e)
-        {
-            Rectangle tmp = new System.Drawing.Rectangle();
-            tmp.X = m_DateWidth;
-            tmp.Y = m_HeaderHeight;
-
-            tmp.Height = m_Height - m_HeaderHeight; //full height
-            tmp.Width = (int)m_ColWidth;
-
-            for (int i = 0; i < m_Cols; ++i)
-            {
-                e.Graphics.DrawRectangle(System.Drawing.Pens.LightGray, tmp);
-                tmp.X += (int)(m_ColWidth);
-            }
-        }
-        private void DrawSelectedDate(PaintEventArgs e)
-        {
-            if (m_SelectedDate > m_StartDate && m_SelectedDate < m_EndDate)
-            {
-                Rectangle tmp = new System.Drawing.Rectangle();
-                tmp.X = m_DateWidth + 2;
-                tmp.Y = ConvertDateToPosition(m_SelectedDate);
-                tmp.Height = 1;
-                tmp.Width = (int)(m_Cols * m_ColWidth) - 4;
-                e.Graphics.DrawRectangle(System.Drawing.Pens.Blue, tmp);
-            }
-        }
-        private int ConvertDateToPosition(DateTime dDate)
-        {
-            TimeSpan dSpan2 = dDate - m_StartDate;
-            double dResult = m_DayHeight * dSpan2.Days + m_HeaderHeight;
-            return (int)dResult;
-        }
-        private DateTime ConvertPositionToDate(Point pos)
-        {
-            int iDays = (int)((double)(pos.Y - m_HeaderHeight) / m_DayHeight);
-            DateTime tmpDate = m_StartDate.AddDays(iDays);
-            return tmpDate;
-        }
-        private int ConvertPositionToCol(Point pos)
-        {
-            int iCol = (pos.X - m_DateWidth) / m_ColWidth;
-            return iCol;
-        }
-        private void pnlLegend_Paint(object sender, PaintEventArgs e)
-        {
-            DrawLegend(e);
-        }
-        private void DrawRotations(PaintEventArgs e)
-        {
-            Rectangle tmp = new System.Drawing.Rectangle();
-            tmp.Width = m_ColWidth;
-
-            if (DocStates != null && DocStates.DocumentElement != null && paddocks != null)
-            {
-                XmlNodeList history_nodes = DocStates.SelectNodes("//history");
-                DateTime StartDate = m_StartDate;
-                DateTime EndDate = m_EndDate;
-
-                foreach (XmlNode history_node in history_nodes)
-                {
-                    string sIndex = history_node.Attributes["id"].Value;
-                    int idx = int.Parse(sIndex);
-                    int idxColour = 0;
-
-                    //need to read first node for the start - then read the next node to get the end date (start of the next transition)
-                    //draws the previous node - finalises using the enddate
-                    if (history_node.HasChildNodes)
-                    {
-                        XmlNode transition_Node = history_node.FirstChild;
-                        StartDate = ReadJulianDate(transition_Node, "day");
-                        string rotation = transition_Node.Attributes["to"].Value;
-
-                        transition_Node = transition_Node.NextSibling;
-
-                        while (transition_Node != null)
-                        {
-                            EndDate = ReadJulianDate(transition_Node, "day");
-                            idxColour = rotations.IndexOf(rotation);
-                            if (idxColour > -1 && idxColour < colours.Count)
-                            {
-                                tmp.X = m_DateWidth + idx * m_ColWidth;
-                                tmp.Y = ConvertDateToPosition(StartDate);
-                                tmp.Height = ConvertDateToPosition(EndDate) - tmp.Y;
-
-                                SolidBrush rotBrush = new SolidBrush(colours[idxColour]);
-                                e.Graphics.FillRectangle(rotBrush, tmp);
-                            }
-
-                            rotation = transition_Node.Attributes["to"].Value;
-                            StartDate = EndDate;
-                            transition_Node = transition_Node.NextSibling;
-                        }
-                        EndDate = m_EndDate;
-                        idxColour = rotations.IndexOf(rotation);
-                        if (idxColour > -1 && idxColour < colours.Count)
-                        {
-                            tmp.X = m_DateWidth + idx * m_ColWidth;
-                            tmp.Y = ConvertDateToPosition(StartDate);
-                            tmp.Height = ConvertDateToPosition(EndDate) - tmp.Y;
-
-                            SolidBrush rotBrush = new SolidBrush(colours[idxColour]);
-                            e.Graphics.FillRectangle(rotBrush, tmp);
-                        }
-                    }
-                }
-            }
-        }
-        void UpdateSelectedDate(int UpdatedBy, DateTime newDate)
-        {
-            try
-            {
-                //if cal changed, then update scrollbar
-                //if scrollbar changed then update cal
-                //if map clicked, then update cal, and scrollbar
-                //update scrollposition??
-                if (!m_UpdatingSelectedDate)
-                {
-                    if (newDate > m_StartDate && newDate < m_EndDate)
-                    {
-                        m_UpdatingSelectedDate = true;
-                        m_SelectedDate = newDate;
-                        lblDayOfYear.Text = m_SelectedDate.DayOfYear.ToString();
-                        switch (UpdatedBy)
-                        {
-                            case 0: //updated by Calendar
-                                {
-                                    TimeSpan tmpSpan = m_SelectedDate - m_StartDate;
-                                    spnDate.Value = tmpSpan.Days;
-                                }
-                                break;
-                            case 1: //Scrollbar
-                                {
-                                    calSelected.Value = m_SelectedDate;
-                                }
-                                break;
-                            case 2: //Mouse Click
-                                {
-                                    calSelected.Value = m_SelectedDate;
-                                    TimeSpan tmpSpan = m_SelectedDate - m_StartDate;
-                                    spnDate.Value = tmpSpan.Days;
-                                }
-                                break;
-
-                        }
-                    }
-                    FillCurrentDateData(newDate);
-                    RefreshTree();
-                }
-            }
-            catch (Exception ex)
-            {
-                lblFileName.Text = "Error: " + ex.Message;
-            }
-            finally
-            {
-                m_UpdatingSelectedDate = false;
-                panel2.Invalidate();
-            }
-        }
-
-        public void JulianToCalendar_Net(double jDay, out DateTime date)
-        {
-            double work = jDay + 68569.0;
-            double work0 = (int)(4.0 * work / 146097.0);
-            work = work - (int)((146097.0 * work0 + 3.0) / 4.0);
-            double yy = (int)(4000.0 * (work + 1.0) / 1461001.0);
-
-            work = work - (int)(1461.0 * yy / 4.0) + 31.0;
-            double mm = (int)(80.0 * work / 2447.0);
-            double dayd = work - (int)(2447.0 * mm / 80.0);
-
-            work = (int)(mm / 11.0);
-            double monthd = mm + 2.0 - 12.0 * work;
-            double yeard = 100.0 * (work0 - 49.0) + yy + work;
-
-            int day = (int)(dayd + 0.5);
-            int month = (int)(monthd + 0.5);
-            int year = (int)(yeard + 0.5);
-            date = new DateTime(year, month, day);
-        }
-        public DateTime ReadJulianDate(XmlNode node, string sAttr)
-        {
-            if (node != null)
-            {
-                DateTime tmpDate;
-                string days = node.Attributes[sAttr].Value;
-                if (Julian_Str_ToCalendar_Net(days, out tmpDate))
-                {
-                    return tmpDate;
-                }
-            }
-            throw new Exception("Error reading Julian Date.");
-        }
-        public bool Julian_Str_ToCalendar_Net(string sJulian, out DateTime date)
-        {
-            double jul_days;
-            date = DateTime.Now;
-            if (double.TryParse(sJulian, System.Globalization.NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out jul_days))
-            {
-                JulianToCalendar_Net(jul_days, out date);
-                return true;
-            }
-            return false;
-        }
-
-        private void ReadXMLFile(string filename)
-        {
-            if (!File.Exists(filename))
-            {
-                return;
-            }
-            DocStates = new XmlDocument();
-            DocStates.Load(filename);
-
-            paddocks = new List<string>();
-            rotations = new List<string>();
-            colours = new List<Color>();
-
-            XmlNode startNode = DocStates.SelectSingleNode("//startdate");
-            if (startNode != null)
-            {
-                DateTime tmpDate;
-                string days = startNode.Attributes["day"].Value;
-                if (Julian_Str_ToCalendar_Net(days, out tmpDate))
-                {
-                    m_StartDate = tmpDate;
-                }
-            }
-            XmlNode endNode = DocStates.SelectSingleNode("//enddate");
-            if (endNode != null)
-            {
-                DateTime tmpDate;
-                string days = endNode.Attributes["day"].Value;
-                if (Julian_Str_ToCalendar_Net(days, out tmpDate))
-                {
-                    m_EndDate = tmpDate;
-                }
-                //                if (System.DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out tmpDate))
-            }
-            XmlNodeList paddockNodes = DocStates.SelectNodes("/simulation/paddock");
-            foreach (XmlNode paddock in paddockNodes)
-            {
-                paddocks.Add(paddock.Attributes["name"].Value);
-            }
-            m_Cols = paddocks.Count;
-
-            XmlNodeList stateNodes = DocStates.SelectNodes("/simulation/state");
-            foreach (XmlNode state in stateNodes)
-            {
-                rotations.Add(state.Attributes["name"].Value);
-                Color tmpColor = Color.FromName(state.Attributes["colour"].Value);
-                colours.Add(tmpColor);
-            }
-            calStart.Value = m_StartDate;
-            calEnd.Value = m_EndDate;
-            calSelected.MinDate = m_StartDate;
-            calSelected.MaxDate = m_EndDate;
-            calSelected.Value = m_StartDate;
-
-            m_FirstYear = new DateTime(m_StartDate.Year + 1, 1, 1);
-            m_LastYear = new DateTime(m_EndDate.Year, 1, 1);
-
-            TimeSpan tmpLength = m_EndDate - m_StartDate;
-            m_Years = (int)(tmpLength.Days / 365.25);
-            spnDate.Maximum = tmpLength.Days;
-        }
-        private void ReadNetCDFFile(string filename)
-        {
-            int result = OpenNetCDFFile(filename);
-            if (result == 0)
-            {
-                int dimlen = 0;
-                result = NetCDF.nc_inq_dimlen(_ncid, 0, ref dimlen);
-                if (result == 0)
-                {
-                    positions = new int[dimlen];
-                    result = NetCDF.nc_get_var_int(_ncid, 0, positions);
-                    daynum = new float[dimlen];
-                    result = NetCDF.nc_get_var_float(_ncid, 1, daynum);
-
-                    m_DataSize = 0;
-                    result = NetCDF.nc_inq_dimlen(_ncid, 1, ref m_DataSize);
-                }
-            }
-            if (result != 0)
-            {
-                positions = null;
-            }
-            int closeresult = NetCDF.nc_close(_ncid);
-        }
-        private int OpenNetCDFFile(string filename)
-        {
-            //should return 0 if successfull
-            string netcdf_file = Path.ChangeExtension(filename, ".nc");
-            if (!File.Exists(netcdf_file))
-            {
-                return -1;
-            }
-            return NetCDF.nc_open(netcdf_file, NetCDF.cmode.NC_NOWRITE.GetHashCode(), ref _ncid);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (dlgOpen.ShowDialog() == DialogResult.OK)
-            {
-                txtFile.Text = dlgOpen.FileName;
-                this.Cursor = Cursors.WaitCursor;
-
-                ReadXMLFile(txtFile.Text);
-                ReadNetCDFFile(txtFile.Text);
-
-                panel2.Invalidate();
-                this.Cursor = Cursors.Arrow;
-                OnRefresh();
-            }
-        }
-
-        private void panel2_MouseDown(object sender, MouseEventArgs e)
-        {
-            //m_Dragging = true;
-            m_SelectedColumn = ConvertPositionToCol(e.Location);
-            if (e.Button == MouseButtons.Left)
-            {
-                DateTime tmpDate = ConvertPositionToDate(e.Location);
-                UpdateSelectedDate(2, tmpDate);
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                //calculate selected col and rotation
-                DateTime tmpDate = ConvertPositionToDate(e.Location);
-                //find previous start date within selected col (paddock)
-                if (DocStates != null && DocStates.DocumentElement != null && paddocks != null)
-                {
-                    XmlNode xmlPaddock = DocStates.SelectSingleNode("/simulation/history[@id='" + m_SelectedColumn.ToString() + "']");
-                    if (xmlPaddock != null)
-                    {
-                        if (xmlPaddock.HasChildNodes)
-                        {
-                            XmlNode xmlTrans = xmlPaddock.FirstChild;
-                            DateTime tmpPrevDate = ReadJulianDate(xmlTrans, "day");
-                            if (tmpDate < tmpPrevDate)
-                            {
-                                UpdateSelectedDate(2, tmpDate);
-                            }
-                            else
-                            {
-                                xmlTrans = xmlTrans.NextSibling;
-                                while (xmlTrans != null)
-                                {
-                                    DateTime tmpCurrentDate = ReadJulianDate(xmlTrans, "day");
-                                    if (tmpDate < tmpCurrentDate)
-                                    {
-                                        //previous date is the start
-                                        break;
-                                    }
-                                    tmpPrevDate = tmpCurrentDate;
-                                    xmlTrans = xmlTrans.NextSibling;
-                                }
-                                //tmpprevdte is correct even if notfound
-                                UpdateSelectedDate(2, tmpPrevDate);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private void calSelected_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateSelectedDate(0, calSelected.Value);
-        }
-        private void spnDate_ValueChanged(object sender, EventArgs e)
-        {
-            DateTime tmpDate = m_StartDate.AddDays(spnDate.Value);
-            UpdateSelectedDate(1, tmpDate);
-        }
-        private void panel1_Resize(object sender, EventArgs e)
-        {
-            panel2.Invalidate();
-        }
-
-        private void FillCurrentDateData(DateTime tmpDate)
-        {
-            if (positions == null)
-            {
-                ReadNetCDFFile(FullFileName);
-                if (positions == null)
-                    return;
-            }
-            int cdfResult = OpenNetCDFFile(FullFileName);
-            if (cdfResult == 0)
+            string sReturn = ReadAttText(tmpNode, sAtt);
+            if (sReturn != "")
             {
                 try
                 {
-                    TimeSpan tmpSpan = tmpDate - m_StartDate;
-                    int index = tmpSpan.Days;
-                    if (index >= 0 && index < positions.Length)
+                    return (int)Convert.ToSingle(sReturn);
+                }catch(Exception ex){}
+            }
+            return 0;
+        }
+        public string ReadAttText(XmlNode tmpNode, string sAtt)
+        {
+            XmlElement tmp = tmpNode as XmlElement;
+            if (tmp != null)
+            {
+                if (tmp.Attributes != null)
+                {
+                    XmlAttribute tmpAtt = tmp.Attributes[sAtt];
+                    if (tmpAtt != null)
                     {
-                        int pos = positions[index];
-                        int daySize = m_DataSize - pos;
-                        if (index < positions.Length - 1)
-                        {
-                            daySize = positions[index + 1] - positions[index];
-                        }
-
-                        day = new float[daySize];
-                        paddock = new short[daySize];
-                        rule = new short[daySize];
-                        value = new float[daySize];
-                        coords[0] = pos;
-                        size[0] = daySize;
-                        int result = NetCDF.nc_get_vara_float(_ncid, 2, coords, size, day);
-                        result += NetCDF.nc_get_vara_short(_ncid, 3, coords, size, paddock);
-                        result += NetCDF.nc_get_vara_short(_ncid, 4, coords, size, rule);
-                        result += NetCDF.nc_get_vara_float(_ncid, 5, coords, size, value);
-
-                        float tmpDayNum = daynum[index];
-                        for (int i = 0; i < day.Length; ++i)
-                        {
-                            float tmpDay = day[i];
-                            if (tmpDay != tmpDayNum)
-                            {
-                                throw new Exception("invalid index into result data");
-                            }
-                        }
-
-                        if (result > 0)
-                        {
-                            //error
-                            day = null;
-                            paddock = null;
-                            rule = null;
-                            value = null;
-                        }
+                        return tmpAtt.Value;
                     }
                 }
-                catch (Exception ex)
-                {
-                    int closeresult = NetCDF.nc_close(_ncid);
-                    throw new Exception(ex.Message);
-                }
             }
-            int close = NetCDF.nc_close(_ncid);
+            return "";
         }
-        private void RefreshTree()
+
+        public void OnChanging(object sender, GDChangeEventArgs e)
         {
-            treeView1.Nodes.Clear();
-            if (paddock == null || panel2.Visible != true) return;
-            int iLastPaddock = -1;
-            TreeNode pPaddockNode = null;
-
-            for (int i = 0; i < paddock.Length; ++i)
-            {
-                int iPaddock = paddock[i];
-                if (iLastPaddock != iPaddock)
-                {
-                    pPaddockNode = GetPaddockNode(i);
-                    iLastPaddock = iPaddock;
-                }
-                if (pPaddockNode != null)
-                {
-                    AddRuleToPaddockNode(pPaddockNode, i);
-                }
-                if (iPaddock == m_SelectedColumn)
-                {
-                    pPaddockNode.ExpandAll();
-                }
-
-            }
-            //expand selected column
         }
-        private void AddRuleToPaddockNode(TreeNode pPaddockNode, int index)
+
+        public void OnSelected(object sender, GDSelectEventArgs e)
         {
-            string sRule = LookupRule(index);
-            float result = value[index];
-            sRule = result.ToString() + " - " + sRule;
-            TreeNode pRuleNode = pPaddockNode.Nodes.Add(sRule);
-            if (result > 0)
+            m_Loading = true;
+            if (e.SelectedObject == null)
             {
-                pRuleNode.ImageIndex = 0;
-                pRuleNode.SelectedImageIndex = 0;
+                lstHints.Dock = DockStyle.Fill;
+                lstHints.Visible = true;
+                pnlArcProperties.Visible = false;
+                pnlNodeProperties.Visible = false;
+
+                lblStatus.Text = "No Item Selected.";
+
+                //display hints
             }
             else
             {
-                pRuleNode.ImageIndex = 1;
-                pRuleNode.SelectedImageIndex = 1;
-            }
-        }
-
-        private TreeNode GetPaddockNode(int index)
-        {
-            //check for existing node - of not found then create new
-            int iPaddock = paddock[index];
-            string sPaddock = FindPaddockName(iPaddock);
-            TreeNode pPaddockNode = FindPaddockNode(sPaddock);
-            if (pPaddockNode == null)
-            {
-                pPaddockNode = CreatePaddockNode(index, sPaddock);
-            }
-            return pPaddockNode;
-        }
-
-        private TreeNode CreatePaddockNode(int index, string sName)
-        {
-            TreeNode pNode = new TreeNode(sName);
-            treeView1.Nodes.Add(pNode);
-            return pNode;
-        }
-
-        private string FindPaddockName(int iPaddock)
-        {
-            //lookup xml file for paddock node
-            string sPaddock = iPaddock.ToString();
-            XmlNode PaddockNode = DocStates.SelectSingleNode("/simulation/paddock[@id='" + sPaddock + "']");
-            if (PaddockNode != null && PaddockNode.Attributes != null)
-            {
-
-                return PaddockNode.Attributes["name"].Value;
-            }
-            return "";
-        }
-
-        private string LookupRule(int index)
-        {
-            string sRule = rule[index].ToString();
-            XmlNode RuleNode = DocStates.SelectSingleNode("/simulation/rule[@id='" + sRule + "']");
-            if (RuleNode != null && RuleNode.Attributes != null)
-            {
-                return RuleNode.Attributes["name"].Value;
-            }
-            return "";
-        }
-
-        private TreeNode FindPaddockNode(string sPaddock)
-        {
-            for (int i = 0; i < treeView1.Nodes.Count; ++i)
-            {
-                TreeNode pNode = treeView1.Nodes[i];
-                if (pNode.Text == sPaddock)
+                GDArc arc = e.SelectedObject as GDArc;
+                if (arc != null)
                 {
-                    return pNode;
+                    pnlArcProperties.Dock = DockStyle.Fill;
+                    pnlArcProperties.Visible = true;
+                    pnlNodeProperties.Visible = false;
+                    lstHints.Visible = false;
+
+                    txtRules.Lines = arc.Rules.ToArray();
+                    txtActions.Lines = arc.Actions.ToArray();
+
+                    lblStatus.Text = "Transition from " + arc.Source + " to " + arc.Target;
+                }
+                else
+                {
+                    GDNode node = e.SelectedObject as GDNode;
+                    if (node != null)
+                    {
+                        pnlNodeProperties.Dock = DockStyle.Fill;
+                        pnlNodeProperties.Visible = true;
+                        pnlArcProperties.Visible = false;
+                        lstHints.Visible = false;
+
+                        lblStatus.Text = "State: " + node.Name;
+                        txtName.Text = node.Name;
+                        lblInvalidName.Visible = false;
+                        txtDesc.Text = node.Description;
+                        lblColour.BackColor = node.Colour;
+                    }
+                }
+                m_Loading = false;
+            }
+        }
+        private void label2_Click(object sender, EventArgs e)
+        {
+            if (dlgColour.ShowDialog() == DialogResult.OK)
+            {
+                lblColour.BackColor = dlgColour.Color;
+                GraphDisplay.SelectedObject.Colour = dlgColour.Color;
+                GraphDisplay.Invalidate();
+            }
+        }
+        private void txtName_TextChanged(object sender, EventArgs e)
+        {
+            if (m_Loading)
+                return;
+            TextBox txt = sender as TextBox;
+            if (txt != null)
+            {
+                if (txt.Text == "")
+                {
+                    lblInvalidName.Text = "Name cannot be blank";
+                    lblInvalidName.Visible = true;
+                }
+                else
+                {
+                    bool bExists = false;
+                    foreach (GDNode node in GraphDisplay.Nodes)
+                    {
+                        if (node != GraphDisplay.SelectedObject)
+                        {
+                            if (node.Name == txt.Text)
+                            {
+                                lblInvalidName.Text = "Name already exists";
+                                bExists = true;
+                                break;
+                            }
+                        }
+                    }
+                    lblInvalidName.Visible = bExists;
+                }
+                if (!lblInvalidName.Visible)
+                {
+                    GraphDisplay.SelectedObject.Name = txt.Text;
+                    Refresh();
                 }
             }
+        }
+        private void txtName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (m_Loading)
+                return;
+            if (e.KeyCode == Keys.Escape && lblInvalidName.Visible)
+            {
+                txtName.Text = GraphDisplay.SelectedObject.Name;
+            }
+        }
+        private void txtDesc_TextChanged(object sender, EventArgs e)
+        {
+            if (m_Loading)
+                return;
+            TextBox txt = sender as TextBox;
+            if (txt != null)
+            {
+                GraphDisplay.SelectedObject.Name = txt.Text;
+            }
+        }
+        private void txtRules_TextChanged(object sender, EventArgs e)
+        {
+            if (m_Loading)
+                return;
+            TextBox txt = sender as TextBox;
+            if (txt != null)
+            {
+                GDArc arc = GraphDisplay.SelectedObject as GDArc;
+                if (arc != null)
+                {
+                    arc.Rules.Clear();
+                    arc.Rules.AddRange(txt.Lines);
+                }
+            }
+        }
+        private void txtActions_TextChanged(object sender, EventArgs e)
+        {
+            if (m_Loading)
+                return;
+            TextBox txt = sender as TextBox;
+            if (txt != null)
+            {
+                GDArc arc = GraphDisplay.SelectedObject as GDArc;
+                if (arc != null)
+                {
+                    arc.Actions.Clear();
+                    arc.Actions.AddRange(txt.Lines);
+                }
+            }
+
+        }
+
+    }
+    public class GDPaddock
+    {
+        public string Name { get; set; }
+        public string InitialState { get; set; } //Set to a GDNode Name
+        public bool Managed { get; set; }
+
+    }
+
+    public class GDObject
+    {
+        public virtual bool Selected { get; set; }
+        public virtual int Left { get; set; }
+        public virtual int Right { get; set; }
+        public virtual int Top { get; set; }
+        public virtual int Bottom { get; set; }
+
+        public string Name { get; set; }
+        public Color Colour { get; set; }
+
+        public virtual void Paint(Graphics GraphicsObject) { }
+        public virtual void Move(int x, int y) { }
+        public virtual void Update() { }
+        public virtual bool Clicked(int x, int y) { return false; }
+        public virtual double GetDistance(Point point1, Point point2)
+        {
+            //pythagoras theorem c^2 = a^2 + b^2
+            //thus c = square root(a^2 + b^2)
+            double a = (double)(point2.X - point1.X);
+            double b = (double)(point2.Y - point1.Y);
+
+            return Math.Sqrt(a * a + b * b);
+        }
+
+    }
+    public class GDArc : GDObject
+    {
+        private int clickTolerence = 3;
+
+        public List<string> Rules = new List<string>();
+        public List<string> Actions = new List<string>();
+        public Point Location = new Point();
+
+        public string Source { get; set; }
+        public string Target { get; set; }
+
+        public GDNode SourceNode = null;
+        public GDNode TargetNode = null;
+
+        private BezierCurve bezCurve = new BezierCurve();
+        public List<Point> BezPoints = new List<Point>();
+        private double[] bezParameters = new double[8];
+
+        #region interface properties
+        //these aren't technically correct as their bounds are also described by the nodes they connect
+        //used in conjunction with the others this should work though
+        public override int Left { get { return Location.X; } }
+        public override int Right { get { return Location.X; } }
+        public override int Top { get { return Location.Y; } }
+        public override int Bottom { get { return Location.Y; } }
+        #endregion
+
+        public override void Paint(Graphics GraphicsObject)
+        {
+            if (BezPoints.Count == 0)
+                CalcBezPoints();
+
+            if (SourceNode != null && TargetNode != null)
+            {
+                Pen pen = new Pen(Color.Black);
+                if (Selected)
+                    pen.Color = Color.Blue;
+
+                GraphicsObject.DrawBezier(pen, SourceNode.Mid, Location, Location, TargetNode.Mid);
+
+                //find closest point in the bezPoints to the intersection point that is outside the target
+                //work backwards through BezPoints array and use the first one that is outside the target
+                for (int i = BezPoints.Count - 1; i >= 0; --i)
+                {
+                    Point arrowHead; 
+                    if (!TargetNode.Clicked(BezPoints[i].X, BezPoints[i].Y))
+                    {
+                        arrowHead = BezPoints[i];
+                        --i;
+                        //keep moving along the line until distance = ??
+                        for (; i >= 0; --i)
+                        {
+                            double dist = GetDistance(BezPoints[i], arrowHead);
+                            if (dist > 10)
+                            {
+                                //Pen p = new Pen(Color.Red, 10);
+                                //ArrowAnchor = Point            
+                                pen.StartCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+                                //Flat = Flat side            
+                                pen.EndCap = System.Drawing.Drawing2D.LineCap.Flat;
+                                pen.Width = 10;
+                                GraphicsObject.DrawLine(pen, arrowHead, BezPoints[i]);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        #region PointinPolygonCalc
+        /*        int PointInPolygon(Point *polygon,int N,Point p)
+        {
+          int counter = 0;
+          int i;
+          double xinters;
+          Point p1,p2;
+
+          p1 = polygon[0];
+          for (i=1;i<=N;i++) {
+            p2 = polygon[i % N];
+            if (p.y > MIN(p1.y,p2.y)) {
+              if (p.y <= MAX(p1.y,p2.y)) {
+                if (p.x <= MAX(p1.x,p2.x)) {
+                  if (p1.y != p2.y) {
+                    xinters = (p.y-p1.y)*(p2.x-p1.x)/(p2.y-p1.y)+p1.x;
+                    if (p1.x == p2.x || p.x <= xinters)
+                      counter++;
+                  }
+                }
+              }
+            }
+            p1 = p2;
+          }
+
+          return (counter % 2 != 0);
+        }
+ */
+        #endregion
+
+        public override void Move(int x, int y)
+        {
+            Location.X = Location.X + x;
+            Location.Y = Location.Y + y;
+            if (x != 0 || y != 0)
+                CalcBezPoints();
+        }
+        public override void Update()
+        {
+            //a signal to recalc - forced by a move event on the targetnode
+            //needs to be seperate from a moveall event
+            CalcBezPoints();
+        }
+        public override bool Clicked(int x, int y)
+        { 
+            foreach(Point tmpPoint in BezPoints)
+            {
+                if (tmpPoint.X > x - clickTolerence && tmpPoint.X < x + clickTolerence)
+                {
+                    if (tmpPoint.Y > y - clickTolerence && tmpPoint.Y < y + clickTolerence)
+                        return true;
+                }
+            }
+            return false;
+        }
+        private void CalcBezPoints()
+        {
+            int iStart = Math.Min(SourceNode.Mid.X, TargetNode.Mid.X);
+            int iEnd = Math.Max(SourceNode.Mid.X, TargetNode.Mid.X);
+            int xPoints = iEnd - iStart;
+            iStart = Math.Min(SourceNode.Mid.Y, TargetNode.Mid.Y);
+            iEnd = Math.Max(SourceNode.Mid.Y, TargetNode.Mid.Y);
+            int yPoints = iEnd - iStart;
+            
+            //will calc a min of 20 points
+            int points = Math.Max(Math.Max(xPoints, yPoints), 10) * 2;
+            double[] output = new double[points];
+
+            bezParameters[0] = SourceNode.Mid.X;
+            bezParameters[1] = SourceNode.Mid.Y;
+            bezParameters[2] = Location.X;
+            bezParameters[3] = Location.Y;
+            bezParameters[4] = Location.X;
+            bezParameters[5] = Location.Y;
+            bezParameters[6] = TargetNode.Mid.X;
+            bezParameters[7] = TargetNode.Mid.Y;
+
+            BezPoints.Clear();
+            bezCurve.Bezier2D(bezParameters, (points) / 2, output);
+            for (int i = 0; i < points - 2; i += 2)
+            {
+                BezPoints.Add(new Point((int)output[i], (int)output[i+1]));
+            }
+        }
+        private int FindLineCircleIntersections(float cx, float cy, float radius,
+            Point point1, Point point2, out PointF intersection1, out PointF intersection2)
+        {
+            float dx, dy, A, B, C, det, t;
+
+            dx = point2.X - point1.X;
+            dy = point2.Y - point1.Y;
+
+            A = dx * dx + dy * dy;
+            B = 2 * (dx * (point1.X - cx) + dy * (point1.Y - cy));
+            C = (point1.X - cx) * (point1.X - cx) + (point1.Y - cy) * (point1.Y - cy) - radius * radius;
+
+            det = B * B - 4 * A * C;
+            if ((A <= 0.0000001) || (det < 0))
+            {
+                // No real solutions.
+                intersection1 = new PointF(float.NaN, float.NaN);
+                intersection2 = new PointF(float.NaN, float.NaN);
+                return 0;
+            }
+            else if (det == 0)
+            {
+                // One solution.
+                t = -B / (2 * A);
+                intersection1 = new PointF(point1.X + t * dx, point1.Y + t * dy);
+                intersection2 = new PointF(float.NaN, float.NaN);
+                return 1;
+            }
+            else
+            {
+                // Two solutions.
+                t = (float)((-B + Math.Sqrt(det)) / (2 * A));
+                intersection1 = new PointF(point1.X + t * dx, point1.Y + t * dy);
+                t = (float)((-B - Math.Sqrt(det)) / (2 * A));
+                intersection2 = new PointF(point1.X + t * dx, point1.Y + t * dy);
+                return 2;
+            }
+        }
+
+    }
+    public class GDNode : GDObject
+    {
+        public Point Start = new Point();
+        public Point End = new Point();
+        public Point Mid = new Point();
+
+        public List<GDArc> Arcs = new List<GDArc>();
+
+        public string Description { get; set; }
+        public int Height { get; set; }
+        public int Width { get; set; }
+        public override int Left { get { return Start.X; }}
+        public override int Right { get { return Start.X + Width; }}
+        public override int Top { get { return Start.Y; } }
+        public override int Bottom { get { return Start.Y + Height; }}
+
+        public GDNode()
+        {
+            this.Colour = Color.Beige;
+        }
+        public override void Paint(Graphics GraphicsObject)
+        {
+            // Create point for upper-left corner of drawing.
+            Rectangle tmp = new System.Drawing.Rectangle();
+            tmp.X = Start.X;
+            tmp.Y = Start.Y;
+            tmp.Height = Height;
+            tmp.Width = Width;
+            //tmp.Height = End.Y - Start.Y;
+            //tmp.Width = End.X - Start.X; ;
+
+            SolidBrush drawBrush = new SolidBrush(this.Colour);
+            Pen pen = new Pen(Color.Black);
+            if (Selected)
+            {
+                pen.Color = Color.Blue;
+                pen.Width = 3;
+            }
+
+            GraphicsObject.FillEllipse(drawBrush, tmp);
+            GraphicsObject.DrawEllipse(pen, tmp);
+
+            //Write text
+            using (StringFormat stringFormat = new StringFormat())
+            {
+                stringFormat.Alignment = StringAlignment.Center;
+                stringFormat.LineAlignment = StringAlignment.Center;
+
+                using(Font txtFont = new Font("Tahoma", 8))
+                {
+                    GraphicsObject.DrawString(this.Name, txtFont, Brushes.Black, tmp, stringFormat);
+                };
+            };
+        }
+        public override void Move(int x, int y)
+        {
+            Start.X = Start.X + x;
+            Start.Y = Start.Y + y;
+
+            Mid.X = Start.X + Width / 2;
+            Mid.Y = Start.Y + Width / 2;
+
+            foreach (GDArc arc in Arcs)
+                arc.Update();
+        }
+        public override bool Clicked(int x, int y)
+        {
+            Point clickPoint = new Point(x, y);
+            double dist = GetDistance(Mid, clickPoint);
+            return dist < (Width / 2);
+        }
+        public bool ArcIsAttached(GDArc tmp)
+        {
+            return tmp.SourceNode == this || tmp.TargetNode == this;
+        }
+    }
+
+    public class GDSelectEventArgs : EventArgs
+    {
+        public GDSelectEventArgs() { }
+        public GDSelectEventArgs(GDObject obj)
+        {
+            SelectedObject = obj;
+        }
+        public GDObject SelectedObject {get; set;}
+    }
+    public class GDChangeEventArgs : EventArgs
+    {
+        public GDChangeEventArgs() { }
+        public GDChangeEventArgs(GDObject oldobj, GDObject newobj)
+        {
+            OldObject = oldobj;
+            NewObject = newobj;
+        }
+        public GDObject OldObject { get; set; }
+        public GDObject NewObject { get; set; }
+
+    }
+    
+
+    public partial class GraphDisplayObject : System.Windows.Forms.Panel
+    {
+        public List<GDNode> Nodes = new List<GDNode>();
+        public List<GDArc> Arcs = new List<GDArc>();
+        
+        public int MaxHeight = 0;
+        public int MaxWidth = 0;
+        private int m_DefaultSize = 100;
+
+        private GDObject m_SelectedObject = null;
+        private GDObject m_RightClickedObject = null;
+        private bool mouseDown = false;
+        private Point LastPos;
+
+        public event EventHandler<GDChangeEventArgs> ChangeSelection;
+        public event EventHandler<GDSelectEventArgs> SelectObject;
+
+        public GraphDisplayObject()
+        {
+            InitializeComponent();
+        }
+        private void InitializeComponent()
+        {
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+            this.MouseDown += this.OnMouseDown;
+            this.MouseUp += this.OnMouseUp;
+            this.MouseMove += this.OnMouseMove;
+        }
+        public GDObject SelectedObject
+        {
+            get { return m_SelectedObject; }
+            set 
+            {
+                if (m_SelectedObject != null && value != m_SelectedObject)
+                {
+                    GDChangeEventArgs evt = new GDChangeEventArgs(m_SelectedObject, value);
+                    if(ChangeSelection != null)
+                        ChangeSelection(this, evt);
+                    m_SelectedObject.Selected = false;
+                }
+                m_SelectedObject = value;
+                if (m_SelectedObject != null)
+                {
+                    m_SelectedObject.Selected = true;
+                }
+                GDSelectEventArgs selevt = new GDSelectEventArgs(m_SelectedObject);
+                if (SelectObject != null)
+                    SelectObject(this, selevt);
+            }
+        }
+
+        public void AddNode(GDNode tmpNode)
+        {
+            Nodes.Add(tmpNode);
+
+            tmpNode.End.X = tmpNode.Start.X + m_DefaultSize;
+            tmpNode.End.Y = tmpNode.Start.Y + m_DefaultSize;
+
+            tmpNode.Mid.X = tmpNode.Start.X + (tmpNode.End.X - tmpNode.Start.X) / 2;
+            tmpNode.Mid.Y = tmpNode.Start.Y + (tmpNode.End.Y - tmpNode.Start.Y) / 2;
+            tmpNode.Width = tmpNode.End.X - tmpNode.Start.X;
+            tmpNode.Height = tmpNode.End.Y - tmpNode.Start.Y;
+
+            MaxHeight = Math.Max(MaxHeight, tmpNode.End.Y);
+            MaxWidth = Math.Max(MaxWidth, tmpNode.End.X);
+        }
+        public void RemoveNode()
+        {
+        }
+        public GDNode FindNode(string sName)
+        {
+            foreach (GDNode tmp in Nodes)
+            {
+                if (tmp.Name == sName)
+                    return tmp;
+            }
             return null;
+        }
+        public void AddArc(GDArc tmpArc)
+        {
+            //link arc with nodes
+            tmpArc.SourceNode = FindNode(tmpArc.Source);
+            if (tmpArc.SourceNode != null)
+                tmpArc.SourceNode.Arcs.Add(tmpArc);
+
+            tmpArc.TargetNode = FindNode(tmpArc.Target);
+            if (tmpArc.TargetNode != null)
+                tmpArc.TargetNode.Arcs.Add(tmpArc);
+            
+            Arcs.Add(tmpArc);
+        }
+        public void RemoveArc()
+        {
+        }
+        public GDArc FindArc(string sName)
+        {
+            foreach (GDArc tmp in Arcs)
+            {
+                if (tmp.Name == sName)
+                    return tmp;
+            }
+            return null;
+        }
+        public string getUniqueNodeName(string sSeedName)
+        {
+            for (int i = 0; i < 100000; ++i)
+            {
+                GDNode tmpNode = FindNode(sSeedName + i.ToString());
+                if (tmpNode == null)
+                    return sSeedName + i.ToString();
+            }
+            return "UniqueNameNotFound";
+        }
+        public string getUniqueArcName(string sSeedName)
+        {
+            for (int i = 0; i < 100000; ++i)
+            {
+                GDArc tmpArc = FindArc(sSeedName + i.ToString());
+                if (tmpArc == null)
+                    return sSeedName + i.ToString();
+            }
+            return "UniqueNameNotFound";
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            UpdateLimits();
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+            foreach (GDArc tmpArc in Arcs)
+            {
+                tmpArc.Paint(e.Graphics);
+            }
+            foreach (GDNode tmpNode in Nodes)
+            {
+                tmpNode.Paint(e.Graphics);
+            }
+        }
+        private void UpdateLimits()
+        {
+            //calc min left, max right, mintop, maxbottom values for width & height
+            int iLeft = Width, iRight = 0, iTop = Height, iBottom = 0;
+            if (Nodes.Count > 0)
+            {
+                foreach (GDNode tmpNode in Nodes)
+                {
+                    iLeft = Math.Min(iLeft, tmpNode.Left);
+                    iRight = Math.Max(iRight, tmpNode.Right);
+                    iTop = Math.Min(iTop, tmpNode.Top);
+                    iBottom = Math.Max(iBottom, tmpNode.Bottom);
+                }
+                int iLeftAdj = 0;
+                int iTopAdj = 0;
+                if (iLeft > Margin.Left || iLeft < Margin.Left)
+                {
+                    iLeftAdj = 0 - (iLeft - Margin.Left);
+                    iRight = iRight - iLeftAdj;
+                }
+                if (iTop > Margin.Top || iTop < Margin.Top)
+                {
+                    iTopAdj = 0 - (iTop - Margin.Top);
+                    iBottom = iBottom - iTopAdj; //works because of double -ve
+                }
+                if (iLeftAdj != 0 || iTopAdj != 0)
+                {
+                    MoveAll(iLeftAdj, iTopAdj);
+                }
+                Width = iRight + Margin.Right + Margin.Left;
+                Height = iBottom + Margin.Top + Margin.Bottom;
+            }
+            else
+            {
+                Width = 0;
+                Height = 0;
+            }
+        }
+        protected void MoveAll(int x, int y)
+        {
+            foreach (GDNode tmpNode in Nodes)
+            {
+                tmpNode.Move(x, y);
+            }
+            foreach (GDArc tmpArc in Arcs)
+            {
+                tmpArc.Move(x, y);
+            }
+        }
+        private void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            //if an object is under the mouse then select it
+            //SelectedObject = Nodes[0];
+            GDObject tmpObject = null;
+            //reverse order as last drawn will be on top
+            for(int i = Nodes.Count-1; i >= 0; --i)
+            {
+                if(Nodes[i].Clicked(e.X, e.Y))
+                {
+                    tmpObject = Nodes[i];
+                    break;
+                }
+            }
+            if (tmpObject == null)
+            {
+                foreach (GDArc tmpArc in Arcs)
+                {
+                    if(tmpArc.Clicked(e.X, e.Y))
+                        tmpObject = tmpArc;
+                }
+            }
+            m_RightClickedObject = null;
+            if (e.Button == MouseButtons.Right)
+            {
+                //menu is going to popup regardless
+                this.ContextMenuStrip.Items.Clear();
+                
+                if (tmpObject != null)
+                {
+                    m_RightClickedObject = tmpObject;
+                    //if previous object is the same as the current object - duplicate/delee
+                    if (SelectedObject == tmpObject)
+                    {
+                        ToolStripItem mnuItem = this.ContextMenuStrip.Items.Add("Delete");
+                        mnuItem.Click += new EventHandler(DeleteGDObjectMenuClicked);
+
+                        mnuItem = this.ContextMenuStrip.Items.Add("Duplicate");
+                        mnuItem.Click += new EventHandler(DuplicateGDObjectMenuClicked);
+                    }
+                    else
+                    {
+                        GDNode tmpPrev = SelectedObject as GDNode;
+                        if (tmpPrev != null)
+                        {
+                            GDNode tmpCurr = tmpObject as GDNode;
+                            if (tmpCurr != null)
+                            {
+                                //if last object was a state and new object is a state and right mouse clicked
+                                //add arc
+                                ToolStripItem mnuItem = this.ContextMenuStrip.Items.Add("Add arc from " + tmpPrev.Name + " to " + tmpCurr.Name);
+                                mnuItem.Click += new EventHandler(addArcMenuClicked);
+                            }
+                            else
+                            {
+                                ToolStripItem mnuItem = this.ContextMenuStrip.Items.Add("Add State");
+                                mnuItem.Click += new EventHandler(addStateMenuClicked);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    ToolStripItem mnuItem = this.ContextMenuStrip.Items.Add("Add State");
+                    mnuItem.Click += new EventHandler(addStateMenuClicked);
+                }
+            }
+            else
+            {
+                if (tmpObject != null)
+                {
+                    mouseDown = true;
+                    LastPos.X = e.X;
+                    LastPos.Y = e.Y;
+                }
+                SelectedObject = tmpObject;
+            }
+            this.Invalidate();
+        }
+
+        private void addStateMenuClicked(object sender, EventArgs e)
+        {
+            ToolStripItem mnuItem = sender as ToolStripItem;
+            GDNode gd = new GDNode();
+            gd.Name = getUniqueNodeName("State");
+
+            if (mnuItem != null)
+            {
+                Point loc = PointToClient(mnuItem.Owner.Location);
+                gd.Start.X = loc.X - m_DefaultSize / 3;
+                gd.Start.Y = loc.Y - m_DefaultSize / 3;
+            }
+            AddNode(gd);
+            SelectedObject = gd;
+            Invalidate();
+        }
+        private void addArcMenuClicked(object sender, EventArgs e)
+        {
+            ToolStripItem mnuItem = sender as ToolStripItem;
+            if (m_RightClickedObject != SelectedObject 
+                && m_RightClickedObject != null 
+                && SelectedObject != null
+                && mnuItem != null)
+            {
+                GDArc ga = new GDArc();
+                ga.Name = getUniqueArcName("arc");
+                ga.Source = SelectedObject.Name;
+                ga.Target = m_RightClickedObject.Name;
+                Point loc = PointToClient(mnuItem.Owner.Location);
+                
+                AddArc(ga);
+                //this should set source and target so we can use them to cal the midpoint
+                int dist = ga.TargetNode.Mid.X - ga.SourceNode.Mid.X;
+                ga.Location.X = ga.SourceNode.Mid.X + dist / 2;
+                dist = ga.TargetNode.Mid.Y - ga.SourceNode.Mid.Y;
+                ga.Location.Y = ga.SourceNode.Mid.Y + dist / 2;
+                SelectedObject = ga;
+                Invalidate();
+            }
+        }
+        private void DeleteGDObjectMenuClicked(object sender, EventArgs e)
+        {
+            GDArc arc = m_RightClickedObject as GDArc;
+            if (arc != null)
+            {
+                Arcs.Remove(arc);
+            }
+            else
+            {
+                GDNode node = m_RightClickedObject as GDNode;
+                Arcs.RemoveAll(node.ArcIsAttached);
+                SelectedObject = null;
+                Nodes.Remove(node);
+            }
+            Invalidate();
+        }
+        private void DuplicateGDObjectMenuClicked(object sender, EventArgs e)
+        {
+            GDArc existingArc = m_RightClickedObject as GDArc;
+            if (existingArc != null)
+            {
+                GDArc ga = DupeArc(existingArc);
+                AddArc(ga);
+                SelectedObject = ga;
+                Invalidate();
+            }
+            else
+            {
+                GDNode node = m_RightClickedObject as GDNode;
+                if(node != null)
+                {
+                    GDNode newNode = new GDNode();
+                    newNode.Name = getUniqueNodeName("State");
+
+                    newNode.Start.X = node.Start.X;
+                    newNode.Start.Y = node.Start.Y;
+                    AddNode(newNode);
+                    //duplicating a node includes arcs
+                    List<GDArc> newArcs = new List<GDArc>();
+
+                    foreach (GDArc arc in node.Arcs)
+                    {
+                        if (arc.SourceNode == node)
+                        {
+                            GDArc ga = DupeArc(arc);
+                            ga.Source = newNode.Name;
+                            newArcs.Add(ga);
+                        }
+                        if(arc.TargetNode == node)
+                        {
+                            GDArc ga = DupeArc(arc);
+                            ga.Target = newNode.Name;
+                            newArcs.Add(ga);
+                        }
+                    }
+                    foreach (GDArc arc in newArcs)
+                    {
+                        AddArc(arc);
+                    }
+                    SelectedObject = newNode;
+                    Invalidate();
+                }
+            }
+        }
+        private GDArc DupeArc(GDArc arc)
+        {
+            GDArc ga = new GDArc();
+            ga.Source = arc.Source;
+            ga.Target = arc.Target;
+            ga.Location.X = arc.Location.X + 10;
+            ga.Location.Y = arc.Location.Y + 10;
+            ga.Rules = new List<string>(arc.Rules);
+            ga.Actions = new List<string>(arc.Actions);
+            return ga;
+        }
+
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            //if an object is selected, then 
+            if (SelectedObject != null)
+            {
+                mouseDown = false;
+                this.Invalidate();
+            }
+        }
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            //if an object is under the mouse then select it
+            if (mouseDown && SelectedObject != null)
+            {
+                int x = e.X - LastPos.X;
+                int y = e.Y - LastPos.Y;
+                LastPos.X = e.X;
+                LastPos.Y = e.Y;
+                SelectedObject.Move(x, y);
+                this.Invalidate();
+            }
         }
     }
 }
