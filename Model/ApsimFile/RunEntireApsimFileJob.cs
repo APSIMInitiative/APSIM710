@@ -28,9 +28,9 @@ public class RunEntireApsimFileJob : RunExternalJob
       StringReader In = new StringReader(_StdOut);
 
       string Line = In.ReadLine();
-      while (Line != null && Line != "")
+      while (Line != null)
          {
-         if (Line.Substring(0, 8) == "Written ")
+         if (Line.Length > 8 && Line.Substring(0, 8) == "Written ")
             {
             string SimFileName = Line.Substring(8);
             RunApsimJob NewJob = new RunApsimJob(SimFileName, _JobRunner);

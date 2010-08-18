@@ -380,8 +380,8 @@ namespace Test
          Assert.AreEqual(S2.Variable("Thickness(mm)"), new double[] { 150, 200, 200 });
          Assert.AreEqual(S2.Variable("BD (g/cc)"), new double[] { 1.4, 1.5, 1.6 });
          Assert.AreEqual(S2.Variable("OC (Walkley Black %)"), new double[] { 1.6, 0.6, 0.1 });
-         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat LL(mm/mm)"), new double[] { 16.66666668, 16, 15.25 }));
-         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat KL(mm/mm)"), new double[] { 0.6666666666, 0.6, 0.525 }));
+         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat LL(mm/mm)"), new double[] { 17.0, 16, 15.00 }));
+         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat KL(mm/mm)"), new double[] { 0.7, 0.6, 0.5 }));
 
          }
 
@@ -525,9 +525,12 @@ namespace Test
          Paths.Add("Test Soil");
          SoilSpreadsheet.Export(TestFileName, Doc.DocumentElement, Paths);
          Assert.IsTrue(File.Exists(TestFileName));
-         Soil NewSoil = Soil.CreateFromXML(SoilSpreadsheet.Import(TestFileName));
+         string FileName = SoilSpreadsheet.OpenXLS(TestFileName, null);
+         StreamReader In = new StreamReader(FileName);
+         string XML = In.ReadToEnd();
+         Soil NewSoil = Soil.CreateFromXML(XML);
 
-         Assert.AreEqual(NewSoil.Name, "Test Soil");
+         Assert.AreEqual(NewSoil.Name, "AllSoils");
          Assert.IsTrue(MathUtility.AreEqual(S.Variable("Thickness (mm)"),
                                             new double[] { 150.000,   150.000,   300.000,   300.000,   300.000 }));
          Assert.IsTrue(MathUtility.AreEqual(S.Variable("BD (g/cc)"),

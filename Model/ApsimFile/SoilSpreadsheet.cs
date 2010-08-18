@@ -88,7 +88,8 @@ namespace ApsimFile
 
             Row += NewSoil.Variable("Thickness (mm)").Length;
 
-            Notifier.Invoke(Convert.ToInt32(Row * 100.0 / Table.Rows.Count));
+            if (Notifier != null)
+               Notifier.Invoke(Convert.ToInt32(Row * 100.0 / Table.Rows.Count));
             counter++;
             if (counter == 50)
                {
