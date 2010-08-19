@@ -21,6 +21,7 @@ namespace CSUserInterface
         private List<string> rotations = new List<string>();
         private List<Color> colours = new List<Color>();
 
+        private bool m_ErrorEncountered = false;
         private int m_ColWidth = 45;
         private int m_HeaderHeight = 20;
         private int m_YearHeight = 0;
@@ -121,7 +122,8 @@ namespace CSUserInterface
             }
             catch (Exception ex)
             {
-                lblFileName.Text = m_FileName;
+                lblFileName.Text = m_FileName + "- Error encountered - check xml file.";
+                m_ErrorEncountered = true;
             }
             panel2.Invalidate();
         }
