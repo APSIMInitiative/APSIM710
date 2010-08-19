@@ -57,6 +57,9 @@ CMPComponentInterface::~CMPComponentInterface()
 	  }
 
    clearMessages();
+   for (unsigned i = 0; i != init2.size(); i++)
+     delete init2[i];
+   init2.clear();
    delete simScript;
    }
 
@@ -168,7 +171,8 @@ void CMPComponentInterface::set(const std::string& name,
    // -----------------------------------------------------------------------
 	clearMessages();
    int id = nameToRegistrationID(name, setReg);
-   if (id == 0)
+   bool alreadyRegistered = (id != 0);
+   if (!alreadyRegistered)
       id = RegisterWithPM(name, units, "", setReg, data);
 
 	RequestSetValueType requestSetValue;
@@ -181,6 +185,8 @@ void CMPComponentInterface::set(const std::string& name,
    pack(requestSetValueMessageData, requestSetValue);
    data->pack(requestSetValueMessageData);
 	sendMessage(requestSetValueMessage);
+   if (alreadyRegistered) // If we've registered, freeing memory will occur in our destructor;
+	   delete data;  // otherwise we clean up here,
    }
 
 bool CMPComponentInterface::readFiltered(const string& parName, vector<string> &values)
@@ -672,8 +678,11 @@ void CMPComponentInterface::onInit1(const Message& message)
    expose("state", "", "", false, new CMPBuiltIn<string&>(state));
 
    simScript = new XMLDocument(init1.sdml, XMLDocument::xmlContents);
-   if (this->init1 != NULL)
+   if (this->init1 != NULL) 
+      {
       this->init1->unpack(messageData, "");
+	  delete this->init1;
+      } 
    }
 
 void CMPComponentInterface::onInit2(const Message& message)
