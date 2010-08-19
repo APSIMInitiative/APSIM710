@@ -31,6 +31,9 @@ namespace CSUserInterface
         }
         protected override void OnLoad()
         {
+        }
+        public override void OnRefresh()
+        {
             //if it is old version
             //load all data using rotnode - save routine will look after it
             //flag creation of subnode "RugPlot"
@@ -39,9 +42,7 @@ namespace CSUserInterface
             BuildGraphDisplay();
             GraphDisplay.Height = GraphDisplay.MaxHeight;
             GraphDisplay.Width = GraphDisplay.MaxWidth;
-        }
-        public override void OnRefresh()
-        {
+
             pnlFlowLayout.Controls.Clear();
             List<string> states = new List<string>();
             foreach (GDNode node in GraphDisplay.Nodes)
@@ -57,6 +58,8 @@ namespace CSUserInterface
                 ps.cboState.Text = paddock.InitialState;
                 pnlFlowLayout.Controls.Add(ps);
             }
+            GraphDisplay.SelectedObject = null; 
+            GraphDisplay.Refresh();
         }
         public override void OnSave()
         {
@@ -212,6 +215,9 @@ namespace CSUserInterface
         }
         private void BuildGraphDisplay()
         {
+            GraphDisplay.ClearAll();
+            ManagedPaddocks.Clear();
+            AvailablePaddocks.Clear();
             //should only have to load it once.
             if (GraphDisplay.Nodes.Count == 0)
             {
@@ -907,6 +913,13 @@ namespace CSUserInterface
             }
         }
 
+        public void ClearAll()
+        {
+            m_SelectedObject = null;
+            m_RightClickedObject = null;
+            Nodes.Clear();
+            Arcs.Clear();
+        }
         public void AddNode(GDNode tmpNode)
         {
             Nodes.Add(tmpNode);
