@@ -925,7 +925,8 @@ namespace ApsimFile
                      {
                      foreach (XmlNode Node in PredSoilTypeNode.ChildNodes)
                         {
-                        if (StringManip.IndexOfCaseInsensitive(CropNames, Node.Name) == -1)
+                        if (StringManip.IndexOfCaseInsensitive(CropNames, Node.Name) == -1 &&
+                            PredictedCropVariable(Node.Name, "ll") != null)
                            CropNames.Add(Node.Name);
                         }
                      }
@@ -1022,7 +1023,7 @@ namespace ApsimFile
       private VariableValue PredictedCropVariable(string CropName, string CropVariableName)
          {
          VariableValue Value = null;
-         string SoilType = Property("SoilType").Replace(" ", "");
+         string SoilType = Property("SoilType");
          if (SoilType != "" && CropVariableName.ToLower() == "ll")
             {
             // If we get to here then must be a predicted variable.
@@ -1068,7 +1069,7 @@ namespace ApsimFile
                   Value.Units = "mm/mm";
                   Value.Doubles = PredLL;
                   Value.ThicknessMM = TargetThickness;
-                  StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
+                  Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
                   }
                }
             }
@@ -1092,7 +1093,7 @@ namespace ApsimFile
                Value.Units = "/day";
                Value.Doubles = Values;
                Value.ThicknessMM = TargetThickness;
-               StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
+               Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
                }
             }
          else if (SoilType != "" && CropVariableName.ToLower() == "xf")
@@ -1113,7 +1114,7 @@ namespace ApsimFile
                   xf[i] = 1.0;
                Value.Doubles = xf;
                }
-            StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
+            Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
             }
          return Value;
          }

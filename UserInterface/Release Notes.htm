@@ -1,0 +1,47 @@
+<html>
+   <head>
+      <link href="ApsimWebStyle.css" rel="stylesheet" type="text/css">
+   </head>
+   <body>
+      <h1>APSOIL 7.2 release notes</h1>
+      <p>20th August 2010</p>
+
+      <p>This release of APSOIL is a major revision with many defects fixed and some new functionality added. It
+         is compatible with APSIM 7.2.
+      </p>
+
+      <h2>Changes to the way soil nodes are visualised</h2>
+      <p>One major change concerns the way the user interface displays soil information</p>
+      
+      <p>In previous versions of APSoil, a soil was represented as a single soil node with a series of grid sheets for general, 
+         water, profile and other soil data. For example:</p>
+         <img src="OldSoilNode.gif"/>
+      
+      <p>This has now changed to multiple nodes for different types of soil information</p>
+         <img src="NewSoilNode.gif">
+         
+         
+      <p>This has several major advantages for APSIM over the old structure.
+         <ul>
+            <li>Each node in the tree can now have a different layer structure. 
+                For example, the water node (with BD, LL15 etc) can be on the normal 
+                deep layer structure, while the lab node (with NO3, NH4, Water) can be 
+                on a 0-10, 10-60. The user interface will map the different layer structures 
+               into a single consolidated one that APSIM can handle.</li>
+            <li>Different nodes can be added in as needed. For example, the user might 
+                add a "Phosphorus" node when needed. This saves always having to have it 
+                there just in case a user may want it at some time. Likewise the "SoilWat" 
+                node (which has SWCON, MWCON, CN2 etc) can be removed and replaced with a 
+                SWIM node that contains SWIM parameters. This will allow all the soils 
+                in the characterisation database to be used with the SWIM model - 
+               something that wasn't possible in earlier versions of APSIM.</li>
+         </ul></p>
+      <h2>Changes to the APSOIL spreadsheet format</h2>
+      <p>To support the changes to the above visualisation of nodes and to support extra soil information, 
+      the spreadsheet format has changed.</p>
+         <img src="NewSpreadsheetFormat.gif"/>
+      <p>The best way to see these changes is to contact Neal Dalgliesh for a sample spreadsheet. NB The old 
+      format will not work with this version of APSoil</p>
+      
+   </body>
+</html>
