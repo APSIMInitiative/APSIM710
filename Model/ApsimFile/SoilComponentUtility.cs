@@ -320,7 +320,7 @@ namespace ApsimFile
          if (Value.Name.ToLower() == "texture")
             {
             Value.Strings = SoilUtility.GetLayeredAsStrings(ProfileNode, Value.Name);
-            Value.Codes = StringManip.CreateStringArray("", Value.Strings.Length);
+            Value.Codes = GetLayeredCode(ProfileNode, "Texture");
             }
          else if (Value.Name.ToLower() == "thickness")
             {

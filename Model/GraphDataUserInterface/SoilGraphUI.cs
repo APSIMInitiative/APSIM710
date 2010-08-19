@@ -61,7 +61,10 @@ namespace GraphDataUserInterface
          Chart.Axes.Bottom.Automatic = true;
 
          // Try and load an appropriate template.
-         FileName = Configuration.ApsimDirectory() + "\\UserInterface\\" + CurrentChartType + ".xml";
+         if (Directory.Exists(Configuration.ApsimDirectory() + "\\UserInterface"))
+            FileName = Configuration.ApsimDirectory() + "\\UserInterface\\" + CurrentChartType + ".xml";
+         else
+            FileName = Configuration.ApsimDirectory() + "\\" + CurrentChartType + ".xml";
          XmlDocument Doc = new XmlDocument();
          if (File.Exists(FileName))
             Doc.Load(FileName);

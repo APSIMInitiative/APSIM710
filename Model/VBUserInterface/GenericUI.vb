@@ -84,6 +84,8 @@ Public Class GenericUI
       '
       Me.Grid.AllowUserToAddRows = False
       Me.Grid.AllowUserToResizeRows = False
+      Me.Grid.BackgroundColor = System.Drawing.SystemColors.Window
+      Me.Grid.BorderStyle = System.Windows.Forms.BorderStyle.None
       Me.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
       Me.Grid.DataSourceTable = Nothing
       Me.Grid.Dock = System.Windows.Forms.DockStyle.Fill

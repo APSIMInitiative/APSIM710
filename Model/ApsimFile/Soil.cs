@@ -857,7 +857,17 @@ namespace ApsimFile
             {
             if (LocationName == "")
                LocationName = SoilMetaData.Instance.GetVariablePath(Value.Name);
-            SetVariable(LocationName, Value);
+            if (Value.Name == "ParticleSizeCode")
+               {
+               Value.Name = "ParticleSizeSandCode";
+               SetVariable(LocationName, Value);
+               Value.Name = "ParticleSizeSiltCode";
+               SetVariable(LocationName, Value);
+               Value.Name = "ParticleSizeClayCode";
+               SetVariable(LocationName, Value);
+               }
+            else
+               SetVariable(LocationName, Value);
             }
          }
 
@@ -1390,6 +1400,7 @@ namespace ApsimFile
             ConvertUnits(OC, "Total %");
             VariableValue BD = FindVariable("BD (g/cc)", OC.ThicknessMM);
             VariableValue BiomC = FindVariable("BiomC (kg/ha)", OC.ThicknessMM);
+            VariableValue InertC = FindVariable("InertC (kg/ha)", OC.ThicknessMM);
 
             double[] HumC = new double[BiomC.Doubles.Length];
 
@@ -1402,7 +1413,7 @@ namespace ApsimFile
                   double soiln2_fac = 100.0 / (BD.Doubles[i] * OC.ThicknessMM[i]);
                   double oc_ppm = OC.Doubles[i] / 100 * ppm;
                   double carbon_tot = oc_ppm / soiln2_fac;
-                  HumC[i] = carbon_tot - BiomC.Doubles[i];
+                  HumC[i] = carbon_tot - BiomC.Doubles[i] - InertC.Doubles[i];
                   }
                }
             Value = new VariableValue();

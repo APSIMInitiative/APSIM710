@@ -181,7 +181,7 @@ namespace CSUserInterface
                               CodeText = _Soil.GetFullCodeName(CodeText, RawVariableName);
                               }
                            Grid.Rows[Row].Cells[Col].ToolTipText = CodeText;
-                           Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Tomato;
+                           Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Blue;
                            }
                         }
                      }

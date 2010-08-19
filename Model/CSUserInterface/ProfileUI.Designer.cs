@@ -63,6 +63,7 @@ namespace CSUserInterface
             // 
             this.Grid.AllowUserToAddRows = false;
             this.Grid.AllowUserToDeleteRows = false;
+            this.Grid.BackgroundColor = System.Drawing.SystemColors.Window;
             this.Grid.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Grid.DataSourceTable = null;

@@ -68,8 +68,9 @@ namespace ApsimFile
 
 
          XmlDocument Doc = new XmlDocument();
-         XmlNode AllSoils = Doc.CreateElement("AllSoils");
+         XmlNode AllSoils = Doc.CreateElement("folder");
          Doc.AppendChild(AllSoils);
+         XmlHelper.SetName(AllSoils, "AllSoils");
          XmlHelper.SetAttribute(AllSoils, "version", APSIMChangeTool.CurrentVersion.ToString());
          
          // Loop through all blocks of rows in datatable from XLS, create a
@@ -84,7 +85,16 @@ namespace ApsimFile
             NewSoil.UseNode(NewSoilNode);
             NewSoil.Read(Table, Row);
 
+            // Make sure the DataSource and Comment nodes under the Water node are multiedits.
+            XmlNode DataSourceNode = XmlHelper.Find(NewSoilNode, "DataSource");
+            if (DataSourceNode != null)
+               XmlHelper.SetAttribute(DataSourceNode, "type", "multiedit");
+            XmlNode CommentNode = XmlHelper.Find(NewSoilNode, "Comments");
+            if (CommentNode != null)
+               XmlHelper.SetAttribute(CommentNode, "type", "multiedit");
+
             AddSoilToXML(NewSoil, AllSoils, NewSoilNode);
+
 
             Row += NewSoil.Variable("Thickness (mm)").Length;
 
