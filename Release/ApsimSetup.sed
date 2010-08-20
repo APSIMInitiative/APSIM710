@@ -30,13 +30,12 @@ AppLaunched=Install.bat
 PostInstallCmd=<None>
 AdminQuietInstCmd=
 UserQuietInstCmd=
-FILE0="ApsimSetup.msi"
-FILE1="setup.exe"
-FILE2="Install.bat"
+FILE0="Install.bat"
+FILE1="ApsimSetup.msi"
+FILE2="setup.exe"
 [SourceFiles]
 SourceFiles0=.\
 [SourceFiles0]
 %FILE0%=
 %FILE1%=
-[SourceFiles1]
 %FILE2%=
