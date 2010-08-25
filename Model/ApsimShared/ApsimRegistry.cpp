@@ -13,8 +13,7 @@
 
 using namespace std;
 
-#include <boost/thread/tss.hpp>
-boost::thread_specific_ptr<ApsimRegistry> GlobalApsimRegistry;
+boost::thread_specific_ptr<ApsimRegistry> ApsimRegistry::GlobalApsimRegistry;
 
 ApsimRegistry& ApsimRegistry::getApsimRegistry(void)
 // ------------------------------------------------------------------
@@ -42,9 +41,30 @@ void ApsimRegistry::reset(void)
 		i++)
 	  delete i->second;
    registrations.clear();
+   reg_id_map.clear();
    components.clear();
    taintedComponents.clear();
    }
+
+// Attempt to remove an ApsimRegistration from the id-keyed map
+void ApsimRegistry::freeIdReg(ApsimRegistration* reg)
+{
+   if (reg) 
+   {
+      reg_id_map_type::iterator i, a, b;
+      a = reg_id_map.lower_bound(reg->getRegID());
+      b = reg_id_map.upper_bound(reg->getRegID());
+
+      for (i = a; i != b; i++)
+ 	  {
+		 if (i->second == reg)
+		 {
+			reg_id_map.erase(i);
+			return;
+		 }
+	  }
+   }
+}
 
 // Create a native registration.
 ApsimRegistration* ApsimRegistry::createNativeRegistration
@@ -89,6 +109,7 @@ unsigned int ApsimRegistry::add(ApsimRegistration *reg)
 //               i->second->getName() << "->" << i->second->getDestinationID() << ")= " << ((unsigned int)i->second) << " called again - returning " << i->second->getRegID() << endl;
 //            delete reg;
 //            return ((unsigned int)i->second);
+			  freeIdReg(i->second);
 			  delete i->second;
 			  registrations.erase(i);
 			  break;
@@ -97,6 +118,7 @@ unsigned int ApsimRegistry::add(ApsimRegistration *reg)
 	  }
 
    registrations.insert(registrations_type::value_type(reg->getNameWithoutBrackets(), reg));
+   reg_id_map.insert(reg_id_map_type::value_type(reg->getRegID(), reg));
 
 //   cout << "add (" << reg->getType() << ":" << componentByID(reg->getComponentID()) << "." <<
 //        reg->getName();
@@ -173,7 +195,7 @@ void ApsimRegistry::lookup(ApsimRegistration * reg,
    for (i = a; i != b; i++)
       {
       if (reg->matchSubscriberType(i->second) &&
-          ::find(candididates.begin(),
+          std::find(candididates.begin(),
                  candididates.end(),
                  i->second->getComponentID()) != candididates.end() )
          {
@@ -225,12 +247,12 @@ void ApsimRegistry::pruneNonMatchingEvents (ApsimRegistration * reg, std::vector
       }
    }
 
-
 void ApsimRegistry::erase(EventTypeCode type, int owner, unsigned int regID)
    {
    ApsimRegistration *reg = find(type, owner, regID);
    if (reg == NULL) return;
 //   cout << "ApsimRegistry::erase name="<< reg->getName() << endl;
+   // Is this correct? 
    bool found = true;
    while (found)
       {
@@ -240,8 +262,9 @@ void ApsimRegistry::erase(EventTypeCode type, int owner, unsigned int regID)
            i++)
          if (reg == i->second)
             {
+			freeIdReg(reg);
+            delete reg;
             registrations.erase(i);
-            //delete reg;
             found = true;
             break;
             }
@@ -256,16 +279,19 @@ ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
    {
    if (isForeign(ownerID))
 	  {
-	  for (registrations_type::iterator i = registrations.begin();
-		   i != registrations.end();
-		   i++)
-		 {
+      reg_id_map_type::iterator i, a, b;
+      a = reg_id_map.lower_bound(regnID);
+      b = reg_id_map.upper_bound(regnID);
+
+      for (i = a; i != b; i++)
+ 	  {
 		 if (i->second->getTypeCode() == type &&
-			 i->second->getComponentID() == ownerID &&
-			 i->second->getRegID() == regnID)
+			 i->second->getComponentID() == ownerID
+			 )
 			return (i->second);
-		 }
-	  return NULL;
+	  } 
+      return NULL;
+
 	  }
    return ((ApsimRegistration *) regnID);
    }

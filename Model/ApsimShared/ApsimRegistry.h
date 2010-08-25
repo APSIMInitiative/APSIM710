@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <boost/thread/tss.hpp>
 
 #include <ApsimShared/ApsimRegistrationType.h>
 #include <ApsimShared/ApsimRegistration.h>
@@ -96,9 +97,20 @@ class EXPORT ApsimRegistry
 
 	  bool hasChildren(int componentID);
    private:
+      static boost::thread_specific_ptr<ApsimRegistry> GlobalApsimRegistry;
+
+	  // Registration information gets retrieved frequently, so we need to be
+	  // able to do lookups quickly. STL multimap works well for this purose.
+	  // We maintain two maps, one keyed by name (registrations), the other by ID
+	  // (reg_id_map). 
 	  typedef multimap<string, ApsimRegistration* , less<string> > registrations_type;
 	  registrations_type registrations;
 
+	  typedef multimap<int, ApsimRegistration* , less<int> > reg_id_map_type;
+	  reg_id_map_type reg_id_map;
+
+	  // attempt to free an item from the id-keyed registration map
+	  void freeIdReg(ApsimRegistration* reg);
 	  // associate component ID with string names
 	  typedef struct {
 		 int ID;
