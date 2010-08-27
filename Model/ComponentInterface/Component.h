@@ -35,7 +35,7 @@ namespace protocol {
 // forward declarations of our friends.
 class Component;
 class Variants;
-class QueryValueData;
+struct QueryValueData;
 
 extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
                                                   Message* message,
@@ -106,7 +106,7 @@ class EXPORT varVectorFloatInfo : public baseInfo {
       {
       myName = name;
       myType = type;
-      myLength = ptr.size();
+      myLength = (int) ptr.size();
       myIsArray = true;
       myUnits = units;
       myDescription = desc;
@@ -421,7 +421,7 @@ class EXPORT Component
       // Send a message
       void sendMessage(Message* message)
          {
-         bool doAck = message->toAcknowledge;
+         bool doAck = message->toAcknowledge != 0;
          if (doAck)
             {
             completeIDs.push_back(message->messageID);
@@ -582,7 +582,7 @@ class EXPORT Component
                return false;
                }
 
-            for (int i = 0; i < values.size(); i++)
+            for (unsigned int i = 0; i < values.size(); i++)
                {
                if (values[i] < lower || values[i] > upper)
                    {
@@ -609,7 +609,7 @@ class EXPORT Component
        std::string valueString = componentData->getProperty(sectionName, variableName);
 
        // remove any Units specifier "(..)":
-       unsigned int posBracket = valueString.find('(');
+       unsigned int posBracket = (unsigned)valueString.find('(');
        if (posBracket != std::string::npos)
          valueString = valueString.substr(0,posBracket);
 

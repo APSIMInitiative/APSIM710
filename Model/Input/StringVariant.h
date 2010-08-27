@@ -3,10 +3,10 @@
 #ifndef StringVariantH
 #define StringVariantH
 
-class Value;
+struct Value;
 namespace protocol {
-   class QueryValueData;
-   class QuerySetValueData;
+   struct QueryValueData;
+   struct QuerySetValueData;
    class Component;
    }
 // ------------------------------------------------------------------

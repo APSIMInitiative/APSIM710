@@ -7,7 +7,7 @@
 namespace protocol {
 
 class IComputation;
-class Message;
+struct Message;
 
 // ------------------------------------------------------------------
 //  Short description:

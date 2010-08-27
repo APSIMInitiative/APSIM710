@@ -2,6 +2,7 @@
 #ifndef FunctionReturningValueH
 #define FunctionReturningValueH
 
+#include <General/platform.h>
 #include <string>
 #include <ComponentInterface/Interfaces.h>
 #include <boost/function.hpp>

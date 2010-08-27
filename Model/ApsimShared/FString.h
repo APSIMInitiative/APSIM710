@@ -2,6 +2,7 @@
 #ifndef FStringH
 #define FStringH
 
+#include <General/platform.h>
 #include <string.h>
 #include <stdexcept>
 #ifdef __WIN32__

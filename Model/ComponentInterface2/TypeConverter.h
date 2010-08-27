@@ -47,7 +47,7 @@ class EXPORT TypeConverter
       TypeConverter(int source, std::vector<bool>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         dest.push_back(source);
+         dest.push_back(source != 0);
          }
       TypeConverter(int source, std::vector<int>& dest)
          {
@@ -76,7 +76,7 @@ class EXPORT TypeConverter
       TypeConverter(float source, std::vector<bool>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         dest.push_back(source);
+         dest.push_back(source != 0.0);
          }
       TypeConverter(float source, std::vector<int>& dest)
          {
@@ -107,7 +107,7 @@ class EXPORT TypeConverter
       TypeConverter(double source, std::vector<bool>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         dest.push_back(source);
+         dest.push_back(source != 0.0);
          }
       TypeConverter(double source, std::vector<int>& dest)
          {
@@ -139,7 +139,7 @@ class EXPORT TypeConverter
          {
          dest.erase(dest.begin(), dest.end());
          char *chk;
-         dest.push_back((bool) strtol(source.c_str(), &chk, 10));
+         dest.push_back(strtol(source.c_str(), &chk, 10) != 0);
          if (chk == source.c_str()) {throw std::runtime_error("Cannot parse bool from string \"" + source + "\"");}
          }
       TypeConverter(const std::string& source, std::vector<int>& dest)
@@ -178,7 +178,7 @@ class EXPORT TypeConverter
          if (values.size() != 1)
             throw std::runtime_error("Data type conversion error. Cannot convert from integer array to boolean");
          else
-            dest = values[0];
+            dest = values[0] != 0;
          }
       TypeConverter(const std::vector<int>& source, int& dest)
          {
@@ -236,7 +236,7 @@ class EXPORT TypeConverter
          if (values.size() != 1)
             throw std::runtime_error("Data type conversion error. Cannot convert from float array to boolean");
          else
-            dest = values[0];
+            dest = values[0] != 0;
          }
       TypeConverter(const std::vector<float>& source, int& dest)
          {
@@ -294,7 +294,7 @@ class EXPORT TypeConverter
          if (values.size() != 1)
             throw std::runtime_error("Data type conversion error. Cannot convert from double array to boolean");
          else
-            dest = values[0];
+            dest = values[0] != 0.0;
          }
       TypeConverter(const std::vector<double>& source, int& dest)
          {
@@ -355,7 +355,7 @@ class EXPORT TypeConverter
          else
             {
             char *chk;
-            dest = (bool) strtol(values[0].c_str(), &chk, 10);
+            dest = strtol(values[0].c_str(), &chk, 10) != 0;
             if (chk == values[0].c_str()) {throw std::runtime_error("Cannot parse bool from string \"" + values[0] + "\"");}
             }
          }

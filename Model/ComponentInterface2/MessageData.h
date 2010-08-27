@@ -43,7 +43,7 @@ class MessageData
       const char* start(void) const {return startBuffer;}
       void seek(char* ptr) {currentPtr = ptr;}
       unsigned totalBytes(void)  const {return bufferSize;}
-      unsigned bytesRead(void)   const {return currentPtr-startBuffer;}
+      unsigned bytesRead(void)   const {return (unsigned)(currentPtr-startBuffer);}
       unsigned bytesUnRead(void) const
          {return totalBytes()-bytesRead();}
 

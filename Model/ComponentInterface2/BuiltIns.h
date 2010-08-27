@@ -15,7 +15,7 @@ inline unsigned int memorySize(const bool& value)
    {return 1;}
 inline void unpack(MessageData& messageData, bool& value)
    {
-   value = *((char*)messageData.ptr());
+   value = *((char*)messageData.ptr()) != 0;
    messageData.movePtrBy(memorySize(value));
    }
 inline void pack(MessageData& messageData, bool value)
@@ -27,13 +27,13 @@ inline std::string DDML(bool value)
    {return "<type kind=\"boolean\"/>";}
 
 inline void Convert(bool source, bool& dest)   {dest = source;}
-inline void Convert(int source, bool& dest)    {dest = source;}
-inline void Convert(float source, bool& dest)  {dest = source;}
-inline void Convert(double source, bool& dest) {dest = source;}
+inline void Convert(int source, bool& dest)    {dest = source != 0;}
+inline void Convert(float source, bool& dest)  {dest = source != 0.0;}
+inline void Convert(double source, bool& dest) {dest = source != 0.0;}
 inline void Convert(const std::string& source, bool& dest)
    {
    char *chk;
-   dest = (bool) strtol(source.c_str(), &chk, 10);
+   dest = strtol(source.c_str(), &chk, 10) != 0;
    if (chk == source.c_str()) {throw std::runtime_error("Cannot parse bool from string \"" + source + "\"");}
    }
 
@@ -150,7 +150,7 @@ inline std::string DDML(WCHAR value)
 
 // ------ std::string ------
 inline unsigned int memorySize(const std::string& value)
-   {return value.length() + 4;}
+   {return (unsigned)value.length() + 4;}
 inline void unpack(MessageData& messageData, std::string& value)
    {
    int numChars;
@@ -161,7 +161,7 @@ inline void unpack(MessageData& messageData, std::string& value)
 inline void pack(MessageData& messageData, const std::string& value)
    {
    pack(messageData, (int) value.length());
-   messageData.copyFrom(value.c_str(), value.length());
+   messageData.copyFrom(value.c_str(), (unsigned)value.length());
    }
 inline std::string DDML(const std::string& value)
    {return "<type kind=\"string\"/>";}

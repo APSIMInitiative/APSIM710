@@ -25,7 +25,7 @@ class Phase
      interpolationFunction y_tt;
 
      virtual float stress() {return 1.0;}  // no stress.
-     int getDaysAfter(void) {return days_after;}
+     int getDaysAfter(void) {return (int)days_after;}
 
    public:
      Phase(ScienceAPI& api, plantInterface& p, const std::string& n);

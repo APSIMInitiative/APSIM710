@@ -13,8 +13,8 @@
 // Forward definitions..
 namespace protocol {
   class Component;
-  class QuerySetValueData;
-  class ApsimGetQueryData;
+  struct QuerySetValueData;
+  struct ApsimGetQueryData;
 };
 class Environment;
 class Phenology;

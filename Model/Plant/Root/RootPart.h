@@ -50,7 +50,7 @@ class RootPart : public RootBase
       void doPlantWaterStress (float sw_demand, SWStress *swStress);
 
       void doWaterSupply();
-      void doDmDemand(float dlt_dm_supply){DMGreenDemand= max(0.,dlt_dm_supply);};  //Just ask for all you can get for now - NIH.
+      void doDmDemand(float dlt_dm_supply){DMGreenDemand= (float)max(0.,dlt_dm_supply);};  //Just ask for all you can get for now - NIH.
       float waterUptake(void);
       void getOtherVariables();
       void UpdateOtherVariables();
