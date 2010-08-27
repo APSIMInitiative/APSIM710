@@ -15,13 +15,11 @@
                         Return Total_DM_Eaten.DM_Total
                 End Get
         End Property
-
         Public ReadOnly Property DM_Eaten_Pasture() As Double
                 Get
                         Return Total_Pasutre_Eaten.DM_Total
                 End Get
         End Property
-
         Public ReadOnly Property DM_Eaten_Supplement() As Double
                 Get
                         Return Total_Supplement_Eaten.DM_Total
@@ -34,13 +32,11 @@
                         Return Total_DM_Eaten.getME_Total
                 End Get
         End Property
-
         Public ReadOnly Property ME_Eaten_Pasture() As Double
                 Get
                         Return Total_Pasutre_Eaten.getME_Total
                 End Get
         End Property
-
         Public ReadOnly Property ME_Eaten_Supplement() As Double
                 Get
                         Return Total_Supplement_Eaten.getME_Total
@@ -53,13 +49,11 @@
                         Return Total_DM_Eaten.N_Total
                 End Get
         End Property
-
         Public ReadOnly Property N_Eaten_Pasture() As Double
                 Get
                         Return Total_Pasutre_Eaten.N_Total
                 End Get
         End Property
-
         Public ReadOnly Property N_Eaten_Supplement() As Double
                 Get
                         Return Total_Supplement_Eaten.N_Total
@@ -74,9 +68,9 @@
                         Return ReferenceCow.N_to_feaces * TotalCows
                 End Get
         End Property
-        Public ReadOnly Property C_to_feaces() As Double
+        Public ReadOnly Property DM_to_feaces() As Double
                 Get
-                        Return ReferenceCow.C_to_feaces * TotalCows
+                        Return ReferenceCow.DM_to_feaces * TotalCows
                 End Get
         End Property
         Public ReadOnly Property N_to_urine() As Double
@@ -183,7 +177,7 @@
 
         Public ReadOnly Property ME_Walking()
                 Get
-            Return ReferenceCow.ME_Walking * TotalCows
+                        Return ReferenceCow.ME_Walking * TotalCows
                 End Get
         End Property
 
@@ -224,7 +218,6 @@
                 If (dmRemoved.DM_Total > 0) Then
                         Feed(dmRemoved, True)
                 End If
-                Dim PH As Double = Total_DM_Eaten.getME_Total() 'PH == pasture harvested
                 Return Total_DM_Eaten
         End Function
 
@@ -270,9 +263,9 @@
         'Return all nutrients evenly to the paddocks in the list
         ' Todo: distribute nutrients by amount of drymatter removal (if grazed)
         Public Sub doNutrientReturns(ByVal myPaddocks As List(Of LocalPaddockType))
-                Dim uN As Double = N_to_urine
-                Dim dN As Double = N_to_feaces
-                Dim dC As Double = C_to_feaces
+                Dim urineN As Double = N_to_urine
+                Dim dungN As Double = N_to_feaces
+                Dim dungDM As Double = DM_to_feaces
                 Dim totalMERemoved As Double = 0
                 For Each pdk As LocalPaddockType In myPaddocks
                         totalMERemoved += pdk.ME_Eaten
@@ -283,7 +276,7 @@
                                 Dim delta As Double = 1 / myPaddocks.Count
                                 Dim density As Double = delta * TotalCows
                                 For Each pdk As LocalPaddockType In myPaddocks
-                                        ReferenceCow.doNutrientReturns(pdk, uN * delta, dN * delta, dC * delta, density)
+                                        ReferenceCow.doNutrientReturns(pdk, urineN * delta, dungN * delta, dungDM * delta, density)
                                 Next
                         End If
                 Else 'if grazed then distribute over paddocks by amount of ME removed
@@ -291,7 +284,7 @@
                                 For Each pdk As LocalPaddockType In myPaddocks
                                         Dim delta As Double = pdk.ME_Eaten / totalMERemoved
                                         Dim density As Double = delta * TotalCows
-                                        ReferenceCow.doNutrientReturns(pdk, uN * delta, dN * delta, dC * delta, density)
+                                        ReferenceCow.doNutrientReturns(pdk, urineN * delta, dungN * delta, dungDM * delta, density)
                                 Next
                         End If
                 End If

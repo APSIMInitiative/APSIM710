@@ -45,13 +45,11 @@
                         If (myPaddockCounter <= 0 Or PaddockQueue.Count = 0) Then 'either it is time to shift or have completed a full rotation
                                 Allocate_Paddocks()
                         End If
-                        'graze the cows
                         Graze()
                         doAnimalsPost()
                         myPaddockCounter -= 1
                 End If
-                'do conservation
-                doConservation(Month, end_week > 0)
+                doConservation()
         End Sub
 
         Sub Graze()
@@ -74,12 +72,14 @@
                         End If
                 End While
         End Sub
+
         Private Sub doAnimalsPost()
                 If (myHerd.isUnderFed) Then
-                        doSupplements()
+                        FeedSupplements()
                 End If
 
                 myHerd.doNitrogenPartioning()
+
                 If (GrazedList.Count > 0) Then
                         myHerd.doNutrientReturns(GrazedList)
                 ElseIf (myPaddocks.Count > 0) Then 'no paddocks grazed today, return nutrients to those paddock allocated as part of the rotation
@@ -90,13 +90,17 @@
 #Region "2: Feeding Supplements"
         'Supplementary feeding
         <Output()> <Units("kgDM")> Public SilageFed As Double 'kgDM @ 10.5me fed to meet animal requirements
-        <Output()> <Units("kgDM")> Public SupplementFedout As Double 'kg of grain fed this period (to fill unsatisifed demand)
-        Private SME As Single = 12
+        <Output()> <Units("kgDM")> Public SupplementFedout As Double 'kg of grain fed this period (to fill unsatisifed feed demand)
+        <Param()> <Output()> <Units("%")> Public SupplementWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
+        <Param()> <Output()> <Units("%")> Public SupplementDigestability As Double = 0.7
+
+        <Param()> <Units("kgN/kgDM")> Public SNC2 As Double = 0.018 'N content of supplement (grain?) - add to the user interface
+        <Param()> <Units("ME/kgDM")> Private SME As Single = 12
 
         <Output()> <Units("MJME")> Public Property SupplementME() As Double
                 Get
                         Return SME
-        End Get
+                End Get
                 Set(ByVal value As Double)
                         SME = value
                 End Set
@@ -111,24 +115,20 @@
                 End Set
         End Property
 
-        <Param()> <Output()> <Units("%")> Public SupplementWastage As Double = 0.0 '0.1 'percentage of feed wasted as part of feeding out
-        <Param()> <Units("kgN/kgDM")> Public SNC2 As Double = 0.018 'N content of supplement (grain?) - add to the user interface
-
         'Silgae and Supplements will be used to completely fill the remaining demand
         'TODO - check implementation of wastage
-        Sub doSupplements()
-                Dim FedSupplements As Boolean = False
-                ' Meet any remaining demand with bought in feed (i.e. grain)
-                If (myHerd.RemainingFeedDemand > 0) Then
-                        FedSupplements = FeedSupplement(myHerd.RemainingFeedDemand, SupplementME, SNC2, SupplementWastage)
+        Sub FeedSupplements()
+                If (myHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
+                        FeedSupplement(myHerd.RemainingFeedDemand, SupplementME, SNC2, SupplementWastage, SupplementDigestability)
                 End If
         End Sub
 
-        Function FeedSupplement(ByVal MEDemand As Single, ByVal MEperKg As Single, ByVal NperKg As Single, ByVal WastageFactor As Single) As Boolean
+        Function FeedSupplement(ByVal MEDemand As Single, ByVal MEperKg As Single, ByVal NperKg As Single, ByVal WastageFactor As Single, ByVal Digestability As Single) As Boolean
                 Dim dm As BioMass = New BioMass()
                 SupplementFedout = (MEDemand / MEperKg) * (1 + WastageFactor)
                 dm.gLeaf = SupplementFedout * (1 - WastageFactor)
                 dm.setME(SupplementME)
+                dm.digestibility = Digestability
                 dm.N_Conc = NperKg
                 myHerd.Feed(dm, False)
                 Return (dm.DM_Total > 0)
@@ -168,7 +168,7 @@
 
         Sub updateCovers()
                 For Each Paddock As LocalPaddockType In myPaddocks
-                        Paddock.updateCoverData()
+                        Paddock.UpdateCovers()
                 Next
         End Sub
 
@@ -218,8 +218,8 @@
         End Sub
 
         Sub SortPaddocksByCover()
+                'shufflePaddocks()
                 myPaddocks.Sort(LocalPaddockType.getSortListByCover())
-                'PrintPaddocks()
         End Sub
 
         Sub SortByIndex()
@@ -242,96 +242,85 @@
                 Return TotalCover / FarmArea
         End Function
 
-        Public ReadOnly Property FarmArea() As Double
-                Get
-                        Return myPaddocks.Count ' assume 1ha paddocks for simplisity
-                End Get
-        End Property
+        Public Function FarmArea() As Double
+                Return myPaddocks.Count ' assume 1ha paddocks for simplisity
+        End Function
 
         Public Function getHerd() As SimpleHerd
                 Return myHerd
         End Function
 
 #Region "3: Pasture Conservation"
-        ''conservation
-        Private StoreSilage As Integer 'Are we going to store silage cut on farm for later use
-        <Output()> <Units("kgDM/ha")> Public CDM As Double = 3500 ' Conservation trigger pasture mass (Dawn default)
-        <Output()> <Units("kgDM/ha")> Public CR As Integer = 1600 ' Conservation cutting residual pasture mass (Dawn default)
+
+        <Input()> <Units("kgDM/ha")> Public CDM As Double = 3500 ' Conservation trigger pasture mass (Dawn default = 3500)
+        <Input()> <Units("kgDM/ha")> Public CR As Integer = 1600 ' Conservation cutting residual pasture mass (Dawn default)
+        <Input()> <Units("MJME")> Public SilageME As Double = 10.5 ' ME content of the silage
+        <Output()> <Units("kgDM")> Public SilageCut As Double
         <Output()> <Units("kgDM")> Public SilageStore As Double 'kgDM @ 10.5me fed on hand
-        <Output()> <Units("MJME")> Public SilageME As Double = 10.5 ' ME content of the silage
-        <Units("kgDM")> Public SilageCut As Double
-        <Output()> <Units("")> Public PaddocksClosed As Integer = 0 'number of paddocks currently close for conservation
+        Public PaddocksClosed As Integer = 0 'number of paddocks currently close for conservation
         'should these be moved out to a management script?
-        <Units("")> Public FCD As Integer = 9 'First Conservation Date - uing a month for the time being
-        <Units("")> Public LCD As Integer = 3 'Last Conservation Date - uing a month for the time being
+        Public FCD As Integer = 9 'First Conservation Date - uing a month for the time being
+        Public LCD As Integer = 3 'Last Conservation Date - uing a month for the time being
+        Public EnableSilageStore As Boolean 'switch ot turn off local storage of farm made silage
 
-        <Param()> <Output()> Public Property EnableSilageStore() As Integer
-                Get
-                        Return StoreSilage
-                End Get
-                Set(ByVal value As Integer)
-                        StoreSilage = value
-                End Set
-        End Property
-
-        Sub doConservation(ByVal Month As Integer, ByVal EndOfWeek As Boolean)
-                SilageCut = 0
-                'if date between FCD and LCD (first and last conservation dates)
+        Private Sub doConservation()
                 If isBetween(Month, FCD, LCD) Then
-                        updateCovers()
-                        For Each Paddock As LocalPaddockType In myPaddocks
-                                If Not (Paddock.Closed) And (Paddock.Cover > CDM) And Not (GrazedList.Contains(Paddock)) Then
-                                        Paddock.Closed = True
-                                        PaddocksClosed += 1
-                                End If
-                        Next
+                        ClosePaddocks()
                 End If
-                If (EndOfWeek And PaddocksClosed) Then ' 20100719 -> if (end_week > 0 and PaddocksClosed > 0)
+
+                Dim IsCuttingDay As Boolean = end_week > 0 'only cut once a week [as per Dawn's rules]
+                SilageCut = 0
+                If (IsCuttingDay And PaddocksClosed) Then
                         SilageCut = doHarvest()
-                        PaddocksClosed = 0
                         If (EnableSilageStore) Then
                                 SilageStore += SilageCut
                         End If
                 End If
         End Sub
 
-        Function doHarvest() As Single
-                '   Harvest all closed paddocks
-                '   Yield = (Pasture mass - conservation residual (CR = 1600)) x Paddock area
-                '   Store silage for latter use
-                '   Record harvest as output variable
-                Dim result As Single = 0
+        Private Sub ClosePaddocks()
+                updateCovers()
                 For Each Paddock As LocalPaddockType In myPaddocks
-                        If (Paddock.Closed) Then
-                                result += Paddock.Harvest(CR)
-                                PaddockQueue.Enqueue(Paddock) 'add it back into the rotation
+                        If Not (Paddock.Closed) And (Paddock.Cover > CDM) And Not (GrazedList.Contains(Paddock)) Then
+                                Paddock.Closed = True
+                                PaddocksClosed += 1
                         End If
                 Next
+        End Sub
+
+        Private Function doHarvest() As Single
+                Dim result As Single = 0
+                For Each Paddock As LocalPaddockType In myPaddocks
+                        If (Paddock.Closed) Then                        'Harvest all closed paddocks
+                                result += Paddock.Harvest(CR)
+                                PaddockQueue.Enqueue(Paddock)           'add paddock back into the rotation
+                        End If
+                Next
+                PaddocksClosed = 0
                 Return result
         End Function
-
 #End Region
 
 #Region "Additional Output Variables"
         Public Sub PrepareOutputs()
                 myPaddocks.Sort(LocalPaddockType.getSortListByIndex)
-                DM_Eaten = myHerd.DM_Eaten / FarmArea
-                DM_Eaten_Pasture = myHerd.DM_Eaten_Pasture / FarmArea
-                DM_Eaten_Supplement = myHerd.DM_Eaten_Supplement / FarmArea
-                ME_Demand = myHerd.ME_Demand / FarmArea
-                ME_Eaten = myHerd.ME_Eaten / FarmArea
-                ME_Eaten_Pasture = myHerd.ME_Eaten_Pasture / FarmArea
-                ME_Eaten_Supplement = myHerd.ME_Eaten_Supplement / FarmArea
-                N_Eaten = myHerd.N_Eaten / FarmArea
-                N_Eaten_Pasture = myHerd.N_Eaten_Pasture / FarmArea
-                N_Eaten_Supplement = myHerd.N_Eaten_Supplement / FarmArea
-                N_to_milk = myHerd.N_to_Milk / FarmArea
-                N_to_BC = myHerd.N_to_BC / FarmArea
-                N_to_feaces = myHerd.N_to_feaces / FarmArea
-                C_to_feaces = myHerd.C_to_feaces / FarmArea
-                N_to_urine = myHerd.N_to_urine / FarmArea
-                N_Balance = myHerd.N_Balance / FarmArea
-                N_Out = myHerd.N_Out / FarmArea
+                DM_Eaten = myHerd.DM_Eaten / FarmArea()
+                DM_Eaten_Pasture = myHerd.DM_Eaten_Pasture / FarmArea()
+                DM_Eaten_Supplement = myHerd.DM_Eaten_Supplement / FarmArea()
+                ME_Demand = myHerd.ME_Demand / FarmArea()
+                ME_Eaten = myHerd.ME_Eaten / FarmArea()
+                ME_Eaten_Pasture = myHerd.ME_Eaten_Pasture / FarmArea()
+                ME_Eaten_Supplement = myHerd.ME_Eaten_Supplement / FarmArea()
+                N_Eaten = myHerd.N_Eaten / FarmArea()
+                N_Eaten_Pasture = myHerd.N_Eaten_Pasture / FarmArea()
+                N_Eaten_Supplement = myHerd.N_Eaten_Supplement / FarmArea()
+                N_to_milk = myHerd.N_to_Milk / FarmArea()
+                N_to_BC = myHerd.N_to_BC / FarmArea()
+                N_to_feaces = myHerd.N_to_feaces / FarmArea()
+                DM_to_feaces = myHerd.DM_to_feaces / FarmArea()
+                N_to_urine = myHerd.N_to_urine / FarmArea()
+                N_Balance = myHerd.N_Balance / FarmArea()
+                N_Out = myHerd.N_Out / FarmArea()
 
                 ME_Demand_Cow = myHerd.ME_Demand_Cow()
                 ME_Eaten_Cow = myHerd.ME_Eaten_Cow()
@@ -386,7 +375,7 @@
         <Output()> <Units("kgN/ha")> Public N_to_BC As Single
         <Output()> <Units("kgN/ha")> Public N_to_feaces As Single
         <Output()> <Units("kgN/ha")> Public N_to_urine As Single
-        <Output()> <Units("kgN/ha")> Public C_to_feaces As Single ' added
+        <Output()> <Units("kgN/ha")> Public DM_to_feaces As Single ' added
 
         '<Output()> <Units("()")> Public PaddockStatus As Single
         <Output()> <Units("MJME/ha")> Public ReadOnly Property PaddockStatus() As String()
@@ -468,7 +457,6 @@
                         Return result
                 End Get
         End Property
-
         <Output()> <Units("MJME/cow")> Public ME_Demand_Cow As Single
         <Output()> <Units("MJME/cow")> Public ME_Eaten_Cow As Single
         <Output()> <Units("MJME/cow")> Public ME_Eaten_Pasture_Cow As Single
@@ -488,5 +476,28 @@
                         Return myHerd.LWt_Change
                 End Get
         End Property
+
+        Public Function PaddockCount()
+                Return myPaddocks.Count
+        End Function
 #End Region
+
+        Private Sub shufflePaddocks()
+                Dim list() As LocalPaddockType = myPaddocks.ToArray()
+                Dim i As Integer = 0
+                Dim j As Integer
+                Dim tmp As LocalPaddockType
+
+                While i < list.Length
+                        j = Rnd(list.Length)
+                        tmp = list(i)
+                        list(i) = list(j)
+                        list(j) = tmp
+                        i += 1
+                End While
+
+                myPaddocks.Clear()
+                myPaddocks.AddRange(list)
+        End Sub
+
 End Class

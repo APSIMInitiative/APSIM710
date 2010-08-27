@@ -2,16 +2,12 @@ Public Class BioMass
         Public Name As String
         Public gLeaf, gStem, dLeaf, dStem As Double ' drymatter [kg]
         Private N_concentration As Double 'total N in biomass [kg]
-        'Private myME As Double = 10 'hard coded ME value. Move to calculated
+        Public digestibility As Double
+        Private myME As Double = -1 'ME value < 0 then use a calculated value
         Private roundTo As Integer = 1000 'dp
 
         Public Sub New()
-                Me.Name = "default"
-                Me.gLeaf = 0
-                Me.gStem = 0
-                Me.dLeaf = 0
-                Me.dStem = 0
-                Me.N_concentration = 0
+                clear()
         End Sub
 
         Public Sub New(ByVal other As BioMass)
@@ -21,22 +17,29 @@ Public Class BioMass
                 Me.dLeaf = other.dLeaf
                 Me.dStem = other.dStem
                 Me.N_concentration = other.N_concentration
+                Me.myME = other.myME
+                Me.digestibility = other.digestibility
         End Sub
 
-
+        Public Sub clear()
+                Name = "default"
+                gLeaf = 0
+                gStem = 0
+                dLeaf = 0
+                dStem = 0
+                N_concentration = 0
+                digestibility = 0
+        End Sub
 
         Public Function DM_Green() As Double
                 Return Math.Round((gLeaf + gStem) * roundTo) / roundTo
         End Function
-
         Public Function DM_Dead() As Double
                 Return Math.Round((dLeaf + dStem) * roundTo) / roundTo
         End Function
-
         Public Function DM_Total() As Double
                 Return DM_Green() + DM_Dead()
         End Function
-
         Public Function N_Total() As Double
                 Return DM_Total() * N_concentration
         End Function
@@ -57,15 +60,12 @@ Public Class BioMass
         Public Function proportionGreenLeaf() As Double
                 Return gLeaf / DM_Green()
         End Function
-
         Public Function proportionDeadLeaf() As Double
                 Return dLeaf / DM_Dead()
         End Function
-
         Public Function proportionDead() As Double
                 Return DM_Dead() / DM_Total()
         End Function
-
         Public Function proportionGreen() As Double
                 Return DM_Green() / DM_Total()
         End Function
@@ -82,7 +82,8 @@ Public Class BioMass
                 result.dLeaf = dLeaf * factor
                 result.dStem = dStem * factor
                 result.N_concentration = N_concentration
-                'result.myME = myME
+                result.myME = myME
+                result.digestibility = digestibility
                 Return result
         End Function
 
@@ -93,9 +94,10 @@ Public Class BioMass
                 result.dLeaf = dLeaf + other.dLeaf
                 result.dStem = dStem + other.dStem
                 result.N_concentration = (N_Total() + other.N_Total) / result.DM_Total
-                'If (result.DM_Total() > 0) Then
-                '        result.myME = (getME_Total() + other.getME_Total()) / result.DM_Total()
-                'End If
+                If (result.DM_Total() > 0) Then
+                        result.myME = (getME_Total() + other.getME_Total()) / result.DM_Total()
+                        result.digestibility = (other.digestibility * other.DM_Total() + digestibility * DM_Total()) / result.DM_Total()
+                End If
                 Return result
         End Function
 
@@ -110,9 +112,10 @@ Public Class BioMass
                 Else
                         result.N_Conc = 0
                 End If
-                'If (result.DM_Total() > 0) Then
-                '        result.myME = (getME_Total() + other.getME_Total()) / result.DM_Total()
-                'End If
+                If (result.DM_Total() > 0) Then
+                        result.myME = (getME_Total() - other.getME_Total()) / result.DM_Total()
+                        result.digestibility = (other.digestibility * other.DM_Total() + digestibility * DM_Total()) / result.DM_Total()
+                End If
                 Return result
         End Function
 
@@ -120,7 +123,7 @@ Public Class BioMass
                 Dim result As New RemoveCropDmType
                 Dim green As RemoveCropDmdmType = getDMType("green", gLeaf, gStem)
                 Dim dead As RemoveCropDmdmType = getDMType("dead", dLeaf, dStem)
-                result.dm = New RemoveCropDmdmType() {green, dead} ' including dead mater causes problems with "remove_crop_biomass" call. If green > zero && dead == zero then removal == zero?
+                result.dm = New RemoveCropDmdmType() {green, dead}
                 Return result
         End Function
 
@@ -132,27 +135,29 @@ Public Class BioMass
                 Return result
         End Function
 
-        Public Sub setME(ByVal PastureME As Double)
-                'myME = PastureME
-        End Sub
-
-        Public Function getME() As Double
-                Return getME_Total() / DM_Total() 'myME
-        End Function
-
+        ' ME pasture calculation by component - values from QGraze defaults
         Private Function calcME() As Double
                 Dim l = gLeaf * 12
                 Dim s = gStem * 10.5
                 Dim d = DM_Dead() * 9
-
-                Return l + s + d ' myME
+                Return l + s + d
+                'Return 16 * digestibility
         End Function
+
+        Public Sub setME(ByVal PastureME As Double)
+                myME = PastureME
+        End Sub
+
+        Public Function getME() As Double
+                Return getME_Total() / DM_Total()
+        End Function
+
 
         Public Function getME_Total() As Double
-                Return calcME()
+                If (myME < 0) Then
+                        Return calcME() 'no ME value set so assume it pasture
+                Else
+                        Return myME * DM_Total()
+                End If
         End Function
-
-        'Public Function getTotal_Nitrogen() As Double
-        '    Return myME * DM_Total() * 0.05 'rainss 20100128 - dummy value only
-        'End Function
 End Class

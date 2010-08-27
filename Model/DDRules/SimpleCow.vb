@@ -22,7 +22,7 @@ Public Class SimpleCow
         Private RFD As Single = 0
         Public DoInterpolate As Boolean = True
 
-        Public N_to_feaces, C_to_feaces, N_to_urine, N_to_Milk, N_to_BC As Double
+        Public N_to_feaces, DM_to_feaces, N_to_urine, N_to_Milk, N_to_BC As Double
 
 #Region "Output Variables - Intake"
 #Region "Output Variables - Intake - Dry Matter"
@@ -119,6 +119,18 @@ Public Class SimpleCow
         End Sub
         '********** Constructor ******************
 
+        '********** Hooks for Apsim Events ******************
+        Public Sub OnPrepare(ByVal year As Integer, ByVal month As Integer)
+                setDate(year, month)
+                TodaysEnergyRequirement = ME_Total() 'calculate this early in case it's is needed outside
+                RemainingFeedDemand = TodaysEnergyRequirement
+                Total_DM_Eaten = New BioMass()
+                Total_Pasutre_Eaten = New BioMass()
+                Total_Supplement_Eaten = New BioMass()
+        End Sub
+        '********** Hooks for Apsim Events ******************
+
+
         Public Function ME_WeightChange()
                 'Return ME_Change_In_Liveweight(Change_in_KgLWt_per_Day)
                 Return ME_Change_In_Liveweight(Change_in_CondistionScore_per_Day * 35)
@@ -202,74 +214,38 @@ Public Class SimpleCow
         End Function
 
         Public Function Graze(ByVal GrazingPaddock As LocalPaddockType, ByVal GrazingResidual As Double) As BioMass
-                Dim dmRemoved As BioMass
-                dmRemoved = GrazingPaddock.Graze(RemainingFeedDemand, GrazingResidual)
+
+                Dim dmRemoved As BioMass = GrazingPaddock.Graze(RemainingFeedDemand, GrazingResidual)
                 If (dmRemoved.DM_Total > 0) Then
                         Feed(dmRemoved, True)
-                        'doNutrientReturns(GrazingPaddock, dmRemoved) ' this will be going on the wrong paddock, should be yesterday intake and include silage and grain
                 End If
-                Dim PH As Double = Total_DM_Eaten.getME_Total() 'PH == pasture harvested
                 Return Total_DM_Eaten
-        End Function
-
-        Public Function Supplements(ByVal kgDM As Double, ByVal MEkgDM As Double, ByVal N As Double)
-                Return 0
-        End Function
-
-        Public Function doNutrientReturns(ByVal pdk As LocalPaddockType, ByVal UrineOut_N As Double, ByVal DungOut_N As Double, ByVal DungOut_C As Double, ByVal density As Double) 'ByVal paddock As PaddockHolder)
-                pdk.UrineApplication(UrineOut_N, UrineOut_N / 0.08, density) 'urine N concentration of 8g/l
-                pdk.DungApplication(DungOut_N, DungOut_C)
-                Return 0
         End Function
 
         Public Sub doNitrogenPartioning()
                 Dim N_in As Double = Total_DM_Eaten.N_Total
                 '1st Milk production
-                Dim casein2 As Double = MS_per_Day / 2 ' assume kgMS 50% Fat : 50% Protien
-                Dim casein As Double = MS_per_Day * 3.5 / (3.5 + 4.0) 'assume kgMS from milk @ 4% Fat + 3.5% Protien
-                N_to_Milk = casein * 0.1567 'TN content in casein of 15.67% source: Rouch et. el. (2008) - Determination of a nitrogen conversion factor for protein content in Cheddar cheese
-                Dim N_to_Milk2 = MS_per_Day * 0.07 'Dawn's rule
+                'Dim casein As Double = MS_per_Day * 3.5 / (3.5 + 4.0) 'assume kgMS from milk @ 4% Fat + 3.5% Protien
+                'N_to_Milk = casein * 0.1567 'TN content in casein of 15.67% source: Rouch et. el. (2008) - Determination of a nitrogen conversion factor for protein content in Cheddar cheese
+                N_to_Milk = MS_per_Day * 0.07 'Dawn's rule, works out slightly lower (only 4% lower) than my version above
 
                 '2nd Change in body weight
-                N_to_BC = Change_in_KgLWt_per_Day / 3.0 * 0.063 ' temp fix until Ronaldo develops a better solution 20100719
+                N_to_BC = Change_in_KgLWt_per_Day * 0.02 ' Source: National Academies Press on ‘Air Emissions from Animal Feeding Operations: Current Knowledge, Future Needs (2003)’ 
 
-                'finally Dung and Urine
-                If (False) Then
-                        'ecomod version
-                        Const DM_to_Carbon As Double = 0.4
-                        Dim C_in As Double = Total_DM_Eaten.DM_Total * DM_to_Carbon
-                        Dim fN_in As Double = DM_to_Carbon * N_in / C_in
-                        Dim MED_in As Double = DM_to_Carbon * Total_DM_Eaten.getME_Total / C_in
-                        Dim NED As Double = fN_in / MED_in
-                        Dim N_out = Total_DM_Eaten.N_Total * 0.03 'parameter from EcoMod.Stock -> AnimalNu_frac[elN] := 0.03;
-                        Dim PEN As Double = N_out / N_in
-                        Dim a = 0.45 'DungNu_frac[1,elN]
-                        Dim b = 0.13 'DungNu_frac[2,elN]
-                        Dim c = 560 'DungNu_frac[3,elN]
-                        Dim fraction = b + (a - b) * Math.Exp(-c * NED * PEN * PEN)
-                        Dim DungOut_N As Double = fraction * N_out
-                        Dim UrineOut_N = N_out - DungOut_N
-                        N_to_feaces = DungOut_N
-                        N_to_urine = UrineOut_N
-                Else
-                        '40:60 split as per Dawn's documentation
-                        N_to_Milk = MS_per_Day * 0.07
-                        Dim N_Excreta = N_in - (N_to_Milk + N_to_BC)
-                        N_to_feaces = N_Excreta * 0.4
-                        N_to_urine = N_Excreta - N_to_feaces
-                End If
-                Dim C_out = Total_DM_Eaten.DM_Total * (1 - 0.7) 'digestability = 70% grass, 55% hay, 80% grain, time = 18-24, 30-40 & 12-14 Farm Tech manual A-154
-                C_to_feaces = C_out
+                'finally Dung and Urine 40:60 split as per Dawn's documentation
+                Dim N_Excreta = N_in - (N_to_Milk + N_to_BC)
+                N_to_feaces = N_Excreta * 0.4
+                N_to_urine = N_Excreta - N_to_feaces
+
+                Dim DM_out = Total_DM_Eaten.DM_Total * (1 - Total_DM_Eaten.digestibility) 'digestability = 70% grass, 55% hay, 80% grain, time = 18-24, 30-40 & 12-14 Farm Tech manual A-154
+                DM_to_feaces = DM_out
         End Sub
 
-        Public Sub OnPrepare(ByVal year As Integer, ByVal month As Integer)
-                setDate(year, month)
-                TodaysEnergyRequirement = ME_Total() 'calculate this early in case it's is needed outside
-                RemainingFeedDemand = TodaysEnergyRequirement
-                Total_DM_Eaten = New BioMass()
-                Total_Pasutre_Eaten = New BioMass()
-                Total_Supplement_Eaten = New BioMass()
-        End Sub
+        Public Function doNutrientReturns(ByVal pdk As LocalPaddockType, ByVal UrineOut_N As Double, ByVal DungNitrogen As Double, ByVal DungDM As Double, ByVal density As Double) 'ByVal paddock As PaddockHolder)
+                pdk.UrineApplication(UrineOut_N, UrineOut_N / 0.08, density) 'urine N concentration of 8g/l
+                pdk.DungApplication(DungNitrogen, DungDM)
+                Return 0
+        End Function
 
         Public Sub Feed(ByVal feed As BioMass, ByVal isPasture As Boolean)
                 If (feed.DM_Total > 0) Then
@@ -345,7 +321,6 @@ Public Class SimpleCow
 
         Public ReadOnly Property isDry() As Boolean
                 Get
-                        'Return Month_Of_Lactation <= 0
                         Return ME_Lactation() <= 0
                 End Get
         End Property

@@ -20,8 +20,8 @@ Public Class DDRules
         <Input()> Private year As Integer
         <Input()> Private day_of_month As Integer
         <Input()> Private end_week As Integer
-        <Input()> Private UI_StockRate As Single
-        <Input()> Private UI_SuppType As String
+        '<Input()> Private UI_StockRate As Single
+        '<Input()> Private UI_SuppType As String
 
         <Param()> <Output()> Public EnableFarmSim As Integer
         <Output()> Public BaseStockingRate As Double = 0
@@ -65,7 +65,6 @@ Public Class DDRules
                 End Get
         End Property
 
-
         Private FirstSimulationDay = True
 #Region "EventHandlers"
         <EventHandler()> Public Sub OnInit2()
@@ -80,7 +79,42 @@ Public Class DDRules
                 myHerd = myFarm.getHerd()
                 ' ************* Farm testing **********************
 
+                BaseStockingRate = 2.5
+
                 SetupFarmSim()
+                'If (debug) Then
+                PrintFarmSummary()
+                'End If
+        End Sub
+
+        Sub SetupFarmSim()
+                Dim FarmSim As ComponentType = MyPaddock.Component("FarmSimGraze")
+                If FarmSim Is Nothing Then
+                        Return
+                End If
+
+                Dim UI_StockRate As Double = FarmSim.Variable("UI_StockRate").ToDouble
+                Dim UI_SuppType As String = FarmSim.Variable("UI_SuppType").ToDouble
+
+                BaseStockingRate = UI_StockRate
+                sr = BaseStockingRate
+
+                Dim GrassSilage As Integer = 0
+                Dim GrainOrConcentrate As Integer = 1
+                If (UI_SuppType = "GrassSilage") Then
+                        myFarm.SupplementME = 10
+                        myFarm.SupplementN = 0.035
+                        myFarm.SupplementWastage = 0.0
+                        myFarm.SupplementDigestability = 0.7 ' minimum for high quality silage. Source: DairyNZ FarmFact 1-46
+                Else 'GrainOrConcentrate
+                        myFarm.SupplementME = 12
+                        myFarm.SupplementN = 0.018
+                        myFarm.SupplementWastage = 0.0
+                        myFarm.SupplementDigestability = 0.8
+                End If
+
+                myFarm.EnableSilageStore = False 'all supplement purchase / no silage kept
+                myFarm.WinterOffDryStock = True 'all stock wintered off farm
         End Sub
 
         <EventHandler()> Sub OnPrepare()
@@ -123,26 +157,6 @@ Public Class DDRules
                 PrepareOutputs()
         End Sub
 #End Region
-
-        Sub SetupFarmSim()
-                BaseStockingRate = UI_StockRate
-                sr = BaseStockingRate
-
-                Dim GrassSilage As Integer = 0
-                Dim GrainOrConcentrate As Integer = 1
-                If (UI_SuppType = "GrassSilage") Then
-                        myFarm.SupplementME = 10
-                        myFarm.SupplementN = 0.035
-                        myFarm.SupplementWastage = 0.0
-                Else 'GrainOrConcentrate
-                        myFarm.SupplementME = 12
-                        myFarm.SupplementN = 0.018
-                        myFarm.SupplementWastage = 0.0
-                End If
-
-                myFarm.EnableSilageStore = 0 'all supplement purchase / no silage kept
-                myFarm.WinterOffDryStock = True 'all stock wintered off farm
-        End Sub
 
 #Region "CowProperties"
 
@@ -252,19 +266,20 @@ Public Class DDRules
         End Property
 #End Region
 
-        Public Property GrazingInterval()
+        <Output()> <Units("Days")> Public Property GrazingInterval() As Integer
                 Get
-                         Return myFarm.GrazingInterval
+                        Return myFarm.GrazingInterval
                 End Get
-                Set(ByVal value)
+                Set(ByVal value As Integer)
                         myFarm.GrazingInterval = value
                 End Set
         End Property
-        Public Property GrazingResidual()
+
+        <Output()> <Units("kgDM/ha")> Public Property GrazingResidual() As Integer
                 Get
-                         Return myFarm.GrazingResidual
+                        Return myFarm.GrazingResidual
                 End Get
-                Set(ByVal value)
+                Set(ByVal value As Integer)
                         'localGR = value
                         'updateCovers(localGR, localPME)
                         myFarm.GrazingResidual = value
@@ -273,7 +288,7 @@ Public Class DDRules
 
         <Output()> <Units("kgDM")> Public ReadOnly Property SilageCut() As Double
                 Get
-                        Return myFarm.SilageCut
+                         Return myFarm.SilageCut
                 End Get
         End Property
 
@@ -327,7 +342,7 @@ Public Class DDRules
                 N_to_milk = myFarm.N_to_milk
                 N_to_BC = myFarm.N_to_BC
                 N_to_feaces = myFarm.N_to_feaces
-                C_to_feaces = myFarm.C_to_feaces
+                DM_to_feaces = myFarm.DM_to_feaces
                 N_to_urine = myFarm.N_to_urine
                 N_Balance = myFarm.N_Balance
                 N_Out = myFarm.N_Out
@@ -347,6 +362,7 @@ Public Class DDRules
                 N_to_feaces_Cow = myHerd.N_to_feaces_Cow()
                 N_to_urine_Cow = myHerd.N_to_urine_Cow()
         End Sub
+
         <Output()> Public ReadOnly Property Total_Cows() As Single
                 Get
                         Return myHerd.Number_Of_Cows
@@ -384,7 +400,7 @@ Public Class DDRules
         <Output()> <Units("kgN/ha")> Public N_to_BC As Single
         <Output()> <Units("kgN/ha")> Public N_to_feaces As Single
         <Output()> <Units("kgN/ha")> Public N_to_urine As Single
-        <Output()> <Units("kgN/ha")> Public C_to_feaces As Single ' added
+        <Output()> <Units("kgN/ha")> Public DM_to_feaces As Single ' added
 
         <Output()> <Units("MJME/ha")> Public ReadOnly Property PaddockStatus() As String()
                 Get
@@ -422,12 +438,12 @@ Public Class DDRules
         <Output()> <Units("kgN/ha")> Public N_to_BC_Pdks As Single()
         <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_feaces_Pdks() As Single()
                 Get
-                         Return myFarm.N_to_feaces_Pdks
+                        Return myFarm.N_to_feaces_Pdks
                 End Get
         End Property
         <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_urine_Pdks() As Single()
                 Get
-                         Return myFarm.N_to_urine_Pdks
+                        Return myFarm.N_to_urine_Pdks
                 End Get
         End Property
         <Output()> <Units("MJME/cow")> Public ME_Demand_Cow As Single
@@ -458,4 +474,27 @@ Public Class DDRules
                 End Get
         End Property
 #End Region
+
+        Private Sub PrintFarmSummary()
+                Console.WriteLine()
+                Console.WriteLine("---------- DDRules Initialisation ----------")
+                Console.WriteLine("     Stock Management")
+                Console.WriteLine("             Stocking Rate           " & BaseStockingRate)
+                Console.WriteLine("             Calving Date            ")
+                Console.WriteLine("             Paddock Count           " & myFarm.PaddockCount)
+                Console.WriteLine("             Winter Off Dry Stock    " & myFarm.WinterOffDryStock.ToString)
+                Console.WriteLine("     Grazing Management")
+                Console.WriteLine("             Residules               " & myFarm.GrazingResidual)
+                Console.WriteLine("             Interval                " & myFarm.GrazingInterval)
+                Console.WriteLine("     Supplementary Feeding")
+                Console.WriteLine("             ME Content              " & myFarm.SupplementME)
+                Console.WriteLine("             N Content               " & myFarm.SupplementN)
+                Console.WriteLine("             Wastage                 " & myFarm.SupplementWastage)
+                Console.WriteLine("     Conservation")
+                Console.WriteLine("             Start Date              " & myFarm.FCD)
+                Console.WriteLine("             Finish Date             " & myFarm.LCD)
+                Console.WriteLine("             Trigger Residule        " & myFarm.CDM)
+                Console.WriteLine("             Cutting Residule        " & myFarm.CR)
+                Console.WriteLine("             Silage Stored on Farm   " & myFarm.EnableSilageStore.ToString)
+        End Sub
 End Class
