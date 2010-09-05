@@ -3,7 +3,7 @@
 #include "PhotosynthesisModel.h"
 #include "RUEModel.h"
 #include "SUCROSModel.h"
-#include "RUEWholePlantModel.h"
+#include "RUEWholePlantModel.h"  // (PFR)
 using namespace std;
 
 // Return one of the PhotosynthesisModel objects we know about.

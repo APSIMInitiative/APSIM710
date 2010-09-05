@@ -6,6 +6,13 @@
 #include "../Phenology/Phenology.h"
 using namespace std;
 
+// Purpose and status: This class was supposed to read a single value of
+// radiation use efficiency (g DM/MJ) for the "entire" plant (i.e. not only shoots as original APSIM)
+// Note: It's not working yet as it conflicts with N demand (not sure why) 
+// To use total RUE at the moment just fill parameter file with same value
+// for all phenological phases (developed for lucerne)
+// This class is not used at the moment - FIXME-EIT
+
 RUEWholePlantModel::RUEWholePlantModel(ScienceAPI& scienceAPI, plantInterface& p)
    : PhotosynthesisModel(scienceAPI, p)
    {
