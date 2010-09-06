@@ -40,13 +40,9 @@ void Arbitrator::partitionDM()
       Part.zeroDltDmGreen();
       if (PartitionRules[i] == "magic")
          Part.giveDmGreen(ratioRootShoot() * DMSupply());
-      else if (PartitionRules[i] == "seasonal")                  // (PFR)
-         {
-         float uptake = ratioRootPlant() * dm_remaining;
-         Part.giveDmGreen(uptake);                                // (PFR)
-         dm_remaining = dm_remaining - uptake;                    // Here total RUE is used so remaining discounts root uptake(PFR)
-         dlt_dm_green_tot = dlt_dm_green_tot + uptake;
-         }
+      else if (PartitionRules[i] == "seasonal")
+         Part.giveDmGreen(ratioRootPlant() * dm_remaining);
+
       else
          {
          float uptake;

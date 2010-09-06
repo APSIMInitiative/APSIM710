@@ -164,7 +164,7 @@ void Leaf::doDmPotRUE (void )                    // (OUTPUT) potential dry matte
    //       temperature and nutritional status of the plant are
    //       taken into account in the radiation use efficiency.
 
-   dlt.dm_pot_rue = Photosynthesis->PotentialDM(radiationInterceptedGreen); // this called the original "Potential()" function in previous versions (PFR)
+   dlt.dm_pot_rue = Photosynthesis->PotentialDM(radiationInterceptedGreen);
    }
 
 

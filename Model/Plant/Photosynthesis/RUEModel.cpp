@@ -14,7 +14,7 @@ RUEModel::RUEModel(ScienceAPI& scienceAPI, plantInterface& p)
 //              "y_rue", "(g dm/mj)", 0.0, 1000.0);
    };
 
-float RUEModel::PotentialDM (float radiationInterceptedGreen)   // (PFR)
+float RUEModel::PotentialDM (float radiationInterceptedGreen)
    {
    float Diffuse_factor = plant.environment().DiffuseLightFactor();
 
@@ -25,13 +25,13 @@ float RUEModel::PotentialDM (float radiationInterceptedGreen)   // (PFR)
 
    }
 
-float RUEModel::getRUE(void) // (PFR)
+float RUEModel::getRUE(void)
    {
    return plant.phenology().doInterpolation(RUE);
 
    }
 
-void RUEModel::Read(void)   // (PFR)
+void RUEModel::Read(void)
    {
     RUE.read(scienceAPI,
               "x_stage_rue", "()", 0.0, 1000.0,

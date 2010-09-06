@@ -38,7 +38,7 @@ class GenericLeaf : public Leaf {
    float senFract (void)
      { return(divide (dltSLAI, gLAI + dltLAI, 0.0)); };             // fraction of canopy senescing
    float dmGreenDemand(void)
-     { return(divide (dltLAI_stressed, cSLAMin * smm2sm, 0.0));};   // Maximum DM this part can take today (PFR)
+     { return(divide (dltLAI_stressed, cSLAMin * smm2sm, 0.0));};   // Maximum DM this part can take today
    float dltLeafAreaPot(void) {return (divide(dltLAI_stressed, plant->population().Density(), 0.0) * sm2smm);};
 
    void CanopyExpansion (int option, float, float, float);
@@ -93,16 +93,17 @@ class GenericLeaf : public Leaf {
                                                       // light competition factor for
                                                       // determining leaf senesence rate.
    float cSenRateWater;                               // slope in linear eqn
+   float cNodeAppRatePostPhoto;                       //
+   float cNodeAppRatePrePhoto;                        //
+   string cLAIExpModelOption;                         // Option of leaf area expansion model selected from ini file
+
+   interpolationFunction cLAIRatePhoto;               // leaf area expansion rate (LAI/oCd)
                                                       // relating soil water
                                                       // stress during photosynthesis
                                                       // to leaf senesense rate
-   float cNodeAppRatePostPhoto;                       // (PFR)
-   float cNodeAppRatePrePhoto;                        // (PFR)
-   string cLAIExpModelOption;                         // Option of leaf area expansion model to be selected from parameter file (PFR)
 
-   interpolationFunction cLAIRatePhoto;               // leaf area expansion rate (LAI/oCd) (PFR)
    interpolationFunction cNodeAppRate;
-   interpolationFunction cNodeAppRatePhoto; 	      // (PFR)
+   interpolationFunction cNodeAppRatePhoto;
    interpolationFunction cLeavesPerNode;
    interpolationFunction cLeafSize;
    interpolationFunction cSLAMax;

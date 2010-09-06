@@ -52,8 +52,7 @@ void GenericLeaf::readSpeciesParameters (protocol::Component *system, vector<str
    cNodeAppRate.read(scienceAPI
                         , "x_node_no_app",  "()", 0.0, 200.0
                         , "y_node_app_rate", "()", 0.0, 400.0);
-
-   bool LAIOptionFound = scienceAPI.readOptional("lai_exp_model_option", cLAIExpModelOption); // lai expansion model option (PFR)
+   bool LAIOptionFound = scienceAPI.readOptional("lai_exp_model_option", cLAIExpModelOption); // lai expansion model option
 
    if (LAIOptionFound)
        cLAIRatePhoto.read(scienceAPI                                                 //    LAI expansion rate
@@ -66,8 +65,8 @@ void GenericLeaf::readSpeciesParameters (protocol::Component *system, vector<str
                         , "x_pp_node_app_rate",  "()", 0.0, 200.0
                         , "y_tt_node_app_rate", "()", 0.0, 400.0);
 
-   scienceAPI.readOptional("node_app_rate_pre_photo", cNodeAppRatePrePhoto, 0.0f, 1000.0f);     // pre-photoperiod phyllochron  (PFR)
-   scienceAPI.readOptional("node_app_rate_post_photo", cNodeAppRatePostPhoto, 0.0f, 1000.0f);  // post-photoperiod phyllochron  (PFR)
+   scienceAPI.readOptional("node_app_rate_pre_photo", cNodeAppRatePrePhoto, 0.0f, 1000.0f);     // pre-photoperiod phyllochron
+   scienceAPI.readOptional("node_app_rate_post_photo", cNodeAppRatePostPhoto, 0.0f, 1000.0f);  // post_photoperiod phyllochron
 
    cLeavesPerNode.read(scienceAPI
                         , "x_node_no_leaf",  "()", 0.0, 200.0
@@ -112,14 +111,12 @@ void GenericLeaf::onInit1(protocol::Component *system)
    system->addGettableVar("slai", gSLAI, "m^2/m^2", "Senesced lai");
 
    system->addGettableVar("lai", gLAI, "m^2/m^2", "Leaf area index");
-
-    system->addGettableVar("dlt_lai", dltLAI, "m^2/m^2", "Actual change in live plant lai"); 									// (PFR)
+    system->addGettableVar("dlt_lai", dltLAI, "m^2/m^2", "Actual change in live plant lai");
 
    system->addGettableVar("dlt_lai_pot", dltLAI_pot, "m^2/m^2", "Potential change in live plant lai");
 
    system->addGettableVar("dlt_lai_stressed", dltLAI_stressed, "m^2/m^2", "Potential change in lai allowing for stress");
-
-   system->addGettableVar("dlt_lai_carbon", dltLAI_carbon, "m^2/m^2", "Potential change in lai allowing for growth"); 			// (PFR)
+   system->addGettableVar("dlt_lai_carbon", dltLAI_carbon, "m^2/m^2", "Potential change in lai allowing for growth");
 
    system->addGettableVar("dlt_leaf_no", dltLeafNo, "leaves/m2", "Change in number of leaves");
 
@@ -197,7 +194,6 @@ void GenericLeaf::zeroDeltas(void)
    dltSLAI = 0.0;
    dltLAI_pot = 0.0;
    dltLAI_stressed = 0.0;
-   dltLAI_carbon = 0.0;  // (PFR)
    dltSLAI_detached = 0.0;
    dltSLAI_age = 0.0;
    dltSLAI_light = 0.0;
@@ -370,8 +366,7 @@ void GenericLeaf::leaf_area_actual(void)
                                                            //index from carbon supply
    dltLAI = min(dltLAI_carbon, dltLAI_stressed);
 }
-
-void GenericLeaf::leaf_area_actual_pp(void)                 // Purpose: Set actual dlt LAI as "stressed dlt LAI" without SLA constraints (PFR)
+void GenericLeaf::leaf_area_actual_pp(void)                 // Purpose: Set actual dlt LAI as "stressed dlt LAI" without SLA constraints
 	{
 	   dltLAI = dltLAI_stressed;
 	}
@@ -460,8 +455,7 @@ void GenericLeaf::CanopyExpansion (int leaf_no_pot_option /* (INPUT) option numb
                               , float AreaStressFactor)
    {
    this->leaf_no_pot (leaf_no_pot_option, stressFactor, dlt_tt);
-
-   if (cLAIExpModelOption == "LAIRatePhoto")          // Uses the LAI expansion rate based on photoperiod (PFR)
+   if (cLAIExpModelOption == "LAIRatePhoto")          // Uses the LAI expansion rate based on photoperiod
          this->leaf_area_potential_pp ();
    else if (cLAIExpModelOption == "default")          // Used the original LAI model with node appearance leaves/node and leaf size
    this->leaf_area_potential ();
@@ -500,8 +494,8 @@ void GenericLeaf::leaf_no_pot (int option, float stressFactor, float dlt_tt)
                              , &dltLeafNoPot
                              , &dltNodeNoPot);
         }
-    else if (option == 3) 							// This option uses phyllochron as a function
-        {                                                                       //  of photoperiod in sensitive phase(PFR)
+    else if (option == 3)
+        {
         cproc_leaf_no_pot4(cNodeAppRatePhoto
                            , cLeavesPerNode
                            , cNodeAppRatePrePhoto
@@ -546,7 +540,7 @@ void GenericLeaf::leaf_area_potential ()
 void GenericLeaf::leaf_area_potential_pp ()
    {
    float photoperiod = plant->environment().dayLength();
-   float LAIRatePhoto = cLAIRatePhoto.value (photoperiod);                      // Leaf area expansion rate (m^2/m^2/oCd, i.e. LAI/oCd)
+   float LAIRatePhoto = cLAIRatePhoto.value (photoperiod);
    float dltTT = plant->phenology().TT();
    dltLAI_pot =  dltTT * LAIRatePhoto;
    }

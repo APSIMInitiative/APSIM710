@@ -359,7 +359,6 @@ void Plant::onProcess()
       root().plant_root_depth ();
       if (g.plant_status == alive)
          {
-         environment().process();
          root().doWaterUptake(1, Tops().SWDemand());
          root().doPlantWaterStress (Tops().SWDemand(), swStress);
          root().plant_nit_supply();
@@ -1480,7 +1479,7 @@ void Plant::plant_read_species_const (void)
     scienceAPI.read("n_supply_preference", c.n_supply_preference);
 
     //    plant_phenology_init                           //FIXME - should be in leafPart
-    scienceAPI.read("leaf_no_pot_option", c.leaf_no_pot_option, 1, 3);          // switch to define the method of calculating node-appearance rate (PFR)
+    scienceAPI.read("leaf_no_pot_option", c.leaf_no_pot_option, 1, 3);
     scienceAPI.read("n_retrans_option", c.n_retrans_option, 1, 2);
 
     //    plant_n_senescence

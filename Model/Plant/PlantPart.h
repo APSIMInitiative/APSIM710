@@ -199,7 +199,7 @@ public:
    virtual void  doProcessBioDemand(void) = 0;
    virtual void  doPSenescence(void) = 0;
    virtual void  doSenescence(float) = 0;
-   virtual void doMaintenanceRespirationPFR (void) = 0;    // (PFR)
+   virtual void doMaintenanceRespirationPFR (void) = 0;
 
 
    virtual void  get_dlt_dm_green(vector<float> &) = 0;

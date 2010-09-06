@@ -47,6 +47,7 @@ class SimplePart : public plantPart
    float SoilNDemand;
    float NCapacity;                  // amount of nitrogen this part can take(g/m^2)
    float NMax ;                      // maximum plant nitrogen demand (g/m^2)
+   float SoilTempTopLayer;           // soil surface temperature (oC)    FIXME-EIT
 
    // "Constants"
    struct {
@@ -67,8 +68,7 @@ class SimplePart : public plantPart
       bool  retrans_part;                // is a retrans_part
 
       float n_deficit_uptake_fraction;    // xxxxxxxxxx
-      float MRScalingFactor;             //  Empirical factor used to scale "average" maintenace-respiration rate using daily change in photoperiod (PFR)
-      float Q10;                         // Q10 for maintenance respiration of plant parts (PFR)
+      float MRScalingFactor;             //  Scaling the delta photoperiod
 
       interpolationFunction GrowthStructuralFraction;
       interpolationFunction n_conc_min;
@@ -150,8 +150,8 @@ protected:
    virtual void doNSenescence(void);
    virtual void doProcessBioDemand(void){};
    virtual void doSenescence(float);
-   virtual void doMaintenanceRespirationPFR(void);                              // (PFR)
-   virtual float TemperatureAdjustmentQ10(float);				// (PFR)
+   virtual void doMaintenanceRespirationPFR(void);                           // Plant and Food implementation
+   virtual float TemperatureAdjustmentQ10(float);
    virtual void doSoilNDemand(void);
    virtual void morphology(void);
    virtual void onInit1(protocol::Component *);
