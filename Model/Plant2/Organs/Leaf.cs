@@ -52,8 +52,6 @@ public class Leaf : BaseOrgan, AboveGround
    double InitialLeafPrimordia = 0;           // Initial number of leaf primordia
    [Param]
    double FinalNodeNoEstimate = 0;
-   [Param]
-   private LinearInterpolation FrostFraction = null;
    #endregion
    [Output]
    public double FinalNodeNo
@@ -355,8 +353,9 @@ public class Leaf : BaseOrgan, AboveGround
          NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
       NodeNo = Math.Min(NodeNo, _FinalNodeNo);
 
+      Function FrostFraction = Children["FrostFraction"] as Function;
       foreach (LeafCohort L in Leaves)
-         L.DoFrost(FrostFraction.Value(MinT));
+         L.DoFrost(FrostFraction.Value);
 
       if (NodeNo > Leaves.Count + 1)
          {
