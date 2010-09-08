@@ -21,7 +21,7 @@ class LeafCohort
    private double LagDuration = 0;
    private double SenescenceDuration = 0;
    private double SpecificLeafAreaMax = 0;
-   private double CriticalNConc = 0;
+   private double MaximumNConc = 0;
    private double MinimumNConc = 0;
    private double StructuralNConc = 0;
    private double InitialNConc = 0;
@@ -72,7 +72,7 @@ class LeafCohort
       LagDuration = ld.Value;
       SenescenceDuration = sd.Value;
       SpecificLeafAreaMax = sla.Value;
-      CriticalNConc = CNC.Value;
+      MaximumNConc = CNC.Value;
       MinimumNConc = MNC.Value;
       StructuralNConc = SNC.Value;
       InitialNConc = INC.Value;
@@ -157,7 +157,7 @@ class LeafCohort
 
    public double NDemand()
       {
-      double NDeficit = Math.Max(0.0, CriticalNConc * Live.Wt - Live.N);
+      double NDeficit = Math.Max(0.0, MaximumNConc * Live.Wt - Live.N);
       return NDeficit;
       }
    public double DMAllocation
@@ -248,7 +248,7 @@ class LeafCohort
    private double NFac()
       {
       double Nconc = Live.NConc;
-      double value = Math.Min(1.0,Math.Max(0.0,(Nconc - MinimumNConc)/(CriticalNConc - MinimumNConc)));
+      double value = Math.Min(1.0,Math.Max(0.0,(Nconc - MinimumNConc)/(MaximumNConc - MinimumNConc)));
       return value;
       }
    public void DoKill(double fraction)

@@ -379,7 +379,7 @@ public class Leaf : BaseOrgan, AboveGround
                                 Children["LagDuration"] as Function,
                                 Children["SenescenceDuration"] as Function,
                                 Children["SpecificLeafArea"] as Function,
-                                0.0, Children["CriticalNConc"] as Function,
+                                0.0, Children["MaximumNConc"] as Function,
                                    Children["MinimumNConc"] as Function,
                                 Children["StructuralNConc"] as Function,
                                 Children["InitialNConc"] as Function));    
@@ -406,7 +406,7 @@ public class Leaf : BaseOrgan, AboveGround
                                 Children["SenescenceDuration"] as Function,
                                 Children["SpecificLeafArea"] as Function,
                                 InitialAreas[i],
-                                Children["CriticalNConc"] as Function,
+                                Children["MaximumNConc"] as Function,
                                 Children["MinimumNConc"] as Function,
                                 Children["StructuralNConc"] as Function,
                                 Children["InitialNConc"] as Function));
@@ -606,13 +606,13 @@ public class Leaf : BaseOrgan, AboveGround
       get
          {
          double F = 1;
-         Function CriticalNConc = (Function)Children["CriticalNConc"];
+         Function MaximumNConc = (Function)Children["MaximumNConc"];
          Function MinimumNConc = (Function)Children["MinimumNConc"];
-         if (CriticalNConc.Value == 0)
+         if (MaximumNConc.Value == 0)
             F = 1;
          else
             {
-            F = (Live.NConc - MinimumNConc.Value) / (CriticalNConc.Value - MinimumNConc.Value);
+            F = (Live.NConc - MinimumNConc.Value) / (MaximumNConc.Value - MinimumNConc.Value);
             F = Math.Max(0.0, Math.Min(F, 1.0));
             }
          return F;

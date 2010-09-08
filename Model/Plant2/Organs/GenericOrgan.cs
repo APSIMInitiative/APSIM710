@@ -50,8 +50,8 @@ class GenericOrgan : BaseOrgan, AboveGround
    {
    get
       {
-      Function CriticalNConc = Children["CriticalNConc"] as Function;
-      double NDeficit = Math.Max(0.0, CriticalNConc.Value * Live.Wt - Live.N);
+      Function MaximumNConc = Children["MaximumNConc"] as Function;
+      double NDeficit = Math.Max(0.0, MaximumNConc.Value * Live.Wt - Live.N);
       return NDeficit;
       }
    }
