@@ -114,6 +114,9 @@ FactoryProperty::FactoryProperty(ReflectedType^ Property, XmlNode^ Parent)
       if (P != nullptr)
          {
          IsParam = true;
+		 OptionalParam = P->Optional;
+		 ParamMinVal = P->MinVal;
+		 ParamMaxVal = P->MaxVal;
          if (P->Name != "")
             {
             Name = P->Name;

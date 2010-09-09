@@ -344,7 +344,7 @@ void ApsimComponent::BuildObjects(XmlNode^ XML)
    RegisterAllProperties(Fact);
    RegisterAllEventHandlers(Fact);
    TrapAllEvents(Fact);
-   Fact->ThrowOnUnInitialisedParameters();
+   Fact->CheckParameters();
    }
 
 void ApsimComponent::PerformInstructions(XmlNode^ Node, XmlNode^% ModelDescription)

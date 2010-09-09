@@ -14,15 +14,22 @@ public ref class Param : public System::Attribute
 	{
 	public:
 		String^ Name;
+		bool Optional;
+		double MinVal;
+		double MaxVal;
 		Param()
 			{
 			Name = "";
+			Optional = false;
+			MinVal = MaxVal = Double::NaN;  // Using Nan to indicate min. and max. values not set
 			}
 		Param(String^ Name)
 			{
 			this->Name = Name;
+			Optional = false;
+			MinVal = MaxVal = Double::NaN;
 			}
-	};
+ 	};
 
 [AttributeUsage(AttributeTargets::Field | AttributeTargets::Property, AllowMultiple = true)]
 public ref class Input : public System::Attribute

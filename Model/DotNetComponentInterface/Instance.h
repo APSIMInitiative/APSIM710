@@ -110,7 +110,7 @@ public ref class Instance : NamedItem
                return Parent->Root;
             }
          }
-         
+	  property String^ InstanceName { String^ get() { return MyFQN(); } }
       //property PaddockType^ Paddock 
       //   { 
       //   // --------------------------------------------------------------------

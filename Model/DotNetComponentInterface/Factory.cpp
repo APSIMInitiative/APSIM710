@@ -215,27 +215,56 @@ void Factory::GetAllEvents(Instance^ Obj)
       return nullptr;
       }
       
-void Factory::ThrowOnUnInitialisedParameters()
+void Factory::CheckParameters()
    {
 	// -----------------------------------------------
 	// Check for parameters in the model that
 	// haven't been given a value and throw if any 
 	// are found.
+    // Also do range checking, if applicable.
 	// -----------------------------------------------
 	
 	String^ Errors = "";
+	String^ RangeErrors = "";
 	for (int i = 0; i != RegisteredProperties->Count; i++)
-	   {
+	{
 	   FactoryProperty^ Property = RegisteredProperties[i];
-	   if (Property->IsParam && !Property->HasAsValue)
+	   if (Property->IsParam)
+	   {
+		  if (!Property->HasAsValue && !Property->OptionalParam)
 	      {
-	      if (Errors != "")
-	         Errors += ", ";
-	      Errors += Property->FQN;
-         }	
-      }
+	         if (Errors != "")
+	            Errors += ", ";
+	         Errors += Property->FQN;
+          }
+		  // Is there a tidier way to do this?
+		  if (Property->HasAsValue && 
+			 (!Double::IsNaN(Property->ParamMinVal) || 
+			  !Double::IsNaN(Property->ParamMaxVal)) &&
+             (Property->TypeName == "Double" ||
+			  Property->TypeName == "Single" ||
+			  Property->TypeName == "Int32"))
+		  {
+			 double val = Convert::ToDouble(Property->Get->ToString());
+   			 if (!Double::IsNaN(Property->ParamMinVal) && 
+				 val < Property->ParamMinVal)
+				 RangeErrors += "The value provided for " + Property->FQN +
+			      " is less than its allowed minimum (" + 
+				  Property->Get->ToString() + " vs. " +
+				  Property->ParamMinVal + ")\n";
+   			 if (!Double::IsNaN(Property->ParamMaxVal) && 
+				 val > Property->ParamMaxVal)
+   			   RangeErrors += "The value provided for " + Property->FQN +
+			      " is greater than its allowed maximum (" + 
+				  Property->Get->ToString() + " vs. " +
+				  Property->ParamMaxVal + ")\n";
+		  }
+	   } 
+   }
    if (Errors != "")
       throw gcnew Exception("The following parameters haven't been initialised: " + Errors);
+   if (RangeErrors != "")
+	   throw gcnew Exception("In " + Root->InstanceName + ", the following parameters are outside their allowable ranges:\n" + RangeErrors);
 	}
       
 void Factory::RemoveShortCuts(XmlNode^ Node)

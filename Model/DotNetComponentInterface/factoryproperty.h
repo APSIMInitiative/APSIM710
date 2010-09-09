@@ -30,6 +30,8 @@ public ref class ReflectedType abstract : NamedItem
             SetObject(Convert::ToInt32(Value));
          else if (Typ->Name == "Single")
             SetObject(Convert::ToSingle(Value));
+		 else if (Typ->Name == "Boolean")
+			 SetObject(Convert::ToBoolean(Value));
          else if (Typ->Name == "String")
             SetObject(Value);
          else if (Typ->Name == "Double[]")
@@ -99,6 +101,9 @@ public ref class FactoryProperty : Instance, ApsimType
       bool ReadOnly;
       bool HaveSet;
       bool OptionalInput;
+	  bool OptionalParam;
+	  double ParamMinVal;
+	  double ParamMaxVal;
       String^ TypeName;
       String^ Units;
       String^ Description;

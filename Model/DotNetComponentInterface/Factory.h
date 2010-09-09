@@ -33,7 +33,7 @@ public ref class Factory
       void Create(String^ Xml, Assembly^ Assembly, ModelFramework::ApsimComponent^ ParentComponent);
       //void Create(XmlNode^ Node, Assembly^ Assembly);
       void PopulateParams(Instance^ Obj, XmlNode^ Node, ModelFramework::ApsimComponent^ ParentComponent);
-      void ThrowOnUnInitialisedParameters();
+      void CheckParameters();
    private:
       Instance^ _Root;
       List<FactoryProperty^>^ RegisteredProperties;
