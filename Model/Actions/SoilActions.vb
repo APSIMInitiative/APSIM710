@@ -15,6 +15,7 @@ Imports CSGeneral
 Imports CSUserInterface 'SoilUI
 Imports UIBits          'ErrorMessageForm
 Imports UIUtility
+Imports ExcelUtility
 
 
 Public Class SoilActions

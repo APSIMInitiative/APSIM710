@@ -359,7 +359,8 @@ namespace ApsimFile
 
                // make sure we have thickness in this profile node. If not then add default ones.
                if (!SoilUtility.VariableExists(LocationNode, "Thickness") &&
-                   !SoilUtility.VariableExists(LocationNode, "Depth"))
+                   !SoilUtility.VariableExists(LocationNode, "Depth") &&
+                  MathUtility.ValuesInArray(TargetThickness))
                   {
                   SoilUtility.SetLayered(LocationNode, "Thickness", TargetThickness);
                   XmlNode ThicknessNode = XmlHelper.Find(LocationNode, "Layer/Thickness");

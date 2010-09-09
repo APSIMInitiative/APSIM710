@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 
 namespace CSGeneral
@@ -95,7 +96,7 @@ namespace CSGeneral
             PlugInProcess.Start();
             return PlugInProcess;
         }
-        public static void CheckProcessExitedProperly(Process PlugInProcess)
+        public static string CheckProcessExitedProperly(Process PlugInProcess)
         {
             string msg = PlugInProcess.StandardOutput.ReadToEnd();
             PlugInProcess.WaitForExit();
@@ -106,6 +107,7 @@ namespace CSGeneral
                     throw new System.Exception("Error from " + Path.GetFileName(PlugInProcess.StartInfo.FileName) + ": "
                                                              + msg);
             }
+            return msg;
         }
         public static string ConvertURLToPath(string Url)
         {
@@ -146,6 +148,19 @@ namespace CSGeneral
             }
         }
 
+        public static void FindFiles(string DirectoryName, string FileSpec, ref List<string> FileNames,
+                                     bool SearchHiddenFolders)
+           {
+           foreach (string FileName in Directory.GetFiles(DirectoryName, FileSpec))
+              FileNames.Add(FileName);
+
+           foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
+              {
+              if (SearchHiddenFolders || File.GetAttributes(ChildDirectoryName) != FileAttributes.Hidden)
+                 FindFiles(ChildDirectoryName, FileSpec, ref FileNames, SearchHiddenFolders);
+              }
+           }
+
 
         public static bool CheckForInvalidChars(string s)
         {
@@ -158,5 +173,21 @@ namespace CSGeneral
 
 
         }
+
+        public static string FindFileOnPath(string FileName)
+           {
+           string PathVariable = Environment.GetEnvironmentVariable("Path");
+           if (PathVariable == null)
+              throw new Exception("Cannot find PATH environment variable");
+
+           string[] Paths = PathVariable.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+           foreach (string DirectoryName in Paths)
+              {
+              string FullPath = Path.Combine(DirectoryName, FileName);
+              if (File.Exists(FullPath))
+                 return FullPath;
+              }
+           return "";
+           }
     }
 }

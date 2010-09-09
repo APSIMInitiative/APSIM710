@@ -108,7 +108,7 @@ namespace ApsimFile
          while (Directory != Path.GetPathRoot(Directory) && !File.Exists(Directory + "\\Apsim.xml"))
             Directory = Path.GetFullPath(Directory + "\\..");
          if (Directory == Path.GetPathRoot(Directory))
-            throw new Exception("Cannot find apsim.xml");
+            return "";
          return Directory;
          }
       public static string ApsimBinDirectory()

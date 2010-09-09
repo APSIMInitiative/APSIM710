@@ -17,10 +17,10 @@ SRC = PlantInterface.cpp \
       Roots.cpp \
       Biomass.cpp \
       Utilities.cpp \
-      Dll.cpp \
-      ../ComponentInterface2/CMPComponentEntryPoints.cpp
-
+      Dll.cpp
+      
 LIBS = General ApsimShared ComponentInterface2
+OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.obj
 
 PROJECTTYPE = dll
 

@@ -90,10 +90,10 @@ SRC = PlantComponent.cpp \
       Photosynthesis/RUEModel.cpp \
       Photosynthesis/RUEWholePlantModel.cpp \
       Photosynthesis/Weather.cpp \
-      Photosynthesis/SUCROSModel.cpp \
-      ../ComponentInterface/EntryPoints.cpp
+      Photosynthesis/SUCROSModel.cpp
 
 LIBS = General ComponentInterface ApsimShared
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
 
 PRECOMPILEDHEADERS = yes
 

@@ -12,10 +12,10 @@ SRC =    StockScienceConverter.cpp \
          PlantHerbage.cpp \
          ResidueHerbage.cpp \
          ResiduePool.cpp \
-         Constants.cpp \
-         ../ComponentInterface/EntryPoints.cpp
+         Constants.cpp
           
 LIBS = General ApsimShared ComponentInterface
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
 
 PROJECTTYPE = dll
 

@@ -279,6 +279,20 @@ namespace ApsimFile
             }
          }
 
+      public static List<string> GetSimNamesInApsimFile(string FileName)
+         {
+         XmlDocument Doc = new XmlDocument();
+         Doc.Load(FileName);
+         List<string> SimNames = new List<string>();
+         List<XmlNode> SimNodes = new List<XmlNode>();
+         XmlHelper.FindAllRecursivelyByType(Doc.DocumentElement, "simulation", ref SimNodes);
+         foreach (XmlNode SimNode in SimNodes)
+            SimNames.Add(XmlHelper.Name(SimNode));
+         return SimNames;
+         }
+
+
+
       }
     }
 

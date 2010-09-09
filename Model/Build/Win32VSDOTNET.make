@@ -10,11 +10,11 @@ endif
 
 
 $(APSIM)/Model/$(PROJECT).exe: $(SRC)
-	$(VS90COMNTOOLS)\..\IDE\devenv $(PROJECT).sln /build release
+	"$(VS90COMNTOOLS)..\IDE\devenv" $(PROJECT).sln /build release
 
 
 $(APSIM)/Model/$(PROJECT).dll: $(SRC)
-	$(VS90COMNTOOLS)\..\IDE\devenv $(PROJECT).sln /build release
+	"$(VS90COMNTOOLS)..\IDE\devenv" $(PROJECT).sln /build release
 
 clean:
 	$(RM) $(APSIM)\Model\$(PROJECT).exe $(APSIM)\Model\$(PROJECT).dll

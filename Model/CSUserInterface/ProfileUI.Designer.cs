@@ -37,9 +37,9 @@ namespace CSUserInterface
             this.TotalGrid = new System.Windows.Forms.DataGridView();
             this.DummyScrollBar = new System.Windows.Forms.VScrollBar();
             this.Splitter = new System.Windows.Forms.Splitter();
-            this.Properties = new VBUserInterface.GenericUI();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.Properties = new VBUserInterface.GenericUI();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).BeginInit();
             this.TotalPanel.SuspendLayout();
@@ -68,10 +68,10 @@ namespace CSUserInterface
             this.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Grid.DataSourceTable = null;
             this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Grid.Location = new System.Drawing.Point(270, 25);
+            this.Grid.Location = new System.Drawing.Point(270, 40);
             this.Grid.Name = "Grid";
             this.Grid.RowHeadersVisible = false;
-            this.Grid.Size = new System.Drawing.Size(385, 241);
+            this.Grid.Size = new System.Drawing.Size(385, 226);
             this.Grid.TabIndex = 25;
             this.Grid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.OnGridScroll);
             // 
@@ -79,11 +79,13 @@ namespace CSUserInterface
             // 
             this.Label.BackColor = System.Drawing.SystemColors.Highlight;
             this.Label.Dock = System.Windows.Forms.DockStyle.Top;
+            this.Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.Label.Location = new System.Drawing.Point(270, 0);
             this.Label.Name = "Label";
-            this.Label.Size = new System.Drawing.Size(385, 25);
+            this.Label.Size = new System.Drawing.Size(385, 40);
             this.Label.TabIndex = 24;
+            this.Label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // TotalPanel
             // 
@@ -142,17 +144,6 @@ namespace CSUserInterface
             this.Splitter.TabIndex = 18;
             this.Splitter.TabStop = false;
             // 
-            // Properties
-            // 
-            this.Properties.AutoScroll = true;
-            this.Properties.BackColor = System.Drawing.SystemColors.Window;
-            this.Properties.Dock = System.Windows.Forms.DockStyle.Left;
-            this.Properties.HelpText = "";
-            this.Properties.Location = new System.Drawing.Point(0, 0);
-            this.Properties.Name = "Properties";
-            this.Properties.Size = new System.Drawing.Size(267, 298);
-            this.Properties.TabIndex = 19;
-            // 
             // splitter1
             // 
             this.splitter1.BackColor = System.Drawing.SystemColors.ScrollBar;
@@ -169,6 +160,17 @@ namespace CSUserInterface
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // Properties
+            // 
+            this.Properties.AutoScroll = true;
+            this.Properties.BackColor = System.Drawing.SystemColors.Window;
+            this.Properties.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Properties.HelpText = "";
+            this.Properties.Location = new System.Drawing.Point(0, 0);
+            this.Properties.Name = "Properties";
+            this.Properties.Size = new System.Drawing.Size(267, 298);
+            this.Properties.TabIndex = 19;
             // 
             // ProfileUI
             // 

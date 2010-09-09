@@ -30,10 +30,12 @@ ifeq ($(PLATFORM),WIN32VS)
  # This is built before tcllink.dll
  PREBUILD=dummy .\bin\TclComponent.dll
 
- SRC2 = TclLink.cpp TclComponent.cpp TclXtras.cpp ../ComponentInterface2/EntryPoints.cpp
+ SRC2 = TclLink.cpp TclComponent.cpp TclXtras.cpp
  SOURCEOBJS2:=	$(SRC2:.cpp=.obj)
  LIBS2 = ComponentInterface2 ApsimShared General tcl$(VER) tk$(VER)
  LIBS2 := $(foreach library,$(LIBS2),$(library).lib) libxml2.lib
+ OBJS = $(APSIM)/Model/ComponentInterface2/EntryPoints.obj
+
 endif
 
 ifeq ($(PLATFORM),Linux)
@@ -49,10 +51,10 @@ include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 ifeq ($(PLATFORM),WIN32VS)
 
 .\bin\TclComponent.dll: $(SOURCEOBJS2) tcl$(VER).lib tk$(VER).lib dummy
-	echo $(LFLAGS) $(SOURCEOBJS2) $(SYSOBJS) $(LIBPATH) $(LIBS2) > .\bin\TclComponent.rsp
+	echo $(LFLAGS) $(SOURCEOBJS2) $(SYSOBJS) $(OBJS) $(LIBPATH) $(LIBS2) > .\bin\TclComponent.rsp
 	$(LD) /OUT:"./bin/TclComponent.dll" @.\bin\TclComponent.rsp
 	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl ./bin/TclComponent.dll > .\bin\TclComponent.def
-	echo $(LFLAGS) $(SOURCEOBJS2) $(SYSOBJS) /DEF:./bin/TclComponent.def $(LIBPATH) $(LIBS2) > .\bin\TclComponent.rsp
+	echo $(LFLAGS) $(SOURCEOBJS2) $(SYSOBJS) $(OBJS) /DEF:./bin/TclComponent.def $(LIBPATH) $(LIBS2) > .\bin\TclComponent.rsp
 	$(LD) /OUT:"./bin/TclComponent.dll" @.\bin\TclComponent.rsp
 
 # ---------------------------------------------------------------------------

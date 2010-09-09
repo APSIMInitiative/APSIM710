@@ -22,4 +22,8 @@ SRC = ComponentInterface.cpp  \
 LIBS = General ApsimShared
 PROJECTTYPE = dll
 
+everything: $(SRC) $(PROJECT).dll EntryPoints.obj
+
+everything: $(SRC) $(PROJECT).dll EntryPoints.obj
+
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

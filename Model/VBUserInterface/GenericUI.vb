@@ -169,8 +169,24 @@ Public Class GenericUI
       Table.Columns.Add("Description", GetType(String))
       Table.Columns.Add("Value", GetType(String))
 
+      If Data.Name.ToLower() = "soil" Then
+         Dim NewRow As DataRow = Table.NewRow()
+         NewRow(0) = "category"
+         NewRow(1) = "category"
+         NewRow(3) = "Soil Description"
+         NewRow(4) = XmlHelper.Name(Data)
+         Table.Rows.Add(NewRow)
+
+         NewRow = Table.NewRow()
+         NewRow(0) = "SoilType"
+         NewRow(1) = "text"
+         NewRow(3) = "Classification"
+         NewRow(4) = XmlHelper.Value(Data, "SoilType")
+         Table.Rows.Add(NewRow)
+      End If
       For Each Child As XmlNode In Data.ChildNodes
-         If Child.ChildNodes.Count <= 1 AndAlso Child.Name <> "TeeChartFormat" AndAlso Child.Name <> "XY" AndAlso Child.Name.ToLower() <> "layer" Then
+         If Child.ChildNodes.Count <= 1 AndAlso Child.Name <> "TeeChartFormat" AndAlso Child.Name <> "XY" AndAlso _
+            Child.Name.ToLower() <> "layer" AndAlso Child.Name <> "SoilType" AndAlso Child.Name <> "Name" Then
             Dim NewRow As DataRow = Table.NewRow()
             Table.Rows.Add(NewRow)
             If Child.Name = "category" Then
@@ -361,11 +377,16 @@ Public Class GenericUI
       ' passed in.
       ' ------------------------------------------------------------
 
+      If Data.Name.ToLower() = "soil" Then
+         Grid.ContextMenuStrip = Nothing
+         Grid.PopupMenu = Nothing
+      Else
+         For i As Integer = 2 To Grid.PopupMenu.Items.Count - 1
+            Grid.PopupMenu.Items(i).Enabled = EditMode
+         Next
+      End If
       EditModeItem.Checked = EditMode
 
-      For i As Integer = 2 To Grid.PopupMenu.Items.Count - 1
-         Grid.PopupMenu.Items(i).Enabled = EditMode
-      Next
       If Grid.Columns.Count > 0 Then
          Grid.Columns(0).Visible = EditMode        ' name 
          Grid.Columns(1).Visible = EditMode        ' type

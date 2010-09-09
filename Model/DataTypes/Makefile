@@ -17,7 +17,7 @@ $(APSIM)/Model/ComponentInterface/DataTypes.h: Datatypes.xml CIDataTypes.macro
 
 include $(APSIM)/Model/Build/$(PLATFORM)DOTNET.make
 
-clean: 
+cleanall: 
 	rm -f $(APSIM)/Model/ProcessDataTypesInterface.exe \
 	  $(APSIM)/Model/ComponentInterface2/DataTypes.h DOTNETDataTypes.h \
 	  $(APSIM)/Model/ComponentInterface/DataTypes.h

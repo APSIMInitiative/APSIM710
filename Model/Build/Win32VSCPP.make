@@ -83,10 +83,10 @@ else
 #   that def file so that the unadorned names are visible.
 #   Then after all that, we embed a manifest into the DLL
 $(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS)
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
 	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl $(APSIM)/Model/$(PROJECT).dll > $(PROJECT).def
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).dll.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).dll;2"
 

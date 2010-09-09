@@ -89,7 +89,7 @@ namespace CSUserInterface
             Col.DefaultCellStyle.Format = "f3";
             }
          Grid.Columns[0].Visible = false; // hide the depthMidpoints column
-         Grid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+         Grid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
          foreach (DataGridViewColumn Col in Grid.Columns)
             Col.Width += 10;
 
@@ -147,7 +147,11 @@ namespace CSUserInterface
                }
             }
          if (LabelText != "")
-            Label.Text = "By right clicking on column headings, you can change the units of these variables: " + LabelText;
+            {
+            Label.Text = "By right clicking on column headings, you can change the units of these variables: " + LabelText +
+                         ".\nThis doesn't convert their values. It flags the values as being of that unit." +
+                         " They will be converted later, if necessary, by APSIM.";
+            }
          }
 
       /// <summary>
@@ -197,6 +201,15 @@ namespace CSUserInterface
          {
          for (int Col = 0; Col < Grid.Columns.Count; Col++)
             {
+            if (Table.Columns[Col].ColumnName.Contains("PAWC"))
+               Grid.Columns[Col].DefaultCellStyle.Format = "f1";
+            else if (Table.Columns[Col].ColumnName.Contains("KL"))
+               Grid.Columns[Col].DefaultCellStyle.Format = "f2";
+            else if (Table.Columns[Col].ColumnName.Contains("XF"))
+               Grid.Columns[Col].DefaultCellStyle.Format = "f1";
+            else if (Table.Columns[Col].ColumnName.Contains("(%)"))
+               Grid.Columns[Col].DefaultCellStyle.Format = "f0";
+
             if (Table.Columns[Col].DataType == typeof(double))
                {
                double[] Values = DataTableUtility.GetColumnAsDoubles(Table, Table.Columns[Col].ColumnName);
@@ -337,7 +350,7 @@ namespace CSUserInterface
             TotalGrid.Columns[Col].Frozen = Grid.Columns[Col].Frozen;
             TotalGrid.Columns[Col].ReadOnly = !Grid.Columns[Col].HeaderText.Contains("NO3") &&
                                               !Grid.Columns[Col].HeaderText.Contains("NH4");
-
+            TotalGrid.Columns[Col].DefaultCellStyle.Format = "f1";
             if (Grid.RowCount > 1 && 
                (Grid.Columns[Col].HeaderText.Contains("NO3") || 
                 Grid.Columns[Col].HeaderText.Contains("NH4") ||

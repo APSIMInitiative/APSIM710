@@ -224,6 +224,13 @@ namespace CSGeneral
          foreach (XmlNode Child in Node.ChildNodes)
             FindAllRecursively(Child, Name, ref Nodes);
          }
+      public static void FindAllRecursivelyByType(XmlNode Node, string TypeName, ref List<XmlNode> Nodes)
+         {
+         if (XmlHelper.Type(Node).ToLower() == TypeName.ToLower())
+            Nodes.Add(Node);
+         foreach (XmlNode Child in Node.ChildNodes)
+            FindAllRecursivelyByType(Child, TypeName, ref Nodes);
+         }
 
       public static XmlNode ChildByNameAndType(XmlNode Node, string NameFilter, string TypeFilter)
          {
@@ -395,6 +402,17 @@ namespace CSGeneral
             Node.Attributes.Remove(A);
             }
          }
+
+      public static void DeleteValue(XmlNode Node, string ValueName)
+         {
+         // ----------------------------------------
+         // Delete the specified value
+         // ----------------------------------------
+         XmlNode ValueNode = Find(Node, ValueName);
+         if (ValueNode != null)
+            ValueNode.ParentNode.RemoveChild(ValueNode);
+         }
+
       public static string FormattedXML(string Xml)
          {
          // -------------------------------------------------

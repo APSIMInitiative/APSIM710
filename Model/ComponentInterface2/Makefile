@@ -23,4 +23,8 @@ SRC = 	  ComponentInterface.cpp           \
 
 LIBS = General ApsimShared 
 PROJECTTYPE = libdll
+
+
+
+
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

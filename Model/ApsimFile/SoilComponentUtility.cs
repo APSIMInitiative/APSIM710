@@ -317,10 +317,10 @@ namespace ApsimFile
          Value.Name = RawVariableName;
          StringManip.SplitOffBracketedValue(ref Value.Name, '(', ')');
 
-         if (Value.Name.ToLower() == "texture")
+         if (Value.Name.ToLower() == "texture" || Value.Name.ToLower() == "munsellcolour")
             {
             Value.Strings = SoilUtility.GetLayeredAsStrings(ProfileNode, Value.Name);
-            Value.Codes = GetLayeredCode(ProfileNode, "Texture");
+            Value.Codes = GetLayeredCode(ProfileNode, Value.Name);
             }
          else if (Value.Name.ToLower() == "thickness")
             {
