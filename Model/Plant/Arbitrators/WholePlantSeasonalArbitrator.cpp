@@ -35,8 +35,9 @@ float WholePlantSeasonalArbitrator::TotalPotentialGrowthRate(void)
 
 float WholePlantSeasonalArbitrator::ratioRootPlant(void)
    {
-   float SoilTempTopLayer = 0.0;
-   scienceAPI.get("st(1)", "oC", SoilTempTopLayer, -15.0, 50.0);   // Retrieves soil temperature of top layer     FIXME-EIT    (to use soil temp module change st(1) by  ave_soil_temp
+   std::vector<float> SoilTempLayer;
+   scienceAPI.get("st", "oC", SoilTempLayer, -15.0, 50.0);   // Retrieves soil temperature of top layer     FIXME-EIT    (to use soil temp module change st(1) by  ave_soil_temp
+   float SoilTempTopLayer = SoilTempLayer[0];
    float TsoilTairRatio = divide (SoilTempTopLayer, plant.environment().meant(),0.0);
    return ratioRootPlantTable.value(TsoilTairRatio);
    }
