@@ -287,7 +287,10 @@ namespace ApsimFile
          List<XmlNode> SimNodes = new List<XmlNode>();
          XmlHelper.FindAllRecursivelyByType(Doc.DocumentElement, "simulation", ref SimNodes);
          foreach (XmlNode SimNode in SimNodes)
-            SimNames.Add(XmlHelper.Name(SimNode));
+            {
+            if (XmlHelper.Attribute(SimNode, "enabled") != "no")
+               SimNames.Add(XmlHelper.Name(SimNode));
+            }
          return SimNames;
          }
 

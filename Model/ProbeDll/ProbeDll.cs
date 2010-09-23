@@ -24,27 +24,32 @@ class ProbeDll
 
 
 
-	[STAThread]
-	static void Main(string[] args)
-		{
-		try
-			{
-			if (args.Length == 1)
-				{
+   [STAThread]
+   static void Main(string[] args)
+      {
+      try
+         {
+         if (args.Length == 1)
+            {
             bool IsAPlugIn = PlugIns.Load(args[0]);
-				getDescriptionFromDLL();
+            getDescriptionFromDLL();
 
             // Need to save the plugin back to disk.
             PlugIns.Save(args[0], IsAPlugIn);
             }
-			else
-				Console.WriteLine("Usage: ProbeDLL XMLPlugInFileName");
-			}
-		catch (Exception err)
-			{
-			Console.WriteLine(err.Message + " Module name: " + args[0]);
-			}
-		}
+         else
+            Console.WriteLine("Usage: ProbeDLL XMLPlugInFileName");
+         }
+      catch (TargetInvocationException err)
+         {
+         Console.WriteLine(err.InnerException.Message + " Module name: " + args[0]);
+         }
+
+      catch (Exception err)
+         {
+         Console.WriteLine(err.Message + " Module name: " + args[0]);
+         }
+      }
 
 
 

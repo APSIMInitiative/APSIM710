@@ -73,7 +73,7 @@ class ApsimToSimExe
       // .sim format if necessary.
       foreach (ApsimFile.Component Child in Apsim.ChildNodes)
          {
-         if (Child.Type.ToLower() == "simulation")
+         if (Child.Type.ToLower() == "simulation" && Child.Enabled)
             {
             string SimName = Child.Name;
             string SimPath = Child.FullPath;
