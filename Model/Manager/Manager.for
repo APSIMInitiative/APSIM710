@@ -38,10 +38,10 @@ C     Last change:  P    25 Oct 2000    9:26 am
       parameter (Max_local_variables=500)
 
       integer Max_manager_var_name_size
-      parameter (Max_manager_var_name_size=35)
+      parameter (Max_manager_var_name_size=100)
 
       integer Max_variable_value_size   ! Maximum size of a local variable name
-      parameter (Max_variable_value_size=60)
+      parameter (Max_variable_value_size=100)
 
       integer Max_tokens               ! Maximum number of tokens
       parameter (Max_tokens=10000)
@@ -50,7 +50,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       parameter (Max_token_size=1000)
 
       integer        Buffer_size                 ! size of each buffer
-      parameter      (Buffer_size = 1000)
+      parameter      (Buffer_size = 2000)
 
       integer        file_maximum                ! maximum tokens in file
       parameter      (file_maximum = 2000)
