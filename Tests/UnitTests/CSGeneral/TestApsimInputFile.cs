@@ -63,11 +63,11 @@ namespace test
 			
 			int FirstRow = 0;
 			Assert.AreEqual(MetData.Rows[FirstRow]["Site"], "DALB");
-			Assert.AreEqual(MetData.Rows[FirstRow]["radn"], 20.74);
-			Assert.AreEqual(MetData.Rows[FirstRow]["maxt"], 33.0);
-			Assert.AreEqual(MetData.Rows[FirstRow]["mint"], 17.4);
-			Assert.AreEqual(MetData.Rows[FirstRow]["rain"], 0.2);
-			Assert.AreEqual(MetData.Rows[FirstRow]["evap"], 7.41);
+         Assert.AreEqual(MetData.Rows[FirstRow]["radn"], (float)20.74);
+         Assert.AreEqual(MetData.Rows[FirstRow]["maxt"], (float)33.0);
+         Assert.AreEqual(MetData.Rows[FirstRow]["mint"], (float)17.4);
+         Assert.AreEqual(MetData.Rows[FirstRow]["rain"], (float)0.2);
+         Assert.AreEqual(MetData.Rows[FirstRow]["evap"], (float)7.41);
 
 			int LastRow = MetData.Rows.Count-1;
 			Assert.AreEqual(LastRow, 3);
@@ -125,11 +125,11 @@ namespace test
          InputFile.ReadFromFile("test.csv", MetData);
 
          Assert.AreEqual(MetData.Rows[0]["Site"], "DALB");
-         Assert.AreEqual(MetData.Rows[0]["radn"], 20.74);
-         Assert.AreEqual(MetData.Rows[0]["maxt"], 33.0);
-         Assert.AreEqual(MetData.Rows[0]["mint"], 17.4);
-         Assert.AreEqual(MetData.Rows[0]["rain"], 0.2);
-         Assert.AreEqual(MetData.Rows[0]["evap"], 7.41);
+         Assert.AreEqual(MetData.Rows[0]["radn"], (float)20.74);
+         Assert.AreEqual(MetData.Rows[0]["maxt"], (float)33.0);
+         Assert.AreEqual(MetData.Rows[0]["mint"], (float)17.4);
+         Assert.AreEqual(MetData.Rows[0]["rain"], (float)0.2);
+         Assert.AreEqual(MetData.Rows[0]["evap"], (float)7.41);
 
          File.Delete("text.csv");
          }

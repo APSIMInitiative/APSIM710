@@ -20,10 +20,10 @@ for /D %%d in (*) do (
    echo %%d
    echo -----------------------------------------------------
    if EXIST Test.sln (
-      "C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\devenv" Test.sln /ReBuild debug
+      "%VS90COMNTOOLS%..\IDE\devenv" Test.sln /ReBuild debug
       if ERRORLEVEL 1 echo ERRORS FOUND >> ..\UnitTests.out
       if ERRORLEVEL 0 (
-         "c:\Program Files\NUnit-Net-2.0 2.2.9\bin\nunit-console" bin\debug\Test.dll /nologo >> ..\UnitTests.out
+         "C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" bin\debug\Test.dll /nologo >> ..\UnitTests.out
          if ERRORLEVEL 1 echo ERRORS FOUND >> ..\UnitTests.out
          )
       echo. >> ..\UnitTests.out

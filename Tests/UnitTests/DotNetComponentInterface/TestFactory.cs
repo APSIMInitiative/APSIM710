@@ -6,7 +6,7 @@ using System.Reflection;
 
 public class Comp1 : Instance
    {
-   [Param][Units("g/m2")][Description("A description")] public double Param1;
+   [Param][Units("g/m2")][@Description("A description")] public double Param1;
    [Param] public NewMetType NewMet = null;
    public double NotAParam = 0;
    [Param("Alias")] public double Param2;
@@ -75,7 +75,7 @@ public class TestFactory
       Assert.AreEqual(Model.NewMet.mint, 12);
       }
 
-   [Test] [ExpectedException("System.Exception", "Cannot set value of property: NotAParam. The property must have either a [Param] or [Input] attribute.")]
+   [Test] [ExpectedException("System.Exception")]
    public void CannotSetParameterWithoutMetaData()
       {
       // --------------------------------------------------------------------
@@ -106,7 +106,7 @@ public class TestFactory
       Assert.AreEqual(Model.Param2, 12);
       }
 
-   [Test] [ExpectedException("System.Exception", "Cannot set value of property: Param2. The property must have either a [Param] or [Input] attribute.")]
+   [Test] [ExpectedException("System.Exception")]
    public void CannotSetAliasedPropertyByRawName()
       {
       // --------------------------------------------------------------------
@@ -252,23 +252,6 @@ public class TestFactory
       SubComp Stem = (SubComp)Model.Children[1];
       Assert.AreEqual(Stem.SubParam1, 2);
       
-      }
-
-   [Test]
-   [ExpectedException("System.Exception", "The following parameters haven't been initialised: " +
-                                          "Param1, NewMet, Alias, Param4")]
-   public void ThrowOnUninitialisedParameters()
-      {
-      // --------------------------------------------------------------------
-      // Make sure we throw when uninitialised parameters are found.
-      // --------------------------------------------------------------------
-      string Xml = "<Comp1>" +
-                   "   <Params>A, B, C</Params>" +
-                   "</Comp1>";
-
-      Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
-      Factory.ThrowOnUnInitialisedParameters();
       }
 
 
