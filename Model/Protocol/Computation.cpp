@@ -134,15 +134,25 @@ void Computation::deleteInstance(void) const
 //    dph 22/2/2000
 
 // ------------------------------------------------------------------
-bool Computation::loadComponent(const std::string& filename,
+bool Computation::loadComponent(const std::string& FileName,
                                 std::string componentInterfaceExecutable) throw (std::runtime_error)
    {
+   string filename = FileName;
+   if (!fileExists(filename))
+      {
+      // Win 7 64 bit computers can put dlls into a Program Files (x86) directory.
+      // The AusFarm DLLs are located there so try changing the directory.
+      To_lower(filename);
+      replaceAll(filename, "program files", "Program Files (x86)"); 
+      }
+      
    executableFileName = filename;
 
    createInstanceProc = NULL;
    deleteInstanceProc = NULL;
    messageToLogicProc = NULL;
    string componentInterface;
+   
    if (componentInterfaceExecutable != "")
       {
       componentInterface = componentInterfaceExecutable;
