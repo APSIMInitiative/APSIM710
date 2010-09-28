@@ -47,7 +47,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       parameter (Max_tokens=10000)
 
       integer Max_token_size           ! Maximum size of a token
-      parameter (Max_token_size=1000)
+      parameter (Max_token_size=700)
 
       integer        Buffer_size                 ! size of each buffer
       parameter      (Buffer_size = 2000)
