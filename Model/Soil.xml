@@ -71,7 +71,7 @@
       [if "[soil.RootCP]"]
       <component name="Phosphorus" executable="%apsim%\Model\SoilP.dll"><executable name="%apsim%\Model\SoilP.dll" version="1.0" /><initdata>
                [Model SoilP]
-               <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption></initdata></component>
+               <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption><sorption_coeff>[soil.SorptionCoeff]</sorption_coeff></initdata></component>
       [endif]
     </ApsimToSim>
   </MetaData>
@@ -501,7 +501,6 @@
       Potential P uptake from a layer is assumed to be related to the notional P concentration in solution
       which is non-linearly related to effective P
       -->
-    <sorption_coeff description="0.5 !0.4  ! exponent of Freundlich isotherm">0.7  </sorption_coeff>
     <!--  Note that sorption_coeff and p_supply_factor will need to be varied together
       provision for other crops, but only maize has been tested against measured data
       -->

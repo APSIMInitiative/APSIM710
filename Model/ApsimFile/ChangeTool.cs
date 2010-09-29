@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 23;
+      public static int CurrentVersion = 24;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -55,7 +55,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion20),
                                           new UpgraderDelegate(ToVersion21),
                                           new UpgraderDelegate(ToVersion22),
-                                          new UpgraderDelegate(ToVersion23)
+                                          new UpgraderDelegate(ToVersion23),
+                                          new UpgraderDelegate(ToVersion24)
                                        };
          if (Data != null)
             {
@@ -1226,8 +1227,11 @@ namespace ApsimFile
                      XmlNode CropLayerNode = CropNode.AppendChild(Node.OwnerDocument.CreateElement("Layer"));
                      SetValue(CropLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
                      SetValue(CropLayerNode, "LL", LLNode.InnerText, "mm/mm");
-                     SetValue(CropLayerNode, "KL", XmlHelper.ChildByNameAndType(LayerNode, CropName, "KL").InnerText, "/day");
-                     SetValue(CropLayerNode, "XF", XmlHelper.ChildByNameAndType(LayerNode, CropName, "XF").InnerText, "0-1");
+
+                     if (XmlHelper.ChildByNameAndType(LayerNode, CropName, "KL") != null)
+                        SetValue(CropLayerNode, "KL", XmlHelper.ChildByNameAndType(LayerNode, CropName, "KL").InnerText, "/day");
+                     if (XmlHelper.ChildByNameAndType(LayerNode, CropName, "XF") != null)
+                        SetValue(CropLayerNode, "XF", XmlHelper.ChildByNameAndType(LayerNode, CropName, "XF").InnerText, "0-1");
                      }
 
                   SetValue(SoilWatLayerNode, "SWCON", XmlHelper.Value(LayerNode, "SWCON"), "0-1");
@@ -1472,7 +1476,21 @@ namespace ApsimFile
             }
          }
 
+      private static void ToVersion24(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // Add SorptionCoeff property to Phosphorus nodes.
+         // ---------------------------------------------------------------
 
+         if (Node.Name.ToLower() == "soil" && XmlHelper.Attribute(Node, "shortcut") == "")
+            {
+            XmlNode PhosphorusNode = XmlHelper.Find(Node, "Phosphorus");
+            if (PhosphorusNode != null && XmlHelper.Attribute(PhosphorusNode, "shortcut") == "")
+               {
+               XmlHelper.SetValue(PhosphorusNode, "SorptionCoeff", "0.7");
+               }
+            }
+         }
 
       }
    }

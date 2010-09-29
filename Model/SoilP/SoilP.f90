@@ -801,7 +801,7 @@ subroutine soilp_read_constants ()
    c%rate_decr_placement = - alog (1 - c%rate_decr_placement) / 365.0
 
    !  read crop constants
-   call read_real_var (section_name,'sorption_coeff','()',c%sorption_coeff,numvals,0.0,2.0)
+   call read_real_var ('parameters','sorption_coeff','()',c%sorption_coeff,numvals,0.0,2.0)
 
    call Read_char_array(section_name,'crop_name',max_crops,'()',c%crop_table_name,num_crops_read)
 
