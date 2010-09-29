@@ -39,10 +39,7 @@ cd Lawes\LE
 
 cd ..\..\
 
-md Predicted
-copy /Y Hermitage\HE1-8\*.out Predicted
-copy /Y Icrisat\BW\*.out Predicted
-copy /Y Lawes\LE\*.out Predicted
+
 
 "C:\Program Files (x86)\ApsimReport\ApsimReport.exe" SorghumValidation.report %APSIM%\Graphs\Sorghum\Validation\SorghumValidation.gif
 

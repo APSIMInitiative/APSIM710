@@ -1,4 +1,4 @@
-c:\progra~1\R\R-2.7.1\bin\Rterm.exe --slave < validation-1.r
+"C:\Program Files\R\R-2.11.1-x64\bin\Rterm.exe" < validation-1.r
 
 "C:\Program Files (x86)\ApsimReport\ApsimReport.exe" aps06.report %APSIM%\Graphs\Wheat\Validation\APS06\aps06.gif
 "C:\Program Files (x86)\ApsimReport\ApsimReport.exe" aps06summary.report %APSIM%\Graphs\Wheat\Validation\APS06\aps06summary.gif

@@ -1,44 +1,44 @@
 <report version="5">
-<Data>
-<ApsimFileReader name="Predicted" Left="9" Top="12" Width="331" Height="148">
-  <FileName>2004\All.out</FileName>
-  <FileName>2005\All.out</FileName>
-  <FileName>2006\All.out</FileName>
-  <FileName>2007\All.out</FileName>
-  <FileName>2008\All.out</FileName>
-  <BySeries>no</BySeries>
-</ApsimFileReader>
-<DataGrid Left="169" Top="346" Width="731" Height="234">
-  <source>Predicted</source>
-</DataGrid>
-<ApsimFileReader name="Observed" Left="9" Top="178" Width="331" Height="148">
-  <FileName>Observed.csv</FileName>
-</ApsimFileReader>
-<PredObs name="PredictedObserved" Left="548" Top="9" Width="188" Height="168">
-  <source>Predicted</source>
-  <source>Filter</source>
-  <FieldName>FileName</FieldName>
-</PredObs>
-<Regression name="Regression" Left="781" Top="12" Width="135" Height="120">
-  <XFieldName>Obswetyield</XFieldName>
-  <YFieldName>Predwetyield</YFieldName>
-  <source>PredictedObserved</source>
-</Regression>
-<Filter name="Filter" Left="515" Top="256" Width="244" Height="70">
-  <FilterString>Crop='Wheat'</FilterString>
-  <source>FilterUnwanted</source>
-</Filter>
-<Regression name="RegressionGrainN" Left="781" Top="142" Width="135" Height="141">
-  <source>PredictedObserved</source>
-  <XFieldName>Obsgrain_n</XFieldName>
-  <YFieldName>Predgrain_n</YFieldName>
-</Regression>
-<Filter name="FilterUnwanted" Left="362" Top="204" Width="134" Height="122">
-  <source>Observed</source>
-  <FilterString><![CDATA[SoilStatus <> 'Inappropriate' and sampling <> 'Deep N' and [Exclude?] <> 'yes']]></FilterString>
-</Filter>
-</Data>
-   <page> <![CDATA[
+  <Data>
+    <ApsimFileReader name="Predicted" Left="9" Top="12" Width="331" Height="148">
+      <FileName>2004\All.out</FileName>
+      <FileName>2005\All.out</FileName>
+      <FileName>2006\All.out</FileName>
+      <FileName>2007\All.out</FileName>
+      <FileName>2008\All.out</FileName>
+      <BySeries>no</BySeries>
+    </ApsimFileReader>
+    <DataGrid Left="169" Top="346" Width="731" Height="234">
+      <source>Predicted</source>
+    </DataGrid>
+    <ApsimFileReader name="Observed" Left="9" Top="178" Width="331" Height="148">
+      <FileName>Observed.csv</FileName>
+    </ApsimFileReader>
+    <PredObs name="PredictedObserved" Left="548" Top="9" Width="188" Height="168">
+      <source>Predicted</source>
+      <source>Filter</source>
+      <FieldName>FileName</FieldName>
+    </PredObs>
+    <Regression name="Regression" Left="781" Top="12" Width="135" Height="120">
+      <XFieldName>Obswetyield</XFieldName>
+      <YFieldName>Predwetyield</YFieldName>
+      <source>PredictedObserved</source>
+    </Regression>
+    <Filter name="Filter" Left="515" Top="256" Width="244" Height="70">
+      <FilterString>Crop='Canola'</FilterString>
+      <source>FilterUnwanted</source>
+    </Filter>
+    <Regression name="RegressionGrainN" Left="781" Top="142" Width="135" Height="141">
+      <source>PredictedObserved</source>
+      <XFieldName>Obsgrain_n</XFieldName>
+      <YFieldName>Predgrain_n</YFieldName>
+    </Regression>
+    <Filter name="FilterUnwanted" Left="362" Top="204" Width="134" Height="122">
+      <source>Observed</source>
+      <FilterString><![CDATA[SoilStatus <> 'Inappropriate' and sampling <> 'Deep N' and [Exclude?] <> 'yes']]></FilterString>
+    </Filter>
+  </Data>
+  <page><![CDATA[
 object Page1: TQuickRep
   Left = 209
   Top = 0
@@ -498,6 +498,5 @@ object Page1: TQuickRep
     end
   end
 end
-]]>
-   </page>
+]]></page>
 </report>

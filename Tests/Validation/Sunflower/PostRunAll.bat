@@ -1,1 +1,2 @@
-c:\progra~1\R\R-2.7.1\bin\Rterm.exe  --slave < valid.r
+"C:\Program Files\R\R-2.11.1-x64\bin\Rterm.exe"  --slave < valid.r
+pause
