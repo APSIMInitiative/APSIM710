@@ -1,33 +1,40 @@
 ## Start reading this from the end...
 #######################Housekeeping############################
-##	this is underhanded
 # Read an "apsim" file into a named R table.
-read.apsim <- function (file) {
-    if(is.character(file)) {
-        file <- file(file, "r")
-        on.exit(close(file))
+read.apsim <- function (file, asList=T) {
+    fp <- file(file, "r")
+    on.exit(close(fp))
+    inHeader <- T
+    units <- NA; names <- NA; data <- list()
+    while (inHeader) {
+       line<-gsub("(^ +)|( +$)", "", readLines(fp, n=1))
+       if (unlist(strsplit(line, ""))[1] == "(") {
+         # Units 
+         units<-unlist(strsplit(line, " +"))
+         inHeader<-F
+       } else if (length(grep("=", line)) > 0) {
+         # Static attribute
+         nv <- unlist(strsplit(line, "="))
+         if (length(nv) == 2) {
+            n<-gsub("(^ +)|( +$)", "", nv[1])
+            v<-gsub("(^ +)|( +$)", "", nv[-1])
+            data[[n]]<-v
+         }
+       } else {
+         # Must be names
+         names<-tolower(unlist(strsplit(line, " +")))
+       }     
     }
-    if(!inherits(file, "connection"))
-        stop("argument `file' must be a character string or connection")
-    if(!isOpen(file)) {
-        open(file, "r")
-        on.exit(close(file))
-    }
-
-    lines <- .Internal(readTableHead(file, 4, "!", FALSE))
-    if(all(nchar(lines) == 0)) stop("empty header")
-
-    summaryfile<- lines[1]
-    title<- lines[2]
-    col.names <- unlist(strsplit(lines[3], " +"))
-    col.units <- unlist(strsplit(lines[4], " +"))
-    data <- read.table(file, skip = 0, row.names=NULL, na.strings="????")
-    names(data)<-col.names[-1]
-    #attr(data, "units") <- col.units[-1]
-    #attr(data, "summaryfile") <- summaryfile
-    #attr(data, "title") <- title
-    data
+    # Should do something with units somewhere??
+    if (asList) {
+      data <- c(data, read.table(fp, skip = 0, col.names=names, row.names=NULL, na.strings="?"))
+    } else {
+      # discard scalar args
+      data <- read.table(fp, skip = 0, col.names=names, row.names=NULL, na.strings="?")
+    } 
+    return(data)
 }
+
 
 # pred:obs plotting.
 plotexp <- function(pred, obs, vars, trials, scatterplot=TRUE, diffplot = TRUE) {
@@ -75,8 +82,6 @@ obs<-read.csv("obsdata.csv", header=T)
 trials <- as.character(unique(obs$trial))
 
 ##Predicted files in this dir:
-#dir <- "c:/apswork/apsim21/sunflower/valid/new"
-#dir <- "c:/apswork/test2.2/sunflower/new"
 dir <- "new"
 
 ## Read modelled data into 1 big table
@@ -84,17 +89,18 @@ if (exists("pred")) { rm("pred") }
 for (i in 1:length(trials)) {
    trial <- trials[i]
    predfile <- paste(dir, "/", trial, ".out", sep="")
-   data <- read.apsim(predfile)
+   data <- read.apsim(predfile, asList=F)
+   data$das <- data$daysaftersowing
    if (exists("pred")) {
-      pred <- rbind(pred, cbind(trial=rep(trial,dim(data)[1]),data))
+      pred <- rbind(pred, cbind(trial=rep(trial,length(data$year)),data))
    } else {
-      pred <- cbind(trial=rep(trial,dim(data)[1]),data)
+      pred <- cbind(trial=rep(trial,length(data$year)),data)
    }
 }
 
 
 ## All experiments as XY scatter plots
-pdf(file="valid.pdf", width=6, height=8, horizontal=F)
+pdf(file="valid.pdf", width=6, height=8)
 ##-- page 1
 layout(matrix(c(1,1:7), 4,2, byrow = TRUE))
 plot(NA, ylim=c(0,1), xlim=c(0,1), xlab="", ylab="", axes=F, type="n", main="All Experiments")

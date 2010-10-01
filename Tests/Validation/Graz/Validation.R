@@ -1,3 +1,4 @@
+# NB. cedar (observed) files are missing.
 
 f1<- "annual.out"
 f2<- "cedar_c4past/cedar_annual.txt"
