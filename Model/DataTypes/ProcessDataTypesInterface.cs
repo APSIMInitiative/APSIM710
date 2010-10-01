@@ -99,6 +99,7 @@ namespace ProcessDataTypesInterface
 
                // write some DDML
                string DDML = MakeDDML(Type).Replace("builtin", "type");
+               XmlHelper.SetValue(BuiltIn, "csddml", DDMLToCS(DDML));
                XmlHelper.SetValue(BuiltIn, "cddml", DDMLToCPP(DDML));
                XmlHelper.SetValue(BuiltIn, "forddml", DDMLToFOR(DDML));
                
@@ -119,6 +120,7 @@ namespace ProcessDataTypesInterface
 
                // write some DDML
                string DDML = MakeDDML(Type);
+               XmlHelper.SetValue(NewDataType, "csddml", DDMLToCS(DDML));
                XmlHelper.SetValue(NewDataType, "cddml", DDMLToCPP(DDML));
                XmlHelper.SetValue(NewDataType, "forddml", DDMLToFOR(DDML));
 
@@ -146,6 +148,9 @@ namespace ProcessDataTypesInterface
          else
             XmlHelper.SetValue(NewDataType, "structure", "T");
 
+         XmlHelper.SetValue(NewDataType, "cstypebase", CalcCSType(Field, false));
+         XmlHelper.SetValue(NewDataType, "cstype", CalcCSType(Field, true));
+         XmlHelper.SetValue(NewDataType, "cstypename", CalcCSTypeName(Field));
          XmlHelper.SetValue(NewDataType, "dotnettype", CalcDotNetType(Field));
          XmlHelper.SetValue(NewDataType, "dotnettypename", CalcDotNetTypeName(Field));
          XmlHelper.SetValue(NewDataType, "rawcpptype", CalcRawCPPType(Field));
@@ -323,16 +328,91 @@ namespace ProcessDataTypesInterface
          return CTypeName;
          }
 
+      private static string CalcCSType(XmlNode DataType, Boolean allowArrayBrackets)
+      {
+          // ------------------------------------------------------------------
+          // convert a DDML 'kind' string to a C# built in type.
+          // ------------------------------------------------------------------
+          string TypeName = XmlHelper.Attribute(DataType, "kind");
+          if (TypeName == "")
+              TypeName = XmlHelper.Attribute(DataType, "type");
+          if (TypeName == "")
+              TypeName = XmlHelper.Attribute(DataType, "name");
+          string LowerTypeName = TypeName.ToLower();
+          string CTypeName;
+          if (LowerTypeName == "integer4")
+              CTypeName = "Int32";
+          else if (LowerTypeName == "single")
+              CTypeName = "Single";
+          else if (LowerTypeName == "double")
+              CTypeName = "Double";
+          else if (LowerTypeName == "boolean")
+              CTypeName = "Boolean";
+          else if (LowerTypeName == "char")
+              CTypeName = "Char";
+          else if (LowerTypeName == "string")
+              CTypeName = "String";
+          else
+              CTypeName = TypeName + "Type";
+          if ( (XmlHelper.Attribute(DataType, "array") == "T") && (allowArrayBrackets) )
+          {
+              CTypeName += "[]";
+          }
+          return CTypeName;
+      }
+      private static string CalcCSTypeName(XmlNode DataType)
+      {
+          // ------------------------------------------------------------------
+          // convert a DDML 'kind' string to a name used for the type.
+          // ------------------------------------------------------------------
+          string TypeName = XmlHelper.Attribute(DataType, "kind");
+          if (TypeName == "")
+              TypeName = XmlHelper.Attribute(DataType, "type");
+          if (TypeName == "")
+              TypeName = XmlHelper.Attribute(DataType, "name");
+          string LowerTypeName = TypeName.ToLower();
+          string CTypeName;
+          if (LowerTypeName == "integer4")
+              CTypeName = "Int32";
+          else if (LowerTypeName == "single")
+              CTypeName = "Single";
+          else if (LowerTypeName == "double")
+              CTypeName = "Double";
+          else if (LowerTypeName == "boolean")
+              CTypeName = "Boolean";
+          else if (LowerTypeName == "char")
+              CTypeName = "Char";
+          else if (LowerTypeName == "string")
+              CTypeName = "String";
+          else
+              CTypeName = TypeName + "Type";
+          if (XmlHelper.Attribute(DataType, "array") == "T")
+          {
+              CTypeName += "Array";
+          }
+          return CTypeName;
+      }
+      private static string DDMLToCS(string DDML)
+      {
+          // ------------------------------------------------------------------
+          // convert a DDML string to a C formatted string
+          // ------------------------------------------------------------------
+          string newDDML = "\"" + DDML.Replace("\"", "\\\"") + "\"";
+          newDDML = newDDML.Replace("\r\n", "");
+          newDDML = newDDML.Replace("><", ">\"+\r\n               \"<");
+          return newDDML;
+      }
+
       private static string DDMLToCPP(string DDML)
-         {
-         // ------------------------------------------------------------------
-         // convert a DDML string to a C formatted string
-         // ------------------------------------------------------------------
-         string newDDML = "\"" + DDML.Replace("\"", "\\\"") + "\"";
-         newDDML = newDDML.Replace("\r\n", "");
-         newDDML = newDDML.Replace("><", ">\"\r\n               \"<");
-         return newDDML;
-         }
+      {
+          // ------------------------------------------------------------------
+          // convert a DDML string to a C formatted string
+          // ------------------------------------------------------------------
+          string newDDML = "\"" + DDML.Replace("\"", "\\\"") + "\"";
+          newDDML = newDDML.Replace("\r\n", "");
+          newDDML = newDDML.Replace("><", ">\"\r\n               \"<");
+          return newDDML;
+      }
 
       private static string DDMLToFOR(string DDML)
          {
