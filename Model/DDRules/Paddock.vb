@@ -7,7 +7,7 @@ Public Class LocalPaddockType
                 CL = 8  'Closed
         End Enum
 
-        Dim DebugLevel As Integer = 1 '0==none, 1==brief, 2==verbose
+        Public DebugLevel As Integer = 0 '0==none, 1==brief, 2==verbose
 
         Private Default_N_Conc = 0.035
         Private index As Integer
@@ -213,6 +213,14 @@ Public Class LocalPaddockType
         End Sub
 
         Public Sub DungApplication(ByVal kgN_ha As Double, ByVal kgDM_ha As Double)
+                If (kgN_ha < 0) Or (kgDM_ha < 0) Then
+                        Console.WriteLine("******** WARNING ****************")
+                        Console.WriteLine("Error: DDRules Dung Application")
+                        Console.WriteLine("Negitive application amount found")
+                        Console.WriteLine("     - kg N per ha = " + kgN_ha)
+                        Console.WriteLine("     - kg DM per ha = " + kgDM_ha)
+                End If
+
                 Dim dung As BiomassRemovedType = New BiomassRemovedType()
                 dung.crop_type = "RuminantDung_PastureFed"
                 dung.dm_type = New String() {"RuminantDung_PastureFed"}

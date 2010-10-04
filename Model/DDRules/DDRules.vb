@@ -496,5 +496,8 @@ Public Class DDRules
                 Console.WriteLine("             Trigger Residule        " & myFarm.CDM)
                 Console.WriteLine("             Cutting Residule        " & myFarm.CR)
                 Console.WriteLine("             Silage Stored on Farm   " & myFarm.EnableSilageStore.ToString)
+                Console.WriteLine("     Debugging")
+                Console.WriteLine("             Apsim Events            " & debug)
+                Console.WriteLine("             Paddock Debug Level     " & myFarm.DebugLevel)
         End Sub
 End Class

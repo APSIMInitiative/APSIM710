@@ -500,4 +500,19 @@
                 myPaddocks.AddRange(list)
         End Sub
 
+        Public Property DebugLevel() As Integer
+                Get
+                        If (myPaddocks.Count > 0) Then
+                                Return myPaddocks(0).DebugLevel
+                        Else
+                                Return 0
+                        End If
+                End Get
+                Set(ByVal value As Integer)
+                        For Each paddock As LocalPaddockType In myPaddocks
+                                paddock.DebugLevel = value
+                        Next
+                End Set
+        End Property
+
 End Class
