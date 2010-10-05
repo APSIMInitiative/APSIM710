@@ -8,6 +8,7 @@ using CSGeneral;
 using System.IO;
 using System.Collections.Specialized;
 using System.Reflection;
+using Microsoft.Win32;
 
 
 namespace ApsimFile
@@ -25,15 +26,15 @@ namespace ApsimFile
          // ---------------------------
 
          // 1. Find version number
-         string SettingsFile = ApsimDirectory() + "\\Apsim.xml";
+         string SettingsFile = Path.Combine(ApsimDirectory(), "Apsim.xml");
          XmlDocument SettingsDoc = new XmlDocument();
          SettingsDoc.Load(SettingsFile);
          SettingsNode = SettingsDoc.DocumentElement;
 
 
          // 2. Update from local data
-         SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                     "\\Apsim\\" + ApsimVersion() + "\\Apsim.xml";
+         SettingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        Path.Combine("Apsim", Path.Combine(ApsimVersion(), "Apsim.xml")));
          if (File.Exists(SettingsFile))
              {
              string ExecutableBuildDate = ApsimBuildDate();
@@ -65,8 +66,8 @@ namespace ApsimFile
       private void Save()
          {
          // The settings in the installation dir are read only. Save in a local (ie writeable) path.
-         string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + 
-                 "\\Apsim\\" + ApsimVersion() + "\\Apsim.xml";
+         string SettingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                               Path.Combine("Apsim", Path.Combine(ApsimVersion(), "Apsim.xml")));
 
          // The first time this runs on a machine, none of these dirs will exist.
          makePathExist (Path.GetDirectoryName(SettingsFile));
@@ -88,33 +89,70 @@ namespace ApsimFile
          }
        public static string RemoveMacros(string St)
          {
-         return St.Replace("%apsim%", ApsimDirectory());
+         string result = St.Replace("%apsim%", ApsimDirectory());
+         return result.Replace("%ausfarm%", AusFarmDirectory());
          }
       public static string AddMacros(string St)
          {
+         string ReturnString = St;
          int Pos = St.ToLower().IndexOf(ApsimDirectory().ToLower());
          if (Pos != -1)
             {
-            string ReturnString = St;
             ReturnString = ReturnString.Remove(Pos, ApsimDirectory().Length);
             ReturnString = ReturnString.Insert(Pos, "%apsim%");
-            return ReturnString;
             }
-         return St;
+         Pos = St.ToLower().IndexOf(AusFarmDirectory().ToLower());
+         if (Pos != -1)
+         {
+             ReturnString = ReturnString.Remove(Pos, AusFarmDirectory().Length);
+             ReturnString = ReturnString.Insert(Pos, "%ausfarm%");
+         }
+         return ReturnString;
          }
       public static string ApsimDirectory()
          {
          string Directory = Path.GetDirectoryName(CSGeneral.Utility.ConvertURLToPath(Assembly.GetExecutingAssembly().CodeBase));
-         while (Directory != Path.GetPathRoot(Directory) && !File.Exists(Directory + "\\Apsim.xml"))
-            Directory = Path.GetFullPath(Directory + "\\..");
+         while (Directory != Path.GetPathRoot(Directory) && !File.Exists(Path.Combine(Directory, "Apsim.xml")))
+            Directory = Path.GetFullPath(Path.Combine(Directory, ".."));
          if (Directory == Path.GetPathRoot(Directory))
             return "";
          return Directory;
          }
       public static string ApsimBinDirectory()
          {
-         return ApsimDirectory() + "\\Model";
+         return Path.Combine(ApsimDirectory(), "Model");
          }
+
+       // When we look up the AusFarm directory, we cache the result so we don't need
+       // to make registry calls over and over and over...
+      private static string AusFarmDir = ""; 
+
+      public static string AusFarmDirectory()
+      {
+          if (AusFarmDir == "")
+          {
+              RegistryKey rk = Registry.LocalMachine.OpenSubKey("SOFTWARE");
+              if (rk != null)
+                  rk = rk.OpenSubKey("CSIRO");
+              if (rk != null)
+                  rk = rk.OpenSubKey("AusFarm");
+              if (rk != null)
+                  rk = rk.OpenSubKey("ModLibs");
+              if (rk != null)
+                  rk = rk.OpenSubKey("CSIRO");
+              if (rk != null)
+                  rk = rk.OpenSubKey("Output");
+              if (rk != null)
+              {
+                  string OutputModPath = (string)rk.GetValue("Path");
+                  if (OutputModPath != null)
+                      AusFarmDir = Path.GetDirectoryName(OutputModPath);
+              }
+              if (AusFarmDir == "")
+                  AusFarmDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "AusFarm");
+          }
+          return AusFarmDir;
+      }
       public string ApplicationName
          {
          get { return SectionName; }
