@@ -234,7 +234,7 @@ extern "C" void EXPORT STDCALL  CIPublish(CMPComponentInterface* componentInterf
       componentInterface->error(err.what(), true);
       }
    }
-extern "C" void EXPORT STDCALL  CIGet(CMPComponentInterface* componentInterface,
+extern "C" bool EXPORT STDCALL  CIGet(CMPComponentInterface* componentInterface,
                                       const char* Name,
                                       const char* Units,
                                       bool Optional,
@@ -246,7 +246,7 @@ extern "C" void EXPORT STDCALL  CIGet(CMPComponentInterface* componentInterface,
    try
       {
       Packable* Handler = new DOTNETWrapper(ForeignHandler, false, foreignInstanceNumber, ForeignDataHandle, ddml);
-      componentInterface->get(Name, Units, Optional, Handler);
+      return componentInterface->get(Name, Units, Optional, Handler);
       }
    catch (const exception& err)
       {
@@ -338,6 +338,15 @@ extern "C" void EXPORT STDCALL  CIUnPackDoubleWithConverter(DOTNETWrapper& wrapp
    {
    CMPBuiltIn<double&> Converter(Data);
    Converter.unpack(*wrapper.messageData, wrapper.sourceDDML);
+   }
+extern "C" void EXPORT STDCALL  CIUnPackBoolArrayWithConverter(DOTNETWrapper& wrapper, bool Data[], int& numValues)
+   {
+   vector<bool> values;
+   CMPBuiltIn<vector<bool>& > Converter(values);
+   Converter.unpack(*wrapper.messageData, wrapper.sourceDDML);
+   numValues = values.size();
+   for (unsigned i = 0; i != values.size(); i++)
+      Data[i] = values[i];
    }
 extern "C" void EXPORT STDCALL  CIUnPackIntArrayWithConverter(DOTNETWrapper& wrapper, int Data[], int& numValues)
    {

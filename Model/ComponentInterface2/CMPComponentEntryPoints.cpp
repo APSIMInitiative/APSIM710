@@ -33,6 +33,6 @@ extern "C" void EXPORT STDCALL getDescriptionLength(char* initScript, int* lengt
    {
    char* buffer = new char[500000];
    getDescriptionInternal(initScript, buffer);
-   *length = strlen(buffer);
+   *length = (int)strlen(buffer);
    delete [] buffer;
    }

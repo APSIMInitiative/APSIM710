@@ -10,9 +10,10 @@ using namespace std;
 static const unsigned MAX_NUM_MESSAGES = 20;
 static const unsigned MAX_MESSAGE_SIZE = 5000;
 
+void freeMsgPtr(Message** aMsgPtr) {delete [] aMsgPtr;} // Requires use of array delete
 boost::thread_specific_ptr<int> runningMessageIDPtr;
 boost::thread_specific_ptr<unsigned> nextFreeMessagePtr;
-boost::thread_specific_ptr<Message*> msgPtr;
+boost::thread_specific_ptr<Message*> msgPtr(freeMsgPtr);
           
 void EXPORT initMessageFactory(void)
    // ------------------------------------------------------------------

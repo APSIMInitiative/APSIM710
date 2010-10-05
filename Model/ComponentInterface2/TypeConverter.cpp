@@ -107,7 +107,7 @@ TypeConverter::TypeConverter(const std::vector<std::string>& source, std::vector
    for (unsigned i = 0; i != values.size(); i++)
       {
       char *chk;
-      dest.push_back((bool)strtol(values[i].c_str(), &chk, 10));
+      dest.push_back(strtol(values[i].c_str(), &chk, 10) != 0);
       if (chk == values[i].c_str()) {throw std::runtime_error("Cannot parse bool from string \"" + values[i] + "\"");}
       }
    }

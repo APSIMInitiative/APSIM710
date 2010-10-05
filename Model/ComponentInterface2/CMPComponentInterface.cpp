@@ -1,4 +1,3 @@
-#include <iostream>
 #include <General/xml.h>
 #include <General/date_class.h>
 #include <General/stl_functions.h>
@@ -72,7 +71,7 @@ void CMPComponentInterface::messageToLogic(const Message& message)
    // We need to keep track of bits of the message because the FARMWI$E infrastructure
    // doesn't guarantee that a message is still valid at the end of this method.
    // eg. it deletes the Init1 message before we get to test the ack flag at the bottom.
-   bool ack = message.toAcknowledge;
+   bool ack = message.toAcknowledge != 0;
    //unsigned fromID = message.from;
    unsigned msgID = message.messageID;
 
@@ -359,7 +358,7 @@ bool CMPComponentInterface::readFromSection(XMLNode::iterator initData,
          {
          string value = match->getValue();
          // Remove any units specifier "(..)":
-         unsigned int posBracket = value.find('(');
+         unsigned int posBracket = (unsigned)value.find('(');
          if (posBracket != std::string::npos)
             value = value.substr(0,posBracket);
 
@@ -486,7 +485,7 @@ void CMPComponentInterface::query(const std::string& pattern, std::vector<QueryM
    queryInfo.name = nameWithoutArraySpec;
 
    // work out if we dealing with a list of components or a list of variables.
-   unsigned posPeriod = pattern.find('.');
+   unsigned posPeriod = (unsigned)pattern.find('.');
    if (posPeriod != string::npos)
       queryInfo.kind = 2;
    else
@@ -698,7 +697,8 @@ void CMPComponentInterface::onInit2(const Message& message)
    if ((tickID = nameToRegistrationID("tick", respondToEventReg)) == 0) 
    	  {
    	  // We need a tick to determine when to write the "day = ..." heading to a summary file. 
-   	  tickID = RegisterWithPM("tick", "", "", respondToEventReg, new PackableWrapper< Null >(*new Null));
+      Null dummy;
+   	  tickID = RegisterWithPM("tick", "", "", respondToEventReg, new PackableWrapper< Null >(dummy));
    	  }
    }
 
@@ -792,7 +792,8 @@ std::string CMPComponentInterface::getExecutableFileName(void) {return dllName; 
 // the variable name probing works
 void CMPComponentInterface::notifyFutureEvent(const std::string& name)
    {
-   RegisterWithPM(name, "", "", eventReg, new PackableWrapper< Null >(*new Null));
+   Null dummy;
+   RegisterWithPM(name, "", "", eventReg, new PackableWrapper< Null >(dummy));
    }
 
 

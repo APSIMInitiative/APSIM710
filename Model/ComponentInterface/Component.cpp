@@ -149,7 +149,7 @@ void Component::messageToLogic(/*const*/ Message* message)
    // We need to keep track of bits of the message because the FARMWI$E infrastructure
    // doesn't guarantee that a message is still valid at the end of this method.
    // eg. it deletes the Init1 message before we get to test the ack flag at the bottom.
-   bool ack = message->toAcknowledge;
+   bool ack = message->toAcknowledge != 0;
    unsigned fromID = message->from;
    unsigned msgID = message->messageID;
    currentMsgID = msgID;
@@ -310,7 +310,7 @@ void Component::doInit1(const Init1Data& init1Data)
 
    // get instance name from fqn.
    string fqn =  asString(init1Data.fqn);
-   unsigned posPeriod = fqn.rfind('.');
+   unsigned posPeriod = (unsigned)fqn.rfind('.');
    if (posPeriod == string::npos)
 	  {
 	  name = fqn;
@@ -767,13 +767,13 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
    unsigned posCR;
    do
 	  {
-      posCR = lines.find("\n", posStart);
+      posCR = (unsigned)lines.find("\n", posStart);
       posEndText = posCR;
       if (posEndText == string::npos)
-         posEndText = lines.length();
+         posEndText = (unsigned)lines.length();
       if (posEndText > 0)
          {
-         posEndText = lines.find_last_not_of(" ", posEndText-1);
+         posEndText = (unsigned)lines.find_last_not_of(" ", posEndText-1);
          if (posEndText == string::npos)
             posEndText = posStart;  // must be all spaces.
          else
