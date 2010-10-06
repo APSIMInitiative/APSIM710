@@ -147,6 +147,7 @@ void parseModuleLine(const string& controlFileName, const string& moduleLine,
                             {
                             // replace any apsuite macros.
                             Replace_all(paramFile, "%apsim%", getApsimDirectory().c_str());
+                            Replace_all(paramFile, "%ausfarm%", getAusFarmDirectory().c_str());
                             }
                          replaceAll(paramFile, "\'", "");
                          replaceAll(paramFile, "\"", "");

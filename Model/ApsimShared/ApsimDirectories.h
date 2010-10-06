@@ -12,6 +12,7 @@
 // Application is not in the apsim directory structure.
 // ------------------------------------------------------------------
 std::string EXPORT getApsimDirectory(void);
+std::string EXPORT getAusFarmDirectory(void);
 
 // ------------------------------------------------------------------
 // This routine returns the directory where the

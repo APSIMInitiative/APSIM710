@@ -102,7 +102,10 @@ void ApsimSettings::read(const std::string& key, std::string& value,
    else
       value = "";
    if (replaceMacros)
+   {
       replaceAll(value, "%apsim%", getApsimDirectory());
+      replaceAll(value, "%ausfarm%", getAusFarmDirectory());
+   }
    }
 
 // ------------------------------------------------------------------
@@ -150,7 +153,10 @@ void ApsimSettings::read(const string& key, vector<string>& values,
       if (replaceMacros)
          {
          for (unsigned v = 0; v != values.size(); v++)
+		 {
             replaceAll(values[v], "%apsim%", getApsimDirectory());
+            replaceAll(values[v], "%ausfarm%", getAusFarmDirectory());
+		 }
          }
       }
    }

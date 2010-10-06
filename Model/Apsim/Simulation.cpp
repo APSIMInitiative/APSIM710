@@ -97,6 +97,7 @@ void Simulation::init(const string& fileName)
    // get dll filename for master PM.
    string dllFilename = data->getExecutableFileName();
    replaceAll(dllFilename, "%apsim%", getApsimDirectory());
+   replaceAll(dllFilename, "%ausfarm%", getAusFarmDirectory());
 
    // create a Master PM and give it to the transport layer.
    string pmName = ".MasterPM";
@@ -182,6 +183,7 @@ void Simulation::setMessageHook(IMessageHook* hook)
 void Simulation::resolveIncludes(string& sdml)
    {
    replaceAll(sdml, "%apsim%", getApsimDirectory());
+   replaceAll(sdml, "%ausfarm%", getAusFarmDirectory());
 
    unsigned posInclude = sdml.find("<include>");
    while (posInclude != string::npos)

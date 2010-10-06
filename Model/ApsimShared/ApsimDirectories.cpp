@@ -12,6 +12,7 @@ using namespace std;
 #ifdef __WIN32__
    #include <windows.h>
    extern HINSTANCE hInstance;
+   #include <shlobj.h>
 #else
    // gnu libc specific version
    #include <dlfcn.h>
@@ -56,7 +57,33 @@ std::string EXPORT getApsimDirectory(void)
    string dll = getExecutableFileName();
    dll = fileDirName(dll);
    return fileDirName(dll);
+}
+
+static std::string AusFarmDir;
+
+std::string EXPORT getAusFarmDirectory(void)
+   {
+      if (AusFarmDir == "")
+	  {
+#ifdef __WIN32__
+		HKEY hKey = 0;
+		DWORD dataType;
+		DWORD dataSize = MAX_PATH;
+		char data[MAX_PATH];
+		RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\CSIRO\\AusFarm\\ModLibs\\CSIRO\\Output", 0, KEY_READ, &hKey);
+		if (hKey && RegQueryValueEx(hKey, "Path", 0, &dataType, (LPBYTE)data, &dataSize) == ERROR_SUCCESS)
+		{
+			*(strrchr(data, '\\')) = '\0'; //strip \Output.exe off path.
+			AusFarmDir = data;
+		}
+        if (AusFarmDir == "")
+		{
+          if (SHGetSpecialFolderPath(0, (LPSTR)data, CSIDL_PROGRAM_FILESX86, false) ||  // should work for 64-bit Windows
+             (SHGetSpecialFolderPath(0, (LPSTR)data, CSIDL_PROGRAM_FILES, false)))
+			AusFarmDir = std::string(data) + "\\AusFarm";
+        }
+#endif
+	  }
+      return AusFarmDir;
    }
-
-
 
