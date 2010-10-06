@@ -8,7 +8,9 @@ using System.IO;
 using System.Xml;
 using ApsimFile;
 using CSGeneral;
+#if __WIN32__
 using ExcelUtility;
+#endif
 using System.Collections.Generic;
 
 
@@ -53,7 +55,7 @@ namespace ApsimFile
          {
          }
 
-
+#if __WIN32__
       static public string OpenXLS(string FileName, ProgressNotifier Notifier)
          {
          // --------------------------------------------------------------
@@ -112,6 +114,7 @@ namespace ApsimFile
          Doc.Save(TempFileName);
          return TempFileName;
          }
+#endif		
 
       /// <summary>
       /// Add the specified soil the the AllSoils node.
@@ -188,6 +191,7 @@ namespace ApsimFile
             return EnsureNodeExists(NewChild, NodePath.Substring(PosDelimiter + 1));
          }
 
+#if __WIN32__		
       static public void Export(string FileName, XmlNode Xml, StringCollection XMLPaths)
          {
          // --------------------------------------------------------------
@@ -206,7 +210,8 @@ namespace ApsimFile
             }
          ExcelHelper.SendDataToSheet(FileName, "SoilData", Table);
          }
-
+#endif
+		
       static private void CreateTableFromData(XmlNode Data, DataTable Table, string ChildPath, ref int Row)
          {
          // --------------------------------------------------------------
