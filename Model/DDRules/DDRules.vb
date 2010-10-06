@@ -24,9 +24,22 @@ Public Class DDRules
         '<Input()> Private UI_SuppType As String
 
         <Param()> <Output()> Public EnableFarmSim As Integer
-        <Output()> Public BaseStockingRate As Double = 0
+        <Output()> <Units("")> Public BaseStockingRate As Double = 2.5 'default value
 
         'Dawn's pasture ME / month table. Will be replace with calls to ApSim
+        <Output()> <Units("cows/ha")> Public Property InitialStockingRate() As Single
+                Get
+                        Return BaseStockingRate
+                End Get
+                Set(ByVal value As Single)
+                        If (value >= 0) Then
+                                BaseStockingRate = value
+                        Else
+                                BaseStockingRate = 0
+                        End If
+                End Set
+        End Property
+
         <Output()> Public Property sr() As Single
                 Get
                         Return myFarm.StockingRate
@@ -59,13 +72,22 @@ Public Class DDRules
                 End Get
         End Property
         'this stocking is the acual number of cows on farm i.e. normal stocking rate less cows wintering off
-        <Output()> Public ReadOnly Property StockingRate() As Single
+        <Output()> <Units("cows/ha")> Public Property StockingRate() As Single
                 Get
                         Return myFarm.StockingRate
                 End Get
+                Set(ByVal value As Single)
+                        If (value >= 0) Then
+                                myFarm.StockingRate = value
+                        End If
+                End Set
         End Property
 
         Private FirstSimulationDay = True
+
+        Public Sub New()
+                myFarm = New Farm()
+        End Sub
 #Region "EventHandlers"
         <EventHandler()> Public Sub OnInit2()
                 If (debug) Then
@@ -74,13 +96,11 @@ Public Class DDRules
 
                 ' ************* Farm testing **********************
                 MyPaddock = New PaddockType(Me)
-                myFarm = New Farm()
+                'myFarm = New Farm() 'moved to constructor
                 myFarm.Init(MyPaddock, year, month)
+
                 myHerd = myFarm.getHerd()
                 ' ************* Farm testing **********************
-
-                BaseStockingRate = 2.5
-
                 SetupFarmSim()
                 'If (debug) Then
                 PrintFarmSummary()
@@ -128,7 +148,7 @@ Public Class DDRules
                 ' ************* Farm testing **********************
                 myFarm.GrazingResidual = GrazingResidual
                 myFarm.GrazingInterval = GrazingInterval
-                myFarm.Prepare(year, month, end_week)
+                myFarm.Prepare(year, month, day_of_month, end_week)
                 myFarm.StockingRate = BaseStockingRate
                 ' ************* Farm testing **********************
 
@@ -156,6 +176,19 @@ Public Class DDRules
                 FirstSimulationDay = False
                 PrepareOutputs()
         End Sub
+
+        <Output()> <Units("")> Public Property WinterOffDryStock() As Integer
+                Get
+                        If (myFarm.WinterOffDryStock) Then
+                                Return 1
+                        Else
+                                Return 0
+                        End If
+                End Get
+                Set(ByVal value As Integer)
+                        myFarm.WinterOffDryStock = value > 0
+                End Set
+        End Property
 #End Region
 
 #Region "CowProperties"
@@ -325,6 +358,97 @@ Public Class DDRules
         End Property
 #End Region
 
+#Region "3: Conservation"
+        Private mySilageStoreEnable As Integer = 0
+        Private mySilageStore As Integer = 0
+        <Output()> <Units("kgDM/ha")> Public CDM As Double = 3500 ' Conservation trigger pasture mass (Dawn default = 3500)
+        <Output()> <Units("kgDM/ha")> Public CR As Integer = 1600 ' Conservation cutting residual pasture mass (Dawn default)
+        '<Output()> <Units("MJME")> Public SilageME As Double = 10.5 ' ME content of the silage
+        <Output()> <Units("MJME")> Public FCD As Integer = 9 'First Conservation Date - uing a month for the time being
+        <Output()> <Units("MJME")> Public LCD As Integer = 3 'Last Conservation Date - uing a month for the time being
+
+        <Output()> <Units("MJME")> Public Property SilageME() As Double
+                Get
+                        Return myFarm.SilageME
+                End Get
+                Set(ByVal value As Double)
+                        myFarm.SilageME = value
+                End Set
+        End Property
+        <Output()> <Units("MJME")> Public Property SilageN() As Double
+                Get
+                        Return myFarm.SilageN
+                End Get
+                Set(ByVal value As Double)
+                        myFarm.SilageN = value
+                End Set
+        End Property
+        <Output()> <Units("%")> Public Property SilageWastage() As Double
+                Get
+                        Return myFarm.SilageWastage
+                End Get
+                Set(ByVal value As Double)
+                        myFarm.SilageWastage = value
+                End Set
+        End Property
+        <Output()> <Units("")> Public Property ConservationStart() As String 'First Conservation Date - uing a month for the time being
+                Get
+                        Return myFarm.FCD
+                End Get
+                Set(ByVal value As String)
+                        myFarm.FCD = Date.Parse(value)
+                End Set
+        End Property
+        <Output()> <Units("")> Public Property ConservationFinish() As String 'First Conservation Date - uing a month for the time being
+                Get
+                        Return myFarm.LCD
+                End Get
+                Set(ByVal value As String)
+                        myFarm.LCD = Date.Parse(value)
+                End Set
+        End Property
+
+        <Output()> <Units("")> Public Property SilageStoreEnable() As Integer
+                Get
+                        If myFarm.EnableSilageStore Then
+                                Return 1
+                        Else
+                                Return 0
+
+                        End If
+                End Get
+                Set(ByVal value As Integer)
+                        myFarm.EnableSilageStore = value
+                End Set
+        End Property
+
+        <Output()> <Units("kgDM/ha")> Public Property SilageStore() As Double
+                Get
+                        Return myFarm.SilageStore
+                End Get
+                Set(ByVal value As Double)
+                        myFarm.SilageStore = value
+                End Set
+        End Property
+
+        <Output()> <Units("kgDM/ha")> Public Property ConservationTrigger() As Double
+                Get
+                        Return myFarm.CDM
+                End Get
+                Set(ByVal value As Double)
+                        myFarm.CDM = value
+                End Set
+        End Property
+        <Output()> <Units("kgDM/ha")> Public Property ConservationResidual() As Double
+                Get
+                        Return myFarm.CR
+                End Get
+                Set(ByVal value As Double)
+                        myFarm.CR = value
+                End Set
+        End Property
+#End Region
+
 #Region "Additional Output Variables"
         Private Sub PrepareOutputs()
                 myFarm.PrepareOutputs()
@@ -487,17 +611,22 @@ Public Class DDRules
                 Console.WriteLine("             Residules               " & myFarm.GrazingResidual)
                 Console.WriteLine("             Interval                " & myFarm.GrazingInterval)
                 Console.WriteLine("     Supplementary Feeding")
-                Console.WriteLine("             ME Content              " & myFarm.SupplementME)
-                Console.WriteLine("             N Content               " & myFarm.SupplementN)
-                Console.WriteLine("             Wastage                 " & myFarm.SupplementWastage)
+                Console.WriteLine("             ME Content (ME/kgDM)    " & myFarm.SupplementME)
+                Console.WriteLine("             N Content               " & myFarm.SupplementN * 100 & "%")
+                Console.WriteLine("             Wastage                 " & myFarm.SupplementWastage * 100 & "%")
                 Console.WriteLine("     Conservation")
-                Console.WriteLine("             Start Date              " & myFarm.FCD)
-                Console.WriteLine("             Finish Date             " & myFarm.LCD)
+                Console.WriteLine("             Start Date              " & myFarm.FCD.ToString("dd-MMM"))
+                Console.WriteLine("             Finish Date             " & myFarm.LCD.ToString("dd-MMM"))
                 Console.WriteLine("             Trigger Residule        " & myFarm.CDM)
                 Console.WriteLine("             Cutting Residule        " & myFarm.CR)
                 Console.WriteLine("             Silage Stored on Farm   " & myFarm.EnableSilageStore.ToString)
-                Console.WriteLine("     Debugging")
-                Console.WriteLine("             Apsim Events            " & debug)
-                Console.WriteLine("             Paddock Debug Level     " & myFarm.DebugLevel)
+                If (myFarm.EnableSilageStore) Then
+                        Console.WriteLine("             ME Content (ME/kgDM)    " & myFarm.SilageME)
+                        Console.WriteLine("             N Content               " & myFarm.SilageN * 100 & "%")
+                        Console.WriteLine("             Wastage                 " & myFarm.SilageWastage * 100 & "%")
+                End If
+                Console.WriteLine("     Debug Switches")
+                Console.WriteLine("             Outputs Apsim Event calls " & debug)
+                Console.WriteLine("             Paddock Messaging Level       " & myFarm.DebugLevel)
         End Sub
 End Class

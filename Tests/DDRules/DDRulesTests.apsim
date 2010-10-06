@@ -12,35 +12,35 @@
     </summaryfile>
     <outputfile name="DDRules Outputs">
       <variables name="Variables">
-        <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-        <variable name="DM_Eaten" array="No" description="Dry matter eaten on a /ha basis" />
-        <variable name="DM_Eaten_Pasture" array="No" description="Dry matter eaten from pasture eaten on a /ha basis" />
-        <variable name="DM_Eaten_Supplement" array="No" description="Dry matter easten from supplements eaten on a /ha basis" />
-        <variable name="SilageCut" array="No" description="Amount of silage made on farm" />
-        <variable name="SilageCut_kgha" />
-        <variable name="DM_Eaten_Cow" array="No" description="Dry matter eaten on a /cow basis by paddock" />
-        <variable name="DM_Eaten_Pasture_Cow" array="No" description="Dry matter eaten from pasture eaten on a /cow basis by paddock" />
-        <variable name="DM_Eaten_Supplement_Cow" array="No" description="Dry matter easten from supplements eaten on a /cow basis by paddock" />
-        <variable name="MilkProduction" array="No" description="Total milk production" />
-        <variable name="BaseStockingRate" array="No" description="Base Stocking Rate (set by FarmSim)" />
-        <variable name="sr" array="No" description="Current stocking rate on farm (i.e. excludes cows wintering off)" />
-        <variable name="DM_Eaten_Pdks" array="Yes" description="Dry matter eaten on a /ha basis by paddock" />
-        <variable name="PWO" array="No" description="Percentage of stocking wintering off farm" />
-        <variable name="PaddockStatus" array="Yes" description="1=growing; 2=was grazed today; 3=was partially greazed today; 4=closed for conservation; 5=was harvested today" />
-        <variable name="ME_Demand_Maintance" array="No" description="Metabolisable energy required for herd maintainence [MJME/day]" />
-        <variable name="ME_Demand_Lactation" array="No" description="Metabolisable energy required for herd lactation [MJME/day]" />
-        <variable name="ME_Demand_Pregnancy" array="No" description="Metabolisable energy required for herd pregnancy [MJME/day]" />
-        <variable name="ME_Demand_WeightChange" array="No" description="Metabolisable energy required for herd live weight change [MJME/day]" />
-        <variable name="ME_Demand_Walking" array="No" description="Metabolisable energy required for herd walking [MJME/day]" />
-        <variable name="Cow_LWt" array="Average per cow Live weight" />
+        <variable name="dd/mm/yyyy as Date" />
+        <variable name="DM_Eaten" />
+        <variable name="DM_Eaten_Pasture" />
+        <variable name="DM_Eaten_Supplement" />
+        <variable name="DM_Eaten_Cow" />
+        <variable name="DM_Eaten_Pasture_Cow" />
+        <variable name="DM_Eaten_Supplement_Cow" />
+        <variable name="MilkProduction" />
+        <variable name="BaseStockingRate" />
+        <variable name="sr" />
+        <variable name="DM_Eaten_Pdks" />
+        <variable name="PWO" />
+        <variable name="PaddockStatus" />
+        <variable name="ME_Demand_Maintance" />
+        <variable name="ME_Demand_Lactation" />
+        <variable name="ME_Demand_Pregnancy" />
+        <variable name="ME_Demand_WeightChange" />
+        <variable name="ME_Demand_Walking" />
+        <variable name="Cow_LWt" />
         <variable name="Cow_BC" />
         <variable name="Cow_MilkSolids" />
         <variable name="ME_Demand_WeightChange_Cow" />
-        <variable name="Cow_BC" array="No" description="Averge body condition score" />
+        <variable name="Cow_BC" />
         <variable name="ME_Demand_Maintance_Cow" />
-        <variable name="ME_Eaten_Cow" array="No" description="Metabolisable energy eaten on a /cow basis by paddock" />
-        <variable name="ME_Eaten_Pasture_Cow" array="No" description="Metabolisable energy from pasture eaten on a /cow basis by paddock" />
-        <variable name="ME_Eaten_Supplement_Cow" array="No" description="Metabolisable energy from supplements eaten on a /cow basis by paddock" />
+        <variable name="ME_Eaten_Cow" />
+        <variable name="ME_Eaten_Pasture_Cow" />
+        <variable name="ME_Eaten_Supplement_Cow" />
+        <variable name="SilageCut" />
+        <variable name="SilageCut_kgha" />
       </variables>
       <events name="Reporting Frequency">
         <event name="Daily" description="End of daily simulation time step" />
@@ -74,12 +74,14 @@
     </outputfile>
     <outputfile name="Cow Model">
       <variables name="Variables">
-        <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-        <variable name="ME_Demand_Maintance_Cow" array="No" description="Metabolisable energy required for maintainence [MJME/cow/day]" />
-        <variable name="ME_Demand_Lactation_Cow" array="No" description="Metabolisable energy required for lactation [MJME/cow/day]" />
-        <variable name="ME_Demand_Pregnancy_Cow" array="No" description="Metabolisable energy required for pregnancy [MJME/cow/day]" />
-        <variable name="ME_Demand_WeightChange_Cow" array="No" description="Metabolisable energy required for live weight change [MJME/cow/day]" />
-        <variable name="ME_Demand_Walking_Cow" array="No" description="Metabolisable energy required for walking [MJME/cow/day]" />
+        <variable name="dd/mm/yyyy as Date" />
+        <variable name="ME_Demand_Maintance_Cow" />
+        <variable name="ME_Demand_Lactation_Cow" />
+        <variable name="ME_Demand_Pregnancy_Cow" />
+        <variable name="ME_Demand_WeightChange_Cow" />
+        <variable name="ME_Demand_Walking_Cow" />
+        <variable name="WinterOffDryStock" />
+        <variable name="BaseStockingRate" />
       </variables>
       <events name="Reporting Frequency">
         <event name="Daily" description="End of daily simulation time step" />
@@ -1415,5 +1417,73 @@
         <Sample name="Initial nitrogen" shortcut="/simulations/test1/paddock01/Canterbury_M /Initial nitrogen" />
       </soil>
     </area>
+    <manager name="Dairy Farm Settings">
+      <script name="init">
+        <text>InitialStockingRate = 2.5
+WinterOffDryStock = 1</text>
+        <event>init</event>
+      </script>
+      <script name="start_of_day">
+        <text>
+        </text>
+        <event>start_of_day</event>
+      </script>
+      <script name="end_of_day">
+        <text>
+        </text>
+        <event>end_of_day</event>
+      </script>
+    </manager>
+    <manager name="Conservation Settings">
+      <ui>
+        <category type="category" />
+        <start_date type="ddmmmdate" description="Enter start date (dd-mmm) ">1-sep</start_date>
+        <finish_date type="ddmmmdate" description="Enter finish date (dd-mmm) ">20-mar</finish_date>
+        <trigger_mass type="text" description="Close paddock if pasture mass exceeds (kg/ha) : ">3500</trigger_mass>
+        <residual type="text" description="Pasture residual after cut (kgDM/ha)">1600</residual>
+        <silage_store type="yesno" description="Store conserved feed for later use">yes</silage_store>
+        <energy_content type="text" description="Energy content of conversed feed (ME/kgDM)">10.5</energy_content>
+        <silage_on_hand type="text" description="Feed stored on farm at start of simulation (kgDM/ha)">250</silage_on_hand>
+      </ui>
+      <script name="init">
+        <text>ConservationStart = '[start_date]'
+ConservationFinish = '[finish_date]'
+ConservationTrigger = [trigger_mass]
+ConservationResidual = [residual]
+if '[silage_store]' = 'yes' then
+   SilageStoreEnable = 1
+   SilageStore = [silage_on_hand]
+   SilageME = [energy_content]
+else
+   SilageStoreEnable = 0
+   SilageStore = 0
+endif</text>
+        <event>init</event>
+      </script>
+    </manager>
+    <outputfile name="DDRules Conservation">
+      <variables name="Variables">
+        <variable name="dd/mm/yyyy as Date" />
+        <variable name="SilageCut" />
+        <variable name="SilageCut_kgha" />
+        <variable name="SilageStore" />
+        <variable name="SilageStoreEnable" />
+      </variables>
+      <events name="Reporting Frequency">
+        <event name="Daily" />
+      </events>
+      <Graph name="Silage">
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <X>Date</X>
+          <Y>SilageStore</Y>
+          <Y>Cumulative SilageCut_kgha</Y>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+    </outputfile>
   </simulation>
 </folder>

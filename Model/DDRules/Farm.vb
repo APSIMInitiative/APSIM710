@@ -11,8 +11,14 @@
         Private myPaddockCounter, myDayPerPaddock As Integer
         Public WinterOffDryStock As Boolean = True
 
+        Private myDate As Date
+        Private Day As Integer
         Private Month As Integer
         Private end_week As Integer
+
+        Public Sub New()
+                myHerd = New SimpleHerd(1, 6, 0, 6)
+        End Sub
 
         Public Sub Init(ByVal MasterPM As PaddockType, ByVal Year As Integer, ByVal Month As Integer)
                 myPaddocks = New List(Of LocalPaddockType)
@@ -26,11 +32,13 @@
                                 Console.WriteLine("   Paddock " & myPaddocks(i).ToString)
                         End If
                 Next
-                myHerd = New SimpleHerd(1, 6, Year, Month)
+                'myHerd = New SimpleHerd(1, 6, Year, Month) ' moved to constructor
         End Sub
 
-        Public Sub Prepare(ByVal Year As Integer, ByVal Month As Integer, ByVal end_week As Integer)
+        Public Sub Prepare(ByVal Year As Integer, ByVal Month As Integer, ByVal Day As Integer, ByVal end_week As Integer)
+                Me.Day = Day
                 Me.Month = Month
+                myDate = New Date(Year, Month, Day)
                 Me.end_week = end_week
                 For Each Paddock As LocalPaddockType In myPaddocks
                         Paddock.OnPrepare()
@@ -92,8 +100,11 @@
         <Output()> <Units("kgDM")> Public SilageFed As Double 'kgDM @ 10.5me fed to meet animal requirements
         <Output()> <Units("kgDM")> Public SupplementFedout As Double 'kg of grain fed this period (to fill unsatisifed feed demand)
         <Param()> <Output()> <Units("%")> Public SupplementWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
-        <Param()> <Output()> <Units("%")> Public SupplementDigestability As Double = 0.7
+        <Param()> <Output()> <Units("%")> Public SupplementDigestability As Double = 0.8
+        <Param()> <Output()> <Units("%")> Public SilageWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
+        <Param()> <Output()> <Units("%")> Public SilageDigestability As Double = 0.7 'need to check this value
 
+        <Param()> <Units("kgN/kgDM")> Public SNC1 As Double = 0.035 'N content of silage (need to chechk this value - add to the user interface
         <Param()> <Units("kgN/kgDM")> Public SNC2 As Double = 0.018 'N content of supplement (grain?) - add to the user interface
         <Param()> <Units("ME/kgDM")> Private SME As Single = 12
 
@@ -115,13 +126,51 @@
                 End Set
         End Property
 
+        <Output()> <Units("MJME")> Public Property SilageN() As Double
+                Get
+                        Return SNC1
+                End Get
+                Set(ByVal value As Double)
+                        SNC1 = value
+                End Set
+        End Property
+
         'Silgae and Supplements will be used to completely fill the remaining demand
         'TODO - check implementation of wastage
         Sub FeedSupplements()
                 If (myHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
+                        FeedSilage(myHerd.RemainingFeedDemand, SilageME, SNC1, SilageWastage, SilageDigestability)
+                End If
+
+                If (myHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
                         FeedSupplement(myHerd.RemainingFeedDemand, SupplementME, SNC2, SupplementWastage, SupplementDigestability)
                 End If
         End Sub
+
+        Private Property SilageStoreTotal() As Double
+                Get
+                        Return SilageStore * FarmArea()
+                End Get
+                Set(ByVal value As Double)
+                        SilageStore = value / FarmArea()
+                End Set
+        End Property
+        Function FeedSilage(ByVal MEDemand As Single, ByVal MEperKg As Single, ByVal NperKg As Single, ByVal WastageFactor As Single, ByVal Digestability As Single) As Boolean
+                Dim dm As BioMass = New BioMass()
+                SilageFed = (MEDemand / MEperKg) * (1 + WastageFactor)
+                If (SilageFed > SilageStoreTotal) Then
+                        SilageFed = SilageStoreTotal
+                End If
+                SilageStoreTotal -= SilageFed ' remove silage from the heap
+
+                dm.gLeaf = SilageFed * (1 - WastageFactor)
+                dm.setME(SilageME)
+                dm.digestibility = Digestability
+                dm.N_Conc = NperKg
+                myHerd.Feed(dm, False)
+
+                Return (dm.DM_Total > 0)
+        End Function
 
         Function FeedSupplement(ByVal MEDemand As Single, ByVal MEperKg As Single, ByVal NperKg As Single, ByVal WastageFactor As Single, ByVal Digestability As Single) As Boolean
                 Dim dm As BioMass = New BioMass()
@@ -256,15 +305,32 @@
         <Input()> <Units("kgDM/ha")> Public CR As Integer = 1600 ' Conservation cutting residual pasture mass (Dawn default)
         <Input()> <Units("MJME")> Public SilageME As Double = 10.5 ' ME content of the silage
         <Output()> <Units("kgDM")> Public SilageCut As Double
-        <Output()> <Units("kgDM")> Public SilageStore As Double 'kgDM @ 10.5me fed on hand
+        Public SilageStore As Double 'kgDM/ha fed/silage on hand
         Public PaddocksClosed As Integer = 0 'number of paddocks currently close for conservation
         'should these be moved out to a management script?
-        Public FCD As Integer = 9 'First Conservation Date - uing a month for the time being
-        Public LCD As Integer = 3 'Last Conservation Date - uing a month for the time being
-        Public EnableSilageStore As Boolean 'switch ot turn off local storage of farm made silage
+        'Public FCD As Integer = 9 'First Conservation Date - uing a month for the time being
+        'Public LCD As Integer = 3 'Last Conservation Date - uing a month for the time being
+        Public FCD As Date 'New - First Conservation Date
+        Public LCD As Date 'New - Last Conservation Date
+        Public EnableSilageStore As Boolean = True 'switch ot turn off local storage of farm made silage
+
+        'Private Sub doConservation() 'old month only implmentation
+        '        If isBetween(Month, FCD, LCD) Then
+        '                ClosePaddocks()
+        '        End If
+
+        '        Dim IsCuttingDay As Boolean = end_week > 0 'only cut once a week [as per Dawn's rules]
+        '        SilageCut = 0
+        '        If (IsCuttingDay And PaddocksClosed) Then
+        '                SilageCut = doHarvest()
+        '                If (EnableSilageStore) Then
+        '                        SilageStore += SilageCut
+        '                End If
+        '        End If
+        'End Sub
 
         Private Sub doConservation()
-                If isBetween(Month, FCD, LCD) Then
+                If isBetween(myDate, FCD, LCD) Then
                         ClosePaddocks()
                 End If
 
@@ -273,7 +339,7 @@
                 If (IsCuttingDay And PaddocksClosed) Then
                         SilageCut = doHarvest()
                         If (EnableSilageStore) Then
-                                SilageStore += SilageCut
+                                SilageStoreTotal += SilageCut
                         End If
                 End If
         End Sub
