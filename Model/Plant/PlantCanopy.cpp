@@ -477,9 +477,9 @@ void cproc_leaf_no_pot4 (interpolationFunction &node_app_rate_fn,          // (I
                          float cNodeAppRatePrePhoto,
                          float cNodeAppRatePostPhoto,
                          bool   inNodeFormationPhase,
-                         bool   inPrePhotoPhyllochronPhase,
-                         bool   inPhotoPhyllochronPhase,
-                         bool   inPostPhotoPhyllochronPhase,
+                         bool   inPrePhotoPhyllochronPhase,  // Early period when phyllochron is insensitive to photoperiod (PFR)
+                         bool   inPhotoPhyllochronPhase,     // Period when phyllochron is modulated by photoperiod (PFR)
+                         bool   inPostPhotoPhyllochronPhase, // Late period when phyllochron is insensitive to photoperiod (PFR)
                          bool   inEmergenceDay,
                          float  photoperiod,                // (INPUT)
                          float  node_no_now,
@@ -494,7 +494,7 @@ void cproc_leaf_no_pot4 (interpolationFunction &node_app_rate_fn,          // (I
       float node_app_rate = 0.0;
       if( inPrePhotoPhyllochronPhase)
          {
-         node_app_rate = cNodeAppRatePrePhoto;
+         node_app_rate = cNodeAppRatePrePhoto;             // note that node_app_rate in this context means phyllochron in oCd/node (PFR)
          }
       else if (inPhotoPhyllochronPhase)
          {
@@ -508,7 +508,7 @@ void cproc_leaf_no_pot4 (interpolationFunction &node_app_rate_fn,          // (I
          {
          throw std::invalid_argument("PhotoPhyllochron phases do not align with NodeFormationPhase");
          }
-      *dlt_node_no_pot = divide (g_dlt_tt, node_app_rate, 0.0);
+      *dlt_node_no_pot = divide (g_dlt_tt, node_app_rate, 0.0);             // Fractional daily increase in nodes/stem
       }
    else
       {

@@ -22,12 +22,14 @@ class Environment : public plantThing
       float co2()     const;
 
       float vpdEstimate() const;
-      float dayLength(void) const;
-      float deltaDayLength(void) const;
+      float dayLength(void) const;                                              // (PFR)
+      float deltaDayLength(void) const;                                         // (PFR)
       float dayLength(float sun_angle) const;
       float dayLength(int dyoyr, float sun_angle) const;
       float Latitude() const {return latitude;}
-      float DiffuseLightFactor(void);
+      float DiffuseLightFactor(void); 						// (PFR)
+      void process(void);                                                       // Just to call environment processes(PFR)
+      float rootActivityTemperature(void) const;                                // Returns root zone temperature(PFR)
 
    private:
       protocol::NewMetType NewMet;
@@ -40,15 +42,16 @@ class Environment : public plantThing
                                                         // lies. (0-1)
       float _co2;
       float co2_default;
-      float twilight;
-      interpolationFunction DiffuseLightFactorTable;
+      float twilight; 					 // (PFR)
+      float _rootActivityTemperature;                     // Soil temperature at the active zone of roots (PFR)
+      interpolationFunction DiffuseLightFactorTable;    // (PFR)
 
-      void ReadDiffuseLightFactorTable(void);
+      void ReadDiffuseLightFactorTable(void);           // (PFR)
       float svp(float temp) const;
       float vpd(float svp_fract, float maxt, float mint) const;
       void OnNewMet(protocol::NewMetType &newmet) ;
       void OnTick(protocol::TimeType &Tick);
-      float Q0(float lat, int day);
+      float Q0(float lat, int day); 					// (PFR)
    };
 
 #endif

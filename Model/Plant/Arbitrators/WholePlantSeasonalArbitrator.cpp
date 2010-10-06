@@ -4,6 +4,13 @@
 #include "../Environment.h"
 #include "../Phenology/Phenology.h"
 
+
+// Purpose: This arbitrator uses the ratio of soil to air temperature (Tsoil/Tair)
+//          as a driver of fractional partitioning
+//          of biomass to roots. Note that it must be used with values of
+//          radiation use efficiency for "total biomass" in parameter file.
+//          Plant and Food Research (PFR) implementation.
+
 WholePlantSeasonalArbitrator::WholePlantSeasonalArbitrator(ScienceAPI& scienceAPI, plantInterface& p)
    : Arbitrator(scienceAPI, p)
    {
@@ -35,10 +42,7 @@ float WholePlantSeasonalArbitrator::TotalPotentialGrowthRate(void)
 
 float WholePlantSeasonalArbitrator::ratioRootPlant(void)
    {
-   std::vector<float> SoilTempLayer;
-   scienceAPI.get("st", "oC", SoilTempLayer, -15.0, 50.0);   // Retrieves soil temperature of top layer     FIXME-EIT    (to use soil temp module change st(1) by  ave_soil_temp
-   float SoilTempTopLayer = SoilTempLayer[0];
-   float TsoilTairRatio = divide (SoilTempTopLayer, plant.environment().meant(),0.0);
+   float TsoilTairRatio = divide (plant.environment().rootActivityTemperature(), plant.environment().meant(),0.0);
    return ratioRootPlantTable.value(TsoilTairRatio);
    }
 

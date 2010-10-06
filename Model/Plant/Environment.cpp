@@ -9,7 +9,7 @@ Environment::Environment(ScienceAPI& api, const std::string& name)
    year = 0;
    day_of_year = 0;
    latitude = 0.0;
-   twilight = 0.0;
+   twilight = 0.0; 								// originally was in RUEModel (PFR)
 
    NewMet.mint = 0.0;
    NewMet.maxt = 0.0;
@@ -18,8 +18,8 @@ Environment::Environment(ScienceAPI& api, const std::string& name)
 
    scienceAPI.read("svp_fract", svp_fract, 0.0f, 1.0f);
    scienceAPI.read("co2_default", co2_default, 0.0f, 1000.0f);
-   scienceAPI.read("twilight", twilight, -90.0f, 90.0f);
-   ReadDiffuseLightFactorTable();
+   scienceAPI.read("twilight", twilight, -90.0f, 90.0f);  			// originally was in RUEModel(PFR)
+   ReadDiffuseLightFactorTable(); 						// originally was in RUEModel(PFR)
 
    scienceAPI.subscribe ("newmet", NewMetFunction(&Environment::OnNewMet));
    scienceAPI.subscribe ("tick", TimeFunction(&Environment::OnTick));
@@ -43,6 +43,18 @@ void Environment::OnTick(protocol::TimeType &Tick)
 
    if (!scienceAPI.getOptional("co2", "mg/kg", _co2, 0.0, 1500.0))
       _co2 = co2_default;
+   }
+void Environment::process (void)
+//=======================================================================================
+   {
+   if (!scienceAPI.getOptional("ave_soil_temp(1)", "oC", _rootActivityTemperature, -15.0, 50.0))   // Variable that retrieves soil temperature assumed for the most "metabolically active" zone of the root system
+       scienceAPI.get("st(1)", "oC", _rootActivityTemperature, -15.0, 50.0);                       // If soil temperature module is not available it uses soil-N module soil temperature as default (PFR)
+   }
+
+float Environment::rootActivityTemperature(void) const
+//===========================================================================
+   {
+   return _rootActivityTemperature;
    }
 float Environment::co2() const
 //===========================================================================
@@ -74,7 +86,7 @@ float Environment::vpdEstimate (void) const
    return (vpd(svp_fract, maxt(), mint()));
    }
 
-float Environment::dayLength(void) const
+float Environment::dayLength(void) const     				// (PFR)
 //===========================================================================
    {
     return dayLength(day_of_year, twilight);
@@ -92,13 +104,13 @@ float Environment::dayLength(int dyoyr, float sun_angle) const
    return ::day_length(dyoyr, latitude, sun_angle);
    }
 
-float Environment::deltaDayLength(void) const                                // Plant and Food Reserach
+float Environment::deltaDayLength(void) const                   // Plant and Food Research (PFR)
 //===========================================================================
    {
     return dayLength(day_of_year, twilight) - dayLength(day_of_year-1, twilight);
    }
 
-void Environment::ReadDiffuseLightFactorTable(void)
+void Environment::ReadDiffuseLightFactorTable(void)     	// this was originally in RUEModel.cpp(PFR)
    {
     if (!DiffuseLightFactorTable.readOptional(scienceAPI,
               "x_diffuse_fr", "(0-1)", 0.0, 1.0,
@@ -106,7 +118,7 @@ void Environment::ReadDiffuseLightFactorTable(void)
         DiffuseLightFactorTable.setDefaultValue(1.0);  // Note this defaults to a value of 1 if not specified.
    }
 
-float Environment::DiffuseLightFactor (void)
+float Environment::DiffuseLightFactor (void)                    // This was originally in the RUEModel class inside "Potential" function (PFR)
    {
    float Q = Q0(latitude, day_of_year);
    float T = radn()/Q;
@@ -118,7 +130,7 @@ float Environment::DiffuseLightFactor (void)
    return DiffuseLightFactorTable.value(Diffuse_fr);
    }
 
-float Environment::Q0(float lat, int day)
+float Environment::Q0(float lat, int day) 						// (PFR)
    {
    float DEC = 23.45 * sin(2. * 3.14159265 / 365.25 * (day - 82.25));
    float DECr = DEC * 2. * 3.14159265 / 360.;

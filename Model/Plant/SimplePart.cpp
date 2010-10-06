@@ -721,16 +721,10 @@ void SimplePart::doSenescence(float sen_fr)
 void SimplePart::doMaintenanceRespirationPFR(void)
 //=======================================================================================
    {
-   std::vector<float> SoilTempLayer;
-   scienceAPI.getOptional("st", "oC", SoilTempLayer, -15.0, 50.0);   // Retrieves soil temperature of top layer     FIXME-EIT    (to use soil temp module change st(1) by  ave_soil_temp
-   if (SoilTempLayer.size() > 0)
-     SoilTempTopLayer = SoilTempLayer[0];
-   else
-     SoilTempTopLayer = 20.0; // "Default" if temperature not available
    float photoperiod = plant->environment().dayLength();
    float MRSeasonalAdjustment =  plant->environment().deltaDayLength() * c.MRScalingFactor;
    float MaintenanceRespiration20C = c.MaintenanceRespiration20CBase.value(photoperiod) + MRSeasonalAdjustment;
-   float fraction_respiring =  MaintenanceRespiration20C * TemperatureAdjustmentQ10(SoilTempTopLayer);
+   float fraction_respiring =  MaintenanceRespiration20C * TemperatureAdjustmentQ10(plant->environment().rootActivityTemperature());
    fraction_respiring = bound (fraction_respiring, 0.0, 1.0);
 
    // This is silly
