@@ -276,7 +276,7 @@ void FortranWrapper::swapInstanceIn(void)
 {
 #ifdef __WIN32__
    if (!swapMutexInited) {
-      InitializeCriticalSectionAndSpinCount(&swapMutex, 0x800000400);
+      InitializeCriticalSectionAndSpinCount(&swapMutex, 0x80000400);
       swapMutexInited = true;
    }
    EnterCriticalSection(&swapMutex);
@@ -716,7 +716,7 @@ extern "C" void EXPORT STDCALL respond2get_logical_var
    (const char* variableName, const char* units, int* value,
     unsigned variableNameLength, unsigned unitsLength)
    {
-   bool b = *value;
+   bool b = *value != 0;
    FortranWrapper::currentInstance->respond2var
       (FString(variableName, variableNameLength, FORString),
        FString(units, unitsLength, FORString), logicalType, b);
@@ -1226,12 +1226,13 @@ extern "C" void EXPORT STDCALL post_real_array
    char* temp = (char*)malloc(*numvals*24);
    memset(temp, ' ', *numvals*24);
    char tmp[40];
-   for (int i=0; i < *numvals; i++) {
+   for (unsigned int i=0; i < *numvals; i++) {
 	 int nChars = sprintf(tmp, "%.12g", values[i]);
 	 strncpy(temp + 24 * i, tmp, nChars);
    }
    post_char_array(variableName, units, temp, numvals,
 	 variableNameLength, unitsLength, 24);
+   free(temp);
    }
 // ------------------------------------------------------------------
 // Module is posting a value into a variant.
@@ -1256,12 +1257,13 @@ extern "C" void EXPORT STDCALL post_double_array
    char* temp = (char*)malloc(*numvals*24);
    memset(temp, ' ', *numvals*24);
    char tmp[40];
-   for (int i=0; i < *numvals; i++) {
+   for (unsigned int i=0; i < *numvals; i++) {
 	 int nChars = sprintf(tmp, "%.12g", values[i]);
 	 strncpy(temp + 24 * i, tmp, nChars);
    }
    post_char_array(variableName, units, temp, numvals,
 	 variableNameLength, unitsLength, 24);
+   free(temp);
    }
 // ------------------------------------------------------------------
 // Module is getting a value from a variant.
@@ -1544,7 +1546,7 @@ extern "C" int EXPORT STDCALL read_parameter
    FString fsect = FString(sectionName, sectionNameLength, FORString);
    FString fpar = FString(parameterName, parameterNameLength, FORString);
    FString fvar = FString(value, valueLength, FORString);
-   bool found = FortranWrapper::currentInstance->readParameter(fsect, fpar, fvar, *optional);
+   bool found = FortranWrapper::currentInstance->readParameter(fsect, fpar, fvar, *optional != 0);
 
    if (found)
       return true;
