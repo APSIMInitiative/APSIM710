@@ -45,7 +45,7 @@ public class TestProcessDataTypes
 
       Assert.AreEqual(New.ChildNodes.Count, 4);
       
-      // builtin 1
+      // builtin 1 
       XmlNode BuiltIn1 = New.ChildNodes[0];
       Assert.AreEqual(XmlHelper.Name(BuiltIn1), "Boolean");
       Assert.AreEqual(XmlHelper.Value(BuiltIn1, "kind"), "boolean");
@@ -70,11 +70,11 @@ public class TestProcessDataTypes
       // type1
       XmlNode Type1 = New.ChildNodes[2];
       Assert.AreEqual(XmlHelper.Name(Type1), "type1");
-      Assert.AreEqual(Type1.ChildNodes.Count, 8);
+      Assert.AreEqual(Type1.ChildNodes.Count, 9);
 
       // first 2 child elements are the 2 ddml types.
       // field 1
-      XmlNode Field1 = Type1.ChildNodes[2];
+      XmlNode Field1 = Type1.ChildNodes[3];
       Assert.AreEqual(XmlHelper.Name(Field1), "field1");
       Assert.AreEqual(XmlHelper.Value(Field1, "kind"), "integer4");
       Assert.AreEqual(XmlHelper.Value(Field1, "structure"), "");
@@ -86,7 +86,7 @@ public class TestProcessDataTypes
       Assert.AreEqual(XmlHelper.Value(Field1, "ctype"), "int");
 
       // field 2
-      XmlNode Field2 = Type1.ChildNodes[3];
+      XmlNode Field2 = Type1.ChildNodes[4];
       Assert.AreEqual(XmlHelper.Name(Field2), "field2");
       Assert.AreEqual(XmlHelper.Value(Field2, "kind"), "single");
       Assert.AreEqual(XmlHelper.Value(Field2, "structure"), "");
@@ -98,7 +98,7 @@ public class TestProcessDataTypes
       Assert.AreEqual(XmlHelper.Value(Field2, "ctype"), "float");
 
       // field 3
-      XmlNode Field3 = Type1.ChildNodes[4];
+      XmlNode Field3 = Type1.ChildNodes[5];
       Assert.AreEqual(XmlHelper.Name(Field3), "field3");
       Assert.AreEqual(XmlHelper.Value(Field3, "kind"), "double");
       Assert.AreEqual(XmlHelper.Value(Field3, "structure"), "");
@@ -110,7 +110,7 @@ public class TestProcessDataTypes
       Assert.AreEqual(XmlHelper.Value(Field3, "ctype"), "double");
 
       // field 4
-      XmlNode Field4 = Type1.ChildNodes[5];
+      XmlNode Field4 = Type1.ChildNodes[6];
       Assert.AreEqual(XmlHelper.Name(Field4), "field4");
       Assert.AreEqual(XmlHelper.Value(Field4, "kind"), "string");
       Assert.AreEqual(XmlHelper.Value(Field4, "structure"), "");
@@ -122,7 +122,7 @@ public class TestProcessDataTypes
       Assert.AreEqual(XmlHelper.Value(Field4, "ctype"), "char*");
 
       // field 5
-      XmlNode Field5 = Type1.ChildNodes[6];
+      XmlNode Field5 = Type1.ChildNodes[7];
       Assert.AreEqual(XmlHelper.Name(Field5), "field5");
       Assert.AreEqual(XmlHelper.Value(Field5, "kind"), "double");
       Assert.AreEqual(XmlHelper.Value(Field5, "structure"), "");
@@ -134,7 +134,7 @@ public class TestProcessDataTypes
       Assert.AreEqual(XmlHelper.Value(Field5, "ctype"), "double");
 
       // field 6
-      XmlNode Field6 = Type1.ChildNodes[7];
+      XmlNode Field6 = Type1.ChildNodes[8];
       Assert.AreEqual(XmlHelper.Name(Field6), "field6");
       Assert.AreEqual(XmlHelper.Value(Field6, "kind"), "string");
       Assert.AreEqual(XmlHelper.Value(Field6, "structure"), "");
@@ -149,11 +149,11 @@ public class TestProcessDataTypes
       // second type.
       XmlNode Type2 = New.ChildNodes[3];
       Assert.AreEqual(XmlHelper.Name(Type2), "type2");
-      Assert.AreEqual(Type2.ChildNodes.Count, 3);
+      Assert.AreEqual(Type2.ChildNodes.Count, 4);
 
       
       // field 7
-      XmlNode Field7 = Type2.ChildNodes[2];
+      XmlNode Field7 = Type2.ChildNodes[3];
       Assert.AreEqual(XmlHelper.Name(Field7), "field7");
       Assert.AreEqual(XmlHelper.Value(Field7, "kind"), "");
       Assert.AreEqual(XmlHelper.Value(Field7, "structure"), "T");
@@ -235,7 +235,7 @@ public class TestProcessDataTypes
          "\"</type>\"");
 
       XmlNode Type2 = New.ChildNodes[1];
-      XmlNode Type2Field = Type2.ChildNodes[2];
+      XmlNode Type2Field = Type2.ChildNodes[3];
       Assert.AreEqual(XmlHelper.Name(Type2Field), "subtype");
       Assert.AreEqual(XmlHelper.Value(Type2Field, "cpptype"), "std::vector<typesubtypeType>");
 
