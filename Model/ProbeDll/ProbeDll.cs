@@ -135,12 +135,13 @@ class ProbeDll
             // Create a manager helper for this type.
             if (ModuleName != "Fertiliser")
                {
-               StreamWriter ProbeXml = new StreamWriter(ModelDirectory + "ManagerHelper.xml");
-               ProbeXml.Write(ProbeContents);
-               ProbeXml.Close();
+               XmlDocument Doc = new XmlDocument();
+               Doc.LoadXml(ProbeContents);
+               XmlHelper.SetName(Doc.DocumentElement, TypeName);
+               Doc.Save(ModelDirectory + TypeName + "ManagerHelper.xml");
 
                Process P = Utility.RunProcess(ModelDirectory + "ProcessDataTypesInterface.exe",
-                                              ModelDirectory + "ManagerHelper.xml " + ModelDirectory + "ProbeDll.macro",
+                                              ModelDirectory + TypeName + "ManagerHelper.xml " + ModelDirectory + "ProbeDll.macro",
                                               ModelDirectory);
                Utility.CheckProcessExitedProperly(P);
 
@@ -148,7 +149,7 @@ class ProbeDll
 
                // Now compile the manager helper.
                P = Utility.RunProcess(ProgramFiles + "\\Microsoft Visual Studio 9.0\\Common7\\IDE\\devenv.exe",
-                                      ModelDirectory + "ManagerHelper.sln /build release",
+                                      ModelDirectory + TypeName + "ManagerHelper.sln /build release",
                                       ModelDirectory);
                Utility.CheckProcessExitedProperly(P);
 
@@ -156,10 +157,11 @@ class ProbeDll
                //File.Copy(ModelDirectory + "ManagerHelper.dll", ModelDirectory + ModuleName + "ManagerHelper.dll", true);
 
                // Get rid of all temporary files and directories.
-               if (Directory.Exists(ModelDirectory + "Release"))
-                  Directory.Delete(ModelDirectory + "Release", true);
-               foreach (string FileNameToDelete in Directory.GetFiles(ModelDirectory, "ManagerHelper.*"))
-                  File.Delete(FileNameToDelete);
+               foreach (string FileNameToDelete in Directory.GetFiles(ModelDirectory, TypeName + "ManagerHelper.*"))
+                  {
+                  if (Path.GetExtension(FileNameToDelete) != ".dll")
+                     File.Delete(FileNameToDelete);
+                  }
                }
             }
          }
