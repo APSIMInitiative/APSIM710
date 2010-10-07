@@ -50,15 +50,27 @@ Instance^ Factory::CreateInstance(XmlNode^ Node,
    if (ClassType == nullptr)
       throw gcnew Exception("Cannot find a class called: " + Node->Name);
    Instance^ CreatedInstance = dynamic_cast<Instance^> (Activator::CreateInstance(ClassType));
-
-   CreatedInstance->Initialise(XmlHelper::Name(Node), ParentInstance, ParentComponent);
-   GetAllProperties(CreatedInstance, Parent);
-   GetAllEventHandlers(CreatedInstance);
-   GetAllEvents(CreatedInstance);
-   PopulateParams(CreatedInstance, Node, ParentComponent);
+   DerivedInstance^ DerivativeInstance = dynamic_cast<DerivedInstance^> (CreatedInstance);
+   if (DerivativeInstance)
+   {
+      DerivativeInstance->Initialise(Node, ParentInstance, ParentComponent);
+   }
+   else if (CreatedInstance)
+   {
+      CreatedInstance->Initialise(XmlHelper::Name(Node), ParentInstance, ParentComponent);
+	  GetAllProperties(CreatedInstance, Parent);
+      GetAllEventHandlers(CreatedInstance);
+      GetAllEvents(CreatedInstance);
+      PopulateParams(CreatedInstance, Node, ParentComponent);
+   }
+   else
+   {
+	   throw gcnew Exception("Class " + Node->Name + " must be derived from the \"Instance\" class");
+   }
    CreatedInstance->Initialised();
    return CreatedInstance;
    }
+
 void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)
    {
    // --------------------------------------------------------------------
@@ -156,8 +168,8 @@ void Factory::GetAllEvents(Instance^ Obj)
       array<Object^>^ Attributes = Event->GetCustomAttributes(false);
       for each (Object^ Attr in Attributes)
          {
-         if (dynamic_cast<::Event^>(Attr) != nullptr)
-            RegisteredEvents->Add(gcnew FactoryEvent(Event, Obj));
+            if (dynamic_cast<::Event^>(Attr) != nullptr)
+              RegisteredEvents->Add(gcnew FactoryEvent(Event, Obj));
          }
       }
    }   
@@ -173,7 +185,7 @@ void Factory::GetAllEvents(Instance^ Obj)
          if (dynamic_cast<XmlComment^>(Child) == nullptr)
             {
             Type^ t = CallingAssembly->GetType(Child->Name);
-            if (t != nullptr)
+			if (t != nullptr && t->IsSubclassOf(Instance::typeid))
                {
                // Create a child instance - indirect recursion.
                Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
@@ -214,7 +226,30 @@ void Factory::GetAllEvents(Instance^ Obj)
          }
       return nullptr;
       }
-      
+    
+template<typename T> void CheckArray(FactoryProperty^ Property, String^ ErrorString)
+{
+   array<T>^ arrayObj = (array<T>^)Property->Get;
+   for (int i = 0; i < arrayObj->Length; i++)
+   {
+     double val = arrayObj[i];
+     if (!Double::IsNaN(Property->ParamMinVal) && 
+         val < Property->ParamMinVal)
+        ErrorString += "The value provided for element " + i +
+		               " of parameter " + Property->FQN +
+			           " is less than its allowed minimum (" + 
+			           val + " vs. " +
+			           Property->ParamMinVal + ")\n";
+   	 if (!Double::IsNaN(Property->ParamMaxVal) && 
+		 val > Property->ParamMaxVal)
+   	    ErrorString += "The value provided for element " + i +
+		                " of parameter " + Property->FQN +
+			            " is greater than its allowed maximum (" + 
+				        val + " vs. " +
+				        Property->ParamMaxVal + ")\n";
+   }
+}
+
 void Factory::CheckParameters()
    {
 	// -----------------------------------------------
@@ -240,24 +275,32 @@ void Factory::CheckParameters()
 		  // Is there a tidier way to do this?
 		  if (Property->HasAsValue && 
 			 (!Double::IsNaN(Property->ParamMinVal) || 
-			  !Double::IsNaN(Property->ParamMaxVal)) &&
-             (Property->TypeName == "Double" ||
-			  Property->TypeName == "Single" ||
-			  Property->TypeName == "Int32"))
+			  !Double::IsNaN(Property->ParamMaxVal)))
 		  {
-			 double val = Convert::ToDouble(Property->Get->ToString());
-   			 if (!Double::IsNaN(Property->ParamMinVal) && 
-				 val < Property->ParamMinVal)
-				 RangeErrors += "The value provided for " + Property->FQN +
-			      " is less than its allowed minimum (" + 
-				  Property->Get->ToString() + " vs. " +
-				  Property->ParamMinVal + ")\n";
-   			 if (!Double::IsNaN(Property->ParamMaxVal) && 
-				 val > Property->ParamMaxVal)
-   			   RangeErrors += "The value provided for " + Property->FQN +
-			      " is greater than its allowed maximum (" + 
-				  Property->Get->ToString() + " vs. " +
-				  Property->ParamMaxVal + ")\n";
+             if (Property->TypeName == "Double" ||
+			     Property->TypeName == "Single" ||
+			     Property->TypeName == "Int32")
+     	     {
+			    double val = Convert::ToDouble(Property->Get->ToString());
+   			    if (!Double::IsNaN(Property->ParamMinVal) && 
+				    val < Property->ParamMinVal)
+				    RangeErrors += "The value provided for parameter " + Property->FQN +
+			         " is less than its allowed minimum (" + 
+				     Property->Get->ToString() + " vs. " +
+				     Property->ParamMinVal + ")\n";
+   			    if (!Double::IsNaN(Property->ParamMaxVal) && 
+				    val > Property->ParamMaxVal)
+   			      RangeErrors += "The value provided for parameter " + Property->FQN +
+			         " is greater than its allowed maximum (" + 
+				     Property->Get->ToString() + " vs. " +
+				     Property->ParamMaxVal + ")\n";
+			 }
+             else if (Property->TypeName == "Double[]")
+			    CheckArray<double>(Property, RangeErrors);
+             else if (Property->TypeName == "Single[]")
+			    CheckArray<float>(Property, RangeErrors);
+             else if (Property->TypeName == "Int32[]")
+			    CheckArray<int>(Property, RangeErrors);
 		  }
 	   } 
    }

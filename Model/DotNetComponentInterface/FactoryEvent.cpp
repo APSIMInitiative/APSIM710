@@ -2,7 +2,7 @@
 #include "ApsimComponent.h"
 using namespace ModelFramework;
 
-public delegate void NullTypeDelegate();
+//public delegate void NullTypeDelegate();
 public delegate void ApsimTypeDelegate(ApsimType^ Data);
 FactoryEvent::FactoryEvent(EventInfo^ Event, Object^ Instance)
    {
@@ -13,28 +13,35 @@ FactoryEvent::FactoryEvent(EventInfo^ Event, Object^ Instance)
    this->Event = Event;
    this->Obj = Instance;
   
-   if (Typ == nullptr)
+   Type^ dataType = Typ;
+   if (dataType == nullptr)
       {
       MethodInfo^ Method = GetType()->GetMethod("NullHandler", BindingFlags::Public | BindingFlags::Instance);
       System::Delegate^ Del = Delegate::CreateDelegate(NullTypeDelegate::typeid, this, Method);
       Event->AddEventHandler(Obj, Del);
+	  this->Data = gcnew NullType();
       }
    else
       {
       MethodInfo^ Method = GetType()->GetMethod("Handler", BindingFlags::Public | BindingFlags::Instance);
-      System::Delegate^ Del = Delegate::CreateDelegate(ApsimTypeDelegate::typeid, this, Method);
+	  System::Delegate^ Del = Delegate::CreateDelegate(Event->EventHandlerType, this, Method);
       Event->AddEventHandler(Obj, Del);
+      if (ApsimType::typeid->IsAssignableFrom(dataType))
+        this->Data = (ApsimType^)Activator::CreateInstance(dataType);
       }
    }
    
    
 void FactoryEvent::NullHandler()
    {
-   this->Data = gcnew NullType();
+   if (!this->Data)
+     this->Data = gcnew NullType();
    OnFired(this);
    }
 void FactoryEvent::Handler(ApsimType^ Data)
    {
+   if (!Data->GetType()->Equals(this->Data->GetType()))
+	   throw gcnew Exception("Incorrect datatype provided for the " + EventName + " event.");
    this->Data = Data;
    OnFired(this);
    }

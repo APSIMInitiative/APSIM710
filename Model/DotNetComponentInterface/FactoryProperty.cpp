@@ -208,7 +208,7 @@ String^ FactoryProperty::GetDescription()
          }
       Desc += "   </property>\r\n";
       }
-   else if (IsParam)
+   else if (IsInput)
 	   {
       Desc = "   <driver name=\"" + OutputName + "\">\r\n";
       if (DDML() != "")

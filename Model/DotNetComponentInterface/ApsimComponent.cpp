@@ -29,7 +29,7 @@ extern "C" {
 	void CIError(int ComponentInterface, String^ Message, bool IsFatal);
 
 	[DllImport("ComponentInterface2.dll", EntryPoint = "CIGet", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
-	void CIGet(int ComponentInterface, String^ Name, String^ Units, bool Optional, void* Handler,
+	bool CIGet(int ComponentInterface, String^ Name, String^ Units, bool Optional, void* Handler,
 			     int InstanceNumber, int RegistrationIndex, String^ ddml);
 
 	[DllImport("ComponentInterface2.dll", EntryPoint = "CISet", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
@@ -76,6 +76,7 @@ ApsimComponent::ApsimComponent(Assembly^ ModelAssembly, int instancenumber)
 	instanceNumber = instancenumber;
 	modelAssembly = ModelAssembly;
 	Registrations = gcnew List<ApsimType^>();
+	DllFileName = ModelAssembly->Location;
 	}
 void ApsimComponent::createInstance(const char* dllFileName,
 					unsigned compID,
@@ -154,7 +155,7 @@ void ApsimComponent::messageToLogic (char* message)
    		   }
    		else if (IsPlant)
 		      {
-            ApsimVariantType^ sowDummy = gcnew ApsimVariantType();
+            SowType^ sowDummy = gcnew SowType();
             CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, sowDummy->DDML());
             CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
             CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
@@ -170,7 +171,9 @@ void ApsimComponent::messageToLogic (char* message)
                   InsertParameterIntoModel(Parameter, InitData->ChildNodes[0]);
                   }
                }
-   		   BuildObjects(InitData->ChildNodes[0]);
+   		     BuildObjects(InitData->ChildNodes[0]);
+			 //String^ descr = GetDescription(InitData);
+			 //Console::WriteLine(descr);
    		   }
 		   CIMessageToLogic(ComponentI, msgCopy);
 		   CIDeleteMessageCopy(msgCopy);
@@ -216,7 +219,7 @@ unsigned ApsimComponent::CallBack(int RegistrationIndex, char* messageData, int 
 		   bool IsEvent = dynamic_cast<EvntHandler^>(Registrations[RegistrationIndex]) != nullptr;
 		   if (IsEvent && Init2Received)
 	   	   GetAllInputs();
-         Registrations[RegistrationIndex]->unpack(messageData);
+           Registrations[RegistrationIndex]->unpack(messageData);
 			}
 		else if (OpCode == 3)
 			return Registrations[RegistrationIndex]->memorySize();
@@ -275,13 +278,14 @@ void ApsimComponent::GetAllInputs()
          }
       }
    }
-void ApsimComponent::Get(String^ PropertyName, ApsimType^ Data)
+bool ApsimComponent::Get(String^ PropertyName, ApsimType^ Data, bool isOptional)
    {
    int RegistrationIndex = Registrations->Count;
    Registrations->Add(Data);
-   CIGet(ComponentI, PropertyName, "", false, &::CallBack,
+   bool result = CIGet(ComponentI, PropertyName, "", isOptional, &::CallBack,
          instanceNumber, RegistrationIndex, Data->DDML());
    Registrations->RemoveAt(RegistrationIndex);
+   return result;
    }
 void ApsimComponent::Set(String^ PropertyName, ApsimType^ Data)
    {
@@ -527,7 +531,9 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
 	// -----------------------------------------------
 	InitData = InitD;
 	String^ Name = XmlHelper::Name(InitData->ParentNode);
-	String^ DLLName = XmlHelper::Attribute(InitData->ParentNode, "Executable");
+	String^ DLLName = (DllFileName == "") ? DllFileName :
+	     XmlHelper::Attribute(InitData->ParentNode, "executable");
+
 	String^ Desc = "<describecomp>\r\n";
 
    Desc += "   <executable>" + DLLName + "</executable>\r\n";
@@ -536,7 +542,7 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
    Desc += "   <author>APSRU</author>\r\n";
 
    XmlNode^ ModelDescription = nullptr;
-   XmlNode^ CultivarNode = XmlHelper::FindByType(InitData, "cultivar");
+   XmlNode^ CultivarNode = XmlHelper::FindByType(InitData, "Cultivar");
    if (CultivarNode != nullptr)
       PerformInstructions(CultivarNode, ModelDescription);
    else if (InitData->ChildNodes->Count > 0)

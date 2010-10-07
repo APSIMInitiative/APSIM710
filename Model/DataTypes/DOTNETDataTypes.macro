@@ -30,6 +30,19 @@ using namespace System::Runtime::InteropServices;
          virtual unsigned memorySize()          {return 0;}
          virtual String^ DDML()                 {return "<type/>";}
       };
+   public delegate void NullTypeDelegate();
+[foreach types.builtin]
+   //------ [builtin.name] ------
+   public ref class [builtin.name]Type : public ApsimType
+      {
+      public:
+      [builtin.dotnettype] Value;
+         virtual void pack(char* MessageData);
+         virtual void unpack(char* MessageData);
+         virtual unsigned memorySize();
+         virtual String^ DDML();
+      };
+[endfor]
 [foreach types.type]
 
    //------ [type.name] ------
@@ -54,6 +67,18 @@ using namespace System::Runtime::InteropServices;
 #include "DOTNETDataTypes.h"
 #include "../DotNetComponentInterface/MessageData.h"
 
+[foreach types.builtin]
+   //------ [builtin.name] ------
+   void [builtin.name]Type::pack(char* MessageData)
+      { ::pack(MessageData, Value);	}
+   void [builtin.name]Type::unpack(char* MessageData)
+      { ::unpackWithConverter(MessageData, Value); }
+   unsigned [builtin.name]Type::memorySize()
+      { return ::memorySize(Value); }
+   String^ [builtin.name]Type::DDML()
+      { return [builtin.cddml]; } 
+   public delegate void [builtin.name]Delegate([builtin.name]Type^ Data);
+[endfor]
 [foreach types.type]
    // ------ [type.name] ------
    void [type.name]Type::pack(char* messageData)
@@ -82,7 +107,7 @@ using namespace System::Runtime::InteropServices;
       }
    String^ [type.name]Type::DDML()
       {return [type.cddml];}
-   public delegate void On[type.name]([type.name]Type^ Data);
+   public delegate void [type.name]Delegate([type.name]Type^ Data);
 
 [endfor]
 [endfile]

@@ -119,6 +119,12 @@ inline void unpackWithConverter(char* messageData, String^% st)
 	}
 
 // --------------------------------------------------------------------------
+// Bool array support
+// --------------------------------------------------------------------------
+[DllImport("ComponentInterface2.dll", EntryPoint = "CIUnPackBoolArrayWithConverter", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
+void unpackWithConverter(char* messageData, Boolean Data[], int& numValues);
+
+// --------------------------------------------------------------------------
 // Int32 array support
 // --------------------------------------------------------------------------
 [DllImport("ComponentInterface2.dll", EntryPoint = "CIUnPackIntArrayWithConverter", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
@@ -183,6 +189,27 @@ inline void unpackWithConverter(char* messageData, array<String^>^% values)
    for (int i = 0; i < allValues->Count; i++)
       values[i] = allValues[i]->Replace("\"","");
    }
+
+// We made need to recurse into structures to build them completely.
+static Object^ createStructure(Type^ targetType)
+{
+	Object^ target = Activator::CreateInstance(targetType);
+	if (!targetType->IsValueType)
+	{
+		array<FieldInfo^>^ childFields = targetType->GetFields();
+		for (int i = 0; i < childFields->Length; i++)
+		{
+			Type^ childType = childFields[i]->FieldType;
+			if (!childType->IsValueType && !childType->Equals(System::String::typeid))
+			{
+				Object^ newChild = createStructure(childType);
+				childFields[i]->SetValue(target, newChild);
+			}
+		}
+	}
+	return target;
+}
+
 template <class T>
 void unpackArrayOfStructures(char* messageData, array<T^>^% values)
    {
@@ -191,7 +218,7 @@ void unpackArrayOfStructures(char* messageData, array<T^>^% values)
    values = gcnew array<T^>(count);
    for (int i = 0; i < count; i++)
 	  {
-	  values[i] = gcnew T;
+	  values[i] = (T^)createStructure(T::typeid);
 	  ::unpack(messageData, values[i]);
 	  }
    }

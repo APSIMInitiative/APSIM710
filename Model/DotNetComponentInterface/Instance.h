@@ -4,6 +4,8 @@
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Text;
+using namespace System::Xml;
+using namespace CSGeneral;
    
 namespace ModelFramework {
    ref class ApsimComponent;  // forward
@@ -41,7 +43,7 @@ public ref class Instance : NamedItem
    
    protected:
       Instance^ Parent;
-
+	  virtual bool Override(Type^ aType, String^ targetName);
          
    public:
       NamedList<NamedItem^>^ Children;
@@ -111,6 +113,7 @@ public ref class Instance : NamedItem
             }
          }
 	  property String^ InstanceName { String^ get() { return MyFQN(); } }
+
       //property PaddockType^ Paddock 
       //   { 
       //   // --------------------------------------------------------------------
@@ -131,3 +134,16 @@ public ref class Instance : NamedItem
       //   }  
       };
 
+public ref class DerivedInstance : Instance
+{
+   protected:
+      XmlNode^ xml;
+
+   public:
+      void Initialise(XmlNode^ Node, Instance^ Paren, ModelFramework::ApsimComponent^ ParentComponent)
+	  {
+         xml = Node;
+  	     Instance::Initialise(XmlHelper::Name(Node), Paren, ParentComponent);
+	  }  
+      void ApplyOverrides();
+};

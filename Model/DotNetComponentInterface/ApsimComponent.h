@@ -46,12 +46,13 @@ public ref class ApsimComponent
 
 	public:
 		void Warning(String^ msg);
-      void Get(String^ PropertyName, ApsimType^ Data);		
+      bool Get(String^ PropertyName, ApsimType^ Data, bool isOptional);		
       void Set(String^ PropertyName, ApsimType^ Data);
       void Publish(String^ EventName, ApsimType^ Data);
       void Subscribe(EvntHandler^ Event);
       
       String^ GetName() {return Name;}
+	  int GetId() { return ComponentID; }
 
 	public:
 		ApsimComponent(Assembly^ ModelAssembly, int instanceNumber);

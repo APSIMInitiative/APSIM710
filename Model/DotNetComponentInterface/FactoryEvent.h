@@ -15,6 +15,7 @@ public ref class FactoryEvent : ApsimType
    private:
       Object^ Obj;
       EventInfo^ Event;
+	  Type^ EventType;
    public:
       ApsimType^ Data;
       int ID;
