@@ -41,55 +41,55 @@ ref class WrapBuiltInVariable : ApsimType
 int VariableType::ToBoolean()
    {
    WrapBuiltInVariable<bool>^ Data = gcnew WrapBuiltInVariable<bool>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }	
 int VariableType::ToInt32()
    {
    WrapBuiltInVariable<int>^ Data = gcnew WrapBuiltInVariable<int>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }	
 float VariableType::ToSingle()
    {
    WrapBuiltInVariable<float>^ Data = gcnew WrapBuiltInVariable<float>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }	   
 double VariableType::ToDouble()
    {
    WrapBuiltInVariable<double>^ Data = gcnew WrapBuiltInVariable<double>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }	
 String^ VariableType::ToString()
    {
    WrapBuiltInVariable<String^>^ Data = gcnew WrapBuiltInVariable<String^>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }	 
 array<int>^ VariableType::ToInt32Array()
    {
    WrapBuiltInVariable<array<int>^>^ Data = gcnew WrapBuiltInVariable<array<int>^>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }	
 array<float>^ VariableType::ToSingleArray()
    {
    WrapBuiltInVariable<array<float>^>^ Data = gcnew WrapBuiltInVariable<array<float>^>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }	     
 array<double>^ VariableType::ToDoubleArray()
    {
    WrapBuiltInVariable<array<double>^>^ Data = gcnew WrapBuiltInVariable<array<double>^>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }
 array<String^>^ VariableType::ToStringArray()
    {
    WrapBuiltInVariable<array<String^>^>^ Data = gcnew WrapBuiltInVariable<array<String^>^>();
-   Component->Get(ComponentName + "." + Name, Data);
+   Component->Get(ComponentName + "." + Name, Data, false);
    return Data->Value;
    }
 	
