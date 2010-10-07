@@ -47,9 +47,11 @@ void Environment::OnTick(protocol::TimeType &Tick)
 void Environment::process (void)
 //=======================================================================================
    {
-   if (!scienceAPI.getOptional("ave_soil_temp(1)", "oC", _rootActivityTemperature, -15.0, 50.0))   // Variable that retrieves soil temperature assumed for the most "metabolically active" zone of the root system
-       scienceAPI.get("st(1)", "oC", _rootActivityTemperature, -15.0, 50.0);                       // If soil temperature module is not available it uses soil-N module soil temperature as default (PFR)
-   }
+   std::vector<float> SoilTempLayer;
+   if (!scienceAPI.getOptional("ave_soil_temp", "oC", SoilTempLayer, -15.0, 50.0))   // Variable that retrieves soil temperature assumed for the most "metabolically active" zone of the root system
+       scienceAPI.get("st", "oC", SoilTempLayer, -15.0, 50.0);                       // If soil temperature module is not available it uses soil-N module soil temperature as default (PFR)
+   float _rootActivityTemperature = SoilTempLayer[0];
+  }
 
 float Environment::rootActivityTemperature(void) const
 //===========================================================================
