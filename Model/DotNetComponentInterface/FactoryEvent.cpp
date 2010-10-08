@@ -12,6 +12,7 @@ FactoryEvent::FactoryEvent(EventInfo^ Event, Object^ Instance)
    
    this->Event = Event;
    this->Obj = Instance;
+   this->Data = nullptr;
   
    Type^ dataType = Typ;
    if (dataType == nullptr)
@@ -26,7 +27,7 @@ FactoryEvent::FactoryEvent(EventInfo^ Event, Object^ Instance)
       MethodInfo^ Method = GetType()->GetMethod("Handler", BindingFlags::Public | BindingFlags::Instance);
 	  System::Delegate^ Del = Delegate::CreateDelegate(Event->EventHandlerType, this, Method);
       Event->AddEventHandler(Obj, Del);
-      if (ApsimType::typeid->IsAssignableFrom(dataType))
+	  if (!ApsimType::typeid->Equals(dataType) && ApsimType::typeid->IsAssignableFrom(dataType))
         this->Data = (ApsimType^)Activator::CreateInstance(dataType);
       }
    }
@@ -40,7 +41,7 @@ void FactoryEvent::NullHandler()
    }
 void FactoryEvent::Handler(ApsimType^ Data)
    {
-   if (!Data->GetType()->Equals(this->Data->GetType()))
+   if (this->Data && !Data->GetType()->Equals(this->Data->GetType()))
 	   throw gcnew Exception("Incorrect datatype provided for the " + EventName + " event.");
    this->Data = Data;
    OnFired(this);
