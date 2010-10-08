@@ -10,6 +10,7 @@ Environment::Environment(ScienceAPI& api, const std::string& name)
    day_of_year = 0;
    latitude = 0.0;
    twilight = 0.0; 								// originally was in RUEModel (PFR)
+   _rootActivityTemperature = 0.0;
 
    NewMet.mint = 0.0;
    NewMet.maxt = 0.0;
@@ -50,8 +51,8 @@ void Environment::process (void)
    std::vector<float> SoilTempLayer;
    if (!scienceAPI.getOptional("ave_soil_temp", "oC", SoilTempLayer, -15.0, 50.0))   // Variable that retrieves soil temperature assumed for the most "metabolically active" zone of the root system
        scienceAPI.get("st", "oC", SoilTempLayer, -15.0, 50.0);                       // If soil temperature module is not available it uses soil-N module soil temperature as default (PFR)
-   float _rootActivityTemperature = SoilTempLayer[0];
-  }
+   _rootActivityTemperature = SoilTempLayer[0];
+   }
 
 float Environment::rootActivityTemperature(void) const
 //===========================================================================
