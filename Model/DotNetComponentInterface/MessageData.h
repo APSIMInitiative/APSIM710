@@ -191,6 +191,10 @@ inline void unpackWithConverter(char* messageData, array<String^>^% values)
    }
 
 // We made need to recurse into structures to build them completely.
+// THIS NEEDS MORE WORK!
+// Creating a type which contains arrays of structures which contain arrays of structures
+// gets pretty messy. This code does NOT handle all possible cases correctly,
+// but does handle those currently is use. EJZ
 static Object^ createStructure(Type^ targetType)
 {
 	Object^ target = Activator::CreateInstance(targetType);
@@ -200,7 +204,7 @@ static Object^ createStructure(Type^ targetType)
 		for (int i = 0; i < childFields->Length; i++)
 		{
 			Type^ childType = childFields[i]->FieldType;
-			if (!childType->IsValueType && !childType->Equals(System::String::typeid))
+			if (!childType->IsArray && !childType->IsValueType && !childType->Equals(System::String::typeid))
 			{
 				Object^ newChild = createStructure(childType);
 				childFields[i]->SetValue(target, newChild);
