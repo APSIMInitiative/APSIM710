@@ -15,8 +15,8 @@ public class Plant : Instance
 
    // ---------------------------- Events we will send ------------------------------
    //[Event] public event OnNewCrop NewCropEvent;
-   [Event] public event ApsimTypeDelegate NewCrop;
-   [Event] public event ApsimTypeDelegate Sowing;
+   [Event] public event NewCropDelegate NewCrop;
+   [Event] public event NullTypeDelegate Sowing;
 
    public NamedList<Organ> Organs
       {
@@ -268,10 +268,7 @@ public class Plant : Instance
       {
       // Send out New Crop Event to tell other modules who I am and what I am
       if (Sowing != null)
-         {
-         NullType S = new NullType();
-         Sowing.Invoke(S);
-         }
+         Sowing.Invoke();
       }
    #endregion
 

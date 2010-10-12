@@ -26,9 +26,9 @@ public class Leaf : BaseOrgan, AboveGround
    private double Height = 0;
 
    [Event]
-   public event ApsimTypeDelegate NewPotentialGrowth;
+   public event NewPotentialGrowthDelegate NewPotentialGrowth;
    [Event]
-   public event ApsimTypeDelegate New_Canopy;
+   public event NewCanopyDelegate New_Canopy;
 
    [Param("Frgr")]
    private double _Frgr;              // Relative Growth Rate Factor

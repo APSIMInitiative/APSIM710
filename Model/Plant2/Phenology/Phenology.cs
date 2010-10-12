@@ -4,7 +4,7 @@ using System.Text;
 
 public class Phenology : Instance
    {
-   [Event] public event ApsimTypeDelegate PhaseChanged;
+   [Event] public event PhenologyChangedDelegate PhaseChanged;
    [Event] public event NullTypeDelegate GrowthStage;
 
    private NamedList<Phase> Phases = new NamedList<Phase>();

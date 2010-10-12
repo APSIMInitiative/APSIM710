@@ -59,7 +59,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             return 0;
          }
       }
-   [Event]        public event NullTypeDelegate Harvesting;
+   [Event] public event NullTypeDelegate Harvesting;
    [EventHandler] private void OnHarvest()
       {
       Harvesting.Invoke();

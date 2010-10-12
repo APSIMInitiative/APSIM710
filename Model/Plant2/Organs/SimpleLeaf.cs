@@ -8,8 +8,8 @@ class SimpleLeaf : BaseOrgan
    private double EP = 0;
    private double PEP = 0;
 
-   [Event] public event ApsimTypeDelegate NewPotentialGrowth;
-   [Event] public event ApsimTypeDelegate New_Canopy;
+   [Event] public event NewPotentialGrowthDelegate NewPotentialGrowth;
+   [Event] public event NewCanopyDelegate New_Canopy;
 
    [Input] private float maxt = 0;
    [Input] private float mint = 0;

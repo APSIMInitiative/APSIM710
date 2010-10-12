@@ -15,9 +15,9 @@ public class Root : BaseOrgan, BelowGround
    private SowType SowingInfo = null;
 
    [Event]
-   public event ApsimTypeDelegate WaterChanged;
+   public event WaterChangedDelegate WaterChanged;
    [Event]
-   public event ApsimTypeDelegate NitrogenChanged;
+   public event NitrogenChangedDelegate NitrogenChanged;
    [Input]
    public double[] sw_dep = null;
    [Input]
