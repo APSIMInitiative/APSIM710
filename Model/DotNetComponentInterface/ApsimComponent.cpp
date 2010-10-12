@@ -531,7 +531,7 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
 	// -----------------------------------------------
 	InitData = InitD;
 	String^ Name = XmlHelper::Name(InitData->ParentNode);
-	String^ DLLName = (DllFileName == "") ? DllFileName :
+	String^ DLLName = (DllFileName != "") ? DllFileName :
 	     XmlHelper::Attribute(InitData->ParentNode, "executable");
 
 	String^ Desc = "<describecomp>\r\n";
