@@ -8,7 +8,7 @@ LIBS = General ApsimShared Protocol ComponentInterface
 PROJECTTYPE = dll
 
 ifeq ($(PLATFORM),Linux)
-OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.so
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.o
 else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
 endif

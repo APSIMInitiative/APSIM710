@@ -5,7 +5,7 @@ PROJECT = Tracker
 SRC = Tracker.cpp TrackerComponent.cpp TrackerVariable.cpp
 LIBS = General ApsimShared ComponentInterface
 ifeq ($(PLATFORM),Linux)
-OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.so
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.o
 else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
 endif

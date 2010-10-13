@@ -94,7 +94,7 @@ SRC = PlantComponent.cpp \
 
 LIBS = General ComponentInterface ApsimShared
 ifeq ($(PLATFORM),Linux)
-OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.so
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.o
 else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
 endif
