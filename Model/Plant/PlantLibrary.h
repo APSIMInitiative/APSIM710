@@ -142,8 +142,8 @@ class plantQueue {
       {
         return accumulate(myqueue.begin(), myqueue.end(), 0.0F);
       };
-     float count(void) {return myqueue.size();};
-     float average(void) {return (count() > 0 ? sum()/count() : 0.0);};
+     unsigned count(void) {return myqueue.size();};
+     float average(void) {return (count() > 0 ? sum()/count() : 0.0F);};
 };
 
 
@@ -163,8 +163,8 @@ class observer {
      virtual void update(void) = 0;
      void reset(void) {mySum = 0.0; n = 0;};
      float getSum(void) {return mySum;};
-     float getN(void) {return n;};
-     float getAverage(void) {return (n > 0 ? mySum/(float)n : 1.0);};
+     float getN(void) {return (float)n;};
+     float getAverage(void) {return (n > 0 ? mySum/(float)n : 1.0f);};
 };
 
 // Keep track of state variable
@@ -176,7 +176,7 @@ class stateObserver : public observer {
 // Factors are "1 - state" style variables
 class factorObserver : public observer {
    public:
-     void update(void) {mySum += (1.0 - *myLocation); n++;};
+     void update(void) {mySum += (1.0f - *myLocation); n++;};
 };
 
 // A subject (observer manager)
@@ -907,7 +907,7 @@ void cproc_transp_eff_co2_1(float vpd,        // (INPUT)
                           float co2_modifier,     // (INPUT)  te modifier of co2 level (0-1)
                           float *transp_eff);       // (OUTPUT) transpiration coefficient
 
-double divide (double dividend, double divisor, double default_value);
+float divide (double dividend, double divisor, double default_value);
 float l_bound (float var, float lower);
 float u_bound (float var, float upper);
 
@@ -990,9 +990,9 @@ float root_proportion (int    layer,              // (INPUT) layer to look at
                        float *dlayr,              // (INPUT) array of layer depths
                        float  root_depth);         // (INPUT) depth of roots
 
-float stage_no_of (float stage_code,           //(INPUT) stage code to look up
-                   float *stage_code_list,     //(INPUT) list of stage codes
-                   int   list_size);            //(INPUT) size_of of stage code list
+int stage_no_of (float stage_code,           //(INPUT) stage code to look up
+                 float *stage_code_list,     //(INPUT) list of stage codes
+                 int   list_size);            //(INPUT) size_of of stage code list
 
 void accumulate (float value,             //  (INPUT) value to add to array
                  float *array,            //  (INPUT/OUTPUT) array to split
