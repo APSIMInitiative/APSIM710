@@ -63,7 +63,7 @@ int position_in_real_array(float Number,      //(INPUT) Number to search for
 
 //XX Needs to be replaced with try/catch of EOverflow/EUnderflow etc..    XXXXXXXXXXXXXXXXXXXXXXX
 //===========================================================================
-float divide (double dividend, double divisor, double default_value)
+double divide (double dividend, double divisor, double default_value)
 //===========================================================================
 
 /*Definition

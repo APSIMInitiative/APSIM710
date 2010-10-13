@@ -907,7 +907,7 @@ void cproc_transp_eff_co2_1(float vpd,        // (INPUT)
                           float co2_modifier,     // (INPUT)  te modifier of co2 level (0-1)
                           float *transp_eff);       // (OUTPUT) transpiration coefficient
 
-float divide (double dividend, double divisor, double default_value);
+double divide (double dividend, double divisor, double default_value);
 float l_bound (float var, float lower);
 float u_bound (float var, float upper);
 
