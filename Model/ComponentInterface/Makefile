@@ -22,8 +22,10 @@ SRC = ComponentInterface.cpp  \
 LIBS = General ApsimShared
 PROJECTTYPE = dll
 
+ifeq ($(PLATFORM),Linux)
+everything: $(SRC) $(APSIM)/Model/$(PROJECT).so EntryPoints.o
+else
 everything: $(SRC) $(PROJECT).dll EntryPoints.obj
-
-everything: $(SRC) $(PROJECT).dll EntryPoints.obj
+endif
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

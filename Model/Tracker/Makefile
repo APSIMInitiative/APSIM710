@@ -4,7 +4,11 @@ PROJECT = Tracker
 
 SRC = Tracker.cpp TrackerComponent.cpp TrackerVariable.cpp
 LIBS = General ApsimShared ComponentInterface
+ifeq ($(PLATFORM),Linux)
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.so
+else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
+endif
 
 PROJECTTYPE = dll
 

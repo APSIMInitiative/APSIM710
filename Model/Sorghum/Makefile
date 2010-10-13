@@ -20,7 +20,11 @@ SRC = PlantInterface.cpp \
       Dll.cpp
       
 LIBS = General ApsimShared ComponentInterface2
+ifeq ($(PLATFORM),Linux)
+OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.o
+else
 OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.obj
+endif
 
 PROJECTTYPE = dll
 

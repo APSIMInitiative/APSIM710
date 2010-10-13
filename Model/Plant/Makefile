@@ -93,7 +93,11 @@ SRC = PlantComponent.cpp \
       Photosynthesis/SUCROSModel.cpp
 
 LIBS = General ComponentInterface ApsimShared
+ifeq ($(PLATFORM),Linux)
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.so
+else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
+endif
 
 PRECOMPILEDHEADERS = yes
 

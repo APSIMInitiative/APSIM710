@@ -49,10 +49,10 @@ endif
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(APSIM)/Model/$(PROJECT).x: $(PREBUILD) $(OBJ)
-	$(CC) -o $@ $(OBJ) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
+	$(CC) -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
 
 $(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(OBJ)
-	$(CC) -shared -o $@ $(OBJ) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
+	$(CC) -shared -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
 
 clean:
 	rm -f $(OBJ) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so
