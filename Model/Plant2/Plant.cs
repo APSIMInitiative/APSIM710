@@ -12,6 +12,7 @@ public class Plant : Instance
    private NamedList<Organ> _Organs = new NamedList<Organ>();
    [Output("Crop_Type")][Param] private string CropType = "";
    [Output] private double WaterSupplyDemandRatio = 0;
+   [Output] [Units("mm")] private double RowSpacing = 0;
 
    // ---------------------------- Events we will send ------------------------------
    //[Event] public event OnNewCrop NewCropEvent;
@@ -42,6 +43,9 @@ public class Plant : Instance
    // ---------------------------- Events we subscribe to ---------------------------
    [EventHandler] public void OnSow (SowType Sow)
       {
+      // Keep a copy of this data for use by other plant classes.
+      RowSpacing = Sow.RowSpacing;
+
       // Go through all our children and find all organs.
       foreach (Instance Child in Children)
          {
@@ -51,6 +55,7 @@ public class Plant : Instance
 
       PublishNewCropEvent();
       PublishSowingEvent();
+
       }
 
 
