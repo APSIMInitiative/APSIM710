@@ -13,9 +13,10 @@ endif
 
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface2
+EXPORTS = OnTick,OnNewProfile,OnApply,getDescription,getDescriptionLength
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll
 
-include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
+include $(APSIM)/Model/Build/$(PLATFORM)FORNew.make
 
