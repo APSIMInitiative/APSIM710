@@ -5,13 +5,14 @@ PROJECT = SoilN
 SRC = SoilN.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = SoilN.rsp
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = SoilN.def
 endif
 
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
-DEF = SoilN.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

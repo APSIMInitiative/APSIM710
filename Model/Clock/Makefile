@@ -5,14 +5,14 @@ PROJECT = Clock
 SRC = Registrations.f90 clock.for clock_read_params.for
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = Clock.rsp
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = Clock.def
 endif
-
 
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
-DEF = Clock.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

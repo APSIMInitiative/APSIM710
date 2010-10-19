@@ -5,13 +5,14 @@ PROJECT = SurfaceOM
 SRC = Registrations.f90 SurfaceOM.f90 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = SurfaceOM.rsp
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = SurfaceOM.def
 endif
 
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
-DEF = SurfaceOM.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

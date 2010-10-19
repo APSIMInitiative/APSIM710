@@ -5,13 +5,14 @@ PROJECT = SoilWat
 SRC = Evap.for Lateral.for SoilWat.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = SoilWat.rsp
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = SoilWat.def
 endif
 
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
-DEF = SoilWat.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll

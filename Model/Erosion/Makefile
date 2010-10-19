@@ -7,6 +7,7 @@ ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = Erosion.def
 endif
 
 STATICLIBS = FortranInfrastructure

@@ -5,13 +5,14 @@ PROJECT = Accum
 SRC = Registrations.f90 accum.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = Accum.rsp
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = Accum.def
 endif
 
 STATICLIBS = FortranInfrastructure
 LIBS = FortranComponentInterface
-DEF = accum.def
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll
