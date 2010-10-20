@@ -5,7 +5,7 @@ PROJECT = SoilWat
 SRC = Evap.for Lateral.for SoilWat.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = SoilWat.rsp
+DEF = SoilWat.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
 DEF = SoilWat.def

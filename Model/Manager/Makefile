@@ -5,7 +5,7 @@ PROJECT = Manager
 SRC = Registrations.f90 Manager.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = Manager.rsp
+DEF = Manager.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
 DEF = Manager.def

@@ -5,7 +5,7 @@ PROJECT = Fertiliser
 SRC = Fertiliser.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux2.for 
-DEF = Fertiliser.rsp
+DEF = Fertiliser.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints2.for 
 DEF = Fertiliser.def

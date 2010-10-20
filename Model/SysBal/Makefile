@@ -5,7 +5,7 @@ PROJECT = SysBal
 SRC = Registrations.f90 SysBal.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = SysBal.rsp
+DEF = SysBal.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
 DEF = SysBal.def

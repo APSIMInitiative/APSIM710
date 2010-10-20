@@ -5,7 +5,7 @@ PROJECT = Operations
 SRC = Registrations.f90 Operations.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = Operations.rsp
+DEF = Operations.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
 DEF = Operations.def

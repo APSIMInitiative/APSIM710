@@ -5,7 +5,7 @@ PROJECT = SurfaceOM
 SRC = Registrations.f90 SurfaceOM.f90 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = SurfaceOM.rsp
+DEF = SurfaceOM.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
 DEF = SurfaceOM.def

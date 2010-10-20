@@ -5,7 +5,7 @@ PROJECT = Clock
 SRC = Registrations.f90 clock.for clock_read_params.for
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = Clock.rsp
+DEF = Clock.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
 DEF = Clock.def

@@ -5,7 +5,7 @@ PROJECT = MicroMet
 SRC = Registrations.f90 MicroMet.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = MicroMet.rsp
+DEF = MicroMet.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
 DEF = MicroMet.def
