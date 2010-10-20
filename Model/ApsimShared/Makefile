@@ -25,6 +25,10 @@ SRC =   ApsimShared.cpp \
 	FStringExt.cpp \
 	Phi_functions.cpp
 
+ifeq ($(PLATFORM),Linux)
+DEF = ApsimShared.ldscript
+endif	
+	
 LIBS = General
 PROJECTTYPE = libdll
 

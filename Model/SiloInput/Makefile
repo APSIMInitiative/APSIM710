@@ -4,7 +4,12 @@ PROJECT = SiloInput
 
 SRC = SiloInput.cpp SiloInputComponent.cpp
 LIBS = General ApsimShared ComponentInterface Input
+
+ifeq ($(PLATFORM),Linux)
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.o
+else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
+endif
 
 PROJECTTYPE = dll
 
