@@ -804,11 +804,11 @@ namespace ApsimFile
             {
             double LayerBottom = MathUtility.Sum(ToThickness, 0, Layer, 0.0);
             double LayerTop = LayerBottom - ToThickness[Layer - 1];
-            bool DidInterpolate = false;
+            bool DidInterpolate;
             double CumMassTop = MathUtility.LinearInterpReal(LayerTop, CumDepth,
-                CumMass, ref DidInterpolate);
+                CumMass, out DidInterpolate);
             double CumMassBottom = MathUtility.LinearInterpReal(LayerBottom, CumDepth,
-                CumMass, ref DidInterpolate);
+                CumMass, out DidInterpolate);
             ToMass[Layer - 1] = CumMassBottom - CumMassTop;
             }
          return ToMass;

@@ -36,6 +36,14 @@ namespace CSGeneral
          {
          return value1 - value2 > tolerance;
          }
+      public static double RoundToZero(double value, double tolerance)
+      {
+          return (Math.Abs(value) <= tolerance) ? 0.0 : value;
+      }
+      public static double RoundToZero(double value)
+      {
+          return RoundToZero(value, 1.0e-15);
+      }
       //-------------------------------------------------------------------------
       //
       //-------------------------------------------------------------------------
@@ -124,6 +132,22 @@ namespace CSGeneral
       //-------------------------------------------------------------------------
       //
       //-------------------------------------------------------------------------
+      public static double Divide(double value1, double value2, double errVal)
+      {
+          return (value2 == 0.0) ? errVal : value1 / value2;
+      }
+
+      //-------------------------------------------------------------------------
+      //
+      //-------------------------------------------------------------------------
+      public static float DivideFloat(float value1, float value2, float errVal)
+      {
+          return (value2 == 0.0) ? errVal : value1 / value2;
+      }
+
+      //-------------------------------------------------------------------------
+      //
+      //-------------------------------------------------------------------------
       public static double[] Add_Value(double[] value1, double value2)
          {
          double[] results = new double[value1.Length];
@@ -153,7 +177,7 @@ namespace CSGeneral
          return results;
          }
       //-------------------------------------------------------------------------
-      // Sum an array of numbers 
+      // Sum an array of doubles 
       //-------------------------------------------------------------------------
       public static double Sum(IEnumerable Values)
          {
@@ -189,7 +213,7 @@ namespace CSGeneral
       //When x lies outside the x range_of, y is set to the boundary condition.
       //Returns true for Did_interpolate if interpolation was necessary.
       //-------------------------------------------------------------------------
-      public static double LinearInterpReal(double dX, double[] dXCoordinate, double[] dYCoordinate, ref bool bDidInterpolate)
+      public static double LinearInterpReal(double dX, double[] dXCoordinate, double[] dYCoordinate, out bool bDidInterpolate)
          {
          bDidInterpolate = false;
          if (dXCoordinate == null || dYCoordinate == null)

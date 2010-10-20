@@ -28,7 +28,7 @@ public class LinearInterpolation
    public double Value(double dX)
       {
       bool DidInterpolate = false;
-      return MathUtility.LinearInterpReal(dX, X, Y, ref DidInterpolate);
+      return MathUtility.LinearInterpReal(dX, X, Y, out DidInterpolate);
       }
    }
    

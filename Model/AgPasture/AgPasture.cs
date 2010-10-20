@@ -216,14 +216,14 @@ public class AgPasture : Instance
     private bool p_Live = true;              //flag signialling crop is live (not killed)
 
     //Events
-    [Event]    public event ApsimTypeDelegate NewCrop;
-    [Event]    public event ApsimTypeDelegate New_Canopy;
-    [Event]    public event ApsimTypeDelegate NewPotentialGrowth;
+    [Event] public event NewCropDelegate NewCrop;
+    [Event] public event NewCanopyDelegate New_Canopy;
+    [Event] public event NewPotentialGrowthDelegate NewPotentialGrowth;
 
-    [Event]    public event ApsimTypeDelegate IncorpFOM;
-    [Event]    public event ApsimTypeDelegate BiomassRemoved;
-    [Event]    public event ApsimTypeDelegate WaterChanged;
-    [Event]    public event ApsimTypeDelegate NitrogenChanged;
+    [Event] public event FOMLayerDelegate IncorpFOM;
+    [Event] public event BiomassRemovedDelegate BiomassRemoved;
+    [Event] public event WaterChangedDelegate WaterChanged;
+    [Event] public event NitrogenChangedDelegate NitrogenChanged;
 
     //temporary testing, will be removed later when IL1 can be get from micromet
     private int canopiesNum = 1;            //number of canpy including this one
@@ -2487,7 +2487,7 @@ public class LinearInterpolation
     public double Value(double dX)
     {
         bool DidInterpolate = false;
-        return MathUtility.LinearInterpReal(dX, X, Y, ref DidInterpolate);
+        return MathUtility.LinearInterpReal(dX, X, Y, out DidInterpolate);
     }
 }
 

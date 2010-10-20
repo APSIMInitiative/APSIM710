@@ -1047,9 +1047,9 @@ namespace ApsimFile
                   double[] PredLL = new double[SoilDepthCentre.Length];
                   for (int i = 0; i != SoilDepthCentre.Length; i++)
                      {
-                     bool DidInterpolate = false;
-                     double A = MathUtility.LinearInterpReal(SoilDepthCentre[i], CoeffDepthCentre, a, ref DidInterpolate);
-                     double B = MathUtility.LinearInterpReal(SoilDepthCentre[i], CoeffDepthCentre, b, ref DidInterpolate);
+                     bool DidInterpolate;
+                     double A = MathUtility.LinearInterpReal(SoilDepthCentre[i], CoeffDepthCentre, a, out DidInterpolate);
+                     double B = MathUtility.LinearInterpReal(SoilDepthCentre[i], CoeffDepthCentre, b, out DidInterpolate);
                      PredLL[i] = SoilDUL[i] * (A + B * SoilDUL[i]) / 100.0;
 
                      // Bound the predicted LL values.
@@ -1084,9 +1084,9 @@ namespace ApsimFile
                double[] CoeffDepthCentre = SoilUtility.GetLayered(PredKLNode, "layercentre");
                double[] SoilDepthCentre = Variable("DepthMidPoints (mm)");
                double[] Values = new double[SoilDepthCentre.Length];
-               bool DidInterpolate = true;
+               bool DidInterpolate;
                for (int i = 0; i != SoilDepthCentre.Length; i++)
-                  Values[i] = MathUtility.LinearInterpReal(SoilDepthCentre[i], CoeffDepthCentre, kl, ref DidInterpolate);
+                  Values[i] = MathUtility.LinearInterpReal(SoilDepthCentre[i], CoeffDepthCentre, kl, out DidInterpolate);
 
                // Create a variable value structure to return to caller.
                Value = new VariableValue();
