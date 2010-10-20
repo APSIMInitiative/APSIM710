@@ -543,7 +543,7 @@ c      end if
       !all the sub switches have no effect
       if (c%module_switch .ne. 0) then
 
-         write(switch, '(G10)') c%module_switch*convertor
+         write(switch, '(I10)') c%module_switch*convertor
 
          c%wat_switch     = switch(2:10)
          c%phen_switch    = switch(2:10)

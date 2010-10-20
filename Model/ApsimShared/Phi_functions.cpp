@@ -21,7 +21,7 @@ std::string ExtractFileExt(const char* a) {
 
 std::string GetCurrentDirectory() {
   char buf[300];
-  return _getcwd(buf, 300);
+  return getcwd(buf, 300);
 }
 
 void ShowMessage(std::string a) {

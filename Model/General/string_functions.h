@@ -128,8 +128,8 @@ std::string buildString(const std::vector<T>& values, const char* separators)
 template <class container>
 void split(const std::string& text, const std::string& separators, container& words)
    {
-   string::size_type n = text.length();
-   string::size_type start, stop;
+   unsigned n = text.length();
+   unsigned start, stop;
 
    start = text.find_first_not_of(separators);
 
