@@ -106,7 +106,7 @@ void SimCreator::ConToSimInternal(const std::string& controlFileName,
                                   const std::vector<std::string>& conSections)
    {
    // change dir so relative paths work OK
-   chdir(fileDirName(controlFileName).c_str());
+   _chdir(fileDirName(controlFileName).c_str());
 
    ApsimControlFile con(controlFileName);
 
@@ -229,7 +229,7 @@ void SimCreator::GetMatchingParFileSections(const std::string& instanceName,
       if (!fileExists(fileName))
          {
          // Hmmmmm. Not sure if this is needed..???
-         char *cwd = getcwd(NULL, 1024);
+         char *cwd = _getcwd(NULL, 1024);
          fileName = string(cwd) + "/" + file;
          free(cwd);
          }

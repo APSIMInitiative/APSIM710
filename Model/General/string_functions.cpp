@@ -259,7 +259,7 @@ string itoa(int intValue)
 int Str_i_Cmp(const string &a, const string &b)
    {
    #ifdef __WIN32__
-      return stricmp(a.c_str(),b.c_str());
+      return _stricmp(a.c_str(),b.c_str());
    #else
       return strcasecmp(a.c_str(),b.c_str());
    #endif

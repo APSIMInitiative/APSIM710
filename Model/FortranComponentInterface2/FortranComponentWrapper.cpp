@@ -166,7 +166,7 @@ extern "C" int EXPORT STDCALL ReadInteger
    CMPBuiltInBounded<int, int> variable(variableName, *value, *lower, *upper);
    return currentWrapper->componentInterface().read(variableName,
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 extern "C" int EXPORT STDCALL ReadReal
    (const char* name, const char* units, int* optional, float* value, float* lower, float* upper,
@@ -176,7 +176,7 @@ extern "C" int EXPORT STDCALL ReadReal
    CMPBuiltInBounded<float, float> variable(variableName, *value, *lower, *upper);
    return currentWrapper->componentInterface().read(variableName,
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 extern "C" int EXPORT STDCALL ReadDouble
    (const char* name, const char* units, int* optional, double* value, double* lower, double* upper,
@@ -186,7 +186,7 @@ extern "C" int EXPORT STDCALL ReadDouble
    CMPBuiltInBounded<double, double> variable(variableName, *value, *lower, *upper);
    return currentWrapper->componentInterface().read(variableName,
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 extern "C" int EXPORT STDCALL ReadString
    (const char* name, const char* units, int* optional, char* value,
@@ -196,7 +196,7 @@ extern "C" int EXPORT STDCALL ReadString
    CMPBuiltIn<FortranString> variable(FortranString(value, valueLength));
    return currentWrapper->componentInterface().read(FortranString(name, nameLength).toString(),
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 extern "C" int EXPORT STDCALL ReadIntegerArray
    (const char* name, const char* units, int* optional, int* value, int* numValues, int* maxValues, int* lower, int* upper,
@@ -208,7 +208,7 @@ extern "C" int EXPORT STDCALL ReadIntegerArray
    CMPBuiltInBounded<FortranArray<int>, int> variable(variableName, arr, *lower, *upper);
    return currentWrapper->componentInterface().read(variableName,
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 extern "C" int EXPORT STDCALL ReadRealArray
    (const char* name, const char* units, int* optional, float* value, int* numValues, int* maxValues, float* lower, float* upper,
@@ -220,7 +220,7 @@ extern "C" int EXPORT STDCALL ReadRealArray
    CMPBuiltInBounded<FortranArray<float>, float> variable(variableName, arr, *lower, *upper);
    return currentWrapper->componentInterface().read(variableName,
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 extern "C" int EXPORT STDCALL ReadDoubleArray
    (const char* name, const char* units, int* optional, double* value, int* numValues, int* maxValues, double* lower, double* upper,
@@ -232,7 +232,7 @@ extern "C" int EXPORT STDCALL ReadDoubleArray
    CMPBuiltInBounded<FortranArray<double>, double> variable(variableName, arr, *lower, *upper);
    return currentWrapper->componentInterface().read(variableName,
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 extern "C" int EXPORT STDCALL ReadStringArray
    (const char* name, const char* units, int* optional, char* value, int* numValues, int* maxValues,
@@ -244,7 +244,7 @@ extern "C" int EXPORT STDCALL ReadStringArray
    CMPBuiltIn<FortranStrings> variable(arr);
    return currentWrapper->componentInterface().read(variableName,
                                                     &variable,
-                                                    (bool)*optional);
+                                                    *optional != 0);
    }
 // -----------------------------------------------------------------------
 // The EXPOSE methods that FORTRAN calls to make one of its variables
@@ -256,7 +256,7 @@ extern "C" void EXPORT STDCALL ExposeInteger(const char* Name, const char* Units
    currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<int&>(*Data));
    }
 extern "C" void EXPORT STDCALL ExposeReal(const char* Name, const char* Units, const char* Description, int* Writable, float* Data,
@@ -265,7 +265,7 @@ extern "C" void EXPORT STDCALL ExposeReal(const char* Name, const char* Units, c
    currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<float&>(*Data));
    }
 extern "C" void EXPORT STDCALL ExposeDouble(const char* Name, const char* Units, const char* Description, int* Writable, double* Data,
@@ -274,7 +274,7 @@ extern "C" void EXPORT STDCALL ExposeDouble(const char* Name, const char* Units,
   currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<double&>(*Data));
    }
 extern "C" void EXPORT STDCALL ExposeString(const char* Name, const char* Units, const char* Description, int* Writable, char* Data,
@@ -283,7 +283,7 @@ extern "C" void EXPORT STDCALL ExposeString(const char* Name, const char* Units,
    currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<FortranString>(FortranString(Data, DataLength)));
    }
 extern "C" void EXPORT STDCALL ExposeIntegerArray(const char* Name, const char* Units, const char* Description, int* Writable, int* Data, int* NumValues, int* MaxValues,
@@ -292,7 +292,7 @@ extern "C" void EXPORT STDCALL ExposeIntegerArray(const char* Name, const char* 
    currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<FortranArray<int> >(FortranArray<int>(Data, *NumValues, *MaxValues)));
    }
 extern "C" void EXPORT STDCALL ExposeRealArray(const char* Name, const char* Units, const char* Description, int* Writable, float* Data, int* NumValues, int* MaxValues,
@@ -301,7 +301,7 @@ extern "C" void EXPORT STDCALL ExposeRealArray(const char* Name, const char* Uni
    currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<FortranArray<float> >(FortranArray<float>(Data, *NumValues, *MaxValues)));
    }
 extern "C" void EXPORT STDCALL ExposeDoubleArray(const char* Name, const char* Units, const char* Description, int* Writable, double* Data, int* NumValues, int* MaxValues,
@@ -310,7 +310,7 @@ extern "C" void EXPORT STDCALL ExposeDoubleArray(const char* Name, const char* U
    currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<FortranArray<double> >(FortranArray<double>(Data, *NumValues, *MaxValues)));
    }
 extern "C" void EXPORT STDCALL ExposeStringArray(const char* Name, const char* Units, const char* Description, int* Writable, char* Data, int* NumValues, int* MaxValues,
@@ -319,7 +319,7 @@ extern "C" void EXPORT STDCALL ExposeStringArray(const char* Name, const char* U
    currentWrapper->componentInterface().expose(FortranString(Name, NameLength).toString(),
                                                FortranString(Units, UnitsLength).toString(),
                                                FortranString(Description, DescriptionLength).toString(),
-                                               *Writable,
+                                               *Writable != 0,
                                                new CMPBuiltIn<FortranStrings>(FortranStrings(Data, DataLength, 100, *NumValues)));
    }
 
@@ -334,7 +334,7 @@ extern "C" int EXPORT STDCALL GetInteger
    CMPBuiltInBounded<int&, int>* variable = new CMPBuiltInBounded<int&, int>(variableName, *Value, *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                    variable);
    }
 extern "C" int EXPORT STDCALL GetReal
@@ -345,7 +345,7 @@ extern "C" int EXPORT STDCALL GetReal
    CMPBuiltInBounded<float&, float>* variable = new CMPBuiltInBounded<float&, float>(variableName, *Value, *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                    variable);
    }
 extern "C" int EXPORT STDCALL GetDouble
@@ -356,7 +356,7 @@ extern "C" int EXPORT STDCALL GetDouble
    CMPBuiltInBounded<double&, double>* variable = new CMPBuiltInBounded<double&, double>(variableName, *Value, *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                    variable);
    }
 extern "C" int EXPORT STDCALL GetString
@@ -366,7 +366,7 @@ extern "C" int EXPORT STDCALL GetString
    CMPBuiltIn<FortranString>* variable = new CMPBuiltIn<FortranString>(FortranString(Value, ValueLength));
    return currentWrapper->componentInterface().get(FortranString(Name, NameLength).toString(),
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                    variable);
    }
 extern "C" int EXPORT STDCALL GetIntegerArray
@@ -381,7 +381,7 @@ extern "C" int EXPORT STDCALL GetIntegerArray
                                   *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                    variable);
    }
 extern "C" int EXPORT STDCALL GetRealArray
@@ -396,7 +396,7 @@ extern "C" int EXPORT STDCALL GetRealArray
                                   *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                    variable);
    }
 extern "C" int EXPORT STDCALL GetDoubleArray
@@ -411,7 +411,7 @@ extern "C" int EXPORT STDCALL GetDoubleArray
                                   *Lower, *Upper);
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                    variable);
    }
 extern "C" int EXPORT STDCALL GetStringArray
@@ -423,7 +423,7 @@ extern "C" int EXPORT STDCALL GetStringArray
    CMPBuiltIn<FortranStrings>* variable = new CMPBuiltIn<FortranStrings>(FortranStrings(Value, ValueLength, *MaxValues, *NumValues));
    return currentWrapper->componentInterface().get(variableName,
                                                    FortranString(Units, UnitsLength).toString(),
-                                                   (bool)*Optional,
+                                                   *Optional != 0,
                                                     variable);
    }
 // -----------------------------------------------------------------------

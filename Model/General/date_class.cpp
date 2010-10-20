@@ -412,7 +412,7 @@ void GDate::Read(const string& Str, const string& Format)
    else
       Yr = Get_year();
 
-   return (Yr & 3) == 0 && Yr % 100 != 0 || Yr % 400 == 0;
+   return ((Yr & 3) == 0 && Yr % 100 != 0) || (Yr % 400 == 0);
    }
 
 
@@ -442,9 +442,9 @@ void GDate::Read(const string& Str, const string& Format)
       double month = mm + 2.0 - 12.0 * work;
       double year = 100.0 * (work0 - 49.0) + yy + work;
 
-      d = day;
-      m = month;
-      y = year;
+      d = (unsigned)day;
+      m = (unsigned)month;
+      y = (unsigned)year;
       }
    else
       {
@@ -471,21 +471,18 @@ void GDate::Read(const string& Str, const string& Format)
 
 //  Calls:
 
-//  Internal variables
-    unsigned long c, ya;
-
 // -------------------- Executable code section ----------------------
 
    if(Dmy_is_valid(d, m, y))
       {
       double Quotnt = int((m - 14.0) / 12.0);
 
-      Julian_day = d - 32075.0 + int(1461.0 * (y + 4800.0 + Quotnt) /4.0)
+      Julian_day = (unsigned int)(d - 32075.0 + int(1461.0 * (y + 4800.0 + Quotnt) /4.0)
                                + int( 367.0 * (m - 2.0    - Quotnt * 12.0) / 12.0)
-                               - int(   3.0 * int((y + 4900.0 + Quotnt) / 100.0) /4.0);
+                               - int(   3.0 * int((y + 4900.0 + Quotnt) / 100.0) /4.0));
       }
    else
-      Julian_day = 0.0;
+      Julian_day = 0;
    }
 
 
@@ -509,7 +506,7 @@ void GDate::Read(const string& Str, const string& Format)
       bool Leap;                       // Is year a leap year?
 // -------------------- Executable code section ----------------------
 
-   Leap = (Year & 3) == 0 && Year % 100 != 0 || Year % 400 == 0;
+   Leap = ((Year & 3) == 0 && Year % 100 != 0) || (Year % 400 == 0);
 
    if (Leap && Day_of_year == 60)
       Set(29, 2, Year);

@@ -64,7 +64,7 @@ http://www.opengroup.org/onlinepubs/009695399/functions/strptime.html
 #ifdef __WIN32__
 int strncasecmp(const char* st1, const char* st2, int i)
    {
-   return strnicmp(st1, st2, i);
+   return _strnicmp(st1, st2, i);
    }
 int strcasecmp(const char* st1, const char* st2)
    {

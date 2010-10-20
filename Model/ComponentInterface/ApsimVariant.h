@@ -29,6 +29,7 @@ class ApsimVariant
 
       void reset(void)
          {
+		 memset(buffer, 0, sizeof(buffer));
          messageData.reset();
          }
 

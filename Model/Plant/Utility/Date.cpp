@@ -171,7 +171,7 @@ void jday_to_date (int *day, int *month, int *year, double jday)
 // or equal to negative zero.
 // Example a = sign (30,-2) ! a is assigned the value -30
 // ------------------------------------------------------------------
-float sign(float a, float b)
+double sign(double a, double b)
    {
    if (b >= 0)
       return fabs(a);

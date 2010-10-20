@@ -34,18 +34,9 @@ class EXPORT FortranString
          canModify = true;
          }
       // constructor for an alias to a FORTRAN string
-      FortranString(char* t, unsigned int tLength)
-         {
-         text = t;
-         len = tLength;
-         realLen = len;
-         canModify = true;
-         calcRealLength();
-         }
-      // constructor for an alias to a FORTRAN string
       FortranString(const char* t, unsigned int tLength)
          {
-         text = (char*) t;
+         text = const_cast<char*>(t);
          len = tLength;
          realLen = len;
          canModify = true;
@@ -95,7 +86,7 @@ class EXPORT FortranString
          }
       FortranString& operator= (const std::string& rhs)
          {
-         unsigned int rhsLength = rhs.length();
+         unsigned int rhsLength = (unsigned)rhs.length();
          if (len < rhsLength)
             {
             std::string message = "String truncation.  FORTRAN string not long enough\nto hold the string:\n";
