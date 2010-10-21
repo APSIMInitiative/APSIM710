@@ -70,6 +70,7 @@ call MakeProject Root
 call MakeProject SiloInput
 call MakeProject SOI
 call MakeProject SoilN
+call MakeProject SoilNitrogen
 call MakeProject SoilP
 call MakeProject SoilTemp
 call MakeProject SoilTemp2
