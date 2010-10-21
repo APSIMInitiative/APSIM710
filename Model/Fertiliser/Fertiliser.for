@@ -373,8 +373,8 @@ c     include   'fertiliz.inc'
       use FertilizModule
       implicit none
       ml_external OnInit1, OnTick, OnNewProfile, OnApply, OnProcess
-
-
+      external :: OnApply, OnTick, OnNewProfile, OnProcess
+       
       call fertiliz_zero_variables ()
       call SubscribeFertiliserApplicationType('apply', OnApply)
       call SubscribeTimeType('tick', OnTick)
@@ -422,7 +422,9 @@ c     include   'fertiliz.inc'
 
       type(FertiliserApplicationType) :: Application
       if (Application%Type .eq. ' ') then
-         call error ('Fertilizer application specification error')
+         call warning_error (ERR_User,
+     .   'Fertilizer application specification error')
+*         call error ('Fertilizer application specification error')
 
       else
          call fertiliz_apply (Application%Amount,
