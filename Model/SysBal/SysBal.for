@@ -230,8 +230,8 @@
 
       call push_routine (my_name)
 
-      g%sysbal_index = 0
-      g%height       = 0.0
+      g%sysbal_index(:) = 0
+      g%height(:)       = 0.0
       g%num_modules = 0
 
       g%Nloss_system         = 0.0

@@ -2192,7 +2192,7 @@ subroutine soiln2_init_calc ()
 
 !+  Local Variables
    real       cum_depth             ! cumulative depth of profile (mm)
-   real       deepest_layer         ! deepest layer number to which initial root_wt is distributed
+   integer    deepest_layer         ! deepest layer number to which initial root_wt is distributed
    real       previous_cum_depth    ! previous value of cum_depth as layer loop is stepped through (mm)
    real       factor                ! factor representing the proportion of layer into which the roots have delved
    real       fom                   ! fresh organic matter in layer (kg/ha)
@@ -2222,7 +2222,7 @@ subroutine soiln2_init_calc ()
    cum_depth = 0.0
    previous_cum_depth = 0.0
 
-   do layer = 1,INT(deepest_layer)  ! Should this be INT() or NINT() ??
+   do layer = 1,deepest_layer
       cum_depth = cum_depth + g%dlayer(layer)
       factor=min(1.0,divide((g%root_depth - previous_cum_depth),g%dlayer(layer),0.0))
       root_distrib(layer) = exp (-3.0*min(1.0,divide(cum_depth,g%root_depth,0.0)))*factor
