@@ -26,6 +26,8 @@ foreach line [split $text "\n"] {
       if {$pastheader} {
          if {[scan $longName "_%\[A-Za-z0-9_\]@" name] == 1} {
             puts "  $name = $longName"
+			set lcname [string tolower $name]
+			puts "  _$lcname = $longName"
          }
       }
       if {"$ordinal" == "ordinal"} {set pastheader 1}
