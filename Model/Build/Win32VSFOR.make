@@ -11,7 +11,7 @@ STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
 F90FLAGS= -cpp -D'ml_external=!' -shared-libgcc -static-libgfortran -fno-underscoring -mrtd -ffree-line-length-none -finit-local-zero -O2 -g
 F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
 
-F90MODS=
+F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
 
 # Generic rules
 %.o:	%.for
