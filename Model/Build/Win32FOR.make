@@ -11,7 +11,7 @@ STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
 F90FLAGS= -cpp -D'ml_external=!' -shared-libgcc -static-libgfortran -fno-underscoring -mrtd -ffree-line-length-none -finit-local-zero -O2 -g
 F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
 
-F90MODS=
+F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
 
 # Generic rules
 %.o:	%.for
@@ -37,7 +37,7 @@ LDFLAGS:= --export-dynamic \
 -u getInstance -u getDescription -u getDescriptionLength --no-allow-shlib-undefined --disable-auto-import  -L "C:\Program Files\gfortran\lib"
 all: $(APSIM)/Model/$(PROJECT).dll
 $(APSIM)/Model/$(PROJECT).dll: $(OBJS)
-	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJS) $(DEF) $(STATICLIBS) $(LIBS) 
+	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(DEF) $(STATICLIBS) $(LIBS) 
 else
 
 ifeq ($(PROJECTTYPE),lib)

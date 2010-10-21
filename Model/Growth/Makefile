@@ -5,8 +5,10 @@ PROJECT = Growth
 SRC = Registrations.f90 Growth.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = ../Build/gfcomp.def
 endif
 
 STATICLIBS = FortranInfrastructure CropTemplate

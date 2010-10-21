@@ -5,8 +5,10 @@ PROJECT = Millet
 SRC = Registrations.f90 MilletMain.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = ../Build/gfcomp.def
 endif
 
 

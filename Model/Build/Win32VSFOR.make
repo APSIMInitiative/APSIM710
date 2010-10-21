@@ -37,7 +37,7 @@ LDFLAGS:= --export-dynamic \
 -u getInstance -u getDescription -u getDescriptionLength --no-allow-shlib-undefined --disable-auto-import  -L "C:\Program Files\gfortran\lib"
 all: $(APSIM)/Model/$(PROJECT).dll
 $(APSIM)/Model/$(PROJECT).dll: $(OBJS)
-	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJS) $(DEF) $(STATICLIBS) $(LIBS) 
+	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(DEF) $(STATICLIBS) $(LIBS) 
 else
 
 ifeq ($(PROJECTTYPE),lib)

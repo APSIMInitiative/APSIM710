@@ -5,8 +5,10 @@ PROJECT = Pond
 SRC = Registrations.f90 Pond.f90 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
+DEF = ../Build/gfcomp.def
 endif
 
 STATICLIBS = FortranInfrastructure

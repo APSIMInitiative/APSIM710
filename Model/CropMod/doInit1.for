@@ -4,7 +4,7 @@
       use CropModData
       Use infrastructure
       implicit none
-      ml_external doInit1
+!      ml_external doInit1
       integer dummy
 
       id%externalmassflow = add_registration(eventReg
