@@ -5,10 +5,10 @@ PROJECT = Manager
 SRC = Registrations.f90 Manager.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = Manager.ldscript
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
-DEF = Manager.def
+DEF = ../Build/gfcomp.def
 endif
 
 STATICLIBS = FortranInfrastructure

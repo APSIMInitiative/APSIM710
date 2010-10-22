@@ -5,10 +5,10 @@ PROJECT = MicroMet
 SRC = Registrations.f90 MicroMet.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = MicroMet.ldscript
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
-DEF = MicroMet.def
+DEF = ../Build/gfcomp.def
 endif
 
 STATICLIBS = FortranInfrastructure

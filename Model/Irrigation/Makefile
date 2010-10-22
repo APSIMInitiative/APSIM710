@@ -5,10 +5,10 @@ PROJECT = Irrigation
 SRC = Registrations.f90 Irrigation.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = Irrigation.ldscript
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
-DEF = Irrigation.def
+DEF = ../Build/gfcomp.def
 endif
 
 STATICLIBS = FortranInfrastructure

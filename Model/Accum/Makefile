@@ -5,10 +5,10 @@ PROJECT = Accum
 SRC = Registrations.f90 accum.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = Accum.ldscript
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
-DEF = Accum.def
+DEF = ../Build/gfcomp.def
 endif
 
 STATICLIBS = FortranInfrastructure

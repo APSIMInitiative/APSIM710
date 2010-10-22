@@ -5,10 +5,10 @@ PROJECT = Operations
 SRC = Registrations.f90 Operations.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
-DEF = Operations.ldscript
+DEF = ../Build/gfcomp.ldscript
 else
 SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for 
-DEF = Operations.def
+DEF = ../Build/gfcomp.def
 endif
 
 STATICLIBS = FortranInfrastructure
