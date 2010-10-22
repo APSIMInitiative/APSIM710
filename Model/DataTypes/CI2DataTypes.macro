@@ -944,7 +944,7 @@ module ScienceAPI2
       subroutine SubscribeNullType(name, proc)
       ml_external SubscribeNullType
       character (len=*), intent(in) :: name
-      ml_external :: proc
+      external :: proc
       end subroutine SubscribeNullType
 
       [foreach types.type]
@@ -953,7 +953,7 @@ module ScienceAPI2
       Use DataTypes
       ml_external Subscribe[type.name]Type
       character (len=*), intent(in) :: Name
-      ml_external F
+      external :: F
       end subroutine
 
       [endfor]
