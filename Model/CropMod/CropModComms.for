@@ -1,3 +1,15 @@
+! UGLY HACK WARNING! E. Zurcher October 2010
+! I had problems getting the "maize" component to build using
+! gfortran on Windows. At the link stage, it was unable to resolve
+! the array of strings named "part_name", defined in CropModData.for.
+! As a nasty hack to get this to build at all, I've duplicated (four-fold)
+! the definition of this parameter locally within the sub-routines that
+! require it, with the name changed to "partname" (without an underscore)
+! There must be a better way, but my knowledge of gfortran and 
+! symbol resolution are not up to the task. This duplication works,
+! but will be a problem to maintain. I encourage any gfortran guru
+! who looks at this code to clean this up! Look for the commented string
+! 'UGLY HACK' to locate the instances of the duplicates.
       include 'plantp_code.for'
       subroutine print_routine (my_name)
 
@@ -24,6 +36,11 @@
 *+  Constant Values
       character  my_name*(*)       ! name of procedure
       parameter (my_name  = 'CropMod_Initialisation')
+      ! UGLY HACK
+      character(len=*), dimension(max_part), parameter ::
+     :            partname=(/'root      ',   'leaf      '
+     :                      , 'stem      ', 'flower    '
+     :                      , 'grain     ', 'energy    '/)
 
 *- Implementation Section ----------------------------------
 
@@ -46,7 +63,7 @@
       g%current_stage = real (plant_end)
       g%plant_status = status_out
 
-      call PlantP_Init(c%crop_type,part_name,max_part)
+      call PlantP_Init(c%crop_type,partname,max_part)
 
       call pop_routine (my_name)
       return
@@ -2897,6 +2914,11 @@ c        end if
       real       incorp_fr_dead(max_part)         ! fraction of dm to 'chop' (0-1)
       real       P_tops                ! Phosphorus added to residue (g/m^2)
       real       P_root                ! Phosphorus added to soil (g/m^2)
+      ! UGLY HACK
+      character(len=*), dimension(max_part), parameter ::
+     :            partname=(/'root      ',   'leaf      '
+     :                      , 'stem      ', 'flower    '
+     :                      , 'grain     ', 'energy    '/)
 
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
@@ -2932,7 +2954,7 @@ c        end if
 
          call Send_Crop_Chopped_Event_N_P
      :                (c%crop_type
-     :               , part_name
+     :               , partname
      :               , dm_residue
      :               , N_residue
      :               , P_residue
@@ -2977,7 +2999,7 @@ c        end if
 
             call Send_Crop_Chopped_Event_N_P
      :                (c%crop_type
-     :               , part_name
+     :               , partname
      :               , dm_residue
      :               , N_residue
      :               , P_residue
@@ -3155,7 +3177,12 @@ c        end if
       real       dlt_dm_P(max_part)    ! P content of changeed dry matter (kg/ha)
       real       incorp_fr(max_part)   ! fraction of each pool to incorporate(0-1)
       real       P_residue             ! P added to residue (kg/ha)
-
+	  
+      ! UGLY HACK
+      character(len=*), dimension(max_part), parameter ::
+     :            partname=(/'root      ',   'leaf      '
+     :                      , 'stem      ', 'flower    '
+     :                      , 'grain     ', 'energy    '/)
 
 
 *- Implementation Section ----------------------------------
@@ -3375,7 +3402,7 @@ c        end if
 
             call Send_Crop_Chopped_Event_N_P
      :                (c%crop_type
-     :               , part_name
+     :               , partname
      :               , dlt_dm_crop
      :               , dlt_dm_N
      :               , dlt_dm_P
@@ -3430,6 +3457,11 @@ c        end if
       real       dlt_dm_P(max_part)    ! P content of changeed dry matter (kg/ha)
       real       incorp_fr(max_part)   ! fraction of each pool to incorporate(0-1)
       real       chop_fr(max_part)     ! fraction of each pool 'chopped' (0-1)
+      ! UGLY HACK
+      character(len=*), dimension(max_part), parameter ::
+     :            partname=(/'root      ',   'leaf      '
+     :                      , 'stem      ', 'flower    '
+     :                      , 'grain     ', 'energy    '/)
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -3540,7 +3572,7 @@ c    :             - g%N_dead(root) - g%N_dead(grain))
 
             call Send_Crop_Chopped_Event_N_P
      :                (c%crop_type
-     :               , part_name
+     :               , partname
      :               , dlt_dm_crop
      :               , dlt_dm_N
      :               , dlt_dm_P
