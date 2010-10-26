@@ -19,9 +19,10 @@
 
 
       ! instance variables.
-      common /InstancePointers/ g,p,c
-      save InstancePointers
+      common /InstancePointers/ ID, g, p, c
+      save /InstancePointers/
       type (FertilizGlobals),pointer :: g
+      integer,pointer :: ID, p, c
 
 
       contains
@@ -373,7 +374,7 @@ c     include   'fertiliz.inc'
       use FertilizModule
       implicit none
       ml_external OnInit1, OnTick, OnNewProfile, OnApply, OnProcess
-      external :: OnApply, OnTick, OnNewProfile, OnProcess
+      external ::OnApply, OnTick, OnNewProfile, OnProcess
        
       call fertiliz_zero_variables ()
       call SubscribeFertiliserApplicationType('apply', OnApply)
