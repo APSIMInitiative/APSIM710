@@ -9,7 +9,7 @@ XML2_LIBDIR= -L/usr/lib
 CC=/usr/bin/g++
 LD=/usr/bin/ld
 CFLAGS= -Wall $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) -I$(APSIM)/Model \
--Wno-write-strings -fpermissive -fPIC $(CPPDEBUGFLAGS) $(INCLUDES)
+-Wno-write-strings -fpermissive -fPIC -O0 $(CPPDEBUGFLAGS) $(INCLUDES)
 
 #-Wno-deprecated
 
@@ -21,7 +21,7 @@ LIBS:= $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) \
 
 
 ifeq ($(PROJECTTYPE),dll)
-LDFLAGS:= --no-allow-shlib-undefined --warn-common -u wrapperDLL -u getInstance -u getDescription -u getDescriptionLength  $(LDFLAGS) 
+LDFLAGS:= --no-allow-shlib-undefined --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions  $(LDFLAGS) 
 LIBS := $(LIBS) -ldl
 endif
 
@@ -52,7 +52,7 @@ $(APSIM)/Model/$(PROJECT).x: $(PREBUILD) $(OBJ)
 	$(CC) -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
 
 $(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(OBJ)
-	$(CC) -shared -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
+	$(CC) -shared -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS) $(DEF)
 
 clean:
 	rm -f $(OBJ) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so

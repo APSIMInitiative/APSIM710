@@ -8,6 +8,6 @@
   #endif
 #else
    #define EXPORT
-   #define STDCALL
+   #define STDCALL __attribute__((stdcall))
 #endif
 #endif
