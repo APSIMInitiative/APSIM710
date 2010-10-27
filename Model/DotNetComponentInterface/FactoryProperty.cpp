@@ -103,6 +103,8 @@ FactoryProperty::FactoryProperty(ReflectedType^ Property, XmlNode^ Parent)
    FQN = CalcParentName(Parent) + this->Name;   
    this->OutputName = FQN;
    Data = GetFieldWrapper();
+   sDDML = Data->DDML();
+   regIndex = -1;
    
    for each (Object^ Attr in Property->MetaData)
       {

@@ -109,6 +109,9 @@ public ref class FactoryProperty : Instance, ApsimType
       String^ Description;
       String^ FQN;
       String^ OutputName;
+	  String^ sDDML;
+	  int regIndex;
+
 
       FactoryProperty(ReflectedType^ Property, XmlNode^ Parent);
       property bool HasAsValue {bool get() {return HaveSet;}}

@@ -172,8 +172,6 @@ void ApsimComponent::messageToLogic (char* message)
                   }
                }
    		     BuildObjects(InitData->ChildNodes[0]);
-			 //String^ descr = GetDescription(InitData);
-			 //Console::WriteLine(descr);
    		   }
 		   CIMessageToLogic(ComponentI, msgCopy);
 		   CIDeleteMessageCopy(msgCopy);
@@ -271,10 +269,13 @@ void ApsimComponent::GetAllInputs()
 	   FactoryProperty^ Property = Fact->Properties[i];
 	   if (Property->IsInput)
 	      {
-         int RegistrationIndex = Registrations->Count;
-         Registrations->Add(Property);
-         CIGet(ComponentI, Property->Name, Property->Units, Property->OptionalInput, &::CallBack,
-               instanceNumber, RegistrationIndex, Property->DDML());
+			  if (Property->regIndex == -1) 
+			  { 
+			    Property->regIndex = Registrations->Count;
+				Registrations->Add(Property);
+			  }
+			  CIGet(ComponentI, Property->Name, Property->Units, Property->OptionalInput, &::CallBack,
+                instanceNumber, Property->regIndex, Property->sDDML);
          }
       }
    }
@@ -467,6 +468,12 @@ void ApsimComponent::OnPost(char* messageData)
       {
       EndCropToday = false;
       CIDeRegister(ComponentI);
+      for (int i = 0; i != Fact->Properties->Count; i++)
+	  {
+	     FactoryProperty^ Property = Fact->Properties[i];
+	     if (Property->IsInput)
+			Property->regIndex = -1;
+	  }
       Model = nullptr;
       ManagerEventType^ dummy = gcnew ManagerEventType();
       SowType^ sowDummy = gcnew SowType();
