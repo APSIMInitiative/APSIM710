@@ -71,5 +71,34 @@
         <event>init</event>
       </script>
     </manager>
+    <manager name="Conservation Settings">
+      <ui>
+        <category type="category" />
+        <start_date type="ddmmmdate" description="Enter start date (dd-mmm) ">1-sep</start_date>
+        <finish_date type="ddmmmdate" description="Enter finish date (dd-mmm) ">20-mar</finish_date>
+        <trigger_mass type="text" description="Close paddock if pasture mass exceeds (kg/ha) : ">3500</trigger_mass>
+        <residual type="text" description="Pasture residual after cut (kgDM/ha)">1600</residual>
+        <silage_store type="yesno" description="Store conserved feed for later use">yes</silage_store>
+        <energy_content type="text" description="Energy content of conversed feed (ME/kgDM)">10.5</energy_content>
+        <silage_on_hand type="text" description="Feed stored on farm at start of simulation (kgDM/ha)">250</silage_on_hand>
+      </ui>
+      <script name="init">
+        <text>	
+        	ConservationStart = '[start_date]'
+        	ConservationFinish = '[finish_date]'
+        	ConservationTrigger = [trigger_mass]
+        	ConservationResidual = [residual]
+        	if '[silage_store]' = 'yes' then
+        		SilageStoreEnable = 1
+        		SilageStore = [silage_on_hand]
+        		SilageME = [energy_content]
+        	else
+        		SilageStoreEnable = 0
+        		SilageStore = 0
+        	endif
+	</text>
+        <event>init</event>
+      </script>
+    </manager>
   </folder>
 </folder>

@@ -280,7 +280,7 @@ Public Class DDRules
                 End Get
         End Property
         'Metabolisable energy required for walking [MJME/cow/day]
-        <Output()> <Units("MJME")> Public ReadOnly Property ME_Demand_Walking_Cow() As Double
+        <Output()> <Units("MJME/cow")> Public ReadOnly Property ME_Demand_Walking_Cow() As Double
                 Get
                         Return myHerd.ME_Walking_Cow
                 End Get
