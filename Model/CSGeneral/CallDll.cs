@@ -49,7 +49,7 @@ namespace CSGeneral
                 }
             catch (Exception ex)
                 {
-                throw new Exception(ex.GetBaseException().Message);
+                throw new Exception(ex.InnerException.Message);
                 }
             } 
 

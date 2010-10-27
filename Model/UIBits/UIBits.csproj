@@ -37,11 +37,19 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApsimRunToolStrip.cs" />
+    <Compile Include="ClusterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClusterForm.Designer.cs">
+      <DependentUpon>ClusterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ColorBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -80,6 +88,16 @@
       <DependentUpon>PrintPreviewDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ReorderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,11 +107,21 @@
     <Compile Include="TextHeader.Designer.cs">
       <DependentUpon>TextHeader.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToowoombaCluster.cs" />
     <Compile Include="VerticalProgressBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Web References\ClusterService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ClusterForm.resx">
+      <DependentUpon>ClusterForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ErrorMessageForm.resx">
       <DependentUpon>ErrorMessageForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -109,6 +137,11 @@
     <EmbeddedResource Include="PrintPreviewDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PrintPreviewDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ReorderForm.resx">
       <DependentUpon>ReorderForm.cs</DependentUpon>
@@ -132,6 +165,37 @@
       <Project>{BD0D614A-2EF9-411B-9884-F1EBD349A0C8}</Project>
       <Name>UIUtility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://www.apsim.info/runremotely/Cluster.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ClusterService\</RelPath>
+      <UpdateFromURL>http://www.apsim.info/runremotely/Cluster.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>UIBits_ClusterService_Cluster</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\ClusterService\Cluster.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ClusterService\Cluster.disco" />
+    <None Include="Web References\ClusterService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

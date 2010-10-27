@@ -45,10 +45,12 @@ namespace CSGeneral
             // Converts given string to Base64
 
             System.IO.MemoryStream mem = new System.IO.MemoryStream(str.Length);
+            StreamWriter Out = new StreamWriter(mem);
+            Out.Write(str);
 
             // Loop through each character in the memo, writing each to a MemoryStream buffer
-            foreach (char character in str.ToCharArray())
-                mem.WriteByte(Convert.ToByte(character));
+            //foreach (char character in str.ToCharArray())
+            //    mem.WriteByte(Convert.ToByte(character));
 
             // convert byte array characters to Base64 return it.
             return Convert.ToBase64String(mem.GetBuffer());

@@ -8,7 +8,6 @@ rem Need to process the datatypes.interface file and auto-
 rem generate the datatypes.cpp, .h etc.
 rem -------------------------------------------------------------
 call MakeProject CSGeneral
-call MakeProject Excel
 call MakeProject ApsimFile
 call MakeProject DataTypes
 
