@@ -701,8 +701,14 @@
 
          IncorpFOM%Type = p%crop_type
          IncorpFOM%num_layer = 1
+         IncorpFOM%layer(1)%LabileP = 0.0
+         IncorpFOM%layer(1)%CNR = 0.0
          IncorpFOM%layer(1)%FOM%Amount = dm_root(1)
          IncorpFOM%layer(1)%FOM%N = n_root(1)
+         IncorpFOM%layer(1)%FOM%C = 0.0
+         IncorpFOM%layer(1)%FOM%P = 0.0
+         IncorpFOM%layer(1)%FOM%AshAlk = 0.0
+		 
          call publish_FOMLayer(id%incorp_fom, IncorpFOM)
 
          ! put stover into surface residue
@@ -1062,6 +1068,7 @@
       g%RAPPPL=0.0
       g%FSLLA=0.0
       g%AMAX2=0.0
+      g%EFF=0.0
       g%EFF2=0.0
       g%GPSHL=0.0
       g%GPL=0.0
@@ -1127,6 +1134,7 @@
       g%nh4(:) = 0.0
       g%amax1 = 0.0   !! XXnot used anywhere??
       g%eff1=0.0      !! XXnot used anywhere??
+      g%fnlv=0.0
 
       ! dsg 030809 rat grazing work with Peter Brown
       g%rat_graze_perc=0.0
@@ -1278,6 +1286,7 @@
       p%WRTI  =0.0
 
       g%eo_source = ' '
+      g%cultivar = ' '
 
       call pop_routine (myname)
       return
@@ -5606,6 +5615,14 @@
 *- Implementation Section ----------------------------------
       call push_routine (myname)
 
+      newProfile%dlayer(:) = 0
+      newProfile%air_dry_dep(:) = 0
+      newProfile%ll15_dep(:) = 0
+      newProfile%dul_dep(:) = 0
+      newProfile%sat_dep(:) = 0
+      newProfile%sw_dep(:) = 0
+      newProfile%bd(:) = 0
+
       call unpack_newProfile(variant, newProfile)
 
       p%tkl = newProfile%dlayer
@@ -5820,6 +5837,11 @@
          allocate(g)
          allocate(p)
          allocate(id)
+         ! Zero these fields now, as they are used in on_newmet, which
+         ! may be received before we do our other initialisations
+         p%vpd(:) = 0.0
+         p%fvpd(:) = 0.0
+         p%numvpd = 0
       else
          deallocate(g)
          deallocate(p)

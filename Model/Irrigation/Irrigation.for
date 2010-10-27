@@ -854,6 +854,10 @@
       g%irrigation_applied = 0.0
       g%allocation = 0.0
       g%carry_over = 0.0
+      g%dlayer(:) = 0.0
+      g%sw_dep(:) = 0.0
+      g%ll15_dep(:) = 0.0
+      g%dul_dep(:) = 0.0
 
       call fill_char_array (g%solute_names, ' ', max_solutes)
       call fill_char_array (g%solute_owners, ' ', max_solutes)
@@ -865,6 +869,7 @@
 
       p%automatic_irrigation = 'off'
       p%irrigation_allocation = 'off'
+      p%irrigation_efficiency = 1.0
       p%asw_depth = -1.0
       p%crit_fr_asw = -1.0
       p%default_time = ' '

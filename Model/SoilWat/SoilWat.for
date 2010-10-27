@@ -5196,6 +5196,8 @@ c         g%crop_module(:) = ' '               ! list of modules
          p%max_pond = 0.0                     ! maximum allowable surface storage (ponding) mm
          p%mwcon (:) = 0.0                    ! layer permeability factor (zero or one)
          p%solute_conc_rain(:) = 0.0          ! solute concentrations in rainfall (optional parameter)
+         p%winterdate = ' '
+         p%summerdate = ' '		 
 * ====================================================================
 * Constants
          c%hydrol_effective_depth = 0.0       ! hydrologically effective depth for
