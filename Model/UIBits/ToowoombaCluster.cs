@@ -35,20 +35,23 @@ public class ToowoombaCluster
          throw new Exception("Invalid email address: " + EmailAddress);
       UserName = UserName.Remove(UserName.IndexOf("@"));
 
-
       // Keep track of all files that need to go to the cluster.
       List<string> FilesToSend = new List<string>();
 
       // Create a .sub file + sim files.
-      string SubFileName = Path.GetTempPath() + "Job.su~";
-      CreateSubFile(F, SubFileName, SimulationPaths, ref FilesToSend);
+      //string SubFileName = Path.GetTempPath() + "Job.su~";
+      //CreateSubFile(F, SubFileName, SimulationPaths, ref FilesToSend);
+
+      // Modify the .apsim file, fixing references to filenames in other directories.
+      ModifyApsimFile(F.FileName, ref FilesToSend);
+      FilesToSend.Add(F.FileName);
 
       // Create a job file.
       string JobFileName = Path.GetTempPath() + "Job.xml";
-      CreateJobFile(JobFileName, EmailAddress, ref FilesToSend);
+      CreateJobFile(F, JobFileName, EmailAddress, ApsimVersion, ref FilesToSend);
 
       // Create a RunApsim.bat file
-      string RunApsimFileName = Path.GetTempPath() + "Job.ba~";
+      string RunApsimFileName = Path.GetTempPath() + "Job.bat";
       CreateRunApsimFile(RunApsimFileName, ApsimVersion, ref FilesToSend);
 
       // Zip the whole lot up.
@@ -60,14 +63,33 @@ public class ToowoombaCluster
       SendToWebService(ZipFileName, Password);
 
       // Remove temporary files.
-      File.Delete(SubFileName);
       File.Delete(JobFileName);
       File.Delete(RunApsimFileName);
       File.Delete(ZipFileName);
-      foreach (string SimFileName in Directory.GetFiles(Path.GetDirectoryName(F.FileName), "*.sim"))
+
+      // Get the instance of ApsimFile to resave itself so that we overwrite our mods to the file.
+      F.Save();
+      }
+
+   private static void ModifyApsimFile(string FileName, ref List<string> FilesToSend)
+      {
+      XmlDocument Doc = new XmlDocument();
+      Doc.Load(FileName);
+
+      List<XmlNode> FileNameNodes = new List<XmlNode>();
+      XmlHelper.FindAllRecursively(Doc.DocumentElement, "FileName", ref FileNameNodes);
+      foreach (XmlNode FileNameNode in FileNameNodes)
          {
-         File.Delete(SimFileName);
+         if (FileNameNode.ParentNode.Name != "summaryfile" && FileNameNode.ParentNode.Name != "outputfile" && 
+             !FileNameNode.ParentNode.Name.Contains("ApsimFileReader"))
+            {
+            string ReferencedFileName = Configuration.RemoveMacros(FileNameNode.InnerText).ToLower();
+            if (File.Exists(ReferencedFileName) && !FilesToSend.Contains(ReferencedFileName))
+               FilesToSend.Add(ReferencedFileName);
+            FileNameNode.InnerText = Path.GetFileName(FileNameNode.InnerText);
+            }
          }
+      Doc.Save(FileName);
       }
 
    public static void CreateRunApsimFile(string FileName, string ApsimVersion, ref List<string> FilesToSend)
@@ -127,7 +149,7 @@ public class ToowoombaCluster
       SubWriter.Close();
       }
 
-   public static void CreateJobFile(string JobFileName, string EmailAddress, ref List<string> FilesToSend)
+   public static void CreateJobFile(ApsimFile.ApsimFile F, string JobFileName, string EmailAddress, string ApsimVersion, ref List<string> FilesToSend)
       {
       FilesToSend.Add(JobFileName);
 
@@ -142,8 +164,14 @@ public class ToowoombaCluster
       XmlNode JobNode = Doc.AppendChild(Doc.CreateElement("Job"));
       XmlHelper.SetName(JobNode, UserName);
 
+      // Create <localcommand> node
+      XmlHelper.SetValue(JobNode, "LocalCommand/CommandLine", "\"c:\\Program files\\Apsim" + ApsimVersion.Replace(".", "") + "\\Model\\ApsimToSim.exe\" \"%jobfolder%\\" + Path.GetFileName(F.FileName) + "\"");
+
       // Create <cluster> node
-      XmlHelper.SetValue(JobNode, "Cluster/SubFile", "Job.su~");
+      XmlHelper.SetValue(JobNode, "Cluster/CommandLine", "Job.bat %f");
+      XmlHelper.SetValue(JobNode, "Cluster/NiceUser", "Yes");
+      XmlNode ClusterNode = XmlHelper.Find(JobNode, "Cluster");
+      XmlHelper.SetAttribute(ClusterNode, "foreach", "*.sim");
 
       // zip up the outputs.
       string ZipFileName = CalcZipFileName(UserName); 

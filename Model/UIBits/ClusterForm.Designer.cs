@@ -38,12 +38,12 @@
          this.CancelButton = new System.Windows.Forms.Button();
          this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
          this.groupBox1 = new System.Windows.Forms.GroupBox();
-         this.VersionBox = new System.Windows.Forms.TextBox();
-         this.label6 = new System.Windows.Forms.Label();
-         this.BrowseButton = new System.Windows.Forms.Button();
-         this.FolderTextBox = new System.Windows.Forms.TextBox();
-         this.AllFilesCheckBox = new System.Windows.Forms.CheckBox();
          this.AllSimsCheckBox = new System.Windows.Forms.CheckBox();
+         this.AllFilesCheckBox = new System.Windows.Forms.CheckBox();
+         this.FolderTextBox = new System.Windows.Forms.TextBox();
+         this.BrowseButton = new System.Windows.Forms.Button();
+         this.label6 = new System.Windows.Forms.Label();
+         this.VersionBox = new System.Windows.Forms.TextBox();
          this.groupBox1.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -125,21 +125,38 @@
          this.groupBox1.TabStop = false;
          this.groupBox1.Text = "What do you want to run?";
          // 
-         // VersionBox
+         // AllSimsCheckBox
          // 
-         this.VersionBox.Location = new System.Drawing.Point(112, 124);
-         this.VersionBox.Name = "VersionBox";
-         this.VersionBox.Size = new System.Drawing.Size(60, 20);
-         this.VersionBox.TabIndex = 21;
+         this.AllSimsCheckBox.AutoSize = true;
+         this.AllSimsCheckBox.Checked = true;
+         this.AllSimsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+         this.AllSimsCheckBox.Location = new System.Drawing.Point(24, 34);
+         this.AllSimsCheckBox.Name = "AllSimsCheckBox";
+         this.AllSimsCheckBox.Size = new System.Drawing.Size(154, 17);
+         this.AllSimsCheckBox.TabIndex = 16;
+         this.AllSimsCheckBox.Text = "All simulations in current file";
+         this.AllSimsCheckBox.UseVisualStyleBackColor = true;
+         this.AllSimsCheckBox.Click += new System.EventHandler(this.AllSimsCheckBox_Click);
+         this.AllSimsCheckBox.CheckedChanged += new System.EventHandler(this.AllSimsCheckBox_CheckedChanged);
          // 
-         // label6
+         // AllFilesCheckBox
          // 
-         this.label6.AutoSize = true;
-         this.label6.Location = new System.Drawing.Point(25, 127);
-         this.label6.Name = "label6";
-         this.label6.Size = new System.Drawing.Size(80, 13);
-         this.label6.TabIndex = 20;
-         this.label6.Text = "APSIM version:";
+         this.AllFilesCheckBox.AutoSize = true;
+         this.AllFilesCheckBox.Location = new System.Drawing.Point(24, 76);
+         this.AllFilesCheckBox.Name = "AllFilesCheckBox";
+         this.AllFilesCheckBox.Size = new System.Drawing.Size(183, 17);
+         this.AllFilesCheckBox.TabIndex = 17;
+         this.AllFilesCheckBox.Text = "All .apsim files found under folder:";
+         this.AllFilesCheckBox.UseVisualStyleBackColor = true;
+         this.AllFilesCheckBox.Click += new System.EventHandler(this.AllFilesCheckBox_Click);
+         this.AllFilesCheckBox.CheckedChanged += new System.EventHandler(this.AllFilesCheckBox_CheckedChanged);
+         // 
+         // FolderTextBox
+         // 
+         this.FolderTextBox.Location = new System.Drawing.Point(214, 76);
+         this.FolderTextBox.Name = "FolderTextBox";
+         this.FolderTextBox.Size = new System.Drawing.Size(208, 20);
+         this.FolderTextBox.TabIndex = 18;
          // 
          // BrowseButton
          // 
@@ -154,38 +171,21 @@
          this.BrowseButton.UseVisualStyleBackColor = true;
          this.BrowseButton.Click += new System.EventHandler(this.BrowseButton_Click);
          // 
-         // FolderTextBox
+         // label6
          // 
-         this.FolderTextBox.Location = new System.Drawing.Point(214, 76);
-         this.FolderTextBox.Name = "FolderTextBox";
-         this.FolderTextBox.Size = new System.Drawing.Size(208, 20);
-         this.FolderTextBox.TabIndex = 18;
+         this.label6.AutoSize = true;
+         this.label6.Location = new System.Drawing.Point(25, 127);
+         this.label6.Name = "label6";
+         this.label6.Size = new System.Drawing.Size(80, 13);
+         this.label6.TabIndex = 20;
+         this.label6.Text = "APSIM version:";
          // 
-         // AllFilesCheckBox
+         // VersionBox
          // 
-         this.AllFilesCheckBox.AutoSize = true;
-         this.AllFilesCheckBox.Location = new System.Drawing.Point(24, 76);
-         this.AllFilesCheckBox.Name = "AllFilesCheckBox";
-         this.AllFilesCheckBox.Size = new System.Drawing.Size(183, 17);
-         this.AllFilesCheckBox.TabIndex = 17;
-         this.AllFilesCheckBox.Text = "All .apsim files found under folder:";
-         this.AllFilesCheckBox.UseVisualStyleBackColor = true;
-         this.AllFilesCheckBox.Click += new System.EventHandler(this.AllFilesCheckBox_Click);
-         this.AllFilesCheckBox.CheckedChanged += new System.EventHandler(this.AllFilesCheckBox_CheckedChanged);
-         // 
-         // AllSimsCheckBox
-         // 
-         this.AllSimsCheckBox.AutoSize = true;
-         this.AllSimsCheckBox.Checked = true;
-         this.AllSimsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-         this.AllSimsCheckBox.Location = new System.Drawing.Point(24, 34);
-         this.AllSimsCheckBox.Name = "AllSimsCheckBox";
-         this.AllSimsCheckBox.Size = new System.Drawing.Size(252, 17);
-         this.AllSimsCheckBox.TabIndex = 16;
-         this.AllSimsCheckBox.Text = "All simulations under the currently selected node";
-         this.AllSimsCheckBox.UseVisualStyleBackColor = true;
-         this.AllSimsCheckBox.Click += new System.EventHandler(this.AllSimsCheckBox_Click);
-         this.AllSimsCheckBox.CheckedChanged += new System.EventHandler(this.AllSimsCheckBox_CheckedChanged);
+         this.VersionBox.Location = new System.Drawing.Point(112, 124);
+         this.VersionBox.Name = "VersionBox";
+         this.VersionBox.Size = new System.Drawing.Size(60, 20);
+         this.VersionBox.TabIndex = 21;
          // 
          // ClusterForm
          // 
