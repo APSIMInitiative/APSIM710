@@ -7,6 +7,7 @@ using CSGeneral;
 
 /// <summary>
 /// A more-or-less direct port of the Fortran SoilN model
+/// Ported by Eric Zurcher Sept/Oct 2010
 /// </summary>
 public class SoilN : Instance
 {
@@ -497,11 +498,51 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
-    double[] org_c_pool { get; set; }
+    double[] org_c_pool1 // Doesn't seem to be fully implemented
+    {
+        get { return new double [fom_c_pool1.Length]; }
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+                fom_c_pool1[layer] += value[layer];
+        }
+    }
 
     [Output]
     [Units("kg/ha")]
-    double[] org_n { get; set; }
+    double[] org_c_pool2 // Doesn't seem to be fully implemented
+    {
+        get { return new double[fom_c_pool2.Length]; }
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+                fom_c_pool2[layer] += value[layer];
+        }
+    }
+
+    [Output]
+    [Units("kg/ha")]
+    double[] org_c_pool3 // Doesn't seem to be fully implemented
+    {
+        get { return new double[fom_c_pool3.Length]; }
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+                fom_c_pool3[layer] += value[layer];
+        }
+    }
+
+    [Output]
+    [Units("kg/ha")]
+    double[] org_n // Doesn't seem to be fully implemented
+    {
+        get { return new double[fom_n.Length]; }
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+                fom_n[layer] += value[layer];
+        }
+    }
 
     double[][] _dlt_fom_c_hum = new double[3][];
     [Output]
@@ -643,7 +684,25 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] soilp_dlt_org_p;
 
+    [Output]
+    double[] tf
+    {
+        get
+        {
+            int nLayers = dlayer.Length;
+            double[] result = new double[nLayers];
+            int index = (pond_active == "no") ? 1 : 2;
+            for (int layer = 0; layer < nLayers; layer++)
+              result[layer] = (soiltype == "rothc") ? RothcTF (layer, index) : TF(layer, index);
+            return result;
+        }
+    }
+
     // Settable variables
+    // Even though these properties are settable, and not meant to be readable,
+    // it appears we still need to provide a "get" method for them, since they
+    // bear the "Output" attribute. 
+    // Perhaps that bit of the infrastructure needs a re-think.
     [Output]
     [Units("kg/ha")]
     double[] dlt_no3
@@ -756,7 +815,39 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
-    double[] dlt_org_c_pool { get; set; }
+    double[] dlt_org_c_pool1 
+    {
+        get { return null; }
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+                fom_c_pool1[layer] += value[layer];
+        }
+    }
+
+    [Output]
+    [Units("kg/ha")]
+    double[] dlt_org_c_pool2
+    {
+        get { return null; }
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+                fom_c_pool2[layer] += value[layer];
+        }
+    }
+
+    [Output]
+    [Units("kg/ha")]
+    double[] dlt_org_c_pool3
+    {
+        get { return null; }
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+                fom_c_pool3[layer] += value[layer];
+        }
+    }
 
     double[] _nitrification_inhibition;
     [Output]
@@ -765,6 +856,7 @@ public class SoilN : Instance
         get { return _nitrification_inhibition; }
         set { _nitrification_inhibition = value; }
     }
+
 #endregion
 
 #region Drivers we obtain from other components
@@ -1737,7 +1829,7 @@ public class SoilN : Instance
         if (soil_loss > 0.0 && p_n_reduction)
         {
             // move pools
-            // EJZ:: Why aren't no3 and ures moved????
+            // EJZ:: Why aren't no3 and urea moved????
             dlt_n_loss_in_sed += MoveLayers(ref _nh4, newProfile);
             dlt_c_loss_in_sed += MoveLayers(ref inert_c, newProfile);
             dlt_c_loss_in_sed += MoveLayers(ref biom_c, newProfile);
@@ -2950,6 +3042,9 @@ public class SoilN : Instance
             int nLayers = dlayer.Length;
             ApsimVariantType data = new ApsimVariantType();
             // Need to pack the data and fire off the event
+            // DotNetComponentInterface doesn't provide a lot of support
+            // in building up an old-style Apsim variant, but perhaps
+            // that's a good thing....
             Array.Resize(ref data.param1_value, 1);
             data.param1_code = 8; // DTstring
             data.param1_isarray = true;
