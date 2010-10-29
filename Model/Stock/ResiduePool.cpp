@@ -10,7 +10,7 @@
 #include <iostream>
 using namespace std;
 
-#include "ResiduePool.h"
+#include "ResiduePool.H"
 
 inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
 

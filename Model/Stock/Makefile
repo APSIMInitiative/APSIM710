@@ -15,7 +15,11 @@ SRC =    StockScienceConverter.cpp \
          Constants.cpp
           
 LIBS = General ApsimShared ComponentInterface
+ifeq ($(PLATFORM),Linux)
+OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.o
+else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
+endif
 
 PROJECTTYPE = dll
 

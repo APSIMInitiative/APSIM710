@@ -2,8 +2,8 @@
 #ifndef PlantHerbageH
 #define PlantHerbageH
 #include "HerbageBase.h"
-#include "PlantPool.h"
-#include "SeedPool.h"
+#include "PlantPool.H"
+#include "SeedPool.H"
 
 // number of plant parts
  const int  max_part = 6 ; // NB. implies for (i=0; i < max_part; max_part++) usage

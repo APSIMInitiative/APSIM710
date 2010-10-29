@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef HerbageConverter_H
 #define HerbageConverter_H
-#include <ComponentInterface\Component.h>
+#include <ComponentInterface/Component.h>
 #include <string>
 #include <vector>
 #include "PlantHerbage.h"

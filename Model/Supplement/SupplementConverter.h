@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef SupplementConverterH
 #define SupplementConverterH
-#include <ComponentInterface\Component.h>
+#include <ComponentInterface/Component.h>
 #include <string>
 #include <vector>
 

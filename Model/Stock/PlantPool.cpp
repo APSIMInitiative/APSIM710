@@ -5,11 +5,10 @@
 #define YES 1
 #define NO 0
 #define TEST_PlantPool YES                            // build unit test?
-#include <windows.h>
 #include <math.h>
 #include <iostream>
 
-#include "PlantPool.h"
+#include "PlantPool.H"
 
       inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
 

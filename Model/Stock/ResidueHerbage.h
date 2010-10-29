@@ -2,7 +2,7 @@
 #ifndef ResidueHerbageH
 #define ResidueHerbageH
 #include "HerbageBase.h"
-#include "ResiduePool.h"
+#include "ResiduePool.H"
 
 
 // ------------------------------------------------------------------
