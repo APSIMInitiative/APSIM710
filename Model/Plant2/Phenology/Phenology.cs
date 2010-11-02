@@ -165,13 +165,13 @@ public class Phenology : Instance
    public bool Between(String Start, String End)
       {
       int StartPhaseIndex = Phases.IndexOf(PhaseStartingWith(Start));
-      int EndPhaseIndex = Phases.IndexOf(PhaseStartingWith(End));
+      int EndPhaseIndex = Phases.IndexOf(PhaseEndingWith(End));
       int CurrentPhaseIndex = Phases.IndexOf(CurrentPhase);
 
       if (StartPhaseIndex == -1 || EndPhaseIndex == -1)
          throw new Exception("Cannot test between stages " + Start + " " + End);
 
-      return CurrentPhaseIndex >= StartPhaseIndex && CurrentPhaseIndex<EndPhaseIndex;
+      return CurrentPhaseIndex >= StartPhaseIndex && CurrentPhaseIndex<=EndPhaseIndex;
       }
 
    /// <summary>
@@ -184,6 +184,18 @@ public class Phenology : Instance
          if (P.Start == Start)
             return P;
       throw new Exception("Unable to find phase starting with " + Start);
+      }
+
+   /// <summary>
+   /// A utility function to return the phenological phase that ends with
+   /// the specified start stage name.
+   /// </summary>
+   public Phase PhaseEndingWith(String End)
+      {
+      foreach (Phase P in Phases)
+         if (P.End == End)
+            return P;
+      throw new Exception("Unable to find phase ending with " + End);
       }
 
    /// <summary>

@@ -10,7 +10,7 @@ public class TemperatureFunction : Function
    [Input] double MinT = 0;
    #endregion
 
-   [Output]  [Units("0-1")]
+   [Output][Units("deg.day")]
    public override double Value
       {
       get
