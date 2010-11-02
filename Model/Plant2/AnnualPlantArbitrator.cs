@@ -6,8 +6,8 @@ using CSGeneral;
 
 public class AnnualPlantArbitrator : Arbitrator
    {
-   [Param] private string DMSink = null;
-   [Param] private string NSink = null;
+   private Function DMSink = null;
+   private Function NSink = null;
 
    // DM Arbitration Variables
    private double TotalDMDemand = 0;
@@ -23,7 +23,12 @@ public class AnnualPlantArbitrator : Arbitrator
    private double TotalNAllocated = 0;
    private double TotalNRetranslocationSupply = 0;
 
-
+   public override void Initialised()
+      {
+      base.Initialised();
+      DMSink = (Function) Children["DMSink"];
+      NSink = (Function) Children["NSink"];
+      }
    [Output] public override double DMSupply
       {
       get
@@ -108,7 +113,7 @@ public class AnnualPlantArbitrator : Arbitrator
             else
                {
                DMAllocation[i] = fraction * DMDemand[i];
-               if (Organs[i].Name == DMSink)
+               if (Organs[i].Name == DMSink.ValueString)
                   DMAllocation[i] += Excess;
                TotalDMAllocated += DMAllocation[i];
                }
@@ -236,7 +241,7 @@ public class AnnualPlantArbitrator : Arbitrator
                 else
                 {
                     NAllocation[i] = fraction * NDemand[i];
-                    if (Organs[i].Name == NSink)
+                    if (Organs[i].Name == NSink.ValueString)
                         NAllocation[i] += Excess;
                     TotalNAllocated += NAllocation[i];
                 }
@@ -365,7 +370,7 @@ public class AnnualPlantArbitrator : Arbitrator
       for (int i = 0; i < Organs.Count; i++)
          {
          DMAllocation[i] = fraction * DMDemand[i];
-         if (Organs[i].Name == DMSink)
+         if (Organs[i].Name == DMSink.ValueString)
             DMAllocation[i] += Excess;
          TotalAllocated += DMAllocation[i];
          }

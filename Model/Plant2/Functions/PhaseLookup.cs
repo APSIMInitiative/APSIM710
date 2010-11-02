@@ -17,5 +17,18 @@ using System.Text;
             }
          }
 
+      public override string ValueString
+         {
+         get
+            {
+            foreach (PhaseLookupValue P in Children)
+               if (P.InPhase)
+                  return P.ValueString;
+            return "";  
+            }
+         }
+
       }
+
+
 

@@ -6,17 +6,24 @@ using CSGeneral;
 
 public class SimpleArbitrator :  Arbitrator
    {
-   [Param] private string DMSink = null;
+   private Function DMSink = null;
    private double TotalDMDemand = 0;
    private double TotalDMSupply = 0;
    private double TotalAllocated = 0;
    private double TotalDMRetranslocationSupply = 0;
 
-   [Param] private string NSink = null;
+   private Function NSink = null;
    private double TotalNDemand = 0;
    private double TotalNSupply = 0;
    //private double TotalAllocated = 0;
    private double TotalNRetranslocationSupply = 0;
+
+   public override void Initialised()
+      {
+      base.Initialised();
+      DMSink = (Function)Children["DMSink"];
+      NSink = (Function)Children["NSink"];
+      }
 
    [Output] public override double DMSupply
       {
@@ -78,7 +85,7 @@ public class SimpleArbitrator :  Arbitrator
       for(int i =0;i<Organs.Count;i++)
          {
          DMAllocation[i] =fraction * DMDemand[i];
-         if (Organs[i].Name == DMSink)
+         if (Organs[i].Name == DMSink.ValueString)
             DMAllocation[i] += Excess;
          TotalAllocated += DMAllocation[i];
          }
@@ -178,7 +185,7 @@ public class SimpleArbitrator :  Arbitrator
       for (int i = 0; i < Organs.Count; i++)
          {
          NAllocation[i] = fraction * NDemand[i];
-         if (Organs[i].Name == NSink)
+         if (Organs[i].Name == NSink.ValueString)
             NAllocation[i] += Excess;
          TotalAllocated += NAllocation[i];
          }
@@ -277,7 +284,7 @@ public class SimpleArbitrator :  Arbitrator
       for (int i = 0; i < Organs.Count; i++)
          {
          DMAllocation[i] = fraction * DMDemand[i];
-         if (Organs[i].Name == DMSink)
+         if (Organs[i].Name == DMSink.ValueString)
             DMAllocation[i] += Excess;
          TotalAllocated += DMAllocation[i];
          }
