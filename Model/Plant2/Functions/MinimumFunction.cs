@@ -16,7 +16,7 @@ class MinimumFunction : Function
          double ReturnValue = 999999999;
          foreach (string PropertyName in Property)
             {
-            double Val = GenericFunction.GetPropertyValueFromPlant((Plant)Root, PropertyName);
+            double Val = Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant((Plant)Root, PropertyName));
             ReturnValue = Math.Min(ReturnValue, Val);
             }
          return ReturnValue;
