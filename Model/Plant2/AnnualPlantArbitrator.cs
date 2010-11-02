@@ -96,7 +96,7 @@ public class AnnualPlantArbitrator : Arbitrator
                }
          }
 
-      if ((TotalDMDemand - TotalDMAllocated) > 0)
+      if (TotalDMSupply > 0 || (TotalDMDemand - TotalDMAllocated) > 0)
          {
          double fraction = 0;
          fraction = Math.Min(1, (TotalDMSupply - TotalDMAllocated) / (TotalDMDemand - TotalDMAllocated));

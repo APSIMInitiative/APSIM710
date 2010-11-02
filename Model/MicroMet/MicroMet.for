@@ -1216,7 +1216,10 @@
 
 
       do 100 j = 1, g%NumComponents
-
+         if (reals_are_equal(g%ComponentCoverGreen(j), 1.0, 0.1)) then
+            call fatal_Error(ERR_Internal
+     :       ,'Unrealistically high cover value in Micromet i.e. > 0.9')
+         endif
          g%ComponentK(j) = divide(-log(1.-g%ComponentCoverGreen(j))
      :                           ,g%ComponentLAI(j)
      :                           ,0.0)
