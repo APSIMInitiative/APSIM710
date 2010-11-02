@@ -997,7 +997,7 @@ void PlantHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float d
    }
 
 
-   float x = (dmdAvg - dmdMin) / (dmdMax - dmdMin);
+   float x = (dmdMax == dmdMin) ? 0.0 : (dmdAvg - dmdMin) / (dmdMax - dmdMin);
    int startDmd = (MAXDMD - dmdMax) / ClassWidth + errorMargin;  // index of first (highest) pool to distribute average to
    int endDmd = (MAXDMD - dmdMin) / ClassWidth + errorMargin;    // index of last (lowest) pool to distribute average to
    int numPools = (endDmd - startDmd) + 1;               // number of pools the average will be distributed over
