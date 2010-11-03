@@ -138,7 +138,7 @@ void ApsimRegistry::lookup(ApsimRegistration * reg,
 //   if (reg->getDestinationID() > 0)
 //      cout << reg->getDestinationID() << ".";
 //   cout  << reg->getName() << "=";
-
+   subscribers.reserve(20);
    if (reg->getDestinationID() > 0)
       {
       vector<int> destination;
@@ -152,6 +152,7 @@ void ApsimRegistry::lookup(ApsimRegistration * reg,
    else if (reg->getTypeCode() == ::get || reg->getTypeCode() == ::set)
       {
       vector<int> siblingsAndParents;
+	  siblingsAndParents.reserve(25);
       getSiblingsAndParents(reg->getComponentID(),
                             siblingsAndParents);
 
@@ -163,6 +164,7 @@ void ApsimRegistry::lookup(ApsimRegistration * reg,
       {
       // Push (events)
       vector<int> siblingsAndDescendants;
+	  siblingsAndDescendants.reserve(25);
       getSiblingsAndDescendants(reg->getComponentID(),
                                 siblingsAndDescendants);
 
