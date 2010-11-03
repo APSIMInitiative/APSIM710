@@ -26,7 +26,7 @@ module WaterSupplyModule
    parameter (max_coeffs = 10)
 
    integer    max_sources      ! maximum number of water sources allowable
-   parameter (max_sources = 10)
+   parameter (max_sources = 20)
 
    type WaterSupplyGlobals
       sequence
@@ -1000,7 +1000,7 @@ subroutine WaterSupply_ONwater_supplied ()
          call fatal_error (ERR_USER,'Top up water amount not provided')
    endif
 
-   call collect_real_array ('solute_concentrations_supplied',g%num_solutes,'(ppm)' &
+   call collect_real_array ('solute_concentrations_supplied',max_solutes,'(ppm)' &
                             ,solute_conc_supplied &
                             ,numvals &
                             ,0.0 &
@@ -1434,7 +1434,7 @@ subroutine WaterSupply_init ()
    implicit none
 
 !+ Purpose
-!  input initial values from soil water parameter files.
+!  Zero pools and parameters
 
 !+ Mission Statement
 !  Initialise SoilWat module
@@ -1497,12 +1497,7 @@ subroutine WaterSupply_init ()
    g%solute_names(:) = ''
    g%solute_owners(:) = ''
    g%max_pump_today = 0.0
-
-   ! Get all coefficients from file
-
-   call WaterSupply_read_parameters ()
-   call WaterSupply_read_constants ()
-
+   
    call pop_routine (my_name)
    return
 end subroutine
@@ -1828,8 +1823,13 @@ subroutine Main (action, data_string)
    else if (action.eq.'water_supplied') then
       call WaterSupply_ONwater_supplied ()
 
-   else if (action.eq.ACTION_init) then
+   else if (action.eq.ACTION_create) then
       call WaterSupply_init ()
+
+   else if (action.eq.ACTION_init) then
+      ! Get all coefficients from file
+      call WaterSupply_read_parameters ()
+      call WaterSupply_read_constants ()
       call WaterSupply_sum_report ()
 
    else if (Action .eq. EVENT_new_solute) then

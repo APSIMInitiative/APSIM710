@@ -38,9 +38,9 @@
       parameter (max_solutes = 20)            ! applied in irrigation water
 
       integer    max_sources                  ! Maximum number of water sources
-      parameter (max_sources = 10)            ! for irrigation water
+      parameter (max_sources = 20)            ! for irrigation water
 
-      integer    module_name_size      ! maximum length of module name
+      integer    module_name_size             ! maximum length of module name
       parameter (module_name_size = 100)
 
       real       effirr                       ! input - fractional value for
@@ -1833,7 +1833,6 @@ cnh note that results may be strange if swdep < ll15
             g%num_solutes = g%num_solutes + 1
             g%solute_names(g%num_solutes) = names(counter1)
             g%solute_owners(g%num_solutes) = sender
-
             call read_real_array_optional (
      :              section_name         ! Section header
      :            , g%solute_names(g%num_solutes) ! Keyword
