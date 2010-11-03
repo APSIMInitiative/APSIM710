@@ -5,7 +5,6 @@
 #include <General/path.h>
 #include "DataTypes.h"
 #include "CMPData.h"
-#include "ScienceAPI2.h"
 #include "CMPComponentInterface.h"
 #include "ArraySpecifier.h"
 #include "Messages.h"
@@ -71,7 +70,7 @@ void CMPComponentInterface::messageToLogic(const Message& message)
    // We need to keep track of bits of the message because the FARMWI$E infrastructure
    // doesn't guarantee that a message is still valid at the end of this method.
    // eg. it deletes the Init1 message before we get to test the ack flag at the bottom.
-   bool ack = message.toAcknowledge != 0;
+   bool ack = message.toAcknowledge == 1;
    //unsigned fromID = message.from;
    unsigned msgID = message.messageID;
 
@@ -564,7 +563,9 @@ int CMPComponentInterface::nameToRegistrationID(const std::string& name,
    // name.
    // -----------------------------------------------------------------------
    {
-   string FullRegName = name + itoa(regKind);
+   char buffer[100];
+   sprintf(buffer, "%d", regKind);
+   string FullRegName = name + buffer;
    NameToRegMap::iterator reg = regNames.find(FullRegName);
    if (reg == regNames.end())
       return 0;
@@ -589,7 +590,9 @@ int CMPComponentInterface::RegisterWithPM(const string& name, const string& unit
       addAttributeToXML(ddml, "description=\"" + description + "\"");
 
    // Add new object to our map.
-   string fullRegName = name + itoa(regKind);
+   char buffer[100];
+   sprintf(buffer, "%d", regKind);
+   string fullRegName = name + buffer;
    Reg* reg = new Reg;
    reg->data = data;
    reg->kind = regKind;
@@ -759,20 +762,20 @@ void CMPComponentInterface::onEvent(const Message& message)
    // -----------------------------------------------------------------------
    {
    MessageData messageData(message);
-	EventType event;
-   unpack(messageData, event);
-   Reg* reg = (Reg*) event.ID;
+   EventType cmpevent;
+   unpack(messageData, cmpevent);
+   Reg* reg = (Reg*) cmpevent.ID;
    Packable& data = *(reg->data);
 
-   if (event.ID == tickID)
+   if (cmpevent.ID == tickID)
       {
       unpack(messageData, tick);
       messageData.reset();
-      unpack(messageData, event);
+      unpack(messageData, cmpevent);
       haveWrittenToStdOutToday = false;
       }
    // unpack the data - this will unpack and then call the function.
-   data.unpack(messageData, event.ddml);
+   data.unpack(messageData, cmpevent.ddml);
    }
 
 void CMPComponentInterface::terminate(void)
