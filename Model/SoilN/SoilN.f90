@@ -5207,7 +5207,9 @@ subroutine doInit1()
    dummy = add_registration_with_units(respondToSetReg, 'dlt_urea', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToSetReg, 'n_reduction', stringTypeDDML, '')
    dummy = add_registration_with_units(respondToSetReg, 'dlt_org_n', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToSetReg, 'dlt_org_c_pool', floatarrayTypeDDML, 'kg/ha')
+   dummy = add_registration_with_units(respondToSetReg, 'dlt_org_c_pool1', floatarrayTypeDDML, 'kg/ha')
+   dummy = add_registration_with_units(respondToSetReg, 'dlt_org_c_pool2', floatarrayTypeDDML, 'kg/ha')
+   dummy = add_registration_with_units(respondToSetReg, 'dlt_org_c_pool3', floatarrayTypeDDML, 'kg/ha')
 
    call soiln2_zero_all_globals ()
 

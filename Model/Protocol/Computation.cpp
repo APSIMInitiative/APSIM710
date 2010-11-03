@@ -210,7 +210,8 @@ bool Computation::loadComponent(const std::string& FileName,
              handle = loadDLL(componentInterface.c_str());
              }
 #else
-          componentInterface = getExecutableDirectory() + "/" + componentInterface;
+          if (componentInterface[0] != '/')  // Adjust the path name if it's not fully qualified
+             componentInterface = getExecutableDirectory() + "/" + componentInterface;
           handle = loadDLL(componentInterface.c_str());
 #endif
           }

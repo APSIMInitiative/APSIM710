@@ -888,27 +888,18 @@ void Coordinator::reorderSubscriptions(std::vector<ApsimRegistration *>& subs)
    {
    vector<ApsimRegistration *> subsToMove = subs;
    vector<ApsimRegistration *> newSubs;
+   int nSubs = subsToMove.size();
+   newSubs.reserve(nSubs);
    for (unsigned o = 0; o != componentOrders.size(); o++)
-      {
-      bool more = true;
-      while (more)
-         {
-         more = false;
-         for (vector<ApsimRegistration *>::iterator s = subsToMove.begin();
-                                                    s != subsToMove.end();
-                                                    s++)
-            {
-            if ((*s)->getComponentID() == componentOrders[o])
-               {
-               newSubs.push_back(*s);
-               subsToMove.erase(s);
-               more = true;
-               break;
-               }
-            }
-         }
-      }
-   if (subsToMove.size() > 0) throw std::runtime_error("leftover subscription in Coordinator::reorderSubscriptions");
+   {
+      for (int i = 0; i < nSubs; i++)
+	  {
+		  if (subsToMove[i]->getComponentID() == componentOrders[o])
+			  newSubs.push_back(subsToMove[i]);
+	  }
+   }
+   if (newSubs.size() != nSubs)
+      throw std::runtime_error("leftover subscription in Coordinator::reorderSubscriptions");
    subs = newSubs;
    }
 // ------------------------------------------------------------------

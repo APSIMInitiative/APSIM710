@@ -597,7 +597,10 @@ extern "C" void EXPORT STDCALL pop_routine(const char* routineName,
 extern "C" bool EXPORT STDCALL strings_equal(const char* st1, const char* st2,
                                         unsigned st1Length, unsigned st2Length)
    {
-   return (FString(st1, st1Length, FORString) == FString(st2, st2Length, FORString));
+      if (st1Length == st2Length)
+		  return strnicmp(st1, st2, st1Length) == 0;
+	  else
+          return (FString(st1, st1Length, FORString) == FString(st2, st2Length, FORString));
    }
 
 
@@ -1532,9 +1535,9 @@ extern "C" bool EXPORT STDCALL component_name_to_id(char* name, int* id,
    if (ok)
 	 *id = iid;
    else
-	 *id = -1;
+	 *id = 0; // -1;
 
-   return ok;
+   return true; // ok;
    }
 // ------------------------------------------------------------------
 // Module is reading a string from a file.
