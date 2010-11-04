@@ -202,16 +202,25 @@ class FString
             error("Cannot modify const string: ", text);
          }
       unsigned int find(const char* st, unsigned startPos = 0) const
+         // Find the position of a substring. This version largely based
+		 // on a published algorithm for strstr()
          {
-         unsigned stLength = strlen(st);
-         for (unsigned int i = startPos; i < realLen; i++)
+	     unsigned stLength = strlen(st);
+         for (unsigned int i = startPos; i <= realLen - stLength; i++)
             {
-            unsigned j = i;
-            while (j-i < stLength && text[j] == st[j-i])
-               j++;
-            if (j-i == stLength)
-               return i;
-            }
+				if (text[i] == *st)
+				{
+					const char* ch1 = text + i;
+					const char* ch2 = st;
+					while (true)
+					{
+						if (*++ch2 == '\0')
+							return i;
+						else if (*++ch1 != *ch2)
+							break;
+					}
+				}
+           }
          return npos;
          }
 
