@@ -495,6 +495,10 @@ void Phenology::process()
          {
          // now we need to divvy
          new_index = (int) (p_index + min (1.0, dlt_index));
+         if (new_index >= phases.size())
+            throw runtime_error("The phenology class in " + plant.Name() + " has tried to move to phase number " +
+                                itoa(new_index+1) + " but there aren't that many phases in the model.");
+
          if (reals_are_equal(fmod((double)p_index,(double)1.0),0.0))
             {
             fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
