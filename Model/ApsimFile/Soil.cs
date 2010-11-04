@@ -1796,7 +1796,7 @@ namespace ApsimFile
          string ErrorMessages = "";
          try
             {
-            string NewApsimToSim = ReplaceSoilMacros(ApsimToSim);
+            ReplaceSoilMacros(ApsimToSim);
             }
          catch (Exception err)
             {

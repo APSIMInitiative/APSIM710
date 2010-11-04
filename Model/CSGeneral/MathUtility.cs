@@ -287,7 +287,6 @@ namespace CSGeneral
          // e.g. 3.4 becomes 3.0
          //      3.5 becomes 4.0
          {
-         double ExtraBit = 1.0 / Math.Pow(10.0, NumDecPlaces);  // gives 0.1 or 0.01 or 0.001 etc
          for (int i = 0; i != Values.Length; i++)
             Values[i] = Round(Values[i], NumDecPlaces);
          return Values;

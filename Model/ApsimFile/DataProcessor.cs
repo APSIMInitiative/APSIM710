@@ -535,7 +535,6 @@ public class DataProcessor
       DataTable NewData = new DataTable();
 
       // copy all fields from old datatable to new datatable.
-      List<string> ProfileColumns = new List<string>();
       foreach (DataColumn Col in Data.Columns)
          NewData.Columns.Add(Col.ColumnName, Col.DataType);
 

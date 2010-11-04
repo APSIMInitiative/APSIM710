@@ -58,8 +58,8 @@ namespace ApsimFile
          }
       public void RevertToDefaults()
          {
-         string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                     "\\Apsim\\" + ApsimVersion() + "\\Apsim.xml";
+         string SettingsFile = Path.Combine(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                     "Apsim"), ApsimVersion()), "Apsim.xml");
          File.Delete(SettingsFile);
          Singleton = null;
          }
@@ -123,13 +123,25 @@ namespace ApsimFile
          return Path.Combine(ApsimDirectory(), "Model");
          }
 
+      // from http://stackoverflow.com/questions/692410/hello-os-with-c-mono
+      public static bool amRunningOnUnix ()
+         {
+         // can also use "bool runningOnMono = Type.GetType ("Mono.Runtime") != null;" but mono can be run on windows too.
+         int p = (int) Environment.OSVersion.Platform;
+         if ((p == 4) || (p == 6) || (p == 128)) 
+            {
+            return true; // Running on Unix
+            }
+         return false; // Something else
+         }
+
        // When we look up the AusFarm directory, we cache the result so we don't need
        // to make registry calls over and over and over...
       private static string AusFarmDir = ""; 
 
       public static string AusFarmDirectory()
       {
-          if (AusFarmDir == "")
+          if (! amRunningOnUnix() && AusFarmDir == "" )
           {
               RegistryKey rk = Registry.LocalMachine.OpenSubKey("SOFTWARE");
               if (rk != null)
@@ -160,34 +172,34 @@ namespace ApsimFile
          }
       public string ApsimVersion()
          {
-         return XmlHelper.Value(SettingsNode, "version/apsim");
+         return XmlHelper.Value(SettingsNode, "version" + XmlHelper.Delimiter + "apsim");
          }
       public string ApsimBuildDate()
          {
-         return XmlHelper.Value(SettingsNode, "version/builddate");
+         return XmlHelper.Value(SettingsNode, "version" + XmlHelper.Delimiter + "builddate");
          }
       public string ApsimBuildNumber()
          {
-         return XmlHelper.Value(SettingsNode, "version/buildnumber");
+         return XmlHelper.Value(SettingsNode, "version" + XmlHelper.Delimiter + "buildnumber");
          }
       public string Setting(string SettingName)
          {
-         return RemoveMacros(XmlHelper.Value(SettingsNode, SectionName + "/" + SettingName));
+         return RemoveMacros(XmlHelper.Value(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName));
          }
       public string ClimateSetting(string SettingName)
          {
-         return RemoveMacros(XmlHelper.Value(SettingsNode, "climate/" + SettingName));
+         return RemoveMacros(XmlHelper.Value(SettingsNode, "climate" + XmlHelper.Delimiter + SettingName));
          }
       public List<string> Settings(string SettingName)
          {
-         List<string> Values = XmlHelper.Values(SettingsNode, SectionName + "/" + SettingName);
+         List<string> Values = XmlHelper.Values(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName);
          for (int i = 0; i != Values.Count; i++)
             Values[i] = RemoveMacros(Values[i]);
          return Values;
          }
       public void SetSetting(string SettingName, string Value)
          {
-         XmlHelper.SetValue(SettingsNode, SectionName + "/" + SettingName, AddMacros(Value));
+         XmlHelper.SetValue(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName, AddMacros(Value));
          Save();
          }
       public void SetSettings(string SettingName, List<string> Values)
@@ -195,12 +207,12 @@ namespace ApsimFile
          List<string> NewValues = Values;
          for (int i = 0; i != NewValues.Count; i++)
             NewValues[i] = AddMacros(NewValues[i]);
-         XmlHelper.SetValues(SettingsNode, SectionName + "/" + SettingName, NewValues);
+         XmlHelper.SetValues(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName, NewValues);
          Save();
          }
       public List<string> ComponentOrder()
          {
-         return XmlHelper.Values(SettingsNode, "ComponentOrder/Component");
+         return XmlHelper.Values(SettingsNode, "ComponentOrder" + XmlHelper.Delimiter + "Component");
          }
       public XmlNode GetSettingsNode(string NodeName)
          {

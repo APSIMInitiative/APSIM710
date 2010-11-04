@@ -93,7 +93,7 @@ namespace Test
          // Use case: User clicks on a shortcut and non-shortcut node in 
          // tree. Ask ApsimFile for the contents of these nodes.
          // -------------------------------------------------------------
-         Component ShortCutNode = Simulations.Find("/folder/My Sim1/outputfile");
+         Component ShortCutNode = Simulations.Find("/folder/My Sim1/outputfile");  Assert.IsNotNull(ShortCutNode);
          Assert.AreEqual(ShortCutNode.Contents, "<outputfile>" +
                                                    "<variable>variable1</variable>" +
                                                    "<variable>variable2</variable>" +
@@ -113,7 +113,7 @@ namespace Test
          // --------------------------------------------------------------------
 
          // Set the contents of a normal node.
-         Component NormalNode = Simulations.Find("/folder/My Sim1/DerivedClock");
+         Component NormalNode = Simulations.Find("/folder/My Sim1/DerivedClock");  Assert.IsNotNull(NormalNode);
 
          NormalNode.Contents = "<clock name=\"DerivedClock\">" +
                                   "<start_date>1/09/1999</start_date>" +
@@ -157,7 +157,7 @@ namespace Test
          List<string> ChildNames = new List<string>();
          ChildNames.Add("clock");
 
-         Component SimNode = Simulations.Find("/folder/My Sim");
+         Component SimNode = Simulations.Find("/folder/My Sim");  Assert.IsNotNull(SimNode);
          SimNode.MoveDown(ChildNames);
          SimNode.MoveDown(ChildNames);
          SimNode.MoveDown(ChildNames);
@@ -178,7 +178,7 @@ namespace Test
          List<string> ChildNames = new List<string>();
          ChildNames.Add("metfile");
 
-         Component SimNode = Simulations.Find("/folder/My Sim");
+         Component SimNode = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(SimNode);
          SimNode.MoveUp(ChildNames);
          SimNode.MoveUp(ChildNames);
          SimNode.MoveUp(ChildNames);
@@ -196,7 +196,7 @@ namespace Test
          // --------------------------------------------------------------------
          // Use case: Sort all child nodes of a simulation.
          // --------------------------------------------------------------------
-         Component SimNode = Simulations.Find("/folder/My Sim");
+         Component SimNode = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(SimNode);
          SimNode.Sort();
          Assert.AreEqual(SimNode.ChildNodes.Count, 3);
          Assert.AreEqual(SimNode.ChildNodes[0].Name, "clock");
@@ -212,7 +212,7 @@ namespace Test
          // sure the child nodes are also shortcutted.
          // --------------------------------------------------------------------
          Component FolderNode = Simulations.RootComponent;
-         Component FirstSimulation = Simulations.Find("/folder/My Sim");
+         Component FirstSimulation = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(FirstSimulation);
 
          FolderNode.AddShortCut(FirstSimulation);
 
@@ -236,7 +236,7 @@ namespace Test
          // Use case: Rename a node higher up the tree of a shortcut destination.
          // Make sure the shortcuts are still pointing to the right place.
          // --------------------------------------------------------------------
-         Component FirstSimulation = Simulations.Find("/folder/My Sim");
+         Component FirstSimulation = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(FirstSimulation);
          FirstSimulation.Name = "My Base Sim";
 
          Component OutputFile = Simulations.Find("/folder/My Sim1/OutputFile");
@@ -254,7 +254,7 @@ namespace Test
          // --------------------------------------------------------------------
 
          // Firstly get a shortcut node.
-         Component OutputFile = Simulations.Find("/folder/My Sim1/OutputFile");
+         Component OutputFile = Simulations.Find("/folder/My Sim1/OutputFile"); Assert.IsNotNull(OutputFile);
          Assert.IsTrue(OutputFile.ShortCutTo != null);
 
          // Now convert to a non-shortcut node.
@@ -274,7 +274,7 @@ namespace Test
          // Use case: Delete a node higher up the tree of a shortcut destination.
          // Make sure the shortcuts are converted into non-shortcut nodes.
          // --------------------------------------------------------------------
-         Component SimNode = Simulations.Find("/folder/My Sim");
+         Component SimNode = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(SimNode);
          SimNode.Parent.Delete(SimNode);
 
          // Make sure the shortcut node still has contents and is concrete.
@@ -309,14 +309,14 @@ namespace Test
                  "    </outputfile>\r\n" +
                  "  </simulation>\r\n";
 
-         Component Simulation = Simulations.Find("/folder/My Sim");
+         Component Simulation = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(Simulation);
          Simulation.Replace(NewSimulationXml);
          Assert.AreEqual(Simulation.ChildNodes.Count, 2);
          }
       [Test]
       public void Duplicate()
          {
-         Component Simulation = Simulations.Find("/folder/My Sim");
+         Component Simulation = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(Simulation);
          Simulation.Parent.Duplicate(Simulation);
          Component NewSim = Simulations.Find("/folder/My Sim2");
          Assert.IsNotNull(NewSim);

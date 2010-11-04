@@ -57,32 +57,6 @@ namespace CSGeneral
 
         }
 
-        public static string ApplyStyleSheet(string Contents, string StylesheetContents)
-        {
-            //Create the XmlParserContext and reader.
-            StringReader StyleSheetReader = new StringReader(StylesheetContents);
-            XmlTextReader StyleSheet = new XmlTextReader(StyleSheetReader);
-
-            //Load the stylesheet.
-            XslCompiledTransform xslt = new XslCompiledTransform();
-            //xslt.Load(StyleSheet, new XmlUrlResolver(), XmlSecureResolver.CreateEvidenceForUrl(""));
-            xslt.Load("D:\\development\\APSIMUI\\ProtocolToVariables.xsl");
-
-            //Load the file to transform.
-
-            StringReader ContentsReader = new StringReader(Contents);
-            XPathDocument doc = new XPathDocument(ContentsReader);
-
-            //Create an XmlTextWriter which outputs to the console.
-            StringWriter SWriter = new StringWriter();
-            XmlTextWriter Writer = new XmlTextWriter(SWriter);
-
-            //Transform the file and send the output to the console.
-            xslt.Transform(doc, Writer);
-            Writer.Close();
-            return SWriter.ToString();
-        }
-
         public static Process RunProcess(string Executable, string Arguments, string JobFolder)
         {
             if (!File.Exists(Executable))
@@ -113,10 +87,8 @@ namespace CSGeneral
         }
         public static string ConvertURLToPath(string Url)
         {
-            int PosColon = Url.IndexOf(':');
-            if (PosColon != -1)
-                return Url.Substring(PosColon + 4).Replace('/', '\\');
-            return Url;
+            Uri uri = new Uri(Url);
+            return uri.LocalPath;
         }
 
         public static void EnsureFileNameIsUnique(ref string FileName)
@@ -129,7 +101,7 @@ namespace CSGeneral
             int Number = 1;
             while (File.Exists(FileName))
             {
-                FileName = Path.GetDirectoryName(FileName) + "\\" + BaseName + Number.ToString() + Path.GetExtension(FileName);
+                FileName = Path.Combine(Path.GetDirectoryName(FileName), BaseName + Number.ToString() + Path.GetExtension(FileName));
                 Number++;
             }
             if (File.Exists(FileName))
@@ -145,7 +117,7 @@ namespace CSGeneral
                 if (Recurse)
                 {
                     foreach (string SubDirectory in Directory.GetDirectories(Path.GetDirectoryName(FileSpec)))
-                        DeleteFiles(SubDirectory + "\\" + Path.GetFileName(FileSpec), true);
+                        DeleteFiles(Path.Combine(SubDirectory, Path.GetFileName(FileSpec)), true);
                 }
             }
         }
@@ -178,7 +150,7 @@ namespace CSGeneral
 
         public static string FindFileOnPath(string FileName)
            {
-           string PathVariable = Environment.GetEnvironmentVariable("Path");
+           string PathVariable = Environment.GetEnvironmentVariable("PATH");
            if (PathVariable == null)
               throw new Exception("Cannot find PATH environment variable");
 

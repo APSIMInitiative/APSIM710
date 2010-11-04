@@ -1469,7 +1469,7 @@ namespace ApsimFile
             foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
                {
                string Description = XmlHelper.Attribute(Child, "description");
-               string Format = StringManip.SplitOffBracketedValue(ref Description, '(', ')');
+               StringManip.SplitOffBracketedValue(ref Description, '(', ')');
                XmlHelper.SetAttribute(Child, "description", Description);
                XmlHelper.SetAttribute(Child, "type", "date");
                }

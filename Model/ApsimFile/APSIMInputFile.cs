@@ -273,7 +273,7 @@ namespace ApsimFile
                      DateTime Value = DateTime.ParseExact(Words[w], DateFormat, null);
                      NewMetRow[Headings[w]] = Value;
                      }
-                  catch (Exception err)
+                  catch (Exception)
                   { }
                   }
                else

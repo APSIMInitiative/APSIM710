@@ -312,7 +312,7 @@ namespace CSGeneral
          }
       public static List<string> Values(XmlNode Node, string TypeFilter)
             {
-            int PosDelimiter = TypeFilter.LastIndexOf('/');
+            int PosDelimiter = TypeFilter.LastIndexOf(Delimiter);
             if (PosDelimiter != -1)
                {
                Node = Find(Node, TypeFilter.Substring(0, PosDelimiter));
@@ -326,7 +326,7 @@ namespace CSGeneral
             }
       public static List<string> ValuesRecursive(XmlNode Node, string TypeFilter)
          {
-         int PosDelimiter = TypeFilter.LastIndexOf('/');
+         int PosDelimiter = TypeFilter.LastIndexOf(Delimiter);
          if (PosDelimiter != -1)
             {
             Node = Find(Node, TypeFilter.Substring(0, PosDelimiter));
@@ -344,7 +344,7 @@ namespace CSGeneral
          }
       public static void SetValues(XmlNode Node, string NamePath, List<string> Values)
          {
-         int PosDelimiter = NamePath.LastIndexOf('/');
+         int PosDelimiter = NamePath.LastIndexOf(Delimiter);
          if (PosDelimiter != -1)
             {
             Node = Find(Node, NamePath.Substring(0, PosDelimiter));

@@ -19,24 +19,24 @@ class ApsimToSimExe
       // Main entry point into application.
       // Firstly parse all arguments.
       string ApsimFileName = null;
-      string[] SimPaths = new string[args.Length - 1];
-      for (int i = 0; i != args.Length; i++)
-         {
-         if (i == 0)
-            ApsimFileName = args[i];
-         else
-            SimPaths[i - 1] = args[i];
-         }
-
-      Assembly.Load("Actions");
-
-      if (ApsimFileName == null)
-         Console.WriteLine("No .apsim file specified on the command line");
+      string[] SimNames = null;
+      if (args.Length > 0) 
+        {
+        ApsimFileName = args[0];
+        SimNames = new string[args.Length - 1];
+        for (int i = 1; i != args.Length; i++)
+           {
+           SimNames[i - 1] = args[i];
+           }
+        }
 
       try
          {
+        if (ApsimFileName == null)
+            throw new Exception ("No .apsim file specified on the command line");
+
          ApsimToSimExe SimCreator = new ApsimToSimExe();
-         if (SimCreator.ConvertApsimToSim(ApsimFileName, SimPaths))
+         if (SimCreator.ConvertApsimToSim(ApsimFileName, SimNames))
             return 1;
          else
             return 0;
