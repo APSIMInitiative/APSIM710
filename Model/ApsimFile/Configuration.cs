@@ -90,7 +90,9 @@ namespace ApsimFile
        public static string RemoveMacros(string St)
          {
          string result = St.Replace("%apsim%", ApsimDirectory());
-         return result.Replace("%ausfarm%", AusFarmDirectory());
+		 string ausfarmDir = AusFarmDirectory();
+		 if (ausfarmDir != "") result = result.Replace("%ausfarm%", AusFarmDirectory());
+         return result;
          }
       public static string AddMacros(string St)
          {
@@ -101,12 +103,16 @@ namespace ApsimFile
             ReturnString = ReturnString.Remove(Pos, ApsimDirectory().Length);
             ReturnString = ReturnString.Insert(Pos, "%apsim%");
             }
-         Pos = St.ToLower().IndexOf(AusFarmDirectory().ToLower());
-         if (Pos != -1)
-         {
-             ReturnString = ReturnString.Remove(Pos, AusFarmDirectory().Length);
-             ReturnString = ReturnString.Insert(Pos, "%ausfarm%");
-         }
+		 string ausfarmDir = AusFarmDirectory();
+		 if (ausfarmDir != "") 
+			{
+            Pos = ReturnString.ToLower().IndexOf(ausfarmDir.ToLower());
+            if (Pos != -1)
+               {
+               ReturnString = ReturnString.Remove(Pos, AusFarmDirectory().Length);
+               ReturnString = ReturnString.Insert(Pos, "%ausfarm%");
+               }
+			}	
          return ReturnString;
          }
       public static string ApsimDirectory()

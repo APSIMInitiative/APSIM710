@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ApsimFile;
@@ -44,6 +44,7 @@ public class ApsimToSim
             ApsimToSimContents = ReplaceSoilMacros(ApsimToSimContents, Child);
             ApsimToSimContents = ReplaceModelMacro(ApsimToSimContents, Child);
             ApsimToSimContents = ReplaceDllMacro(ApsimToSimContents, Child);
+            ApsimToSimContents = ReplaceDllExtMacro(ApsimToSimContents, Child);
             ApsimToSimContents = ReplaceChildrenMacro(ApsimToSimContents, Child);
 
             // Any other macros in the <ApsimToSim> will be removed by using the 
@@ -78,6 +79,15 @@ public class ApsimToSim
       string Dll = Types.Instance.MetaData(ApsimComponent.Type, "dll");
       Dll = Configuration.AddMacros(Dll);
       return ApsimToSimContents.Replace("[dll]", Dll);
+      }
+
+   private static string ReplaceDllExtMacro(string ApsimToSimContents, Component ApsimComponent)
+      {
+      // Replace all occurrences of %dllext%
+      if (ApsimFile.Configuration.amRunningOnUnix()) 
+         return(ApsimToSimContents.Replace("%dllext%", "so"));
+            
+      return (ApsimToSimContents.Replace("%dllext%", "dll"));
       }
    private static string ReplaceModelMacro(string ApsimToSimContents, Component ApsimComponent)
       {
