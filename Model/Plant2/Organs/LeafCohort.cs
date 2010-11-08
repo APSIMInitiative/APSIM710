@@ -177,7 +177,7 @@ class LeafCohort
       {
       set
          {
-         double StructN = Live.Wt * StructuralNConc;
+         double StructN = Live.StructuralWt * StructuralNConc;
          double Ndmd = StructN - Live.StructuralN;
          if (Ndmd < 0)
             Ndmd = 0.0;
@@ -285,7 +285,8 @@ class LeafCohort
       get 
          {
          double Nf = NFac();
-         return Live.NonStructuralN *Nf; 
+         //return Live.NonStructuralN *Nf;
+         return Live.NonStructuralN; 
          } 
       }
       public  double NRetranslocation

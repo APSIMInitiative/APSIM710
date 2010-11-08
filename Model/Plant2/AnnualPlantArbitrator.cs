@@ -289,15 +289,60 @@ public class AnnualPlantArbitrator : Arbitrator
               {
               double Nretrans = RetransDemandFraction * RetransDemand[i];
               NAllocation[i] += Nretrans;
-
               }
            else
               {
               double Nretrans = RetransSupplyFraction * NRetranslocationSupply[i];
               NRetranslocation[i] += Nretrans;
+              }
+           }
 
+        // ==============================================================================
+        // FINALLY DETERMINE UNMET DEMAND OF NONREPRODUCTIVE ORGANS AND RETRANSLOCATE FROM
+        // OTHER ORGANS AS REQUIRED/ALLOWED.
+        // ==============================================================================
+        if (RetransSupplyFraction > 0)
+        { }
+        TotalNRetranslocationSupply = TotalNRetranslocationSupply * (1.0 - RetransSupplyFraction);
+        for (int i = 0; i < Organs.Count; i++)
+           {
+           NRetranslocationSupply[i] *= (1.0 - RetransSupplyFraction);
               }
 
+        TotalRetransDemand = 0;
+        RetransDemand = new double[Organs.Count];
+        for (int i = 0; i < Organs.Count; i++)
+           if (Organs[i] is Reproductive)
+              { // Do nothing this time through 
+              }
+           else
+              {
+              RetransDemand[i] = Math.Max(NDemand[i] - NAllocation[i], 0.0);
+              TotalRetransDemand += RetransDemand[i];
+              }
+
+        RetransDemandFraction = 0;
+        if (TotalRetransDemand > 0)
+           RetransDemandFraction = Math.Min(1, TotalNRetranslocationSupply / TotalRetransDemand);
+
+        RetransSupplyFraction = 0;
+        if (TotalNRetranslocationSupply > 0)
+           RetransSupplyFraction = Math.Min(1, TotalRetransDemand * RetransDemandFraction / TotalNRetranslocationSupply);
+
+        // Allocate Daily Retranslocation to organs according to demand and Supply
+
+        for (int i = 0; i < Organs.Count; i++)
+           {
+           if (RetransDemand[i]>0.0)
+              {
+              double Nretrans = RetransDemandFraction * RetransDemand[i];
+              NAllocation[i] += Nretrans;
+              }
+           if(NRetranslocationSupply[i]>0)
+              {
+              double Nretrans = RetransSupplyFraction * NRetranslocationSupply[i];
+              NRetranslocation[i] += Nretrans;
+              }
            }
 
         // Now Send Arbitration Results to all Plant Organs

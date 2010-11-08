@@ -57,12 +57,14 @@ class GenericOrgan : BaseOrgan, AboveGround
    }
    public override double NAllocation
    {
-       set
+   set
        {
-       Function StructuralFraction = Children["NStructuralFraction"] as Function;
-       Live.StructuralN += value * StructuralFraction.Value;
-       Live.NonStructuralN += value * (1 - StructuralFraction.Value);
-        }
+       Function StructuralNConc = Children["StructuralNConc"] as Function;
+       double StructuralNRequirement = Math.Max(0.0, Live.StructuralWt * StructuralNConc.Value - Live.StructuralN);
+       double StructuralAllocation = Math.Min(StructuralNRequirement, value);
+       Live.StructuralN += StructuralAllocation;
+       Live.NonStructuralN += value - StructuralAllocation;
+       }
    }
    public override double NRetranslocationSupply
       {

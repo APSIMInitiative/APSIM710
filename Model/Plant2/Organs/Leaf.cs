@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CSGeneral;
 
 public class Leaf : BaseOrgan, AboveGround
    {
@@ -158,7 +159,7 @@ public class Leaf : BaseOrgan, AboveGround
          return values;
          }
       }
-   [Output]
+   [Output] [Units("/m2")]
    private double BranchNo
       {
       get
@@ -171,7 +172,7 @@ public class Leaf : BaseOrgan, AboveGround
          return n;
          }
       }
-   [Output]
+   [Output] [Units("/plant")]
    private double TotalNo
       {
       get
@@ -187,6 +188,7 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   [Units("/plant")]
    private double GreenNo
       {
       get
@@ -216,6 +218,7 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
+   [Units("/plant")]
    private double GreenNodeNo
       {
       get
@@ -762,6 +765,16 @@ public class Leaf : BaseOrgan, AboveGround
          return Dead.N;
          }
       }
+
+   [Output]
+   public double LiveNConc
+      {
+      get
+         {
+         return Live.NConc;
+         }
+      }
+
    [Output]
    [Units("g/m^2")]
    public override double NDemand
@@ -826,11 +839,20 @@ public class Leaf : BaseOrgan, AboveGround
             throw new Exception(Name + " cannot supply that amount for N retranslocation");
          if (value > 0)
             {
-            double fraction = value/NSupply;
+            //double fraction = value/NSupply;
+            //foreach (LeafCohort L in Leaves)
+            //   {
+            //   L.NRetranslocation = fraction * L.NRetranslocationSupply;
+            //   }
+            double remainder = value;
             foreach (LeafCohort L in Leaves)
                {
-               L.NRetranslocation = fraction * L.NRetranslocationSupply;
+               double Supply = Math.Min(remainder, L.NRetranslocationSupply);
+               L.NRetranslocation = Supply;
+               remainder = remainder - Supply;
                }
+            if (!MathUtility.FloatsAreEqual(remainder,0.0))
+               throw new Exception(Name + " N Retranslocation demand left over after processing.");
             }
          }
       }

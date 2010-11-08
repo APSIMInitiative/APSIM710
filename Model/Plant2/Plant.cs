@@ -10,7 +10,7 @@ public class Plant : Instance
    {
    // ------------------------------- Private data ----------------------------------
    private NamedList<Organ> _Organs = new NamedList<Organ>();
-   [Output("Crop_Type")][Param] private string CropType = "";
+   [Output("Crop_Type")][Param] public string CropType = "";
    [Output] private double WaterSupplyDemandRatio = 0;
    [Output] [Units("mm")] private double RowSpacing = 0;
 

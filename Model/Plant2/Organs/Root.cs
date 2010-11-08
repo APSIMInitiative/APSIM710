@@ -15,6 +15,8 @@ public class Root : BaseOrgan, BelowGround
    private SowType SowingInfo = null;
 
    [Event]
+   public event FOMLayerDelegate IncorpFOM;
+   [Event]
    public event WaterChangedDelegate WaterChanged;
    [Event]
    public event NitrogenChangedDelegate NitrogenChanged;
@@ -52,6 +54,18 @@ public class Root : BaseOrgan, BelowGround
    public double Depth = 0;
    #endregion
 
+   [Output] [Units("mm")]
+   double[] LLdep
+      {
+      get
+         {
+         double[] value = new double[dlayer.Length];
+         for (int i = 0; i < dlayer.Length; i++)
+            value[i] = ll[i] * dlayer[i];
+         return value;
+         }
+      }
+
    [EventHandler]
    public void OnSow(SowType Sow)
       {
@@ -88,7 +102,8 @@ public class Root : BaseOrgan, BelowGround
    public override void DoActualGrowth()
       {
       base.DoActualGrowth();
-
+      
+      // Do Root Front Advance
       Function TF = Children["TemperatureEffect"] as Function;
       Function RFV = Children["RootFrontVelocity"] as Function;
       int RootLayer = LayerIndex(Depth);
@@ -99,6 +114,41 @@ public class Root : BaseOrgan, BelowGround
             MaxDepth += dlayer[i];
 
       Depth = Math.Min(Depth, MaxDepth);
+
+      // Do Root Senescence
+      Function SenescenceRate = Children["SenescenceRate"] as Function;
+      FOMLayerLayerType[] FOMLayers = new FOMLayerLayerType[dlayer.Length];
+
+      for (int layer = 0; layer < dlayer.Length; layer++)
+         {
+         double DM = LayerLive[layer].Wt * SenescenceRate.Value * 10.0;
+         double N = LayerLive[layer].StructuralN * SenescenceRate.Value*10.0; 
+         LayerLive[layer].StructuralWt *= (1.0-SenescenceRate.Value);
+         LayerLive[layer].NonStructuralWt *= (1.0 - SenescenceRate.Value);
+         LayerLive[layer].StructuralN *= (1.0 - SenescenceRate.Value);
+         LayerLive[layer].NonStructuralN *= (1.0 - SenescenceRate.Value);
+         
+
+
+         FOMType fom = new FOMType();
+         fom.amount = (float)DM;
+         fom.N = (float)N;
+         fom.C = (float)(0.40*DM);
+         fom.P = 0;        
+         fom.AshAlk = 0;   
+
+         FOMLayerLayerType Layer = new FOMLayerLayerType();
+         Layer.FOM = fom;
+         Layer.CNR = 0;       
+         Layer.LabileP = 0;   
+
+         FOMLayers[layer] = Layer;
+         }
+      FOMLayerType FomLayer = new FOMLayerType();
+      FomLayer.Type = Plant.CropType; 
+      FomLayer.Layer = FOMLayers;
+      IncorpFOM.Invoke(FomLayer);
+
       }
    public override double DMDemand
       {
@@ -273,6 +323,32 @@ public class Root : BaseOrgan, BelowGround
          }
       }
 
+   [Output]
+   public double LiveWt
+      {
+      get
+         {
+         return Live.Wt;
+         }
+      }
+   [Output]
+   public double DeadWt
+      {
+      get
+         {
+         return Dead.Wt;
+         }
+      }
+
+   [Output]
+   public double LiveNConc
+      {
+      get
+         {
+         return Live.NConc;
+         }
+      }
+
    private void SoilNSupply(double[] NO3Supply, double[] NH4Supply)
       {
       double[] no3ppm = new double[dlayer.Length];
@@ -361,13 +437,13 @@ public class Root : BaseOrgan, BelowGround
          }
       }
 
-   [Output]
    public override double NAllocation
       {
       set
          {
          double Demand = NDemand;
          double Supply = value;
+         double NAllocated = 0;
          Function MaximumNConc = Children["MaximumNConc"] as Function;
 
          if (Demand == 0 && Supply > 0) { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
@@ -377,10 +453,17 @@ public class Root : BaseOrgan, BelowGround
                {
                double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
                double fraction = NDeficit / Demand;
-               Layer.StructuralN += fraction * Supply;
+               double Allocation = fraction * Supply;
+               Layer.StructuralN += Allocation;
+               NAllocated += Allocation;
                }
+            }
+         if (!MathUtility.FloatsAreEqual(NAllocated-Supply,0.0))
+            {
+            throw new Exception("Error in N Allocation: " + Name);
             }
          }
       }
-   }
+
+  }
 
