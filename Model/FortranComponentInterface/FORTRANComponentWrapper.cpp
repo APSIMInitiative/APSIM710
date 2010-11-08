@@ -1539,9 +1539,9 @@ extern "C" bool EXPORT STDCALL component_name_to_id(char* name, int* id,
    if (ok)
 	 *id = iid;
    else
-	 *id = 0; // -1;
+	 *id = -1;
 
-   return true; // ok;
+   return ok;
    }
 // ------------------------------------------------------------------
 // Module is reading a string from a file.
