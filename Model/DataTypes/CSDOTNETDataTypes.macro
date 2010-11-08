@@ -11,7 +11,7 @@ using CMPServices;
     //------ ApsimType ------
     public interface ApsimType
     {
-        void pack(ref byte[] messageData);
+        void pack(out byte[] messageData);
         void unpack(byte[] messageData);
         uint memorySize();
         String DDML();
@@ -28,7 +28,7 @@ using CMPServices;
             DDMLValue = new TDDMLValue(DDML(), "");
         }
         public virtual String DDML() { return "<type/>"; }
-        public virtual void pack(ref byte[] messageData)
+        public virtual void pack(out byte[] messageData)
         {
             messageData = new byte[DDMLValue.sizeBytes()];
             DDMLValue.getData(ref messageData);
@@ -36,8 +36,8 @@ using CMPServices;
         public virtual void pack(TTypedValue typedValue)
         {
             byte[] data = new byte[0];
-            pack(ref data);
-            typedValue.setData(data, (uint)data.Length, 0);
+            pack(out data);
+            typedValue.setData(data, data.Length, 0);
         }
         public virtual void packArrayOfStructures(TypeInterpreter[] items, TTypedValue typedValue)
         {
@@ -49,7 +49,7 @@ using CMPServices;
         }
         public virtual void unpack(byte[] messageData)
         {
-            DDMLValue.setData(messageData, (uint)messageData.Length, 0);
+            DDMLValue.setData(messageData, messageData.Length, 0);
         }
         public virtual void unpackStructure(TTypedValue typedValue)
         {
@@ -65,8 +65,9 @@ using CMPServices;
     //------ NullType ------
     public class NullType : ApsimType
     {
-        public void pack(ref byte[] MessageData)
+        public void pack(out byte[] MessageData)
         {
+            MessageData = null;
         }
         public void unpack(byte[] MessageData)
         {
@@ -89,7 +90,7 @@ using CMPServices;
          [foreach type.field]
          public [field.cstype] [field.name];
          [endfor]
-         public override void pack(ref byte[] messageData)
+         public override void pack(out byte[] messageData)
          {
             [foreach type.field]
             [if [field.arrayofstructures] = T]
@@ -105,7 +106,7 @@ using CMPServices;
          }
          public override void unpack(byte[] messageData)
          {
-            DDMLValue.setData(messageData, (uint)messageData.Length, 0);        
+            DDMLValue.setData(messageData, messageData.Length, 0);        
             [foreach type.field]
             [if [field.arrayofstructures] = T]
             [field.name] = new [field.cstypebase][DDMLValue.member("[field.name]").count()];
@@ -126,6 +127,6 @@ using CMPServices;
             return [type.csddml];
          }
       }
-      public delegate void On[type.name]([type.name]Type Data);
+      public delegate void [type.name]Delegate([type.name]Type Data);
 [endfor]
 [endfile]
