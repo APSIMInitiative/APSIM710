@@ -196,7 +196,7 @@ module PublishEventsModule
 
    call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
    IncorpFOM%Type = ' '
-   IncompFOM%num_layer = 0
+   IncorpFOM%num_layer = 0
 
    do while (NumValues > 0)
       if (strings_equal(KeyName, 'type')) then
