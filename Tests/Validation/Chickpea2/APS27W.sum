@@ -1,0 +1,337 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = APS27W
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "output titles" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "chickpea2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 14/06/1995
+     Simulation end date   = 26/11/1995
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met\cooper.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        Expcode as Title
+        Site
+        Season
+        Treatment
+        dd/mm/yyyy as Date
+        DaysAfterSowing
+        TTAfterSowing
+        sw_dep
+        AboveGroundDM
+        RootDepth
+        StageCodeValue
+        LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
+        LeafFw
+        LeafFrgr
+        LeafLAI
+        sw_dep()
+        grainlivewt
+
+     Output file = APS27W.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     15/06/1995  Prepare       'soil water' set sw = 0.320 0.340 0.380 0.310 0.360 0.330 0.280
+     15/06/1995  Prepare      chickpea2 sow population = 37.3, Depth= 50, cultivar = amethyst, maxcover=1.0, budNumber=1
+     21/07/1995  Prepare      irrigation apply amount = 13.5
+      1/08/1995  Prepare      irrigation apply amount = 28.0
+     11/08/1995  Prepare      irrigation apply amount = 32.0
+     25/08/1995  Prepare      irrigation apply amount = 15.0
+      1/09/1995  Prepare      irrigation apply amount = 14.0
+      4/09/1995  Prepare      irrigation apply amount = 15.0
+     15/09/1995  Prepare      irrigation apply amount = 25.0
+     22/09/1995  Prepare      irrigation apply amount = 20.0
+     29/09/1995  Prepare      irrigation apply amount = 9.0
+      2/10/1995  Prepare      irrigation apply amount = 11.0
+
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- output titles Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     expcode='aps27w'
+          site='cp95gat '
+          season='-y1995'
+          treatment='amethyst'
+     
+     SECTION:- end_of_day
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if (chickpea2.stagename = 'harvest_ripe' or chickpea2.plant_status = 'dead') then
+       chickpea2  harvest
+       chickpea2  end_crop
+                endif
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.050  0.250  0.370  0.434  0.340  1.380  0.762  0.400
+          150.-  300.  0.190  0.250  0.370  0.431  0.346  1.380  0.190  0.400
+          300.-  600.  0.200  0.200  0.380  0.490  0.309  1.320  0.048  0.400
+          600.-  900.  0.220  0.230  0.320  0.448  0.324  1.460  0.000  0.400
+          900.- 1200.  0.190  0.210  0.360  0.430  0.302  1.510  0.000  0.400
+         1200.- 1500.  0.170  0.220  0.330  0.426  0.290  1.490  0.000  0.400
+         1500.- 1800.  0.170  0.220  0.280  0.427  0.278  1.470  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      37.50      13.50      18.00       9.60
+          150.-  300.      37.50      14.40      18.00       9.15
+          300.-  600.      60.00      32.70      54.00      33.00
+          600.-  900.      69.00      28.20      27.00      38.40
+          900.- 1200.      63.00      27.60      45.00      21.00
+         1200.- 1500.      66.00      21.00      33.00      28.80
+         1500.- 1800.      66.00      17.40      18.00      44.10
+          ---------------------------------------------------------
+               Totals     399.00     154.80     213.00     184.05
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              72.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            Stage 2       (CONA): Summer        2.00 (mm^0.5)
+                                  Winter        3.50 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          unknown   wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.50  1.20  124.20    0.00    0.00
+             2     8.00  0.80   82.80    0.00    0.00
+             3     8.00  0.50  158.40    0.00    0.00
+             4     8.00  0.30   43.80    0.00    0.00
+             5     8.00  0.20    4.53    0.00    0.00
+             6     8.00  0.10    0.89    0.00    0.00
+             7     8.00  0.10    0.44    0.00    0.00
+          ------------------------------------------------
+           Totals              415.07    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24528.3  1691.6   311.7    39.0    69.4     0.9
+             2      16437.6  1133.6   122.4    15.3    54.1     0.7
+             3      19719.6  1360.0    80.4    10.0    32.8     0.4
+             4      13119.2   904.8    20.8     2.6    19.9     0.2
+             5       9042.1   623.6    17.9     2.2    12.1     0.2
+             6       4469.6   308.2     0.4     0.1     7.3     0.1
+             7       4409.6   304.1     0.4     0.1     4.4     0.1
+          ---------------------------------------------------------
+           Totals   91725.9  6325.9   554.1    69.3   200.0     2.5
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local string variable : expcode = aps27w
+     Manager creating a new local string variable : site = cp95gat
+     Manager creating a new local string variable : season = -y1995
+     Manager creating a new local string variable : treatment = amethyst
+15 June 1995(Day of year=166), Operations: 
+      Sending set message to soil water
+      Sending sow message to chickpea2
+16/06/1995 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+26/06/1995 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+21 July 1995(Day of year=202), Operations: 
+      Sending apply message to irrigation
+1 August 1995(Day of year=213), Operations: 
+      Sending apply message to irrigation
+2/08/1995 - EndJuvenile
+                            LAI = 0.37 (m^2/m^2)
+           Above Ground Biomass = 17.09 (g/m^2)
+11 August 1995(Day of year=223), Operations: 
+      Sending apply message to irrigation
+25 August 1995(Day of year=237), Operations: 
+      Sending apply message to irrigation
+25/08/1995 - FloralInitiation
+                            LAI = 2.26 (m^2/m^2)
+           Above Ground Biomass = 111.15 (g/m^2)
+27/08/1995 - Flowering
+                            LAI = 2.48 (m^2/m^2)
+           Above Ground Biomass = 124.57 (g/m^2)
+1 September 1995(Day of year=244), Operations: 
+      Sending apply message to irrigation
+4 September 1995(Day of year=247), Operations: 
+      Sending apply message to irrigation
+15 September 1995(Day of year=258), Operations: 
+      Sending apply message to irrigation
+21/09/1995 - StartPodGrowth
+                            LAI = 4.69 (m^2/m^2)
+           Above Ground Biomass = 371.51 (g/m^2)
+22 September 1995(Day of year=265), Operations: 
+      Sending apply message to irrigation
+29 September 1995(Day of year=272), Operations: 
+      Sending apply message to irrigation
+2 October 1995(Day of year=275), Operations: 
+      Sending apply message to irrigation
+25/10/1995 - EndGrainFill
+                            LAI = 1.05 (m^2/m^2)
+           Above Ground Biomass = 715.56 (g/m^2)
+28/10/1995 - Maturity
+                            LAI = 0.70 (m^2/m^2)
+           Above Ground Biomass = 729.25 (g/m^2)
+28/10/1995 - HarvestRipe
+                            LAI = 0.70 (m^2/m^2)
+           Above Ground Biomass = 729.25 (g/m^2)
+26 November 1995(Day of year=330), clock: 
+     Simulation is terminating due to end criteria being met.

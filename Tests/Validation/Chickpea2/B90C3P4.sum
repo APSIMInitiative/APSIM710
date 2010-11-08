@@ -1,0 +1,299 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = B90C3P4
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "output titles" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "chickpea2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/03/1990
+     Simulation end date   = 31/12/1990
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Validation\Chickpea2\met\biloela.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        Expcode as Title
+        Site
+        Season
+        Treatment
+        dd/mm/yyyy as Date
+        sw_dep
+        sw_dep()
+        ll15_dep
+        AboveGroundDM
+        GrainLiveWt
+        RootDepth
+        StageCodeValue
+        LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
+        LeafFw
+        LeafFrgr
+        LeafLAI
+        StemLiveWt
+        LeafLiveWt2
+        PodLiveWt
+
+     Output file = B90C3P4.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     07/03/1990  Prepare       'soil water' set sw = 0.400 0.420 0.447 0.460
+     17/07/1990  Prepare      chickpea2 sow population = 19.18, Depth= 50, cultivar = amethyst, maxcover=1.0, budNumber=1
+     14/09/1990  Prepare      irrigation apply amount = 100.0
+
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- output titles Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     expcode='a16p2t8a'
+          site='cp93gat '
+          season='-y1993'
+          treatment='amethyst'
+     
+     SECTION:- end_of_day
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if (chickpea2.stagename = 'harvest_ripe' or chickpea2.plant_status = 'dead') then
+       chickpea2  harvest
+       chickpea2  end_crop
+                endif
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.167  0.400  0.410  0.400  1.090  0.762  0.100
+          150.-  300.  0.167  0.167  0.420  0.430  0.420  1.270  0.190  0.100
+          300.-  600.  0.213  0.213  0.447  0.455  0.447  1.300  0.048  0.100
+          600.-  900.  0.220  0.220  0.460  0.470  0.460  1.300  0.000  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      25.05      34.95      34.95       1.50
+          150.-  300.      25.05      37.95      37.95       1.50
+          300.-  600.      63.90      70.20      70.20       2.40
+          600.-  900.      66.00      72.00      72.00       3.00
+          ---------------------------------------------------------
+               Totals     180.00     215.10     215.10       8.40
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     2.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          unknown   wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.50  0.80    6.38    0.98    0.00
+             2     8.00  0.40    2.48    0.19    0.00
+             3     8.00  0.20    5.85    0.39    0.00
+             4     8.00  0.20    5.85    0.39    0.00
+          ------------------------------------------------
+           Totals               20.55    1.95    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      12700.1   875.9   379.9    47.5   104.6     1.3
+             2       7540.8   520.1    79.2     9.9    63.5     0.8
+             3       7744.7   534.1    55.3     6.9    23.3     0.3
+             4       7744.7   534.1    55.3     6.9     8.6     0.1
+          ---------------------------------------------------------
+           Totals   35730.2  2464.2   569.8    71.2   200.0     2.5
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local string variable : expcode = a16p2t8a
+     Manager creating a new local string variable : site = cp93gat
+     Manager creating a new local string variable : season = -y1993
+     Manager creating a new local string variable : treatment = amethyst
+7 March 1990(Day of year=66), Operations: 
+      Sending set message to soil water
+17 July 1990(Day of year=198), Operations: 
+      Sending sow message to chickpea2
+18/07/1990 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+26/07/1990 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+2/09/1990 - EndJuvenile
+                            LAI = 0.23 (m^2/m^2)
+           Above Ground Biomass = 11.41 (g/m^2)
+14 September 1990(Day of year=257), Operations: 
+      Sending apply message to irrigation
+21/09/1990 - FloralInitiation
+                            LAI = 1.35 (m^2/m^2)
+           Above Ground Biomass = 100.14 (g/m^2)
+22/09/1990 - Flowering
+                            LAI = 1.43 (m^2/m^2)
+           Above Ground Biomass = 107.98 (g/m^2)
+14/10/1990 - StartPodGrowth
+                            LAI = 3.10 (m^2/m^2)
+           Above Ground Biomass = 323.77 (g/m^2)
+14/11/1990 - EndGrainFill
+                            LAI = 0.83 (m^2/m^2)
+           Above Ground Biomass = 489.95 (g/m^2)
+17/11/1990 - Maturity
+                            LAI = 0.59 (m^2/m^2)
+           Above Ground Biomass = 496.49 (g/m^2)
+17/11/1990 - HarvestRipe
+                            LAI = 0.59 (m^2/m^2)
+           Above Ground Biomass = 496.49 (g/m^2)
+Removing Leaves from plant
+31 December 1990(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
