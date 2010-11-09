@@ -215,14 +215,116 @@
         <Value>4</Value>
       </Population>
       <AnnualPlantArbitrator name="Arbitrator">
-        <Constant name="DMSink">
-          <Value>Stem</Value>
-        </Constant>
-        <Constant name="NSink">
-          <Value>Stem</Value>
-        </Constant>
-		<!--<DMSink type="text" description="DMSink">Stem</DMSink>
+        <!--<DMSink type="text" description="DMSink">Stem</DMSink>
         <NSink type="text" description="NSink">Stem</NSink>-->
+        <Constant name="xDMSink">
+          <Value>Stem</Value>
+        </Constant>
+        <Constant name="xNSink">
+          <Value>Stem</Value>
+        </Constant>
+        <PhaseLookup name="DMSink">
+          <PhaseLookupValue name="Dormant">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Sprouting">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Inductive">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Induced">
+            <Start type="text" description="Start">FloralInitiation</Start>
+            <End type="text" description="End">TuberInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="EarlyTuber">
+            <Start type="text" description="Start">TuberInitiation</Start>
+            <End type="text" description="End">FinalLeaf</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Tuber</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="LateTuber">
+            <Start type="text" description="Start">FinalLeaf</Start>
+            <End type="text" description="End">FullSenescence</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Tuber</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Senesced">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="NSink">
+          <PhaseLookupValue name="Dormant">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Sprouting">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Inductive">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Induced">
+            <Start type="text" description="Start">FloralInitiation</Start>
+            <End type="text" description="End">TuberInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="EarlyTuber">
+            <Start type="text" description="Start">TuberInitiation</Start>
+            <End type="text" description="End">FinalLeaf</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Tuber</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="LateTuber">
+            <Start type="text" description="Start">FinalLeaf</Start>
+            <End type="text" description="End">FullSenescence</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Tuber</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Senesced">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">Stem</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
       </AnnualPlantArbitrator>
       <Phenology>
         <TemperatureFunction name="ThermalTime">
@@ -661,7 +763,7 @@
         </Constant>
         <Constant name="SenescenceRate">
           <Value>0.0</Value>
-        </Constant>        
+        </Constant>
         <PhaseLookup name="RootFrontVelocity">
           <PhaseLookupValue>
             <Start type="text" description="Start">Peeping</Start>
