@@ -332,11 +332,11 @@ Public Class FarmSimGraze
 
         Dim DungData As BiomassRemovedType = New BiomassRemovedType()
 
-        DungData.crop_type = "manure"
-        DungData.dm_type = New String() {"manure"}
+        DungData.crop_type = "RuminantDung_PastureFed"
+        DungData.dm_type = New String() {"RuminantDung_PastureFed"}
         DungData.dlt_crop_dm = New Single() {DungN + DungDM}
         DungData.dlt_dm_n = New Single() {DungN}
-        DungData.dlt_dm_p = New Single() {DungDM * 0.4 * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
+        DungData.dlt_dm_p = New Single() {DungDM * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
         DungData.fraction_to_residue = New Single() {1.0}
 
         Dim SOM As ComponentType = MyPaddock.Component("surfaceom")

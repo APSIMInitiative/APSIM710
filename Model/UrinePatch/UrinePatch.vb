@@ -15,15 +15,23 @@ Public Class UrinePatch
     <Input()> Public UI_BeefPercentage As String
     Private SUBeefPercentatage As Double
 
-
+    <Output()> Public Stack_Rain As Double() = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+    <Output()> Public Stack_AveTemp As Double() = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+    <Output()> Public Stack_UrineN_FromAnimal As Double() = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+    <Output()> Public Stack_Effective_StockDensity As Double() = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+    <Output()> Public Stack_AnimalType As String() = {"None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None"}
 
     <Input()> Private month As Integer
     <Input()> Private day As Integer
     <Input()> Private annual_average_rainfall As Single
+    <Input()> Private Rain As Integer
+    <Input()> Private Mint As Integer
+    <Input()> Private Maxt As Integer
 
     <Output()> Public UrineN_PropLeached As Double = 0.0
     <Output()> Public UrineN_Retained As Double = 0.0
     <Output()> Public UrineN_Leached As Double = 0.0
+    <Output()> Public UrineN_Volat As Double = 0.0
     <Output()> Public UrineN_Retained_Patch As Double = 0.0
     <Output()> Public UrineN_Leached_Patch As Double = 0.0
     <Output()> Public UrineConcentration As Double = 0.0
@@ -37,6 +45,40 @@ Public Class UrinePatch
     <Output()> Public Amount_fac As Double
     <Output()> Public Rain_fac As Double
     <Output()> Public Day_fac As Double
+    <Output()> Public Volat_fac As Double
+
+    Private P1 As Double = 0.107889
+    Private P2 As Double = 0.24442
+    Private P3 As Double = 0.639043
+    Private P4 As Double = 3.217139
+    Private P5 As Double = 0.011375
+    Private P6 As Double = -0.01538
+    Private P7 As Double = 5.102897
+    Private P8 As Double = 4.796632
+    Private A As Double = 0.0
+    Private B As Double = 0.0
+    Private C As Double = 0.0
+    Private D As Double = 0.0
+    <Output()> Public LoadByPAW_fac As Double = 0.0
+
+    Private G1 As Double = -0.38246
+    Private G2 As Double = 0.001441
+    Private G3 As Double = 17.16542
+    Private G4 As Double = 0.000414
+    Private G5 As Double = 1.384217
+    Private G6 As Double = -0.09355
+    Private G7 As Double = -0.0000012
+    <Output()> Public Temp2wk_fac As Double = 0.0
+    <Output()> Public Temp2wk As Double = 0.0
+
+    Private Q1 As Double = -20.2051
+    Private Q2 As Double = -0.03552
+    Private Q3 As Double = 0.182615
+    Private Q4 As Double = 2610.128
+    Private Q5 As Double = -0.40163
+    <Output()> Public Rain2wk_fac As Double = 0.0
+    <Output()> Public Rain2wk As Double = 0.0
+
 
     Private Amount_x As Double() = {0, 200, 400, 600, 800, 1000}
     Private Amount_y As Double() = {0, 0.2, 0.25, 0.4, 0.5, 0.6}
@@ -49,7 +91,6 @@ Public Class UrinePatch
     Private DrainPost2wk_irrig_y As Double() = {0, 0, 0.06, 0.13, 0.19, 0.19}
     Private DrainPost2wk_dry_y As Double() = {0, 0.08, 0.16, 0.24, 0.32, 0.32}
     <Output()> Public DrainPost2wk_fac As Double = 0.0
-
 
     Private CowsPerHa As Single = 0.0
     Private CowUrinationsPerDay As Single = 10.0
@@ -93,7 +134,7 @@ Public Class UrinePatch
         ElseIf UI_SoilType.ToLower = "medium" Then
             SoilPAW = 153  'to 150 cm deep
         ElseIf UI_SoilType.ToLower = "heavy" Then
-            SoilPAW = 231  'to 150 cm deep
+            SoilPAW = 232  'to 150 cm deep
         ElseIf UI_SoilType.ToLower = "poorlydrained" Then
             SoilPAW = 242  'to 150 cm deep
         ElseIf UI_SoilType.ToLower = "poorlydrainedlight" Then
@@ -132,7 +173,13 @@ Public Class UrinePatch
 
     End Sub
 
-    <EventHandler()> Public Sub OnTick()
+    <EventHandler()> Public Sub OnNewMet()
+
+        If day = 1 Then
+            UP_AnimalType = "None"
+
+        End If
+
         UrineN_FromAnimal = 0.0
         UrineN_PropLeached = 0.0
         UrineN_Retained = 0.0
@@ -144,6 +191,21 @@ Public Class UrinePatch
         DrainPost2wk_fac = 0.0
         UP_AnimalType = "None"
 
+        LoadByPAW_fac = 0.0
+        Temp2wk_fac = 0.0
+        Rain2wk_fac = 0.0
+        Temp2wk = 0.0
+        Rain2wk = 0.0
+
+        For i As Integer = 14 To 1 Step -1
+            Stack_Rain(i) = Stack_Rain(i - 1)
+            Stack_AveTemp(i) = Stack_AveTemp(i - 1)
+            Stack_UrineN_FromAnimal(i) = Stack_UrineN_FromAnimal(i - 1)
+            Stack_Effective_StockDensity(i) = Stack_Effective_StockDensity(i - 1)
+            Stack_AnimalType(i) = Stack_AnimalType(i - 1)
+        Next
+        Stack_Rain(1) = Rain
+        Stack_AveTemp(1) = (Mint + Maxt) / 2.0
 
     End Sub
 
@@ -153,10 +215,15 @@ Public Class UrinePatch
         UrineN_FromAnimal = UrineData.AmountUrine
         Effective_StockDensity = UrineData.StockDensity
         AnimalType = UrineData.StockType
+
+        Stack_UrineN_FromAnimal(1) = UrineN_FromAnimal
+        Stack_Effective_StockDensity(1) = Effective_StockDensity
+        Stack_AnimalType(1) = AnimalType ' will not deal with more than one animal type at this point
+
         'Console.WriteLine("UrinePatch - Amount = " & UrineN_FromAnimal.ToString)
         'Console.WriteLine("UrinePatch - StockDensity = " & Effective_StockDensity.ToString)
         'Console.WriteLine("UrinePatch - StockType = " & AnimalType)
-        CalcUrineArea(UrineN_FromAnimal, Effective_StockDensity, AnimalType)
+
 
 
     End Sub
@@ -165,6 +232,10 @@ Public Class UrinePatch
 
 
     <EventHandler()> Public Sub OnProcess()
+        If Stack_UrineN_FromAnimal(14) > 0.0 Then
+            CalcUrineArea(Stack_UrineN_FromAnimal(14), Stack_Effective_StockDensity(14), Stack_AnimalType(14))
+        End If
+
 
     End Sub
 
@@ -227,7 +298,7 @@ Public Class UrinePatch
 
 
             'calculate the urine patch properties and do fate
-            If StockDensity_Beef > 0.0 Then
+            If StockDensity_Beef > 0.1 Then
                 UrineConcentration_Beef = Amt_Urine_Beef / BeefUrineAreaPerHa
                 UrineApplication(UrineConcentration_Beef, BeefUrineAreaPerHa)
                 UrineN_PropLeached_Beef = UrineN_PropLeached
@@ -238,7 +309,7 @@ Public Class UrinePatch
             Else
                 UrineConcentration_Beef = 0.0
             End If
-            If StockDensity_Sheep > 0.0 Then
+            If StockDensity_Sheep > 0.1 Then
                 UrineConcentration_Sheep = Amt_Urine_Sheep / SheepUrineAreaPerHa
                 UrineApplication(UrineConcentration_Sheep, SheepUrineAreaPerHa)
                 UrineN_PropLeached_Sheep = UrineN_PropLeached
@@ -268,21 +339,50 @@ Public Class UrinePatch
         'calculate the factors affecting leaching loss from the urine patch area
 
         ' not useable   SoilPAW_fac = Math.Exp(SoilPAW * (0.0039 * Math.Log(UrinePatchNitrogenConc) - 0.0343)) * 0.5 ' need to get the PAW right
-        Amount_fac = LinearInterp(UrinePatchNitrogenConc, Amount_x, Amount_y)
+        'Amount_fac = LinearInterp(UrinePatchNitrogenConc, Amount_x, Amount_y)
+        'Day_fac = 0.5 + 0.35 * Math.Sin(2 * Math.PI * (day + 40.2) / 365.25)
+        'Rain_fac = -0.1179 + 0.00014 * annual_average_rainfall
 
-        Day_fac = 0.5 + 0.35 * Math.Sin(2 * Math.PI * (day + 40.2) / 365.25)
-        Rain_fac = -0.1179 + 0.00014 * annual_average_rainfall
+        A = P1 * Math.Min(5800.0, UrinePatchNitrogenConc) ^ P2    'Excel testing showed the calculation robust to 5900 but should notget above about 3000 even with triples
+        B = P3 * A ^ P4
+        C = P5 + (P6 * A ^ 3)
+        D = P7 + (P8 * A ^ 2)
 
+        LoadByPAW_fac = B + (A - B) / (1 + (C * SoilPAW) ^ D)
+        Day_fac = 0.14809 * Math.Exp(-0.00443 * SoilPAW) * Math.Sin(2 * Math.PI * (day + 37.96) / 365.25)
+
+        Temp2wk = 0.0
+        Rain2wk = 0.0
+        For i As Integer = 1 To 14
+            Rain2wk += Stack_Rain(i)
+            Temp2wk += Stack_AveTemp(i) / 14.0
+        Next
+
+        Dim Pt1 As Double = 1 / (Q1 + Q2 * SoilPAW)
+        Dim Num As Double = (Q3 - 1 / (Q2 + Q1 * SoilPAW)) * Rain2wk
+        Dim Den As Double = Q4 * UrinePatchNitrogenConc ^ Q5 + Rain2wk
+        Rain2wk_fac = Pt1 + Num / Den
+
+        Dim Y As Double = G1 + G2 * SoilPAW + G3 / SoilPAW
+        Dim ratio As Double = G4 + G6 * Y / (1 + G5 * Y)
+        Temp2wk_fac = Y + (ratio + G7 * UrinePatchNitrogenConc) * Temp2wk
+
+        Volat_fac = 0.0 '0.15 * (1.25 + Math.Sin(2 * Math.PI * (day + 60.0) / 365.25))
+
+        'Amount_fac = Math.Exp(SoilPAW * (0.0053 * Math.Log(UrinePatchNitrogenConc) - 0.045))  'fromRogerio's document
+        'Rain_fac = -0.0285 + 0.0625 / (1 + (annual_average_rainfall / 903.95) ^ (-22.462))
 
         'calculate proportion leached and distribute to appropriate locations
-        UrineN_PropLeached = Day_fac * SoilPAW_fac * Animal_fac   'rain_fac not used as can go -ve
+        UrineN_PropLeached = LoadByPAW_fac + Day_fac + Temp2wk_fac + Rain2wk_fac ' and in rain and temperature when avaialabe + Rain_fac
         UrineN_PropLeached = Math.Min(MaxPropLeach, UrineN_PropLeached)
         UrineN_PropLeached = Math.Max(UrineN_PropLeached, 0.01)
+        UrineN_PropLeached = UrineN_PropLeached * Animal_fac
 
         UrineN_Leached_Patch = UrinePatchNitrogenConc * UrineN_PropLeached
         UrineN_Retained_Patch = UrinePatchNitrogenConc - UrineN_Leached_Patch
         UrineN_Leached = UrineN_Leached_Patch * UrinePatchArea
-        UrineN_Retained = UrineN_Retained_Patch * UrinePatchArea
+        UrineN_Volat = (UrineN_Retained_Patch * Volat_fac) * UrinePatchArea
+        UrineN_Retained = (UrineN_Retained_Patch * (1.0 - Volat_fac)) * UrinePatchArea
 
         Dim Default_Application_Depth As Double = 10   ' apply N at a depth of 10mm
         Dim volume As Double = UrinePatchNitrogenConc / 0.08               ' liquid volume of the urine application
