@@ -14,7 +14,6 @@ Title                  = Parilla_17Dec_medN
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
    Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
@@ -47,29 +46,13 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: Lameroo.met
 
-------- outputfile Initialisation ---------------------------------------------
-     Output frequency:
-        post
-     Output variables:
-        dd/mmm/yyyy
-        biomass
-        PhenologyCurrentPhaseName
-        tt
-        LeafLiveNconc2
-        stemliveNconc
-        tuberliveNconc
-        tuberNpercent
-        stemNpercent
-        leafNpercent
-
-     Output file = Parilla_17Dec_medN.out
-     Format = normal
-
 ------- Plant2 diagnostic variables Initialisation ----------------------------
      Output frequency:
         post
      Output variables:
         dd/mmm/yyyy
+        AccumTtSowing
+        StageCodeValue
         no3()
         nh4()
         urea()
@@ -78,7 +61,7 @@ Paddock:
         fom_n()
         hum_n()
         dnit()
-        leach
+        leach_no3
         AccumPlantN
         AccumMineralisation
         AccumDenit
@@ -106,9 +89,12 @@ Paddock:
         AccumIrrigation
         AccumOutflowLat
         SoilWaterDeficit
+        AboveGroundDM
+        BelowGroundDM
+        TotalDM
         LeafDeadWt
         LeafLiveWt2
-        StemDeadWt2
+        StemDeadWt
         StemLiveWt
         TuberDeadWt
         TuberLiveWt
@@ -118,6 +104,9 @@ Paddock:
         GrainDeadWt
         FloretLIveWt
         FloretDeadWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
         RootLiveN
         RootDeadN
         LeafDeadN2
@@ -130,6 +119,11 @@ Paddock:
         GrainDeadN
         FloretLiveN
         FloretDeadN
+        GrainNpercent
+        FloretNpercent
+        TuberNpercent
+        LeafNpercent
+        StemNpercent
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -154,6 +148,24 @@ Paddock:
         LeafDeadNodeNo
         LeafNodeNo
         LeafSenescingNodeNo
+        sw
+        no3
+        LeafPartitionFractionValue
+        StemPartitionFractionValue
+        TuberPartitionFractionValue
+        RootPartitionFractionValue
+        GrainMinimumN
+        FloretMinimumN
+        LeafMinimumN
+        StemMinimumN
+        TuberMinimumN
+        GrainMaximumN
+        FloretMaximumN
+        LeafMaximumN
+        StemMaximumN
+        TuberMaximumN
+        GrainPartitionFractionValue
+        FloretPartitionFractionValue
 
      Output file = Parilla_17Dec_medN Plant2 diagnostic variables.out
      Format = normal
@@ -396,9 +408,19 @@ Paddock:
      accumes = 0
      accumdrainage = 0
      accumrunoff = 0
+     accumoutflowlat = 0
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
+     grainnpercent = 0
+     floretnpercent = 0
+     tubernpercent = 0
+     stemnpercent = 0
+     leafnpercent = 0
+     accumttsowing = 0
+     abovegrounddm = 0
+     belowgrounddm = 0
+     totaldm = 0
      
      SECTION:- start_of_day
      if simday = 1 then
@@ -424,6 +446,26 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
+     grainnpercent = potato2.grainlivenconc * 100
+     floretnpercent = potato2.floretlivenconc * 100
+     tubernpercent = potato2.tuberlivenconc * 100
+     stemnpercent = potato2.stemlivenconc * 100
+     if potato2.leaflivewt2 > 0 then
+     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2) * 100
+     endif
+     grainmaximumn = potato2.grainmaximumnconcvalue * 100
+     floretmaximumn = potato2.floretmaximumnconcvalue * 100
+     leafmaximumn = potato2.leafmaximumnconcvalue * 100
+     stemmaximumn = potato2.stemmaximumnconcvalue * 100
+     tubermaximumn = potato2.tubermaximumnconcvalue * 100
+     grainminimumn = potato2.grainminimumnconcvalue * 100
+     floretminimumn = potato2.floretminimumnconcvalue * 100
+     leafminimumn = potato2.leafminimumnconcvalue * 100
+     stemminimumn = potato2.stemminimumnconcvalue * 100
+     tuberminimumn = potato2.tuberminimumnconcvalue * 100
+     if potato2.stagecodevalue >= 3 then
+     accumttsowing = accumttsowing + potato2.phenologythermaltimevalue
+     endif
      
      SECTION:- end_of_day
      if simday = 1 then
@@ -447,9 +489,19 @@ Paddock:
      Manager creating a new local real variable : accumes = 0.00000
      Manager creating a new local real variable : accumdrainage = 0.00000
      Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : grainnpercent = 0.00000
+     Manager creating a new local real variable : floretnpercent = 0.00000
+     Manager creating a new local real variable : tubernpercent = 0.00000
+     Manager creating a new local real variable : stemnpercent = 0.00000
+     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : accumttsowing = 0.00000
+     Manager creating a new local real variable : abovegrounddm = 0.00000
+     Manager creating a new local real variable : belowgrounddm = 0.00000
+     Manager creating a new local real variable : totaldm = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -598,17 +650,16 @@ Paddock:
      Manager creating a new local real variable : initialsoilomn = 5584.82129
      Manager creating a new local real variable : initialsurfaceomn = 10.00000
      Manager creating a new local real variable : initialmineraln = 81.20642
-16 December 2007(Day of year=350): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "accumoutflowlat".
-     Variables should have a value before they are used in an expression.
-     Component name: Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : grainmaximumn = 0.00000
+     Manager creating a new local real variable : floretmaximumn = 0.00000
+     Manager creating a new local real variable : leafmaximumn = 0.00000
+     Manager creating a new local real variable : stemmaximumn = 0.00000
+     Manager creating a new local real variable : tubermaximumn = 0.00000
+     Manager creating a new local real variable : grainminimumn = 0.00000
+     Manager creating a new local real variable : floretminimumn = 0.00000
+     Manager creating a new local real variable : leafminimumn = 0.00000
+     Manager creating a new local real variable : stemminimumn = 0.00000
+     Manager creating a new local real variable : tuberminimumn = 0.00000
 17 December 2007(Day of year=351), operations: 
       Sending apply message to irrigation
 17 December 2007(Day of year=351), Sowing rule: 
@@ -924,7 +975,7 @@ Paddock:
       Sending apply message to irrigation
 26/04/2008 - FinalLeaf
                             LAI = 2.08 (m^2/m^2)
-           Above Ground Biomass = 803.19 (g/m^2)
+           Above Ground Biomass = 803.50 (g/m^2)
 27 April 2008(Day of year=118), operations: 
       Sending apply message to irrigation
 28 April 2008(Day of year=119), operations: 
