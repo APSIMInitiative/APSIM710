@@ -9,7 +9,7 @@
  The Agricultural Production Systems Simulator
              Copyright(c) APSRU               
 
-Version                = 7.3
+Version                = 7.2
 Title                  = Lynetts_4_300kg_planting
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
@@ -39,7 +39,7 @@ Paddock:
         post
         end_step
      Simulation start date = 20/09/1992
-     Simulation end date   =  1/06/1993
+     Simulation end date   =  2/06/1993
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
@@ -112,18 +112,18 @@ Paddock:
         LeafDeadN2
         LeafLiveN2
         StemDeadN
-        StemLiveN
+        StemLiveNconc
         TuberDeadN
-        TuberLiveN
-        GrainLiveN
+        TuberLiveNconc
+        GrainLiveNconc
         GrainDeadN
-        FloretLiveN
+        FloretLiveNconc
         FloretDeadN
-        GrainNpercent
-        FloretNpercent
-        TuberNpercent
+        GrainLiveNconcconc
+        FloretLiveNconcconc
+        TuberLiveNconcconc
         LeafNpercent
-        StemNpercent
+        StemLiveNconcconc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -153,19 +153,19 @@ Paddock:
         LeafPartitionFractionValue
         StemPartitionFractionValue
         TuberPartitionFractionValue
-        RootPartitionFractionValue
-        GrainMinimumN
-        FloretMinimumN
-        LeafMinimumN
-        StemMinimumN
-        TuberMinimumN
-        GrainMaximumN
-        FloretMaximumN
-        LeafMaximumN
-        StemMaximumN
-        TuberMaximumN
         GrainPartitionFractionValue
         FloretPartitionFractionValue
+        RootPartitionFractionValue
+        GrainMinimumNconcValue
+        FloretMinimumNconcValue
+        LeafMinimumNconcValue
+        StemMinimumNconcValue
+        TuberMinimumNconcValue
+        GrainMaximumNconcValue
+        FloretMaximumNconcValue
+        LeafMaximumNconcValue
+        StemMaximumNconcValue
+        TuberMaximumNconcValue
 
      Output file = Lynetts_4_300kg_planting Plant2 diagnostic variables.out
      Format = normal
@@ -249,9 +249,6 @@ Paddock:
      stemnpercent = 0
      leafnpercent = 0
      accumttsowing = 0
-     abovegrounddm = 0
-     belowgrounddm = 0
-     totaldm = 0
      
      SECTION:- start_of_day
      if simday = 1 then
@@ -259,7 +256,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemlivenconc - potato2.stemdeadn - potato2.tuberlivenconc - potato2.tuberdeadn ) * 10
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -277,23 +274,9 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     grainnpercent = potato2.grainlivenconc * 100
-     floretnpercent = potato2.floretlivenconc * 100
-     tubernpercent = potato2.tuberlivenconc * 100
-     stemnpercent = potato2.stemlivenconc * 100
      if potato2.leaflivewt2 > 0 then
-     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2) * 100
+     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
      endif
-     grainmaximumn = potato2.grainmaximumnconcvalue * 100
-     floretmaximumn = potato2.floretmaximumnconcvalue * 100
-     leafmaximumn = potato2.leafmaximumnconcvalue * 100
-     stemmaximumn = potato2.stemmaximumnconcvalue * 100
-     tubermaximumn = potato2.tubermaximumnconcvalue * 100
-     grainminimumn = potato2.grainminimumnconcvalue * 100
-     floretminimumn = potato2.floretminimumnconcvalue * 100
-     leafminimumn = potato2.leafminimumnconcvalue * 100
-     stemminimumn = potato2.stemminimumnconcvalue * 100
-     tuberminimumn = potato2.tuberminimumnconcvalue * 100
      if potato2.stagecodevalue >= 3 then
      accumttsowing = accumttsowing + potato2.phenologythermaltimevalue
      endif
@@ -330,9 +313,6 @@ Paddock:
      Manager creating a new local real variable : stemnpercent = 0.00000
      Manager creating a new local real variable : leafnpercent = 0.00000
      Manager creating a new local real variable : accumttsowing = 0.00000
-     Manager creating a new local real variable : abovegrounddm = 0.00000
-     Manager creating a new local real variable : belowgrounddm = 0.00000
-     Manager creating a new local real variable : totaldm = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -480,16 +460,6 @@ Paddock:
      Manager creating a new local real variable : initialsoilomn = 18097.61130
      Manager creating a new local real variable : initialsurfaceomn = 0.00000
      Manager creating a new local real variable : initialmineraln = 20.81340
-     Manager creating a new local real variable : grainmaximumn = 0.00000
-     Manager creating a new local real variable : floretmaximumn = 0.00000
-     Manager creating a new local real variable : leafmaximumn = 0.00000
-     Manager creating a new local real variable : stemmaximumn = 0.00000
-     Manager creating a new local real variable : tubermaximumn = 0.00000
-     Manager creating a new local real variable : grainminimumn = 0.00000
-     Manager creating a new local real variable : floretminimumn = 0.00000
-     Manager creating a new local real variable : leafminimumn = 0.00000
-     Manager creating a new local real variable : stemminimumn = 0.00000
-     Manager creating a new local real variable : tuberminimumn = 0.00000
 4 November 1992(Day of year=309), operations: 
       Sending apply message to fertiliser
 4 November 1992(Day of year=309), fertiliser: 
@@ -521,5 +491,5 @@ Paddock:
                             LAI = 5.22 (m^2/m^2)
            Above Ground Biomass = 2093.45 (g/m^2)
 Removing Leaves from plant
-1 June 1993(Day of year=152), clock: 
+2 June 1993(Day of year=153), clock: 
      Simulation is terminating due to end criteria being met.
