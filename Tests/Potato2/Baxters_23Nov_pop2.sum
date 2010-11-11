@@ -9,7 +9,7 @@
  The Agricultural Production Systems Simulator
              Copyright(c) APSRU               
 
-Version                = 7.2
+Version                = 7.3
 Title                  = Baxters_23Nov_pop2
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
@@ -51,7 +51,7 @@ Paddock:
         post
      Output variables:
         dd/mmm/yyyy
-        AccumTtSowing
+        AccumTtemerg
         StageCodeValue
         no3()
         nh4()
@@ -112,18 +112,18 @@ Paddock:
         LeafDeadN2
         LeafLiveN2
         StemDeadN
-        StemLiveNconc
+        StemLiveN
         TuberDeadN
-        TuberLiveNconc
-        GrainLiveNconc
+        TuberLiveN
+        GrainLiveN
         GrainDeadN
-        FloretLiveNconc
+        FloretLiveN
         FloretDeadN
-        GrainLiveNconcconc
-        FloretLiveNconcconc
-        TuberLiveNconcconc
+        GrainLiveNconc
+        FloretLiveNconc
+        TuberLiveNconc
         LeafNpercent
-        StemLiveNconcconc
+        StemliveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -156,16 +156,16 @@ Paddock:
         GrainPartitionFractionValue
         FloretPartitionFractionValue
         RootPartitionFractionValue
-        GrainMinimumNconcValue
-        FloretMinimumNconcValue
-        LeafMinimumNconcValue
-        StemMinimumNconcValue
-        TuberMinimumNconcValue
-        GrainMaximumNconcValue
-        FloretMaximumNconcValue
-        LeafMaximumNconcValue
-        StemMaximumNconcValue
-        TuberMaximumNconcValue
+        GrainStructuralNConcValue
+        FloretStructuralNConcValue
+        LeafMinimumNConcValue
+        StemStructuralNConcValue
+        TuberStructuralNConcValue
+        GrainMaximumNConcValue
+        FloretMaximumNConcValue
+        LeafMaximumNConcValue
+        StemMaximumNConcValue
+        TuberMaximumNConcValue
 
      Output file = Baxters_23Nov_pop2 Plant2 diagnostic variables.out
      Format = normal
@@ -247,12 +247,8 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     grainnpercent = 0
-     floretnpercent = 0
-     tubernpercent = 0
-     stemnpercent = 0
      leafnpercent = 0
-     accumttsowing = 0
+     accumttemerg = 0
      
      SECTION:- start_of_day
      if simday = 1 then
@@ -282,7 +278,7 @@ Paddock:
      leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
      endif
      if potato2.stagecodevalue >= 3 then
-     accumttsowing = accumttsowing + potato2.phenologythermaltimevalue
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
      
      SECTION:- end_of_day
@@ -311,12 +307,8 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : grainnpercent = 0.00000
-     Manager creating a new local real variable : floretnpercent = 0.00000
-     Manager creating a new local real variable : tubernpercent = 0.00000
-     Manager creating a new local real variable : stemnpercent = 0.00000
      Manager creating a new local real variable : leafnpercent = 0.00000
-     Manager creating a new local real variable : accumttsowing = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -495,11 +487,11 @@ Paddock:
 30 December 1998(Day of year=364), operations: 
       Sending apply message to irrigation
 5/01/1999 - FloralInitiation
-                            LAI = 2.33 (m^2/m^2)
-           Above Ground Biomass = 143.58 (g/m^2)
+                            LAI = 2.51 (m^2/m^2)
+           Above Ground Biomass = 154.53 (g/m^2)
 6/01/1999 - TuberInitiation
-                            LAI = 2.60 (m^2/m^2)
-           Above Ground Biomass = 160.29 (g/m^2)
+                            LAI = 2.82 (m^2/m^2)
+           Above Ground Biomass = 173.96 (g/m^2)
 7 January 1999(Day of year=7), operations: 
       Sending apply message to irrigation
 21 January 1999(Day of year=21), operations: 
@@ -508,11 +500,71 @@ Paddock:
       Sending apply message to irrigation
 19 February 1999(Day of year=50), operations: 
       Sending apply message to irrigation
+27/02/1999 - FinalLeaf
+                            LAI = 4.14 (m^2/m^2)
+           Above Ground Biomass = 1394.61 (g/m^2)
 9 March 1999(Day of year=68), operations: 
       Sending apply message to irrigation
-16/03/1999 - FinalLeaf
-                            LAI = 3.47 (m^2/m^2)
-           Above Ground Biomass = 1633.78 (g/m^2)
 Removing Leaves from plant
+15/05/1999 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 1741.03 (g/m^2)
+15/05/1999 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 1741.03 (g/m^2)
+15 May 1999(Day of year=135), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+16 May 1999(Day of year=136), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+17 May 1999(Day of year=137), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+18 May 1999(Day of year=138), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+19 May 1999(Day of year=139), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+20 May 1999(Day of year=140), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+21 May 1999(Day of year=141), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+22 May 1999(Day of year=142), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+23 May 1999(Day of year=143), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+24 May 1999(Day of year=144), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+25 May 1999(Day of year=145), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+26 May 1999(Day of year=146), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+27 May 1999(Day of year=147), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+28 May 1999(Day of year=148), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+29 May 1999(Day of year=149), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+30 May 1999(Day of year=150), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+31 May 1999(Day of year=151), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+1 June 1999(Day of year=152), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
 1 June 1999(Day of year=152), clock: 
      Simulation is terminating due to end criteria being met.
