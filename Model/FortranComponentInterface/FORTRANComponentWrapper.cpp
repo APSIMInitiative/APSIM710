@@ -1575,6 +1575,23 @@ extern "C" void EXPORT STDCALL change_component_order
    FortranWrapper::currentInstance->changeComponentOrder(names);
    }
 
+// ------------------------------------------------------------------
+// Provide access to a method for converting a string to a floating point numeric 
+// which should be noticeably faster than a Fortran internal read (especially with gfortran)
+// ------------------------------------------------------------------
+extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsigned strLength)
+{
+	const int MAX_CHARS=30;
+	char buf[MAX_CHARS + 1];
+	char* endPtr;
+	int nChars = min(MAX_CHARS, strLength);
+	memcpy(buf, str, nChars);
+	buf[nChars] = '\0';
+	double result = strtod(buf, &endPtr);
+	*ok = endPtr != buf;
+	return result;
+}
+   
 // restore the warnings about "Functions containing for are not expanded inline.
 #pragma warn .inl
 
