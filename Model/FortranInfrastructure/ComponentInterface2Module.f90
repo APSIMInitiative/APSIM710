@@ -582,6 +582,13 @@ module ComponentInterface2Module
        integer, intent(in)              :: numvals
        end subroutine change_component_order
 
+       function string_to_float(inString, isOk)
+       ml_external string_to_float
+       character (len=*), intent(in) :: inString
+       logical*1, intent(out)        :: isOk
+       double precision string_to_float
+       end function string_to_float	   
+	   
    end interface
 
 end module ComponentInterface2Module

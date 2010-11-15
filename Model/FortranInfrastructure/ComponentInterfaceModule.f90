@@ -710,7 +710,7 @@ module ComponentInterfaceModule
        end subroutine get_fq_name
 	   
        function string_to_float(inString, isOk)
-       ml_external add_registration
+       ml_external string_to_float
        character (len=*), intent(in) :: inString
        logical*1, intent(out)        :: isOk
        double precision string_to_float
