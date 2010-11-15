@@ -87,7 +87,6 @@
       real extinction_coef
       real crown_cover
       real radn_int
-      real day_length
       real adm_green(max_part),
      :      adm_sen(max_part),
      :      adm_dead(max_part)
@@ -1634,12 +1633,6 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :               variable_name     ! variable name
      :              ,'(g/m^2)'         ! variable units
      :              ,sum_real_array (temp, 3))
-
-      elseif (variable_name .eq. 'day_length') then
-         call respond2get_real_var (
-     :               variable_name     ! variable name
-     :              ,'(h)'         ! variable units
-     :              ,g%day_length)
 
       else
          call Message_Unused ()
