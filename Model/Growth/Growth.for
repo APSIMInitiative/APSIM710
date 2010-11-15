@@ -70,6 +70,7 @@
       real Fage
       real Ffasw
       real Fdl
+      real Fd
       real Frgr
       real Cum_Stress
       real Flai
@@ -86,6 +87,7 @@
       real extinction_coef
       real crown_cover
       real radn_int
+      real day_length
       real adm_green(max_part),
      :      adm_sen(max_part),
      :      adm_dead(max_part)
@@ -104,6 +106,7 @@
       real an_green(max_part), bn_green(max_part)
       REAL an_demand(max_part), bn_demand(max_part)
       real dlt_an_green(max_part), dlt_bn_green(max_part)
+      real dlt_an_green_fix(max_part), dlt_bn_green_fix(max_part)
       real an_sen(max_part), bn_sen(max_part)
       real dlt_an_sen(max_part), dlt_bn_sen(max_part)
       real dlt_an_detached(max_part), dlt_bn_detached(max_part)
@@ -118,7 +121,7 @@
       real root_length (max_layer), dlt_root_length(max_layer)
       real dlt_root_length_sen(max_layer)
       real root_mass, dlt_root_mass, dlt_root_mass_sen
-      real root_n, dlt_root_n, dlt_root_n_sen
+      real root_n, dlt_root_n, dlt_root_n_fix, dlt_root_n_sen
       real root_depth, dlt_root_depth
       real root_n_demand
 
@@ -127,9 +130,10 @@
       real slai, foliage_mass_sen, foliage_n_Sen
       real dlt_lai, dlt_lai_sen, dlt_lai_sen_detached
       real dlt_foliage_mass, dlt_foliage_mass_sen
-      real dlt_foliage_n, dlt_foliage_n_sen
+      real dlt_foliage_n, dlt_foliage_n_fix, dlt_foliage_n_sen
       real dlt_foliage_mass_detached, dlt_foliage_n_detached
       real foliage_n_Demand
+      real retranslocation_fract
 
 
       end type GrowthGlobals
@@ -206,6 +210,7 @@
      :           ,y_bdm_sen(max_table,max_part)
       real adm_sen_detach_frac(max_table)
      :           ,bdm_sen_detach_frac(max_table)
+      real x_adm(max_table), y_fixation(max_table)
       real self_thinning_coef, self_thinning_power, self_thin_size
       real crit_cum_stress, mortality_rate, mortality_age,
      :     mortality_size
@@ -237,6 +242,7 @@
       integer num_Age
       integer num_lai_extinction_coef
       integer num_lai_crown_cover
+      integer num_adm
 
       character above_gnd_parts(max_part)*32
       character below_gnd_parts(max_part)*32
@@ -548,6 +554,7 @@
       g%Fw = 0.0
       g%Fvpd = 0.0
       g%Fn = 0.0
+      g%Fd = 1.0
       g%Fage = 0.0
       g%Frgr = 0.0
       g%Cum_Stress = 0.0
@@ -593,6 +600,9 @@
       g%bn_demand(:) = 0.0
       g%dlt_an_green(:) = 0.0
       g%dlt_bn_green(:) = 0.0
+      g%dlt_an_green_fix(:) = 0.0
+      g%dlt_bn_green_fix(:) = 0.0
+
       g%an_sen(:) = 0.0
       g%bn_sen(:) = 0.0
       g%dlt_an_sen(:) = 0.0
@@ -608,7 +618,7 @@
       g%year = 0
 
       g%plant_status = ' '
-
+      g%retranslocation_fract = 0.0
 
       g%root_length (:) = 0.0
       g%dlt_root_length(:) = 0.0
@@ -618,6 +628,7 @@
       g%dlt_root_mass_sen = 0.0
       g%root_n = 0.0
       g%dlt_root_n = 0.0
+      g%dlt_root_n_fix = 0.0
       g%dlt_root_n_sen = 0.0
       g%root_depth = 0.0
       g%dlt_root_depth = 0.0
@@ -636,12 +647,16 @@
       g%dlt_foliage_mass = 0.0
       g%dlt_foliage_mass_sen = 0.0
       g%dlt_foliage_n = 0.0
+      g%dlt_foliage_n_fix = 0.0
       g%dlt_foliage_n_sen = 0.0
       g%dlt_foliage_mass_detached = 0.0
       g%dlt_foliage_n_detached = 0.0
       g%foliage_n_Demand = 0.0
 
       g%plant_status = status_out
+
+      call fill_real_array(c%x_adm,            0.0, max_table)
+      call fill_real_array(c%y_fixation,       0.0, max_table)
 
       call pop_routine (myname)
       return
@@ -689,7 +704,7 @@
      :     ,'(oC)'          ! Units                (Not Used)
      :     ,g%soilt        ! Variable
      :     ,numvals         ! Number of values returned
-     :     ,-10.0             ! Lower Limit for bound checking
+     :     ,-15.0             ! Lower Limit for bound checking
      :     ,100.0)          ! Upper Limit for bound checking
 
       call Get_real_array (
@@ -833,6 +848,19 @@
      :              ,'(kg/ha)'           ! variable units
      :              ,g%dlt_bn_green         ! variable
      :              ,max(1,c%num_below_gnd_parts))
+      elseif (variable_name .eq. 'dlt_an_green_fix') then
+          call respond2get_real_array (
+     :               variable_name     ! variable name
+     :              ,'(kg/ha)'           ! variable units
+     :              ,g%dlt_an_green_fix         ! variable
+     :              ,max(1,c%num_above_gnd_parts))
+      elseif (variable_name .eq. 'dlt_bn_green_fix') then
+          call respond2get_real_array (
+     :               variable_name     ! variable name
+     :              ,'(kg/ha)'           ! variable units
+     :              ,g%dlt_bn_green_fix         ! variable
+     :              ,max(1,c%num_below_gnd_parts))
+
       elseif (variable_name .eq. 'dlt_root_n') then
           call respond2get_real_var (
      :               variable_name     ! variable name
@@ -843,6 +871,17 @@
      :               variable_name     ! variable name
      :              ,'(kg/ha)'           ! variable units
      :              ,g%dlt_foliage_n)         ! variable
+      elseif (variable_name .eq. 'dlt_root_n_fix') then
+          call respond2get_real_var (
+     :               variable_name     ! variable name
+     :              ,'(kg/ha)'           ! variable units
+     :              ,g%dlt_root_n_fix)         ! variable
+      elseif (variable_name .eq. 'dlt_foliage_n_fix') then
+          call respond2get_real_var (
+     :               variable_name     ! variable name
+     :              ,'(kg/ha)'           ! variable units
+     :              ,g%dlt_foliage_n_fix)         ! variable
+
       elseif (variable_name .eq. 'dlt_foliage_mass_sen') then
           call respond2get_real_var (
      :               variable_name     ! variable name
@@ -1174,6 +1213,20 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,'(0-1)'              ! variable units
      :              ,g%Ff) ! variable
 
+      elseif (variable_name .eq. 'fd') then
+
+         call respond2get_real_var (
+     :               variable_name       ! variable name
+     :              ,'(0-1)'              ! variable units
+     :              ,g%Fd) ! variable
+
+      elseif (variable_name .eq. 'retranslocation_fract') then
+
+         call respond2get_real_var (
+     :               variable_name       ! variable name
+     :              ,'()'              ! variable units
+     :              ,g%retranslocation_fract) ! variable
+
       elseif (variable_name .eq. 'fage') then
 
          call respond2get_real_var (
@@ -1377,6 +1430,19 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,'(kg/ha)'           ! variable units
      :              ,total_n)            ! variable
 
+      elseif (variable_name .eq. 'dlt_n_fix_total') then
+
+         total_n = g%dlt_root_n_fix
+     :           + g%dlt_foliage_n_fix
+     :           + sum_real_array(g%dlt_an_green_fix
+     :                           ,c%num_above_gnd_parts)
+     :           + sum_real_array(g%dlt_bn_green_fix
+     :                           ,c%num_below_gnd_parts)
+
+         call respond2get_real_var (
+     :               variable_name       ! variable name
+     :              ,'(kg/ha)'           ! variable units
+     :              ,total_n)            ! variable
       elseif (variable_name .eq. 'dlt_an_uptake_total') then
 
          total_n = g%dlt_foliage_n
@@ -1462,7 +1528,8 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :              ,g%height)         ! variable
 
       elseif (variable_name .eq. 'no3_demand') then
-         if (p%n_uptake_source .eq. 'apsim') then
+         if (p%n_uptake_source .eq. 'apsim' .or.
+     :       p%n_uptake_source .eq. 'swim3') then
             call respond2get_real_var (
      :               variable_name     ! variable name
      :              ,'(kg/ha)'         ! variable units
@@ -1567,6 +1634,12 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :               variable_name     ! variable name
      :              ,'(g/m^2)'         ! variable units
      :              ,sum_real_array (temp, 3))
+
+      elseif (variable_name .eq. 'day_length') then
+         call respond2get_real_var (
+     :               variable_name     ! variable name
+     :              ,'(h)'         ! variable units
+     :              ,g%day_length)
 
       else
          call Message_Unused ()
@@ -1726,27 +1799,47 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
 
 *+  Local Variables
       integer    numvals               ! number of values read
+      real dummy(max_layer)
 
 *- Implementation Section ----------------------------------
 
       call push_routine (myname)
 
 
-      call read_char_var (
+      p%uptake_source = 'calc'
+      call read_char_var_optional (
      :           section_name         ! Section header
      :          ,'uptake_source'      ! Keyword
      :          ,'()'                 ! Units
      :          ,p%uptake_source      ! Array
      :          ,numvals)             ! Number of values returned
+      if (numvals.eq.0) then
+         ! nothing in our parameters - see if swim3 is plugged in
+         call get_real_var_optional(unknown_module
+     :                              ,'swim3'
+     :                              ,'()'
+     :                              ,dummy(1)
+     :                              ,numvals
+     :                              ,0.0
+     :                              ,1.0)
+         if (numvals .gt. 0) then
+           p%uptake_source = 'swim3'
+         endif  
+      endif
 
-
-      call read_char_var (
+      p%n_uptake_source = 'calc'
+      call read_char_var_optional (
      :           section_name         ! Section header
      :          ,'n_uptake_source'    ! Keyword
      :          ,'()'                 ! Units
      :          ,p%n_uptake_source    ! Array
      :          ,numvals)             ! Number of values returned
-
+      if (numvals.eq.0) then
+         ! nothing in our parameters - see if swim3 is plugged in
+         if (p%uptake_source .eq. 'swim3') then
+           p%n_uptake_source = 'swim3'
+         endif  
+      endif
 
       call read_real_var_optional (
      :           section_name         ! Section header
@@ -2616,6 +2709,18 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :          ,0.0                  ! Lower Limit for bound check
      :          ,10.0)                 ! Upper Limit for bound check
 
+      !Fixation caluclation
+      call read_real_array (section_name
+     :                     , 'x_adm', max_table, '(kg/ha)'
+     :                     , c%x_adm, c%num_adm
+     :                     , 0.0, 100000.0)
+
+      call read_real_array (section_name
+     :                     , 'y_fixation', max_table, '(kg/ha)'
+     :                     , c%y_fixation, c%num_adm
+     :                     , 0.0, 100.0)
+
+
       call pop_routine  (myname)
       return
       end subroutine
@@ -2657,6 +2762,25 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :            ,numvals              ! number of elements returned
      :            ,0.0                  ! lower limit for bound check
      :            ,1.0)                 ! upper limit for bound check
+
+      elseif (variable_name.eq.'fd') then
+
+         call collect_real_var (
+     :             variable_name        ! variable name
+     :            ,'()'                 ! units
+     :            ,g%Fd                 ! variable
+     :            ,numvals              ! number of elements returned
+     :            ,0.0                  ! lower limit for bound check
+     :            ,1.0)                 ! upper limit for bound check
+
+      elseif (variable_name .eq. 'retranslocation_fract') then
+
+         call collect_real_var (
+     :               variable_name         ! variable name
+     :            ,'()'                    ! units
+     :            ,g%retranslocation_fract ! variable
+     :            ,numvals, -1.0, 1.0)     ! number of elements returned
+
 
       else
          ! Don't know this variable name
@@ -2784,6 +2908,7 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :               ,g%Fvpd
      :               ,g%Ff
      :               ,g%Fage
+     :               ,g%Fd
      :               ,g%Frgr
      :               )
 
@@ -2887,8 +3012,9 @@ c   Needs to wait until we put reads into create phase
                 ! Using site index - do not take up N
              endif
 
-          elseif (p%n_uptake_source.eq.'apsim') then
-             call Growth_get_n_uptake_variables()
+          elseif (p%n_uptake_source.eq.'apsim' .or. 
+     :            p%n_uptake_source .eq. 'swim3') then
+              call Growth_get_n_uptake_variables()
 
           else
           endif
@@ -2917,6 +3043,9 @@ c   Needs to wait until we put reads into create phase
           endif
 
           call Growth_n_partition()
+          call Growth_n_fixation()
+
+          call Growth_bud_retranslocation()
 
           call Growth_process_foliage()
           call Growth_process_root()
@@ -3442,6 +3571,7 @@ cvs      num_layers = count_of_real_vals(g%root_length, max_layer)
       g%an_Demand = 0.0
       g%bn_demand = 0.0
       g%dlt_an_green = 0.0
+      g%dlt_an_green_fix = 0.0
       g%dlt_an_sen = 0.0
       g%dlt_an_dead = 0.0
       g%dlt_an_detached = 0.0
@@ -3452,6 +3582,7 @@ cvs      num_layers = count_of_real_vals(g%root_length, max_layer)
       g%dlt_bdm_detached = 0.0
 
       g%dlt_bn_green = 0.0
+      g%dlt_bn_green_fix = 0.0
       g%dlt_bn_sen = 0.0
       g%dlt_bn_dead = 0.0
       g%dlt_bn_detached = 0.0
@@ -3467,6 +3598,7 @@ cvs      num_layers = count_of_real_vals(g%root_length, max_layer)
       g%dlt_foliage_mass_sen = 0.0
       g%foliage_n_Demand = 0.0
       g%dlt_foliage_n = 0.0
+      g%dlt_foliage_n_fix = 0.0
       g%dlt_foliage_n_sen = 0.0
       g%dlt_foliage_mass_detached = 0.0
       g%dlt_foliage_n_detached = 0.0
@@ -3823,6 +3955,7 @@ c     :                 , c_num_av_temp)
      :               ,g_Fvpd
      :               ,g_Ff
      :               ,g_Fage
+     :               ,g_Fd
      :               ,g_Frgr
      :               )
 *     ===========================================================
@@ -3836,6 +3969,7 @@ c     :                 , c_num_av_temp)
       real g_Ff   ! (INPUT)
       real g_Ffasw! (INPUT)
       real g_Fage ! (INPUT)
+      real g_Fd   ! (INPUT)
       real g_Frgr ! (OUTPUT)
 
 *+  Purpose
@@ -3856,7 +3990,7 @@ c     :                 , c_num_av_temp)
       ! note leaving Ff out for now - use it only in leaf death
       ! Ffasw is used only for root:shoot partitioning
 
-      g_Frgr = min(g_Ft, g_Fn, g_Fvpd, g_Fage)
+      g_Frgr = min(g_Ft, g_Fn, g_Fvpd, g_Fage, g_Fd)
 
       call pop_routine (my_name)
       return
@@ -5251,6 +5385,78 @@ cvs adding the rest to foliage.
       end subroutine
 
 *     ===========================================================
+      subroutine Growth_n_fixation ()
+*     ===========================================================
+
+      implicit none
+
+*+  Purpose
+*       Calculate N Fixation
+
+*+  Local Variables
+      integer part
+      real tot_demand
+      real tot_nsupply
+      real fraction
+      real tot_soil_supply
+      real Unmet_demand
+      real Fixation
+      real adm
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'Growth_n_fixation')
+
+*- Implementation Section ----------------------------------
+      call push_routine (my_name)
+
+      if (p%site_index.eq.0.0) then
+         tot_nsupply = abs(sum_real_array(g%dlt_no3, max_layer))
+      else
+         tot_nsupply = g%no3_demand
+      endif
+
+      tot_demand =      g%foliage_n_demand
+     :                + sum_real_array (g%an_demand, max_part)
+     :                + sum_real_array (g%bn_demand, max_part)
+     :                + g%root_n_demand
+      tot_soil_supply = g%dlt_foliage_n
+     :                + sum_real_array (g%dlt_an_green, max_part)
+     :                + sum_real_array (g%dlt_bn_green, max_part)
+     :                + g%dlt_root_n
+
+      Unmet_demand = max(0.0, tot_demand - tot_soil_supply)
+
+      adm = sum_Real_array(g%adm_Green,c%num_above_gnd_parts)
+     :    + g%foliage_mass
+      Fixation = linear_interp_real(adm,c%x_adm
+     :                             ,c%y_fixation,c%num_adm)
+      Fixation = min(Fixation, Unmet_demand)
+
+
+      fraction = divide(Fixation,Unmet_demand,0.0)
+      fraction = u_bound (fraction, 1.0)
+
+      do 300 part = 1, c%num_above_gnd_parts
+         g%dlt_an_green_fix(part)
+     :      = (g%an_demand(part)-g%dlt_an_green(part))*fraction
+  300 continue
+
+      do 400 part = 1, c%num_below_gnd_parts
+         g%dlt_bn_green_fix(part)
+     :      = (g%bn_demand(part)-g%dlt_bn_green(part))*fraction
+  400 continue
+
+      g%dlt_root_n_fix = (g%root_n_demand- g%dlt_root_n)* fraction
+
+      g%dlt_foliage_n_fix = (g%foliage_n_demand-g%dlt_foliage_n)
+     :                    * fraction
+
+      call pop_routine (my_name)
+      return
+      end subroutine
+
+*     ===========================================================
       subroutine Growth_n_demand (dlt_dm_pot_rue
      :                           ,foliage_n_demand
      :                           ,root_n_demand
@@ -5469,8 +5675,6 @@ c         NO3_diffn = divide (NO3_diffn, c%NO3_diffn_const, 0.0)
          dlt_NO3(layer) = - NO3_uptake
 
 1100  continue
-      pause
-
 
       call pop_routine (my_name)
       return
@@ -6011,6 +6215,7 @@ c         NO3_diffn = divide (NO3_diffn, c%NO3_diffn_const, 0.0)
 
       g%foliage_n = g%foliage_n
      :            + g%dlt_foliage_n
+     :            + g%dlt_foliage_n_fix
      :            - g%dlt_foliage_n_sen
 
 
@@ -6084,6 +6289,7 @@ c         NO3_diffn = divide (NO3_diffn, c%NO3_diffn_const, 0.0)
      :               - g%dlt_root_mass_sen
       g%root_n = g%root_n
      :         + g%dlt_root_n
+     :         + g%dlt_root_n_fix
      :         - g%dlt_root_n_sen
 
       call add_real_array (g%dlt_root_length
@@ -6169,6 +6375,9 @@ c         NO3_diffn = divide (NO3_diffn, c%NO3_diffn_const, 0.0)
       ! =============================
       call add_real_array (g%dlt_an_green, g%an_green, max_part)
       call add_real_array (g%dlt_bn_green, g%bn_green, max_part)
+      call add_real_array (g%dlt_an_green_fix, g%an_green, max_part)
+      call add_real_array (g%dlt_bn_green_fix, g%bn_green, max_part)
+
       call subtract_real_array (g%dlt_an_sen, g%an_green, max_part)
       call subtract_real_array (g%dlt_bn_sen, g%bn_green, max_part)
       call subtract_real_array (g%dlt_an_dead, g%an_green, max_part)
@@ -6355,6 +6564,78 @@ c         NO3_diffn = divide (NO3_diffn, c%NO3_diffn_const, 0.0)
       end subroutine
 
 *     ===========================================================
+      subroutine Growth_bud_retranslocation ()
+*     ===========================================================
+
+      implicit none
+
+*+  Purpose
+*       Calculate today's retranslocation to / from buds
+
+*+  Changes
+*       250500 nih
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'Growth_bud_retranslocation')
+
+*+  Local Variables
+      integer budpart
+      real dlt_dm, dlt_n
+
+
+*- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+      if (abs(g%retranslocation_fract) .ge. 0.01) then
+
+         budpart = 1
+         do while (budpart .LE. c%num_above_gnd_parts .AND.
+     :             c%above_gnd_parts(budpart) .NE. 'bud')
+            budpart = budpart + 1
+         end do
+         if (budpart .gt. c%num_above_gnd_parts) then
+            call fatal_error(err_user, 'Cant find a bud to fill')
+         endif
+
+         if (g%retranslocation_fract .gt. 0.0) then
+            ! Take DM and N from leaves to buds
+            dlt_dm = g%dlt_foliage_mass * g%retranslocation_fract
+
+            g%dlt_adm_green(budpart) = g%dlt_adm_green(budpart) +
+     :                                 dlt_dm
+            g%dlt_foliage_mass = g%dlt_foliage_mass - dlt_dm
+
+            dlt_n = g%dlt_foliage_n * g%retranslocation_fract
+            g%dlt_an_green(budpart) = g%dlt_an_green(budpart) +
+     :                                 dlt_n
+            g%dlt_foliage_n = g%dlt_foliage_n - dlt_n
+
+         elseif (g%retranslocation_fract .lt. 0.0) then
+
+            ! Take DM and N from buds to leaves
+            dlt_dm = g%adm_green(budpart) *
+     :                   abs(g%retranslocation_fract)
+
+            g%dlt_foliage_mass = g%dlt_foliage_mass + dlt_dm
+            g%dlt_adm_green(budpart) = g%dlt_adm_green(budpart) -
+     :                                 dlt_dm
+
+            dlt_n = g%an_green(budpart) *
+     :                   abs(g%retranslocation_fract)
+            g%dlt_foliage_n = g%dlt_foliage_n + dlt_n
+            g%dlt_an_green(budpart) = g%dlt_an_green(budpart) -
+     :                                 dlt_n
+
+         endif
+      endif
+
+      call pop_routine (my_name)
+      return
+      end subroutine
+
+
+*     ===========================================================
       subroutine Growth_crown_cover
      :               (
      :                G_LAI
@@ -6533,6 +6814,7 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
      :               ,g%Fvpd
      :               ,g%Ff
      :               ,g%Fage
+     :               ,g%Fd
      :               ,g%Frgr
      :               )
         else

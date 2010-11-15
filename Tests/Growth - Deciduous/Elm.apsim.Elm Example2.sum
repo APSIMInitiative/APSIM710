@@ -1,0 +1,1495 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Example Deciduous Tree Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                      "report2" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                          "Elm" = %apsim%\Model\growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2003
+     Simulation end date   =  5/12/2006
+     Time step =           = 1440 (mins)
+
+------- report2 Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        clock.year
+        clock.month
+        clock.day
+        Elm.foliage_mass
+        Elm.adm_green(4) as bud
+        Elm.Fd
+        Elm.retranslocation_fract
+        Elm.dlt_tt
+        Elm.day_length
+
+     Output file = ElmGrowth.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Yangibazar.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 94 and year = 2003 then
+        elm establish plants = 5700., init_section = seedling
+        fertiliser apply amount = 0.0, type = no3_n, depth = 50
+     endif
+     if day = 270 then
+        elm set retranslocation_fract = 1.0
+     endif
+     if day = 305 then
+        litter_dm = (foliage_mass + foliage_mass_sen)
+        litter_n = (foliage_n + foliage_n_sen)
+        surfaceom add_surfaceom mass = litter_dm, n = litter_n, p=0, name = elm
+        elm cut foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+        elm set fd = 0.0
+        elm set retranslocation_fract = 0.0
+     endif
+     if day = 56 then
+        elm set fd = 1.0
+        elm set retranslocation_fract = -0.5
+     endif
+     if (elm.retranslocation_fract < 0.0 and
+         elm.adm_green(4) <= 10.0) then
+        elm set retranslocation_fract = 0.0
+     endif
+     END of rules
+     
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.33  0.272  0.091  0.272  0.390
+            25.0  1.33  0.272  0.091  0.272  0.390
+            70.0  1.33  0.272  0.091  0.272  0.390
+           125.0  1.33  0.272  0.091  0.272  0.390
+           175.0  1.35  0.330  0.134  0.330  0.450
+           200.0  1.37  0.340  0.143  0.340  0.458
+           200.0  1.40  0.334  0.102  0.334  0.438
+           150.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+           150.0  1.42  0.397  0.164  0.397  0.440
+           200.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.2719978     -0.100      0.080
+            10.0  soil2         0.2719978     -0.100      0.080
+            50.0  soil3         0.2719978     -0.100      0.080
+           150.0  soil4         0.2719978     -0.100      0.080
+           300.0  soil5         0.3299988     -0.100      0.080
+           500.0  soil6         0.3399984     -0.100      0.080
+           700.0  soil7         0.3339998     -0.100      0.080
+           900.0  soil8         0.3971026     -0.100      0.080
+          1000.0  soil9         0.3971026     -0.100      0.080
+          1100.0  soil10        0.3971026     -0.100      0.080
+          1300.0  soil11        0.3971026     -0.100      0.080
+          1500.0  soil12        0.3971026     -0.100      0.080
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.09073    0.09073    0.09073    0.09073    0.13354    0.14326    0.10156
+            -1.00 |    0.16972    0.16972    0.16972    0.16972    0.22577    0.23705    0.19888
+            -0.10 |    0.27200    0.27200    0.27200    0.27200    0.33000    0.34000    0.33400
+            -0.01 |    0.38452    0.38452    0.38452    0.38452    0.44274    0.45043    0.43597
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021
+            -0.01 |    0.05644    0.05644    0.05644    0.05644    0.05031    0.04878    0.06739
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-06 .100E-06 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified potential
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          elm       elm              0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Note - APSwim will not redistribute urea
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.70  0.58    0.33    0.00    0.00
+             2     7.70  0.58    1.66    0.00    0.00
+             3     7.70  0.58    4.66    0.00    0.00
+             4     7.70  0.58    8.31    0.00    0.00
+             5     7.70  0.58   11.81    0.00    0.00
+             6     8.00  0.42   13.70    0.00    0.00
+             7     8.00  0.42   14.00    0.00    0.00
+             8     8.00  0.42   10.65    0.00    0.00
+             9     8.60  0.23    1.42    0.00    0.00
+            10     8.60  0.23    2.13    0.00    0.00
+            11     8.60  0.23    2.84    0.00    0.00
+            12     8.60  0.17    1.42    0.00    0.00
+          ------------------------------------------------
+           Totals               72.93    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        376.6    26.0     9.1     1.1    82.3     4.1
+             2       1882.8   129.9    45.7     5.7    78.3     3.9
+             3       5272.0   363.6   127.8    16.0    68.0     3.4
+             4       9414.2   649.3   228.3    28.5    53.0     2.6
+             5      13378.1   922.6   324.4    40.5    37.3     1.9
+             6      11311.5   780.1   196.5    24.6    25.0     1.3
+             7      11587.9   799.2   172.1    21.5    16.8     0.8
+             8       8815.1   607.9   130.9    16.4    12.4     0.6
+             9       3226.2   222.5    39.8     5.0    10.2     0.5
+            10       4862.8   335.4    36.2     4.5     7.5     0.4
+            11       6493.4   447.8    38.6     4.8     5.1     0.3
+            12       2404.4   165.8     9.6     1.2     4.1     0.2
+          ---------------------------------------------------------
+           Totals   79025.1  5450.0  1358.9   169.9   400.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+4 April 2003(Day of year=94), manager: 
+     Manager sending message :- elm establish  plants = 5700., init_section = seedling
+4 April 2003(Day of year=94), Elm: 
+     Establishing
+     Manager sending message :- fertiliser apply  amount = 0.0, type = no3_n, depth = 50
+1 November 2003(Day of year=305), manager: 
+     Manager creating a new local real variable : litter_dm = 589.63538
+     Manager creating a new local real variable : litter_n = 19.32162
+     Manager sending message :- surfaceom add_surfaceom  mass = 589.63538, n = 19.32162, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+31 October 2004(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 4342.76758, n = 139.23511, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2005(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 7051.27002, n = 201.14427, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2006(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 6181.36963, n = 175.96837, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+5 December 2006(Day of year=339), clock: 
+     Simulation is terminating due to end criteria being met.
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Example Deciduous Tree Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                      "report2" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                          "Elm" = %apsim%\Model\growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2003
+     Simulation end date   =  5/12/2006
+     Time step =           = 1440 (mins)
+
+------- report2 Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        clock.year
+        clock.month
+        clock.day
+        Elm.foliage_mass
+        Elm.adm_green(4) as bud
+        Elm.Fd
+        Elm.retranslocation_fract
+        Elm.dlt_tt
+        Elm.day_length
+
+     Output file = ElmGrowth.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Yangibazar.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 94 and year = 2003 then
+        elm establish plants = 5700., init_section = seedling
+        fertiliser apply amount = 0.0, type = no3_n, depth = 50
+     endif
+     if day = 270 then
+        elm set retranslocation_fract = 1.0
+     endif
+     if day = 305 then
+        litter_dm = (foliage_mass + foliage_mass_sen)
+        litter_n = (foliage_n + foliage_n_sen)
+        surfaceom add_surfaceom mass = litter_dm, n = litter_n, p=0, name = elm
+        elm cut foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+        elm set fd = 0.0
+        elm set retranslocation_fract = 0.0
+     endif
+     if day = 56 then
+        elm set fd = 1.0
+        elm set retranslocation_fract = -0.5
+     endif
+     if (elm.retranslocation_fract < 0.0 and
+         elm.adm_green(4) <= 10.0) then
+        elm set retranslocation_fract = 0.0
+     endif
+     END of rules
+     
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.33  0.272  0.091  0.272  0.390
+            25.0  1.33  0.272  0.091  0.272  0.390
+            70.0  1.33  0.272  0.091  0.272  0.390
+           125.0  1.33  0.272  0.091  0.272  0.390
+           175.0  1.35  0.330  0.134  0.330  0.450
+           200.0  1.37  0.340  0.143  0.340  0.458
+           200.0  1.40  0.334  0.102  0.334  0.438
+           150.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+           150.0  1.42  0.397  0.164  0.397  0.440
+           200.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.2719978     -0.100      0.080
+            10.0  soil2         0.2719978     -0.100      0.080
+            50.0  soil3         0.2719978     -0.100      0.080
+           150.0  soil4         0.2719978     -0.100      0.080
+           300.0  soil5         0.3299988     -0.100      0.080
+           500.0  soil6         0.3399984     -0.100      0.080
+           700.0  soil7         0.3339998     -0.100      0.080
+           900.0  soil8         0.3971026     -0.100      0.080
+          1000.0  soil9         0.3971026     -0.100      0.080
+          1100.0  soil10        0.3971026     -0.100      0.080
+          1300.0  soil11        0.3971026     -0.100      0.080
+          1500.0  soil12        0.3971026     -0.100      0.080
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.09073    0.09073    0.09073    0.09073    0.13354    0.14326    0.10156
+            -1.00 |    0.16972    0.16972    0.16972    0.16972    0.22577    0.23705    0.19888
+            -0.10 |    0.27200    0.27200    0.27200    0.27200    0.33000    0.34000    0.33400
+            -0.01 |    0.38452    0.38452    0.38452    0.38452    0.44274    0.45043    0.43597
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021
+            -0.01 |    0.05644    0.05644    0.05644    0.05644    0.05031    0.04878    0.06739
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-06 .100E-06 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified potential
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          elm       elm              0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Note - APSwim will not redistribute urea
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.70  0.58    0.33    0.00    0.00
+             2     7.70  0.58    1.66    0.00    0.00
+             3     7.70  0.58    4.66    0.00    0.00
+             4     7.70  0.58    8.31    0.00    0.00
+             5     7.70  0.58   11.81    0.00    0.00
+             6     8.00  0.42   13.70    0.00    0.00
+             7     8.00  0.42   14.00    0.00    0.00
+             8     8.00  0.42   10.65    0.00    0.00
+             9     8.60  0.23    1.42    0.00    0.00
+            10     8.60  0.23    2.13    0.00    0.00
+            11     8.60  0.23    2.84    0.00    0.00
+            12     8.60  0.17    1.42    0.00    0.00
+          ------------------------------------------------
+           Totals               72.93    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        376.6    26.0     9.1     1.1    82.3     4.1
+             2       1882.8   129.9    45.7     5.7    78.3     3.9
+             3       5272.0   363.6   127.8    16.0    68.0     3.4
+             4       9414.2   649.3   228.3    28.5    53.0     2.6
+             5      13378.1   922.6   324.4    40.5    37.3     1.9
+             6      11311.5   780.1   196.5    24.6    25.0     1.3
+             7      11587.9   799.2   172.1    21.5    16.8     0.8
+             8       8815.1   607.9   130.9    16.4    12.4     0.6
+             9       3226.2   222.5    39.8     5.0    10.2     0.5
+            10       4862.8   335.4    36.2     4.5     7.5     0.4
+            11       6493.4   447.8    38.6     4.8     5.1     0.3
+            12       2404.4   165.8     9.6     1.2     4.1     0.2
+          ---------------------------------------------------------
+           Totals   79025.1  5450.0  1358.9   169.9   400.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+4 April 2003(Day of year=94), manager: 
+     Manager sending message :- elm establish  plants = 5700., init_section = seedling
+4 April 2003(Day of year=94), Elm: 
+     Establishing
+     Manager sending message :- fertiliser apply  amount = 0.0, type = no3_n, depth = 50
+1 November 2003(Day of year=305), manager: 
+     Manager creating a new local real variable : litter_dm = 589.63538
+     Manager creating a new local real variable : litter_n = 19.32162
+     Manager sending message :- surfaceom add_surfaceom  mass = 589.63538, n = 19.32162, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+31 October 2004(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 4342.76758, n = 139.23511, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2005(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 7051.27002, n = 201.14427, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2006(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 6181.36963, n = 175.96837, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+5 December 2006(Day of year=339), clock: 
+     Simulation is terminating due to end criteria being met.
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Example Deciduous Tree Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                      "report2" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                          "Elm" = %apsim%\Model\growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2003
+     Simulation end date   =  5/12/2006
+     Time step =           = 1440 (mins)
+
+------- report2 Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        clock.year
+        clock.month
+        clock.day
+        Elm.foliage_mass
+        Elm.adm_green(4) as bud
+        Elm.Fd
+        Elm.retranslocation_fract
+        Elm.dlt_tt
+        Elm.day_length
+
+     Output file = ElmGrowth.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Yangibazar.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 94 and year = 2003 then
+        elm establish plants = 5700., init_section = seedling
+        fertiliser apply amount = 0.0, type = no3_n, depth = 50
+     endif
+     if day = 270 then
+        elm set retranslocation_fract = 1.0
+     endif
+     if day = 305 then
+        litter_dm = (foliage_mass + foliage_mass_sen)
+        litter_n = (foliage_n + foliage_n_sen)
+        surfaceom add_surfaceom mass = litter_dm, n = litter_n, p=0, name = elm
+        elm cut foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+        elm set fd = 0.0
+        elm set retranslocation_fract = 0.0
+     endif
+     if day = 56 then
+        elm set fd = 1.0
+        elm set retranslocation_fract = -0.5
+     endif
+     if (elm.retranslocation_fract < 0.0 and
+         elm.adm_green(4) <= 10.0) then
+        elm set retranslocation_fract = 0.0
+     endif
+     END of rules
+     
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.33  0.272  0.091  0.272  0.390
+            25.0  1.33  0.272  0.091  0.272  0.390
+            70.0  1.33  0.272  0.091  0.272  0.390
+           125.0  1.33  0.272  0.091  0.272  0.390
+           175.0  1.35  0.330  0.134  0.330  0.450
+           200.0  1.37  0.340  0.143  0.340  0.458
+           200.0  1.40  0.334  0.102  0.334  0.438
+           150.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+           150.0  1.42  0.397  0.164  0.397  0.440
+           200.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.2719978     -0.100      0.080
+            10.0  soil2         0.2719978     -0.100      0.080
+            50.0  soil3         0.2719978     -0.100      0.080
+           150.0  soil4         0.2719978     -0.100      0.080
+           300.0  soil5         0.3299988     -0.100      0.080
+           500.0  soil6         0.3399984     -0.100      0.080
+           700.0  soil7         0.3339998     -0.100      0.080
+           900.0  soil8         0.3971026     -0.100      0.080
+          1000.0  soil9         0.3971026     -0.100      0.080
+          1100.0  soil10        0.3971026     -0.100      0.080
+          1300.0  soil11        0.3971026     -0.100      0.080
+          1500.0  soil12        0.3971026     -0.100      0.080
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.09073    0.09073    0.09073    0.09073    0.13354    0.14326    0.10156
+            -1.00 |    0.16972    0.16972    0.16972    0.16972    0.22577    0.23705    0.19888
+            -0.10 |    0.27200    0.27200    0.27200    0.27200    0.33000    0.34000    0.33400
+            -0.01 |    0.38452    0.38452    0.38452    0.38452    0.44274    0.45043    0.43597
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021
+            -0.01 |    0.05644    0.05644    0.05644    0.05644    0.05031    0.04878    0.06739
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-06 .100E-06 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified potential
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          elm       elm              0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Note - APSwim will not redistribute urea
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.70  0.58    0.33    0.00    0.00
+             2     7.70  0.58    1.66    0.00    0.00
+             3     7.70  0.58    4.66    0.00    0.00
+             4     7.70  0.58    8.31    0.00    0.00
+             5     7.70  0.58   11.81    0.00    0.00
+             6     8.00  0.42   13.70    0.00    0.00
+             7     8.00  0.42   14.00    0.00    0.00
+             8     8.00  0.42   10.65    0.00    0.00
+             9     8.60  0.23    1.42    0.00    0.00
+            10     8.60  0.23    2.13    0.00    0.00
+            11     8.60  0.23    2.84    0.00    0.00
+            12     8.60  0.17    1.42    0.00    0.00
+          ------------------------------------------------
+           Totals               72.93    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        376.6    26.0     9.1     1.1    82.3     4.1
+             2       1882.8   129.9    45.7     5.7    78.3     3.9
+             3       5272.0   363.6   127.8    16.0    68.0     3.4
+             4       9414.2   649.3   228.3    28.5    53.0     2.6
+             5      13378.1   922.6   324.4    40.5    37.3     1.9
+             6      11311.5   780.1   196.5    24.6    25.0     1.3
+             7      11587.9   799.2   172.1    21.5    16.8     0.8
+             8       8815.1   607.9   130.9    16.4    12.4     0.6
+             9       3226.2   222.5    39.8     5.0    10.2     0.5
+            10       4862.8   335.4    36.2     4.5     7.5     0.4
+            11       6493.4   447.8    38.6     4.8     5.1     0.3
+            12       2404.4   165.8     9.6     1.2     4.1     0.2
+          ---------------------------------------------------------
+           Totals   79025.1  5450.0  1358.9   169.9   400.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+4 April 2003(Day of year=94), manager: 
+     Manager sending message :- elm establish  plants = 5700., init_section = seedling
+4 April 2003(Day of year=94), Elm: 
+     Establishing
+     Manager sending message :- fertiliser apply  amount = 0.0, type = no3_n, depth = 50
+1 November 2003(Day of year=305), manager: 
+     Manager creating a new local real variable : litter_dm = 589.63538
+     Manager creating a new local real variable : litter_n = 19.32162
+     Manager sending message :- surfaceom add_surfaceom  mass = 589.63538, n = 19.32162, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+31 October 2004(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 4342.76758, n = 139.23511, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2005(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 7051.27002, n = 201.14427, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2006(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 6181.36963, n = 175.96837, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+5 December 2006(Day of year=339), clock: 
+     Simulation is terminating due to end criteria being met.
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Example Deciduous Tree Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                      "report2" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                          "Elm" = %apsim%\Model\growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2003
+     Simulation end date   =  5/12/2006
+     Time step =           = 1440 (mins)
+
+------- report2 Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        clock.year
+        clock.month
+        clock.day
+        Elm.foliage_mass
+        Elm.adm_green(4) as bud
+        Elm.Fd
+        Elm.retranslocation_fract
+        Elm.dlt_tt
+        Elm.day_length
+
+     Output file = ElmGrowth.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Yangibazar.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 94 and year = 2003 then
+        elm establish plants = 5700., init_section = seedling
+        fertiliser apply amount = 0.0, type = no3_n, depth = 50
+     endif
+     if day = 270 then
+        elm set retranslocation_fract = 1.0
+     endif
+     if day = 305 then
+        litter_dm = (foliage_mass + foliage_mass_sen)
+        litter_n = (foliage_n + foliage_n_sen)
+        surfaceom add_surfaceom mass = litter_dm, n = litter_n, p=0, name = elm
+        elm cut foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+        elm set fd = 0.0
+        elm set retranslocation_fract = 0.0
+     endif
+     if day = 56 then
+        elm set fd = 1.0
+        elm set retranslocation_fract = -0.5
+     endif
+     if (elm.retranslocation_fract < 0.0 and
+         elm.adm_green(4) <= 10.0) then
+        elm set retranslocation_fract = 0.0
+     endif
+     END of rules
+     
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.33  0.272  0.091  0.272  0.390
+            25.0  1.33  0.272  0.091  0.272  0.390
+            70.0  1.33  0.272  0.091  0.272  0.390
+           125.0  1.33  0.272  0.091  0.272  0.390
+           175.0  1.35  0.330  0.134  0.330  0.450
+           200.0  1.37  0.340  0.143  0.340  0.458
+           200.0  1.40  0.334  0.102  0.334  0.438
+           150.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+           150.0  1.42  0.397  0.164  0.397  0.440
+           200.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.2719978     -0.100      0.080
+            10.0  soil2         0.2719978     -0.100      0.080
+            50.0  soil3         0.2719978     -0.100      0.080
+           150.0  soil4         0.2719978     -0.100      0.080
+           300.0  soil5         0.3299988     -0.100      0.080
+           500.0  soil6         0.3399984     -0.100      0.080
+           700.0  soil7         0.3339998     -0.100      0.080
+           900.0  soil8         0.3971026     -0.100      0.080
+          1000.0  soil9         0.3971026     -0.100      0.080
+          1100.0  soil10        0.3971026     -0.100      0.080
+          1300.0  soil11        0.3971026     -0.100      0.080
+          1500.0  soil12        0.3971026     -0.100      0.080
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.09073    0.09073    0.09073    0.09073    0.13354    0.14326    0.10156
+            -1.00 |    0.16972    0.16972    0.16972    0.16972    0.22577    0.23705    0.19888
+            -0.10 |    0.27200    0.27200    0.27200    0.27200    0.33000    0.34000    0.33400
+            -0.01 |    0.38452    0.38452    0.38452    0.38452    0.44274    0.45043    0.43597
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021
+            -0.01 |    0.05644    0.05644    0.05644    0.05644    0.05031    0.04878    0.06739
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-06 .100E-06 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified potential
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          elm       elm              0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Note - APSwim will not redistribute urea
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.70  0.58    0.33    0.00    0.00
+             2     7.70  0.58    1.66    0.00    0.00
+             3     7.70  0.58    4.66    0.00    0.00
+             4     7.70  0.58    8.31    0.00    0.00
+             5     7.70  0.58   11.81    0.00    0.00
+             6     8.00  0.42   13.70    0.00    0.00
+             7     8.00  0.42   14.00    0.00    0.00
+             8     8.00  0.42   10.65    0.00    0.00
+             9     8.60  0.23    1.42    0.00    0.00
+            10     8.60  0.23    2.13    0.00    0.00
+            11     8.60  0.23    2.84    0.00    0.00
+            12     8.60  0.17    1.42    0.00    0.00
+          ------------------------------------------------
+           Totals               72.93    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        376.6    26.0     9.1     1.1    82.3     4.1
+             2       1882.8   129.9    45.7     5.7    78.3     3.9
+             3       5272.0   363.6   127.8    16.0    68.0     3.4
+             4       9414.2   649.3   228.3    28.5    53.0     2.6
+             5      13378.1   922.6   324.4    40.5    37.3     1.9
+             6      11311.5   780.1   196.5    24.6    25.0     1.3
+             7      11587.9   799.2   172.1    21.5    16.8     0.8
+             8       8815.1   607.9   130.9    16.4    12.4     0.6
+             9       3226.2   222.5    39.8     5.0    10.2     0.5
+            10       4862.8   335.4    36.2     4.5     7.5     0.4
+            11       6493.4   447.8    38.6     4.8     5.1     0.3
+            12       2404.4   165.8     9.6     1.2     4.1     0.2
+          ---------------------------------------------------------
+           Totals   79025.1  5450.0  1358.9   169.9   400.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+4 April 2003(Day of year=94), manager: 
+     Manager sending message :- elm establish  plants = 5700., init_section = seedling
+4 April 2003(Day of year=94), Elm: 
+     Establishing
+     Manager sending message :- fertiliser apply  amount = 0.0, type = no3_n, depth = 50
+1 November 2003(Day of year=305), manager: 
+     Manager creating a new local real variable : litter_dm = 589.63538
+     Manager creating a new local real variable : litter_n = 19.32162
+     Manager sending message :- surfaceom add_surfaceom  mass = 589.63538, n = 19.32162, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+31 October 2004(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 4342.76758, n = 139.23511, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2005(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 7051.27002, n = 201.14427, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2006(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 6181.36963, n = 175.96837, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+5 December 2006(Day of year=339), clock: 
+     Simulation is terminating due to end criteria being met.
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Example Deciduous Tree Simulation
+   Component                        "clock" = %apsim%\Model\clock.dll
+   Component                      "report2" = %apsim%\Model\report.dll
+   Component                          "Met" = %apsim%\Model\input.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                      "manager" = %apsim%\Model\manager.dll
+   Component                     "micromet" = %apsim%\Model\micromet.dll
+   Component                        "SWIM2" = %apsim%\Model\SWIM2.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                          "Elm" = %apsim%\Model\growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2003
+     Simulation end date   =  5/12/2006
+     Time step =           = 1440 (mins)
+
+------- report2 Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        clock.year
+        clock.month
+        clock.day
+        Elm.foliage_mass
+        Elm.adm_green(4) as bud
+        Elm.Fd
+        Elm.retranslocation_fract
+        Elm.dlt_tt
+        Elm.day_length
+
+     Output file = ElmGrowth.out
+     Format = normal
+
+------- Met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Yangibazar.met
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 94 and year = 2003 then
+        elm establish plants = 5700., init_section = seedling
+        fertiliser apply amount = 0.0, type = no3_n, depth = 50
+     endif
+     if day = 270 then
+        elm set retranslocation_fract = 1.0
+     endif
+     if day = 305 then
+        litter_dm = (foliage_mass + foliage_mass_sen)
+        litter_n = (foliage_n + foliage_n_sen)
+        surfaceom add_surfaceom mass = litter_dm, n = litter_n, p=0, name = elm
+        elm cut foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+        elm set fd = 0.0
+        elm set retranslocation_fract = 0.0
+     endif
+     if day = 56 then
+        elm set fd = 1.0
+        elm set retranslocation_fract = -0.5
+     endif
+     if (elm.retranslocation_fract < 0.0 and
+         elm.adm_green(4) <= 10.0) then
+        elm set retranslocation_fract = 0.0
+     endif
+     END of rules
+     
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2 Initialisation --------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.33  0.272  0.091  0.272  0.390
+            25.0  1.33  0.272  0.091  0.272  0.390
+            70.0  1.33  0.272  0.091  0.272  0.390
+           125.0  1.33  0.272  0.091  0.272  0.390
+           175.0  1.35  0.330  0.134  0.330  0.450
+           200.0  1.37  0.340  0.143  0.340  0.458
+           200.0  1.40  0.334  0.102  0.334  0.438
+           150.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+           150.0  1.42  0.397  0.164  0.397  0.440
+           200.0  1.42  0.397  0.164  0.397  0.440
+           100.0  1.42  0.397  0.164  0.397  0.440
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  soil1         0.2719978     -0.100      0.080
+            10.0  soil2         0.2719978     -0.100      0.080
+            50.0  soil3         0.2719978     -0.100      0.080
+           150.0  soil4         0.2719978     -0.100      0.080
+           300.0  soil5         0.3299988     -0.100      0.080
+           500.0  soil6         0.3399984     -0.100      0.080
+           700.0  soil7         0.3339998     -0.100      0.080
+           900.0  soil8         0.3971026     -0.100      0.080
+          1000.0  soil9         0.3971026     -0.100      0.080
+          1100.0  soil10        0.3971026     -0.100      0.080
+          1300.0  soil11        0.3971026     -0.100      0.080
+          1500.0  soil12        0.3971026     -0.100      0.080
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.09073    0.09073    0.09073    0.09073    0.13354    0.14326    0.10156
+            -1.00 |    0.16972    0.16972    0.16972    0.16972    0.22577    0.23705    0.19888
+            -0.10 |    0.27200    0.27200    0.27200    0.27200    0.33000    0.34000    0.33400
+            -0.01 |    0.38452    0.38452    0.38452    0.38452    0.44274    0.45043    0.43597
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021    0.00021
+            -0.01 |    0.05644    0.05644    0.05644    0.05644    0.05031    0.04878    0.06739
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0  24.0 .100E-06 .100E-06 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified potential
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          elm       elm              0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilN Initialisation --------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Note - APSwim will not redistribute urea
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.70  0.58    0.33    0.00    0.00
+             2     7.70  0.58    1.66    0.00    0.00
+             3     7.70  0.58    4.66    0.00    0.00
+             4     7.70  0.58    8.31    0.00    0.00
+             5     7.70  0.58   11.81    0.00    0.00
+             6     8.00  0.42   13.70    0.00    0.00
+             7     8.00  0.42   14.00    0.00    0.00
+             8     8.00  0.42   10.65    0.00    0.00
+             9     8.60  0.23    1.42    0.00    0.00
+            10     8.60  0.23    2.13    0.00    0.00
+            11     8.60  0.23    2.84    0.00    0.00
+            12     8.60  0.17    1.42    0.00    0.00
+          ------------------------------------------------
+           Totals               72.93    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        376.6    26.0     9.1     1.1    82.3     4.1
+             2       1882.8   129.9    45.7     5.7    78.3     3.9
+             3       5272.0   363.6   127.8    16.0    68.0     3.4
+             4       9414.2   649.3   228.3    28.5    53.0     2.6
+             5      13378.1   922.6   324.4    40.5    37.3     1.9
+             6      11311.5   780.1   196.5    24.6    25.0     1.3
+             7      11587.9   799.2   172.1    21.5    16.8     0.8
+             8       8815.1   607.9   130.9    16.4    12.4     0.6
+             9       3226.2   222.5    39.8     5.0    10.2     0.5
+            10       4862.8   335.4    36.2     4.5     7.5     0.4
+            11       6493.4   447.8    38.6     4.8     5.1     0.3
+            12       2404.4   165.8     9.6     1.2     4.1     0.2
+          ---------------------------------------------------------
+           Totals   79025.1  5450.0  1358.9   169.9   400.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+4 April 2003(Day of year=94), manager: 
+     Manager sending message :- elm establish  plants = 5700., init_section = seedling
+4 April 2003(Day of year=94), Elm: 
+     Establishing
+     Manager sending message :- fertiliser apply  amount = 0.0, type = no3_n, depth = 50
+1 November 2003(Day of year=305), manager: 
+     Manager creating a new local real variable : litter_dm = 589.63538
+     Manager creating a new local real variable : litter_n = 19.32162
+     Manager sending message :- surfaceom add_surfaceom  mass = 589.63538, n = 19.32162, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+31 October 2004(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 4342.76758, n = 139.23511, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2005(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 7051.27002, n = 201.14427, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+1 November 2006(Day of year=305), manager: 
+     Manager sending message :- surfaceom add_surfaceom  mass = 6181.36963, n = 175.96837, p = 0, name = elm
+     Manager sending message :- elm cut  foliage_remove_fr = 1.0, adm_remove_fr = 1 1 1
+5 December 2006(Day of year=339), clock: 
+     Simulation is terminating due to end criteria being met.
