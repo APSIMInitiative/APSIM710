@@ -708,6 +708,13 @@ module ComponentInterfaceModule
        ml_external get_fq_name
        character(len=*), intent(in out) :: name
        end subroutine get_fq_name
+	   
+       function string_to_float(inString, isOk)
+       ml_external add_registration
+       character (len=*), intent(in) :: inString
+       logical*1, intent(out)        :: isOk
+       double precision string_to_float
+       end function string_to_float	   
 
    end interface
 

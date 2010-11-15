@@ -310,6 +310,7 @@ module DataStrModule
       subroutine string_to_real_var (value_string, value, numvals)
    ! ====================================================================
       use ConstantsModule
+      use ComponentInterfaceModule
       use StringModule
       use ErrorModule
       implicit none
@@ -352,7 +353,7 @@ module DataStrModule
       parameter (Ok_status = 0)
 
    !+ Local Variables
-      integer    Read_status           ! Status of read stmt
+      logical*1 read_status
       character  values*(Function_string_len)
                                        ! values string
       character  word*100              ! word from values string
@@ -363,13 +364,13 @@ module DataStrModule
       Values = Value_string
       call Get_next_word(Values, word)
       if (word .eq. Blank) then
-         read_status = -1
+         read_status = .false. ! -1
 
          e_message = 'Cannot read real value from a blank string.'
       else
-         read (word, '(g25.0)', iostat = read_status) value
+         value = string_to_float(word, read_status)
 
-         if (read_status.ne.OK_status) then
+         if (.not. read_status) then
             e_message =                                      &
             'Unable to read real value from string :- '      &
             // new_line                                      &
@@ -378,7 +379,7 @@ module DataStrModule
          endif
       endif
 
-      if (read_status.ne.OK_status) then
+      if (.not. read_status) then
          numvals = 0
          value = 0.0
 
@@ -621,6 +622,7 @@ module DataStrModule
       subroutine string_to_double_var (value_string, value, numvals)
    ! ====================================================================
       use ConstantsModule
+      use ComponentInterfaceModule
       use StringModule
       use ErrorModule
       implicit none
@@ -657,7 +659,7 @@ module DataStrModule
       parameter (Ok_status = 0)
 
    !+ Local Variables
-      integer    Read_status           ! Status of read stmt
+      logical*1  Read_status           ! Status of read stmt
       character  values*(Function_string_len)
                                        ! values string
       character  word*100              ! word from values string
@@ -667,9 +669,9 @@ module DataStrModule
 
       Values = Value_string
       call Get_next_word(Values, word)
-      read (word, '(g25.0)', iostat = read_status) value
+      value = string_to_float(word, read_status)
 
-      if (read_status.ne.OK_status) then
+      if (.not. read_status) then
          numvals = 0
          value = 0.0d0
 
