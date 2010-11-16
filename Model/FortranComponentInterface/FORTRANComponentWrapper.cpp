@@ -6,6 +6,7 @@
 #include <ComponentInterface/ScienceAPI.h>
 #include <General/dll.h>
 #include "FORTRANComponentWrapper.h"
+#include <algorithm>
 
 static const char* nullType = "<type/>";
 static const char* integerType = "<type kind=\"integer4\"/>";
@@ -1581,7 +1582,7 @@ extern "C" void EXPORT STDCALL change_component_order
 // ------------------------------------------------------------------
 extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsigned strLength)
 {
-	const int MAX_CHARS=30;
+	const unsigned MAX_CHARS=30;
 	char buf[MAX_CHARS + 1];
 	char* endPtr;
 	int nChars = min(MAX_CHARS, strLength);
