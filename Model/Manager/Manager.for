@@ -243,7 +243,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       contains
 
 ! ====================================================================
-       recursive subroutine Set_variable_in_other_module (modnameID
+       subroutine Set_variable_in_other_module (modnameID
      :                                         ,var_name
      :                                         ,variable_value)
 ! ====================================================================
@@ -313,7 +313,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! ====================================================================
-       recursive subroutine Manager_Init ()
+       subroutine Manager_Init ()
 ! ====================================================================
       Use Infrastructure
       implicit none
@@ -371,7 +371,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! ====================================================================
-       recursive subroutine Manager_zero_variables ()
+       subroutine Manager_zero_variables ()
 ! ====================================================================
       Use Infrastructure
       implicit none
@@ -451,7 +451,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       end subroutine
 
 ! ====================================================================
-       recursive subroutine Manager_read_rules ()
+       subroutine Manager_read_rules ()
 ! ====================================================================
       Use Infrastructure
       implicit none
@@ -547,7 +547,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       end subroutine
 
 ! ====================================================================
-       recursive subroutine ProcessRules(regId)
+       subroutine ProcessRules(regId)
 ! ====================================================================
       Use Infrastructure
       implicit none
@@ -583,7 +583,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       end subroutine
 
 ! ====================================================================
-      recursive subroutine manager_send_my_variable (variable_name)
+      subroutine manager_send_my_variable (variable_name)
 ! ====================================================================
       Use Infrastructure
       implicit none
@@ -642,7 +642,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       end subroutine
 
 * ====================================================================
-       recursive subroutine manager_set_my_variable (Variable_name)
+      subroutine manager_set_my_variable (Variable_name)
 * ====================================================================
       Use Infrastructure
       implicit none
@@ -826,6 +826,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
       subroutine SetLocalVariable(Indx, Value)
 ! ====================================================================
+      use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -836,7 +837,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !+  Local Variables
       real RealValue
       character*500 str
-      integer read_status
+      logical*1 read_status
 
       integer    Ok_status             ! Line was read from file ok.
       parameter (Ok_status = 0)
@@ -845,8 +846,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       call assign_string(g%local_variable_values(Indx), value)
       if (Trim(Value) .ne. blank) then
-         read (value, '(g25.0)', iostat = read_status) realvalue
-         if (read_status.eq.OK_status) then
+         realvalue = string_to_float(value, read_status)
+         if (read_status) then
             write(str, '(f15.5)' ) RealValue
             !g%local_variable_values(Indx) = Trim(str)
             call assign_string(g%local_variable_values(Indx), Trim(str))
@@ -1553,7 +1554,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! ====================================================================
-       recursive subroutine Parse_error (Error_message, Routine_message)
+       subroutine Parse_error (Error_message, Routine_message)
 ! ====================================================================
       Use Infrastructure
       implicit none
@@ -2263,9 +2264,10 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Str_to_double_var
+       subroutine Str_to_double_var
      .     (String, Double_value, io_result)
 ! =====================================================================
+      use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -2273,6 +2275,16 @@ C     Last change:  P    25 Oct 2000    9:26 am
       character String*(*)             ! (INPUT) String to convert
       double precision Double_value    ! (OUTPUT) Value of string
       integer IO_result                ! (OUTPUT) io_result of internal read.
+      logical*1 read_status
+      integer    line_index            ! Current position in input string
+      integer    end_of_line           ! end position of line
+      character  Charact               ! Character from line
+
+      character  Zero
+      parameter (Zero='0')
+
+      character  Nine
+      parameter (Nine='9')
 
 !+  Purpose
 !     Convert a string value to a double number.
@@ -2288,20 +2300,33 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
 
 
-      if (scan(String, '0123456789') .gt. 0) then
-         read (String, '(g25.0)',iostat = io_result) Double_value
-      else
-         io_result = -1
-      endif
-
+      end_of_line = len(String)
+      line_index = 1
+ 
+      do while (line_index .le. end_of_line)
+         charact = String(line_index:line_index)
+         if (Charact .ge. Zero .and. Charact .le. Nine) then
+            Double_value = string_to_float(String, read_status)
+            if (read_status) then
+              io_result = 0
+            else
+              io_result = -1
+            endif
+            return
+         endif
+         line_index = line_index + 1
+      enddo
+      io_result = -1
       return
+		 
       end subroutine
 
 
 ! =====================================================================
-       recursive subroutine Str_to_real_var
+       subroutine Str_to_real_var
      .     (String, Real_value, io_result)
 ! =====================================================================
+      use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -2309,6 +2334,16 @@ C     Last change:  P    25 Oct 2000    9:26 am
       character String*(*)             ! (INPUT) String to convert
       real  real_value                 ! (OUTPUT) Value of string
       integer IO_result                ! (OUTPUT) io_result of internal read.
+      logical*1 read_status
+      integer    line_index            ! Current position in input string
+      integer    end_of_line           ! end position of line
+      character  Charact               ! Character from line
+
+      character  Zero
+      parameter (Zero='0')
+
+      character  Nine
+      parameter (Nine='9')
 
 !+  Purpose
 !     Convert a string value to a real number.
@@ -2323,13 +2358,25 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !- Implementation Section ----------------------------------
 
-      if (scan(String, '0123456789') .gt. 0) then
-         read (String, '(g25.0)',iostat = io_result) Real_value
-      else
-         io_result = -1
-      endif
-
+      end_of_line = len(String)
+      line_index = 1
+ 
+      do while (line_index .le. end_of_line)
+         charact = String(line_index:line_index)
+         if (Charact .ge. Zero .and. Charact .le. Nine) then
+            real_value = string_to_float(String, read_status)
+            if (read_status) then
+              io_result = 0
+            else
+              io_result = -1
+            endif
+            return
+         endif
+         line_index = line_index + 1
+      enddo
+      io_result = -1
       return
+
       end subroutine
 
 
@@ -2760,7 +2807,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine push_stack (Variable_Value)
+       subroutine push_stack (Variable_Value)
 ! =====================================================================
       Use Infrastructure
       implicit none
@@ -2795,7 +2842,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive character*(buffer_size) function pop_stack ()
+       character*(buffer_size) function pop_stack ()
 ! =====================================================================
       Use Infrastructure
       implicit none
@@ -3020,7 +3067,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive character*(buffer_size) function Real_or_not
+       character*(buffer_size) function Real_or_not
      .     (Variable_Value)
 ! =====================================================================
       Use Infrastructure
@@ -3574,7 +3621,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive logical function Reserved()
+       logical function Reserved()
 ! =====================================================================
       Use Infrastructure
       implicit none
@@ -3624,7 +3671,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       end module ManagerModule
 
 !     ===========================================================
-      recursive subroutine alloc_dealloc_instance(doAllocate)
+      subroutine alloc_dealloc_instance(doAllocate)
 !     ===========================================================
       use ManagerModule
       implicit none
@@ -3720,7 +3767,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
 ! This routine is the event handler for all events
 ! ====================================================================
-      recursive subroutine respondToEvent(fromID, eventID, variant)
+      subroutine respondToEvent(fromID, eventID, variant)
       use ManagerModule
       Use infrastructure
       implicit none
