@@ -992,7 +992,6 @@ module StringModule
    !- Implementation Section ----------------------------------
 
       ok = check_string_truncation (string1, string2)
-      ok = ok
       string1 = string2
 
       return
@@ -1044,7 +1043,6 @@ module StringModule
    !- Implementation Section ----------------------------------
 
       ok = check_string_truncation(string(start_position:), substring)
-      ok = ok
       string(start_position:) = substring
 
       return
@@ -1488,12 +1486,7 @@ module StringModule
       integer Delimiter_Pos           ! Position of delimiter on line
 
    !- Implementation Section ----------------------------------
-      Delimiter_Pos = len(Line)
-
-      do 10 while (Delimiter_Pos .gt. not_found .and. &
-                   Line(Delimiter_Pos:Delimiter_Pos+len(Delimiter)-1) .ne. Delimiter)
-        Delimiter_Pos = Delimiter_Pos - len(Delimiter)
-  10  Continue
+      Delimiter_Pos = index(Line, Delimiter, .TRUE.)
 
       if (Delimiter_Pos .eq. Not_found) then
          call assign_string (Left_string, Line)
