@@ -28,6 +28,8 @@ extern int apsimSubscribeVariant(ClientData cd, Tcl_Interp *interp, int objc, Tc
 //extern int apsimUnRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 //extern int apsimCatchMessages(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 extern int apsimGetComponentXML(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+extern int apsimGetChildren(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+extern int apsimGetFQName(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 
 static char GlobalDllName[4096];
 
@@ -95,7 +97,8 @@ Tcl_Interp *NewInterp (Tcl_Interp *topLevel, ClientData cd, const char *interpNa
 //   Tcl_CreateObjCommand(interp, "apsimUnRegisterEvent", apsimUnRegisterEvent, cd, NULL);
 //   Tcl_CreateObjCommand(interp, "apsimCatchMessages", apsimCatchMessages, cd, NULL);
    Tcl_CreateObjCommand(interp, "apsimGetComponentXML", apsimGetComponentXML, cd, NULL);
-
+   Tcl_CreateObjCommand(interp, "apsimGetChildren", apsimGetChildren, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimGetFQName", apsimGetFQName, cd, NULL);
    return interp;
    }
 

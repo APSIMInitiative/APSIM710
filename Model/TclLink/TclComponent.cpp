@@ -5,6 +5,7 @@
 #include <General/stristr.h>
 
 #include <ApsimShared/ApsimDirectories.h>
+#include <ApsimShared/ApsimRegistry.h>
 
 #include <ComponentInterface2/ScienceAPI2.h>
 
@@ -503,3 +504,40 @@ int apsimGetComponentXML(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * 
    return TCL_OK;
 } 
 
+int apsimGetChildren(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
+{
+   if (objc != 2)
+         {
+         Tcl_SetResult(interp, "Wrong num args: apsimGetChildren componentname", NULL);
+         return TCL_ERROR;
+         }
+
+   Tcl_Obj *result = Tcl_GetObjResult(interp);
+   Tcl_SetListObj(result, 0, NULL);
+
+   string ComponentName = Tcl_GetStringFromObj(objv[1], NULL);
+   int componentID = ApsimRegistry::getApsimRegistry().componentByName(ComponentName);
+   if (componentID > 0)
+      {
+      // Return a list of child components for the specified componentID
+      vector<int> childIDs;
+      ApsimRegistry::getApsimRegistry().getChildren(componentID, childIDs);
+
+      for (unsigned i = 0; i != childIDs.size(); i++)
+         {
+         string ChildName = ApsimRegistry::getApsimRegistry().componentByID(childIDs[i]);
+         Tcl_ListObjAppendElement(interp, result, Tcl_NewStringObj((char *)ChildName.c_str(), -1));
+         }
+      return TCL_OK;
+	    }
+	 string emsg = "No component called: " + ComponentName ;
+   Tcl_SetResult(interp, (char *) emsg.c_str(), NULL);
+   return TCL_ERROR;
+} 
+
+int apsimGetFQName(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[])
+{
+   TclComponent *component = (TclComponent *) cd;
+   Tcl_SetObjResult(interp, Tcl_NewStringObj(component->apsimAPI.FQName().c_str(), -1));
+   return TCL_OK;
+}

@@ -3348,6 +3348,1043 @@ endif
       </folder>
     </folder>
     <folder name="Tcl">
+      <tclmanager name="TCL Manager with examples">
+        <rule name="Sow using esw and rainfall">
+          <ui>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
+            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">25</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">100</esw_amount>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+          </ui>
+          <script name="init">
+            <text><![CDATA[
+# Sow this crop
+proc sow_[crop] {} {
+  #global myName
+  #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
+  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {} {
+   global myCrops
+   foreach crop $myCrops {
+      set status [apsimGet $crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+# Dummy values in case rotations aren't plugged in
+set NextCrop        ""
+set FallowIn        no
+
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+# Do some auto-discovery for later on
+if {![info exists myPaddockName]} {
+  set myPaddockName [join [lrange [split [apsimGetFQName] "."] 0 end-1] "."]
+
+  set myCrops {}
+  foreach component [apsimGetChildren $myPaddockName] {
+    set status [apsimGetOptional $component.plant_status]
+    if {$status != ""} {
+      lappend myCrops $component
+    }
+  }
+}</text>
+            <event>start_simulation</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == "[crop]")} {
+   if {[dateWithin [date1] [date2]] } {
+      if {( [apsimGet rain\[[rainnumdays]\]] >= [raincrit] && [apsimGet esw] >= [esw_amount] ) ||
+          ( "[must_sow]" == "yes" && [dateIs '[date2]'] ) } {
+          set ChooseNextCrop "yes"
+          sow_[crop]
+      }
+      if {[dateIs [date2]]} {
+          set ChooseNextCrop "yes"
+      }
+   }
+}
+
+]]></text>
+            <event>prepare</event>
+          </script>
+        </rule>
+        <rule name="Sow using fasw in top layer">
+          <ui>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
+            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+            <fasw_amount type="text" description="sw above ll15 in top layer (mm): ">20</fasw_amount>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+          </ui>
+          <script name="init">
+            <text><![CDATA[
+# Sow this crop
+proc sow_[crop] {} {
+  #global myName
+  #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
+  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {} {
+   global myCrops
+   foreach crop $myCrops {
+      set status [apsimGet $crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+# Dummy values in case rotations aren't plugged in
+set NextCrop        ""
+set FallowIn        no
+
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+# Do some auto-discovery for later on
+if {![info exists myPaddockName]} {
+  set myPaddockName [join [lrange [split [apsimGetFQName] "."] 0 end-1] "."]
+
+  set myCrops {}
+  foreach component [apsimGetChildren $myPaddockName] {
+    set status [apsimGetOptional $component.plant_status]
+    if {$status != ""} {
+      lappend myCrops $component
+    }
+  }
+}
+set sw1f_[crop] [expr [fasw_amount] / [lindex [apsimGet dlayer] 0] + [lindex [apsimGet ll15] 0]] 
+</text>
+            <event>start_simulation</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+
+
+if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == "[crop]")} {
+   if {[dateWithin [date1] [date2]] } {
+      set sw1 [lindex [apsimGet sw] 0]
+      if {$sw1 >= $sw1f_[crop] ||
+          ( "[must_sow]" == "yes" && [dateIs '[date2]'] ) } {
+          set ChooseNextCrop "yes"
+          sow_[crop]
+      }
+      if {[dateIs [date2]]} {
+          set ChooseNextCrop "yes"
+      }
+   }
+}
+
+]]></text>
+            <event>prepare</event>
+          </script>
+        </rule>
+        <rule name="Sow on a fixed date">
+          <ui>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing date (dd-mmm) : ">15-may</date1>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+          </ui>
+          <script name="init">
+            <text><![CDATA[
+# Sow this crop
+proc sow_[crop] {} {
+  #global myName
+  #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
+  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+}
+
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+# Dummy values in case rotations aren't plugged in
+set NextCrop        ""
+set FallowIn        no
+
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+            </text>
+            <event>start_simulation</event>
+          </script>
+          <script name="prepare">
+            <text>
+
+
+if {[dateIs [date1]] } {
+    sow_[crop]
+}
+
+
+</text>
+            <event>prepare</event>
+          </script>
+        </rule>
+        <rule name="Harvesting rule">
+          <ui>
+            <category type="category" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">cotton</crop>
+          </ui>
+          <script name="post">
+            <text><![CDATA[
+  if {[apsimGet [crop].ozcot_status] > 0} {
+    apsimSendMessage [crop]  harvest
+    apsimSendMessage [crop]  end_crop
+  }
+
+      ]]></text>
+            <event>post</event>
+          </script>
+        </rule>
+        <rule name="Cotton sowing rule">
+          <ui>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-oct</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jan</date2>
+            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">100</esw_amount>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">cotton</crop>
+            <density type="text" description="Enter sowing density  (plants/m2 in row) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">siok</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
+            <skiprow type="list" listvalues="0, 1, 2" description="Skip row : ">0</skiprow>
+          </ui>
+          <script name="init">
+            <text><![CDATA[
+# Sow this crop
+proc sow_[crop] {} {
+  #global myName
+  #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
+  apsimSendMessage [crop] sow {plants_pm [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {skiprow [skiprow]}
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {} {
+   global myCrops
+   foreach crop $myCrops {
+      set status [apsimGet $crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+# Dummy values in case rotations aren't plugged in
+set NextCrop        ""
+set FallowIn        no
+
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+# Do some auto-discovery for later on
+if {![info exists myPaddockName]} {
+  set myPaddockName [join [lrange [split [apsimGetFQName] "."] 0 end-1] "."]
+
+  set myCrops {}
+  foreach component [apsimGetChildren $myPaddockName] {
+    set status [apsimGetOptional $component.plant_status]
+    if {$status != ""} {
+      lappend myCrops $component
+    }
+  }
+}</text>
+            <event>start_simulation</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == "[crop]")} {
+   if {[dateWithin [date1] [date2]] } {
+      if {( [apsimGet rain\[[rainnumdays]\]] >= [raincrit] && [apsimGet esw] >= [esw_amount] ) ||
+          ( "[must_sow]" == "yes" && [dateIs '[date2]'] ) } {
+          set ChooseNextCrop "yes"
+          sow_[crop]
+      }
+      if {[dateIs [date2]]} {
+          set ChooseNextCrop "yes"
+      }
+   }
+}
+
+]]></text>
+            <event>prepare</event>
+          </script>
+        </rule>
+        <rule name="Cotton harvesting rule">
+          <ui>
+            <category type="category" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">cotton</crop>
+          </ui>
+          <script name="post">
+            <text><![CDATA[
+  if {[apsimGet [crop].ozcot_status] > 0} {
+    apsimSendMessage [crop]  harvest
+    apsimSendMessage [crop]  end_crop
+  }
+
+      ]]></text>
+            <event>post</event>
+          </script>
+        </rule>
+        <rule name="Sorghum sowing rule">
+          <ui>
+            <category name="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-oct</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jan</date2>
+            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+            <category name="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">7</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" croppropertyname="crop" description="Enter cultivar : ">early</cultivar>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
+            <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
+          </ui>
+          <script name="init">
+            <text><![CDATA[
+# Sow this crop
+proc sow_[crop] {} {
+  #global myName
+  #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing], crop_class=[class]"
+  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {skiprow  [skiprow]}
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {} {
+   global myCrops
+   foreach crop $myCrops {
+      set status [apsimGet $crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+# Dummy values in case rotations aren't plugged in
+set NextCrop        ""
+set FallowIn        no
+
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+# Do some auto-discovery for later on
+if {![info exists myPaddockName]} {
+  set myPaddockName [join [lrange [split [apsimGetFQName] "."] 0 end-1] "."]
+
+  set myCrops {}
+  foreach component [apsimGetChildren $myPaddockName] {
+    set status [apsimGetOptional $component.plant_status]
+    if {$status != ""} {
+      lappend myCrops $component
+    }
+  }
+}</text>
+            <event>start_simulation</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == "[crop]")} {
+   if {[dateWithin [date1] [date2]] } {
+      if {( [apsimGet rain\[[rainnumdays]\]] >= [raincrit] && [apsimGet esw] >= [esw_amount] ) ||
+          ( "[must_sow]" == "yes" && [dateIs '[date2]'] ) } {
+          set ChooseNextCrop "yes"
+          sow_[crop]
+      }
+      if {[dateIs [date2]]} {
+          set ChooseNextCrop "yes"
+      }
+   }
+}
+
+]]></text>
+            <event>prepare</event>
+          </script>
+        </rule>
+        <rule name="Lucerne Ley fixed sow harvest at flowering">
+          <ui>
+            <category type="category" />
+            <date type="text" description="Enter sowing date (dd-mmm-yyyy) : ">1-jan</date>
+            <category type="category" />
+            <crop type="crop" description="Enter name of crop to sow : ">lucerne</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">200</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">20</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">trifecta</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+            <category type="category" />
+            <leyyears type="text" description="Enter numberofyeasr inley : ">3</leyyears>
+            <category type="category" />
+            <harvest_ht type="text" description="Enter the height to harvest the crop : ">50</harvest_ht>
+            <remove type="text" description="Fraction of maerial removed leaving the system (balance to residue): ">0.95</remove>
+            <killdate type="text" description="date lucerne is to be removed : ">15-nov</killdate>
+          </ui>
+          <script name="init">
+            <text><![CDATA[
+# Sow this crop
+proc sow_[crop] {} {
+  #global myName
+  #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing]"
+  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]}
+}
+
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {} {
+   global myCrops
+   foreach crop $myCrops {
+      set status [apsimGet $crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+# Dummy values in case rotations aren't plugged in
+set NextCrop        ""
+set FallowIn        no
+
+set [crop]LeyYears [leyyears]
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+if {[paddockIsFallow] && [dateIs [date]] && 
+    $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == "[crop]") } {
+    sow_[crop]
+    set [crop]LeyYears [leyyears]
+    set ChooseNextCrop "yes"
+}
+]]></text>
+            <event>prepare</event>
+          </script>
+          <script name="post">
+            <text><![CDATA[
+if {[apsimGet [crop].stagename] == "flowering" } {
+   apsimSendMessage [crop]  harvest {height [harvest_ht]}
+}
+
+if {[dateIs [killdate]] && [apsimGet [crop].plant_status] != "out"} {
+  if {$[crop]LeyYears > 0} {
+    set [crop]LeyYears [expr $[crop]LeyYears - 1]
+  } else {
+    apsimSendMessage [crop] end_crop
+  }
+}  
+  ]]></text>
+            <event>post</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+# Do some auto-discovery for later on
+if {![info exists myPaddockName]} {
+  set myPaddockName [join [lrange [split [apsimGetFQName] "."] 0 end-1] "."]
+
+  set myCrops {}
+  foreach component [apsimGetChildren $myPaddockName] {
+    set status [apsimGetOptional $component.plant_status]
+    if {$status != ""} {
+      lappend myCrops $component
+    }
+  }
+}
+</text>
+            <event>start_simulation</event>
+          </script>
+        </rule>
+        <rule name="Lucerne Ley variable sowing harvest at flowering">
+          <ui>
+            <category type="category" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
+            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+            <category type="category" />
+            <crop type="crop" description="Enter name of crop to sow : ">lucerne</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">200</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">20</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">trifecta</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+            <category type="category" />
+            <leyyears type="text" description="Enter numberofyeasr inley : ">3</leyyears>
+            <category type="category" />
+            <harvest_ht type="text" description="Enter the height to harvest the crop : ">50</harvest_ht>
+            <remove type="text" description="Fraction of maerial removed leaving the system (balance to residue): ">0.95</remove>
+            <killdate type="text" description="date lucerne is to be removed : ">15-nov</killdate>
+          </ui>
+          <script name="init">
+            <text><![CDATA[
+# Sow this crop
+proc sow_[crop] {} {
+  #global myName
+  #puts "[apsimGet dd/mm/yyyy]: $myName\n Manager sending message:\n[crop] sow plants=[density], sowing_depth=[depth], cultivar=[cultivar], row_spacing=[row_spacing]"
+  apsimSendMessage [crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]}
+}
+
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {} {
+   global myCrops
+   foreach crop $myCrops {
+      set status [apsimGet $crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+# Dummy values in case rotations aren't plugged in
+set NextCrop        ""
+set FallowIn        no
+
+set [crop]LeyYears 0
+]]></text>
+            <event>init</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+if {[paddockIsFallow] && $FallowIn != "yes" && ($NextCrop == "" || $NextCrop == "[crop]")} {
+   if {[dateWithin [date1] [date2]] } {
+      if {( [apsimGet rain\[[rainnumdays]\]] >= [raincrit] && [apsimGet esw] >= [esw_amount] ) ||
+          ( "[must_sow]" == "yes" && [dateIs '[date2]'] ) } {
+          set [crop]LeyYears [leyyears]
+          set ChooseNextCrop "yes"
+          sow_[crop]
+      }
+      if {[dateIs [date2]]} {
+          set ChooseNextCrop "yes"
+      }
+   }
+}
+]]></text>
+            <event>prepare</event>
+          </script>
+          <script name="post">
+            <text><![CDATA[
+if {[apsimGet [crop].stagename] == "flowering" } {
+   apsimSendMessage [crop]  harvest {height [harvest_ht]}
+}
+
+if {[dateIs [killdate]] && [apsimGet [crop].plant_status] != "out"} {
+  if {$[crop]LeyYears > 0} {
+    set [crop]LeyYears [expr $[crop]LeyYears - 1]
+  } else {
+    apsimSendMessage [crop] end_crop
+  }
+}  
+  ]]></text>
+            <event>post</event>
+          </script>
+          <script name="start_simulation">
+            <text>
+# Do some auto-discovery for later on
+if {![info exists myPaddockName]} {
+  set myPaddockName [join [lrange [split [apsimGetFQName] "."] 0 end-1] "."]
+
+  set myCrops {}
+  foreach component [apsimGetChildren $myPaddockName] {
+    set status [apsimGetOptional $component.plant_status]
+    if {$status != ""} {
+      lappend myCrops $component
+    }
+  }
+}
+</text>
+            <event>start_simulation</event>
+          </script>
+        </rule>
+        <rule name="Rotations - Sequential">
+          <ui>
+            <category type="category" />
+            <SummerFallowName type="text" description="Enter summer fallow name : ">sf</SummerFallowName>
+            <SummerFallowEndDate type="text" description="Enter summer fallow END date (dd-mmm) : ">15-mar</SummerFallowEndDate>
+            <WinterFallowName type="text" description="Enter winter fallow name : ">wf</WinterFallowName>
+            <WinterFallowEndDate type="text" description="Enter winter fallow END date (dd-mmm) : ">23-aug</WinterFallowEndDate>
+            <category type="category" />
+            <crop1 type="crop" description="Enter 1st crop : ">wheat</crop1>
+            <crop2 type="crop" description="Enter 2nd crop : ">sf</crop2>
+            <crop3 type="crop" description="Enter 3rd crop : ">nil</crop3>
+            <crop4 type="crop" description="Enter 4th crop : ">nil</crop4>
+            <crop5 type="crop" description="Enter 5th crop : ">nil</crop5>
+            <crop6 type="crop" description="Enter 6th crop : ">nil</crop6>
+            <crop7 type="crop" description="Enter 7th crop : ">nil</crop7>
+            <crop8 type="crop" description="Enter 8th crop : ">nil</crop8>
+            <crop9 type="crop" description="Enter 9th crop : ">nil</crop9>
+            <crop10 type="crop" description="Enter 10th crop : ">nil</crop10>
+            <crop11 type="crop" description="Enter 11th crop : ">nil</crop11>
+            <crop12 type="crop" description="Enter 12th crop : ">nil</crop12>
+            <crop13 type="crop" description="Enter 13th crop : ">nil</crop13>
+            <crop14 type="crop" description="Enter 14th crop : ">nil</crop14>
+            <crop15 type="crop" description="Enter 15th crop : ">nil</crop15>
+            <crop16 type="crop" description="Enter 16th crop : ">nil</crop16>
+            <crop17 type="crop" description="Enter 17th crop : ">nil</crop17>
+            <crop18 type="crop" description="Enter 18th crop : ">nil</crop18>
+            <crop19 type="crop" description="Enter 19th crop : ">nil</crop19>
+            <crop20 type="crop" description="Enter 20th crop : ">nil</crop20>
+          </ui>
+          <script name="init">
+            <text>
+set NextCropIndex   1
+set NextCrop        ""
+set ChooseNextCrop  yes
+set SummerFallowIn  no
+set WinterFallowIn  no
+set FallowIn        no
+      </text>
+            <event>init</event>
+          </script>
+          <script name="prepare">
+            <text><![CDATA[
+if {$ChooseNextCrop == "yes"} {
+   if {$NextCropIndex == "1"} {
+      set NextCrop "[crop1]"
+   } elseif {$NextCropIndex == "2"} {
+      set NextCrop "[crop2]"
+   } elseif {$NextCropIndex == "3"} {
+      set NextCrop "[crop3]"
+   } elseif {$NextCropIndex == "4"} {
+      set NextCrop "[crop4]"
+   } elseif {$NextCropIndex == "5"} {
+      set NextCrop "[crop5]"
+   } elseif {$NextCropIndex == "6"} {
+      set NextCrop "[crop6]"
+   } elseif {$NextCropIndex == "7"} {
+      set NextCrop "[crop7]"
+   } elseif {$NextCropIndex == "8"} {
+      set NextCrop "[crop8]"
+   } elseif {$NextCropIndex == "9"} {
+      set NextCrop "[crop9]"
+   } elseif {$NextCropIndex == "10"} {
+      set NextCrop "[crop10]"
+   } elseif {$NextCropIndex == "11"} {
+      set NextCrop "[crop11]"
+   } elseif {$NextCropIndex == "12"} {
+      set NextCrop "[crop12]"
+   } elseif {$NextCropIndex == "13"} {
+      set NextCrop "[crop13]"
+   } elseif {$NextCropIndex == "14"} {
+      set NextCrop "[crop14]"
+   } elseif {$NextCropIndex == "14"} {
+      set NextCrop "[crop14]"
+   } elseif {$NextCropIndex == "15"} {
+      set NextCrop "[crop15]"
+   } elseif {$NextCropIndex == "16"} {
+      set NextCrop "[crop16]"
+   } elseif {$NextCropIndex == "17"} {
+      set NextCrop "[crop17]"
+   } elseif {$NextCropIndex == "18"} {
+      set NextCrop "[crop18]"
+   } elseif {$NextCropIndex == "19"} {
+      set NextCrop "[crop19]"
+   } elseif {$NextCropIndex == "20"} {
+      set NextCrop "[crop20]"
+   }
+   
+   if {$NextCrop == "nil" || $NextCrop == ""} {
+      set NextCrop "[crop1]"
+      set NextCropIndex 1
+   }
+   set NextCropIndex [expr $NextCropIndex + 1]
+   set ChooseNextCrop "no"
+}
+
+# if the next crop is due to be a fallow and we're within the
+# correct date range then put a fallow in.
+if {$NextCrop == "[WinterFallowName]"} {
+   if {[paddockIsFallow] && $FallowIn == "no"} {
+      if {[dateWithin [SummerFallowEndDate] [WinterFallowEndDate]] } {
+         set WinterFallowIn "yes"
+         set FallowIn "yes"
+         set ChooseNextCrop "yes"
+      }
+   }
+} elseif {$NextCrop == "[SummerFallowName]"} {
+   if {[paddockIsFallow] && $FallowIn == "no"} {
+      if {[dateWithin [WinterFallowEndDate] [SummerFallowEndDate]] } {
+         set SummerFallowIn "yes"
+         set FallowIn "yes"
+         set ChooseNextCrop "yes"
+      }
+   }
+}
+
+# if we currently have a fallow in and we're at the end of the fallow window
+# then remove the fallow.
+if {$WinterFallowIn == "yes" && [dateIs 1+[WinterFallowEndDate]]} {
+   set WinterFallowIn "no"
+   set FallowIn "no"
+}
+if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
+   set SummerFallowIn "no"
+   set FallowIn "no"
+}
+      ]]></text>
+            <event>prepare</event>
+          </script>
+        </rule>
+        <rule name="Sowing fertiliser">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">lucerne</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script name="[modulename].[eventname]">
+            <text>
+
+  apsimSendMessage [fertmodule] apply {amount [fert_amount_sow]} {depth 50} {type [fert_type_sow]}
+
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </rule>
+      </tclmanager>
       <tclmanager name="TCL Manager (standalone)">
         <rule name="Logic">
           <script name="init">
@@ -3360,10 +4397,10 @@ endif
             </text>
             <event>prepare</event>
           </script>
-          <script name="exit">
+          <script name="end_simulation">
             <text>
             </text>
-            <event>exit</event>
+            <event>end_simulation</event>
           </script>
         </rule>
         <rule name="Debugger">
@@ -3412,44 +4449,6 @@ incr steps -1
 if {$steps == 0} {tkwait variable steps}
         </text></script></rule>
       </tclmanager>
-      <farmmanager name="Farm Manager">
-        <rule name="Farm logic">
-          <script name="init">
-            <text>
-            </text>
-            <event>init</event>
-          </script>
-          <script name="prepare">
-            <text>
-            </text>
-            <event>prepare</event>
-          </script>
-          <script name="exit">
-            <text>
-            </text>
-            <event>exit</event>
-          </script>
-        </rule>
-      </farmmanager>
-      <paddockmanager name="Paddock Manager">
-        <rule name="Farm logic">
-          <script name="init">
-            <text>
-            </text>
-            <event>init</event>
-          </script>
-          <script name="prepare">
-            <text>
-            </text>
-            <event>prepare</event>
-          </script>
-          <script name="exit">
-            <text>
-            </text>
-            <event>exit</event>
-          </script>
-        </rule>
-      </paddockmanager>
       <tclui name="R Graphics">
         <uiscript>
 # Displays R graphics
