@@ -669,22 +669,27 @@ module DataStrModule
 
       Values = Value_string
       call Get_next_word(Values, word)
-      value = string_to_float(word, read_status)
-
-      if (.not. read_status) then
-         numvals = 0
-         value = 0.0d0
-
-         write (e_message, '(a, a, a)')                             &
-            'Unable to read double precision value from string :-'  &
-            , new_line                                              &
-            , value_string(1:100)
-
-         call fatal_error (ERR_User, e_message)
+      if (word .eq. Blank) then
+        value = 0.0d0
+        numvals = 0
       else
-         ! Read was successful.
+         value = string_to_float(word, read_status)
 
-         Numvals = 1
+	     if (.not. read_status) then
+            numvals = 0
+            value = 0.0d0
+
+            write (e_message, '(a, a, a)')                             &
+               'Unable to read double precision value from string :-'  &
+               , new_line                                              &
+               , value_string(1:100)
+
+            call fatal_error (ERR_User, e_message)
+         else
+            ! Read was successful.
+
+            Numvals = 1
+        endif
       endif
 
 
