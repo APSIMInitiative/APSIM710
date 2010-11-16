@@ -8,7 +8,7 @@ LD=ld
 LIBS := $(foreach library,$(LIBS),../$(library).lib)
 STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
 
-F90FLAGS= -cpp -D'ml_external=!' -shared-libgcc -static-libgfortran -fno-underscoring -mrtd -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit_logical=false -O2 -g 
+F90FLAGS= -cpp -D'ml_external=!' -shared-libgcc -static-libgfortran -fno-underscoring -mrtd -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false -O2 -g 
 F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
 
 F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
