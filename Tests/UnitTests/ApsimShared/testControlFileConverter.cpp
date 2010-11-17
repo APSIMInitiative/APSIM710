@@ -1,13 +1,11 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
-
 #include "testControlFileConverter.h"
 
-#include <ApsimShared\ApsimControlFile.h>
-#include <ConToSim\ControlFileConverter.h>
-#include <general\string_functions.h>
-#include <general\xml.h>
-#include <general\IniFile.h>
+#include <ApsimShared/ApsimControlFile.h>
+#include <ConToSim/ControlFileConverter.h>
+#include <General/string_functions.h>
+#include <General/xml.h>
+#include <General/IniFile.h>
 #include <iostream>
 
 using namespace boost::unit_test_framework;
@@ -157,8 +155,8 @@ void tearDownControlFileConverter(void)
    {
    unlink("accum.con");
    unlink("accum.par");
-   unlink("accum.oldcon");
-   unlink("accum.oldpar");
+   unlink("accum.con.old");
+   unlink("accum.par.old");
    }
 //---------------------------------------------------------------------------
 // test the set parameter value functionality

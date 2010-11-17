@@ -8,14 +8,18 @@ SRC = test.cpp \
       testApsimDataFile.cpp \
       ../../../Model/ConToSim/ControlFileConverter.cpp
 
-ifdef DEBUG
-  LIBS = General ApsimShared libboost_unit_test_framework-vc90-mt-gd-1_42
-else
-  LIBS = General ApsimShared libboost_unit_test_framework-vc90-mt-1_42
+ifeq ($(PLATFORM),Linux)
+  LDDEBUGFLAGS := -lboost_unit_test_framework-mt
+  LIBS = General ApsimShared 
+else 
+ ifdef DEBUG
+   LIBS = General ApsimShared libboost_unit_test_framework-vc90-mt-gd-1_42
+ else
+   LIBS = General ApsimShared libboost_unit_test_framework-vc90-mt-1_42
+ endif
 endif
 
 PROJECTTYPE = exe
-
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 

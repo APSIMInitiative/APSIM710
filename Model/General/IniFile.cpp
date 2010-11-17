@@ -1,16 +1,15 @@
 #include <stdlib.h>
-#ifdef __WIN32__
-   #include <windows.h> // needed for CopyFile
-   #include <direct.h>
-#endif
-#include <General/string_functions.h>
-#include <General/stl_functions.h>
-#include <General/path.h>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
 #include <stdexcept>
+
+#include <General/string_functions.h>
+#include <General/stl_functions.h>
+#include <General/path.h>
+
+#include <boost/filesystem/operations.hpp>
 
 #include "IniFile.h"
 
@@ -75,7 +74,7 @@ void IniFile::parse(void)
       unsigned int posOpen = contents.find_first_not_of (" \t", posStartLine);
       if (posOpen != string::npos && contents[posOpen] == '[')
          {
-         int posClose = contents.find(']', posOpen);
+         unsigned int posClose = contents.find(']', posOpen);
          if (posClose != string::npos)
             {
             string sectionName = contents.substr(posOpen+1, posClose-posOpen-1);
@@ -490,18 +489,14 @@ bool IniFile::renameKey(const std::string& section,
 
 void IniFile::doBackup()
    {
-   #ifdef __WIN32__
    if (!haveDoneBackup)
       {
-      Path bakFile(fileName);
-      string ext = bakFile.Get_extension();
-      ext.insert(1, "old");
-      bakFile.Set_extension(ext.c_str());
-      CopyFile(fileName.c_str(), bakFile.Get_path().c_str(), false);
+      std::string backupFileName = fileName + ".old";
+      if (boost::filesystem::exists(backupFileName))
+         boost::filesystem::remove(backupFileName);
+         	
+      boost::filesystem::copy_file(fileName, backupFileName);
       haveDoneBackup = true;
       }
-   #else
-      throw std::runtime_error("IniFile::doBackup() called");
-   #endif
    }
 

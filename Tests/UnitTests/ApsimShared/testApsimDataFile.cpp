@@ -1,10 +1,8 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
-
 #include "testApsimDataFile.h"
-#include <ApsimShared\ApsimDataFile.h>
+#include <ApsimShared/ApsimDataFile.h>
 #include <fstream>
-#include <general\stl_functions.h>
+#include <General/stl_functions.h>
 using namespace std;
 using namespace boost::unit_test_framework;
 using namespace boost::gregorian;

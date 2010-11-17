@@ -1,14 +1,13 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
 
-#include "TestApsimControlFile.h"
+#include "testApsimControlFile.h"
 
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <fstream>
-#include <general\string_functions.h>
-#include <ApsimShared\ApsimControlFile.h>
-#include <ApsimShared\ApsimDirectories.h>
+#include <General/string_functions.h>
+#include <ApsimShared/ApsimControlFile.h>
+#include <ApsimShared/ApsimDirectories.h>
 
 
 using namespace boost::unit_test_framework;
@@ -91,9 +90,9 @@ void tearDownConPar(void)
    unlink("accum.con");
    unlink("accum.par");
    unlink("default.par");
-   unlink("default.oldpar");
-   unlink("accum.oldcon");
-   unlink("accum.oldpar");
+   unlink("default.par.old");
+   unlink("accum.con.old");
+   unlink("accum.par.old");
    delete con;
    }
 //---------------------------------------------------------------------------
