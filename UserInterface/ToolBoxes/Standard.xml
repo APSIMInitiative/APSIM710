@@ -9,8 +9,161 @@
     <area name="paddock">
       <registrations name="global" />
     </area>
+   <ini>
+    <filename>
+    </filename>
+   </ini>
+  </folder>
+  <folder name="Animals">
+    <stock>
+      <fraction_faeces_added type="text" description="fraction_faeces_added">0.5</fraction_faeces_added>
+      <fraction_urine_added type="text" description="fraction_urine_added">0.5</fraction_urine_added>
+      <herbage1 type="text" description="First plant herbage source">lucerne</herbage1>
+      <herbage2 type="text" description="Second plant herbage source">
+      </herbage2>
+    </stock>
+    <supplement>
+      <spoilage_time type="text" description="spoilage_time">0</spoilage_time>
+    </supplement>
+    <graz name="Simple grazing model">
+      <intake_util_intercept type="text" description="Intercept in intake and utilization eqn (p142)">1</intake_util_intercept>
+      <intake_util_slope type="text" description="Slope in intake and utilization eqn (p143)">-0.3</intake_util_slope>
+      <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies (p144)">300</yld_eat_restr>
+      <summer_lwg type="text" description="Expected summer lwg @ low SR (p145)">70</summer_lwg>
+      <autumn_lwg type="text" description="Expected autumn lwg @ low SR (p146)">35</autumn_lwg>
+      <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
+      <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">35</spring_lwg>
+      <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
+      <std_alw type="text" description="std_alw">200</std_alw>
+      <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
+      <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
+      <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
+      <allow_supplements type="text" description="allow_supplements">1</allow_supplements>
+    </graz>
   </folder>
   <folder name="Crops">
+    <AusfarmPasture>
+      <debug type="list" listvalues="on,off" description="debug">off</debug>
+      <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
+      <svp_fract type="text" description="svp_fract">0.75</svp_fract>
+      <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
+      <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
+    </AusfarmPasture>
+    <AusfarmPasture name="AusfarmEstablishedPasture">
+      <debug type="list" listvalues="on,off" description="debug">off</debug>
+      <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
+      <svp_fract type="text" description="svp_fract">0.75</svp_fract>
+      <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
+      <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
+      <nutrients type="list" listvalues="Null,N,NP,NS,NPS" description="Determines which of the plant nutrient submodels to activate">N</nutrients>
+      <fertility type="text" description="Fertility scalar. Only meaningful in simple mode">1</fertility>
+      <max_rtdep type="text" description="Maximum rooting depth (mm)">1300</max_rtdep>
+      <lagged_day_t type="text" description="Lagged daytime temperature (oC)">-999.9</lagged_day_t>
+      <phenology type="text" description="Value denoting the phenological stage of the species">1.005</phenology>
+      <flower_len type="text" description="Current maximum length of the flowering period (d)">0</flower_len>
+      <flower_time type="text" description="Time since the start of flowering (d)">0</flower_time>
+      <senc_index type="text" description="Number of preceding days of dry conditions (d)">0</senc_index>
+      <dorm_index type="text" description="Number of preceding days of cool, moist conditions (d)">0</dorm_index>
+      <dorm_t type="text" description="Lagged mean temperature used in summer-dormancy calculations (oc)">-999.9</dorm_t>
+      <seed_dorm_time type="text" description="Time since commencement of embryo dormancy (d)">0</seed_dorm_time>
+      <germ_index type="text" description="Germination index. Only meaningful if the species is modelled with seed pools (d)">0</germ_index>
+      <kl type="text" description="kl (-)">
+      </kl>
+      <ll type="text" description="lower limit (mm/mm)">
+      </ll>
+      <AusfarmPastureGreen name="Green">
+        <status type="list" listvalues="seedling,established,senescing" description="status">established</status>
+        <rt_dep type="text" description="Current rooting depth of the cohort (mm)">100</rt_dep>
+        <estab_index type="text" description="Establishment index.  Only meaningful if status = seedling">0</estab_index>
+        <stress_index type="text" description="Stress index.  Only meaningful if status = seedling:">0</stress_index>
+        <stem_reloc type="text" description="Maximum amount of stem tissue to be relocated to seed (kg/ha)">0</stem_reloc>
+        <frosts type="text" description="Number of frosts experienced by this herbage cohort during its lifetime">0</frosts>
+        <AusfarmPastureGreenHerbage name="Leaf">
+          <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
+          <weight type="text" description="weight (kg/ha)">8000</weight>
+          <n_conc type="text" description="n_conc (kg/kg)">
+          </n_conc>
+          <p_conc type="text" description="p_conc (kg/kg)">
+          </p_conc>
+          <s_conc type="text" description="s_conc (kg/kg)">
+          </s_conc>
+          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+          <root_wt type="text" description="root_wt (kg/ha)">3600</root_wt>
+        </AusfarmPastureGreenHerbage>
+        <AusfarmPastureGreenHerbage name="Stem">
+          <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
+          <weight type="text" description="weight (kg/ha)">1000</weight>
+          <n_conc type="text" description="n_conc (kg/kg)">
+          </n_conc>
+          <p_conc type="text" description="p_conc (kg/kg)">
+          </p_conc>
+          <s_conc type="text" description="s_conc (kg/kg)">
+          </s_conc>
+          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+          <root_wt type="text" description="root_wt (kg/ha)">0</root_wt>
+        </AusfarmPastureGreenHerbage>
+      </AusfarmPastureGreen>
+      <AusfarmPastureDry name="Dry">
+        <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">dead</status>
+        <AusfarmPastureDryHerbage name="Leaf">
+          <dmd type="text" description="dmd (kg/kg)">0.65</dmd>
+          <weight type="text" description="weight (kg/ha)">500</weight>
+          <n_conc type="text" description="n_conc (kg/kg)">
+          </n_conc>
+          <p_conc type="text" description="p_conc (kg/kg)">
+          </p_conc>
+          <s_conc type="text" description="s_conc (kg/kg)">
+          </s_conc>
+          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+        </AusfarmPastureDryHerbage>
+        <AusfarmPastureDryHerbage name="Stem">
+          <dmd type="text" description="dmd (kg/kg)">0.425</dmd>
+          <weight type="text" description="weight (kg/ha)">100</weight>
+          <n_conc type="text" description="n_conc (kg/kg)">
+          </n_conc>
+          <p_conc type="text" description="p_conc (kg/kg)">
+          </p_conc>
+          <s_conc type="text" description="s_conc (kg/kg)">
+          </s_conc>
+          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+        </AusfarmPastureDryHerbage>
+      </AusfarmPastureDry>
+      <AusfarmPastureDry name="Litter">
+        <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">litter</status>
+        <AusfarmPastureDryHerbage name="Leaf">
+          <dmd type="text" description="dmd (kg/kg)">0.651</dmd>
+          <weight type="text" description="weight (kg/ha)">233</weight>
+          <n_conc type="text" description="n_conc (kg/kg)">
+          </n_conc>
+          <p_conc type="text" description="p_conc (kg/kg)">
+          </p_conc>
+          <s_conc type="text" description="s_conc (kg/kg)">
+          </s_conc>
+          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+        </AusfarmPastureDryHerbage>
+        <AusfarmPastureDryHerbage name="Stem">
+          <dmd type="text" description="dmd (kg/kg)">0</dmd>
+          <weight type="text" description="weight (kg/ha)">0</weight>
+          <n_conc type="text" description="n_conc (kg/kg)">
+          </n_conc>
+          <p_conc type="text" description="p_conc (kg/kg)">
+          </p_conc>
+          <s_conc type="text" description="s_conc (kg/kg)">
+          </s_conc>
+          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
+        </AusfarmPastureDryHerbage>
+      </AusfarmPastureDry>
+      <AusfarmPastureSeeds name="Seeds">
+        <soft_unripe type="text" description="Mass of soft, unripe seeds (kg/ha)">
+        </soft_unripe>
+        <soft_ripe type="text" description="Mass of soft, ripe seeds (kg/ha)">
+        </soft_ripe>
+        <hard_unripe type="text" description="Mass of hard, unripe seeds (kg/ha)">
+        </hard_unripe>
+        <hard_ripe type="text" description="Mass of hard, ripe seeds (kg/ha)">
+        </hard_ripe>
+      </AusfarmPastureSeeds>
+    </AusfarmPasture>
     <barley />
     <bambatsi />
     <butterflypea />
@@ -111,8 +264,10 @@
     <weed />
     <wheat />
     <WF_Millet />
+    <canopy name="Canopy">
+  </canopy>
   </folder>
-  <folder name="Soil related">
+    <folder name="Soil related">
       <soil name="Blank soil">
         <Site></Site>
         <Region></Region>
@@ -323,26 +478,6 @@
       <Values description="Enter soil profile thickness values for APSIM (mm)">100 100 100 300 300 300</Values>
     </Thickness>
   </folder>
-  <clock name="Clock">
-    <start_date name="start_date" description="Select the start date of the simulation" type="date">1/01/1988</start_date>
-    <end_date name="end_date" description="Select the end date of the simulation" type="date">31/12/1988</end_date>
-  </clock>
-  <clock name="ClockAllYears" />
-  <outputfile name="Outputfile">
-    <variables name="Variables">
-      <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
-    </variables>
-    <events name="Reporting Frequency">
-      <event name="Daily" description="End of daily simulation time step" />
-    </events>
-  </outputfile>
-  <summaryfile name="Summaryfile">
-    <filename name="filename">sample.sum</filename>
-  </summaryfile>
-  <ini>
-    <filename>
-    </filename>
-  </ini>
   <folder name="Meteorological">
     <metfile name="met">
       <filename name="filename">%apsuite\apsim\met\sample\dalby.met</filename>
@@ -450,9 +585,7 @@ if (year > [startyear]) then
     </gcm_data>
   </folder>
   <folder name="Management">
-    <YPCalc />
-    <RugPlotUI name="Rug Plot Graph" />
-      <manager name="Empty manager">
+    <manager name="Empty manager">
       <script name="init">
         <text>
         </text>
@@ -469,7 +602,7 @@ if (year > [startyear]) then
         <event>end_of_day</event>
       </script>
     </manager>
-    <folder name="Manager with examples">
+    <folder name="Manager (common tasks)">
       <manager name="Sow using a fasw in top layer">
         <ui>
           <category description="Sowing criteria" />
@@ -1445,8 +1578,40 @@ endif
           <event>start_of_day</event>
         </script>
       </manager>
+    <manager name="Canola Oil Conc Calculator">
+      <script>
+        <event>script</event>
+        <text><![CDATA[start_of_day
+         if (DaysAfterSowing = 1) then
+            cum_temp = 0
+            cum_swdef = 0
+            cum_days = 0
+         elseif (StageName = 'start_grain_fill' or
+                       StageName = 'end_grain_fill' or
+                       StageName = 'maturity' or
+                       StageName = 'harvest_ripe') then
+            cum_temp = cum_temp + (maxt + mint) / 2
+            cum_swdef = cum_swdef + swdef_photo
+            cum_days = cum_days + 1
+         endif
+
+         ! calculate canola oil content
+         if (cum_days > 0) then
+            avg_temp = cum_temp / cum_days
+            avg_swdef = cum_swdef / cum_days
+            if (avg_temp <= 14) then
+               oil_conc =  47
+            else
+               oil_conc = (47 - ((avg_temp - 14)*1.21)) - (1.91*(1 - avg_swdef^2))
+            endif
+         else
+            oil_conc = 0
+         endif
+      ]]></text>
+      </script>
+    </manager>
     </folder>
-    <folder name="Africa-India">
+    <folder name="African &amp; Indian specialisations">
       <folder name="Phosphorus and Manure">
         <manager name="Fertilise with Phosphorus at sowing">
           <script>
@@ -2440,7 +2605,139 @@ endif
         </manager>
       </folder>
     </folder>
-    <folder name="Stock">
+  <folder name="Ausfarm Pasture Management">
+    <manager name="Area">
+      <ui>
+        <area type="text" description="Area of paddock (ha) :">100</area>
+      </ui>
+      <script name="Init">
+        <text>area = [area]</text>
+        <event>Init</event>
+      </script>
+    </manager>
+    <manager name="Sow">
+      <ui>
+        <category description="Sowing criteria" />
+        <date type="text" description="Enter sowing date (dd-mmm):">15-May</date>
+        <category description="Sowing details" />
+        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+        <rate type="text" description="Enter sowing rate (kg/ha):">100</rate>
+      </ui>
+      <script name="start_of_day">
+        <text>if (today = date('[date]')) then
+     '[pasturemodel]' sowpasture rate = [rate]
+    endif
+   </text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Cut">
+      <ui>
+        <category description="When should a cut be done?" />
+        <date type="ddmmmdate" description="Enter date of cut (dd-mmm) : ">1-jan</date>
+        <category description="Cut details" />
+        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+        <height type="text" description="Enter height of cut (mm):">80</height>
+        <gathered type="text" description="Proportion of cut forage gathered in (remainder becomes litter):">0.5</gathered>
+        <dmdloss type="text" description="Loss of DMD during cutting, drying and storage:">0.1</dmdloss>
+        <dmdcontent type="text" description="Dry matter content when stored (kg/kg):">0.9</dmdcontent>
+      </ui>
+      <script name="start_of_day">
+        <text>if (today = date('[date]')) then
+         standing_DM = avail_dm
+         '[pasturemodel]' cutpasture cut_height = [height], gathered = [gathered], dmd_loss = [dmdloss], dm_content = [dmdcontent]
+         resid_DM = avail_dm
+         removed_DM = standing_DM - resid_DM
+   endif
+
+
+
+   </text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="CutOnDMThreshold">
+      <ui>
+        <category description="When should a cut be done?" />
+        <availdmthreshold type="text" description="Enter DM threshold after which a cut should be performed (kg/ha):">1500</availdmthreshold>
+        <category description="Cut details" />
+        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+        <height type="text" description="Enter height of cut (mm):">80</height>
+        <gathered type="text" description="Proportion of cut forage gathered in (remainder becomes litter):">0.5</gathered>
+        <dmdloss type="text" description="Loss of DMD during cutting, drying and storage:">0.1</dmdloss>
+        <dmdcontent type="text" description="Dry matter content when stored (kg/kg):">0.9</dmdcontent>
+      </ui>
+      <script name="start_of_day">
+        <text><![CDATA[if (avail_dm > [availdmthreshold]) then
+         standing_DM = avail_dm
+         '[pasturemodel]' cutpasture cut_height = [height], gathered = [gathered], dmd_loss = [dmdloss], dm_content = [dmdcontent]
+         resid_DM = avail_dm
+         removed_DM = standing_DM - resid_DM
+   endif
+
+
+
+   ]]></text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Kill">
+      <ui>
+        <category description="Kill criteria" />
+        <date type="text" description="Enter kill date (dd-mmm):">11-May</date>
+        <category description="Kill details" />
+        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+        <propn_herbage type="text" description="Proportion of herbage to be killed:">0.5</propn_herbage>
+        <propn_seed type="text" description="Proportion of seed to be killed:">0.5</propn_seed>
+      </ui>
+      <script name="start_of_day">
+        <text>if (today = date('[date]')) then
+     '[pasturemodel]' killpasture propn_herbage = [propn_herbage],  propn_seed = [propn_seed]
+    endif
+
+
+   </text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Burn">
+      <ui>
+        <category description="Burn criteria" />
+        <date type="text" description="Enter burn date (dd-mmm):">10-May</date>
+        <category description="Burn details" />
+        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+        <kill_plants type="text" description="Proportion of herbage killed by the fire:">0.5</kill_plants>
+        <kill_seed type="text" description="Proportion of seeds killed by the fire:">0.5</kill_seed>
+        <propn_unburnt type="text" description="Proportion of herbage (green &amp; dead) that remains after the fire has passed:">0.2</propn_unburnt>
+      </ui>
+      <script name="start_of_day">
+        <text>if (today = date('[date]')) then
+     '[pasturemodel]' burnpasture kill_plants = [kill_plants], kill_seed = [kill_seed], propn_unburnt = [propn_unburnt]
+    endif
+   </text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Cultivate">
+      <ui>
+        <category description="Cultivate criteria" />
+        <date type="text" description="Enter cultivation date (dd-mmm):">13-May</date>
+        <category description="Cultivation details" />
+        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
+        <depth type="text" description="Depth of cultivation (mm):">100</depth>
+        <propn_incorp type="text" description="Proportion of surface herbage incorporated into the soil:" />
+        <propn_mixed type="text" description="Proportion of soil in each soil layer that is mixed across the cultivation depth:">0.3</propn_mixed>
+      </ui>
+      <script name="start_of_day">
+        <text>if (today = date('[date]')) then
+     '[pasturemodel]' cultivatepasture depth = [depth], propn_incorp = [propn_incorp], propn_mixed = [propn_mixed]
+    endif
+   </text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+  </folder>
+    <folder name="Ausfarm Stock Management">
       <folder name="Cattle">
         <manager name="Buy cattle on a fixed date">
           <script>
@@ -3347,8 +3644,27 @@ endif
         </manager>
       </folder>
     </folder>
-    <folder name="Tcl">
-      <tclmanager name="TCL Manager with examples">
+    <folder name="TCL Manager">
+      <tclmanager name="Empty Manager">
+        <rule name="Logic">
+          <script name="init">
+            <text>
+            </text>
+            <event>init</event>
+          </script>
+          <script name="prepare">
+            <text>
+            </text>
+            <event>prepare</event>
+          </script>
+          <script name="end_simulation">
+            <text>
+            </text>
+            <event>end_simulation</event>
+          </script>
+        </rule>
+      </tclmanager>
+      <tclmanager name="Common tasks">
         <rule name="Sow using esw and rainfall">
           <ui>
             <category type="category" description="Sowing criteria" />
@@ -4236,6 +4552,280 @@ if {![info exists myPaddockName]} {
             <event>start_simulation</event>
           </script>
         </rule>
+      <rule name="Fertilise in a zadok stage window">
+        <script name="init">
+          <text>
+            set fert_applied_[crop]_[zadok_fert_stage_begin]_[zadok_fert_stage_end] 0
+        </text>
+          <event>init</event>
+        </script>
+        <script name="sowing">
+          <text>
+            set fert_applied_[crop]_[zadok_fert_stage_begin]_[zadok_fert_stage_end] 0
+        </text>
+          <event>sowing</event>
+        </script>
+        <script name="prepare">
+          <text><![CDATA[
+         set z [apsimGet [crop].zadok_stage]
+         if { $z >= [zadok_fert_stage_begin] &&
+              $z <= [zadok_fert_stage_end] &&
+              fert_applied_[crop]_[zadok_fert_stage_begin]_[zadok_fert_stage_end] == 0} {
+            if {[apsimGet esw] >= [esw_amount]} {
+               set N_topsoil [expr [lrange [apsimGet no3] 0 1] + [lrange [apsimGet nh4] 0 1]]
+               if {$N_topsoil < [fert_criteria]} {
+                  a[simSendMessage [fertmodule] apply {amount [fert_amount]} {depth 50} {type [fert_type]}
+                  set fert_applied_[crop]_[zadok_fert_stage_begin]_[zadok_fert_stage_end] 1
+               }
+            }
+         }
+         ]]></text>
+          <event>prepare</event>
+        </script>
+        <ui>
+          <category name="When should fertiliser be applied" />
+          <zadok_fert_stage_begin type="text" description="Enter start of zadok window (10-71):   ">30</zadok_fert_stage_begin>
+          <zadok_fert_stage_end type="text" description="Enter end of zadok window (10-71):   ">32</zadok_fert_stage_end>
+          <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+          <esw_amount type="text" description="Enter amount of soil water (mm)">30</esw_amount>
+          <category name="Fertiliser application details" />
+          <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
+          <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">25</fert_amount>
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+        </ui>
+      </rule>
+            <rule name="Fertilise on fixed date - top up">
+        <script name="prepare">
+          <text><![CDATA[
+if { [dateIs [fert_date]] } {
+   set N_deficit [expr [fert_criteria] - [expr [lrange [apsimGet no3] 0 2] + [lrange [apsimGet nh4] 0 2]]
+   apsimSendMessage [fertmodule] apply {amount $N_deficit} {depth 50} {type [fert_type]}
+}
+          ]]></text>
+          <event>prepare</event>
+        </script>
+        <ui>
+          <category name="When should fertiliser be applied" />
+          <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">dd-mmm</fert_date>
+          <fert_criteria type="text" description="Amount of N required in top 3 layers (kg/ha) : ">1000</fert_criteria>
+          <category name="Fertiliser application details" />
+          <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+        </ui>
+      </rule>
+      <rule name="Fertilise on days after sowing - top up">
+        <script name="prepare">
+          <text><![CDATA[
+if {[apsimGet [modulename].daysaftersowing] == [fert_das]} {
+   N_deficit = [fert_criteria] - [expr [fert_criteria] - [expr [lrange [apsimGet no3] 0 2] + [lrange [apsimGet nh4] 0 2]]
+   if {$N_deficit > 0} {
+      apsimSendMessage [fertmodule] apply {amount $N_deficit} {depth 50} {type [fert_type]}
+   }
+}
+     ]]></text>
+          <event>prepare</event>
+        </script>
+        <ui>
+          <category name="When should fertiliser be applied" />
+          <modulename type="modulename" description="On which crop is fertiliser being applied : ">wheat</modulename>
+          <fert_das type="text" description="Enter fertiliser days after sowing  : ">dd-mmm</fert_das>
+          <fert_criteria type="text" description="Amount of N required in top 3 layers (kg/ha) : ">1000</fert_criteria>
+          <category name="Fertiliser application details" />
+          <fertmodule type="modulename" description="Module used to apply the fertiliser : " />
+          <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+        </ui>
+      </rule>
+      <rule name="Irrigate at sowing">
+        <script name="[modulename].[eventname]">
+          <text><![CDATA[
+if {[irrig_amount_evt] > 0} {
+   apsimSendMessage [irrigatemodule] apply {amount [irrig_amount_evt]}
+}
+   ]]></text>
+          <event>[modulename].[eventname]</event>
+        </script>
+        <ui>
+          <category name="When should irrigation be applied" />
+          <modulename type="modulename" description="The module the event come from : " />
+          <eventname type="text" description="Which event should irrigation be applied : ">sowing</eventname>
+          <category name="Irrigation application details" />
+          <irrigatemodule type="modulename" description="Module used to apply the irrigation : " />
+          <irrig_amount_evt type="text" description="Amount of irrigation to apply (mm) : ">50</irrig_amount_evt>
+        </ui>
+      </rule>
+      <rule name="Irrigate on fixed date">
+        <script name="prepare">
+          <text>
+if {[dateIs [irrigate_date]]} {
+   apsimSet [irrigate_module].irrigation_efficiency [irrigate_efficiency]
+   apsimSendMessage  [irrigate_module] apply {amount [irrigate_amount]}
+}
+</text>
+          <event>prepare</event>
+        </script>
+        <ui>
+          <category name="When should irrigation be applied" />
+          <irrigate_date type="ddmmmdate" description="Enter irrigation date (dd-mmm) : ">dd-mmm</irrigate_date>
+          <category name="Irrigation application details" />
+          <irrigate_module type="modulename" description="Module used to apply the irrigation : ">ClockAllYears</irrigate_module>
+          <irrigate_amount type="text" description="Amount of irrigation to apply (mm) : ">50</irrigate_amount>
+          <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1.0</irrigate_efficiency>
+        </ui>
+      </rule>
+      <rule name="Tillage on fixed date">
+        <script name="prepare">
+          <text>
+if {[dateIs [tillage_date]]} {
+   if {"[tillage_type]" == "user_defined"} {
+       apsimSendMessage [surfaceommodule] tillage {type [tillage_type]} {f_incorp [tillage_f_incorp]} {tillage_depth [tillage_depth]}
+   } else {
+       apsimSendMessage [surfaceommodule] tillage {type [tillage_type]}
+   }
+   set ready_to_till_pre_sow 0
+   set till_day_pre_sow 0
+endif
+      </text>
+          <event>prepare</event>
+        </script>
+        <ui>
+          <category name="When should tillage be done" />
+          <tillage_date type="ddmmmdate" description="Enter tillage date (dd-mmm) : ">dd-mmm</tillage_date>
+          <category name="Tillage application details" />
+          <surfaceommodule type="modulename" description="Module used to apply the tillage : " />
+          <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">disc</tillage_type>
+          <tillage_depth description="User_defined depth of seedbed preparation (mm) : ">0</tillage_depth>
+          <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1): ">0</tillage_f_incorp>
+        </ui>
+      </rule>
+      <rule name="Tillage on an event">
+        <script name="[modulename].[eventname]">
+          <text>
+if {"[tillage_type]" == "user_defined"} {
+   apsimSendMessage [surfaceommodule] tillage {type [tillage_type]} {f_incorp [tillage_f_incorp]} {tillage_depth [tillage_depth]}
+} else {
+   apsimSendMessage [surfaceommodule] tillage {type [tillage_type]}
+}
+      </text>
+          <event>[modulename].[eventname]</event>
+        </script>
+        <ui>
+          <category name="When should tillage be performed" />
+          <modulename type="modulename" description="The module the event come from : ">ClockAllYears</modulename>
+          <eventname type="text" description="On which event should tillage be done : ">sowing</eventname>
+          <category name="Tillage details" />
+          <surfaceommodule type="modulename" description="Module used to apply the tillage : ">ClockAllYears</surfaceommodule>
+          <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">disc</tillage_type>
+          <tillage_depth description="User_defined depth of seedbed preparation (mm) : ">0</tillage_depth>
+          <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1): ">0</tillage_f_incorp>
+        </ui>
+      </rule>
+      <rule name="Reset water, nitrogen and surfaceOM on fixed date">
+        <script name="prepare">
+          <text>
+if {[dateIs [reset_date]]} {
+   if {"[resetWater]" == "yes"} {
+       apsimSendMessage "[soilmodule] Water" reset
+   }
+   if {"[resetNitrogen]" == "yes"} {
+       apsimSendMessage "[soilmodule] Nitrogen" reset
+   }
+   if {"[resetSurfaceOM]" == "yes"} {
+       apsimSendMessage "[surfaceommodule] Water" reset
+   }
+   apsimSendMessage * reseting
+}
+      </text>
+          <event>prepare</event>
+        </script>
+        <ui>
+          <category name="When should a reset be done" />
+          <reset_date type="ddmmmdate" description="Enter date of reset (dd-mmm) : ">dd-mmm</reset_date>
+          <category name="Reset details" />
+          <soilmodule type="modulename" description="Name of your soil module : " />
+          <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">surface organic matter</surfaceommodule>
+          <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
+          <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
+          <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
+        </ui>
+      </rule>
+      <rule name="Reset water, nitrogen and surfaceOM on sowing">
+        <script name="[modulename].[eventname]">
+          <text>
+if {[dateIs [reset_date]]} {
+   if {"[resetWater]" == "yes"} {
+       apsimSendMessage "[soilmodule] Water" reset
+   }
+   if {"[resetNitrogen]" == "yes"} {
+       apsimSendMessage "[soilmodule] Nitrogen" reset
+   }
+   if {"[resetSurfaceOM]" == "yes"} {
+       apsimSendMessage "[surfaceommodule] Water" reset
+   }
+   apsimSendMessage * reseting
+endif
+      </text>
+          <event>[modulename].[eventname]</event>
+        </script>
+        <ui>
+          <category name="When should a reset be done" />
+          <modulename type="modulename" description="The module the event is to come from : ">wheat</modulename>
+          <eventname type="text" description="On which event should a reset be done : ">sowing</eventname>
+          <category name="Reset details" />
+          <soilmodule type="modulename" description="Name of your soil module : " />
+          <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">surface organic matter</surfaceommodule>
+          <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
+          <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
+          <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
+        </ui>
+      </rule>
+      <rule name="Establish Bambatsi pasture">
+        <ui>
+          <category description="Sowing criteria" />
+          <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-sep</date1>
+          <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">31-dec</date2>
+          <raincrit type="text" description="Amount of rainfall : ">15</raincrit>
+          <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+          <category description="Sowing parameters" />
+          <crop type="crop" description="Enter name of module to sow : ">bambatsi</crop>
+          <density type="text" description="Enter sowing density  (plants/ha) : ">100</density>
+        </ui>
+        <script name="init">
+          <text>
+set [crop]_in 0
+           </text>
+          <event>init</event>
+        </script>
+        <script name="prepare">
+          <text><![CDATA[
+if {[dateWithin [date1] [date2]] && [crop]_in == 0} {
+   if ([apsimGet rain\[[rainnumdays]\]] >= [raincrit]} {
+      apsimSendMessage [crop]  establish plants = [density], init_section = seedling
+      [crop]_in = 1
+   }
+}
+            ]]></text>
+          <event>prepare</event>
+        </script>
+      </rule>
+      <rule name="Manage Bambatsi">
+        <ui>
+          <category description="Cutting criteria" />
+          <hmass type="text" description="Enter critical biomass for harvest (kg/ha) : ">2000</hmass>
+          <category description="Cutting parameters" />
+          <crop type="crop" description="Enter name of module to cut : ">bambatsi</crop>
+          <ffraction type="text" description="Enter fraction of foliage removed  (0-1) : ">0.9</ffraction>
+          <sfraction type="text" description="Enter fraction of stem removed  (0-1) : ">0.9</sfraction>
+        </ui>
+        <script name="prepare">
+          <text><![CDATA[
+if {[apsimGet [crop].biomass] > [hmass] && [crop]_in != 0} {
+   [crop] cut {foliage_remove_fr  [ffraction]} {adm_remove_fr [sfraction]}
+}
+            ]]></text>
+          <event>prepare</event>
+        </script>
+      </rule>
+
         <rule name="Rotations - Sequential">
           <ui>
             <category type="category" />
@@ -4384,70 +4974,6 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
             <event>[modulename].[eventname]</event>
           </script>
         </rule>
-      </tclmanager>
-      <tclmanager name="TCL Manager (standalone)">
-        <rule name="Logic">
-          <script name="init">
-            <text>
-            </text>
-            <event>init</event>
-          </script>
-          <script name="prepare">
-            <text>
-            </text>
-            <event>prepare</event>
-          </script>
-          <script name="end_simulation">
-            <text>
-            </text>
-            <event>end_simulation</event>
-          </script>
-        </rule>
-        <rule name="Debugger">
-          <script name="init">
-            <event>init</event>
-            <text><![CDATA[package require Tk
-wm withdraw .
-
-package require tkcon
-tkcon show
-tkcon title "Apsim Debugging Console"
-puts "Commands:"
-puts " 'c'       - Continue"
-puts " 's <n>'   - Step n days (default 1)"
-puts " 'p <what>'- Print apsim variable"
-puts " 'b <cond>'- Set break condition"
-set steps 1
-update
-
-# A 4 command debugger:
-proc c {}      {uplevel #0 set steps -1}  ;# Continue
-proc s {{n 1}} {uplevel #0 set steps $n}  ;# Step n days
-proc p {var}   {apsimGet $var}            ;# print apsim variable
-proc b {cond}  {global Conds; lappend Conds $cond} ;# set break condition
-set Conds {}
-
-# Link an apsim variable
-proc link {apsimName tclName} {
-   global $tclName; set $tclName {}
-   trace variable $tclName r "getLinked $apsimName"
-   trace variable $tclName w "setLinked $apsimName"
-}
-proc getLinked {a n1 n2 op} {uplevel #0 set $n1 [apsimGet $a]}
-proc setLinked {a n1 n2 op} {apsimSet $a $n1}
-
-]]></text>
-          </script>
-\          <script name="process"><event>process</event><text>update
-foreach cond $Conds {
-  if {[expr $cond]} {
-    set steps 1
-  }
-}
-
-incr steps -1
-if {$steps == 0} {tkwait variable steps}
-        </text></script></rule>
       </tclmanager>
       <tclui name="R Graphics">
         <uiscript>
@@ -4706,6 +5232,7 @@ dev.off()
 
 </rscript>
       </tclui>
+    <RugPlotUI name="Rug Plot Graph" />
      <cropui>
        <ui>
          <state>Wheat</state>
@@ -5761,47 +6288,71 @@ trace add variable XMLDoc read setXML
 </uiscript>
   </tclui>     
     </folder>
-    <operations />
+    <operations name="Operations Schedule"/>
     <accum>
       <variable name="variable">variable</variable>
     </accum>
-    <log />
-    <sysbal />
     <tracker />
-    <manager name="CanolaOilConc">
-      <script>
-        <event>script</event>
-        <text><![CDATA[start_of_day
-         if (DaysAfterSowing = 1) then
-            cum_temp = 0
-            cum_swdef = 0
-            cum_days = 0
-         elseif (StageName = 'start_grain_fill' or
-                       StageName = 'end_grain_fill' or
-                       StageName = 'maturity' or
-                       StageName = 'harvest_ripe') then
-            cum_temp = cum_temp + (maxt + mint) / 2
-            cum_swdef = cum_swdef + swdef_photo
-            cum_days = cum_days + 1
-         endif
+    <YPCalc name= "YP Calculator"/>
+  <venlink>
+    <model_filename type="filename" description="Name of VENSIM model filename" />
+    <variable type="multiedit" description="Name of VENSIM variable(s) that are gettable/settable by APSIM" />
+    <ini name="Constants">
+      <filename>%apsuite\apsim\venlink\sample\Vensim.ini</filename>
+    </ini>
+  </venlink>
+    <log name="Diagnostic log file"/>
+    <sysbal name="System balance checker"/>
+      <tclmanager name="Debugger">
+        <rule name="Debugger">
+          <ui/>
+          <script name="init">
+            <event>init</event>
+            <text><![CDATA[package require Tk
+wm withdraw .
 
-         ! calculate canola oil content
-         if (cum_days > 0) then
-            avg_temp = cum_temp / cum_days
-            avg_swdef = cum_swdef / cum_days
-            if (avg_temp <= 14) then
-               oil_conc =  47
-            else
-               oil_conc = (47 - ((avg_temp - 14)*1.21)) - (1.91*(1 - avg_swdef^2))
-            endif
-         else
-            oil_conc = 0
-         endif
-      ]]></text>
-      </script>
-    </manager>
+package require tkcon
+tkcon show
+tkcon title "Apsim Debugging Console"
+puts "Commands:"
+puts " 'c'       - Continue"
+puts " 's <n>'   - Step n days (default 1)"
+puts " 'p <what>'- Print apsim variable"
+puts " 'b <cond>'- Set break condition"
+set steps 1
+update
+
+# A 4 command debugger:
+proc c {}      {uplevel #0 set steps -1}  ;# Continue
+proc s {{n 1}} {uplevel #0 set steps $n}  ;# Step n days
+proc p {var}   {apsimGet $var}            ;# print apsim variable
+proc b {cond}  {global Conds; lappend Conds $cond} ;# set break condition
+set Conds {}
+
+# Link an apsim variable
+proc link {apsimName tclName} {
+   global $tclName; set $tclName {}
+   trace variable $tclName r "getLinked $apsimName"
+   trace variable $tclName w "setLinked $apsimName"
+}
+proc getLinked {a n1 n2 op} {uplevel #0 set $n1 [apsimGet $a]}
+proc setLinked {a n1 n2 op} {apsimSet $a $n1}
+
+]]></text>
+          </script>
+\          <script name="process"><event>process</event><text>update
+foreach cond $Conds {
+  if {[expr $cond]} {
+    set steps 1
+  }
+}
+
+incr steps -1
+if {$steps == 0} {tkwait variable steps}
+        </text></script></rule>
+      </tclmanager>
   </folder>
-  <folder name="Water Management">
+  <folder name="Water Components">
     <irrigation name="Irrigation">
       <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
       <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
@@ -5867,296 +6418,20 @@ trace add variable XMLDoc read setXML
       <CEC description="surface soil cation exchange capacity">30.0</CEC>
     </pond>
   </folder>
-  <canopy name="Canopy">
-    <intercrop name="intercrop" description="Enter crop names to intercrop" type="text">
-    </intercrop>
-  </canopy>
-  <venlink>
-    <model_filename type="filename" description="Name of VENSIM model filename" />
-    <variable type="multiedit" description="Name of VENSIM variable(s) that are gettable/settable by APSIM" />
-    <ini name="Constants">
-      <filename>%apsuite\apsim\venlink\sample\Vensim.ini</filename>
-    </ini>
-  </venlink>
-  <folder name="Animals">
-    <stock>
-      <fraction_faeces_added type="text" description="fraction_faeces_added">0.5</fraction_faeces_added>
-      <fraction_urine_added type="text" description="fraction_urine_added">0.5</fraction_urine_added>
-      <herbage1 type="text" description="First plant herbage source">lucerne</herbage1>
-      <herbage2 type="text" description="Second plant herbage source">
-      </herbage2>
-    </stock>
-    <supplement>
-      <spoilage_time type="text" description="spoilage_time">0</spoilage_time>
-    </supplement>
-    <graz name="Simple grazing model">
-      <intake_util_intercept type="text" description="Intercept in intake and utilization eqn (p142)">1</intake_util_intercept>
-      <intake_util_slope type="text" description="Slope in intake and utilization eqn (p143)">-0.3</intake_util_slope>
-      <yld_eat_restr type="text" description="Yield at which intake restriction no longer applies (p144)">300</yld_eat_restr>
-      <summer_lwg type="text" description="Expected summer lwg @ low SR (p145)">70</summer_lwg>
-      <autumn_lwg type="text" description="Expected autumn lwg @ low SR (p146)">35</autumn_lwg>
-      <winter_lwg type="text" description="Expected winter lwg @ low SR (p147)">10</winter_lwg>
-      <spring_lwg type="text" description="Expected spring lwg @ low SR (p148)">35</spring_lwg>
-      <leaf_diet type="text" description="Proportion of leaf in diet (p132/100)">0.85</leaf_diet>
-      <std_alw type="text" description="std_alw">200</std_alw>
-      <metabol_expon type="text" description="metabol_expon">0.75</metabol_expon>
-      <acc_eaten_reset type="text" description="Day to reset eaten accumulator">335</acc_eaten_reset>
-      <prop_can_eat type="text" description="prop_can_eat">1</prop_can_eat>
-      <allow_supplements type="text" description="allow_supplements">1</allow_supplements>
-    </graz>
-  </folder>
-  <folder name="Pasture">
-    <AusfarmPasture>
-      <debug type="list" listvalues="on,off" description="debug">off</debug>
-      <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
-      <svp_fract type="text" description="svp_fract">0.75</svp_fract>
-      <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
-      <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
-    </AusfarmPasture>
-    <AusfarmPasture name="AusfarmEstablishedPasture">
-      <debug type="list" listvalues="on,off" description="debug">off</debug>
-      <sand type="text" description="sand">0.1 0.1 0.1 0.1 0.1</sand>
-      <svp_fract type="text" description="svp_fract">0.75</svp_fract>
-      <co2_ppm type="text" description="co2 (ppm)">400</co2_ppm>
-      <species type="list" description="Name of the pasture species" listvalues="Perennial Ryegrass,Phalaris,Cocksfoot,Annual Ryegrass,Annual Grass - Early,Sub Clover - Mt Barker,Sub Clover - Leura,Sub Clover - Seaton Park,Sub Clover - Dalkeith,Medic - Paraggio,White Clover (beta),Lucerne - Hunter River (beta),Lucerne - winter active (beta),Capeweed">Cocksfoot</species>
-      <nutrients type="list" listvalues="Null,N,NP,NS,NPS" description="Determines which of the plant nutrient submodels to activate">N</nutrients>
-      <fertility type="text" description="Fertility scalar. Only meaningful in simple mode">1</fertility>
-      <max_rtdep type="text" description="Maximum rooting depth (mm)">1300</max_rtdep>
-      <lagged_day_t type="text" description="Lagged daytime temperature (oC)">-999.9</lagged_day_t>
-      <phenology type="text" description="Value denoting the phenological stage of the species">1.005</phenology>
-      <flower_len type="text" description="Current maximum length of the flowering period (d)">0</flower_len>
-      <flower_time type="text" description="Time since the start of flowering (d)">0</flower_time>
-      <senc_index type="text" description="Number of preceding days of dry conditions (d)">0</senc_index>
-      <dorm_index type="text" description="Number of preceding days of cool, moist conditions (d)">0</dorm_index>
-      <dorm_t type="text" description="Lagged mean temperature used in summer-dormancy calculations (oc)">-999.9</dorm_t>
-      <seed_dorm_time type="text" description="Time since commencement of embryo dormancy (d)">0</seed_dorm_time>
-      <germ_index type="text" description="Germination index. Only meaningful if the species is modelled with seed pools (d)">0</germ_index>
-      <kl type="text" description="kl (-)">
-      </kl>
-      <ll type="text" description="lower limit (mm/mm)">
-      </ll>
-      <AusfarmPastureGreen name="Green">
-        <status type="list" listvalues="seedling,established,senescing" description="status">established</status>
-        <rt_dep type="text" description="Current rooting depth of the cohort (mm)">100</rt_dep>
-        <estab_index type="text" description="Establishment index.  Only meaningful if status = seedling">0</estab_index>
-        <stress_index type="text" description="Stress index.  Only meaningful if status = seedling:">0</stress_index>
-        <stem_reloc type="text" description="Maximum amount of stem tissue to be relocated to seed (kg/ha)">0</stem_reloc>
-        <frosts type="text" description="Number of frosts experienced by this herbage cohort during its lifetime">0</frosts>
-        <AusfarmPastureGreenHerbage name="Leaf">
-          <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
-          <weight type="text" description="weight (kg/ha)">8000</weight>
-          <n_conc type="text" description="n_conc (kg/kg)">
-          </n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)">
-          </p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)">
-          </s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-          <root_wt type="text" description="root_wt (kg/ha)">3600</root_wt>
-        </AusfarmPastureGreenHerbage>
-        <AusfarmPastureGreenHerbage name="Stem">
-          <dmd type="text" description="dmd (kg/kg)">0.825</dmd>
-          <weight type="text" description="weight (kg/ha)">1000</weight>
-          <n_conc type="text" description="n_conc (kg/kg)">
-          </n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)">
-          </p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)">
-          </s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-          <root_wt type="text" description="root_wt (kg/ha)">0</root_wt>
-        </AusfarmPastureGreenHerbage>
-      </AusfarmPastureGreen>
-      <AusfarmPastureDry name="Dry">
-        <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">dead</status>
-        <AusfarmPastureDryHerbage name="Leaf">
-          <dmd type="text" description="dmd (kg/kg)">0.65</dmd>
-          <weight type="text" description="weight (kg/ha)">500</weight>
-          <n_conc type="text" description="n_conc (kg/kg)">
-          </n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)">
-          </p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)">
-          </s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-        <AusfarmPastureDryHerbage name="Stem">
-          <dmd type="text" description="dmd (kg/kg)">0.425</dmd>
-          <weight type="text" description="weight (kg/ha)">100</weight>
-          <n_conc type="text" description="n_conc (kg/kg)">
-          </n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)">
-          </p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)">
-          </s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-      </AusfarmPastureDry>
-      <AusfarmPastureDry name="Litter">
-        <status type="list" listvalues="dead,litter" description="State of a cohort of dry herbage:">litter</status>
-        <AusfarmPastureDryHerbage name="Leaf">
-          <dmd type="text" description="dmd (kg/kg)">0.651</dmd>
-          <weight type="text" description="weight (kg/ha)">233</weight>
-          <n_conc type="text" description="n_conc (kg/kg)">
-          </n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)">
-          </p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)">
-          </s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-        <AusfarmPastureDryHerbage name="Stem">
-          <dmd type="text" description="dmd (kg/kg)">0</dmd>
-          <weight type="text" description="weight (kg/ha)">0</weight>
-          <n_conc type="text" description="n_conc (kg/kg)">
-          </n_conc>
-          <p_conc type="text" description="p_conc (kg/kg)">
-          </p_conc>
-          <s_conc type="text" description="s_conc (kg/kg)">
-          </s_conc>
-          <spec_area type="text" description="spec_area (cm^2/g)">10</spec_area>
-        </AusfarmPastureDryHerbage>
-      </AusfarmPastureDry>
-      <AusfarmPastureSeeds name="Seeds">
-        <soft_unripe type="text" description="Mass of soft, unripe seeds (kg/ha)">
-        </soft_unripe>
-        <soft_ripe type="text" description="Mass of soft, ripe seeds (kg/ha)">
-        </soft_ripe>
-        <hard_unripe type="text" description="Mass of hard, unripe seeds (kg/ha)">
-        </hard_unripe>
-        <hard_ripe type="text" description="Mass of hard, ripe seeds (kg/ha)">
-        </hard_ripe>
-      </AusfarmPastureSeeds>
-    </AusfarmPasture>
-    <manager name="Area">
-      <ui>
-        <area type="text" description="Area of paddock (ha) :">100</area>
-      </ui>
-      <script name="Init">
-        <text>area = [area]</text>
-        <event>Init</event>
-      </script>
-    </manager>
-    <manager name="Sow">
-      <ui>
-        <category description="Sowing criteria" />
-        <date type="text" description="Enter sowing date (dd-mmm):">15-May</date>
-        <category description="Sowing details" />
-        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-        <rate type="text" description="Enter sowing rate (kg/ha):">100</rate>
-      </ui>
-      <script name="start_of_day">
-        <text>if (today = date('[date]')) then
-     '[pasturemodel]' sowpasture rate = [rate]
-    endif
-   </text>
-        <event>start_of_day</event>
-      </script>
-    </manager>
-    <manager name="Cut">
-      <ui>
-        <category description="When should a cut be done?" />
-        <date type="ddmmmdate" description="Enter date of cut (dd-mmm) : ">1-jan</date>
-        <category description="Cut details" />
-        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-        <height type="text" description="Enter height of cut (mm):">80</height>
-        <gathered type="text" description="Proportion of cut forage gathered in (remainder becomes litter):">0.5</gathered>
-        <dmdloss type="text" description="Loss of DMD during cutting, drying and storage:">0.1</dmdloss>
-        <dmdcontent type="text" description="Dry matter content when stored (kg/kg):">0.9</dmdcontent>
-      </ui>
-      <script name="start_of_day">
-        <text>if (today = date('[date]')) then
-         standing_DM = avail_dm
-         '[pasturemodel]' cutpasture cut_height = [height], gathered = [gathered], dmd_loss = [dmdloss], dm_content = [dmdcontent]
-         resid_DM = avail_dm
-         removed_DM = standing_DM - resid_DM
-   endif
-
-
-
-   </text>
-        <event>start_of_day</event>
-      </script>
-    </manager>
-    <manager name="CutOnDMThreshold">
-      <ui>
-        <category description="When should a cut be done?" />
-        <availdmthreshold type="text" description="Enter DM threshold after which a cut should be performed (kg/ha):">1500</availdmthreshold>
-        <category description="Cut details" />
-        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-        <height type="text" description="Enter height of cut (mm):">80</height>
-        <gathered type="text" description="Proportion of cut forage gathered in (remainder becomes litter):">0.5</gathered>
-        <dmdloss type="text" description="Loss of DMD during cutting, drying and storage:">0.1</dmdloss>
-        <dmdcontent type="text" description="Dry matter content when stored (kg/kg):">0.9</dmdcontent>
-      </ui>
-      <script name="start_of_day">
-        <text><![CDATA[if (avail_dm > [availdmthreshold]) then
-         standing_DM = avail_dm
-         '[pasturemodel]' cutpasture cut_height = [height], gathered = [gathered], dmd_loss = [dmdloss], dm_content = [dmdcontent]
-         resid_DM = avail_dm
-         removed_DM = standing_DM - resid_DM
-   endif
-
-
-
-   ]]></text>
-        <event>start_of_day</event>
-      </script>
-    </manager>
-    <manager name="Kill">
-      <ui>
-        <category description="Kill criteria" />
-        <date type="text" description="Enter kill date (dd-mmm):">11-May</date>
-        <category description="Kill details" />
-        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-        <propn_herbage type="text" description="Proportion of herbage to be killed:">0.5</propn_herbage>
-        <propn_seed type="text" description="Proportion of seed to be killed:">0.5</propn_seed>
-      </ui>
-      <script name="start_of_day">
-        <text>if (today = date('[date]')) then
-     '[pasturemodel]' killpasture propn_herbage = [propn_herbage],  propn_seed = [propn_seed]
-    endif
-
-
-   </text>
-        <event>start_of_day</event>
-      </script>
-    </manager>
-    <manager name="Burn">
-      <ui>
-        <category description="Burn criteria" />
-        <date type="text" description="Enter burn date (dd-mmm):">10-May</date>
-        <category description="Burn details" />
-        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-        <kill_plants type="text" description="Proportion of herbage killed by the fire:">0.5</kill_plants>
-        <kill_seed type="text" description="Proportion of seeds killed by the fire:">0.5</kill_seed>
-        <propn_unburnt type="text" description="Proportion of herbage (green &amp; dead) that remains after the fire has passed:">0.2</propn_unburnt>
-      </ui>
-      <script name="start_of_day">
-        <text>if (today = date('[date]')) then
-     '[pasturemodel]' burnpasture kill_plants = [kill_plants], kill_seed = [kill_seed], propn_unburnt = [propn_unburnt]
-    endif
-   </text>
-        <event>start_of_day</event>
-      </script>
-    </manager>
-    <manager name="Cultivate">
-      <ui>
-        <category description="Cultivate criteria" />
-        <date type="text" description="Enter cultivation date (dd-mmm):">13-May</date>
-        <category description="Cultivation details" />
-        <pasturemodel type="crop" description="Enter name of pasture module:">AusfarmPasture</pasturemodel>
-        <depth type="text" description="Depth of cultivation (mm):">100</depth>
-        <propn_incorp type="text" description="Proportion of surface herbage incorporated into the soil:" />
-        <propn_mixed type="text" description="Proportion of soil in each soil layer that is mixed across the cultivation depth:">0.3</propn_mixed>
-      </ui>
-      <script name="start_of_day">
-        <text>if (today = date('[date]')) then
-     '[pasturemodel]' cultivatepasture depth = [depth], propn_incorp = [propn_incorp], propn_mixed = [propn_mixed]
-    endif
-   </text>
-        <event>start_of_day</event>
-      </script>
-    </manager>
-  </folder>
+  <clock name="Clock">
+    <start_date name="start_date" description="Select the start date of the simulation" type="date">1/01/1988</start_date>
+    <end_date name="end_date" description="Select the end date of the simulation" type="date">31/12/1988</end_date>
+  </clock>
+  <clock name="Clock - all years in metfile" />
+  <outputfile name="Outputfile">
+    <variables name="Variables">
+      <variable name="dd/mm/yyyy as Date" description="Date (dd/mm/yyyy)" array="?" />
+    </variables>
+    <events name="Reporting Frequency">
+      <event name="Daily" description="End of daily simulation time step" />
+    </events>
+  </outputfile>
+  <summaryfile name="Summaryfile">
+    <filename name="filename">sample.sum</filename>
+  </summaryfile>
 </folder>
