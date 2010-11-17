@@ -649,7 +649,15 @@ namespace ApsimFile
                VariableValue BD = FindVariable("BD (g/cc)", Value.ThicknessMM);
                for (int i = 0; i < Value.Doubles.Length; i++)
                   Value.Doubles[i] = Value.Doubles[i] / 100 * (BD.Doubles[i] * Value.ThicknessMM[i]);
-               Value.Units = "ppm";
+               Value.Units = "kg/ha";
+               }
+
+            else if (Value.Units == "mg/kg" && ToUnits == "kg/ha")
+               {
+               VariableValue BD = FindVariable("BD (g/cc)", Value.ThicknessMM);
+               for (int i = 0; i < Value.Doubles.Length; i++)
+                  Value.Doubles[i] = Value.Doubles[i] / 100 * (BD.Doubles[i] * Value.ThicknessMM[i]);
+               Value.Units = "kg/ha";
                }
 
             else if (Value.Units == "CaCl2" && ToUnits == "1:5 water")

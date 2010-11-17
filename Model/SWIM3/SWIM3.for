@@ -1157,6 +1157,24 @@ c     :              1d0)
      :            g%psi(0),
      :            p%n+1)
 
+      else if (Variable_name .eq. 'psio') then
+
+         do 17 node=0,p%n
+            dummy(node) = g%psi(node)
+            do 16 solnum=1,nsol
+               dummy(node)=dummy(node)-c%slos(solnum)*g%csl(solnum,node)
+   16       continue
+
+   17    continue
+
+
+         call respond2Get_double_array (
+     :            Variable_name,
+     :            '(cm)',
+     :            dummy(0),
+     :            p%n+1)
+
+
       else if (Variable_name .eq. 'runoff') then
          call respond2Get_double_var (
      :            Variable_name,
@@ -3182,7 +3200,6 @@ c      eqr0  = 0.d0
          p%solute_names(4) = 'cl'      
          p%num_solutes = 4
       endif
-
       return
       end subroutine
 

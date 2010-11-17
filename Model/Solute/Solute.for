@@ -426,7 +426,7 @@
 
       !     Read in solute in profile from parameter file
       !             -----------------
-            call read_real_array (
+            call read_real_array_optional (
      :           section_name,          ! Section header
      :           p%solute_names(solnum),! Keyword
      :           max_layer,             ! array size
@@ -436,10 +436,28 @@
      :           c%lb_solute,           ! Lower Limit for bound checking
      :           c%ub_solute)           ! Upper Limit for bound checking
 
-            do 100 layer = 1, numvals
-               g%solute(solnum,layer) = sol(layer)
-  100       continue
+            if(numvals.gt.0) then
+               do 100 layer = 1, numvals
+                  g%solute(solnum,layer) = sol(layer)
+  100          continue
+            else
+               call read_real_array (
+     :           section_name,          ! Section header
+     :           trim(p%solute_names(solnum))//'_ppm',! Keyword
+     :           max_layer,             ! array size
+     :           '()',                  ! Units
+     :           sol,                   ! Array
+     :           numvals,               ! Number of values returned
+     :           0.0,           ! Lower Limit for bound checking
+     :           1e6)           ! Upper Limit for bound checking
 
+               do 101 layer = 1, numvals
+                  g%solute(solnum,layer) = sol(layer)
+     :               / divide (100.0, g%bd(layer)*g%dlayer(layer), 0.0)
+  101          continue
+            
+            endif
+            
             parname = 'd0_'//p%solute_names(solnum)
 
             call read_real_var_optional (
