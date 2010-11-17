@@ -6,7 +6,7 @@ module StringModule
       function strings_equal(st1, st2)
       character (len=*), intent(in) :: st1
       character (len=*), intent(in) :: st2
-      logical                       :: strings_equal
+      logical*1                     :: strings_equal
       end function strings_equal
 
    end interface
