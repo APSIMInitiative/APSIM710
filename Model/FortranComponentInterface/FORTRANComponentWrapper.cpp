@@ -1589,7 +1589,8 @@ extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsi
 	memcpy(buf, str, nChars);
 	buf[nChars] = '\0';
 	double result = strtod(buf, &endPtr);
-	*ok = endPtr != buf;
+	// Check to be certain that we had a numeric value, and numeric value only
+	*ok = (endPtr != buf) && ((*endPtr == NULL) || isspace(*endPtr));
 	return result;
 }
    
