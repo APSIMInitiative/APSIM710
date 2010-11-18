@@ -1297,7 +1297,7 @@ module DateModule
          write (msg, '(4a)' )                                    &
             'Invalid date string passed to the date function.',  &
             new_line,                                            &
-            'Date string = ', Date_string
+            'Date string = ', Date_string(:100)
          call Fatal_error (ERR_user, msg)
          Date = 0.0d0
 
