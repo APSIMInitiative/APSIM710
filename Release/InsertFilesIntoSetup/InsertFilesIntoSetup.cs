@@ -142,7 +142,9 @@ class InsertFilesIntoSetup
       if (!ExcludeFile &&
           !FileAlreadyExists(FileName, RootNode, TargetDirectory) && 
           Path.GetExtension(FileName) != ".out" &&
-          Path.GetExtension(FileName) != ".sum")
+          Path.GetExtension(FileName) != ".sum" &&
+          Path.GetExtension(FileName) != ".csv" &&
+          Path.GetExtension(FileName) != ".nc")
          {
 
          // Get the ID of the target directory object.
