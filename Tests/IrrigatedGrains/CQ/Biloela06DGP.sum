@@ -1,0 +1,411 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.1
+Title                  = Biloela06DGP
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component  "Sow SkipRow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                   "Calculator" = %apsim%\Model\Manager.dll
+   Component                "Biloela Water" = %apsim%\Model\SoilWat.dll
+   Component             "Biloela Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2007
+     Simulation end date   = 30/05/2007
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Biloela DGP.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as date
+        DaysAfterSowing
+        sw_dep()
+        ll15_dep()
+        dul_dep()
+        WaterSD
+        Biomass
+        yield
+        lai
+        GrainNo
+        stage
+        biomass_wt
+        GrainGreenWt
+        RachisGreenWt
+        StemGreenWt
+        GrainSize
+        LeafSenescedWt
+        LeafGreenWt
+        TillerNoFertile
+
+     Output file = Biloela06DGP.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Sow SkipRow on a fixed date Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (paddock_is_fallow() = 1 and today = date('17/01/2007')) then
+       sorghum sow plants =5.7, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 0.9 ()
+     endif
+     if (paddock_is_fallow() = 0) then
+        outputfile do_output
+     endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+       sorghum  harvest
+       sorghum  end_crop
+                endif
+     END of rules
+     
+
+------- Calculator Initialisation ---------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+      head_wt = 0
+     rootgreenn = 0
+     head_n = 0
+     leafgreenn = 0
+     sd = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     head_wt = greenwt4)
+     rootgreenn = greenn1)
+     head_n = greenn4)
+     leafgreenn = greenn2)
+     if (sw_demand > 0) then
+        sd = sw_supply / sw_demand
+     else
+        sd = 1
+     endif
+     if (sd > 1) then
+        sd = 1
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : head_wt = 0.00000
+     Manager creating a new local real variable : rootgreenn = 0.00000
+     Manager creating a new local real variable : head_n = 0.00000
+     Manager creating a new local real variable : leafgreenn = 0.00000
+     Manager creating a new local real variable : sd = 0.00000
+
+------- Biloela Water Initialisation ------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.120  0.140  0.390  0.440  0.390  1.270  0.762  0.500
+          150.-  300.  0.200  0.210  0.410  0.460  0.410  1.350  0.190  0.500
+          300.-  600.  0.200  0.210  0.400  0.450  0.400  1.390  0.048  0.500
+          600.-  900.  0.190  0.200  0.370  0.420  0.370  1.470  0.000  0.500
+          900.- 1200.  0.180  0.190  0.360  0.410  0.268  1.490  0.000  0.500
+         1200.- 1500.  0.210  0.210  0.360  0.410  0.210  1.490  0.000  0.500
+         1500.- 1800.  0.160  0.160  0.360  0.410  0.160  1.480  0.000  0.500
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      21.00      37.50      37.50       7.50
+          150.-  300.      31.50      30.00      30.00       7.50
+          300.-  600.      63.00      57.00      57.00      15.00
+          600.-  900.      60.00      51.00      51.00      15.00
+          900.- 1200.      57.00      23.40      51.00      15.00
+         1200.- 1500.      63.00       0.00      45.00      15.00
+         1500.- 1800.      48.00       0.00      60.00      15.00
+          ---------------------------------------------------------
+               Totals     343.50     198.90     331.50      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              91.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- Biloela Nitrogen Initialisation ---------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Biloela
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  1.24   32.38    1.14    0.00
+             2     7.00  1.24   24.25    0.20    0.00
+             3     7.00  1.25   30.76    0.42    0.00
+             4     7.00  1.10   27.50    0.44    0.00
+             5     7.00  0.71   29.60    0.45    0.00
+             6     7.00  0.34   27.60    0.45    0.00
+             7     7.00  0.26   30.55    0.44    0.00
+          ------------------------------------------------
+           Totals              202.64    3.54    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      23209.2  1856.7   412.8    51.6   208.3     6.9
+             2      24913.1  1993.0   196.9    24.6   162.2     5.4
+             3      52021.8  4161.7   103.2    12.9    98.4     3.3
+             4      48462.0  3877.0    48.0     6.0    59.7     2.0
+             5      31721.3  2537.7    15.7     2.0    36.2     1.2
+             6      15190.5  1215.2     7.5     0.9    22.0     0.7
+             7      11538.3   923.1     5.7     0.7    13.3     0.4
+          ---------------------------------------------------------
+           Totals  207056.0 16564.5   790.0    98.7   600.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 January 2007(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "greenwt4".
+     Variables should have a value before they are used in an expression.
+     Component name: Calculator
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : greenwt4 = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "greenn1".
+     Variables should have a value before they are used in an expression.
+     Component name: Calculator
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : greenn1 = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "greenn4".
+     Variables should have a value before they are used in an expression.
+     Component name: Calculator
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : greenn4 = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "greenn2".
+     Variables should have a value before they are used in an expression.
+     Component name: Calculator
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : greenn2 = 0.00000
+17 January 2007(Day of year=17), Sow SkipRow on a fixed date: 
+     Manager sending message :- sorghum sow  plants = 5.7, sowing_depth = 30, cultivar = buster, row_spacing = 1, skip = solid, tiller_no_fertile = 0.9
+17 January 2007(Day of year=17), Sorghum: 
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+             17    30.0     5.7  1000    1.0     buster    0.90
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - buster
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  160.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.080          0.140       1.000
+             150.0     0.080          0.210       1.000
+             300.0     0.060          0.210       1.000
+             300.0     0.040          0.200       1.000
+             300.0     0.040          0.190       1.000
+             300.0     0.040          0.210       1.000
+             300.0     0.040          0.160       1.000
+         ---------------------------------------------------
+     
+18 January 2007(Day of year=18), Sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+21 January 2007(Day of year=21), Sorghum: 
+     Stage 3 Emergence  DAS = 4
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  16.11
+28 January 2007(Day of year=28), Sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 11
+     		Biomass       =   1.48 		 LAI            =   0.02
+     		Stover N Conc =   0.05 		 Extractable SW =  49.19
+11 February 2007(Day of year=42), Sorghum: 
+     Stage 5 FloralInitiation  DAS = 25
+     		Biomass       =  15.08 		 LAI            =   0.37
+     		Stover N Conc =   0.55 		 Extractable SW =  86.67
+5 March 2007(Day of year=64), Sorghum: 
+     Stage 6 FlagLeaf  DAS = 47
+     		Biomass       = 290.19 		 LAI            =   3.04
+     		Stover N Conc =   6.32 		 Extractable SW =  87.31
+18 March 2007(Day of year=77), Sorghum: 
+     Stage 7 Flowering  DAS = 60
+     		Biomass       = 474.04 		 LAI            =   3.06
+     		Stover N Conc =   8.05 		 Extractable SW =  63.48
+23 March 2007(Day of year=82), Sorghum: 
+     Stage 8 StartGrainFill  DAS = 65
+     		Biomass       = 519.78 		 LAI            =   3.06
+     		Stover N Conc =   8.43 		 Extractable SW =  50.48
+29 April 2007(Day of year=119), Sorghum: 
+     Stage 9 EndGrainFill  DAS = 102
+     		Biomass       = 676.87 		 LAI            =   1.11
+     		Stover N Conc =   3.37 		 Extractable SW =  18.87
+2 May 2007(Day of year=122), Sorghum: 
+     Stage 10 Maturity  DAS = 105
+     		Biomass       = 688.32 		 LAI            =   1.01
+     		Stover N Conc =   3.25 		 Extractable SW =  14.19
+3 May 2007(Day of year=123), Sorghum: 
+     Stage 11 HarvestRipe  DAS = 106
+     		Biomass       = 690.70 		 LAI            =   0.99
+     		Stover N Conc =   3.22 		 Extractable SW =  12.24
+3 May 2007(Day of year=123), Harvesting rule: 
+     Manager sending message :- sorghum harvest
+     
+     Harvest
+     Flowering (DAS)       = 60 		 Maturity (DAS)          = 105
+     Flowering day         = 77 		 Maturity day            = 122
+     Maximum LAI           = 3.1 		 Number of leaves        = 17.1
+     Total above ground biomass    (kg/ha) = 6925.3
+     Green above ground biomass    (kg/ha) = 5992.4
+     Senesced above ground biomass (kg/ha) = 932.9
+     Stover (kg/ha)        = 4238.3 	 Grain yield (kg/ha)     = 2687.0
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 3088.5
+     Weight 1000 grains(g) = 13.8 		 Grains/m^2              = 19440.7
+     Grains/head           = 3410.6
+     Grain N percent    (%)     =      2.63 	 Grain N            (kg/ha) =    70.64
+     Total N content    (kg/ha) =    102.85 	 Senesced N content (kg/ha) =    18.55
+     Green N content    (kg/ha) =     17.17
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.9          0.9        1.0
+        Flag leaf           to Flowering                 0.7          0.7        1.0
+        Flowering           to Start grain fill          0.5          0.4        1.0
+        Start grain fill    to End grain fill            0.3          0.2        0.9
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               2686.97		    0.00
+                         N  (kg/ha) =                 70.64		    0.00
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               4238.30		 1758.40
+                         N  (kg/ha) =                 32.20		    3.52
+                         P  (kg/ha) =                  0.00		    0.00
+30 May 2007(Day of year=150), clock: 
+     Simulation is terminating due to end criteria being met.
