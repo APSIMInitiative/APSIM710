@@ -1,5 +1,8 @@
 //---------------------------------------------------------------------------
+#ifndef WIN32
 #define BOOST_TEST_DYN_LINK
+#endif
+
 #define BOOST_TEST_ALTERNATIVE_INIT_API
 
 
@@ -21,7 +24,9 @@ bool init_unit_test( )
    return 1;
    }
 
+#ifndef WIN32
 int main( int argc, char* argv[] )
 {
     return ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
 }
+#endif
