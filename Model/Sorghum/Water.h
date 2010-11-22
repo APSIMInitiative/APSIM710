@@ -6,6 +6,7 @@
 #include "PlantComponents.h"
 #include "Utilities.h"
 
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
 class Water : public PlantProcess
    {
@@ -132,6 +133,6 @@ class Water : public PlantProcess
    void  phenologyEvent(int){};
    };
 
-
 //------------------------------------------------------------------------------------------------
+}
 #endif

@@ -9,8 +9,8 @@
 #include "Utilities.h"
 using namespace std;
 
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
-
 class Leaf : public PlantPart
    {
    private:
@@ -177,6 +177,6 @@ class Leaf : public PlantPart
    void  phenologyEvent(int);
 
    };  // Leaf
-
 //------------------------------------------------------------------------------------------------
+}
 #endif

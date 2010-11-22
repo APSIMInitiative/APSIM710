@@ -6,8 +6,8 @@
 #include "PlantComponents.h"
 #include "Utilities.h"
 
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
-
 class Grain : public PlantPart
    {
    private:
@@ -85,6 +85,6 @@ class Grain : public PlantPart
    void  Summary(void);
    };
 
-
 //---------------------------------------------------------------------------
+}
 #endif

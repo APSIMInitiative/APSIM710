@@ -11,6 +11,8 @@
 
 class TableFn;
 class ScienceAPI2;
+
+namespace Sorghum {
 class Plant;
 
 //---------------------------------------------------------------------------
@@ -148,4 +150,5 @@ class PlantProcess : public PlantComponent
    // variables
    };
 //---------------------------------------------------------------------------
+}
 #endif

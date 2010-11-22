@@ -4,7 +4,7 @@
 #define RootsH
 
 #include "Utilities.h"
-
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
 
 class Roots : public PlantPart
@@ -104,4 +104,5 @@ class Roots : public PlantPart
    };  // Roots
 
 //------------------------------------------------------------------------------------------------
+}
 #endif

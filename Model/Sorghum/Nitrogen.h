@@ -6,8 +6,8 @@
 #include "PlantComponents.h"
 #include "Utilities.h"
 
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
-
 class Nitrogen : public PlantProcess
    {
    private:
@@ -122,6 +122,6 @@ class Nitrogen : public PlantProcess
    void Update(void){updateVars();};
 
    };  // Nitrogen
-
 //------------------------------------------------------------------------------------------------
+}
 #endif

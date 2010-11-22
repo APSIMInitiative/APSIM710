@@ -3,7 +3,7 @@ using namespace std;
 
 #include "PlantInterface.h"
 
-
+using namespace Sorghum;
 //-----------------------------------------------------------------------------
 // Create an instance of the Plant module
 //-----------------------------------------------------------------------------

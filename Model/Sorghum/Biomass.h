@@ -5,7 +5,7 @@
 
 #include "PlantComponents.h"
 #include "Utilities.h"
-
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
 
 class Biomass : public PlantProcess
@@ -87,5 +87,5 @@ class Biomass : public PlantProcess
    // phenology
    void  phenologyEvent(int){};
 };
-
+}
 #endif

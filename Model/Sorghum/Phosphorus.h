@@ -6,8 +6,8 @@
 #include "PlantComponents.h"
 #include "Utilities.h"
 
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
-
 class Phosphorus : public PlantProcess
    {
    private:
@@ -129,7 +129,7 @@ class Phosphorus : public PlantProcess
    void  phenologyEvent(int){};
    void Update(void){updateVars();};
    };  // Phosphorus
-
 //------------------------------------------------------------------------------------------------
+}
 #endif
 

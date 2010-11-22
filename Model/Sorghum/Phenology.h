@@ -6,7 +6,7 @@
 #include "PlantComponents.h"
 #include "Utilities.h"
 
-
+namespace Sorghum {
 typedef enum  {noCrop, sowing, germination, emergence, endJuv, fi, flag, flowering,
                   startGrainFill, endGrainFill, maturity, harvest, endCrop} stages;
 
@@ -102,5 +102,5 @@ class Phenology : public PlantProcess
    // phenology
    void  phenologyEvent(int){};
    };
-
+}
 #endif

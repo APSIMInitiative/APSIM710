@@ -5,6 +5,7 @@ using namespace std;
 #include "PlantComponents.h"
 #include "Utilities.h"
 
+using namespace Sorghum;
 //---------------------------------------------------------------------------
 PlantPart::PlantPart(ScienceAPI2 &api) : PlantComponent (api)
    {

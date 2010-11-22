@@ -5,6 +5,7 @@
 
 #include "PlantComponents.h"
 #include "Utilities.h"
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
 
 class Stem : public PlantPart
@@ -69,4 +70,5 @@ class Stem : public PlantPart
    };
 
 //---------------------------------------------------------------------------
+}
 #endif

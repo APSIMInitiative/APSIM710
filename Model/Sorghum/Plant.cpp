@@ -10,6 +10,7 @@
 #include "PlantInterface.h"
 
 using namespace std;
+using namespace Sorghum;
 
 //------------------------------------------------------------------------------------------------
 //------------- Plant Constructor

@@ -6,6 +6,7 @@
 #include "PlantComponents.h"
 #include "Utilities.h"
 
+namespace Sorghum {
 //------------------------------------------------------------------------------------------------
 
 class Rachis : public PlantPart
@@ -53,4 +54,5 @@ class Rachis : public PlantPart
 
 
 //---------------------------------------------------------------------------
+}
 #endif

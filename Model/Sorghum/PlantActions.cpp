@@ -4,6 +4,7 @@
 #include "Plant.h"
 #include "PlantComponents.h"
 #include "PlantActions.h"
+using namespace Sorghum;
 //------------------------------------------------------------------------------------------------
 // Register Methods, Events,
 //------------------------------------------------------------------------------------------------
