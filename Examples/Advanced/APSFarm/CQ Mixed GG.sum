@@ -77,6 +77,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "Erosion" = %apsim%\Model\Erosion.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
    Component                      "tracker" = %apsim%\Model\Tracker.dll
@@ -87,6 +88,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "Erosion" = %apsim%\Model\Erosion.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
    Component                      "tracker" = %apsim%\Model\Tracker.dll
@@ -97,6 +99,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "Erosion" = %apsim%\Model\Erosion.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
    Component                      "tracker" = %apsim%\Model\Tracker.dll
@@ -107,6 +110,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "Erosion" = %apsim%\Model\Erosion.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
    Component                      "tracker" = %apsim%\Model\Tracker.dll
@@ -117,6 +121,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "Erosion" = %apsim%\Model\Erosion.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
    Component                      "tracker" = %apsim%\Model\Tracker.dll
@@ -3322,361 +3327,10 @@ Economics:
            Totals  103021.3  8585.1   964.7   120.6   400.0    10.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
-     Tracker variables:
-        sum of rain on newmet from sowing to harvesting as incroprain
-        sum of rain on newmet from harvesting to sowing  as fallowrain
-        sum of es on post from blork to now as es_sum
-        sum of runoff on post from blork to now as runoff_sum
-        sum of drain on post from blork to now as drainage_sum
-        sum of soil_loss on post from blork to now as soil_loss_sum
-        sum of dlt_n_min_tot() on post from blork to now as n_mineralisation_sum
-
-------- accum Initialisation --------------------------------------------------
+------- Cl Initialisation -----------------------------------------------------
      Initialising
-
-------- Soil Water Initialisation ---------------------------------------------
-     
-         - Reading constants
-     
-        - Reading Soil Property Parameters
-     
-        - Reading Soil Profile Parameters
-     Initial soilwater distributed using "sw" parameter.
-     
-     
-     
-                      Soil Profile Properties
-        ---------------------------------------------------------------------
-              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
-                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
-        ---------------------------------------------------------------------
-            0.-  150.  0.110  0.220  0.410  0.460  0.220  1.360  0.762  0.300
-          150.-  300.  0.176  0.220  0.400  0.450  0.220  1.370  0.190  0.300
-          300.-  600.  0.250  0.250  0.400  0.450  0.250  1.380  0.048  0.300
-          600.-  900.  0.250  0.250  0.380  0.430  0.250  1.430  0.000  0.300
-          900.- 1200.  0.250  0.250  0.370  0.420  0.250  1.470  0.000  0.300
-         1200.- 1500.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
-         1500.- 1800.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
-        ---------------------------------------------------------------------
-     
-     
-     
-                  Soil Water Holding Capacity
-          ---------------------------------------------------------
-              Depth    Unavailable Available  Max Avail.  Drainable
-                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
-                            mm        mm          mm         mm
-          ---------------------------------------------------------
-            0.-  150.      33.00       0.00      28.50       7.50
-          150.-  300.      33.00       0.00      27.00       7.50
-          300.-  600.      75.00       0.00      45.00      15.00
-          600.-  900.      75.00       0.00      39.00      15.00
-          900.- 1200.      75.00       0.00      36.00      15.00
-         1200.- 1500.      75.00       0.00      27.00      15.00
-         1500.- 1800.      75.00       0.00      27.00      15.00
-          ---------------------------------------------------------
-               Totals     441.00       0.00     229.50      90.00
-          ---------------------------------------------------------
-     
-     
-     
-     
-     
-     
-                  Initial Soil Parameters
-          ---------------------------------------------------------
-                 Insoil        Salb     Dif_Con   Dif_Slope
-          ---------------------------------------------------------
-                   0.00        0.12       40.00       16.00
-          ---------------------------------------------------------
-     
-     
-     
-                  Runoff is predicted using scs curve number:
-                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
-                                           mm
-          ---------------------------------------------------------
-              73.00   20.00    0.80  450.00
-          ---------------------------------------------------------
-     
-     
-     
-           Using Ritchie evaporation model
-            Stage 1 Duration (U): Summer        6.00 (mm)
-                                  Winter        4.00 (mm)
-            Stage 2       (CONA): Summer        3.50 (mm^0.5)
-                                  Winter        2.50 (mm^0.5)
-            Critical Dates:       Summer        1-Nov
-                                  Winter        1-apr
-            Eo from priestly-taylor
-
-------- surface organic matter Initialisation ---------------------------------
-     
-         - Reading constants
-     
-         - Reading parameters
-     
-     
-     
-                         Initial Surface Organic Matter Data
-         ----------------------------------------------------------------------
-            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
-                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
-         ----------------------------------------------------------------------
-          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
-         ----------------------------------------------------------------------
-     
-                      Effective Cover from Surface Materials =   0.4
-     
-
-------- Erosion Initialisation ------------------------------------------------
-      Initialising:
-     
-        - Reading Parameters
-     
-     
-     
-                      Erosion Parameters
-          -----------------------------------------------
-           Profile reduction:                     off
-           Freebairn cover-sediment concentration model
-     
-           LS factor:                             1.0954
-     
-           K factor:                              0.4000
-     
-           P factor:                              1.0000
-     
-          -----------------------------------------------
-
-------- Soil Nitrogen Initialisation ------------------------------------------
-     
-        - Reading Parameters
      
         - Reading Constants
-     Using standard soil mineralisation for soil type Grey Vertosol
-     
-     
-     
-           TAV and AMP supplied externally
-     
-     
-     
-                      Soil Profile Properties
-          ------------------------------------------------
-           Layer    pH    OC     NO3     NH4    Urea
-                         (%) (kg/ha) (kg/ha) (kg/ha)
-          ------------------------------------------------
-             1     8.70  1.50   11.72    0.20    0.00
-             2     8.80  1.00   11.80    0.21    0.00
-             3     7.70  0.60   23.78    0.41    0.00
-             4     7.70  0.40   24.64    0.43    0.00
-             5     7.10  0.10   25.33    0.44    0.00
-             6     5.80  0.07   26.36    0.46    0.00
-             7     5.80  0.07   26.36    0.46    0.00
-          ------------------------------------------------
-           Totals              150.00    2.61    0.00
-          ------------------------------------------------
-     
-     
-     
-     
-     
-     
-                  Initial Soil Organic Matter Status
-          ---------------------------------------------------------
-           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
-                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
-          ---------------------------------------------------------
-             1      29893.8  2491.2   706.2    88.3   138.9     3.5
-             2      20388.8  1699.1   161.2    20.1   108.1     2.7
-             3      24742.6  2061.9    97.4    12.2    65.6     1.6
-             4      17160.0  1430.0     0.0     0.0    39.8     1.0
-             5       4410.0   367.5     0.0     0.0    24.1     0.6
-             6       3213.0   267.8     0.0     0.0    14.6     0.4
-             7       3213.0   267.8     0.0     0.0     8.9     0.2
-          ---------------------------------------------------------
-           Totals  103021.3  8585.1   964.7   120.6   400.0    10.0
-          ---------------------------------------------------------
-
-------- tracker Initialisation ------------------------------------------------
-     Tracker variables:
-        sum of rain on newmet from sowing to harvesting as incroprain
-        sum of rain on newmet from harvesting to sowing  as fallowrain
-        sum of es on post from blork to now as es_sum
-        sum of runoff on post from blork to now as runoff_sum
-        sum of drain on post from blork to now as drainage_sum
-        sum of soil_loss on post from blork to now as soil_loss_sum
-        sum of dlt_n_min_tot() on post from blork to now as n_mineralisation_sum
-
-------- accum Initialisation --------------------------------------------------
-     Initialising
-
-------- Soil Water Initialisation ---------------------------------------------
-     
-         - Reading constants
-     
-        - Reading Soil Property Parameters
-     
-        - Reading Soil Profile Parameters
-     Initial soilwater distributed using "sw" parameter.
-     
-     
-     
-                      Soil Profile Properties
-        ---------------------------------------------------------------------
-              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
-                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
-        ---------------------------------------------------------------------
-            0.-  150.  0.110  0.220  0.410  0.460  0.220  1.360  0.762  0.300
-          150.-  300.  0.176  0.220  0.400  0.450  0.220  1.370  0.190  0.300
-          300.-  600.  0.250  0.250  0.400  0.450  0.250  1.380  0.048  0.300
-          600.-  900.  0.250  0.250  0.380  0.430  0.250  1.430  0.000  0.300
-          900.- 1200.  0.250  0.250  0.370  0.420  0.250  1.470  0.000  0.300
-         1200.- 1500.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
-         1500.- 1800.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
-        ---------------------------------------------------------------------
-     
-     
-     
-                  Soil Water Holding Capacity
-          ---------------------------------------------------------
-              Depth    Unavailable Available  Max Avail.  Drainable
-                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
-                            mm        mm          mm         mm
-          ---------------------------------------------------------
-            0.-  150.      33.00       0.00      28.50       7.50
-          150.-  300.      33.00       0.00      27.00       7.50
-          300.-  600.      75.00       0.00      45.00      15.00
-          600.-  900.      75.00       0.00      39.00      15.00
-          900.- 1200.      75.00       0.00      36.00      15.00
-         1200.- 1500.      75.00       0.00      27.00      15.00
-         1500.- 1800.      75.00       0.00      27.00      15.00
-          ---------------------------------------------------------
-               Totals     441.00       0.00     229.50      90.00
-          ---------------------------------------------------------
-     
-     
-     
-     
-     
-     
-                  Initial Soil Parameters
-          ---------------------------------------------------------
-                 Insoil        Salb     Dif_Con   Dif_Slope
-          ---------------------------------------------------------
-                   0.00        0.12       40.00       16.00
-          ---------------------------------------------------------
-     
-     
-     
-                  Runoff is predicted using scs curve number:
-                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
-                                           mm
-          ---------------------------------------------------------
-              73.00   20.00    0.80  450.00
-          ---------------------------------------------------------
-     
-     
-     
-           Using Ritchie evaporation model
-            Stage 1 Duration (U): Summer        6.00 (mm)
-                                  Winter        4.00 (mm)
-            Stage 2       (CONA): Summer        3.50 (mm^0.5)
-                                  Winter        2.50 (mm^0.5)
-            Critical Dates:       Summer        1-Nov
-                                  Winter        1-apr
-            Eo from priestly-taylor
-
-------- surface organic matter Initialisation ---------------------------------
-     
-         - Reading constants
-     
-         - Reading parameters
-     
-     
-     
-                         Initial Surface Organic Matter Data
-         ----------------------------------------------------------------------
-            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
-                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
-         ----------------------------------------------------------------------
-          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
-         ----------------------------------------------------------------------
-     
-                      Effective Cover from Surface Materials =   0.4
-     
-
-------- Erosion Initialisation ------------------------------------------------
-      Initialising:
-     
-        - Reading Parameters
-     
-     
-     
-                      Erosion Parameters
-          -----------------------------------------------
-           Profile reduction:                     off
-           Freebairn cover-sediment concentration model
-     
-           LS factor:                             1.0954
-     
-           K factor:                              0.4000
-     
-           P factor:                              1.0000
-     
-          -----------------------------------------------
-
-------- Soil Nitrogen Initialisation ------------------------------------------
-     
-        - Reading Parameters
-     
-        - Reading Constants
-     Using standard soil mineralisation for soil type Grey Vertosol
-     
-     
-     
-           TAV and AMP supplied externally
-     
-     
-     
-                      Soil Profile Properties
-          ------------------------------------------------
-           Layer    pH    OC     NO3     NH4    Urea
-                         (%) (kg/ha) (kg/ha) (kg/ha)
-          ------------------------------------------------
-             1     8.70  1.50   11.72    0.20    0.00
-             2     8.80  1.00   11.80    0.21    0.00
-             3     7.70  0.60   23.78    0.41    0.00
-             4     7.70  0.40   24.64    0.43    0.00
-             5     7.10  0.10   25.33    0.44    0.00
-             6     5.80  0.07   26.36    0.46    0.00
-             7     5.80  0.07   26.36    0.46    0.00
-          ------------------------------------------------
-           Totals              150.00    2.61    0.00
-          ------------------------------------------------
-     
-     
-     
-     
-     
-     
-                  Initial Soil Organic Matter Status
-          ---------------------------------------------------------
-           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
-                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
-          ---------------------------------------------------------
-             1      29893.8  2491.2   706.2    88.3   138.9     3.5
-             2      20388.8  1699.1   161.2    20.1   108.1     2.7
-             3      24742.6  2061.9    97.4    12.2    65.6     1.6
-             4      17160.0  1430.0     0.0     0.0    39.8     1.0
-             5       4410.0   367.5     0.0     0.0    24.1     0.6
-             6       3213.0   267.8     0.0     0.0    14.6     0.4
-             7       3213.0   267.8     0.0     0.0     8.9     0.2
-          ---------------------------------------------------------
-           Totals  103021.3  8585.1   964.7   120.6   400.0    10.0
-          ---------------------------------------------------------
 
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
@@ -3856,6 +3510,11 @@ Economics:
            Totals  103021.3  8585.1   964.7   120.6   400.0    10.0
           ---------------------------------------------------------
 
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
         sum of rain on newmet from sowing to harvesting as incroprain
@@ -4033,6 +3692,377 @@ Economics:
           ---------------------------------------------------------
            Totals  103021.3  8585.1   964.7   120.6   400.0    10.0
           ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        sum of rain on newmet from sowing to harvesting as incroprain
+        sum of rain on newmet from harvesting to sowing  as fallowrain
+        sum of es on post from blork to now as es_sum
+        sum of runoff on post from blork to now as runoff_sum
+        sum of drain on post from blork to now as drainage_sum
+        sum of soil_loss on post from blork to now as soil_loss_sum
+        sum of dlt_n_min_tot() on post from blork to now as n_mineralisation_sum
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.110  0.220  0.410  0.460  0.220  1.360  0.762  0.300
+          150.-  300.  0.176  0.220  0.400  0.450  0.220  1.370  0.190  0.300
+          300.-  600.  0.250  0.250  0.400  0.450  0.250  1.380  0.048  0.300
+          600.-  900.  0.250  0.250  0.380  0.430  0.250  1.430  0.000  0.300
+          900.- 1200.  0.250  0.250  0.370  0.420  0.250  1.470  0.000  0.300
+         1200.- 1500.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
+         1500.- 1800.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      33.00       0.00      28.50       7.50
+          150.-  300.      33.00       0.00      27.00       7.50
+          300.-  600.      75.00       0.00      45.00      15.00
+          600.-  900.      75.00       0.00      39.00      15.00
+          900.- 1200.      75.00       0.00      36.00      15.00
+         1200.- 1500.      75.00       0.00      27.00      15.00
+         1500.- 1800.      75.00       0.00      27.00      15.00
+          ---------------------------------------------------------
+               Totals     441.00       0.00     229.50      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Erosion Initialisation ------------------------------------------------
+      Initialising:
+     
+        - Reading Parameters
+     
+     
+     
+                      Erosion Parameters
+          -----------------------------------------------
+           Profile reduction:                     off
+           Freebairn cover-sediment concentration model
+     
+           LS factor:                             1.0954
+     
+           K factor:                              0.4000
+     
+           P factor:                              1.0000
+     
+          -----------------------------------------------
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Grey Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.70  1.50   11.72    0.20    0.00
+             2     8.80  1.00   11.80    0.21    0.00
+             3     7.70  0.60   23.78    0.41    0.00
+             4     7.70  0.40   24.64    0.43    0.00
+             5     7.10  0.10   25.33    0.44    0.00
+             6     5.80  0.07   26.36    0.46    0.00
+             7     5.80  0.07   26.36    0.46    0.00
+          ------------------------------------------------
+           Totals              150.00    2.61    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      29893.8  2491.2   706.2    88.3   138.9     3.5
+             2      20388.8  1699.1   161.2    20.1   108.1     2.7
+             3      24742.6  2061.9    97.4    12.2    65.6     1.6
+             4      17160.0  1430.0     0.0     0.0    39.8     1.0
+             5       4410.0   367.5     0.0     0.0    24.1     0.6
+             6       3213.0   267.8     0.0     0.0    14.6     0.4
+             7       3213.0   267.8     0.0     0.0     8.9     0.2
+          ---------------------------------------------------------
+           Totals  103021.3  8585.1   964.7   120.6   400.0    10.0
+          ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        sum of rain on newmet from sowing to harvesting as incroprain
+        sum of rain on newmet from harvesting to sowing  as fallowrain
+        sum of es on post from blork to now as es_sum
+        sum of runoff on post from blork to now as runoff_sum
+        sum of drain on post from blork to now as drainage_sum
+        sum of soil_loss on post from blork to now as soil_loss_sum
+        sum of dlt_n_min_tot() on post from blork to now as n_mineralisation_sum
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.110  0.220  0.410  0.460  0.220  1.360  0.762  0.300
+          150.-  300.  0.176  0.220  0.400  0.450  0.220  1.370  0.190  0.300
+          300.-  600.  0.250  0.250  0.400  0.450  0.250  1.380  0.048  0.300
+          600.-  900.  0.250  0.250  0.380  0.430  0.250  1.430  0.000  0.300
+          900.- 1200.  0.250  0.250  0.370  0.420  0.250  1.470  0.000  0.300
+         1200.- 1500.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
+         1500.- 1800.  0.250  0.250  0.340  0.390  0.250  1.530  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      33.00       0.00      28.50       7.50
+          150.-  300.      33.00       0.00      27.00       7.50
+          300.-  600.      75.00       0.00      45.00      15.00
+          600.-  900.      75.00       0.00      39.00      15.00
+          900.- 1200.      75.00       0.00      36.00      15.00
+         1200.- 1500.      75.00       0.00      27.00      15.00
+         1500.- 1800.      75.00       0.00      27.00      15.00
+          ---------------------------------------------------------
+               Totals     441.00       0.00     229.50      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Erosion Initialisation ------------------------------------------------
+      Initialising:
+     
+        - Reading Parameters
+     
+     
+     
+                      Erosion Parameters
+          -----------------------------------------------
+           Profile reduction:                     off
+           Freebairn cover-sediment concentration model
+     
+           LS factor:                             1.0954
+     
+           K factor:                              0.4000
+     
+           P factor:                              1.0000
+     
+          -----------------------------------------------
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Grey Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.70  1.50   11.72    0.20    0.00
+             2     8.80  1.00   11.80    0.21    0.00
+             3     7.70  0.60   23.78    0.41    0.00
+             4     7.70  0.40   24.64    0.43    0.00
+             5     7.10  0.10   25.33    0.44    0.00
+             6     5.80  0.07   26.36    0.46    0.00
+             7     5.80  0.07   26.36    0.46    0.00
+          ------------------------------------------------
+           Totals              150.00    2.61    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      29893.8  2491.2   706.2    88.3   138.9     3.5
+             2      20388.8  1699.1   161.2    20.1   108.1     2.7
+             3      24742.6  2061.9    97.4    12.2    65.6     1.6
+             4      17160.0  1430.0     0.0     0.0    39.8     1.0
+             5       4410.0   367.5     0.0     0.0    24.1     0.6
+             6       3213.0   267.8     0.0     0.0    14.6     0.4
+             7       3213.0   267.8     0.0     0.0     8.9     0.2
+          ---------------------------------------------------------
+           Totals  103021.3  8585.1   964.7   120.6   400.0    10.0
+          ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
 
 ------- tracker Initialisation ------------------------------------------------
      Tracker variables:
