@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Reflection;
+
+/// <summary>
+/// Starting with the first child value of this node, recursively divide by the values of the subsequent child values 
+/// </summary>
+
+public class DivideFunction : Function
+{
+    [Output]
+    public override double Value
+    {
+        get
+        {
+            double returnValue = 0.0;
+            if (Children.Count != 0)
+            {
+                Function F = Children[0] as Function;
+                returnValue = F.Value;
+
+                if (Children.Count > 1)
+                    for (int i = 1; i < Children.Count; i++)
+                    {
+                        F = Children[i] as Function;
+                        returnValue = returnValue / F.Value;
+                    }
+            }
+            return returnValue;
+        }
+    }
+
+}

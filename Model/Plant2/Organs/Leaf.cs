@@ -534,7 +534,7 @@ public class Leaf : BaseOrgan, AboveGround
    [Output]
    [Units("g/m^2")]
    public override double DMAllocation
-      {
+      {  
       set
          {
          if (DMDemand == 0)

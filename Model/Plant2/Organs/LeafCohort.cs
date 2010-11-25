@@ -135,7 +135,7 @@ class LeafCohort
       {
       PotentialAreaGrowth = PotentialAreaGrowthFunction(TT);
       }
-   public double PotentialAreaGrowthFunction(double TT)
+   public double PotentialAreaGrowthFunction(double TT) // Potential delta LAI
       {
       //return MaxArea*Population * Math.Min(TT, Math.Max(0, GrowthDuration - Age)) / GrowthDuration;
 
