@@ -41,7 +41,6 @@ call MakeProject ConToSim
 call MakeProject CropMod
 call MakeProject Eo
 call MakeProject Erosion
-call MakeProject ExpressionEvaluator
 call MakeProject Fertiliser
 call MakeProject Grasp
 call MakeProject Graz
