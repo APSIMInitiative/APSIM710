@@ -121,7 +121,9 @@ module Soiln2Module
                                           ! Residue C decomposed (kg/ha)
       real         dlt_C_incorp(max_layer)! Residue C incorporated into FOM
                                           ! (kg/ha)
-      real         dlt_NO3_dnit(max_layer)! N denitrified (kg/ha)
+      real         dlt_NO3_dnit(max_layer)! NO3 N denitrified (kg/ha)
+      real         dlt_NH4_dnit(max_layer)! NH4 N denitrified
+      real         n2o_atm (max_layer)    ! amount of N20 produced
       real         dlt_fom_C_atm(nfract,max_layer)
                                           ! fom C lost to atmosphere
                                           ! (kg/ha)
@@ -207,6 +209,8 @@ module Soiln2Module
       integer    p_N_reduction            ! (on or off)
       real       dlt_rntrf(max_layer)     ! nitrogen moved by nitrification
                                           !    (kg/ha)
+      real       dlt_rntrf_eff(max_layer) ! effective nitrogen moved by nitrification
+                                          !    (kg/ha)      
       real       dlt_urea_hydrol(max_layer) ! nitrogen moved by hydrolysis (kg/ha)
       real       excess_nh4(max_layer)      ! excess N required above NH4 supply
 
@@ -278,6 +282,11 @@ module Soiln2Module
                                           ! function for given pH values
       real         dnit_rate_coeff        ! denitrification rate coefficient (kg/mg)
       real         dnit_wf_power          ! denitrification water factor power term
+      real         dnit_k1                ! k1 parameter from Thorburn et al (2010)
+      real         dnit_wfps(max_wf_values) ! WFPS factor for n2o fraction of denitrification
+      real         dnit_n2o_factor(max_wf_values) !Thorburn et al (2010)
+      integer      num_dnit_wfps
+      real         dnit_nitrf_loss        ! fraction of nitrification lost as denitrification (0-1)
 
       ! MINERALISATION CONSTANTS
       real         ef_biom                ! fraction of biomass C mineralized
@@ -732,6 +741,8 @@ subroutine soiln2_zero_all_globals ()
    g%dlt_C_decomp(:,:)    = 0.0
    g%dlt_C_incorp(:)      = 0.0
    g%dlt_NO3_dnit(:)      = 0.0
+   g%dlt_NH4_dnit(:)      = 0.0
+   g%N2O_atm(:)           = 0.0
    g%dlt_fom_C_atm(:,:)   = 0.0
    g%dlt_fom_C_biom(:,:)  = 0.0
    g%dlt_fom_C_hum(:,:)   = 0.0
@@ -777,6 +788,7 @@ subroutine soiln2_zero_all_globals ()
    g%dlt_C_loss_sed         = 0.0
    g%p_N_reduction          = 0
    g%dlt_rntrf(:)         = 0.0
+   g%dlt_rntrf_eff(:)         = 0.0
    g%dlt_urea_hydrol(:)   = 0.0
    g%excess_nh4(:)        = 0.0
    g%oldC = 0.0
@@ -799,6 +811,7 @@ subroutine soiln2_zero_all_globals ()
 
 
    g%dlt_rntrf(:)         = 0.0
+   g%dlt_rntrf_eff(:)     = 0.0
    g%dlt_urea_hydrol(:)   = 0.0
    g%excess_nh4(:)        = 0.0
    g%nitrification_inhibition(:) = 0.0 ! nitrification inhibition - default to no effect - VOS added 13 Dec 09, reviewed by RCichota (9/feb/2010)
@@ -826,6 +839,11 @@ subroutine soiln2_zero_all_globals ()
    c%pHf_nit_values(:)     = 0.0
    c%dnit_rate_coeff       = 0.0
    c%dnit_wf_power         = 0.0
+   c%dnit_k1               = 0.0
+   c%dnit_wfps(:)          = 0.0
+   c%dnit_n2o_factor(:)    = 0.0
+   c%num_dnit_wfps         = 0
+   c%dnit_nitrf_loss       = 0.0
    c%ef_biom               = 0.0
    c%ef_fom                = 0.0
    c%ef_hum                = 0.0
@@ -881,6 +899,8 @@ subroutine soiln2_zero_variables ()
    g%dlt_C_decomp = 0.0
    g%dlt_C_incorp = 0.0
    g%dlt_NO3_dnit = 0.0
+   g%dlt_NH4_dnit = 0.0
+   g%N2O_atm(:)   =0.0
    g%dlt_fom_C_atm = 0.0
    g%dlt_fom_C_biom = 0.0
    g%dlt_fom_C_hum = 0.0
@@ -905,6 +925,7 @@ subroutine soiln2_zero_variables ()
    g%NO3_transform_net = 0.0
    g%dlt_NH4_net       = 0.0
    g%dlt_rntrf(:)         = 0.0
+   g%dlt_rntrf_eff(:)     = 0.0
    g%dlt_urea_hydrol(:)   = 0.0
    g%excess_nh4(:)        = 0.0
    g%dlt_NO3_net       = 0.0
@@ -962,6 +983,11 @@ subroutine soiln2_zero_variables ()
    c%pHf_nit_values    = 0.0
    c%dnit_rate_coeff   = 0.0
    c%dnit_wf_power     = 0.0
+   c%dnit_k1           = 0.0
+   c%dnit_wfps(:)      = 0.0
+   c%dnit_n2o_factor(:)= 0.0
+   c%num_dnit_wfps     = 0   
+   c%dnit_nitrf_loss   = 0.0   
    g%num_fom_types     = 0
 
    c%ef_biom           = 0.0
@@ -1032,7 +1058,6 @@ subroutine soiln2_get_other_variables ()
       call get_real_array (unknown_module, 'ph', max_layer, '()', g%ph, numvals, 3.5, 11.0)
 
    endif
-
    call soiln2_check_pond()
 
 
@@ -1305,6 +1330,11 @@ subroutine soiln2_send_my_variable (variable_name)
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_rntrf, num_layers)
 
+   elseif (variable_name .eq. 'effective_nitrification') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_rntrf_eff, num_layers)
+      
    elseif (variable_name .eq. 'dlt_urea_hydrol') then
    !                           ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
@@ -1512,6 +1542,11 @@ subroutine soiln2_send_my_variable (variable_name)
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_NO3_dnit, num_layers)
 
+   elseif (variable_name .eq. 'dlt_nh4_dnit') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_NH4_dnit, num_layers)
+      
    elseif (variable_name .eq. 'nit_tot') then
    !                           -----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
@@ -1559,7 +1594,14 @@ subroutine soiln2_send_my_variable (variable_name)
    elseif (variable_name .eq. 'dnit') then
    !                           ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
-      call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_no3_dnit, num_layers)
+      temp = g%dlt_NO3_dnit(1:num_layers)+g%dlt_NH4_dnit(1:num_layers)
+      call respond2get_real_array (variable_name,'(kg/ha)', temp, num_layers)
+
+   elseif (variable_name .eq. 'n2o_atm') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'(kg/ha)', g%N2O_atm, num_layers)
+
 
    elseif (variable_name .eq. 'dlt_c_loss_in_sed') then
    !                           -------------
@@ -2161,8 +2203,14 @@ subroutine soiln2_read_constants ()
    call read_real_var (section_name, 'dnit_rate_coeff', '(kg/mg)', c%dnit_rate_coeff, numvals, 0.0, 1.0)
 
    call read_real_var (section_name, 'dnit_wf_power', '()', c%dnit_wf_power, numvals, 0.0, 5.0)
+   
+   call read_real_var (section_name, 'dnit_k1', '()', c%dnit_k1, numvals, 0.0, 100.0)
+   
+   call read_real_array (section_name, 'dnit_wfps', max_wf_values, '(%)', c%dnit_wfps, numvals, 0.0, 100.0)
+   call read_real_array (section_name, 'dnit_n2o_factor', max_wf_values, '()', c%dnit_n2o_factor, c%num_dnit_wfps, 0.0, 100.0)
 
-
+   call read_real_var (section_name, 'dnit_nitrf_loss', '(0-1)', c%dnit_nitrf_loss, numvals, 0.0, 1.0)
+   
    call pop_routine (my_name)
    return
 end subroutine
@@ -3009,7 +3057,6 @@ subroutine soiln2_urea_hydrolysis (layer, dlt_urea_hydrol)
    else
    endif
 
-
    if (g%urea(layer).gt.0.0) then
 
          ! do some g%urea hydrolysis.
@@ -3259,6 +3306,8 @@ subroutine soiln2_process ()
    integer    fract                 ! number of fpools for fom
    real       dlt_rntrf             ! nitrogen moved by nitrification
                                     !    (kg/ha)
+   real       dlt_rntrf_eff         ! effective nitrogen moved by nitrification
+                                    !    (kg/ha)
    real       dlt_urea_hydrol       ! nitrogen moved by hydrolysis (kg/ha)
    real       excess_nh4            ! excess N required above NH4 supply
    real       fom_c                 ! total fom carbon
@@ -3335,7 +3384,7 @@ subroutine soiln2_process ()
 
          ! denitrification of nitrate-N
 
-      call soiln2_denitrification (layer, g%dlt_no3_dnit(layer))
+      call soiln2_denitrification (layer, g%dlt_no3_dnit(layer), g%N2O_atm(layer))
 
       g%no3(layer) = g%no3(layer) - g%dlt_no3_dnit(layer)
 
@@ -3403,9 +3452,9 @@ subroutine soiln2_process ()
 
 	  ! nitrification of some ammonium-N
 
-       call soiln2_nitrification (layer, dlt_rntrf)
+       call soiln2_nitrification (layer, dlt_rntrf, dlt_rntrf_eff, g%dlt_nh4_dnit(layer), g%n2o_atm(layer))
 
-       g%no3(layer) = g%no3(layer) + dlt_rntrf
+       g%no3(layer) = g%no3(layer) + dlt_rntrf_eff
        g%nh4(layer) = g%nh4(layer) - dlt_rntrf
 
        call bound_check_real_var (g%no3(layer), g%no3_min(layer), 9000.0, 'NO3(layer)')
@@ -3414,9 +3463,10 @@ subroutine soiln2_process ()
 
        g%NH4_transform_net(layer) = g%dlt_res_NH4_min(layer)+ g%dlt_fom_N_min(layer)+ g%dlt_biom_N_min(layer)+ g%dlt_hum_N_min(layer)- dlt_rntrf+ dlt_urea_hydrol+ excess_nh4
 
-       g%NO3_transform_net(layer) = g%dlt_res_NO3_min(layer)- g%dlt_NO3_dnit(layer)+ dlt_rntrf- excess_NH4
+       g%NO3_transform_net(layer) = g%dlt_res_NO3_min(layer)- g%dlt_NO3_dnit(layer)+ dlt_rntrf_eff- excess_NH4
 
        g%dlt_rntrf(layer)         = dlt_rntrf
+       g%dlt_rntrf_eff(layer)     = dlt_rntrf_eff
        g%dlt_urea_hydrol(layer)   = dlt_urea_hydrol
        g%excess_nh4(layer)        = excess_NH4
 
@@ -3480,7 +3530,6 @@ subroutine soiln2_min_humic (layer, dlt_c_biom, dlt_c_atm, dlt_n_min)
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
-
    ! dsg 200508  use different values for some constants when there's a pond and anaerobic conditions dominate
    if (g%pond_active.eq.'no') then
        index = 1
@@ -3488,7 +3537,6 @@ subroutine soiln2_min_humic (layer, dlt_c_biom, dlt_c_atm, dlt_n_min)
        index = 2
    else
    endif
-
 
    if (g%soiltype.eq.'rothc') then
       tf = rothc_tf (layer,index)
@@ -3549,7 +3597,6 @@ subroutine soiln2_min_biomass (layer,dlt_c_hum,dlt_c_atm,dlt_n_min)
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
-
    ! dsg 200508  use different values for some constants when anaerobic conditions dominate
    if (g%pond_active.eq.'no') then
        index = 1
@@ -3651,7 +3698,6 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
-
    ! dsg 200508  use different values for some constants when anaerobic conditions dominate
    if (g%pond_active.eq.'no') then
        index = 1
@@ -3771,7 +3817,7 @@ end subroutine
 
 
 !     ===========================================================
-subroutine soiln2_nitrification (layer, dlt_rntrf)
+subroutine soiln2_nitrification (layer, dlt_rntrf, dlt_rntrf_eff, dlt_nh4_dnit, n2o_atm)
 !     ===========================================================
    Use Infrastructure
    implicit none
@@ -3780,7 +3826,11 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
    integer    layer                 ! (INPUT) soil layer count
    real       dlt_rntrf             ! (OUTPUT) actual rate of nitrification
                                     !    (kg/ha)
-
+   real       dlt_rntrf_eff         ! (OUTPUT) effective rate of nitrification
+                                    !    (kg/ha)                  
+   real       dlt_nh4_dnit                                                       
+   real        n2o_atm              ! (OUTPUT) N20 produced
+   
 !+  Purpose
 !           Calculates nitrification of NH4 in a given soil layer.
 
@@ -3811,10 +3861,10 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
    real       tf                    ! temperature factor (0-1)
    real       wfd                   ! water factor (0-1)
 
+   
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
-
    ! dsg 200508  use different values for some constants when anaerobic conditions dominate
    if (g%pond_active.eq.'no') then
        index = 1
@@ -3822,7 +3872,6 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
        index = 2
    else
    endif
-
 
    phf = soiln2_phf_nitrf (layer)
 
@@ -3850,6 +3899,10 @@ subroutine soiln2_nitrification (layer, dlt_rntrf)
    dlt_rntrf = pni * opt_rate
    nh4_avail = l_bound (g%nh4(layer) - g%nh4_min(layer), 0.0)
    dlt_rntrf = bound (dlt_rntrf, 0.0, nh4_avail)
+   
+   dlt_nh4_dnit = dlt_rntrf * c%dnit_nitrf_loss
+   dlt_rntrf_eff = dlt_rntrf - dlt_nh4_dnit
+    n2o_atm = n2o_atm + dlt_nh4_dnit
 
    call pop_routine (my_name)
    return
@@ -3858,7 +3911,7 @@ end subroutine
 
 
 !     ===========================================================
-subroutine soiln2_denitrification (layer, dlt_n_atm)
+subroutine soiln2_denitrification (layer, dlt_n_atm, n2o_atm)
 !     ===========================================================
    Use Infrastructure
    implicit none
@@ -3866,6 +3919,7 @@ subroutine soiln2_denitrification (layer, dlt_n_atm)
 !+  Sub-Program Arguments
    real       dlt_n_atm             ! (OUTPUT) denitrification rate
                                     !    - kg/ha/day
+   real        n2o_atm              ! (OUTPUT) N20 produced
    integer    layer                 ! (INPUT) soil layer counter
 
 !+  Purpose
@@ -3916,6 +3970,11 @@ subroutine soiln2_denitrification (layer, dlt_n_atm)
                                     !    (mg C/kg soil)
    real       fom_c_conc            ! carbon conc. of fresh organic pool
                                     !    (mg C/kg soil)
+   real    WFPS                     ! water filled pore space (%)
+   real    CO2                      ! CO2 produced
+   real    RtermA, RtermB, RtermC, RtermD 
+   real    N2N2O
+
 
 !- Implementation Section ----------------------------------
 
@@ -3952,8 +4011,23 @@ subroutine soiln2_denitrification (layer, dlt_n_atm)
       no3_avail = g%no3(layer) - g%no3_min(layer)
       dlt_n_atm = bound (dlt_n_atm, 0.0, no3_avail)
 
+      WFPS = g%sw_dep(layer)/g%sat_dep(layer) * 100
+      CO2 = (sum(g%dlt_fom_c_atm(:,layer)) + g%dlt_biom_c_atm(layer) + g%dlt_hum_c_atm(layer))/(g%bd(layer)*g%dlayer(layer))*100
+      RtermA = 0.16*c%dnit_k1
+      if (CO2.gt.0) then
+         RtermB = c%dnit_k1 * (exp(-0.8*(g%no3(layer)*soiln2_fac (layer)/CO2)))
+      else
+         RtermB= 0
+      endif
+      RtermC = 0.1
+      RTermD =linear_interp_real (WFPS, c%dnit_wfps, c%dnit_n2o_factor, c%num_dnit_wfps)
+      ! RTermD = (0.015*WFPS)-0.32
+
+      N2N2O = max(RTermA,RTermB) * Max(RTermC,RTermD)
+      N2O_atm = dlt_n_atm/(N2N2O+1)
    else
       dlt_n_atm = 0.0
+      n2o_atm = 0.0
    endif
 
    call pop_routine (my_name)
@@ -4117,15 +4191,14 @@ real function soiln2_wf (layer,index)
       wfd = bound (wfd, 0.0, 1.0)
 
    endif
-
    if (index.eq.1) then
+
         soiln2_wf =linear_interp_real (wfd, c%wf_min_index, c%wf_min_values, max_wf_values)
    else if (index.eq.2) then
         ! if pond is active, and liquid conditions dominate, assume wf = 1
         soiln2_wf = 1.0
    else
    endif
-
 
    call pop_routine (my_name)
    return
@@ -5171,6 +5244,8 @@ subroutine doInit1()
    dummy = add_registration_with_units(respondToGetReg, 'dlt_hum_n_min', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'dlt_res_no3_min', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'dlt_no3_dnit', floatarrayTypeDDML, 'kg/ha')
+   dummy = add_registration_with_units(respondToGetReg, 'dlt_nh4_dnit', floatarrayTypeDDML, 'kg/ha')
+   dummy = add_registration_with_units(respondToGetReg, 'n2o_atm', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'nit_tot', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'dlt_n_min', floatarrayTypeDDML, 'kg/ha')
    dummy = add_registration_with_units(respondToGetReg, 'dlt_n_min_res', floatarrayTypeDDML, 'kg/ha')
