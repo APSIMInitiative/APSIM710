@@ -2792,6 +2792,19 @@ c     Bound to reasonable values:
       g%rawswi_total = 0.0
       call fill_real_array (g%swi, 0.0, max_layer)
 
+      g%out_radn_cover = 0.0
+      g%out_transp_cover = 0.0
+      g%out_total_cover = 0.0
+
+      g%out_clothesline = 0.0
+
+      g%out_sw_pot = 0.0
+      g%out_sw_demand = 0.0
+
+      g%out_rfact = 0.0
+      g%out_nfact = 0.0
+      g%out_tfact = 0.0
+
       g%out_growth_transp  = 0.0
       g%out_growth_regrow  = 0.0
       g%out_growth_photo   = 0.0
@@ -3213,8 +3226,7 @@ cpdev  bound required?..
      :     , g%pan, numvals, c%pan_lb, c%pan_ub)
       if (numvals .le. 0) then
          call get_real_var (unknown_module, 'eo', '(mm)'
-     :        , value, numvals, c%pan_lb, c%pan_ub)
-         g%pan = value
+     :        , g%pan, numvals, c%pan_lb, c%pan_ub)
       else
                                 ! nothing
       endif
