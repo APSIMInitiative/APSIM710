@@ -169,46 +169,6 @@
 
       call Get_real_array (
      :      unknown_module, ! Module that responds (Not Used)
-     :      'dlayer',       ! Variable Name
-     :      max_layer,      ! Array Size
-     :      '(mm)',         ! Units                (Not Used)
-     :      g%dlayer,       ! Variable
-     :      numvals,        ! Number of values returned
-     :      0.,              ! Lower Limit for bound checking
-     :      1000.)          ! Upper Limit for bound checking
-
-      call Get_real_array (
-     :      unknown_module, ! Module that responds (Not Used)
-     :      'bd',       ! Variable Name
-     :      max_layer,      ! Array Size
-     :      '(g/cc)',         ! Units                (Not Used)
-     :      g%bd,       ! Variable
-     :      numvals,        ! Number of values returned
-     :      0.,              ! Lower Limit for bound checking
-     :      1000.)          ! Upper Limit for bound checking
-
-      call Get_real_array (
-     :      unknown_module, ! Module that responds (Not Used)
-     :      'sat',       ! Variable Name
-     :      max_layer,      ! Array Size
-     :      '(cc/cc)',         ! Units                (Not Used)
-     :      g%sat,       ! Variable
-     :      numvals,        ! Number of values returned
-     :      0.,              ! Lower Limit for bound checking
-     :      1.)          ! Upper Limit for bound checking
-
-      call Get_real_array (
-     :      unknown_module, ! Module that responds (Not Used)
-     :      'll15',       ! Variable Name
-     :      max_layer,      ! Array Size
-     :      '(cc/cc)',         ! Units                (Not Used)
-     :      g%ll15,       ! Variable
-     :      numvals,        ! Number of values returned
-     :      0.,              ! Lower Limit for bound checking
-     :      1.)          ! Upper Limit for bound checking
-
-      call Get_real_array (
-     :      unknown_module, ! Module that responds (Not Used)
      :      'sw',       ! Variable Name
      :      max_layer,      ! Array Size
      :      '(cc/cc)',         ! Units                (Not Used)
@@ -809,6 +769,47 @@
       call pop_routine (myname)
       return
       end subroutine
+!     ===========================================================
+      subroutine solute_ONnew_profile (variant)
+!     ===========================================================
+      Use Infrastructure
+      implicit none
+
+!+  Purpose
+!     Update internal soil layer structure with new data
+
+!+  Mission Statement
+!     Update internal soil layer structure with new data
+      integer variant
+
+!+  Local Variables
+      type(NewProfileType) :: newProfile
+
+!+  Constant Values
+      character*(*) myname               ! name of current procedure 
+      parameter (myname = 'SoilN2_ONNew_Profile')
+
+!- Implementation Section ----------------------------------
+      call push_routine (myname)
+
+      newProfile%dlayer(:) = 0.0
+      newProfile%air_dry_dep(:) = 0.0
+      newProfile%ll15_dep(:) = 0.0
+      newProfile%dul_dep(:) = 0.0
+      newProfile%sat_dep(:) = 0.0
+      newProfile%sw_dep(:) = 0.0
+      newProfile%bd(:) = 0.0
+
+      call unpack_newProfile(variant, newProfile)
+
+      g%dlayer(:) = newProfile%dlayer
+      g%bd(:) = newProfile%bd
+      g%sat(:) = newProfile%sat_dep / newProfile%dlayer
+      g%ll15(:) = newProfile%ll15_dep / newProfile%dlayer
+
+      call pop_routine (myname)
+      return
+      end subroutine
 
       end module SoluteModule
 
@@ -913,12 +914,17 @@
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       Use infrastructure
+      Use SoluteModule
       implicit none
       ml_external respondToEvent
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID
       integer, intent(in) :: variant
+
+      if (eventID .eq. id%new_profile) then
+         call solute_ONnew_profile(variant)
+      endif
 
       return
       end subroutine respondToEvent

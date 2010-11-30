@@ -6,6 +6,7 @@ module Registrations
       integer :: create
       integer :: sys_init
       integer :: process
+      integer :: new_profile
 
    end type IDsType
 
@@ -19,6 +20,7 @@ module Registrations
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
          id%sys_init = add_registration(respondToEventReg, 'sys_init', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
+         id%new_profile = add_registration(respondToEventReg, 'new_profile', newprofileTypeDDML, '')
       end subroutine
 end module Registrations
 
