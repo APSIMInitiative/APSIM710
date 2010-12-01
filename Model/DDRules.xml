@@ -28,26 +28,16 @@
 		</ApsimToSim>
 	</MetaData>
 	<Model>
-		<DDRules>
-			<EnableFarmSim>1</EnableFarmSim>
-		</DDRules>
+		<DDRules></DDRules>
 	</Model>
 	<Info>
 		<variables>
-			<variable name="EnableFarmSim" description="Run with FarmSim default values" read="T" write="T" kind="integer" array="F" units="" />
-			<variable name="BaseStockingRate" description="Stocking rate a peak of lactation" read="T" write="T" kind="double" array="F" units="cows/ha" />
-			<variable name="InitialStockingRate" description="Dawns pasture ME / month table. Will be replace with calls to ApSim" read="T" write="T" kind="single" array="F" units="cows/ha" />
-			<variable name="sr" description="Current stocking rate on farm (i.e. excludes cows wintering off)" read="T" write="T" kind="single" array="F" units="cows/ha" />
-			<variable name="localTFD" description="Total feed demand" read="T" write="T" kind="double" array="F" units="MJME" />
-			<variable name="localFPA" description="Farm Pasture area" read="T" write="T" kind="double" array="F" units="ha" />
-			<variable name="localGR" description="Grazing residual" read="T" write="T" kind="integer" array="F" units="kgDM" />
-			<variable name="localMG" description="Minimum grazing interval" read="T" write="T" kind="double" array="F" units="days" />
-			<variable name="localMA" description="Maximum area available" read="T" write="T" kind="double" array="F" units="ha" />
-			<variable name="localPME" description="Pasture ME content" read="T" write="T" kind="double" array="F" units="MJME" />
-			<variable name="PastureHarvested" description="Pasture harvested" read="T" write="T" kind="double" array="F" units="kgDM" />
 			<variable name="RemainingFeedDemand" description="ME still required to meet animal requirements" read="T" write="F" kind="double" array="F" units="MJME" />
+			<variable name="TotalCows" description="Total animal requirements [MJME] (for the full herd)" read="T" write="F" kind="double" array="F" units="Cows" />
 			<variable name="TotalFeedDemand" description="Total animal requirements [MJME] (for the full herd)" read="T" write="F" kind="double" array="F" units="MJME" />
 			<variable name="StockingRate" description="Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off" read="T" write="T" kind="single" array="F" units="cows/ha" />
+			<variable name="PeakStockingRate" description="Stocking rate a peak of lactation" read="T" write="T" kind="single" array="F" units="cows/ha" />
+			<variable name="FarmArea" description="" read="T" write="T" kind="double" array="F" units="cows/ha" />
 			<variable name="WinterOffDryStock" description="Take dry stock off farm" read="T" write="T" kind="integer" array="F" units="" />
 			<variable name="ME_Demand_Total" description="Total Metabolisable energy required by herd [MJME/day]" read="T" write="F" kind="double" array="F" units="MJME" />
 			<variable name="ME_Demand_Maintance" description="Metabolisable energy required by herd for maintance [MJME/day]" read="T" write="F" kind="double" array="F" units="MJME" />
@@ -62,34 +52,37 @@
 			<variable name="ME_Demand_Pregnancy_Cow" description="Metabolisable energy required for pregnancy [MJME/cow/day]" read="T" write="F" kind="double" array="F" units="MJME/cow" />
 			<variable name="ME_Demand_Walking_Cow" description="Metabolisable energy required for walking [MJME/cow/day]" read="T" write="F" kind="double" array="F" units="MJME/cow" />
 			<variable name="MilkProduction" description="Milk solids production - total" read="T" write="F" kind="double" array="F" units="kgMS" />
-			<variable name="MLact" description="Month of lactation" read="T" write="F" kind="double" array="F" units="kgMS" />
-			<variable name="MPreg" description="Month of pregnancy" read="T" write="F" kind="double" array="F" units="kgMS" />
+			<variable name="MLact" description="Month of lactation" read="T" write="F" kind="double" array="F" units="" />
+			<variable name="MPreg" description="Month of pregnancy" read="T" write="F" kind="double" array="F" units="" />
 			<variable name="Cow_LWt" description="Average cow live weight" read="T" write="F" kind="double" array="F" units="kg_LWt" />
 			<variable name="Cow_dLWt" description="Average cows change in live weight" read="T" write="F" kind="double" array="F" units="kg_LWt" />
-			<variable name="Cow_BC" description="Averge body condition score" read="T" write="F" kind="double" array="F" units="kg_LWt" />
-			<variable name="Cow_MilkSolids" description="Milk solids production per cow" read="T" write="F" kind="double" array="F" units="kg_LWt" />
+			<variable name="Cow_BC" description="Averge body condition score" read="T" write="F" kind="double" array="F" units="" />
+			<variable name="Cow_MilkSolids" description="Milk solids production per cow" read="T" write="F" kind="double" array="F" units="kgMS/cow" />
 			<variable name="Cow_IsDry" description="Is herd currently dried off" read="T" write="F" kind="string" array="F" units="" />
 			<variable name="GrazingInterval" description="Current grazing interval / return period" read="T" write="T" kind="integer" array="F" units="Days" />
 			<variable name="GrazingResidual" description="Current cow grazing residual" read="T" write="T" kind="integer" array="F" units="kgDM/ha" />
 			<variable name="SilageCut" description="Quantity of silage cut on farm today" read="T" write="F" kind="double" array="F" units="kgDM" />
 			<variable name="SilageCut_kgha" description="Quantity of silage cut on farm today" read="T" write="F" kind="double" array="F" units="kgDM/ha" />
-			<variable name="SupplementME" description="Energy content of purchased supplement" read="T" write="T" kind="double" array="F" units="MJME" />
-			<variable name="SupplementN" description="Nitrogen content of purchased supplement" read="T" write="T" kind="double" array="F" units="MJME" />
+			<variable name="SupplementME" description="Energy content of purchased supplement" read="T" write="T" kind="double" array="F" units="MJME/kgDM" />
+			<variable name="SupplementN" description="Nitrogen content of purchased supplement" read="T" write="T" kind="double" array="F" units="kgN/kgDM" />
+			<variable name="SupplementDigestability" description="Supplment digestability" read="T" write="T" kind="double" array="F" units="0-1" />
 			<variable name="SupplementWastage" description="Supplment loss at feeding out" read="T" write="T" kind="double" array="F" units="%" />
+			<variable name="SilageDigestability" description="Silage digestability (could this be made read only once the store has been refactored)" read="T" write="T" kind="double" array="F" units="0-1" />
+			<variable name="SilageCutWastage" description="Supplment/silage loss during cutting" read="T" write="T" kind="double" array="F" units="%" />
 			<variable name="CDM" description="Conservation trigger pasture mass (Dawn default = 3500)" read="T" write="T" kind="double" array="F" units="kgDM/ha" />
 			<variable name="CR" description="Conservation cutting residual pasture mass (Dawn default = 1600)" read="T" write="T" kind="integer" array="F" units="kgDM/ha" />
-			<variable name="FCD" description="First Conservation Date - uing a month for the time being" read="T" write="T" kind="integer" array="F" units="MJME" />
-			<variable name="LCD" description="Last Conservation Date - uing a month for the time being" read="T" write="T" kind="integer" array="F" units="MJME" />
-			<variable name="SilageME" description="Energy content of silage produced on farm" read="T" write="T" kind="double" array="F" units="MJME" />
-			<variable name="SilageN" description="Nitrogen content of silage produced on farm" read="T" write="T" kind="double" array="F" units="MJME" />
-			<variable name="SilageWastage" description="Silage lost during feeding out" read="T" write="T" kind="double" array="F" units="%" />
+			<variable name="FCD" description="First Conservation Date - uing a month for the time being" read="T" write="T" kind="integer" array="F" units="" />
+			<variable name="LCD" description="Last Conservation Date - uing a month for the time being" read="T" write="T" kind="integer" array="F" units="" />
+			<variable name="SilageME" description="Energy content of silage produced on farm" read="T" write="T" kind="double" array="F" units="MJME/kgDM" />
+			<variable name="SilageN" description="Nitrogen content of silage produced on farm" read="T" write="T" kind="double" array="F" units="kgN/kgDM" />
+			<variable name="SilageWastage" description="Proportion of silage lost during feeding out" read="T" write="T" kind="double" array="F" units="0-1" />
 			<variable name="ConservationStart" description="First Conservation Date" read="T" write="T" kind="string" array="F" units="" />
 			<variable name="ConservationFinish" description="Last Conservation Date" read="T" write="T" kind="string" array="F" units="" />
 			<variable name="SilageStoreEnable" description="Storage of cut silage on farm (for later use)" read="T" write="T" kind="integer" array="F" units="" />
-			<variable name="SilageStore" description="Amount of silage avalible for feeding out" read="T" write="T" kind="double" array="F" units="kgDM/ha" />
-			<variable name="ConservationTrigger" description="Conservation trigger mass" read="T" write="T" kind="double" array="F" units="kgDM/ha" />
+			<variable name="SilageStore" description="Amount of silage avalible for feeding out [kgDM]" read="T" write="T" kind="double" array="F" units="kgDM" />
+			<variable name="SilageStore_kgha" description="Amount of silage avalible for feeding out [kgDM]" read="T" write="T" kind="double" array="F" units="kgDM/ha" />
+			<variable name="ConservationTrigger" description="Conservation trigger mass (close paddocks above this residual)" read="T" write="T" kind="double" array="F" units="kgDM/ha" />
 			<variable name="ConservationResidual" description="Conservation cutting residual" read="T" write="T" kind="double" array="F" units="kgDM/ha" />
-			<variable name="Total_Cows" description="Number of cows on farm" read="T" write="F" kind="single" array="F" units="" />
 			<variable name="N_Balance" description="Total nitrogen balance of herd" read="T" write="T" kind="single" array="F" units="kgN/ha" />
 			<variable name="N_Out" description="Nitrogen output of herd" read="T" write="T" kind="single" array="F" units="kgN/ha" />
 			<variable name="ME_Demand" description="Energy demand" read="T" write="T" kind="single" array="F" units="MJME/ha" />
@@ -106,12 +99,13 @@
 			<variable name="N_to_BC" description="Nitrogen partitioned to body condition" read="T" write="T" kind="single" array="F" units="kgN/ha" />
 			<variable name="N_to_feaces" description="Nitrogen partitioned to dung" read="T" write="T" kind="single" array="F" units="kgN/ha" />
 			<variable name="N_to_urine" description="Nitrogen partitioned to urine" read="T" write="T" kind="single" array="F" units="kgN/ha" />
-			<variable name="DM_to_feaces" description="Drymatter partitioned to dung" read="T" write="T" kind="single" array="F" units="kgN/ha" />
-			<variable name="PaddockStatus" description="Current status of paddocks" read="T" write="F" kind="string" array="T" units="MJME/ha" />
+			<variable name="DM_to_feaces" description="Drymatter partitioned to dung" read="T" write="T" kind="single" array="F" units="kgDM/ha" />
+			<variable name="PaddockStatus" description="Current status of paddocks" read="T" write="F" kind="string" array="T" units="" />
 			<variable name="ME_Eaten_Pasture_Pdks" description="Energy consumed as pasture per paddock" read="T" write="F" kind="single" array="T" units="MJME/ha" />
 			<variable name="ME_Eaten_Supplement_Pdks" description="Energy consumed as Supplements per paddock" read="T" write="T" kind="single" array="T" units="MJME/ha" />
 			<variable name="ME_Eaten_Pdks" description="Energy consumed per paddock" read="T" write="F" kind="single" array="T" units="MJME/ha" />
-			<variable name="DM_Eaten_Pdks" description="Dry matter consumed per paddock" read="T" write="F" kind="single" array="T" units="MJME/ha" />
+			<variable name="DM_Eaten_Pdks" description="Total Dry matter consumed per paddock [kgDM/day]" read="T" write="F" kind="single" array="T" units="kgDM" />
+			<variable name="DM_Eaten_Pdks_ha" description="Dry matter consumed per paddock [kgDM/ha/day]" read="T" write="F" kind="single" array="T" units="kgDM/ha" />
 			<variable name="DM_Eaten_Pasture_Pdks" description="Dry matter consumed as pasture per paddock" read="T" write="T" kind="single" array="T" units="kgDM/ha" />
 			<variable name="DM_Eaten_Supplement_Pdks" description="Dry matter consumed as supplement per paddock" read="T" write="T" kind="single" array="T" units="kgDM/ha" />
 			<variable name="N_Eaten_Pdks" description="Nitrogen consumed per paddock" read="T" write="F" kind="single" array="T" units="kgN/ha" />
@@ -135,8 +129,11 @@
 			<variable name="N_to_BC_Cow" description="Nitrogen partitioned to body condition per cow" read="T" write="T" kind="single" array="F" units="kgN/cow" />
 			<variable name="N_to_feaces_Cow" description="Nitrogen partitioned to dung per cow" read="T" write="T" kind="single" array="F" units="kgN/cow" />
 			<variable name="N_to_urine_Cow" description="Nitrogen partitioned to urine per cow" read="T" write="T" kind="single" array="F" units="kgN/cow" />
-			<variable name="LWt_Change_Cow" description="Daily per cow live weight change" read="T" write="F" kind="single" array="F" units="kgN/cow" />
-			<variable name="PWO" description="Percentage wintered off" read="T" write="F" kind="double" array="F" units="%" />
+			<variable name="LWt_Change_Cow" description="Daily per cow live weight change" read="T" write="F" kind="single" array="F" units="kgLWt/cow" />
+			<variable name="PWO" description="Proportion (PWO) of herd wintered off-farm (range 0-1.0)" read="T" write="T" kind="single" array="F" units="0-1" />
+			<variable name="DCWO" description="Date commence winter off" read="T" write="T" kind="string" array="F" units="" />
+			<variable name="DSWO" description="Date to stop winter off" read="T" write="T" kind="string" array="F" units="" />
+			<variable name="PercentageWinteredOff" description="Percentage wintered off" read="T" write="F" kind="double" array="F" units="%" />
 		</variables>
 		<events></events>
 	</Info>

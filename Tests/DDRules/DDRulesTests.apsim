@@ -20,8 +20,8 @@
         <variable name="DM_Eaten_Pasture_Cow" />
         <variable name="DM_Eaten_Supplement_Cow" />
         <variable name="MilkProduction" />
-        <variable name="BaseStockingRate" />
-        <variable name="sr" />
+        <variable name="PeakStockingRate" />
+        <variable name="StockingRate" />
         <variable name="DM_Eaten_Pdks" />
         <variable name="PWO" />
         <variable name="PaddockStatus" />
@@ -41,6 +41,9 @@
         <variable name="ME_Eaten_Supplement_Cow" />
         <variable name="SilageCut" />
         <variable name="SilageCut_kgha" />
+        <variable name="TotalFeedDemand" />
+        <variable name="RemainingFeedDemand" />
+        <variable name="TotalCows" />
       </variables>
       <events name="Reporting Frequency">
         <event name="Daily" description="End of daily simulation time step" />
@@ -81,10 +84,12 @@
         <variable name="ME_Demand_WeightChange_Cow" />
         <variable name="ME_Demand_Walking_Cow" />
         <variable name="WinterOffDryStock" />
-        <variable name="BaseStockingRate" />
+        <variable name="Cow_IsDry" />
+        <variable name="PeakStockingRate" />
+        <variable name="StockingRate" />
       </variables>
       <events name="Reporting Frequency">
-        <event name="Daily" description="End of daily simulation time step" />
+        <event name="Daily" />
       </events>
       <Graph name="Renergy Requirements">
         <Plot>
@@ -344,19 +349,21 @@
       </irrigation>
       <outputfile>
         <variables name="Variables">
-          <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
-          <variable name="HerbageGrowthWt" array="No" description="Daily net herbage accumulation" />
-          <variable name="SpeciesLiveWt" array="No" description="Species - total aboveground live dry matter (kg/ha)" />
-          <variable name="LAI_total" array="No" description="Total leaf area index" />
-          <variable name="LeafLiveWt" array="No" description="Plant green leaf dry matter" />
+          <variable name="dd/mmm/yyyy as Date" />
+          <variable name="HerbageGrowthWt" />
+          <variable name="SpeciesLiveWt" />
+          <variable name="LAI_total" />
+          <variable name="LeafLiveWt" />
           <variable name="leafgreenwt" />
-          <variable name="surfaceom_wt" array="No" description="Total mass of all surface organic materials" />
-          <variable name="surfaceom_n" array="No" description="Total mass of all surface organic nitrogen" />
-          <variable name="surfaceom_c" array="No" description="Total mass of all surface organic carbon" />
-          <variable name="AboveGroundWt" array="No" description="Plant aboveground dry matter" />
-          <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
-          <variable name="AboveGroundDeadWt" array="No" description="Plant aboveground dead dry matter" />
-          <variable name="GLFwater" array="No" description="Plant growth limiting factor due to water deficit" />
+          <variable name="surfaceom_wt" />
+          <variable name="surfaceom_n" />
+          <variable name="surfaceom_c" />
+          <variable name="AboveGroundWt" />
+          <variable name="AboveGroundLiveWt" />
+          <variable name="AboveGroundDeadWt" />
+          <variable name="GLFwater" />
+          <variable name="cover_green" />
+          <variable name="AboveGroundNPct" />
         </variables>
         <events name="Reporting Frequency">
           <event name="end_day" />
@@ -1419,13 +1426,14 @@
     </area>
     <manager name="Dairy Farm Settings">
       <script name="init">
-        <text>InitialStockingRate = 2.5
-WinterOffDryStock = 1</text>
+        <text>DDRules.PeakStockingRate = 2.5
+DDRules.WinterOffDryStock = 0
+DDRules.FarmArea = 5</text>
         <event>init</event>
       </script>
       <script name="start_of_day">
-        <text>
-        </text>
+        <text>PaddockGrazable(1) = 0
+PaddockGrazable(2) = 0</text>
         <event>start_of_day</event>
       </script>
       <script name="end_of_day">
@@ -1438,22 +1446,25 @@ WinterOffDryStock = 1</text>
       <ui>
         <category type="category" />
         <start_date type="ddmmmdate" description="Enter start date (dd-mmm) ">1-sep</start_date>
-        <finish_date type="ddmmmdate" description="Enter finish date (dd-mmm) ">20-mar</finish_date>
+        <finish_date type="ddmmmdate" description="Enter finish date (dd-mmm) ">1-apr</finish_date>
         <trigger_mass type="text" description="Close paddock if pasture mass exceeds (kg/ha) : ">3500</trigger_mass>
-        <residual type="text" description="Pasture residual after cut (kgDM/ha)">1600</residual>
+        <residual type="text" description="Pasture residual after cut (kgDM/ha)">1800</residual>
         <silage_store type="yesno" description="Store conserved feed for later use">yes</silage_store>
         <energy_content type="text" description="Energy content of conversed feed (ME/kgDM)">10.5</energy_content>
         <silage_on_hand type="text" description="Feed stored on farm at start of simulation (kgDM/ha)">250</silage_on_hand>
+        <cutting_waste type="text" description="cutting_waste">5</cutting_waste>
       </ui>
       <script name="init">
         <text>ConservationStart = '[start_date]'
 ConservationFinish = '[finish_date]'
 ConservationTrigger = [trigger_mass]
 ConservationResidual = [residual]
+SilageCutWastage = cutting_waste
+
 if '[silage_store]' = 'yes' then
    SilageStoreEnable = 1
-   SilageStore = [silage_on_hand]
    SilageME = [energy_content]
+   SilageStore = [silage_on_hand]
 else
    SilageStoreEnable = 0
    SilageStore = 0
@@ -1485,5 +1496,81 @@ endif</text>
         </Plot>
       </Graph>
     </outputfile>
+    <outputfile name="Supplements">
+      <variables name="Variables">
+        <variable name="dd/mm/yyyy as Date" />
+        <variable name="SupplementME" />
+        <variable name="SupplementN" />
+        <variable name="SupplementDigestability" />
+        <variable name="SilageME" />
+        <variable name="SilageN" />
+        <variable name="SilageDigestability" />
+        <variable name="SupplementWastage" />
+        <variable name="SilageWastage" />
+        <variable name="SilageCut" />
+        <variable name="SilageStore" />
+        <variable name="SilageCut_kgha" />
+        <variable name="SilageStore_kgha" />
+      </variables>
+      <events name="Reporting Frequency">
+        <event name="Daily" />
+      </events>
+    </outputfile>
+    <manager name="Wintering Off">
+      <ui>
+        <category type="category" />
+        <start_date type="ddmmmdate" description="Enter start date (dd-mmm) ">1-november</start_date>
+        <finish_date type="ddmmmdate" description="Enter finish date (dd-mmm) ">1-december</finish_date>
+        <proportion type="text" description="Proportion of herd wintered off-farm (0-1)">0.5</proportion>
+      </ui>
+      <script name="init">
+        <text>DCWO = '[start_date]'
+DSWO = '[finish_date]'
+PWO = [Proportion]</text>
+        <event>init</event>
+      </script>
+    </manager>
+    <outputfile name="Removal">
+      <variables name="Variables">
+        <variable name="dd/mm/yyyy as Date" />
+        <variable name="PeakStockingRate" />
+        <variable name="TotalCows" />
+        <variable name="DM_Eaten_Pdks" />
+        <variable name="DM_Eaten_Pdks_Ha" />
+        <variable name="GrazingResidual" />
+        <variable name="GrazingInterval" />
+      </variables>
+      <events name="Reporting Frequency">
+        <event name="Daily" />
+      </events>
+      <Graph name="Silage">
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <X>Date</X>
+          <Y>SilageStore</Y>
+          <Y>Cumulative SilageCut_kgha</Y>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+    </outputfile>
+    <manager name="Grazing Settings Test">
+      <ui>
+        <category type="category" />
+        <irrigate_date type="ddmmmdate" description="Enter irrigation date (dd-mmm) : ">05-jul</irrigate_date>
+        <category type="category" />
+        <residual type="text" description="Grazing Residual [kgDM/ha]">1600</residual>
+        <length type="text" description="Rotation Length [days]">25</length>
+      </ui>
+      <script name="start_of_day">
+        <text>if (today = date('[irrigate_date]')) then
+   DDRules.GrazingResidual = [residual]
+   DDRules.GrazingInterval = [length]
+endif</text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
   </simulation>
 </folder>

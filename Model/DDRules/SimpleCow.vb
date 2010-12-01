@@ -104,17 +104,9 @@ Public Class SimpleCow
         Private BC As Double() = {3.8, 3.9, 4.2, 4.4, 4.5, 5.1, 5, 5.1, 4, 3.8, 3.9, 3.9} 'dawn
         Private LWt As Double() = {437, 443, 450, 458, 466, 478, 486, 463, 430, 430, 438, 442} 'dawn
         Private MS As Double() = {1.5, 1.33, 1.23, 1.13, 1.12, 0, 0, 0.78, 1.69, 1.94, 1.86, 1.68} 'dawn
-        'Private Pregnancy As Double() = {0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 20, 30, 0, 0, 0, 0, 0} 'DairyNZ, to match Dawn above
-        'Public ME_Maintance As Double
-        'Public ME_Lactation As Double
-        'Public ME_Pregnancy As Double
-        'Public ME_Walking As Double
-        'Public ME_WeightChange As Double
-        'Public ME_Total As Double
 
         '********** Constructor ******************
         Public Sub New(ByVal Year As Integer, ByVal Month As Integer)
-                'Live_Weight = LWt
                 Live_Weight = LWt(Month - 1)
         End Sub
         '********** Constructor ******************
@@ -132,12 +124,11 @@ Public Class SimpleCow
 
 
         Public Function ME_WeightChange()
-                'Return ME_Change_In_Liveweight(Change_in_KgLWt_per_Day)
                 Return ME_Change_In_Liveweight(Change_in_CondistionScore_per_Day * 35)
         End Function
 
         Public Function ME_Walking()
-                Return Walking(0)
+                Return Walking(0) 'cows not walking at all
         End Function
 
         Public Function ME_Pregnancy()
@@ -236,6 +227,9 @@ Public Class SimpleCow
                 Dim N_Excreta = N_in - (N_to_Milk + N_to_BC)
                 N_to_feaces = N_Excreta * 0.4
                 N_to_urine = N_Excreta - N_to_feaces
+                If (N_to_urine.ToString.Contains("NaN")) Then
+                        Console.WriteLine("DDRules (debug) - " & "Urine: N not a number")
+                End If
 
                 Dim DM_out = Total_DM_Eaten.DM_Total * (1 - Total_DM_Eaten.digestibility) 'digestability = 70% grass, 55% hay, 80% grain, time = 18-24, 30-40 & 12-14 Farm Tech manual A-154
                 DM_to_feaces = DM_out

@@ -1,9 +1,9 @@
 Public Class BioMass
         Public Name As String
         Public gLeaf, gStem, dLeaf, dStem As Double ' drymatter [kg]
-        Private N_concentration As Double 'total N in biomass [kg]
-        Public digestibility As Double
-        Private myME As Double = -1 'ME value < 0 then use a calculated value
+        Private N_concentration As Double = 0 'total N in biomass [kg]
+        Public digestibility As Double = 0
+        Private myME As Double = 0 'ME value <= 0 then use a calculated value
         Private roundTo As Integer = 1000 'dp
 
         Public Sub New()
@@ -41,7 +41,7 @@ Public Class BioMass
                 Return DM_Green() + DM_Dead()
         End Function
         Public Function N_Total() As Double
-                Return DM_Total() * N_concentration
+                Return DM_Total() * N_Conc()
         End Function
 
         Public Property N_Conc() As Double 'N concentration [kgN/kgDM]
@@ -93,7 +93,10 @@ Public Class BioMass
                 result.gStem = gStem + other.gStem
                 result.dLeaf = dLeaf + other.dLeaf
                 result.dStem = dStem + other.dStem
-                result.N_concentration = (N_Total() + other.N_Total) / result.DM_Total
+                result.N_concentration = (N_Total() + other.N_Total()) / result.DM_Total()
+                If (result.N_concentration.ToString.Contains("NaN")) Then
+                        Console.WriteLine("DDRules (debug) - " & "BioMass.Add: N_concentration not a number")
+                End If
                 If (result.DM_Total() > 0) Then
                         result.myME = (getME_Total() + other.getME_Total()) / result.DM_Total()
                         result.digestibility = (other.digestibility * other.DM_Total() + digestibility * DM_Total()) / result.DM_Total()
@@ -119,6 +122,19 @@ Public Class BioMass
                 Return result
         End Function
 
+        'This convienience function is for use with the SurfaceOM "BiomassRemoved" event
+        Public Function toBiomassRemovedType(ByVal fraction_to_residue As Double) As BiomassRemovedType
+                Dim result As New BiomassRemovedType
+                result.crop_type = "grass"
+                result.dm_type = New String() {"grass"}
+                result.dlt_crop_dm = New Single() {DM_Total()}  'convert this to g/m^2?
+                result.dlt_dm_n = New Single() {N_Total()}      'convert this to g/m^2?
+                result.dlt_dm_p = New Single() {0} ' I don't know what to do about P
+                result.fraction_to_residue = New Single() {fraction_to_residue}
+                Return result
+        End Function
+
+        'This convienience function is for use with the "remove_crop_biomass" event
         Public Function toRemoveCropDmType() As RemoveCropDmType
                 Dim result As New RemoveCropDmType
                 Dim green As RemoveCropDmdmType = getDMType("green", gLeaf, gStem)
@@ -149,12 +165,16 @@ Public Class BioMass
         End Sub
 
         Public Function getME() As Double
-                Return getME_Total() / DM_Total()
+                If (DM_Total() > 0) Then
+                        Return getME_Total() / DM_Total()
+                Else
+                        Return 0
+                End If
         End Function
 
 
         Public Function getME_Total() As Double
-                If (myME < 0) Then
+                If (myME <= 0) Then
                         Return calcME() 'no ME value set so assume it pasture
                 Else
                         Return myME * DM_Total()

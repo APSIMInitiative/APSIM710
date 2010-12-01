@@ -6,13 +6,21 @@
 <body>
 <h1>DDRules – Daily time step dairy farm manager module</h1>
 <h2>Please Note</h2>
-<p>This manager module is currently under heavy development as may be give unacceptable result. Use with caution.
-</p>
+<ul>
+	<li>This manager module is currently under heavy development as may be give unacceptable results. <b>Use with caution</b>.</li>
+	<li>This moduale <b>should</b> be capable of grazing crops other that AgPasture, but this to is currently untested</li>
+	<li>AgPasture reports stolons as a above ground pasture component. DDRules does not graze stolons under any curcumstances.
+</ul>
 <h2>Introduction</h2>
 <p>
 DDRules is a dairy farm manager component originally developed from a collection of rules and managment practices developed by Dawn Dally of DairyNZ. A number of 
 the orginal user input parameters are now being supplied by Apsim modules, most notably pasture mass and quality.
-of Dawn&apos;s original model have been
+</p>
+<h2>Original Documentation</h2>
+<ul>
+<li><a href="Dairy Grazing rules Sep 07.doc">Dairy Grazing rules Sep 07.doc</a></li>
+<li><a href="Additional information for Dairy Farmsim 2 Oct 07.doc">Additional information for Dairy Farmsim 2 Oct 07.doc</a></li>
+</ul>
 
 <h2>Module Inputs/Outputs</h2>
 <p>
@@ -21,62 +29,57 @@ Parameter and variable names may also be altered to better align with Apsim stan
 </p>
 <table border=1>
 <tr> <th>Name</th><th>Description</th><th>Read</th><th>Write</th><th>Kind</th><th>Array</th><th>Units</th></tr>
-    <tr> <td>EnableFarmSim</td><td>Run with FarmSim default values</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
-    <tr> <td>BaseStockingRate</td><td>Stocking rate a peak of lactation</td><td>True</td><td>True</td><td>double</td><td>False</td><td>cows/ha</td></tr>
-    <tr> <td>InitialStockingRate</td><td>Dawns pasture ME / month table. Will be replace with calls to ApSim</td><td>True</td><td>True</td><td>single</td><td>False</td><td>cows/ha</td></tr>
-    <tr> <td>sr</td><td>Current stocking rate on farm</td><td>True</td><td>True</td><td>single</td><td>False</td><td></td></tr>
-    <tr> <td>localTFD</td><td>Total feed demand</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>localFPA</td><td>Farm Pasture area</td><td>True</td><td>True</td><td>double</td><td>False</td><td>ha</td></tr>
-    <tr> <td>localGR</td><td>Grazing residual</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>kgDM</td></tr>
-    <tr> <td>localMG</td><td>Minimum grazing interval</td><td>True</td><td>True</td><td>double</td><td>False</td><td>days</td></tr>
-    <tr> <td>localMA</td><td>Maximum area available</td><td>True</td><td>True</td><td>double</td><td>False</td><td>ha</td></tr>
-    <tr> <td>localPME</td><td>Pasture ME content</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>PastureHarvested</td><td>Pasture harvested</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM</td></tr>
     <tr> <td>RemainingFeedDemand</td><td>ME still required to meet animal requirements</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>TotalCows</td><td>Total animal requirements [MJME] (for the full herd)</td><td>True</td><td>False</td><td>double</td><td>False</td><td>Cows</td></tr>
     <tr> <td>TotalFeedDemand</td><td>Total animal requirements [MJME] (for the full herd)</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
     <tr> <td>StockingRate</td><td>Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off</td><td>True</td><td>True</td><td>single</td><td>False</td><td>cows/ha</td></tr>
+    <tr> <td>PeakStockingRate</td><td>Stocking rate a peak of lactation</td><td>True</td><td>True</td><td>single</td><td>False</td><td>cows/ha</td></tr>
+    <tr> <td>FarmArea</td><td></td><td>True</td><td>True</td><td>double</td><td>False</td><td>cows/ha</td></tr>
     <tr> <td>WinterOffDryStock</td><td>Take dry stock off farm</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
-    <tr> <td>ME_Demand_Maintance</td><td>Total energy maintainance demand on farm</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Lactation</td><td>Total lactaction energy demand on farm</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Pregnancy</td><td>Total pregnancy energy demand on farm</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Walking</td><td>Total walking energy demand on farm</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_WeightChange</td><td>Total live weight change energy demand on farm</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Total</td><td>Total energy demand on farm</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Total_Cow</td><td>Energy demand per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Maintance_Cow</td><td>Energy demand for maintainance per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Lactation_Cow</td><td>Energy demand for lactation per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_WeightChange_Cow</td><td>Energy demand for live weight change per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Pregnancy_Cow</td><td>Energy demand for pregnancy per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>ME_Demand_Walking_Cow</td><td>Energy demand for walking per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>ME_Demand_Total</td><td>Total Metabolisable energy required by herd [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>ME_Demand_Maintance</td><td>Metabolisable energy required by herd for maintance [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>ME_Demand_Lactation</td><td>Metabolisable energy required by herd for lactation [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>ME_Demand_Pregnancy</td><td>Metabolisable energy required by herd for pregnancy [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>ME_Demand_Walking</td><td>Metabolisable energy required by herd for walking [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>ME_Demand_WeightChange</td><td>Metabolisable energy required by herd for live weight change [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>ME_Demand_Total_Cow</td><td>Total Metabolisable energy required [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
+    <tr> <td>ME_Demand_Maintance_Cow</td><td>Metabolisable energy required for maintainence [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
+    <tr> <td>ME_Demand_Lactation_Cow</td><td>Metabolisable energy required for lactation [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
+    <tr> <td>ME_Demand_WeightChange_Cow</td><td>Metabolisable energy required for live weight change [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
+    <tr> <td>ME_Demand_Pregnancy_Cow</td><td>Metabolisable energy required for pregnancy [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
+    <tr> <td>ME_Demand_Walking_Cow</td><td>Metabolisable energy required for walking [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
     <tr> <td>MilkProduction</td><td>Milk solids production - total</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS</td></tr>
-    <tr> <td>MLact</td><td>Month of lactation</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS</td></tr>
-    <tr> <td>MPreg</td><td>Month of pregnancy</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS</td></tr>
+    <tr> <td>MLact</td><td>Month of lactation</td><td>True</td><td>False</td><td>double</td><td>False</td><td></td></tr>
+    <tr> <td>MPreg</td><td>Month of pregnancy</td><td>True</td><td>False</td><td>double</td><td>False</td><td></td></tr>
     <tr> <td>Cow_LWt</td><td>Average cow live weight</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt</td></tr>
     <tr> <td>Cow_dLWt</td><td>Average cows change in live weight</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt</td></tr>
-    <tr> <td>Cow_BC</td><td>Change in average condidtion score</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt</td></tr>
-    <tr> <td>Cow_MilkSolids</td><td>Milk solids production per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt</td></tr>
+    <tr> <td>Cow_BC</td><td>Averge body condition score</td><td>True</td><td>False</td><td>double</td><td>False</td><td></td></tr>
+    <tr> <td>Cow_MilkSolids</td><td>Milk solids production per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS/cow</td></tr>
     <tr> <td>Cow_IsDry</td><td>Is herd currently dried off</td><td>True</td><td>False</td><td>string</td><td>False</td><td></td></tr>
     <tr> <td>GrazingInterval</td><td>Current grazing interval / return period</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>Days</td></tr>
     <tr> <td>GrazingResidual</td><td>Current cow grazing residual</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>SilageCut</td><td>Quantity of silage cut on farm today</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM</td></tr>
     <tr> <td>SilageCut_kgha</td><td>Quantity of silage cut on farm today</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
-    <tr> <td>SupplementME</td><td>Energy content of purchased supplement</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>SupplementN</td><td>Nitrogen content of purchased supplement</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME</td></tr>
+    <tr> <td>SupplementME</td><td>Energy content of purchased supplement</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME/kgDM</td></tr>
+    <tr> <td>SupplementN</td><td>Nitrogen content of purchased supplement</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgN/kgDM</td></tr>
+    <tr> <td>SupplementDigestability</td><td>Supplment digestability</td><td>True</td><td>True</td><td>double</td><td>False</td><td>0-1</td></tr>
     <tr> <td>SupplementWastage</td><td>Supplment loss at feeding out</td><td>True</td><td>True</td><td>double</td><td>False</td><td>%</td></tr>
+    <tr> <td>SilageDigestability</td><td>Silage digestability (could this be made read only once the store has been refactored)</td><td>True</td><td>True</td><td>double</td><td>False</td><td>0-1</td></tr>
+    <tr> <td>SilageCutWastage</td><td>Supplment/silage loss during cutting</td><td>True</td><td>True</td><td>double</td><td>False</td><td>%</td></tr>
     <tr> <td>CDM</td><td>Conservation trigger pasture mass (Dawn default = 3500)</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>CR</td><td>Conservation cutting residual pasture mass (Dawn default = 1600)</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>kgDM/ha</td></tr>
-    <tr> <td>FCD</td><td>First Conservation Date - uing a month for the time being</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>LCD</td><td>Last Conservation Date - uing a month for the time being</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>SilageME</td><td>Energy content of silage produced on farm</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>SilageN</td><td>Nitrogen content of silage produced on farm</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>SilageWastage</td><td>Silage lost during feeding out</td><td>True</td><td>True</td><td>double</td><td>False</td><td>%</td></tr>
+    <tr> <td>FCD</td><td>First Conservation Date - uing a month for the time being</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
+    <tr> <td>LCD</td><td>Last Conservation Date - uing a month for the time being</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
+    <tr> <td>SilageME</td><td>Energy content of silage produced on farm</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME/kgDM</td></tr>
+    <tr> <td>SilageN</td><td>Nitrogen content of silage produced on farm</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgN/kgDM</td></tr>
+    <tr> <td>SilageWastage</td><td>Proportion of silage lost during feeding out</td><td>True</td><td>True</td><td>double</td><td>False</td><td>0-1</td></tr>
     <tr> <td>ConservationStart</td><td>First Conservation Date</td><td>True</td><td>True</td><td>string</td><td>False</td><td></td></tr>
     <tr> <td>ConservationFinish</td><td>Last Conservation Date</td><td>True</td><td>True</td><td>string</td><td>False</td><td></td></tr>
     <tr> <td>SilageStoreEnable</td><td>Storage of cut silage on farm (for later use)</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
-    <tr> <td>SilageStore</td><td>Amount of silage avalible for feeding out</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
-    <tr> <td>ConservationTrigger</td><td>Conservation trigger mass</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
+    <tr> <td>SilageStore</td><td>Amount of silage avalible for feeding out [kgDM]</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM</td></tr>
+    <tr> <td>SilageStore_kgha</td><td>Amount of silage avalible for feeding out [kgDM]</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
+    <tr> <td>ConservationTrigger</td><td>Conservation trigger mass (close paddocks above this residual)</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>ConservationResidual</td><td>Conservation cutting residual</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
-    <tr> <td>Total_Cows</td><td>Number of cows on farm</td><td>True</td><td>False</td><td>single</td><td>False</td><td></td></tr>
     <tr> <td>N_Balance</td><td>Total nitrogen balance of herd</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
     <tr> <td>N_Out</td><td>Nitrogen output of herd</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
     <tr> <td>ME_Demand</td><td>Energy demand</td><td>True</td><td>True</td><td>single</td><td>False</td><td>MJME/ha</td></tr>
@@ -93,12 +96,13 @@ Parameter and variable names may also be altered to better align with Apsim stan
     <tr> <td>N_to_BC</td><td>Nitrogen partitioned to body condition</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
     <tr> <td>N_to_feaces</td><td>Nitrogen partitioned to dung</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
     <tr> <td>N_to_urine</td><td>Nitrogen partitioned to urine</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
-    <tr> <td>DM_to_feaces</td><td>Drymatter partitioned to dung</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
-    <tr> <td>PaddockStatus</td><td>Current status of paddocks</td><td>True</td><td>False</td><td>string</td><td>True</td><td>MJME/ha</td></tr>
+    <tr> <td>DM_to_feaces</td><td>Drymatter partitioned to dung</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgDM/ha</td></tr>
+    <tr> <td>PaddockStatus</td><td>Current status of paddocks</td><td>True</td><td>False</td><td>string</td><td>True</td><td></td></tr>
     <tr> <td>ME_Eaten_Pasture_Pdks</td><td>Energy consumed as pasture per paddock</td><td>True</td><td>False</td><td>single</td><td>True</td><td>MJME/ha</td></tr>
     <tr> <td>ME_Eaten_Supplement_Pdks</td><td>Energy consumed as Supplements per paddock</td><td>True</td><td>True</td><td>single</td><td>True</td><td>MJME/ha</td></tr>
     <tr> <td>ME_Eaten_Pdks</td><td>Energy consumed per paddock</td><td>True</td><td>False</td><td>single</td><td>True</td><td>MJME/ha</td></tr>
-    <tr> <td>DM_Eaten_Pdks</td><td>Dry matter consumed per paddock</td><td>True</td><td>False</td><td>single</td><td>True</td><td>MJME/ha</td></tr>
+    <tr> <td>DM_Eaten_Pdks</td><td>Total Dry matter consumed per paddock [kgDM/day]</td><td>True</td><td>False</td><td>single</td><td>True</td><td>kgDM</td></tr>
+    <tr> <td>DM_Eaten_Pdks_ha</td><td>Dry matter consumed per paddock [kgDM/ha/day]</td><td>True</td><td>False</td><td>single</td><td>True</td><td>kgDM/ha</td></tr>
     <tr> <td>DM_Eaten_Pasture_Pdks</td><td>Dry matter consumed as pasture per paddock</td><td>True</td><td>True</td><td>single</td><td>True</td><td>kgDM/ha</td></tr>
     <tr> <td>DM_Eaten_Supplement_Pdks</td><td>Dry matter consumed as supplement per paddock</td><td>True</td><td>True</td><td>single</td><td>True</td><td>kgDM/ha</td></tr>
     <tr> <td>N_Eaten_Pdks</td><td>Nitrogen consumed per paddock</td><td>True</td><td>False</td><td>single</td><td>True</td><td>kgN/ha</td></tr>
@@ -122,10 +126,12 @@ Parameter and variable names may also be altered to better align with Apsim stan
     <tr> <td>N_to_BC_Cow</td><td>Nitrogen partitioned to body condition per cow</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/cow</td></tr>
     <tr> <td>N_to_feaces_Cow</td><td>Nitrogen partitioned to dung per cow</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/cow</td></tr>
     <tr> <td>N_to_urine_Cow</td><td>Nitrogen partitioned to urine per cow</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/cow</td></tr>
-    <tr> <td>LWt_Change_Cow</td><td>Daily per cow live weight change</td><td>True</td><td>False</td><td>single</td><td>False</td><td>kgN/cow</td></tr>
-    <tr> <td>PWO</td><td>Percentage wintered off</td><td>True</td><td>False</td><td>double</td><td>False</td><td>%</td></tr>
+    <tr> <td>LWt_Change_Cow</td><td>Daily per cow live weight change</td><td>True</td><td>False</td><td>single</td><td>False</td><td>kgLWt/cow</td></tr>
+    <tr> <td>PWO</td><td>Proportion (PWO) of herd wintered off-farm (range 0-1.0)</td><td>True</td><td>True</td><td>single</td><td>False</td><td>0-1</td></tr>
+    <tr> <td>DCWO</td><td>Date commence winter off</td><td>True</td><td>True</td><td>string</td><td>False</td><td></td></tr>
+    <tr> <td>DSWO</td><td>Date to stop winter off</td><td>True</td><td>True</td><td>string</td><td>False</td><td></td></tr>
+    <tr> <td>PercentageWinteredOff</td><td>Percentage wintered off</td><td>True</td><td>False</td><td>double</td><td>False</td><td>%</td></tr>
   </table>
-
 </p>
 <h1>Dawn Dally&apos;s Orginal Documentation</h1>
 <h1>GRAZING RULES – DAILY TIME STEP</h1>
