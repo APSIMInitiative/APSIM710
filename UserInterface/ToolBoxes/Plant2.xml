@@ -1,8 +1,6 @@
 <folder version="24" name="Plant2">
   <Construct />
-  <Memo>
-    <Memo />
-  </Memo>
+  <Memo />
   <MetaData />
   <Model />
   <Cultivar>
@@ -327,21 +325,52 @@
     <Constant>
       <Value type="text" description="Value">401</Value>
     </Constant>
-    <MultiplyFunction />
-    <DivideFunction />
-    <AddFunction />
-    <SubtractFunction />
+    <MultiplyFunction>
+      <Memo>Multiplies the values of the children of this node</Memo>
+    </MultiplyFunction>
+    <DivideFunction>
+      <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
+    </DivideFunction>
+    <AddFunction>
+      <Memo>Sum the values of the children of this node</Memo>
+    </AddFunction>
+    <SubtractFunction>
+      <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+    </SubtractFunction>
     <ExpressionFunction>
       <ExpressionProperty type="text" description="Math Expression">1.0*Leaf.LAI</ExpressionProperty>
+      <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
+Obs: Expression can contain variable names from Plant2
+</Memo>
     </ExpressionFunction>
     <Variable>
       <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+      <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
     </Variable>
     <PowerFunction>
       <Exponent type="text" description="Exponent">1.0</Exponent>
+      <Memo>Raises the value of the child to the power of the especified exponent parameter</Memo>
     </PowerFunction>
     <SoilTemperatureFunction>
       <Depth type="text" description="Soil depth(mm)">10</Depth>
+      <Memo>Return soil temperature (oC) from a specified soil profile layer.</Memo>
     </SoilTemperatureFunction>
+    <ExternalVariable>
+      <VariableName type="text" description="Variable Name">lucerne2.LeafLAI</VariableName>
+      <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+    </ExternalVariable>
   </folder>
 </folder>

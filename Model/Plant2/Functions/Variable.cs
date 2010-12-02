@@ -4,7 +4,9 @@ using System.Text;
 using System.Reflection;
 using CSGeneral;
 
-
+/// <summary>
+/// Returns the value of a nominated internal Plant2 numerical variable
+/// </summary>
 
 public class Variable : Function
 {
