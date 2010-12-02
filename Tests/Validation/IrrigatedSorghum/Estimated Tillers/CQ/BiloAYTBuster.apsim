@@ -1,0 +1,455 @@
+<folder version="23" name="Biloela2008">
+  <simulation name="Biloela_AYT_2008">
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/2009</start_date>
+      <end_date type="date" description="Select the end date of the simulation">30/06/2009</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Sorghum_Biloela_AYT_2008_Buster.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">Biloela AYT 2008.met</filename>
+    </metfile>
+    <area name="paddock">
+      <folder name="Manager folder">
+        <manager name="Sow SkipRow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (d/m/yyyy) : ">30/01/2009</date>
+            <category description="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">6.9</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
+            <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
+            <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
+            <ftn type="text" description="Enter Fertile Tiller No. : " />
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+
+if (paddock_is_fallow() = 1 and today = date('[date]')) then
+    if (day > 152) then
+        season  = year
+    else
+        season  = year -1
+    endif
+
+    SowDay = day
+    SowYear = year
+
+
+   [crop] sow plants = [density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] 
+endif
+if (paddock_is_fallow() = 0) then
+       outputfile do_output
+endif
+          
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sorghum</crop>
+          </ui>
+          <script name="end_of_day">
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+ 
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <soil name="M1">
+        <Country />
+        <Site>Biloela</Site>
+        <Region>Central Queensland</Region>
+        <LocalName>Biloela</LocalName>
+        <SoilType description="Classification">Biloela</SoilType>
+        <NearestTown description="Nearest town">Unknown</NearestTown>
+        <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <BD units="g/cc">1.27</BD>
+            <AirDry units="mm/mm">0.05</AirDry>
+            <LL15 units="mm/mm">0.14</LL15>
+            <DUL units="mm/mm">0.39</DUL>
+            <SAT units="mm/mm">0.44</SAT>
+          </Layer>
+          <SoilCrop name="Sorghum">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.14</LL>
+              <KL units="/day">0.08</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.21</LL>
+              <KL>0.08</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.21</LL>
+              <KL>0.08</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.2</LL>
+              <KL>0.08</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.19</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.21</LL>
+              <KL>0.04</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.16</LL>
+              <KL>0.02</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <Layer>
+            <Thickness>150</Thickness>
+            <BD>1.35</BD>
+            <AirDry>0.18</AirDry>
+            <LL15>0.21</LL15>
+            <DUL>0.41</DUL>
+            <SAT>0.46</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.39</BD>
+            <AirDry>0.19</AirDry>
+            <LL15>0.21</LL15>
+            <DUL>0.4</DUL>
+            <SAT>0.45</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.47</BD>
+            <AirDry>0.19</AirDry>
+            <LL15>0.2</LL15>
+            <DUL>0.37</DUL>
+            <SAT>0.42</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.49</BD>
+            <AirDry>0.18</AirDry>
+            <LL15>0.19</LL15>
+            <DUL>0.36</DUL>
+            <SAT>0.41</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.49</BD>
+            <AirDry>0.2</AirDry>
+            <LL15>0.21</LL15>
+            <DUL>0.36</DUL>
+            <SAT>0.41</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.48</BD>
+            <AirDry>0.15</AirDry>
+            <LL15>0.16</LL15>
+            <DUL>0.36</DUL>
+            <SAT>0.41</SAT>
+          </Layer>
+        </Water>
+        <SoilWat>
+          <SummerCona>3.5</SummerCona>
+          <WinterCona>3.5</WinterCona>
+          <SummerU>6</SummerU>
+          <WinterU>6</WinterU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35.4</DiffusSlope>
+          <Salb>0.13</Salb>
+          <Cn2Bare>91</Cn2Bare>
+          <CnRed>20</CnRed>
+          <CnCov>0.8</CnCov>
+          <CnCanopyFact>0.8</CnCanopyFact>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0.5</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.5</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.5</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.5</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.5</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.5</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.5</SWCON>
+          </Layer>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">2.57</OC>
+            <FBiom units="0-1">0.04</FBiom>
+            <FInert units="0-1">0.4</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>1.2</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>0.5</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.6</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>0.5</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.3</OC>
+            <FBiom>0.02</FBiom>
+            <FInert>0.6</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.2</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>0.6</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.2</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>0.7</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.2</OC>
+            <FBiom>0.01</FBiom>
+            <FInert>0.8</FInert>
+          </Layer>
+          <RootCn>30</RootCn>
+          <RootWt>1500</RootWt>
+          <SoilCn>12.5</SoilCn>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+        </SoilOrganicMatter>
+        <Lab>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <PH units="1:5 water">6.87</PH>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <PH>7.45</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>7.81</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.31</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.47</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.37</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.12</PH>
+          </Layer>
+        </Lab>
+        <State />
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Langitude description="Longitude (WGS84)" />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source" />
+        <Comment type="multiedit" description="Comments" />
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm">16.5</NO3>
+            <NH4 units="ppm">0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3>9.5</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>10.3</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>6.2</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>6.5</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>8.5</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>10</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+        </Sample>
+        <Sample name="Initial water">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SW units="mm/mm">0.26</SW>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SW>0.32</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SW>0.36</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SW>0.33</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SW>0.25</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SW>0.25</SW>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SW>0.27</SW>
+          </Layer>
+        </Sample>
+      </soil>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="text" description="switch">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1800</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">1</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <operations />
+      <manager name="Calc">
+        <script name="init">
+          <text>
+          </text>
+          <event>init</event>
+        </script>
+        <script name="start_of_day">
+          <text>
+          </text>
+          <event>start_of_day</event>
+        </script>
+        <script name="end_of_day">
+          <text><![CDATA[
+   if (transp_eff > 1000) then
+      te = 0
+   else
+      te = Transp_eff
+   endif
+
+
+   if (vpd > 1000) then
+      vpDef = 0
+   else
+      vpDef = vpd
+   endif
+
+]]></text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+      <outputfile>
+        <events name="My Variables Events" />
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="DaysAfterSowing" array="No" description="Days after sowing" />
+          <variable name="sw_dep()" />
+          <variable name="ll15_dep()" />
+          <variable name="dul_dep()" />
+          <variable name="WaterSD" />
+          <variable name="Biomass" array="No" description="Total above-ground biomass" />
+          <variable name="yield" />
+          <variable name="lai" />
+          <variable name="GrainNo" />
+          <variable name="stage" />
+          <variable name="biomass_wt" array="No" description="Total above-ground biomass" />
+          <variable name="GrainGreenWt" array="No" description="Live grain dry weight" />
+          <variable name="RachisGreenWt" array="No" description="Live rachis dry weight" />
+          <variable name="StemGreenWt" array="No" description="Stem dry weight" />
+          <variable name="GrainSize" array="No" description="1000 grain weight" />
+          <variable name="LeafSenescedWt" array="No" description="Senesced leaf dry weight" />
+          <variable name="LeafGreenWt" array="No" description="Live leaf dry weight" />
+          <variable name="TillerNoFertile" />
+        </variables>
+      </outputfile>
+      <sorghum name="Sorghum" />
+    </area>
+  </simulation>
+</folder>

@@ -1,0 +1,403 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Jimbour04
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component  "Sow SkipRow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                        "Logic" = %apsim%\Model\Manager.dll
+   Component            "Jimbour2004 Water" = %apsim%\Model\SoilWat.dll
+   Component         "Jimbour2004 Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "sorghum" = %apsim%\Model\Sorghum.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 15/11/2004
+     Simulation end date   = 31/03/2005
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Jimbour Breeders.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as date
+        DaysAfterSowing
+        sw_dep()
+        ll15_dep()
+        dul_dep()
+        WaterSD
+        Biomass
+        yield
+        lai
+        GrainNo
+        stage
+        biomass_wt
+        GrainGreenWt
+        RachisGreenWt
+        StemGreenWt
+        GrainSize
+        LeafSenescedWt
+        TillerNoFertile
+
+     Output file = Jimbour04.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     15/11/2004  Prepare      fertiliser apply amount = 4 (kg/ha), depth = 50 (mm), type = NO3_N ()
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow SkipRow on a fixed date Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+          if (biomass > 0) then
+              harvindx = yield / biomass
+           else
+              harvindx = 0
+           endif
+           if (day > 152) then
+             current_season = year
+           else
+             current_season = year -1
+           endif
+     if (paddock_is_fallow() = 1 and today = date('15/11/2004')) then
+       season = current_season
+       sowday = day
+        sowyear = year
+     ftn = 0
+       sorghum sow plants =10, sowing_depth = 30, cultivar = buster, row_spacing = 0.75, skip = solid, tiller_no_fertile =
+                ()
+     endif
+     if (paddock_is_fallow() = 0) then
+        outputfile do_output
+     endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+       sorghum  harvest
+       sorghum  end_crop
+                endif
+     END of rules
+     
+
+------- Logic Initialisation --------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+      sdr = 1
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+       if (sw_demand > 0) then
+          sdr = sw_supply / sw_demand
+          if (sdr > 1) then
+             sdr = 1
+          endif
+       else
+          sdr = 1
+       endif
+     END of rules
+     
+     Manager creating a new local real variable : sdr = 1.00000
+
+------- Jimbour2004 Water Initialisation --------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.220  0.320  0.520  0.570  0.520  1.070  0.762  0.000
+          150.-  300.  0.220  0.320  0.510  0.560  0.510  1.080  0.190  0.000
+          300.-  600.  0.230  0.330  0.510  0.560  0.510  1.080  0.048  0.000
+          600.-  900.  0.230  0.330  0.510  0.560  0.510  1.070  0.000  0.000
+          900.- 1200.  0.230  0.330  0.510  0.560  0.510  1.080  0.000  0.000
+         1200.- 1500.  0.260  0.370  0.500  0.550  0.500  1.130  0.000  0.000
+         1500.- 1800.  0.270  0.380  0.480  0.530  0.480  1.170  0.000  0.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      48.00      30.00      30.00       7.50
+          150.-  300.      48.00      28.50      28.50       7.50
+          300.-  600.      99.00      54.00      54.00      15.00
+          600.-  900.      99.00      54.00      54.00      15.00
+          900.- 1200.      99.00      54.00      54.00      15.00
+         1200.- 1500.     111.00      39.00      39.00      15.00
+         1500.- 1800.     114.00      30.00      30.00      15.00
+          ---------------------------------------------------------
+               Totals     618.00     289.50     289.50      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.11       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              85.00    0.80    0.20  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- Jimbour2004 Nitrogen Initialisation -----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type JimbourBlack
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.60  1.57   33.57    0.16    0.00
+             2     8.00  0.45   55.32    0.16    0.00
+             3     8.20  0.32   44.32    0.32    0.00
+             4     8.40  0.29   26.95    0.32    0.00
+             5     8.40  0.23   17.12    0.32    0.00
+             6     8.30  0.27    6.72    0.34    0.00
+             7     8.30  0.30   25.83    0.35    0.00
+          ------------------------------------------------
+           Totals              209.82    1.98    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24466.5  1687.3   732.0    91.5   138.9     3.1
+             2       7214.2   497.5    75.8     9.5   108.1     2.4
+             3      10318.7   711.6    49.3     6.2    65.6     1.5
+             4       9274.0   639.6    35.0     4.4    39.8     0.9
+             5       7432.8   512.6    19.2     2.4    24.1     0.5
+             6       9137.6   630.2    15.4     1.9    14.6     0.3
+             7      10522.7   725.7     7.3     0.9     8.9     0.2
+          ---------------------------------------------------------
+           Totals   78366.6  5404.6   933.9   116.7   400.0     8.9
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+      Sending apply message to fertiliser
+fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+     Manager creating a new local real variable : harvindx = 0.00000
+     Manager creating a new local real variable : current_season = 2004.00000
+     Manager creating a new local real variable : season = 2004.00000
+     Manager creating a new local real variable : sowday = 320.00000
+     Manager creating a new local real variable : sowyear = 2004.00000
+     Manager creating a new local real variable : ftn = 0.00000
+     Manager sending message :- sorghum sow  plants = 10, sowing_depth = 30, cultivar = buster, row_spacing = 0.75, skip = solid, tiller_no_fertile =
+sorghum: 
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            320    30.0    10.0   750    1.0     buster    0.36
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - buster
+         -------------------------------------------------------
+         tpla_prod_coef           =    0.02
+         tpla_inflection_ratio    =    0.66
+         tt_emerg_to_endjuv       =  160.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.070          0.320       1.000
+             150.0     0.070          0.320       1.000
+             300.0     0.070          0.330       1.000
+             300.0     0.050          0.330       1.000
+             300.0     0.050          0.330       1.000
+             300.0     0.040          0.370       1.000
+             300.0     0.040          0.380       1.000
+         ---------------------------------------------------
+     
+16 November 2004(Day of year=321), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+19 November 2004(Day of year=324), sorghum: 
+     Stage 3 Emergence  DAS = 4
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   9.63
+29 November 2004(Day of year=334), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 14
+     		Biomass       =   3.29 		 LAI            =   0.02
+     		Stover N Conc =   0.08 		 Extractable SW =  65.14
+14 December 2004(Day of year=349), sorghum: 
+     Stage 5 FloralInitiation  DAS = 29
+     		Biomass       =  27.72 		 LAI            =   0.55
+     		Stover N Conc =   0.84 		 Extractable SW = 137.42
+7 January 2005(Day of year=7), sorghum: 
+     Stage 6 FlagLeaf  DAS = 53
+     		Biomass       = 467.72 		 LAI            =   4.41
+     		Stover N Conc =   8.70 		 Extractable SW = 147.42
+22 January 2005(Day of year=22), sorghum: 
+     Stage 7 Flowering  DAS = 68
+     		Biomass       = 802.88 		 LAI            =   4.44
+     		Stover N Conc =  12.11 		 Extractable SW = 120.56
+27 January 2005(Day of year=27), sorghum: 
+     Stage 8 StartGrainFill  DAS = 73
+     		Biomass       = 891.79 		 LAI            =   4.44
+     		Stover N Conc =  12.49 		 Extractable SW = 100.04
+4 March 2005(Day of year=63), sorghum: 
+     Stage 9 EndGrainFill  DAS = 109
+     		Biomass       = 1122.17 		 LAI            =   1.51
+     		Stover N Conc =   4.87 		 Extractable SW =  16.08
+6 March 2005(Day of year=65), sorghum: 
+     Stage 10 Maturity  DAS = 111
+     		Biomass       = 1126.06 		 LAI            =   1.48
+     		Stover N Conc =   4.80 		 Extractable SW =  14.65
+7 March 2005(Day of year=66), sorghum: 
+     Stage 11 HarvestRipe  DAS = 112
+     		Biomass       = 1128.14 		 LAI            =   1.46
+     		Stover N Conc =   4.76 		 Extractable SW =  13.98
+7 March 2005(Day of year=66), Harvesting rule: 
+     Manager sending message :- sorghum harvest
+     
+     Harvest
+     Flowering (DAS)       = 68 		 Maturity (DAS)          = 111
+     Flowering day         = 22 		 Maturity day            = 65
+     Maximum LAI           = 4.4 		 Number of leaves        = 17.1
+     Total above ground biomass    (kg/ha) = 11302.1
+     Green above ground biomass    (kg/ha) = 9647.4
+     Senesced above ground biomass (kg/ha) = 1654.7
+     Stover (kg/ha)        = 7336.4 	 Grain yield (kg/ha)     = 3965.7
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 4558.3
+     Weight 1000 grains(g) = 12.8 		 Grains/m^2              = 30965.8
+     Grains/head           = 3096.6
+     Grain N percent    (%)     =      2.45 	 Grain N            (kg/ha) =    97.27
+     Total N content    (kg/ha) =    144.91 	 Senesced N content (kg/ha) =    27.35
+     Green N content    (kg/ha) =     26.32
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 0.8          0.7        1.0
+        Flowering           to Start grain fill          1.0          0.9        1.0
+        Start grain fill    to End grain fill            0.4          0.3        0.8
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               3965.70		    0.00
+                         N  (kg/ha) =                 97.27		    0.00
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               7336.40		 3020.63
+                         N  (kg/ha) =                 47.64		    6.03
+                         P  (kg/ha) =                  0.00		    0.00
+31 March 2005(Day of year=90), clock: 
+     Simulation is terminating due to end criteria being met.

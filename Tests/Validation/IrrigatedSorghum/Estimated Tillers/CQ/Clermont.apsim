@@ -1,0 +1,257 @@
+<folder version="19" name="Clermont AYT 2008">
+  <simulation name="Clermont_AYT_2008">
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/1/2009</start_date>
+      <end_date type="date" description="Select the end date of the simulation">30/6/2009</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Sorghum_Clermont_AYT_2008_Buster.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">Clermont AYT 2008.met</filename>
+    </metfile>
+    <area name="paddock">
+      <folder name="Manager folder">
+        <manager name="Sow SkipRow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (d/m/yyyy) : ">26/01/2009</date>
+            <category description="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">6.5</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
+            <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
+            <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
+            <ftn type="text" description="Enter Fertile Tiller No. : "></ftn>
+          </ui>
+          <script name="start_of_day">
+            <text>
+            if (paddock_is_fallow() = 1 and today = date('[date]')) then
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
+            endif
+            if (paddock_is_fallow() = 0) then
+               outputfile do_output
+            endif
+          </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sorghum</crop>
+          </ui>
+          <script name="end_of_day">
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+ 
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise at sowing">
+          <ui>
+            <category description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">Sorghum</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script name="[modulename].[eventname]">
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+      </folder>
+      <soil name="Mifsud">
+        <Site>Clermont</Site>
+        <Region>Central Queensland</Region>
+        <LocalName>Clermont</LocalName>
+        <SoilType>Clermont</SoilType>
+        <NearestTown>Unknown</NearestTown>
+        <NaturalVegetation>Unknown</NaturalVegetation>
+        <profile>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.08</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.15</airdry>
+            <dul>0.45</dul>
+            <sat>0.5</sat>
+            <sw>0.45</sw>
+            <swcon>0.5</swcon>
+            <oc>1.87</oc>
+            <ph>7.79</ph>
+            <fbiom>0.04</fbiom>
+            <finert>0.4</finert>
+            <ll name="Sorghum">0.3</ll>
+            <kl name="Sorghum">0.08</kl>
+            <xf name="Sorghum">1</xf>
+          </layer>
+          <layer>
+            <thickness>150</thickness>
+            <bd>1.15</bd>
+            <ll15>0.3</ll15>
+            <airdry>0.2</airdry>
+            <dul>0.49</dul>
+            <sat>0.54</sat>
+            <sw>0.49</sw>
+            <swcon>0.5</swcon>
+            <oc>1.2</oc>
+            <ph>8.01</ph>
+            <fbiom>0.02</fbiom>
+            <finert>0.5</finert>
+            <ll name="Sorghum">0.3</ll>
+            <kl name="Sorghum">0.08</kl>
+            <xf name="Sorghum">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.18</bd>
+            <ll15>0.35</ll15>
+            <airdry>0.3</airdry>
+            <dul>0.47</dul>
+            <sat>0.52</sat>
+            <sw>0.47</sw>
+            <swcon>0.5</swcon>
+            <oc>0.6</oc>
+            <ph>8.15</ph>
+            <fbiom>0.02</fbiom>
+            <finert>0.5</finert>
+            <ll name="Sorghum">0.35</ll>
+            <kl name="Sorghum">0.08</kl>
+            <xf name="Sorghum">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.34</bd>
+            <ll15>0.35</ll15>
+            <airdry>0.34</airdry>
+            <dul>0.46</dul>
+            <sat>0.47</sat>
+            <sw>0.4</sw>
+            <swcon>0.5</swcon>
+            <oc>0.3</oc>
+            <ph>8.28</ph>
+            <fbiom>0.02</fbiom>
+            <finert>0.6</finert>
+            <ll name="Sorghum">0.35</ll>
+            <kl name="Sorghum">0.08</kl>
+            <xf name="Sorghum">1</xf>
+          </layer>
+          <layer>
+            <thickness>300</thickness>
+            <bd>1.48</bd>
+            <ll15>0.32</ll15>
+            <airdry>0.32</airdry>
+            <dul>0.4</dul>
+            <sat>0.4</sat>
+            <sw>0.32</sw>
+            <swcon>0.5</swcon>
+            <oc>0.2</oc>
+            <ph>8.31</ph>
+            <fbiom>0.01</fbiom>
+            <finert>0.6</finert>
+            <ll name="Sorghum">0.32</ll>
+            <kl name="Sorghum">0.06</kl>
+            <xf name="Sorghum">1</xf>
+          </layer>
+        </profile>
+        <Cona>3.5</Cona>
+        <DiffusConst>88</DiffusConst>
+        <DiffusSlope>35.4</DiffusSlope>
+        <U>6</U>
+        <Salb>0.13</Salb>
+        <Cn2Bare>91</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <CnCanopyFact>0.8</CnCanopyFact>
+        <RootCn>30</RootCn>
+        <RootWt>1500</RootWt>
+        <SoilCn>12.5</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <InitWater>
+          <PercentMethod>
+            <Percent>1.00</Percent>
+            <Distributed>Filled from top</Distributed>
+          </PercentMethod>
+        </InitWater>
+        <InitNitrogen>
+          <profile>
+            <layer>
+              <thickness>150</thickness>
+              <no3>22.8087324861518</no3>
+              <nh4>0.100032583903552</nh4>
+            </layer>
+            <layer>
+              <thickness>150</thickness>
+              <no3>22.8087324861518</no3>
+              <nh4>0.100032583903552</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>22.8087324861518</no3>
+              <nh4>0.100032583903552</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>22.8087324861518</no3>
+              <nh4>0.100032583903552</nh4>
+            </layer>
+            <layer>
+              <thickness>300</thickness>
+              <no3>22.8087324861518</no3>
+              <nh4>0.100032583903552</nh4>
+            </layer>
+          </profile>
+        </InitNitrogen>
+      </soil>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="text" description="switch">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">800</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.8</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <operations />
+      <sorghum name="Sorghum" />
+      <outputfile>
+        <events name="My Variables Events" />
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="DaysAfterSowing" array="No" description="Days after sowing" />
+          <variable name="sw_dep()" />
+          <variable name="ll15_dep()" />
+          <variable name="dul_dep()" />
+          <variable name="WaterSD" />
+          <variable name="Biomass" array="No" description="Total above-ground biomass" />
+          <variable name="yield" />
+          <variable name="lai" />
+          <variable name="GrainNo" />
+          <variable name="stage" />
+          <variable name="biomass_wt" array="No" description="Total above-ground biomass" />
+          <variable name="GrainGreenWt" array="No" description="Live grain dry weight" />
+          <variable name="RachisGreenWt" array="No" description="Live rachis dry weight" />
+          <variable name="StemGreenWt" array="No" description="Stem dry weight" />
+          <variable name="GrainSize" array="No" description="1000 grain weight" />
+          <variable name="LeafSenescedWt" array="No" description="Senesced leaf dry weight" />
+          <variable name="LeafGreenWt" array="No" description="Live leaf dry weight" />
+          <variable name="TillerNoFertile" array="No" description="No of tillers that produce a head" />
+        </variables>
+      </outputfile>
+    </area>
+  </simulation>
+</folder>

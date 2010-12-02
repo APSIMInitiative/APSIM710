@@ -1,0 +1,559 @@
+<folder version="23" name="Bilo Skip2">
+  <simulation name="Bilo05Skip2DSHD">
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/1/2006</start_date>
+      <end_date type="date" description="Select the end date of the simulation">23/5/2006</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Sorghum_Bilo Skip1_MR Buster_DS_HD.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">Bilo Skip2.met</filename>
+    </metfile>
+    <area name="paddock">
+      <folder name="Manager folder">
+        <manager name="Sow SkipRow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (d/m/yyyy) : ">27/01/2006</date>
+            <category description="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">5</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
+            <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
+            <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : "> double</RowConfiguration>
+            <ftn type="text" description="Enter Fertile Tiller No. : ">
+            </ftn>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[     if (biomass > 0) then
+         harvIndx = yield / biomass
+      else
+         harvIndx = 0
+      endif
+
+
+      if (day > 152) then
+        current_season = year
+      else
+        current_season = year -1
+      endif
+
+            if (paddock_is_fallow() = 1 and today = date('[date]')) then
+              season = current_season
+              SowDay = day
+               SowYear = year
+ftn = 0
+
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
+            endif
+            if (paddock_is_fallow() = 0) then
+               outputfile do_output
+            endif
+          
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+ 
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sorghum</crop>
+          </ui>
+        </manager>
+      </folder>
+      <soil name="Bilo Skip2 (avg)">
+        <Country />
+        <Site>Biloela</Site>
+        <Region>Central Queensland</Region>
+        <LocalName>Biloela</LocalName>
+        <SoilType description="Classification">BiloSkip1(avg)</SoilType>
+        <NearestTown description="Nearest town">Unknown</NearestTown>
+        <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <BD units="g/cc">1.230</BD>
+            <AirDry units="mm/mm">0.140</AirDry>
+            <LL15 units="mm/mm">0.240</LL15>
+            <DUL units="mm/mm">0.340</DUL>
+            <SAT units="mm/mm">0.360</SAT>
+          </Layer>
+          <SoilCrop name="Sorghum">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.240</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.240</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.270</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.270</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.220</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.210</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.210</LL>
+              <KL>0.020</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <Layer>
+            <Thickness>150</Thickness>
+            <BD>1.440</BD>
+            <AirDry>0.200</AirDry>
+            <LL15>0.240</LL15>
+            <DUL>0.350</DUL>
+            <SAT>0.370</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.430</BD>
+            <AirDry>0.250</AirDry>
+            <LL15>0.270</LL15>
+            <DUL>0.390</DUL>
+            <SAT>0.410</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.520</BD>
+            <AirDry>0.250</AirDry>
+            <LL15>0.270</LL15>
+            <DUL>0.370</DUL>
+            <SAT>0.390</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.670</BD>
+            <AirDry>0.200</AirDry>
+            <LL15>0.220</LL15>
+            <DUL>0.290</DUL>
+            <SAT>0.310</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.510</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.210</LL15>
+            <DUL>0.300</DUL>
+            <SAT>0.320</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.580</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.210</LL15>
+            <DUL>0.260</DUL>
+            <SAT>0.280</SAT>
+          </Layer>
+        </Water>
+        <SoilWat>
+          <SummerCona>3.5</SummerCona>
+          <WinterCona>3.5</WinterCona>
+          <SummerU>6</SummerU>
+          <WinterU>6</WinterU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35.4</DiffusSlope>
+          <Salb>0.13</Salb>
+          <Cn2Bare>91</Cn2Bare>
+          <CnRed>20</CnRed>
+          <CnCov>0.8</CnCov>
+          <CnCanopyFact>0.8</CnCanopyFact>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0.500</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.500</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.500</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.500</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.500</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.500</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.500</SWCON>
+          </Layer>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">1.630</OC>
+            <FBiom units="0-1">0.030</FBiom>
+            <FInert units="0-1">0.400</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>1.250</OC>
+            <FBiom>0.020</FBiom>
+            <FInert>0.600</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>1</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.800</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.700</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.900</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.700</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.300</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.300</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>1</FInert>
+          </Layer>
+          <RootCn>30</RootCn>
+          <RootWt>1500</RootWt>
+          <SoilCn>12.5</SoilCn>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+        </SoilOrganicMatter>
+        <Lab>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <PH units="1:5 water">6.750</PH>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <PH>6.900</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>7.050</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>7.500</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>7.900</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>7.800</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>7.750</PH>
+          </Layer>
+        </Lab>
+        <State />
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Langitude description="Longitude (WGS84)" />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source" />
+        <Comment type="multiedit" description="Comments" />
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm">13.5500428334085</NO3>
+            <NH4 units="ppm">0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3>14.815046832247</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>5.12801621031136</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>4.8250152524868</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>4.19201325148698</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>3.97401256235908</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>3.16501000499911</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+        </Sample>
+        <InitWater name="Initial water">
+          <PercentMethod>
+            <Percent>1.00</Percent>
+            <Distributed>Filled from top</Distributed>
+          </PercentMethod>
+        </InitWater>
+      </soil>
+      <manager name="Logic">
+        <script name="init">
+          <text>
+          </text>
+          <event>init</event>
+        </script>
+        <script name="start_of_day">
+          <text>
+          </text>
+          <event>start_of_day</event>
+        </script>
+        <script name="end_of_day">
+          <text><![CDATA[  if (sw_demand > 0) then
+     sdr = sw_supply / sw_demand
+     if (sdr > 1) then
+        sdr = 1
+     endif
+  else
+     sdr = 1
+  endif]]></text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+      <sorghum name="Sorghum" />
+      <outputfile name="Outputfile">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="DaysAfterSowing" array="No" description="Days after sowing" />
+          <variable name="sw_dep()" />
+          <variable name="ll15_dep()" />
+          <variable name="dul_dep()" />
+          <variable name="WaterSD" />
+          <variable name="Biomass" array="No" description="Total above-ground biomass" />
+          <variable name="yield" />
+          <variable name="lai" />
+          <variable name="GrainNo" />
+          <variable name="stage" />
+          <variable name="biomass_wt" array="No" description="Total above-ground biomass" />
+          <variable name="GrainGreenWt" array="No" description="Live grain dry weight" />
+          <variable name="RachisGreenWt" array="No" description="Live rachis dry weight" />
+          <variable name="StemGreenWt" array="No" description="Stem dry weight" />
+          <variable name="GrainSize" array="No" description="1000 grain weight" />
+          <variable name="LeafSenescedWt" array="No" description="Senesced leaf dry weight" />
+          <variable name="LeafGreenWt" array="No" description="Live leaf dry weight" />
+          <variable name="TillerNoFertile" array="No" description="No of tillers that produce a head" />
+        </variables>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Bilo05Skip2DSLD" shortcut="/Bilo Skip2/Bilo05Skip2DSHD">
+    <clock shortcut="/Bilo Skip2/Bilo05Skip2DSHD/clock" />
+    <summaryfile shortcut="/Bilo Skip2/Bilo05Skip2DSHD/summaryfile" />
+    <metfile name="met" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/met" />
+    <area name="paddock" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock">
+      <folder name="Manager folder" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Manager folder">
+        <manager name="Sow SkipRow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (d/m/yyyy) : ">27/01/2006</date>
+            <category description="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">2.5</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
+            <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
+            <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : "> double</RowConfiguration>
+            <ftn type="text" description="Enter Fertile Tiller No. : ">
+            </ftn>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[     if (biomass > 0) then
+         harvIndx = yield / biomass
+      else
+         harvIndx = 0
+      endif
+
+
+      if (day > 152) then
+        current_season = year
+      else
+        current_season = year -1
+      endif
+
+            if (paddock_is_fallow() = 1 and today = date('[date]')) then
+              season = current_season
+              SowDay = day
+               SowYear = year
+ftn = 0
+
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
+            endif
+            if (paddock_is_fallow() = 0) then
+               outputfile do_output
+            endif
+          
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Manager folder/Harvesting rule" />
+      </folder>
+      <soil name="Bilo Skip2 (avg)" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)">
+        <Water shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Water">
+          <SoilCrop name="Sorghum" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Water/Sorghum" />
+        </Water>
+        <SoilWat shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/SoilWat" />
+        <SoilOrganicMatter shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/SoilOrganicMatter" />
+        <Lab shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Lab" />
+        <Sample name="Initial Nitrogen" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Initial Nitrogen" />
+        <InitWater name="Initial Water" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Initial water" />
+      </soil>
+      <manager name="Logic" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Logic" />
+      <sorghum name="Sorghum" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Sorghum" />
+      <outputfile name="Outputfile" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Outputfile">
+        <variables name="Variables" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Outputfile/Variables" />
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Bilo05Skip2SHD" shortcut="/Bilo Skip2/Bilo05Skip2DSHD">
+    <clock shortcut="/Bilo Skip2/Bilo05Skip2DSHD/clock" />
+    <summaryfile shortcut="/Bilo Skip2/Bilo05Skip2DSHD/summaryfile" />
+    <metfile name="met" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/met" />
+    <area name="paddock" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock">
+      <folder name="Manager folder" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Manager folder">
+        <manager name="Sow SkipRow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (d/m/yyyy) : ">27/01/2006</date>
+            <category description="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">5</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
+            <row_spacing type="text" description="Enter row spacing (m) : ">1</row_spacing>
+            <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
+            <ftn type="text" description="Enter Fertile Tiller No. : ">
+            </ftn>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[     if (biomass > 0) then
+         harvIndx = yield / biomass
+      else
+         harvIndx = 0
+      endif
+
+
+      if (day > 152) then
+        current_season = year
+      else
+        current_season = year -1
+      endif
+
+            if (paddock_is_fallow() = 1 and today = date('[date]')) then
+              season = current_season
+              SowDay = day
+               SowYear = year
+ftn = 0
+
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
+            endif
+            if (paddock_is_fallow() = 0) then
+               outputfile do_output
+            endif
+          
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Manager folder/Harvesting rule" />
+      </folder>
+      <manager name="Logic" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Logic" />
+      <sorghum name="Sorghum" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Sorghum" />
+      <outputfile name="Outputfile" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Outputfile">
+        <variables name="Variables" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Outputfile/Variables" />
+      </outputfile>
+      <soil name="Bilo Skip2 (avg)" shortcut="/Bilo Skip2/Bilo05Skip2DSLD/paddock/Bilo Skip2 (avg)">
+        <Water shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Water">
+          <SoilCrop name="Sorghum" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Water/Sorghum" />
+        </Water>
+        <SoilWat shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/SoilWat" />
+        <SoilOrganicMatter shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/SoilOrganicMatter" />
+        <Lab shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Lab" />
+        <Sample name="Initial Nitrogen" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Initial Nitrogen" />
+        <InitWater name="Initial Water" shortcut="/Bilo Skip2/Bilo05Skip2DSHD/paddock/Bilo Skip2 (avg)/Initial water" />
+      </soil>
+    </area>
+  </simulation>
+</folder>

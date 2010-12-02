@@ -1,0 +1,843 @@
+<folder version="23" name="Breeders">
+  <simulation name="HermitageDGP04">
+    <clock>
+      <start_date name="start_date" description="Select the start date of the simulation" type="date" lbound="5/11/2004" ubound="30/04/2005">5/11/2004</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date" lbound="5/11/2004" ubound="30/04/2005">30/04/2005</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Buster.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">Hermitage DGP.met</filename>
+    </metfile>
+    <area name="paddock">
+      <folder name="Manager folder">
+        <manager name="Sow SkipRow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (d/m/yyyy) : ">5/11/2004</date>
+            <category description="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
+            <row_spacing type="text" description="Enter row spacing (m) : ">0.75</row_spacing>
+            <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
+            <ftn type="text" description="Enter Fertile Tiller No. : " />
+            <TillerFactor type="text" description="Enter Tiller Factor : ">1</TillerFactor>
+            <DensityFactor type="text" description="Enter Density Factor : ">1</DensityFactor>
+          </ui>
+          <script name="start_of_day">
+            <text>
+if (paddock_is_fallow() = 1 and today = date('[date]')) then
+     season = current_season
+     SowDay = day
+     SowYear = year
+
+
+     [crop] sow plants =[density] , sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn]  ()
+endif
+
+          </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sorghum</crop>
+          </ui>
+          <script name="end_of_day">
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+ 
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <manager name="Calculator">
+        <script name="init">
+          <text><![CDATA[ head_wt = 0
+root_n = 0
+head_n = 0
+leaf_n = 0
+sd = 0
+     if (day > 152) then
+        current_season = year
+      else
+        current_season = year -1
+      endif
+]]></text>
+          <event>init</event>
+        </script>
+        <script name="start_of_day">
+          <text><![CDATA[     if (day > 152) then
+        current_season = year
+      else
+        current_season = year -1
+      endif
+]]></text>
+          <event>start_of_day</event>
+        </script>
+        <script name="end_of_day">
+          <text><![CDATA[ 
+if (biomass > 0) then
+     harvIndx = yield / biomass
+else
+     harvIndx = 0
+endif
+
+
+if (sw_demand > 0) then
+   sdr = sw_supply / sw_demand
+   if (sdr > 1) then
+      sdr = 1
+   endif
+else
+   sdr = 1
+endif
+
+
+if (paddock_is_fallow() = 0) then
+    outputfile do_output
+
+endif
+]]></text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+      <soil name="HRS2004">
+        <Country />
+        <Site>Hermitage</Site>
+        <Region>Darling Downs</Region>
+        <LocalName>Hermitage</LocalName>
+        <SoilType description="Classification">Hermitage</SoilType>
+        <NearestTown description="Nearest town">Unknown</NearestTown>
+        <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <BD units="g/cc">1.030</BD>
+            <AirDry units="mm/mm">0.150</AirDry>
+            <LL15 units="mm/mm">0.210</LL15>
+            <DUL units="mm/mm">0.560</DUL>
+            <SAT units="mm/mm">0.580</SAT>
+          </Layer>
+          <SoilCrop name="Sorghum">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.21</LL>
+              <KL units="/day">0.06</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.29</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.31</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.31</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.32</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.33</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.34</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <Layer>
+            <Thickness>150</Thickness>
+            <BD>1.060</BD>
+            <AirDry>0.200</AirDry>
+            <LL15>0.290</LL15>
+            <DUL>0.550</DUL>
+            <SAT>0.570</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.060</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.310</LL15>
+            <DUL>0.550</DUL>
+            <SAT>0.570</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.080</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.310</LL15>
+            <DUL>0.540</DUL>
+            <SAT>0.560</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.110</BD>
+            <AirDry>0.200</AirDry>
+            <LL15>0.320</LL15>
+            <DUL>0.530</DUL>
+            <SAT>0.550</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.140</BD>
+            <AirDry>0.210</AirDry>
+            <LL15>0.330</LL15>
+            <DUL>0.520</DUL>
+            <SAT>0.530</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.170</BD>
+            <AirDry>0.210</AirDry>
+            <LL15>0.340</LL15>
+            <DUL>0.510</DUL>
+            <SAT>0.520</SAT>
+          </Layer>
+        </Water>
+        <SoilWat>
+          <SummerCona>3.5</SummerCona>
+          <WinterCona>3.5</WinterCona>
+          <SummerU>6</SummerU>
+          <WinterU>6</WinterU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.11</Salb>
+          <Cn2Bare>85</Cn2Bare>
+          <CnRed>0.8</CnRed>
+          <CnCov>0.2</CnCov>
+          <CnCanopyFact>0.2</CnCanopyFact>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">1.560</OC>
+            <FBiom units="0-1">0.050</FBiom>
+            <FInert units="0-1">0.390</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>0.450</OC>
+            <FBiom>0.020</FBiom>
+            <FInert>0.470</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.320</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.520</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.290</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.620</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.230</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.740</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.270</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.830</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.300</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.930</FInert>
+          </Layer>
+          <RootCn>45</RootCn>
+          <RootWt>1000</RootWt>
+          <SoilCn>14.5</SoilCn>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+        </SoilOrganicMatter>
+        <Lab>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <PH units="1:5 water">7.600</PH>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <PH>7.700</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.200</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.500</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.600</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.600</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.500</PH>
+          </Layer>
+        </Lab>
+        <State />
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Langitude description="Longitude (WGS84)" />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source" />
+        <Comment type="multiedit" description="Comments" />
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm">37.1010736471802</NO3>
+            <NH4 units="ppm">0.100025233409034</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3>26.1600519287953</NO3>
+            <NH4>0.100025233409034</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>6.28901248395234</NO3>
+            <NH4>0.100025233409034</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>8.70901728776291</NO3>
+            <NH4>0.100025233409034</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>6.00601192218441</NO3>
+            <NH4>0.100025233409034</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>8.56101699397615</NO3>
+            <NH4>0.100025233409034</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>10.7810214007776</NO3>
+            <NH4>0.100025233409034</NH4>
+          </Layer>
+        </Sample>
+        <InitWater name="Initial water">
+          <PercentMethod>
+            <Percent>0.75</Percent>
+            <Distributed>Filled from top</Distributed>
+          </PercentMethod>
+        </InitWater>
+      </soil>
+      <sorghum name="Sorghum" />
+      <outputfile name="Outputfile">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="DaysAfterSowing" array="No" description="Days after sowing" />
+          <variable name="sw_dep()" />
+          <variable name="ll15_dep()" />
+          <variable name="dul_dep()" />
+          <variable name="WaterSD" />
+          <variable name="Biomass" array="No" description="Total above-ground biomass" />
+          <variable name="yield" />
+          <variable name="lai" />
+          <variable name="GrainNo" />
+          <variable name="stage" />
+          <variable name="biomass_wt" array="No" description="Total above-ground biomass" />
+          <variable name="GrainGreenWt" array="No" description="Live grain dry weight" />
+          <variable name="RachisGreenWt" array="No" description="Live rachis dry weight" />
+          <variable name="StemGreenWt" array="No" description="Stem dry weight" />
+          <variable name="GrainSize" array="No" description="1000 grain weight" />
+          <variable name="LeafSenescedWt" array="No" description="Senesced leaf dry weight" />
+          <variable name="LeafGreenWt" array="No" description="Live leaf dry weight" />
+          <variable name="TillerNoFertile" />
+        </variables>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Hermitage AYT04">
+    <clock>
+      <start_date name="start_date" description="Select the start date of the simulation" type="date">27/10/2004</start_date>
+      <end_date name="end_date" description="Select the end date of the simulation" type="date">30/04/2005</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Sorghum_Hermitage AYT_Buster_S_75RS.sum</filename>
+    </summaryfile>
+    <metfile name="met">
+      <filename name="filename">Hermitage AYT.met</filename>
+    </metfile>
+    <area name="paddock">
+      <folder name="Manager folder">
+        <manager name="Sow SkipRow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (d/m/yyyy) : ">27/10/2004</date>
+            <category description="Sowing parameters" />
+            <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
+            <row_spacing type="text" description="Enter row spacing (m) : ">0.75</row_spacing>
+            <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
+            <ftn type="text" description="Enter Fertile Tiller No. : " />
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[     if (biomass > 0) then
+         harvIndx = yield / biomass
+      else
+         harvIndx = 0
+      endif
+
+      if (day > 152) then
+        current_season = year
+      else
+        current_season = year -1
+      endif
+
+            if (paddock_is_fallow() = 1 and today = date('[date]')) then
+              season = current_season
+              SowDay = day
+               SowYear = year
+ftn = 0
+
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
+            endif
+            if (paddock_is_fallow() = 0) then
+               outputfile do_output
+            endif
+          
+
+]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <script>
+            <text>
+
+           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+ 
+            </text>
+            <event>end_of_day</event>
+          </script>
+          <ui>
+            <category name="Harvesting criteria" />
+            <crop type="modulename" description="Enter name of crop to harvest when ripe : ">Sorghum</crop>
+          </ui>
+        </manager>
+      </folder>
+      <soil name="HRS2004">
+        <Country />
+        <Site>Hermitage</Site>
+        <Region>Darling Downs</Region>
+        <LocalName>Hermitage</LocalName>
+        <SoilType description="Classification">Hermitage</SoilType>
+        <NearestTown description="Nearest town">Unknown</NearestTown>
+        <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <BD units="g/cc">1.030</BD>
+            <AirDry units="mm/mm">0.150</AirDry>
+            <LL15 units="mm/mm">0.210</LL15>
+            <DUL units="mm/mm">0.560</DUL>
+            <SAT units="mm/mm">0.610</SAT>
+          </Layer>
+          <SoilCrop name="Sorghum">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.210</LL>
+              <KL units="/day">0.070</KL>
+              <XF units="0-1">1.000</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.280</LL>
+              <KL>0.070</KL>
+              <XF>1.000</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.300</LL>
+              <KL>0.070</KL>
+              <XF>1.000</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.300</LL>
+              <KL>0.050</KL>
+              <XF>1.000</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.310</LL>
+              <KL>0.050</KL>
+              <XF>1.000</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.320</LL>
+              <KL>0.040</KL>
+              <XF>1.000</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.330</LL>
+              <KL>0.040</KL>
+              <XF>1.000</XF>
+            </Layer>
+          </SoilCrop>
+          <Layer>
+            <Thickness>150</Thickness>
+            <BD>1.060</BD>
+            <AirDry>0.200</AirDry>
+            <LL15>0.280</LL15>
+            <DUL>0.550</DUL>
+            <SAT>0.600</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.060</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.300</LL15>
+            <DUL>0.550</DUL>
+            <SAT>0.600</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.080</BD>
+            <AirDry>0.190</AirDry>
+            <LL15>0.300</LL15>
+            <DUL>0.540</DUL>
+            <SAT>0.590</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.110</BD>
+            <AirDry>0.200</AirDry>
+            <LL15>0.310</LL15>
+            <DUL>0.530</DUL>
+            <SAT>0.580</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.140</BD>
+            <AirDry>0.210</AirDry>
+            <LL15>0.320</LL15>
+            <DUL>0.520</DUL>
+            <SAT>0.570</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD>1.170</BD>
+            <AirDry>0.210</AirDry>
+            <LL15>0.330</LL15>
+            <DUL>0.510</DUL>
+            <SAT>0.560</SAT>
+          </Layer>
+        </Water>
+        <SoilWat>
+          <SummerCona>3.5</SummerCona>
+          <WinterCona>3.5</WinterCona>
+          <SummerU>6</SummerU>
+          <WinterU>6</WinterU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.11</Salb>
+          <Cn2Bare>85</Cn2Bare>
+          <CnRed>0.8</CnRed>
+          <CnCov>0.2</CnCov>
+          <CnCanopyFact>0.2</CnCanopyFact>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0</SWCON>
+          </Layer>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">1.560</OC>
+            <FBiom units="0-1">0.050</FBiom>
+            <FInert units="0-1">0.390</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>0.450</OC>
+            <FBiom>0.020</FBiom>
+            <FInert>0.470</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.320</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.520</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.290</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.620</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.230</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.740</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.270</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.830</FInert>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.300</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.930</FInert>
+          </Layer>
+          <RootCn>45</RootCn>
+          <RootWt>1000</RootWt>
+          <SoilCn>14.5</SoilCn>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+        </SoilOrganicMatter>
+        <Lab>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <PH units="1:5 water">7.600</PH>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <PH>7.700</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.200</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.500</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.600</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.600</PH>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <PH>8.500</PH>
+          </Layer>
+        </Lab>
+        <State />
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Langitude description="Longitude (WGS84)" />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source" />
+        <Comment type="multiedit" description="Comments" />
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <NO3 units="ppm">25.984021292924</NO3>
+            <NH4 units="ppm">0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <NO3>20.0560164351479</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>8.3800068670991</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>8.55400700968564</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>6.77100554858329</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>6.5820053937048</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>6.77900555513899</NO3>
+            <NH4>0.1</NH4>
+          </Layer>
+        </Sample>
+        <InitWater name="Initial water">
+          <PercentMethod>
+            <Percent>1.00</Percent>
+            <Distributed>Filled from top</Distributed>
+          </PercentMethod>
+        </InitWater>
+      </soil>
+      <manager name="Logic">
+        <script name="init">
+          <text> sdr = 1
+</text>
+          <event>init</event>
+        </script>
+        <script name="start_of_day">
+          <text>
+          </text>
+          <event>start_of_day</event>
+        </script>
+        <script name="end_of_day">
+          <text><![CDATA[  if (sw_demand > 0) then
+     sdr = sw_supply / sw_demand
+     if (sdr > 1) then
+        sdr = 1
+     endif
+  else
+     sdr = 1
+  endif]]></text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="text" description="switch">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600.0</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency description="Efficiency of the irrigation. (0-1.0)">1.0</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <operations>
+        <operation condition="start_of_day">
+          <date>27/10/2004</date>
+          <action>fertiliser apply amount = 4 (kg/ha), depth = 50 (mm), type = NO3_N ()</action>
+        </operation>
+      </operations>
+      <sorghum name="Sorghum" />
+      <outputfile name="Outputfile" shortcut="/Breeders/HermitageDGP04/paddock/Outputfile">
+        <variables name="Variables" shortcut="/Breeders/HermitageDGP04/paddock/Outputfile/Variables" />
+      </outputfile>
+    </area>
+  </simulation>
+</folder>

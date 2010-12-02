@@ -1,0 +1,763 @@
+<report version="5">
+<Data>
+<ApsimFileReader Left="772" Top="13" Width="162" Height="150" name="Observed">
+  <FileName>Observed\Observed.csv</FileName>
+</ApsimFileReader>
+<ApsimFileReader Left="3" Top="3" Width="201" Height="875" name="Predicted">
+  <FileName>.\CQ\*.out</FileName>
+  <FileName>.\NNSW\*.out</FileName>
+  <FileName>.\SQ\*.out</FileName>
+</ApsimFileReader>
+<Filter Left="260" Top="13" Width="135" Height="92">
+  <FilterString>stage=10</FilterString>
+  <source>Predicted</source>
+</Filter>
+<PredObs Left="454" Top="139" Width="185" Height="167">
+  <source>Filter</source>
+  <source>Observed</source>
+  <FieldName>Title</FieldName>
+</PredObs>
+<Regression name="RegrBiomass" Left="222" Top="298" Width="135" Height="141">
+  <source>PredObs</source>
+  <XFieldName>ObsBiomass</XFieldName>
+  <YFieldName>PredBiomass</YFieldName>
+</Regression>
+<Regression name="RegrYield" Left="232" Top="445" Width="150" Height="141">
+  <source>PredObs</source>
+  <XFieldName>ObsYield</XFieldName>
+  <YFieldName>PredYield</YFieldName>
+</Regression>
+<DataGrid Left="439" Top="441" Width="812" Height="460">
+  <source>PredObs</source>
+</DataGrid>
+<DataGrid name="DataGrid1" Left="727" Top="186" Width="462" Height="233">
+  <source>PredObs</source>
+</DataGrid>
+</Data>
+   <page> <![CDATA[
+object Page1: TQuickRep
+  Left = 163
+  Top = 21
+  Width = 1123
+  Height = 794
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -17
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poLandscape
+  Page.PaperSize = A4
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2100
+    0
+    2970
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 100
+  object TitleBand1: TQRBand
+    Left = 0
+    Top = 0
+    Width = 1123
+    Height = 794
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2100
+      2971.27083333333)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 27
+      Top = 92
+      Width = 490
+      Height = 501
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1325.5625
+        71.4375
+        243.416666666667
+        1296.45833333333)
+      title = 'Biomass'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted Biomass (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed Biomass (g/m2)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        Title.Font.Color = clBlack
+        Title.Font.Height = -19
+        Title.Text.Strings = (
+          'Biomass')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.Grid.ZPosition = 2
+        BottomAxis.Increment = 4000
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 0
+        BottomAxis.Maximum = 22000
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed Biomass (g/m2)'
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.ExactDateTime = False
+        LeftAxis.Grid.Visible = False
+        LeftAxis.Increment = 4000
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 22000
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted Biomass (g/m2)'
+        Legend.LegendStyle = lsSeries
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredObs
+          SeriesColor = clBlack
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'ObsBiomass'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'PredBiomass'
+        end
+        object Series2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegrBiomass
+          SeriesColor = clBlack
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object Series3: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegrBiomass
+          SeriesColor = clBlack
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text1: TText
+      Left = 247
+      Top = 495
+      Width = 233
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        653.520833333333
+        1309.6875
+        616.479166666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        ' y = 0.89 x + 790.64 (r2 = 0.96)')
+      Transparent = False
+      WordWrap = True
+      text = '$property(regrbiomass.equation)'#13#10
+      FontSize = 13
+    end
+    object Graph2: TGraph
+      Left = 556
+      Top = 92
+      Width = 505
+      Height = 501
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1325.5625
+        1471.08333333333
+        243.416666666667
+        1336.14583333333)
+      title = 'Grain Yield'#13#10
+      subTitle = ' '
+      leftAxisTitle = 'Predicted Yield (g/m2)'
+      topAxisTitle = ' '
+      rightAxisTitle = ' '
+      bottomAxisTitle = 'Observed Yield (g/m2)'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = ' '
+      seriesTitle4 = ' '
+      seriesTitle5 = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        Title.Font.Color = clBlack
+        Title.Font.Height = -19
+        Title.Text.Strings = (
+          'Grain Yield')
+        BottomAxis.Automatic = False
+        BottomAxis.AutomaticMaximum = False
+        BottomAxis.AutomaticMinimum = False
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Grid.Visible = False
+        BottomAxis.Grid.ZPosition = 2
+        BottomAxis.Increment = 2000
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.LabelsSeparation = 0
+        BottomAxis.Maximum = 12000
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Observed Yield (g/m2)'
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMaximum = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.Grid.Visible = False
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.Maximum = 12000
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Predicted Yield (g/m2)'
+        Legend.LegendStyle = lsSeries
+        Legend.Visible = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsSeparation = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object PointSeries1: TPointSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = PredObs
+          SeriesColor = clBlack
+          ClickableLine = False
+          Pointer.InflateMargins = True
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'ObsYield'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'PredYield'
+        end
+        object LineSeries1: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegrYield
+          SeriesColor = clBlack
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'RegrX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'RegrY'
+        end
+        object LineSeries2: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = RegrYield
+          SeriesColor = clBlack
+          LinePen.Style = psDot
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = '1:1X'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = '1:1Y'
+        end
+      end
+    end
+    object Text2: TText
+      Left = 796
+      Top = 499
+      Width = 233
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        2106.08333333333
+        1320.27083333333
+        616.479166666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        ' y = 0.87 x + 102.61 (r2 = 0.95)')
+      Transparent = False
+      WordWrap = True
+      text = '$property(regryield.equation)'#13#10
+      FontSize = 13
+    end
+    object Text3: TText
+      Left = 56
+      Top = 24
+      Width = 492
+      Height = 39
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        103.1875
+        148.166666666667
+        63.5
+        1301.75)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -32
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      Lines.Strings = (
+        'APSIM Sorghum Breeding Trials')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'APSIM Sorghum Breeding Trials'#13#10
+      FontSize = 24
+    end
+    object Text10: TText
+      Left = 640
+      Top = 644
+      Width = 93
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        1693.33333333333
+        1703.91666666667
+        246.0625)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'RMSE=580.987')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'RMSE=$decplaces($property(regryield.RMSD),3)'#13#10
+      FontSize = 10
+    end
+    object Text6: TText
+      Left = 533
+      Top = 761
+      Width = 1
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        1410.22916666667
+        2013.47916666667
+        2.64583333333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        '')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = '$property(regrgrainN.equation)'#13#10
+      FontSize = 13
+    end
+    object Text7: TText
+      Left = 177
+      Top = 749
+      Width = 1
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        468.3125
+        1981.72916666667
+        2.64583333333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        '')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = '$property(regrBiomassN.equation)'#13#10
+      FontSize = 13
+    end
+    object Text9: TText
+      Left = 112
+      Top = 652
+      Width = 93
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        296.333333333333
+        1725.08333333333
+        246.0625)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'RMSE=887.870')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'RMSE=$decplaces($property(regrBiomass.RMSD),3)'#13#10
+      FontSize = 10
+    end
+    object Text16: TText
+      Left = 112
+      Top = 676
+      Width = 97
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        296.333333333333
+        1788.58333333333
+        256.645833333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'StdErr(m)=0.029')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'StdErr(m)=$decplaces($property(regrBiomass.StdErr(m)),3)'#13#10
+      FontSize = 10
+    end
+    object Text17: TText
+      Left = 224
+      Top = 676
+      Width = 107
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        592.666666666667
+        1788.58333333333
+        283.104166666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'StdErr(c)=304.605')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'StdErr(c)=$decplaces($property(regrBiomass.StdErr(c)),3)'#13#10
+      FontSize = 10
+    end
+    object Text23: TText
+      Left = 784
+      Top = 668
+      Width = 107
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        2074.33333333333
+        1767.41666666667
+        283.104166666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'StdErr(c)=180.323')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'StdErr(c)=$decplaces($property(regryield.StdErr(c)),3)'#13#10
+      FontSize = 10
+    end
+    object Text24: TText
+      Left = 640
+      Top = 668
+      Width = 97
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        1693.33333333333
+        1767.41666666667
+        256.645833333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'StdErr(m)=0.032')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'StdErr(m)=$decplaces($property(regryield.StdErr(m)),3)'#13#10
+      FontSize = 10
+    end
+    object Text18: TText
+      Left = 109
+      Top = 628
+      Width = 56
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        288.395833333333
+        1661.58333333333
+        148.166666666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        'N=42')
+      Transparent = False
+      WordWrap = True
+      text = 'N=$decplaces($property(regrBiomass.N),0)'#13#10
+      FontSize = 13
+    end
+    object Text20: TText
+      Left = 638
+      Top = 614
+      Width = 40
+      Height = 20
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        52.9166666666667
+        1688.04166666667
+        1624.54166666667
+        105.833333333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Lines.Strings = (
+        'N=42')
+      Transparent = False
+      WordWrap = True
+      text = 'N=$decplaces($property(regryield.N),0)'#13#10
+      FontSize = 13
+    end
+  end
+end
+]]>
+   </page>
+</report>
