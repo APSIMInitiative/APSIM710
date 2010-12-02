@@ -6819,20 +6819,6 @@ c dsg 070302 added runon
      :                                          , floatTypeDDML
      :                                          , 'kg/ha')
 
-            dummy = string_concat(g%solute_names(g%num_solutes),
-     :                            '_leach')
-            dummyID = add_registration_with_units(respondToGetReg
-     :                                          , dummy
-     :                                          , floatArrayTypeDDML
-     :                                          , 'kg/ha')
-
-            dummy = string_concat(g%solute_names(g%num_solutes),
-     :                            '_up')
-            dummyID = add_registration_with_units(respondToGetReg
-     :                                          , dummy
-     :                                          , floatArrayTypeDDML
-     :                                          , 'kg/ha')
-
             dummy = string_concat('dlt_',
      :                            g%solute_names(g%num_solutes))
             dummyID = add_registration_with_units(setVariableReg
