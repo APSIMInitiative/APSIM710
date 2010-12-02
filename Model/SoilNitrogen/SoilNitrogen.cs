@@ -285,6 +285,11 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    double[] effective_nitrification; // effecitive nitrogen moved by nitrification
+                                      // (Alias dlt_rntrf_eff)
+
+    [Output]
+    [Units("kg/ha")]
     double[] dlt_urea_hydrol;   // nitrogen moved by hydrolysis
 
     [Output]
@@ -402,7 +407,15 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
-    double[] dlt_no3_dnit;      // N denitrified
+    double[] dlt_no3_dnit;      // NO3 N denitrified
+
+    [Output]
+    [Units("kg/ha")]
+    double[] dlt_nh4_dnit;      // NH4 N denitrified
+
+    [Output]
+    [Units("kg/ha")]
+    double[] n2o_atm;           // amount of N2O produced
 
     [Output]
     [Units("kg/ha")]
@@ -480,7 +493,11 @@ public class SoilN : Instance
     {
         get
         {
-            return dlt_no3_dnit;
+            int nLayers = dlayer.Length;
+            double[] dnit_tot = new double[nLayers];
+            for (int layer = 0; layer < nLayers; layer++)
+                dnit_tot[layer] = dlt_no3_dnit[layer] + dlt_nh4_dnit[layer];
+            return dnit_tot;
         }
     }
 
@@ -1318,6 +1335,7 @@ public class SoilN : Instance
         Array.Resize(ref dlt_res_c_decomp, nLayers);
         Array.Resize(ref dlt_res_n_decomp, nLayers);
         Array.Resize(ref dlt_rntrf, nLayers);
+        Array.Resize(ref effective_nitrification, nLayers);
         Array.Resize(ref dlt_urea_hydrol, nLayers);
         Array.Resize(ref excess_nh4, nLayers);
         Array.Resize(ref dlt_fom_n_min, nLayers);
@@ -1327,6 +1345,8 @@ public class SoilN : Instance
         Array.Resize(ref dlt_fom_c_pool2, nLayers);
         Array.Resize(ref dlt_fom_c_pool3, nLayers);
         Array.Resize(ref dlt_no3_dnit, nLayers);
+        Array.Resize(ref dlt_nh4_dnit, nLayers);
+        Array.Resize(ref n2o_atm, nLayers);
         Array.Resize(ref dlt_hum_c_biom, nLayers);
         Array.Resize(ref dlt_biom_c_hum, nLayers);
     }
@@ -1631,7 +1651,7 @@ public class SoilN : Instance
 
             double dltRntrf = Nitrification(layer);
 
-            _no3[layer] += dltRntrf;
+            _no3[layer] += effective_nitrification[layer];
             _nh4[layer] -= dltRntrf;
 
             if (_no3[layer] < no3_min[layer] || no3[layer] > 9000.0)
@@ -1643,7 +1663,7 @@ public class SoilN : Instance
 
             nh4_transform_net[layer] = dlt_res_nh4_min[layer] + dlt_fom_n_min[layer] + dlt_biom_n_min[layer] + dlt_hum_n_min[layer] - dltRntrf + dltUreaHydrol + nh4_excess;
 
-            no3_transform_net[layer] = dlt_res_no3_min[layer] - dlt_no3_dnit[layer] + dltRntrf - nh4_excess;
+            no3_transform_net[layer] = dlt_res_no3_min[layer] - dlt_no3_dnit[layer] + effective_nitrification[layer] - nh4_excess;
 
             dlt_rntrf[layer]      = dltRntrf;
             dlt_urea_hydrol[layer] = dltUreaHydrol;
@@ -2668,6 +2688,11 @@ public class SoilN : Instance
         double result = pni * opt_rate;
         nh4_avail = Math.Max(_nh4[layer] - nh4_min[layer], 0.0);
         result = Math.Max(0.0, Math.Min(nh4_avail, result));
+
+        dlt_nh4_dnit[layer] = result * minInst.dnit_nitrf_loss;
+        effective_nitrification[layer] = result - dlt_nh4_dnit[layer];
+        n2o_atm[layer] += dlt_nh4_dnit[layer];
+
         return result;
     }    
 
@@ -2721,6 +2746,7 @@ public class SoilN : Instance
 
         if (_no3[layer] < no3_min[layer])
         {
+            n2o_atm[layer] = 0.0;
             return 0.0;
         }
 
@@ -2750,7 +2776,24 @@ public class SoilN : Instance
 
       // prevent NO3 - N concentration from falling below NO3_min
         no3_avail = _no3[layer] - no3_min[layer];
-        result = Math.Max(0.0, Math.Min(no3_avail, result)); 
+        result = Math.Max(0.0, Math.Min(no3_avail, result));
+
+        double WFPS = sw_dep[layer] / sat_dep[layer] * 100.0; // Water filled pore space (%)
+        double CO2 = (_dlt_fom_c_atm[0][layer] + _dlt_fom_c_atm[1][layer] +_dlt_fom_c_atm[2][layer] +
+                      dlt_biom_c_atm[layer] + dlt_hum_c_atm[layer]) /
+                      (bd[layer] * dlayer[layer]) * 100.0;
+        double RtermA = 0.16 * minInst.dnit_k1;
+        double RtermB = (CO2 > 0.0) ?
+             minInst.dnit_k1 * (Math.Exp(-0.8 * (_no3[layer] * SoilN2Fac(layer) / CO2))) 
+             : 0.0;
+        double RtermC = 0.1;
+        bool didInterpolate;
+        double RtermD = MathUtility.LinearInterpReal(WFPS, minInst.dnit_wfps, minInst.dnit_n2o_factor, out didInterpolate);
+        // RTermD = (0.015 * WFPS) - 0.32;
+
+        double N2N2O = Math.Max(RtermA, RtermB) * Math.Max(RtermC, RtermD);
+        n2o_atm[layer] = result / (N2N2O + 1.0);
+
         return result;
     }
 
@@ -3404,6 +3447,18 @@ public class Mineralisation : Instance
 
     [Param(MinVal = 0.0, MaxVal = 5.0)]
     public double dnit_wf_power;        // denitrification water factor power term
+
+    [Param(MinVal = 0.0, MaxVal = 100.0)]
+    public double dnit_k1;              // K1 parameter from Thorburn et al (2010) for N2O model
+
+    [Param(MinVal = 0.0, MaxVal = 100.0)]
+    public double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
+
+    [Param(MinVal = 0.0, MaxVal = 100.0)]
+    public double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
 
 }
 
