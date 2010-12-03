@@ -1,4 +1,4 @@
-// Ugliness mostly due to inability to include tk.h into apsim framework..
+// Ugliness mostly due to inability to include tcl.h into apsim framework..
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -6,13 +6,10 @@
 
 #include <string.h>
 #include <tcl.h>
-#include <tk.h>
 #include <stdexcept>
 
 #ifdef __WIN32__
 extern "C" void TclWinInit(HINSTANCE);
-extern "C" void TkWinXCleanup(HINSTANCE);
-extern "C" void TkWinXInit(HINSTANCE);
 #endif
 
 extern int apsimGetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
@@ -54,7 +51,6 @@ Tcl_Interp *NewInterp (Tcl_Interp *topLevel, ClientData cd, const char *interpNa
    Tcl_FindExecutable(GlobalDllName); // This is ignored anyway - they use GetModule()!!
 
    Tcl_VarEval(interp, "set tcl_library [file join [file dirname ", GlobalDllName, "] TclLink/lib/tcl[info tclversion]]", NULL);
-   Tcl_VarEval(interp, "set tk_library [file join [file dirname ", GlobalDllName, "] TclLink/lib/tk[info tclversion]]", NULL);
 
    Tcl_SetVar(interp, "argv", "", TCL_GLOBAL_ONLY);
    Tcl_SetVar(interp, "argc", "0", TCL_GLOBAL_ONLY);
@@ -70,16 +66,6 @@ Tcl_Interp *NewInterp (Tcl_Interp *topLevel, ClientData cd, const char *interpNa
       MessageBox(0, interp->result, "Error in Tcl Startup", MB_ICONSTOP); 
 #else
       fprintf(stderr, "Error in Tcl Startup\n%s", interp->result);
-#endif
-      return NULL;
-   }
-
-   Tcl_StaticPackage(interp, "Tk", Tk_Init, Tk_SafeInit);
-   if (Tk_Init(interp) != TCL_OK) {
-#ifdef __WIN32__
-      MessageBox(0, interp->result, "Error in Tk Startup", MB_ICONSTOP); 
-#else
-      fprintf(stderr, "Error in Tk Startup\n%s", interp->result);
 #endif
       return NULL;
    }
@@ -122,9 +108,6 @@ void StopTcl(Tcl_Interp *interp)
    //MessageBox(0, "TCl Stop", "TCl Stop", MB_ICONSTOP);
    if (!Tcl_InterpDeleted(interp))
        {
-       Tk_Window t = Tk_MainWindow(interp);
-       if (t != NULL) { Tk_DestroyWindow(t); }
-   
        Tcl_Eval(interp, "exit");
        if (!Tcl_InterpDeleted(interp))
            {
@@ -133,5 +116,4 @@ void StopTcl(Tcl_Interp *interp)
        Tcl_Release((ClientData) interp);
        }
    Tcl_Finalize();
-   //TkWinXCleanup(hinst);
    }

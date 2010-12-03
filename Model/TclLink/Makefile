@@ -25,14 +25,14 @@ TCLVER=$(DOTVER).$(PATCH)
 ifeq ($(PLATFORM),WIN32VS)
  SRC = TclStub.cpp
  LIBS =
- INCLUDES = /I "./tcl$(TCLVER)/generic" /I "./tk$(TCLVER)/generic" /I "./tk$(TCLVER)/xlib"
+ INCLUDES = /I "./tcl$(TCLVER)/generic" /I "./tk$(TCLVER)/generic" 
 
  # This is built before tcllink.dll
  PREBUILD=dummy .\bin\TclComponent.dll
 
  SRC2 = TclLink.cpp TclComponent.cpp TclXtras.cpp $(APSIM)/Model/ComponentInterface2/EntryPoints.cpp
  SOURCEOBJS2:=	$(SRC2:.cpp=.obj)
- LIBS2 = ComponentInterface2 ApsimShared General tcl$(VER) tk$(VER)
+ LIBS2 = ComponentInterface2 ApsimShared General tcl$(VER) 
  LIBS2 := $(foreach library,$(LIBS2),$(library).lib) libxml2.lib
  OBJS = 
 
@@ -42,7 +42,7 @@ ifeq ($(PLATFORM),Linux)
  INCLUDES := -I /usr/include/tcl$(DOTVER)
  SRC = TclLink.cpp TclComponent.cpp TclXtras.cpp ../ComponentInterface2/CMPComponentEntryPoints.cpp
  LIBS = General ApsimShared ComponentInterface2 
- LDFLAGS := -ltcl -ltk
+ LDFLAGS := -ltcl
 endif
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
