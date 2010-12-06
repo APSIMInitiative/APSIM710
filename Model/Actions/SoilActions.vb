@@ -35,8 +35,8 @@ Public Class SoilActions
         End If
     End Sub
    Public Shared Sub AddSoil(ByVal Controller As BaseController)
-      Dim NewSoil As Soil = Soil.Create("Soil")
-      Controller.Selection.Add(NewSoil.XML)
+      Dim NewSoil As XmlNode = Soil.Create("Soil")
+      Controller.Selection.Add(NewSoil.OuterXml)
    End Sub
 
 
@@ -164,10 +164,10 @@ Public Class SoilActions
     End Sub
     Private Shared Sub CheckSoils(ByVal Data As ApsimFile.Component, ByRef ErrorMessage As String)
         If Data.Type.ToLower() = "soil" Then
-         Dim ThisSoil As Soil = Soil.CreateFromXML(Data.FullXML())
-         Dim Errors As String = ThisSoil.CheckForErrors(True)
+         Dim ThisSoil As XmlNode = Soil.CreateFromXML(Data.FullXML())
+         Dim Errors As String = Soil.CheckForErrors(ThisSoil, True)
             If Errors <> "" Then
-                ErrorMessage += vbCr + vbLf + ThisSoil.Name + vbCr + vbLf + StringManip.IndentText(Errors, 6)
+            ErrorMessage += vbCr + vbLf + XmlHelper.Name(ThisSoil) + vbCr + vbLf + StringManip.IndentText(Errors, 6)
             End If
         ElseIf Data.Type.ToLower() = "folder" Then
             For Each Child As ApsimFile.Component In Data.ChildNodes

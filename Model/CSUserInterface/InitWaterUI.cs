@@ -23,7 +23,6 @@ namespace CSUserInterface
       private System.Windows.Forms.Panel panel1;
       private System.Windows.Forms.Splitter splitter1;
       private System.ComponentModel.IContainer components = null;
-      private Soil _Soil;
       private GroupBox groupBox3;
       private GroupBox groupBox2;
       internal Label Label3;
@@ -336,10 +335,9 @@ namespace CSUserInterface
             Doc.LoadXml(SoilComponent.FullXMLNoShortCuts());
             SoilNode = Doc.DocumentElement;
             OurNode = XmlHelper.Find(SoilNode, XmlHelper.Name(Data));
-            _Soil = Soil.CreateFromXML(SoilNode);
 
             RelativeToCombo.Items.Add("ll15");
-            RelativeToCombo.Items.AddRange(_Soil.Crops);
+            RelativeToCombo.Items.AddRange(Soil.Crops(SoilNode));
 
             SoilGraph.OnLoad(Controller, NodePath, OurNode.OuterXml); 
             }
@@ -370,18 +368,23 @@ namespace CSUserInterface
          if (RelativeToCombo.Text == "")
             RelativeToCombo.Text = "ll15";
 
-         double PAWC; 
-         double PAW;
+         Soil.Variable PAWCVar;
+         Soil.Variable PAWVar;
          if (RelativeToCombo.Text == "ll15")
             {
-            PAWC = MathUtility.Sum(_Soil.Variable("PAWC (mm)"));
-            PAW = MathUtility.Sum(_Soil.Variable("PAW (mm)"));
+            PAWCVar = Soil.Get(SoilNode, "PAWC");
+            PAWVar = Soil.Get(SoilNode, "PAW");
             }
          else
             {
-            PAWC = MathUtility.Sum(_Soil.Variable(RelativeToCombo.Text + " PAWC (mm)"));
-            PAW = MathUtility.Sum(_Soil.Variable(RelativeToCombo.Text + " PAW (mm)"));
+            PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + "PAWC");
+            PAWVar = Soil.Get(SoilNode, RelativeToCombo.Text + "PAW");
             }
+         PAWCVar.Units = "mm";
+         PAWVar.Units = "mm";
+         double PAWC = MathUtility.Sum(PAWCVar.Doubles);
+         double PAW = MathUtility.Sum(PAWVar.Doubles);
+
          double Percent = PAW / PAWC * 100;
          PercentEdit.Text = Percent.ToString("f0");
          PAWEdit.Text = PAW.ToString("f0");
@@ -468,11 +471,16 @@ namespace CSUserInterface
          if (UserChange)
             {
             UserChange = false;
-            double[] pawc;
+  
+            Soil.Variable PAWCVar;
+            Soil.Variable PAWVar;
             if (RelativeToCombo.Text == "ll15")
-               pawc = _Soil.Variable("PAWC (mm)");
+               PAWCVar = Soil.Get(SoilNode, "PAWC");
             else
-               pawc = _Soil.Variable(RelativeToCombo.Text + " PAWC (mm)");
+               PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + "PAWC");
+            PAWCVar.Units = "mm";
+            double[] pawc = PAWCVar.Doubles;
+
             double TotalPAWC = MathUtility.Sum(pawc);
             int Percent = 0;
             if (PAWEdit.Text != "")
@@ -492,7 +500,7 @@ namespace CSUserInterface
       private void PopulateGraph()
          {
          List<string> Names = new List<string>();
-         Names = _Soil.ValidVariablesForProfileNode("Water", "Water");
+         Names.AddRange(Soil.ValidVariablesForProfileNode(Data));
          Names.Add("SW (mm/mm)");
 
          // Remove the thickness column and add in a depth mid points column
@@ -500,7 +508,7 @@ namespace CSUserInterface
          Names.Insert(0, "DepthMidPoints (mm)");
 
          DataTable Table = new DataTable();
-         _Soil.Write(Table, Names);
+         Soil.WriteToTable(SoilNode, Table, Names);
          Table.TableName = "InitWater";
 
          SoilGraph.AddDataSource(Table);

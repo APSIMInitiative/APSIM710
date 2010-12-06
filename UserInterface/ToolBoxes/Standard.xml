@@ -268,7 +268,8 @@
   </canopy>
   </folder>
     <folder name="Soil related">
-      <soil name="Blank soil">
+      <soil name="Soil">
+        <Country />
         <Site></Site>
         <Region></Region>
         <LocalName></LocalName>
@@ -278,51 +279,107 @@
         <State />
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
-        <Langitude description="Longitude (WGS84)" />
+        <Longitude description="Longitude (WGS84)" />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
-        <Comment type="multiedit" description="Comments" />
+        <Comments type="multiedit" description="Comments" />
+        <Water>
+           <Layer>
+              <Thickness units="mm" />
+              <KS units="mm/day"/>
+              <BD units="g/cc" />
+              <Airdry units="mm/mm" />
+              <LL15 units="mm/mm" />
+              <DUL units="mm/mm" />
+              <SAT units="mm/mm" />
+           </Layer>
+        </Water>
+        <SoilWat>
+          <SummerCona />
+          <SummerU />
+          <SummerDate />
+          <WinterCona />
+          <WinterU />
+          <WinterDate />
+          <DiffusConst />
+          <DiffusSlope />
+          <Salb />
+          <Cn2Bare />
+          <CnRed />
+          <CnCov />
+          <CnCanopyFact />
+          <Slope />
+          <DischargeWidth />
+          <CatchmentArea />
+          <MaxPond />
+           <Layer>
+              <Thickness units="mm" />
+              <SWCON units="0-1" />
+              <MWCON units="0-1" />
+              <KLAT units="mm/d" />
+           </Layer>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <RootCn></RootCn>
+          <RootWt></RootWt>
+          <SoilCn></SoilCn>
+          <EnrACoeff></EnrACoeff>
+          <EnrBCoeff></EnrBCoeff>
+           <Layer>
+              <Thickness units="mm" />
+              <OC units="Walkley Black %" />
+              <FBIOM units="0-1" />
+              <FINERT units="0-1" />
+           </Layer>
+        </SoilOrganicMatter>
+        <Analysis>
+           <Layer>
+              <Thickness units="mm" />
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH units="1:5 water" />
+              <CL units="mg/kg" />
+              <Boron units="" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+           </Layer>
+        </Analysis>
         <InitWater>
           <percentmethod>
             <percent>1</percent>
             <distributed>filled from top</distributed>
           </percentmethod>
         </InitWater>
-        <Sample name="Initial nitrogen">
-          <Date type="date" description="Sample date:" />
-        </Sample>
-        <Water>
-          <SoilCrop name="Crop"/>
-        </Water>
-        <SoilWat>
-          <SummerCona>3.5</SummerCona>
-          <WinterCona>3.5</WinterCona>
-          <SummerU>6</SummerU>
-          <WinterU>6</WinterU>
-          <SummerDate>1-Nov</SummerDate>
-          <WinterDate>1-Apr</WinterDate>
-          <DiffusConst>40</DiffusConst>
-          <DiffusSlope>16</DiffusSlope>
-          <Salb>0.13</Salb>
-          <Cn2Bare>73</Cn2Bare>
-          <CnRed>20</CnRed>
-          <CnCov>0.8</CnCov>
-          <CnCanopyFact>1</CnCanopyFact>
-          <RootCn>40</RootCn>
-          <RootWt>200</RootWt>
-          <SoilCn>12.5</SoilCn>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
-        </SoilWat>
-        <SoilOrganicMatter/>
-        <Lab/>
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
+          <Layer>
+             <Thickness units="mm">100</Thickness>
+             <SW units="mm/mm">0</SW>
+             <NO3 units="ppm">0</NO3>
+             <NH4 units="ppm">0</NH4>
+          </Layer> 
         </Sample>
         <Phosphorus>
            <RootCP/>
            <RateDissolRock/>
            <RateLossAvail/>
+           <Layer>
+              <LabileP units="mg/kg">5</LabileP>
+              <Sorption units="-">50</Sorption>
+              <BandedP units="kg/ha">0</BandedP>
+              <RockP units="kg/ha">0</RockP>
+           </Layer>
         </Phosphorus>        
       </soil>
         <folder name="SWIM3">
@@ -426,7 +483,29 @@
           </Swim>
         
         <SoilOrganicMatter/>
-        <Lab/>
+        <Analysis>
+           <Layer>
+              <Thickness units="mm" />
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH units="1:5 water" />
+              <CL units="mg/kg" />
+              <Boron units="" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+           </Layer>
+        </Analysis>
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
         </Sample>

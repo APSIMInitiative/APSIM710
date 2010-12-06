@@ -13,11 +13,19 @@ namespace Test
    [TestFixture]
    public class TestSoil
       {
-      private Soil S;
+      private XmlNode S;
       private const string SoilContents =
             "<soil name=\"Test Soil\">" +
+            "  <Country />" +
             "  <Site>My site</Site>" +
             "  <Region>My region</Region>" +
+            "  <LocalName></LocalName>" +
+            "  <SoilType></SoilType>" +
+            "  <NearestTown></NearestTown>" +
+            "  <NaturalVegetation></NaturalVegetation>" +
+            "  <State />" +
+            "  <ApsoilNumber/>" +
+            "  <Latitude/>" +
             "  <InitWater>" +
             "    <percentmethod>" +
             "      <percent>1</percent>" +
@@ -207,29 +215,6 @@ namespace Test
             "      <NH4>0.100000730999496</NH4>" +
             "    </Layer>" +
             "  </Sample>" +
-            "  <Sample name=\"Initial nitrogen2\">" +
-            "    <Date type=\"date\" description=\"Sample date:\">2/6/2009</Date>" +
-            "    <Layer>" +
-            "      <Thickness units=\"mm\">150</Thickness>" +
-            "      <NO3 units=\"ppm\">10</NO3>" +
-            "      <NH4 units=\"ppm\">29</NH4>" +
-            "    </Layer>" +
-            "    <Layer>" +
-            "      <Thickness>150</Thickness>" +
-            "      <NO3>11</NO3>" +
-            "      <NH4>3</NH4>" +
-            "    </Layer>" +
-            "    <Layer>" +
-            "      <Thickness>300</Thickness>" +
-            "      <NO3>12</NO3>" +
-            "      <NH4>4</NH4>" +
-            "    </Layer>" +
-            "    <Layer>" +
-            "      <Thickness>300</Thickness>" +
-            "      <NO3>13</NO3>" +
-            "      <NH4>5</NH4>" +
-            "    </Layer>" +
-            "  </Sample>" +
             "</soil>";
 
       /// <summary>
@@ -257,15 +242,15 @@ namespace Test
                       "      NO3 = [soil.NO3(ppm)]" +
                       "      NH4 = [soil.NH4(ppm)]" +
                       "Barley LL = [soil.barley ll(mm/mm)]";
-         string NewStr = S.ReplaceSoilMacros(Str);
+         string NewStr = Soil.ReplaceSoilMacros(S, Str);
          Assert.AreEqual(NewStr, "     Name = Test Soil" +
                                  "  CN2Bare = 73" +
                                  "Thickness =    150.000   150.000   300.000   300.000   300.000" +
                                  "       BD =      1.020     1.030     1.020     1.020     1.060" +
                                  "    SWCon =      0.300     0.300     0.100     0.000     0.000" +
                                  "      NO3 =      6.503     2.101     2.101     1.000     1.000" +
-                                 "      NH4 =      0.599     0.100     0.100     0.200     0.200" +
-                                 "Barley LL =      0.290     0.280     0.280     0.280     0.280");
+                                 "      NH4 =      0.599     0.200     0.200     0.200     0.200" +
+                                 "Barley LL =      0.290     0.280     0.290     0.290     0.300");
          }
 
 
@@ -275,13 +260,15 @@ namespace Test
       [Test]
       public void GetCropVariables()
          {
-         string[] Crops = S.Crops;
+         string[] Crops = Soil.Crops(S);
          Assert.AreEqual(Crops.Length, 2);
          Assert.AreEqual(Crops[0], "Barley");
          Assert.AreEqual(Crops[1], "Chickpea");
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("Barley LL (mm/mm)"),
-                                            new double[] { 0.290, 0.280, 0.280, 0.280, 0.280 }));
-         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(S.Variable("Barley PAW(mm)")), 187.5));
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Barley LL").Doubles,
+                                            new double[] { 0.290, 0.280 }));
+         Soil.Variable PAW = Soil.Get(S, "Barley PAW");
+         PAW.Units = "mm";
+         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(PAW.Doubles), 75.0));
          }
 
 
@@ -291,19 +278,19 @@ namespace Test
       [Test]
       public void AddNewCrop()
          {
-         double[] ll = new double[] { 0.290, 0.280 };
-         double[] kl = new double[] { 0.060, 0.040 };
-         double[] xf = new double[] { 1.000, 0.500 };
          double[] Thickness = new double[] { 100, 600 };
 
-         S.SetVariable("x Thickness (mm)", Thickness);
-         S.SetVariable("x LL (mm/mm)", ll);
-         S.SetVariable("x KL (/day)", kl);
-         S.SetVariable("x XF (0-1)", xf);
+         Soil.Variable ll = new Soil.Variable("x LL", "mm/mm", new double[] { 0.290, 0.280 }, Thickness);
+         Soil.Variable kl = new Soil.Variable("x KL", "/day",  new double[] { 0.060, 0.040 }, Thickness);
+         Soil.Variable xf = new Soil.Variable("x XF", "0-1",   new double[] { 1.000, 0.500 }, Thickness);
 
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("x ll(mm/mm)"), new double[] {0.28667, 0.280, 0.280, 0.280, 0.280}));
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("x kl(/day)"), new double[] {0.05333, 0.040, 0.040, 0.040, 0.040 }));
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("x xf(0-1)"), new double[] {0.83333, 0.500, 0.500, 0.500, 0.500 }));
+         Soil.Set(S, ll);
+         Soil.Set(S, kl);
+         Soil.Set(S, xf);
+
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "x ll").Doubles, new double[] { 0.290, 0.280}));
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "x kl").Doubles, new double[] { 0.060, 0.040}));
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "x xf").Doubles, new double[] { 1.000, 0.500}));
          }
 
       /// <summary>
@@ -312,13 +299,14 @@ namespace Test
       [Test]
       public void PredictedCrops()
          {
-         S.SetProperty("SoilType", "Black Vertosol");
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("Wheat LL (mm)"),
-                                            new double[] { 43.5, 43.5, 87, 87, 90 }));
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("Wheat KL (/day)"),
-                                            new double[] { 0.06, 0.06, 0.06, 0.04, 0.04 }));
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("Wheat XF (0-1)"),
-                                            new double[] { 1.0, 1.0, 1.0, 1.0, 1.0 }));
+         Soil.Variable SoilType = new Soil.Variable("SoilType", "Black Vertosol");
+         Soil.Set(S, SoilType);
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Wheat LL").Doubles,
+                                            new double[] { 0.29, 0.29, 0.29, 0.29, 0.30 }));
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Wheat KL").Doubles,
+                                            new double[] { 0.06, 0.06, 0.06, 0.05, 0.04 }));
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Wheat XF").Doubles,
+                                            new double[] { 1.0, 1.0, 0.0, 0.0, 0.0 }));
          }
 
       /// <summary>
@@ -328,9 +316,15 @@ namespace Test
       [Test]
       public void PAWC()
          {
-         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(S.Variable("PAWC(mm)")), 289.5));
-         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(S.Variable("Chickpea PAWC(mm)")), 51.6666667));
-         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(S.Variable("PAW(mm)")), 289.5));
+         Soil.Variable SoilPAWC = Soil.Get(S, "PAWC");
+         SoilPAWC.Units = "mm";
+         Soil.Variable ChickpeaPAWC = Soil.Get(S, "Chickpea PAWC");
+         ChickpeaPAWC.Units = "mm";
+         Soil.Variable PAW = Soil.Get(S, "PAW");
+         PAW.Units = "mm";
+         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(SoilPAWC.Doubles), 289.5));
+         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(ChickpeaPAWC.Doubles), 94.5));
+         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(PAW.Doubles), 289.5));
          }
 
       /// <summary>
@@ -340,12 +334,14 @@ namespace Test
       [Test]
       public void SWFromInitWater()
          {
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("SW (mm/mm)"),
+         Soil.Variable SW = Soil.Get(S, "SW");
+         SW.Units = "mm/mm";
+         Assert.IsTrue(MathUtility.AreEqual(SW.Doubles,
                                             new double[] { 0.540, 0.530, 0.540, 0.540, 0.520 }));
          }
 
       /// <summary>
-      /// Make sure the soil class can read variables and properties
+      /// Make sure the soil class can read variables
       /// from a data table.
       /// </summary>
       [Test]
@@ -353,56 +349,21 @@ namespace Test
          {
          // Create a data table with 2 soils in it.
          DataTable Table = new DataTable();
-         DataTableUtility.AddColumn(Table, "Name",                 new string[] { "S1",        "S1",        "S1",        "S2",     "S2",    "S2" });
-         DataTableUtility.AddColumn(Table, "Region",               new string[] { "Toowoomba", "Toowoomba", "Toowoomba", "Dalby",  "Dalby", "Dalby" });
-         DataTableUtility.AddColumn(Table, "Thickness (mm)",       new double[] {     100,          300,        300,       150,     200,     200 });
-         DataTableUtility.AddColumn(Table, "BD (g/cc)",            new double[] {     1.1,          1.2,        1.3,       1.4,     1.5,     1.6 });
-         DataTableUtility.AddColumn(Table, "OC (Walkley Black %)", new double[] { 4.6, 3.6, 2.6, 1.6, 0.6, 0.1 });
-         DataTableUtility.AddColumn(Table, "Wheat LL(mm/mm)",      new double[] {     20,           19,         18,        17,      16,      15 });
-         DataTableUtility.AddColumn(Table, "Wheat KL(mm/mm)",      new double[] {     1.0,          0.9,        0.8,       0.7,     0.6,     0.5 });
+         DataTableUtility.AddColumn(Table, "Thickness (mm)",       new double[] {     100,          300,        300,});
+         DataTableUtility.AddColumn(Table, "BD (g/cc)",            new double[] {     1.1,          1.2,        1.3,});
+         DataTableUtility.AddColumn(Table, "OC (Walkley Black %)", new double[] { 4.6, 3.6, 2.6});
+         DataTableUtility.AddColumn(Table, "Wheat LL(mm/mm)",      new double[] {     20,           19,         18});
+         DataTableUtility.AddColumn(Table, "Wheat KL(/day)",      new double[] {     1.0,          0.9,        0.8});
 
-         Soil S1 = Soil.Create("Soil1");
-         S1.Read(Table, 0);
+         XmlNode S1 = Soil.Create("Soil1");
+         Soil.ReadFromTable(S1, Table);
 
-         Soil S2 = Soil.Create("Soil2");
-         S2.Read(Table, 3);
-
-         Assert.AreEqual(S1.Name, "S1");
-         Assert.AreEqual(S1.Property("Region"), "Toowoomba");
-         Assert.AreEqual(S1.Variable("Thickness(mm)"), new double[] {100, 300, 300} );
-         Assert.AreEqual(S1.Variable("BD (g/cc)"), new double[] { 1.1, 1.2, 1.3 });
-         Assert.AreEqual(S1.Variable("OC (Walkley Black %)"), new double[] { 4.6, 3.6, 2.6 });
-         Assert.AreEqual(S1.Variable("Wheat LL(mm/mm)"), new double[] { 20, 19, 18 });
-         Assert.AreEqual(S1.Variable("Wheat KL(mm/mm)"), new double[] { 1.0, 0.9, 0.8 });
-
-         Assert.AreEqual(S2.Name, "S2");
-         Assert.AreEqual(S2.Property("Region"), "Dalby");
-         Assert.AreEqual(S2.Variable("Thickness(mm)"), new double[] { 150, 200, 200 });
-         Assert.AreEqual(S2.Variable("BD (g/cc)"), new double[] { 1.4, 1.5, 1.6 });
-         Assert.AreEqual(S2.Variable("OC (Walkley Black %)"), new double[] { 1.6, 0.6, 0.1 });
-         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat LL(mm/mm)"), new double[] { 17.0, 16, 15.00 }));
-         Assert.IsTrue(MathUtility.AreEqual(S2.Variable("Wheat KL(mm/mm)"), new double[] { 0.7, 0.6, 0.5 }));
-
+         Assert.AreEqual(Soil.Get(S1, "BD").Doubles, new double[] { 1.1, 1.2, 1.3 });
+         Assert.AreEqual(Soil.Get(S1, "OC").Doubles, new double[] { 4.6, 3.6, 2.6 });
+         Assert.AreEqual(Soil.Get(S1, "Wheat LL").Doubles, new double[] { 20, 19, 18 });
+         Assert.AreEqual(Soil.Get(S1, "Wheat KL").Doubles, new double[] { 1.0, 0.9, 0.8 });
          }
 
-
-      /// <summary>
-      /// Make sure the soil can read from a column in a datatable.
-      /// </summary>
-      [Test]
-      public void ReadFromTableColumn()
-         {
-         // Create a data table with 2 soils in it.
-         DataTable Table = new DataTable();
-         DataTableUtility.AddColumn(Table, "Name", new string[] { "S1", "S1", "S1", "S2", "S2", "S2" });
-         DataTableUtility.AddColumn(Table, "Region", new string[] { "Toowoomba", "Toowoomba", "Toowoomba", "Dalby", "Dalby", "Dalby" });
-         DataTableUtility.AddColumn(Table, "Thickness (mm)", new double[] { 100, 300, 300, 150, 200, 200 });
-         DataTableUtility.AddColumn(Table, "BD (g/cc)", new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 });
-
-         S.Read(Table, "BD (g/cc)", "Water");
-         Assert.AreEqual(S.Variable("BD (g/cc)"), new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 });
-
-         }
 
       /// <summary>
       /// Ensure that a soil can write a datatable of a specific profile 
@@ -415,11 +376,10 @@ namespace Test
          VariableNames.Add("Thickness (mm)");
          VariableNames.Add("Depth (cm)");
          VariableNames.Add("SWCON (0-1)");
-         VariableNames.Add("MWCON (0-1)");
 
          DataTable Table = new DataTable();
 
-         S.WriteUnMapped(Table, VariableNames);
+         Soil.WriteToTable(S, Table, VariableNames);
 
          // Check that we have variables.
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Thickness (mm)"),
@@ -430,9 +390,6 @@ namespace Test
          Assert.AreEqual(Depths[2], "20-40");
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "SWCON (0-1)"),
                                             new double[] { 0.3, 0.3, 0.3 }));
-
-         // Make sure there is an MWCON column and that it doesn't have any values.
-         Assert.IsFalse(MathUtility.ValuesInArray(DataTableUtility.GetColumnAsDoubles(Table, "MWCON (0-1)")));
          }
 
       /// <summary>
@@ -456,7 +413,7 @@ namespace Test
 
          DataTable Table = new DataTable();
 
-         S.Write(Table, VariableNames);
+         Soil.WriteToTable(S, Table, VariableNames);
 
          // Check that we have variables.
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Thickness (mm)"),
@@ -469,9 +426,9 @@ namespace Test
          Assert.AreEqual(Depths[3], "60-90");
          Assert.AreEqual(Depths[4], "90-120");
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Barley LL (mm/mm)"),
-                                   new double[] { 0.29, 0.28, 0.28, 0.28, 0.28 }));
+                                   new double[] { 0.29, 0.28, 0.29, 0.29, 0.30 }));
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Barley PAWC (mm)"),
-                                   new double[] { 37.5, 37.5, 37.5, 37.5, 37.5 }));
+                                   new double[] { 37.5, 37.5, 0, 0, 0 }));
          }
 
       /// <summary>
@@ -491,7 +448,7 @@ namespace Test
 
          DataTable Table = new DataTable();
 
-         S.WriteUnMapped(Table, VariableNames);
+         Soil.WriteToTable(S, Table, VariableNames);
 
          // Check that we have variables.
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Thickness (mm)"),
@@ -510,33 +467,6 @@ namespace Test
 
          }
 
-      /// <summary>
-      /// Make sure that a soil can be exported to a spreadsheet and then reimported.
-      /// </summary>
-      [Test]
-      public void SpreadsheetReadWrite()
-         {
-         //string TestFileName = Directory.GetCurrentDirectory() + "\\test.xls";
-
-         //XmlDocument Doc = new XmlDocument();
-         //Doc.LoadXml("<dummy>" + S.XML + "</dummy>");
-
-         //StringCollection Paths = new StringCollection();
-         //Paths.Add("Test Soil");
-         //SoilSpreadsheet.Export(TestFileName, Doc.DocumentElement, Paths);
-         //Assert.IsTrue(File.Exists(TestFileName));
-         //string FileName = SoilSpreadsheet.OpenXLS(TestFileName, null);
-         //StreamReader In = new StreamReader(FileName);
-         //string XML = In.ReadToEnd();
-         //Soil NewSoil = Soil.CreateFromXML(XML);
-
-         //Assert.AreEqual(NewSoil.Name, "AllSoils");
-         //Assert.IsTrue(MathUtility.AreEqual(S.Variable("Thickness (mm)"),
-         //                                   new double[] { 150.000,   150.000,   300.000,   300.000,   300.000 }));
-         //Assert.IsTrue(MathUtility.AreEqual(S.Variable("BD (g/cc)"),
-         //                                   new double[] { 1.020,     1.030,     1.020,     1.020,     1.060 }));
-
-         }
 
       /// <summary>
       /// Ensure that a soil can write a datatable given a custom list of variable names and
@@ -561,7 +491,7 @@ namespace Test
 
 
          DataTable Table = new DataTable();
-         S.Write(Table, VariableNames);
+         Soil.WriteToTable(S, Table, VariableNames);
 
          // Check that we have properties.
          Assert.AreEqual(DataTableUtility.GetColumnAsStrings(Table, "Site", 5)[0], "My site");
@@ -578,61 +508,17 @@ namespace Test
          Assert.AreEqual(Table.Columns.IndexOf("Rocks (%)"), 7);
          Assert.IsTrue(Table.Columns.Contains("FBiom (0-1)"));
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "FBiom (0-1)"),
-                                            new double[] {0.025, 0.02167, 0.02, 0.02, 0.02})); 
+                                            new double[] {0.025, 0.02167, 0.0066666, 0.0, 0.0})); 
 
          // Now check that we have the crops.
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Barley LL (mm/mm)"),
-                                            new double[] { 0.29, 0.28, 0.28, 0.28, 0.28 }));
+                                            new double[] { 0.29, 0.28, 0.29, 0.29, 0.30 }));
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Barley KL (/day)"),
-                                            new double[] { 0.1, 0.1, 0.1, 0.1, 0.1 }));
+                                            new double[] { 0.01, 0.01, 0.01, 0.01, 0.01 }));
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Chickpea XF (0-1)"),
                                             new double[] { 1.0, 1.0, 1.0, 0.33333, 0.0 })); 
          }
 
-      /// <summary>
-      /// Ensure that a soil can return a list of valid variable names for a specified profile node 
-      /// eg. Water, SoilWat.
-      /// </summary>
-      [Test]
-      public void ValidVariableNames()
-         {
-         List<string> Variables = S.ValidVariablesForProfileNode("Water", "");
-         Assert.IsTrue(Variables.Contains("Thickness (mm)"));
-         Assert.IsTrue(Variables.Contains("BD (g/cc)"));
-         Assert.IsTrue(Variables.Contains("KS (mm/day)"));
-         Assert.IsTrue(Variables.Contains("AirDry (mm/mm)"));
-         Assert.IsTrue(Variables.Contains("LL15 (mm/mm)"));
-         Assert.IsTrue(Variables.Contains("DUL (mm/mm)"));
-         Assert.IsTrue(Variables.Contains("SAT (mm/mm)"));
-
-         Variables = S.ValidVariablesForProfileNode("SoilWat", "");
-         Assert.IsTrue(Variables.Contains("SWCON (0-1)"));
-         Assert.IsTrue(Variables.Contains("MWCON (0-1)"));
-
-         Variables = S.ValidVariablesForProfileNode("SoilOrganicMatter", "");
-         Assert.IsTrue(Variables.Contains("OC (Walkley Black %)"));
-         Assert.IsTrue(Variables.Contains("FBiom (0-1)"));
-         Assert.IsTrue(Variables.Contains("FInert (0-1)"));
-
-         Variables = S.ValidVariablesForProfileNode("SoilCrop", "Barley");
-         Assert.IsTrue(Variables.Contains("Barley LL (mm/mm)"));
-         Assert.IsTrue(Variables.Contains("Barley KL (/day)"));
-         Assert.IsTrue(Variables.Contains("Barley XF (0-1)"));
-
-         }
-
-      /// <summary>
-      /// Test that the soil's TargetThickness can be modified. 
-      /// </summary>
-      [Test]
-      public void SetTargetThickness()
-         {
-         double[] TargetThickness =  {100, 500};
-
-         S.TargetThickness = TargetThickness;
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("ll15 (mm)"), new double[] { 29.0, 145.0 }));
-
-         }
 
       /// <summary>
       /// Make sure the caller can delete values from a soil variable using the 
@@ -641,56 +527,22 @@ namespace Test
       [Test]
       public void DeleteValues()
          {
-         double[] NewValues = { 0.30, 0.31, 999999.0, 0.32 };
-         S.SetVariable("Chickpea LL (mm/mm)", NewValues);
-         Assert.IsTrue(MathUtility.AreEqual(S.VariableUnMapped("Chickpea LL (mm/mm)"),
+         double[] Thickness = new double[4] {100, 100, 100, 100}; 
+         Soil.Variable ChickpeaLL = new Soil.Variable("Chickpea LL", "mm/mm",
+                                                      new double[] { 0.30, 0.31, 999999.0, 0.32 }, 
+                                                      Thickness);
+
+         Soil.Set(S, ChickpeaLL);
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Chickpea LL").Doubles,
                                    new double[] { 0.30, 0.31, 999999.0, 0.32 }));
          DataTable Table = new DataTable();
          List<string> VariableNames = new List<string>();
          VariableNames.Add("Chickpea LL (mm/mm)");
-         S.WriteUnMapped(Table, VariableNames);
+         Soil.WriteToTable(S, Table, VariableNames);
          Assert.AreEqual(Table.Rows[0][0], 0.30);
          Assert.AreEqual(Table.Rows[1][0], 0.31);
          Assert.AreEqual(Table.Rows[2][0], DBNull.Value);
          Assert.AreEqual(Table.Rows[3][0], 0.32);
-         }
-
-      /// <summary>
-      /// Make sure that depth and thickness are interchangable i.e. that you can
-      /// get and set both at will.
-      /// </summary>
-      [Test]
-      public void InterchangableDepthThickness()
-         {
-         // Make sure we can change depth strings.
-         string[] NewDepthValues = { "0-15", "15-30", "", "60-90", "90-120" };
-         DataTable DepthTable = new DataTable();
-         DataTableUtility.AddColumn(DepthTable, "Depth (cm)", NewDepthValues);
-         S.Read(DepthTable, "Depth (cm)", "Water");
-
-         DataTable NewDepthTable = new DataTable();
-         List<string> VariableNames = new List<string>();
-         VariableNames.Clear();
-         VariableNames.Add("Depth (cm)");
-         VariableNames.Add("Thickness (cm)");
-         S.Write(NewDepthTable, VariableNames);
-
-         string[] NewDepthValues2 = DataTableUtility.GetColumnAsStrings(NewDepthTable, "Depth (cm)");
-         Assert.AreEqual(NewDepthValues2.Length, 5);
-         Assert.AreEqual(NewDepthValues2[0], "0-15");
-         Assert.AreEqual(NewDepthValues2[1], "15-30");
-         Assert.AreEqual(NewDepthValues2[2], "");
-         Assert.AreEqual(NewDepthValues2[3], "30-60");
-         Assert.AreEqual(NewDepthValues2[4], "60-90");
-
-         string[] NewThicknessValues = DataTableUtility.GetColumnAsStrings(NewDepthTable, "Thickness (cm)");
-         Assert.AreEqual(NewThicknessValues.Length, 5);
-         Assert.AreEqual(NewThicknessValues[0], "15");
-         Assert.AreEqual(NewThicknessValues[1], "15");
-         Assert.AreEqual(NewThicknessValues[2], "");
-         Assert.AreEqual(NewThicknessValues[3], "30");
-         Assert.AreEqual(NewThicknessValues[4], "30");
-         
          }
 
       /// <summary>
@@ -699,11 +551,11 @@ namespace Test
       [Test]
       public void GetSoilOrganicMatterVariables()
          {
-         double[] InertC = S.VariableUnMapped("InertC (kg/ha)");         
+         double[] InertC = Soil.Get(S, "InertC").Doubles;
          Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(InertC), 25290.46));
          Assert.AreEqual(InertC.Length, 2);
 
-         double[] BiomC = S.VariableUnMapped("BiomC (kg/ha)");         
+         double[] BiomC = Soil.Get(S, "BiomC").Doubles;
          Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(BiomC), 590.63818));
          Assert.AreEqual(BiomC.Length, 2);
 
@@ -717,7 +569,7 @@ namespace Test
 
          DataTable Table = new DataTable();
 
-         S.WriteUnMapped(Table, VariableNames);
+         Soil.WriteToTable(S, Table, VariableNames);
 
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Thickness (mm)"),
                                             new double[] { 200, 200 }));
@@ -742,26 +594,15 @@ namespace Test
          {
          // Only need to put codes on calculated variables (e.g. PAWC) and not normal variable (e.g. LL)
          // Check codes on crop variables.
-         List<string> VariableNames = new List<string>();
-         VariableNames.Add("Barley LLCode");
-         VariableNames.Add("Barley PAWCCode (mm)");
-         DataTable Table = new DataTable();
-         S.WriteUnMapped(Table, VariableNames);
-         Assert.AreEqual(DataTableUtility.GetColumnAsStrings(Table, "Barley LLCode")[0], "Field measured");
-         Assert.AreEqual(DataTableUtility.GetColumnAsStrings(Table, "Barley LLCode")[1], "Laboratory measured");
-         Assert.AreEqual(DataTableUtility.GetColumnAsStrings(Table, "Barley PAWCCode (mm)")[0], "Calculated");
 
-         // Check codes on soil organic matter variables.
+         Soil.Variable BarleyLL = Soil.Get(S, "Barley LL");
+         Soil.Variable BarleyPAWC = Soil.Get(S, "Barley PAWC");
+         Soil.Variable InertC = Soil.Get(S, "InertC");
 
-         List<string> VariableNames2 = new List<string>();
-         VariableNames2.Add("InertCCode (kg/ha)");
-         VariableNames2.Add("BiomCCode (kg/ha)");
-         VariableNames2.Add("HumCCode (kg/ha)");
-         DataTable Table2 = new DataTable();
-         S.WriteUnMapped(Table2, VariableNames2);
-         Assert.AreEqual(DataTableUtility.GetColumnAsStrings(Table2, "InertCCode (kg/ha)")[0], "Calculated");
-         Assert.AreEqual(DataTableUtility.GetColumnAsStrings(Table2, "BiomCCode (kg/ha)")[0], "Calculated");
-         Assert.AreEqual(DataTableUtility.GetColumnAsStrings(Table2, "HumCCode (kg/ha)")[0], "Calculated");
+         Assert.AreEqual(BarleyLL.Codes[0], "Field measured");
+         Assert.AreEqual(BarleyLL.Codes[1], "Laboratory measured");
+         Assert.AreEqual(BarleyPAWC.Codes[0], "Calculated");
+         Assert.AreEqual(InertC.Codes[0], "Calculated");
          }
 
       /// <summary>
@@ -771,9 +612,12 @@ namespace Test
       [Test]
       public void DeleteDepths()
          {
-         string[] NewValues = { "0-10" };
-         S.SetVariable("Barley Depth (cm)", NewValues);
-         Assert.IsTrue(MathUtility.AreEqual(S.VariableUnMapped("Barley LL (mm/mm)"),
+         Soil.Variable LL = Soil.Get(S, "Barley LL");
+         LL.Name = "Barley LL";
+         LL.ThicknessMM = new double[1];
+         LL.ThicknessMM[0] = 100;
+         Soil.Set(S, LL);
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Barley LL").Doubles,
                                    new double[] { 0.29 }));
          }
 
@@ -783,7 +627,7 @@ namespace Test
       [Test]
       public void GetAllowableUnits()
          {
-         List<string> OkUnits = S.ValidUnits("no3");
+         List<string> OkUnits = Soil.ValidUnits("no3");
          Assert.AreEqual(OkUnits.Count, 2);
          Assert.AreEqual(OkUnits[0], "ppm");
          Assert.AreEqual(OkUnits[1], "kg/ha");
@@ -795,41 +639,11 @@ namespace Test
       [Test]
       public void ChangeUnitsInSoilSample()
          {
-         // Create a data table with 2 soils in it.
-         DataTable Table = new DataTable();
-         DataTableUtility.AddColumn(Table, "NO3 (kg/ha)", new double[] {1, 2, 3 });
-
-         S.Read(Table, "NO3 (kg/ha)", "Initial Nitrogen");
-
-         double[] NewValues = S.VariableUnMapped("NO3 (kg/ha)", "Initial Nitrogen");
-
-         Assert.AreEqual(NewValues, new double[] {1, 2, 3 });
+         Soil.Variable NO3 = Soil.Get(S, "NO3");
+         NO3.Units = "kg/ha";
+         Assert.IsTrue(MathUtility.AreEqual(NO3.Doubles, new double[] {9.949595, 3.2460467, 6.4290634}));
          }
 
-      /// <summary>
-      /// Make sure we can write a sample to a datatable.
-      /// </summary>
-      [Test]
-      public void WriteSampleToTable()
-         {
-         List<string> VariableNames = new List<string>();
-         VariableNames.Add("Depth (cm)");
-         VariableNames.Add("NO3 (ppm)");
-         VariableNames.Add("SW (mm/mm)");
-
-         DataTable Table = new DataTable();
-         S.WriteUnMapped(Table, VariableNames, "Initial nitrogen2");
-
-         // Check that we have variables.
-         string[] Depths = DataTableUtility.GetColumnAsStrings(Table, "Depth (cm)");
-         double[] NO3 = DataTableUtility.GetColumnAsDoubles(Table, "NO3 (ppm)");
-         double[] SW = DataTableUtility.GetColumnAsDoubles(Table, "SW (mm/mm)");
-
-         Assert.AreEqual(Depths, new string[] { "0-15", "15-30", "30-60", "60-90" });
-
-         Assert.AreEqual(NO3, new double[] { 10, 11, 12, 13 });
-         Assert.IsFalse(MathUtility.ValuesInArray(SW));
-         }
 
       /// <summary>
       /// Make sure we can set codes for our soil variables.
@@ -837,36 +651,19 @@ namespace Test
       [Test]
       public void SetCodes()
          {
-         string[] Codes = { "U", "E" }; 
-         S.SetVariable("Barley LLCode", Codes);
+         string[] Codes = { "U", "E" };
+         Soil.Variable LL = Soil.Get(S, "Barley LL");
+         LL.Name = "Barley LL";
+         LL.Codes[0] = "U";
+         LL.Codes[1] = "E";
+         Soil.Set(S, LL);
 
-         Codes = S.VariableAsStrings("Barley LLCode");
+         Codes = Soil.Get(S, "Barley LL").Codes;
          Assert.AreEqual(Codes.Length, 2);
          Assert.AreEqual(Codes[0], "U");
          Assert.AreEqual(Codes[1], "E");
 
          }
-
-      /// <summary>
-      /// Some soil variables have special "Method" variables e.g. OCMethod, PHMethod.
-      /// Make sure we can read and write these. Neal D's spreadsheet has these in them.
-      /// </summary>
-      [Test]
-      public void SetMethodVariableNames()
-         {
-         // Create a data table with 2 soils in it.
-         DataTable Table = new DataTable();
-         DataTableUtility.AddColumn(Table, "Name", new string[] { "X", "X" });
-         DataTableUtility.AddColumn(Table, "OC", new double[] { 1.0, 0.5 });
-         DataTableUtility.AddColumn(Table, "OCMethod", new string[] { "Total %", "Total %" });
-
-         S.Read(Table, 0);
-
-         double[] OC = S.VariableUnMapped("OC (Walkley Black %)");
-         Assert.AreEqual(OC.Length, 2);
-         Assert.IsTrue(MathUtility.AreEqual(OC, new double[] {0.7692301, 0.384615} ));
-         }
-
 
       }
    }

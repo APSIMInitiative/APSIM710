@@ -437,7 +437,13 @@ namespace GraphDataUserInterface
                if (AnyPointNull)
                   {
                   foreach (ValueList L in S.ValuesLists)
-                     L.RemoveAt(i);
+                     {
+                     L.Value = MathUtility.RemoveValueAt(L.Value, i);
+                     L.Count = L.Count - 1;
+                     }
+                 
+                  NumPoints--;
+                  i--;
                   }
                }
             }

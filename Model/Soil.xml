@@ -68,11 +68,11 @@
                <rocks>[soil.Rocks(%)]</rocks>
                [endif]
          </initdata></component>
-      [if "[soil.RootCP]"]
+      [foreach Soil.Phosphorus]
       <component name="Phosphorus" executable="%apsim%/Model/SoilP.%dllext%"><executable name="%apsim%/Model/SoilP.%dllext%" version="1.0" /><initdata>
                [Model SoilP]
                <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption><sorption_coeff>[soil.SorptionCoeff]</sorption_coeff></initdata></component>
-      [endif]
+      [endfor]
       [if [soil.Cl (mg/kg)]]
     <component name="Cl" executable="%apsim%/Model/Solute.%dllext%">
       <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" />

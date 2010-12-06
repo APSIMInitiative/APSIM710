@@ -167,14 +167,15 @@ public class ApsimToSim
                }
             }
 
-         // Create an instance of the soil class so that we can ask it for the values we need.
          if (SoilComponent != null)
             {
-            Soil SoilInPaddock = Soil.CreateFromXML(SoilComponent.FullXMLNoShortCuts());
+            // Create a soil XML node.
+            XmlDocument Doc = new XmlDocument();
+            Doc.LoadXml(SoilComponent.FullXMLNoShortCuts());
+            XmlNode SoilNode = Doc.DocumentElement;
 
-            // Optionally set a targetthickess.
-            SoilInPaddock.UseThicknessIfPresent();
-            ApsimToSimContents = SoilInPaddock.ReplaceSoilMacros(ApsimToSimContents);
+            // Now do all soil macro replacements.
+            ApsimToSimContents = Soil.ReplaceSoilMacros(SoilNode, ApsimToSimContents);
             }
          }
       return ApsimToSimContents;

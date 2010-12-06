@@ -272,6 +272,14 @@ namespace CSGeneral
          return dConstrainedValue;
          }
 
+      static public double[] Constrain(double[] dLowerLimits, double[] dUpperLimits, double[] dValues)
+         {
+         double[] Values = new double[dValues.Length];
+         for (int i = 0; i < dValues.Length; i++)
+            Values[i] = Math.Min(dUpperLimits[i], Math.Max(dLowerLimits[i], dValues[i]));
+         return Values;
+         }
+
       static public double Round(double Value, int NumDecPlaces)
          // rounds properly rather than the math.round function.
          // e.g. 3.4 becomes 3.0
@@ -605,6 +613,81 @@ namespace CSGeneral
          double[] Values = new double[NumValues];
          for (int i = 0; i < NumValues; i++)
             Values[i] = Value;
+         return Values;
+         }
+
+      static public bool GreaterThan(double Value1, double Value2, int NumDecPlaces)
+         // rounds properly rather than the math.round function.
+         // e.g. 3.4 becomes 3.0
+         //      3.5 becomes 4.0
+         {
+         double Multiplier = Math.Pow(10.0, NumDecPlaces);  // gives 1 or 10 or 100 for decplaces=0, 1, or 2 etc
+         Value1 = Math.Truncate(Value1 * Multiplier + 0.5);
+         Value2 = Math.Truncate(Value2 * Multiplier + 0.5);
+         return (Value1 > Value2);
+         }
+
+      static public bool LessThan(double Value1, double Value2, int NumDecPlaces)
+         // rounds properly rather than the math.round function.
+         // e.g. 3.4 becomes 3.0
+         //      3.5 becomes 4.0
+         {
+         double Multiplier = Math.Pow(10.0, NumDecPlaces);  // gives 1 or 10 or 100 for decplaces=0, 1, or 2 etc
+         Value1 = Math.Truncate(Value1 * Multiplier + 0.5);
+         Value2 = Math.Truncate(Value2 * Multiplier + 0.5);
+         return (Value1 < Value2);
+         }
+
+      static public bool IsNumerical(string StringValue)
+         {
+         double Value;
+         if (StringValue != "" && !Double.TryParse(StringValue, out Value))
+            return false;
+         else
+            return true;
+         }
+      static public bool ValuesAreNumerical(string[] Values)
+         {
+         for (int i = 0; i < Values.Length; i++)
+            {
+            if (!IsNumerical(Values[i]))
+               return false;
+            }
+         return true;
+         }
+
+      static public double[] RemoveMissingValuesFromBottom(double[] Values)
+         {
+         // Find the last non missing value.
+         int i;
+         for (i = Values.Length - 1; i >= 0; i--)
+            {
+            if (Values[i] != MissingValue)
+               break;
+            }
+         if (i <= 0)
+            return new double[0];
+         double[] ReturnValues = new double[i+1];
+         for (int j = 0; j <= i; j++)
+            ReturnValues[j] = Values[i];
+         return ReturnValues;
+         }
+      static public double[] RemoveValueAt(double[] Values, int Index)
+         {
+         List<double> NewValues = new List<double>();
+         for (int i = 0; i < Values.Length; i++)
+            {
+            if (i != Index)
+               NewValues.Add(Values[i]);
+            }
+         return NewValues.ToArray();
+         }
+
+      public static string[] DoublesToStrings(double[] DoubleValues)
+         {
+         string[] Values = new string[DoubleValues.Length];
+         for (int i = 0; i < DoubleValues.Length; i++)
+            Values[i] = DoubleValues[i].ToString();
          return Values;
          }
       }

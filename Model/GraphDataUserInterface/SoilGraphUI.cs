@@ -19,8 +19,8 @@ namespace GraphDataUserInterface
       private string FileName;
       private XmlNode OurData;
       private bool AdjustTopAxisTitle = false;
-      private Soil _Soil;
       private string CurrentChartType;
+      private XmlNode _SoilNode;
 
       /// <summary>
       /// Constructor
@@ -44,10 +44,10 @@ namespace GraphDataUserInterface
       /// <summary>
       /// A property to allow the parent to give us a soil object.
       /// </summary>
-      public Soil Soil
+      public XmlNode SoilNode
          {
-         get { return _Soil; }
-         set { _Soil = value; }
+         get { return _SoilNode; }
+         set { _SoilNode = value; }
          }
 
       /// <summary>
@@ -59,6 +59,7 @@ namespace GraphDataUserInterface
          Chart.Axes.Top.Automatic = true;
          Chart.Axes.Right.Automatic = true;
          Chart.Axes.Bottom.Automatic = true;
+         Chart.Series.Clear();
 
          // Try and load an appropriate template.
          if (Directory.Exists(Configuration.ApsimDirectory() + "\\UserInterface"))
@@ -94,7 +95,7 @@ namespace GraphDataUserInterface
             VariableNames.Add("SAT (mm/mm)");
 
             DataTable Table = new DataTable();
-            _Soil.Write(Table, VariableNames);
+            Soil.WriteToTable(SoilNode, Table, VariableNames);
             Table.TableName = "Water";
             AddDataSource(Table);
             }

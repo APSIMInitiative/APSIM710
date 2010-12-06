@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 24;
+      public static int CurrentVersion = 25;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -56,7 +56,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion21),
                                           new UpgraderDelegate(ToVersion22),
                                           new UpgraderDelegate(ToVersion23),
-                                          new UpgraderDelegate(ToVersion24)
+                                          new UpgraderDelegate(ToVersion24),
+                                          new UpgraderDelegate(ToVersion25)
                                        };
          if (Data != null)
             {
@@ -421,6 +422,8 @@ namespace ApsimFile
             Profile = XmlHelper.EnsureNodeExists(Data.ParentNode, "profile");
 
          int NumLayers = XmlHelper.ChildNodes(Data, "layer").Count;
+         if (NumLayers == 0)
+            return;
          XmlHelper.EnsureNumberOfChildren(Profile, "layer", "", NumLayers);
 
          int LayerNumber = 0;
@@ -1491,6 +1494,179 @@ namespace ApsimFile
                }
             }
          }
+
+      private static void ToVersion25(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // Make sure the soil nodes are complete and in the right order.
+         // ----------------------------------------------------------------
+         if (Node.Name.ToLower() == "soil")
+            {
+            if (XmlHelper.Attribute(Node, "shortcut") != "")
+               {
+               XmlNode LabChild = XmlHelper.Find(Node, "Lab");
+               if (LabChild != null && XmlHelper.Attribute(LabChild, "shortcut") != "")
+                  {
+                  string ShortCut = XmlHelper.Attribute(LabChild, "shortcut").Replace("/Lab", "/Analysis");
+                  XmlNode AnalysisChild = XmlHelper.ChangeType(LabChild, "Analysis");
+                  XmlHelper.SetAttribute(AnalysisChild, "shortcut", ShortCut);
+                  }
+               }
+            else
+               {
+               string[] SoilProperties = {"Country", "Site", "Region", "LocalName", "SoilType",
+                                   "NearestTown",
+                                   "NaturalVegetation",
+                                   "State",
+                                   "ApsoilNumber",
+                                   "Latitude",
+                                   "Longitude",
+                                   "LocationAccuracy",
+                                   "DataSource",
+                                   "Comments"};
+               SetPropertiesOrder(Node, SoilProperties, null);
+
+               // Order the nodes under <Water>
+               XmlNode WaterNode = XmlHelper.Find(Node, "Water");
+               if (WaterNode != null)
+                  {
+                  string[] Variables = { "Thickness", "KS", "BD", "AirDry", "LL15", "DUL", "SAT" };
+                  string[] VariableUnits = { "mm", "mm/day", "g/cc", "mm/mm", "mm/mm", "mm/mm", "mm/mm" };
+                  SetLayeredOrder(WaterNode, Variables, VariableUnits);
+
+                  // Order the variables in <SoilCrop>
+                  string[] CropVariables = { "Thickness", "LL", "KL", "XF" };
+                  string[] CropUnits = { "mm", "mm/mm", "/day", "0-1" };
+
+                  foreach (XmlNode CropNode in XmlHelper.ChildNodes(WaterNode, "SoilCrop"))
+                     {
+                     SetLayeredOrder(CropNode, CropVariables, CropUnits);
+                     }
+                  }
+
+               // Order the nodes under <SoilWat>
+               XmlNode SoilWatNode = XmlHelper.Find(Node, "SoilWat");
+               if (SoilWatNode != null)
+                  {
+                  string[] Properties = { "SummerCona", "SummerU", "SummerDate", "WinterCona",
+                                       "WinterU", "WinterDate", "DiffusConst", "DiffusSlope",
+                                       "Salb", "Cn2Bare", "CnRed", "CnCov", "CnCanopyFact",
+                                       "Slope", "DischargeWidth", "CatchmentArea", "MaxPond"};
+                  SetPropertiesOrder(SoilWatNode, Properties, null);
+                  string[] Variables = { "Thickness", "SWCON", "MWCON", "KLAT" };
+                  string[] Units = { "mm", "0-1", "0-1", "mm/d" };
+                  SetLayeredOrder(SoilWatNode, Variables, Units);
+                  }
+
+               // Order the nodes under <SoilOrganicMatter>
+               XmlNode SOMNode = XmlHelper.Find(Node, "SoilOrganicMatter");
+               if (SOMNode != null)
+                  {
+                  string[] Properties = { "RootCN", "RootWt", "SoilCn", "EnrACoeff", "EnrBCoeff" };
+                  SetPropertiesOrder(SOMNode, Properties, null);
+
+                  string[] Variables = { "Thickness", "OC", "FBiom", "FInert" };
+                  string[] Units = { "mm", "Total %", "0-1", "0-1" };
+                  SetLayeredOrder(SOMNode, Variables, Units);
+                  }
+               // Order the nodes under <Lab>
+               XmlNode LabNode = XmlHelper.Find(Node, "Lab");
+               if (LabNode != null)
+                  {
+                  string[] Variables = { "Thickness", "Rocks", "Texture", "MunsellColour", "EC", "PH", "CL", "Boron", "CEC",
+                                      "Ca", "Mg", "Na", "K", "ESP", "Mn", "Al",
+                                      "ParticleSizeSand", "ParticleSizeSilt", "ParticleSizeClay"};
+
+
+
+                  string[] Units =     { "mm", "%", "", "", "1:5 dS/m", "1:5 water", "mg/kg", "Hot water mg/kg", "cmol+/kg",
+                                      "cmol+/kg", "cmol+/kg", "cmol+/kg", "cmol+/kg", "%", "mg/kg", "cmol+/kg",
+                                      "%", "%", "%"};
+                  SetLayeredOrder(LabNode, Variables, Units);
+                  XmlHelper.ChangeType(LabNode, "Analysis");
+                  }
+               // Order the nodes under <Sample>
+               foreach (XmlNode SampleNode in XmlHelper.ChildNodes(Node, "Sample"))
+                  {
+                  string[] Variables = { "Thickness", "NO3", "NH4", "SW" };
+                  string[] Units = { "mm", "ppm", "ppm", "mm/mm" };
+                  SetLayeredOrder(SampleNode, Variables, Units);
+                  }
+               // Order the nodes under <Phosphorus>
+               XmlNode PNode = XmlHelper.Find(Node, "Phosphorus");
+               if (PNode != null)
+                  {
+                  string[] Properties = { "RootCP", "RateDissolRock", "RateLossAvail", "SorptionCoeff" };
+                  SetPropertiesOrder(PNode, Properties, null);
+
+                  string[] Variables = { "Thickness", "LabileP", "BandedP", "RockP", "Sorption" };
+                  string[] Units = { "mm", "mg/kg", "kg/ha", "kg/ha", "" };
+                  SetLayeredOrder(PNode, Variables, Units);
+                  }
+               }
+            }
+         }
+
+      /// <summary>
+      /// Fix the order of the properties of the specified parent xml node to that 
+      /// giveen in ChildNodeNames
+      /// </summary>
+      private static void SetPropertiesOrder(XmlNode ParentNode, string[] ChildNodeNames, string[] Units)
+         {
+         for (int i = 0; i < ChildNodeNames.Length; i++)
+            {
+            XmlNode Child = XmlHelper.Find(ParentNode, ChildNodeNames[i]);
+            if (Child == null)
+               {
+               Child = ParentNode.OwnerDocument.CreateElement(ChildNodeNames[i]);
+               if (Units != null && Units[i] != "")
+                  XmlHelper.SetAttribute(Child, "units", Units[i]);
+               }
+
+            Child = ParentNode.InsertBefore(Child, ParentNode.ChildNodes[i]);
+            }
+         }
+      /// <summary>
+      /// Fix the order of the layered variables of the specified parent xml node to that 
+      /// giveen in ChildNodeNames
+      /// </summary>
+      private static void SetLayeredOrder(XmlNode ProfileNode, string[] ChildNodeNames, string[] Units)
+         {
+         foreach (XmlNode LayerNode in XmlHelper.ChildNodes(ProfileNode, "Layer"))
+            {
+            if (XmlHelper.Find(LayerNode, "Depth") != null)
+               RemoveDepthNodes(XmlHelper.Find(LayerNode, "Depth"));
+            SetPropertiesOrder(LayerNode, ChildNodeNames, Units);
+            }
+         }
+
+      /// <summary>
+      /// Change the depth nodes: <depth>0-10</depth>
+      /// to thickness nodes : <thickness>100</thickness>
+      /// </summary>
+      private static void RemoveDepthNodes(XmlNode DepthNode)
+         {
+         string[] DepthStringBits = DepthNode.InnerText.Split("-".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+         int Thickness = 100;
+         if (DepthStringBits.Length == 2)
+            {
+            int Depth1;
+            int Depth2;
+            if (Int32.TryParse(DepthStringBits[0], out Depth1))
+               if (Int32.TryParse(DepthStringBits[1], out Depth2))
+                  {
+                  Thickness = Depth2 - Depth1;
+                  string Units = XmlHelper.Attribute(DepthNode, "units");
+                  if (Units == "cm")
+                     Thickness *= 10;
+                  }
+            }
+         XmlNode ThicknessNode = XmlHelper.ChangeType(DepthNode, "Thickness");
+         ThicknessNode.InnerText = Thickness.ToString();
+         XmlHelper.SetAttribute(ThicknessNode, "units", "mm");
+         }
+
 
       }
    }

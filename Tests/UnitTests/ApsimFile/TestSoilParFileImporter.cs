@@ -4,6 +4,7 @@ using NUnit.Framework;
 using ApsimFile;
 using System.IO;
 using CSGeneral;
+using System.Xml;
 
 
 namespace Test
@@ -134,13 +135,13 @@ namespace Test
       [Test]
       public void TestImportFromPar()
          {
-         Soil S = Soil.CreateFromXML(SoilParFileImporter.Import(".\\Temp.par"));
-         Assert.AreEqual(S.Name, "BlackVertosol");
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("BD"),
+         XmlNode S = Soil.CreateFromXML(SoilParFileImporter.Import(".\\Temp.par"));
+         Assert.AreEqual(XmlHelper.Name(S), "BlackVertosol");
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "BD").Doubles,
                                             new double[] { 1.02, 1.03, 1.02, 1.02, 1.06, 1.11, 1.12, 1.15, 1.18, 1.2, 1.25 }));
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("OC"),
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "OC").Doubles,
                                             new double[] {1.04, 0.89, 0.89, 0.89, 0.77, 0.45, 0.27, 0.22, 0.16, 0.13, 0.12 }));
-         Assert.IsTrue(MathUtility.AreEqual(S.Variable("nwheat LL"),
+         Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "nwheat LL").Doubles,
                                             new double[] { 0.290, 0.290, 0.320, 0.320, 0.350, 0.380, 0.410, 0.480, 0.470, 0.460, 0.440 }));
         
          }

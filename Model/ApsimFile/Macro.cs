@@ -43,17 +43,11 @@ namespace ApsimFile
       // ------------------------------------------------------------------
       public string Go(XmlNode MacroValues, string MacroContents)
          {
-         StringCollection AliasNames = new StringCollection();
-         XmlNode[] AliasNodes = new XmlNode[100];
-
-         AliasNames.Add(XmlHelper.Type(MacroValues).ToLower());
-         AliasNodes[0] = MacroValues;
-
          string Contents = MacroContents;
          ParseIncludes(ref Contents);
          ParseComments(ref Contents);
 
-         Contents = ParseForEach(Contents, MacroValues, AliasNames, AliasNodes);
+         Contents = ParseForEach(MacroValues, Contents);
          ReplaceGlobalMacros(ref Contents, MacroValues);
          ParseIf(ref Contents);
 		 ParseToLower(ref Contents);
@@ -69,6 +63,21 @@ namespace ApsimFile
          Contents = ReplaceHTMLSymbols(Contents);
          return WriteStringToFiles(Contents, OutputDirectory, AppendToFile);
          }
+      // ------------------------------------------------------------------
+      // Parse and remove all foreach macros from specified string.
+      // Contents is the full text to parse.
+      //
+      // ------------------------------------------------------------------
+      public string ParseForEach(XmlNode MacroValues, string Contents)
+         {
+         StringCollection AliasNames = new StringCollection();
+         XmlNode[] AliasNodes = new XmlNode[100];
+         AliasNames.Add(XmlHelper.Type(MacroValues).ToLower());
+         AliasNodes[0] = MacroValues;
+         return ParseForEach(Contents, MacroValues, AliasNames, AliasNodes);
+         }
+
+
       // ------------------------------------------------------------------
       // Parse and remove all foreach macros from specified string.
       // Contents is the full text to parse.

@@ -16,7 +16,8 @@ namespace CSUserInterface
       {
       private GraphDataUserInterface.SoilGraphUI Graph = new GraphDataUserInterface.SoilGraphUI();
       private DataTable Table;
-      private Soil _Soil;
+      private XmlNode _SoilNode;
+      private XmlNode ProfileNode;
 
       /// <summary>
       /// Constructor
@@ -36,11 +37,18 @@ namespace CSUserInterface
          Component SoilComponent = Controller.ApsimData.Find(NodePath).Parent;
          if (SoilComponent.Type.ToLower() != "soil")
             SoilComponent = SoilComponent.Parent;
-         _Soil = Soil.CreateFromXML(SoilComponent.FullXMLNoShortCuts());
+         _SoilNode = Soil.CreateFromXML(SoilComponent.FullXMLNoShortCuts());
          Properties.OnLoad(Controller, NodePath, Data.OuterXml);
 
+         // Find the node under _SoilNode that is our node that we're to work with.
+         List<XmlNode> Nodes = new List<XmlNode>();
+         XmlHelper.FindAllRecursively(_SoilNode, XmlHelper.Name(Data), ref Nodes);
+         if (Nodes.Count != 1)
+            throw new Exception("Cannot find soil node: " + XmlHelper.Name(Data));
+         ProfileNode = Nodes[0];
+
          // Call OnLoad in our graph
-         Graph.Soil = _Soil;
+         Graph.SoilNode = _SoilNode;
          Graph.OnLoad(Controller, NodePath, Controller.ApsimData.Find(NodePath).Contents);
          Graph.Parent = this;
          Graph.Visible = true;
@@ -71,12 +79,9 @@ namespace CSUserInterface
          // Create and fill a datatable from our soil
          Table.Rows.Clear();
          Table.Columns.Clear();
-         if (XmlHelper.Name(Data) == "Water")
-            _Soil.Write(Table, GetVariableNames());
-         else if (Data.Name == "SoilCrop")
-            _Soil.WriteUnMapped(Table, GetVariableNames());
-         else
-            _Soil.WriteUnMapped(Table, GetVariableNames(), XmlHelper.Name(Data));
+
+         Soil.WriteToTable(_SoilNode, Table, GetVariableNames());
+         
          Grid.DataSourceTable = Table;
          Grid.AllowUserToAddRows = true;
 
@@ -127,7 +132,7 @@ namespace CSUserInterface
             {
             string RawVariableName = Grid.Columns[Col].HeaderText;
             string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
-            List<string> ValidUnits = _Soil.ValidUnits(RawVariableName);
+            List<string> ValidUnits = Soil.ValidUnits(RawVariableName);
             if (ValidUnits.Count > 1)
                {
                ContextMenuStrip PopupMenu = new ContextMenuStrip();
@@ -147,11 +152,7 @@ namespace CSUserInterface
                }
             }
          if (LabelText != "")
-            {
-            Label.Text = "By right clicking on column headings, you can change the units of these variables: " + LabelText +
-                         ".\nThis doesn't convert their values. It flags the values as being of that unit." +
-                         " They will be converted later, if necessary, by APSIM.";
-            }
+            Label.Text = "By right clicking on column headings, you can change the units of these variables: " + LabelText;
          }
 
       /// <summary>
@@ -163,26 +164,25 @@ namespace CSUserInterface
             {
             string RawVariableName = Grid.Columns[Col].HeaderText;
             string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
-            if (RawVariableName != "Depth")
+            if (RawVariableName != "Thickness" && RawVariableName != "Depth" && RawVariableName != "DepthMidPoints")
                {
-               string NewVariableName = RawVariableName + "Code" + "(" + Units + ")";
-               string[] Codes = _Soil.VariableAsStrings(NewVariableName);
-               if (Codes != null)
+               Soil.Variable Var = Soil.Get(_SoilNode, RawVariableName);
+               if (Var.Codes != null)
                   {
-                  if (Codes.Length > 0 && Codes[0] == "Calculated")
+                  if (Var.Codes.Length > 0 && Var.Codes[0] == "Calculated")
                      Grid.Columns[Col].ReadOnly = true;
 
                   // Put codes as tooltips.
-                  if (Codes.Length == Grid.Rows.Count - 1)
+                  if (Var.Codes.Length == Grid.Rows.Count - 1)
                      {
-                     for (int Row = 0; Row < Codes.Length; Row++)
+                     for (int Row = 0; Row < Var.Codes.Length; Row++)
                         {
-                        string CodeText = Codes[Row];
+                        string CodeText = Var.Codes[Row];
                         if (CodeText != "")
                            {
                            if (CodeText != "Calculated")
                               {
-                              CodeText = _Soil.GetFullCodeName(CodeText, RawVariableName);
+                              CodeText = Soil.GetFullCodeName(CodeText, Var.Name);
                               }
                            Grid.Rows[Row].Cells[Col].ToolTipText = CodeText;
                            Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Blue;
@@ -207,8 +207,8 @@ namespace CSUserInterface
                Grid.Columns[Col].DefaultCellStyle.Format = "f2";
             else if (Table.Columns[Col].ColumnName.Contains("XF"))
                Grid.Columns[Col].DefaultCellStyle.Format = "f1";
-            else if (Table.Columns[Col].ColumnName.Contains("(%)"))
-               Grid.Columns[Col].DefaultCellStyle.Format = "f0";
+            else if (Table.Columns[Col].ColumnName.Contains("%"))
+               Grid.Columns[Col].DefaultCellStyle.Format = "f3";
 
             if (Table.Columns[Col].DataType == typeof(double))
                {
@@ -259,15 +259,15 @@ namespace CSUserInterface
       private List<string> GetVariableNames()
          {
          List<string> Names = new List<string>();
-         Names = _Soil.ValidVariablesForProfileNode(Data.Name, XmlHelper.Name(Data));
+         Names.AddRange(Soil.ValidVariablesForProfileNode(ProfileNode));
+
+         // Remove the thickness column.
+         Names.RemoveAt(0);
 
          // If this is the water node then add in the crop variables as well.
          if (Data.Name == "Water")
             {
-            // Remove the thickness column.
-            Names.RemoveAt(0);
-
-            foreach (string Crop in _Soil.Crops)
+            foreach (string Crop in Soil.Crops(_SoilNode))
                {
                Names.Add(Crop + " LL (mm/mm)");
                Names.Add(Crop + " PAWC (mm)");
@@ -276,8 +276,12 @@ namespace CSUserInterface
                }
             }
          else if (Data.Name == "SoilCrop")
-            Names.Insert(1, XmlHelper.Name(Data) + " PAWC (mm)");
-
+            {
+            Names.Insert(1, "PAWC (mm)");
+            // Add the crop name in front of each.
+            for (int i = 0; i < Names.Count; i++)
+               Names[i] = XmlHelper.Name(Data) + " " + Names[i];
+            }
          else if (Data.Name == "SoilOrganicMatter")
             {
             Names.Add("InertC (kg/ha)");
@@ -293,7 +297,7 @@ namespace CSUserInterface
          }
 
       /// <summary>
-      /// Called whenever the user interface wants use to save ourselves.
+      /// Called whenever the user interface wants us to save ourselves.
       /// </summary>
       public override void OnSave()
          {
@@ -308,20 +312,17 @@ namespace CSUserInterface
             Data = Data.OwnerDocument.DocumentElement;
             }
 
-         XmlDocument Doc = new XmlDocument();
-         Doc.LoadXml(_Soil.XML);
-
          // Copy the <SoilCrop> and <Layer> nodes from the soil (Doc.DocumentElement) to our Data node, removing
          // the existing ones first.
          foreach (XmlNode Child in XmlHelper.ChildNodes(Data, "Layer"))
             Data.RemoveChild(Child);
 
-         XmlNode ProfileNode = XmlHelper.Find(Doc.DocumentElement, XmlHelper.Name(Data));
+         XmlNode ProfileNode = XmlHelper.Find(_SoilNode, XmlHelper.Name(Data));
          if (Data.Name == "SoilCrop")
-            ProfileNode = XmlHelper.Find(Doc.DocumentElement, "Water/" + XmlHelper.Name(Data));
+            ProfileNode = XmlHelper.Find(_SoilNode, "Water/" + XmlHelper.Name(Data));
 
          if (Data.Name == "SwimSoluteParameters")
-            ProfileNode = XmlHelper.Find(Doc.DocumentElement, "Swim/" + XmlHelper.Name(Data));
+            ProfileNode = XmlHelper.Find(_SoilNode, "Swim/" + XmlHelper.Name(Data));
 
          foreach (XmlNode Child in XmlHelper.ChildNodes(ProfileNode, "SoilCrop"))
             ProfileNode.RemoveChild(Child);
@@ -417,39 +418,14 @@ namespace CSUserInterface
          int ColIndex = Grid.CurrentCell.ColumnIndex;
          int RowIndex = Grid.CurrentCell.RowIndex;
 
-         foreach (string VariableName in ColumnNames)
-            {
-            SaveTableColumn(VariableName);
-            }
+         foreach (string ColumnName in ColumnNames)
+            Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, ColumnName);
+
          OnRefresh();
          RefreshGraph();
          if (RowIndex < Grid.Rows.Count-1 && ColIndex < Grid.Columns.Count-1)
             Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
          }
-
-      /// <summary>
-      /// Save the data in the table for the specified column name back to the soil.
-      /// </summary>
-      private void SaveTableColumn(string ColumnName)
-         {
-         string LocationName = Data.Name;
-         string VariableName = ColumnName.Replace("\n(", " (");
-         if (LocationName == "SoilCrop" || LocationName == "Sample")
-            LocationName = XmlHelper.Name(Data);
-
-         if (VariableName == "Depth (cm)")
-            {
-            int NumValues = DataTableUtility.GetNumberOfNonBlankRows(Table, VariableName);
-            string[] Values = DataTableUtility.GetColumnAsStrings(Table, VariableName, NumValues);
-            if (Data.Name == "SoilCrop")
-               _Soil.SetVariable(LocationName + " " + VariableName, Values);
-            else
-               _Soil.SetVariable(VariableName, Values, LocationName);
-            }
-         else
-            _Soil.Read(Table, VariableName, LocationName);
-         }
-
 
       /// <summary>
       /// User has changed the units for a variable.
@@ -468,7 +444,9 @@ namespace CSUserInterface
          string NewColumnName = RawVariableName + " (" + NewUnits + ")";
 
          Table.Columns[OldColumnName].ColumnName = NewColumnName;
-         SaveTableColumn(NewColumnName);
+
+         Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, NewColumnName);
+         
          OnRefresh();         
          }
 
@@ -482,9 +460,11 @@ namespace CSUserInterface
          double NewSum = Convert.ToDouble(TotalGrid.CurrentCell.Value);
          double Scale = NewSum / OldSum;
          for (int i = 0; i < Values.Length; i++)
-            Values[i] *= Scale;
+            Grid.Rows[i].Cells[e.ColumnIndex].Value = Values[i] * Scale;
 
-         _Soil.SetVariable(Grid.Columns[e.ColumnIndex].HeaderText, Values);
+         string ColumnName = Grid.Columns[e.ColumnIndex].HeaderText.Replace("\n", " "); ;
+         Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, ColumnName);
+
          OnRefresh();
          }
 

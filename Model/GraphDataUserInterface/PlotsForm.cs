@@ -78,8 +78,15 @@ namespace GraphDataUserInterface
             XmlNode PlotNode = Doc.DocumentElement;
 
             string PageName = XmlHelper.Value(PlotNode, "GalleryPageName");
-            int SeriesIndex = Convert.ToInt32(XmlHelper.Value(PlotNode, "GallerySeriesIndex"));
-            int SubIndex = Convert.ToInt32(XmlHelper.Value(PlotNode, "GallerySubIndex"));
+            int SeriesIndex = 0;
+            int SubIndex = 0;
+            if (PageName != "")
+               {
+               SeriesIndex = Convert.ToInt32(XmlHelper.Value(PlotNode, "GallerySeriesIndex"));
+               SubIndex = Convert.ToInt32(XmlHelper.Value(PlotNode, "GallerySubIndex"));
+               }
+            else
+               PageName = "Standard";
 
             // Select the appropriate tab page.
             tabControl1.SelectTab(PageName);
