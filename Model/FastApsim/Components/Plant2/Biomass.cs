@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+public class Biomass : Instance
+   {
+   private double _StructuralWt = 0;
+   private double _NonStructuralWt = 0;
+   private double _StructuralN = 0;
+   private double _NonStructuralN = 0;
+
+   [Output] [Units("g/m^2")] public double NonStructuralN
+      {
+      get { return _NonStructuralN; }
+      set { _NonStructuralN = value; 
+         }
+      }
+   [Output] [Units("g/m^2")] public double StructuralN
+      {
+      get { return _StructuralN; }
+      set
+         {
+         _StructuralN = value;
+         }
+      }
+   [Output] [Units("g/m^2")] public double NonStructuralWt
+      {
+      get { return _NonStructuralWt; }
+      set
+         {
+         _NonStructuralWt = value;
+         }
+      }
+   [Output] [Units("g/m^2")] public double StructuralWt
+      {
+      get { return _StructuralWt; }
+      set
+         {
+         _StructuralWt = value;
+         }
+      }
+
+   [Output][Units("g/m^2")] public double Wt
+   {
+       get
+       {
+           return StructuralWt + NonStructuralWt;
+       }
+   }
+
+    [Output][Units("g/m^2")] public double N
+      {
+      get
+         {
+         return StructuralN + NonStructuralN;
+         }
+      }
+    [Output] [Units("g/m^2")] public double NConc
+       {
+       get
+          {
+          double wt = (StructuralWt + NonStructuralWt);
+          double n = (StructuralN + NonStructuralN);
+          if (wt > 0)
+             return n / wt;
+          else
+             return 0.0;
+          }
+       }
+
+   public void Clear()
+      {
+      StructuralWt = 0;
+      NonStructuralWt = 0;
+      }
+
+   }
+   

@@ -147,14 +147,23 @@ namespace CSGeneral
             ChildName = NamePath;
             Remainder = "";
             }
-         foreach (XmlNode Child in Node.ChildNodes)
+         if (ChildName == "..")
+            return Find(Node.ParentNode, Remainder);
+         else if (ChildName.Length > 0 && ChildName[0] == '@')
             {
-            if (Name(Child).ToLower() == ChildName.ToLower())
+            return Node.Attributes[ChildName.Substring(1)];
+            }
+         else
+            {
+            foreach (XmlNode Child in Node.ChildNodes)
                {
-               if (Remainder == "")
-                  return Child;
-               else
-                  return Find(Child, Remainder);
+               if (Name(Child).ToLower() == ChildName.ToLower())
+                  {
+                  if (Remainder == "")
+                     return Child;
+                  else
+                     return Find(Child, Remainder);
+                  }
                }
             }
          return null;
