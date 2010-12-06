@@ -95,7 +95,7 @@ public class Tests
    /// Make sure that the engine throws when an invalid assembly name is located in the XML.
    /// </summary>
    [Test]
-   [ExpectedException("System.Exception", ExpectedMessage = "Cannot find assembly file: C:\\Users\\hol353\\Apsim\\Tests\\UnitTests\\FastApsim\\bin\\Debug\\Test2.dll")]
+   [ExpectedException("System.Exception")]
    public void EnsureInvalidAssemblyNameThrows()
       {
       string XML = "<Simulation>" +

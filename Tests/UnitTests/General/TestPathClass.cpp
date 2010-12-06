@@ -25,7 +25,9 @@ void prints(Path& p){
 }
 
 void Path_test::TestExists(){
-    string ff="c:\\test.path";
+    string tempdir = Path::getTempFolder().Get_full_path();
+    
+    string ff=tempdir + "\\test.path";
     unlink(ff.c_str());
     mpath.Set_path(ff.c_str());
     BOOST_CHECK(!mpath.Exists());
@@ -387,7 +389,8 @@ void Path_test::TestOperatorLessThan(){
 }
 
 void Path_test::TestfileExists(){
-    string ff="c:\\test.path";
+    string tempdir = Path::getTempFolder().Get_full_path();
+    string ff=tempdir + "\\test.path";
     unlink(ff.c_str());
     BOOST_CHECK(!fileExists(ff));
 
