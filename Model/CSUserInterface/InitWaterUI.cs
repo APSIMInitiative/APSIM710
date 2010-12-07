@@ -500,11 +500,11 @@ namespace CSUserInterface
       private void PopulateGraph()
          {
          List<string> Names = new List<string>();
-         Names.AddRange(Soil.ValidVariablesForProfileNode(Data));
+         //Names.AddRange(Soil.ValidVariablesForProfileNode(Data));
          Names.Add("SW (mm/mm)");
 
          // Remove the thickness column and add in a depth mid points column
-         Names.RemoveAt(0);
+         //Names.RemoveAt(0);
          Names.Insert(0, "DepthMidPoints (mm)");
 
          DataTable Table = new DataTable();

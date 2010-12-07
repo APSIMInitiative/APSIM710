@@ -42,24 +42,26 @@ namespace ApsimFile
          /// <summary>
          /// A constructor to create a soil variable with an array of doubles.
          /// </summary>
-         public Variable(string name, string units, double[] Values, double[] Thickness)
+         public Variable(string name, string units, double[] Values, double[] Thickness, XmlNode SoilNode)
             {
             Name = name;
             _Units = units;
             _Doubles = Values;
             _ThicknessMM = Thickness;
+            _SoilNode = SoilNode;
             Soil.CheckUnits(Name, Units);
             }
 
          /// <summary>
          /// A constructor to create a soil variable with an array of strings.
          /// </summary>
-         public Variable(string name, string units, string[] Values, double[] Thickness)
+         public Variable(string name, string units, string[] Values, double[] Thickness, XmlNode SoilNode)
             {
             Name = name;
             _Units = units;
             _Strings = Values;
             _ThicknessMM = Thickness;
+            _SoilNode = SoilNode;
             Soil.CheckUnits(Name, Units);
             }
 
@@ -858,13 +860,25 @@ namespace ApsimFile
                {
                if (Node.ParentNode.Name == "Layer")
                   {
-                  // Its a profile node - add to our list if it isn't alreay adde.d
+                  // Its a profile node - add to our list if it isn't alreay added
                   ParentName = XmlHelper.Name(Node.ParentNode.ParentNode);
                   if (ParentNodes.IndexOf(Node.ParentNode.ParentNode) == -1)
                      ParentNodes.Add(Node.ParentNode.ParentNode);
                   }
                else
                   ParentNodes.Add(Node.ParentNode); // not a profile node.
+               }
+            }
+         if (ParentNodes.Count > 1)
+            {
+            // go through all parent nodes and remove the ones that have blank values.
+            for (int i = 0; i < ParentNodes.Count; i++)
+               {
+               if (XmlHelper.Value(ParentNodes[i], "Layer/" + VariableName) == "")
+                  {
+                  ParentNodes.RemoveAt(i);
+                  i--;
+                  }
                }
             }
          if (ParentNodes.Count > 1)
@@ -919,7 +933,7 @@ namespace ApsimFile
                Soil.Variable Var = Soil.Get(SoilNode, Name);
                if (Var.ThicknessMM != null && Var.Value == null)
                   {
-                  Thickness = new Soil.Variable("Thickness", "mm", Var.ThicknessMM, Var.ThicknessMM);
+                  Thickness = new Soil.Variable("Thickness", "mm", Var.ThicknessMM, Var.ThicknessMM, SoilNode);
                   break;
                   }
                }
@@ -943,15 +957,15 @@ namespace ApsimFile
                {
                Thickness.Units = Units;
                Var = new Soil.Variable("Depth", Units,
-                                      SoilUtility.ToDepthStrings(Thickness.Doubles), 
-                                      Thickness.ThicknessMM);
+                                      SoilUtility.ToDepthStrings(Thickness.Doubles),
+                                      Thickness.ThicknessMM, SoilNode);
                }
             else if (Name == "DepthMidPoints")
                {
                Thickness.Units = Units;
                Var = new Soil.Variable("DepthMidPoints", Units,
                                       SoilUtility.ToMidPoints(Thickness.Doubles),
-                                      Thickness.ThicknessMM);
+                                      Thickness.ThicknessMM, SoilNode);
                }
             else
                {
@@ -973,6 +987,79 @@ namespace ApsimFile
                Var.WriteTo(Table, 0);   // layered variable.
             }
          }
+      /// <summary>
+      /// Fill the specified table with data from the specified profile node.
+      /// </summary>
+      public static void WriteToTableFromProfileNode(XmlNode ProfileNode, DataTable Table, List<string> VariableNames)
+         {
+         // Find a thickness.
+         Soil.Variable Thickness = null;
+         for (int i = 0; i < VariableNames.Count; i++)
+            {
+            if (!VariableNames[i].Contains("Thickness") &&
+                !VariableNames[i].Contains("Depth"))
+               {
+               string Name = VariableNames[i];
+               string Units = StringManip.SplitOffBracketedValue(ref Name, '(', ')');
+
+               Soil.Variable Var = new Soil.Variable(ProfileNode, Name); 
+               if (Var.ThicknessMM != null && Var.Value == null)
+                  {
+                  Thickness = new Soil.Variable("Thickness", "mm", Var.ThicknessMM, Var.ThicknessMM, null);
+                  break;
+                  }
+               }
+            }
+         if (Thickness == null)
+            throw new Exception("Cannot find a thickness column in table.");
+
+         // Loop through all variables and write each to the table.
+         foreach (string VariableName in VariableNames)
+            {
+            string Name = VariableName;
+            string Units = StringManip.SplitOffBracketedValue(ref Name, '(', ')');
+
+            Soil.Variable Var;
+            if (Name == "Thickness")
+               {
+               Thickness.Units = Units;
+               Var = Thickness;
+               }
+            else if (Name == "Depth")
+               {
+               Thickness.Units = Units;
+               Var = new Soil.Variable("Depth", Units,
+                                      SoilUtility.ToDepthStrings(Thickness.Doubles),
+                                      Thickness.ThicknessMM, null);
+               }
+            else if (Name == "DepthMidPoints")
+               {
+               Thickness.Units = Units;
+               Var = new Soil.Variable("DepthMidPoints", Units,
+                                      SoilUtility.ToMidPoints(Thickness.Doubles),
+                                      Thickness.ThicknessMM, null);
+               }
+            else
+               {
+               Var = new Soil.Variable(ProfileNode, Name); 
+               Var.Units = Units;
+               if (Var.ThicknessMM != null)
+                  Var.ThicknessMM = Thickness.ThicknessMM; // mapping may occur!
+
+               // Crop variables will have a Var.Name of LL, KL etc without the name of the crop.
+               // The "Name" local variable above will have the name of the crop so set the name of the 
+               // variable back to the local Name variable.
+               Var.Name = Name;
+               }
+
+            if (Var.Value != null)
+               DataTableUtility.AddValue(Table, Name,
+                                         Var.Value, 0, Thickness.Doubles.Length);  // property.
+            else
+               Var.WriteTo(Table, 0);   // layered variable.
+            }
+         }
+
 
       /// <summary>
       /// Read in all columns from the specified table
@@ -1002,13 +1089,13 @@ namespace ApsimFile
                {
                string[] DepthStrings = DataTableUtility.GetColumnAsStrings(Table, Column.ColumnName);
                double[] Values = SoilUtility.ToThickness(DepthStrings);
-               Thickness = new Soil.Variable("Thickness", ColUnits, Values, Values);
+               Thickness = new Soil.Variable("Thickness", ColUnits, Values, Values, SoilNode);
                break;
                }
             else if (ColName == "Thickness")
                {
                double[] Values = DataTableUtility.GetColumnAsDoubles(Table, Column.ColumnName);
-               Thickness = new Soil.Variable("Thickness", ColUnits, Values, Values);
+               Thickness = new Soil.Variable("Thickness", ColUnits, Values, Values, SoilNode);
                break;
                }
             }
@@ -1032,10 +1119,10 @@ namespace ApsimFile
          if (MathUtility.ValuesAreNumerical(StringValues))
             {
             double[] Values = MathUtility.StringsToDoubles(StringValues);
-            Var = new Soil.Variable(VariableName, Units, Values, Thickness.Doubles);
+            Var = new Soil.Variable(VariableName, OldVar.Units, Values, Thickness.Doubles, SoilNode);
             }
          else
-            Var = new Soil.Variable(VariableName, Units, StringValues, Thickness.Doubles);
+            Var = new Soil.Variable(VariableName, OldVar.Units, StringValues, Thickness.Doubles, SoilNode);
 
          // Now change the unit to the new ones. This will change the values if necessary.
          Var.Units = Units;
@@ -1095,11 +1182,11 @@ namespace ApsimFile
             {
             Soil.Variable Var = Soil.Get(SoilNode, "LL15");
             if (VariableName == "Thickness")
-               return new Variable(VariableName, "mm", Var.ThicknessMM, Var.ThicknessMM);
+               return new Variable(VariableName, "mm", Var.ThicknessMM, Var.ThicknessMM, SoilNode);
             if (VariableName == "Depth")
-               return new Variable(VariableName, "mm", SoilUtility.ToDepthStrings(Var.ThicknessMM), Var.ThicknessMM);
+               return new Variable(VariableName, "mm", SoilUtility.ToDepthStrings(Var.ThicknessMM), Var.ThicknessMM, SoilNode);
             if (VariableName == "DepthMidPoints")
-               return new Variable(VariableName, "mm", SoilUtility.ToMidPoints(Var.ThicknessMM), Var.ThicknessMM);
+               return new Variable(VariableName, "mm", SoilUtility.ToMidPoints(Var.ThicknessMM), Var.ThicknessMM, SoilNode);
             }
 
          Soil.Variable Value = SWFromInitWater(SoilNode, VariableName);
@@ -1251,7 +1338,7 @@ namespace ApsimFile
 
                Value = new Soil.Variable(CropName = " PAWC", "mm/mm", 
                                         PAWC(LL.ThicknessMM, LL.Doubles, DUL.Doubles, XF.Doubles),
-                                        LL.ThicknessMM);
+                                        LL.ThicknessMM, SoilNode);
                Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
                Value.ThicknessMM = LL.ThicknessMM;
                }
@@ -1270,8 +1357,8 @@ namespace ApsimFile
                XF.ThicknessMM = SW.ThicknessMM;
 
                Value = new Soil.Variable(CropName + " PAW", "mm/mm", 
-                                        PAWC(LL.ThicknessMM, LL.Doubles, SW.Doubles, XF.Doubles), 
-                                        LL.ThicknessMM);
+                                        PAWC(LL.ThicknessMM, LL.Doubles, SW.Doubles, XF.Doubles),
+                                        LL.ThicknessMM, SoilNode);
                Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
                }
             else
@@ -1343,7 +1430,7 @@ namespace ApsimFile
                      LL[2] = LL15.Doubles[2];
                      }
                   // Create a variable value structure to return to caller.
-                  Value = new Soil.Variable(CropName + " " + CropVariableName, "mm/mm", LL, LL15.ThicknessMM);
+                  Value = new Soil.Variable(CropName + " " + CropVariableName, "mm/mm", LL, LL15.ThicknessMM, SoilNode);
                   Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
                   }
                }
@@ -1367,7 +1454,7 @@ namespace ApsimFile
                   Values[i] = MathUtility.LinearInterpReal(DepthCentre[i], CoeffDepthCentre, KL.Doubles, out DidInterpolate);
 
                // Create a variable value structure to return to caller.
-               Value = new Soil.Variable(CropName + " " + CropVariableName, "/day", Values, KL.ThicknessMM);
+               Value = new Soil.Variable(CropName + " " + CropVariableName, "/day", Values, KL.ThicknessMM, SoilNode);
                Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
                }
             }
@@ -1389,7 +1476,7 @@ namespace ApsimFile
                double[] xf = new double[LL15.ThicknessMM.Length];
                for (int i = 0; i < xf.Length; i++)
                   xf[i] = 1.0;
-               Value = new Soil.Variable(CropName + " " + CropVariableName, "0-1", xf, LL15.ThicknessMM);
+               Value = new Soil.Variable(CropName + " " + CropVariableName, "0-1", xf, LL15.ThicknessMM, SoilNode);
                }
             Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
             }
@@ -1474,7 +1561,7 @@ namespace ApsimFile
                   DepthSoFar += Thickness[Layer];
                   }
                }
-            Soil.Variable Value = new Soil.Variable("SW", "mm", sw, ll.ThicknessMM);
+            Soil.Variable Value = new Soil.Variable("SW", "mm", sw, ll.ThicknessMM, SoilNode);
             StringManip.CreateStringArray("Calculated", Value.ThicknessMM.Length);
             return Value;
             }
@@ -1525,7 +1612,7 @@ namespace ApsimFile
             Soil.Variable DUL = Soil.Get(SoilNode, "DUL");
             DUL.Units = "mm/mm";
 
-            Value = new Soil.Variable("PAWC", "mm/mm", PAWC(LL15.ThicknessMM, LL15.Doubles, DUL.Doubles, null), LL15.ThicknessMM);
+            Value = new Soil.Variable("PAWC", "mm/mm", PAWC(LL15.ThicknessMM, LL15.Doubles, DUL.Doubles, null), LL15.ThicknessMM, SoilNode);
             }
 
          // PAW relative to LL15
@@ -1537,7 +1624,7 @@ namespace ApsimFile
             Soil.Variable SW = Soil.Get(SoilNode, "SW");
             SW.Units = "mm/mm";
 
-            Value = new Soil.Variable("PAW", "mm/mm", PAWC(LL15.ThicknessMM, LL15.Doubles, SW.Doubles, null), LL15.ThicknessMM);
+            Value = new Soil.Variable("PAW", "mm/mm", PAWC(LL15.ThicknessMM, LL15.Doubles, SW.Doubles, null), LL15.ThicknessMM, SoilNode);
             }
 
          // InertC
@@ -1571,7 +1658,7 @@ namespace ApsimFile
                   InertC[i] = FInert.Doubles[i] * carbon_tot;
                   }
                }
-            Value = new Soil.Variable("InertC", "kg/ha", InertC, OC.ThicknessMM);
+            Value = new Soil.Variable("InertC", "kg/ha", InertC, OC.ThicknessMM, SoilNode);
             }
 
          // BiomC
@@ -1609,7 +1696,7 @@ namespace ApsimFile
                   BiomC[i] = ((carbon_tot - InertC.Doubles[i]) * FBiom.Doubles[i]) / (1.0 + FBiom.Doubles[i]);
                   }
                }
-            Value = new Soil.Variable("BiomC", "kg/ha", BiomC, OC.ThicknessMM);
+            Value = new Soil.Variable("BiomC", "kg/ha", BiomC, OC.ThicknessMM, SoilNode);
             }
          // HumC
          else if (RawVariableName == "humc")
@@ -1643,7 +1730,7 @@ namespace ApsimFile
                   HumC[i] = carbon_tot - BiomC.Doubles[i] - InertC.Doubles[i];
                   }
                }
-            Value = new Soil.Variable("HumC", "kg/ha", HumC, OC.ThicknessMM);
+            Value = new Soil.Variable("HumC", "kg/ha", HumC, OC.ThicknessMM, SoilNode);
             }
          if (Value != null)
             Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);

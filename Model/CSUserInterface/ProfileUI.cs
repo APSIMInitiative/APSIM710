@@ -80,7 +80,10 @@ namespace CSUserInterface
          Table.Rows.Clear();
          Table.Columns.Clear();
 
-         Soil.WriteToTable(_SoilNode, Table, GetVariableNames());
+         if (ProfileNode.Name == "Sample")
+            Soil.WriteToTableFromProfileNode(ProfileNode, Table, GetVariableNames());
+         else
+            Soil.WriteToTable(_SoilNode, Table, GetVariableNames());
          
          Grid.DataSourceTable = Table;
          Grid.AllowUserToAddRows = true;

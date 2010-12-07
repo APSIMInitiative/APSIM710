@@ -114,7 +114,7 @@ namespace ApsimFile
          }
       static private void Set(XmlNode NewSoil, string Name, string Units, double[] Values, double[] Thickness)
          {
-         Soil.Set(NewSoil, new Soil.Variable(Name, Units, Values, Thickness));
+         Soil.Set(NewSoil, new Soil.Variable(Name, Units, Values, Thickness, NewSoil));
          }
       static private void ReadCropSections(string SectionBit, string FileName, XmlNode NewSoil, double[] Thickness)
          {

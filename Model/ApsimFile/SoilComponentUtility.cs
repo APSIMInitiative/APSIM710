@@ -142,8 +142,8 @@ namespace ApsimFile
                   throw new Exception("Invalid layer string: " + DepthStrings[i] +
                             ". String must be of the form: 10-30");
 
-               int TopOfLayer = Convert.ToInt32(DepthStrings[i].Substring(0, PosDash));
-               int BottomOfLayer = Convert.ToInt32(DepthStrings[i].Substring(PosDash + 1));
+               double TopOfLayer = Convert.ToDouble(DepthStrings[i].Substring(0, PosDash));
+               double BottomOfLayer = Convert.ToDouble(DepthStrings[i].Substring(PosDash + 1));
                Thickness[i] = (BottomOfLayer - TopOfLayer);
                }
             }

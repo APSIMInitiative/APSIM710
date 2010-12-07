@@ -423,9 +423,9 @@ namespace ApsimFile
                   else
                      {
                      if (IsChemVariable(VariableName))
-                        Var = new Soil.Variable(VariableName, Units, Values, ThicknessChem);
+                        Var = new Soil.Variable(VariableName, Units, Values, ThicknessChem, SoilNode);
                      else
-                        Var = new Soil.Variable(VariableName, Units, Values, Thickness);
+                        Var = new Soil.Variable(VariableName, Units, Values, Thickness, SoilNode);
                      }
                   Var.Codes = Codes;
                   Soil.Set(SoilNode, Var);
@@ -540,7 +540,7 @@ namespace ApsimFile
                   throw new Exception("Didn't find a code column for variable " + VariableName);
                for (int i = 0; i < Codes.Length; i++)
                   {
-                  if (Units != "")
+                  if (Units != "" && Codes[i] != "")
                      Codes[i] = Codes[i] + " (" + Units + ")";
                   }
                DataTableUtility.AddColumn(Table, Name, Values, StartRow, NumValues);
