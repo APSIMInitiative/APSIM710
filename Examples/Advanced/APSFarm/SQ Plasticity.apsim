@@ -1,4 +1,4 @@
-<folder version="23" name="Simulations">
+<folder version="25" name="Simulations">
   <folder name="Shared">
     <area name="p">
       <wheat />
@@ -1903,28 +1903,34 @@ closeLogging
     </tclmanager>
     <soil name="low">
       <Country />
-      <State>Queensland</State>
-      <Region>Borders and Western Downs</Region>
-      <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <Site>Billa Billa</Site>
+      <Region>Borders and Western Downs</Region>
+      <LocalName />
       <SoilType description="Classification">Grey Vertosol</SoilType>
-      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <NaturalVegetation description="Natural vegetation">Brigalow, Belah, Wilga</NaturalVegetation>
+      <State>Queensland</State>
       <ApsoilNumber description="Apsoil number" />
       <Latitude description="Latitude (WGS84)" />
-      <Langitude description="Longitude (WGS84)" />
+      <Longitude />
       <LocationAccuracy description="Location accuracy" />
+      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+      <Comments />
+      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <Langitude description="Longitude (WGS84)" />
       <Sample name="Initial Nitrogen">
         <Date type="date" description="Sample date:" />
         <Layer>
-          <Depth units="cm">0-120</Depth>
+          <Thickness units="mm">1200</Thickness>
           <NO3 units="kg/ha">25</NO3>
+          <NH4 units="ppm" />
+          <SW units="mm/mm" />
         </Layer>
       </Sample>
       <Water>
         <Layer>
           <Thickness units="mm">150</Thickness>
+          <KS units="mm/day" />
           <BD units="g/cc">1.28</BD>
           <AirDry units="mm/mm">0.11</AirDry>
           <LL15 units="mm/mm">0.21</LL15>
@@ -1933,6 +1939,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>150</Thickness>
+          <KS units="mm/day" />
           <BD>1.26</BD>
           <AirDry>0.17</AirDry>
           <LL15>0.21</LL15>
@@ -1941,6 +1948,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.32</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -1949,6 +1957,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.34</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -1957,6 +1966,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.36</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2105,26 +2115,7 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <SWCON units="0-1">0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
+        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -2133,8 +2124,43 @@ closeLogging
         </CatchmentArea>
         <MaxPond>
         </MaxPond>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <SWCON units="0-1">0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
       </SoilWat>
       <SoilOrganicMatter>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
         <Layer>
           <Thickness units="mm">150</Thickness>
           <OC units="Total %">1.24</OC>
@@ -2165,34 +2191,114 @@ closeLogging
           <FBiom>0.01</FBiom>
           <FInert>1</FInert>
         </Layer>
-        <RootCN>40</RootCN>
-        <RootWT>1000</RootWT>
-        <SoilCN>12</SoilCN>
-        <EnrACoeff>7.4</EnrACoeff>
-        <EnrBCoeff>0.2</EnrBCoeff>
       </SoilOrganicMatter>
-      <Lab>
+      <Analysis>
         <Layer>
           <Thickness units="mm">150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH units="1:5 water">7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
-      </Lab>
+      </Analysis>
       <InitWater name="Initial water">
         <percentmethod>
           <percent>0.80</percent>
@@ -2202,28 +2308,34 @@ closeLogging
     </soil>
     <soil name="medium">
       <Country />
-      <State>Queensland</State>
-      <Region>Borders and Western Downs</Region>
-      <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <Site>Billa Billa</Site>
+      <Region>Borders and Western Downs</Region>
+      <LocalName />
       <SoilType description="Classification">Grey Vertosol</SoilType>
-      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <NaturalVegetation description="Natural vegetation">Brigalow, Belah, Wilga</NaturalVegetation>
+      <State>Queensland</State>
       <ApsoilNumber description="Apsoil number" />
       <Latitude description="Latitude (WGS84)" />
-      <Langitude description="Longitude (WGS84)" />
+      <Longitude />
       <LocationAccuracy description="Location accuracy" />
+      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+      <Comments />
+      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <Langitude description="Longitude (WGS84)" />
       <Sample name="Initial Nitrogen">
         <Date type="date" description="Sample date:" />
         <Layer>
-          <Depth units="cm">0-120</Depth>
+          <Thickness units="mm">1200</Thickness>
           <NO3 units="kg/ha">25</NO3>
+          <NH4 units="ppm" />
+          <SW units="mm/mm" />
         </Layer>
       </Sample>
       <Water>
         <Layer>
           <Thickness units="mm">150</Thickness>
+          <KS units="mm/day" />
           <BD units="g/cc">1.28</BD>
           <AirDry units="mm/mm">0.11</AirDry>
           <LL15 units="mm/mm">0.21</LL15>
@@ -2232,6 +2344,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>150</Thickness>
+          <KS units="mm/day" />
           <BD>1.26</BD>
           <AirDry>0.17</AirDry>
           <LL15>0.21</LL15>
@@ -2240,6 +2353,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.32</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2248,6 +2362,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.34</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2256,6 +2371,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.36</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2404,26 +2520,7 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <SWCON units="0-1">0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
+        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -2432,8 +2529,43 @@ closeLogging
         </CatchmentArea>
         <MaxPond>
         </MaxPond>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <SWCON units="0-1">0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
       </SoilWat>
       <SoilOrganicMatter>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
         <Layer>
           <Thickness units="mm">150</Thickness>
           <OC units="Total %">1.24</OC>
@@ -2464,34 +2596,114 @@ closeLogging
           <FBiom>0.01</FBiom>
           <FInert>1</FInert>
         </Layer>
-        <RootCN>40</RootCN>
-        <RootWT>1000</RootWT>
-        <SoilCN>12</SoilCN>
-        <EnrACoeff>7.4</EnrACoeff>
-        <EnrBCoeff>0.2</EnrBCoeff>
       </SoilOrganicMatter>
-      <Lab>
+      <Analysis>
         <Layer>
           <Thickness units="mm">150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH units="1:5 water">7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
-      </Lab>
+      </Analysis>
       <InitWater name="Initial water">
         <percentmethod>
           <percent>0.80</percent>
@@ -2501,28 +2713,34 @@ closeLogging
     </soil>
     <soil name="high">
       <Country />
-      <State>Queensland</State>
-      <Region>Borders and Western Downs</Region>
-      <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <Site>Billa Billa</Site>
+      <Region>Borders and Western Downs</Region>
+      <LocalName />
       <SoilType description="Classification">Grey Vertosol</SoilType>
-      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <NearestTown description="Nearest town">Billa Billa, Q 4390</NearestTown>
       <NaturalVegetation description="Natural vegetation">Brigalow, Belah, Wilga</NaturalVegetation>
+      <State>Queensland</State>
       <ApsoilNumber description="Apsoil number" />
       <Latitude description="Latitude (WGS84)" />
-      <Langitude description="Longitude (WGS84)" />
+      <Longitude />
       <LocationAccuracy description="Location accuracy" />
+      <DataSource type="multiedit" description="Data source">CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+      <Comments />
+      <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
+      <Langitude description="Longitude (WGS84)" />
       <Sample name="Initial Nitrogen">
         <Date type="date" description="Sample date:" />
         <Layer>
-          <Depth units="cm">0-120</Depth>
+          <Thickness units="mm">1200</Thickness>
           <NO3 units="kg/ha">25</NO3>
+          <NH4 units="ppm" />
+          <SW units="mm/mm" />
         </Layer>
       </Sample>
       <Water>
         <Layer>
           <Thickness units="mm">150</Thickness>
+          <KS units="mm/day" />
           <BD units="g/cc">1.28</BD>
           <AirDry units="mm/mm">0.11</AirDry>
           <LL15 units="mm/mm">0.21</LL15>
@@ -2531,6 +2749,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>150</Thickness>
+          <KS units="mm/day" />
           <BD>1.26</BD>
           <AirDry>0.17</AirDry>
           <LL15>0.21</LL15>
@@ -2539,6 +2758,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.32</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2547,6 +2767,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.34</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2555,6 +2776,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.36</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2563,6 +2785,7 @@ closeLogging
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <KS units="mm/day" />
           <BD>1.35</BD>
           <AirDry>0.21</AirDry>
           <LL15>0.21</LL15>
@@ -2735,30 +2958,7 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <Layer>
-          <Thickness units="mm">150</Thickness>
-          <SWCON units="0-1">0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>150</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
-        <Layer>
-          <Thickness>300</Thickness>
-          <SWCON>0.3</SWCON>
-        </Layer>
+        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -2767,8 +2967,49 @@ closeLogging
         </CatchmentArea>
         <MaxPond>
         </MaxPond>
+        <Layer>
+          <Thickness units="mm">150</Thickness>
+          <SWCON units="0-1">0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.3</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
       </SoilWat>
       <SoilOrganicMatter>
+        <RootCN>40</RootCN>
+        <RootWT>1000</RootWT>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
         <Layer>
           <Thickness units="mm">150</Thickness>
           <OC units="Total %">1.24</OC>
@@ -2805,38 +3046,135 @@ closeLogging
           <FBiom>0.01</FBiom>
           <FInert>1</FInert>
         </Layer>
-        <RootCN>40</RootCN>
-        <RootWT>1000</RootWT>
-        <SoilCN>12</SoilCN>
-        <EnrACoeff>7.4</EnrACoeff>
-        <EnrBCoeff>0.2</EnrBCoeff>
       </SoilOrganicMatter>
-      <Lab>
+      <Analysis>
         <Layer>
           <Thickness units="mm">150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH units="1:5 water">7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>150</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
         <Layer>
           <Thickness>300</Thickness>
+          <Rocks units="%" />
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
           <PH>7</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" />
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" />
+          <ParticleSizeSilt units="%" />
+          <ParticleSizeClay units="%" />
         </Layer>
-      </Lab>
+      </Analysis>
       <InitWater name="Initial water">
         <percentmethod>
           <percent>0.80</percent>
@@ -3488,7 +3826,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/low/Lab" />
+        <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
       </soil>
@@ -3510,7 +3848,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/low/Lab" />
+        <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
       </soil>
@@ -3532,8 +3870,9 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
+        <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
       </soil>
     </area>
     <area name="p4" shortcut="/Simulations/Shared/p">
@@ -3553,7 +3892,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -3575,7 +3914,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -3597,7 +3936,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -3619,7 +3958,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -3641,7 +3980,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -3663,7 +4002,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/high/Lab" />
+        <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
       </soil>
@@ -3685,7 +4024,7 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
         </Water>
         <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/high/Lab" />
+        <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
       </soil>
@@ -4331,7 +4670,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/low/Lab" />
+        <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
       </soil>
@@ -4353,7 +4692,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/low/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/low/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/low/Lab" />
+        <Analysis shortcut="/Simulations/Shared/low/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/low/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/low/Initial water" />
       </soil>
@@ -4375,7 +4714,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -4397,7 +4736,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -4419,7 +4758,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -4441,7 +4780,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -4463,7 +4802,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -4485,7 +4824,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/medium/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/medium/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/medium/Lab" />
+        <Analysis shortcut="/Simulations/Shared/medium/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/medium/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/medium/Initial water" />
       </soil>
@@ -4507,7 +4846,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/high/Lab" />
+        <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
       </soil>
@@ -4529,7 +4868,7 @@ stateGraph arc lappend "arc10" rules {[wheatHistory $paddock]}
         </Water>
         <SoilWat shortcut="/Simulations/Shared/high/SoilWat" />
         <SoilOrganicMatter shortcut="/Simulations/Shared/high/SoilOrganicMatter" />
-        <Lab shortcut="/Simulations/Shared/high/Lab" />
+        <Analysis shortcut="/Simulations/Shared/high/Analysis" />
         <Sample name="Initial Nitrogen" shortcut="/Simulations/Shared/high/Initial Nitrogen" />
         <InitWater name="Initial Water" shortcut="/Simulations/Shared/high/Initial water" />
       </soil>

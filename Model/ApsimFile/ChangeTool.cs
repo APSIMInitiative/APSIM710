@@ -1524,7 +1524,7 @@ namespace ApsimFile
                                    "LocationAccuracy",
                                    "DataSource",
                                    "Comments"};
-               SetPropertiesOrder(Node, SoilProperties, null);
+               SetPropertiesOrder(Node, SoilProperties, null, false);
 
                // Order the nodes under <Water>
                XmlNode WaterNode = XmlHelper.Find(Node, "Water");
@@ -1552,7 +1552,7 @@ namespace ApsimFile
                                        "WinterU", "WinterDate", "DiffusConst", "DiffusSlope",
                                        "Salb", "Cn2Bare", "CnRed", "CnCov", "CnCanopyFact",
                                        "Slope", "DischargeWidth", "CatchmentArea", "MaxPond"};
-                  SetPropertiesOrder(SoilWatNode, Properties, null);
+                  SetPropertiesOrder(SoilWatNode, Properties, null, false);
                   string[] Variables = { "Thickness", "SWCON", "MWCON", "KLAT" };
                   string[] Units = { "mm", "0-1", "0-1", "mm/d" };
                   SetLayeredOrder(SoilWatNode, Variables, Units);
@@ -1563,7 +1563,7 @@ namespace ApsimFile
                if (SOMNode != null)
                   {
                   string[] Properties = { "RootCN", "RootWt", "SoilCn", "EnrACoeff", "EnrBCoeff" };
-                  SetPropertiesOrder(SOMNode, Properties, null);
+                  SetPropertiesOrder(SOMNode, Properties, null, false);
 
                   string[] Variables = { "Thickness", "OC", "FBiom", "FInert" };
                   string[] Units = { "mm", "Total %", "0-1", "0-1" };
@@ -1597,7 +1597,7 @@ namespace ApsimFile
                if (PNode != null)
                   {
                   string[] Properties = { "RootCP", "RateDissolRock", "RateLossAvail", "SorptionCoeff" };
-                  SetPropertiesOrder(PNode, Properties, null);
+                  SetPropertiesOrder(PNode, Properties, null, false);
 
                   string[] Variables = { "Thickness", "LabileP", "BandedP", "RockP", "Sorption" };
                   string[] Units = { "mm", "mg/kg", "kg/ha", "kg/ha", "" };
@@ -1611,7 +1611,7 @@ namespace ApsimFile
       /// Fix the order of the properties of the specified parent xml node to that 
       /// giveen in ChildNodeNames
       /// </summary>
-      private static void SetPropertiesOrder(XmlNode ParentNode, string[] ChildNodeNames, string[] Units)
+      private static void SetPropertiesOrder(XmlNode ParentNode, string[] ChildNodeNames, string[] Units, bool CheckUnits)
          {
          for (int i = 0; i < ChildNodeNames.Length; i++)
             {
@@ -1622,8 +1622,9 @@ namespace ApsimFile
                if (Units != null && Units[i] != "")
                   XmlHelper.SetAttribute(Child, "units", Units[i]);
                }
-
             Child = ParentNode.InsertBefore(Child, ParentNode.ChildNodes[i]);
+            if (CheckUnits && XmlHelper.Attribute(Child, "units") == "")
+               XmlHelper.SetAttribute(Child, "units", Units[i]);
             }
          }
       /// <summary>
@@ -1632,11 +1633,14 @@ namespace ApsimFile
       /// </summary>
       private static void SetLayeredOrder(XmlNode ProfileNode, string[] ChildNodeNames, string[] Units)
          {
+         bool First = true;
          foreach (XmlNode LayerNode in XmlHelper.ChildNodes(ProfileNode, "Layer"))
             {
             if (XmlHelper.Find(LayerNode, "Depth") != null)
                RemoveDepthNodes(XmlHelper.Find(LayerNode, "Depth"));
-            SetPropertiesOrder(LayerNode, ChildNodeNames, Units);
+            SetPropertiesOrder(LayerNode, ChildNodeNames, Units, First);
+            if (First)
+               First = false;
             }
          }
 

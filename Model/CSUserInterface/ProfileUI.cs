@@ -421,13 +421,23 @@ namespace CSUserInterface
          int ColIndex = Grid.CurrentCell.ColumnIndex;
          int RowIndex = Grid.CurrentCell.RowIndex;
 
+         bool SomethingWasSaved = false;
          foreach (string ColumnName in ColumnNames)
-            Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, ColumnName);
+            {
+            if (!ColumnName.Contains("Depth"))
+               {
+               SomethingWasSaved = true;
+               Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, ColumnName);
+               }
+            }
 
-         OnRefresh();
-         RefreshGraph();
-         if (RowIndex < Grid.Rows.Count-1 && ColIndex < Grid.Columns.Count-1)
-            Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
+         if (SomethingWasSaved)
+            {
+            OnRefresh();
+            RefreshGraph();
+            if (RowIndex < Grid.Rows.Count - 1 && ColIndex < Grid.Columns.Count - 1)
+               Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
+            }
          }
 
       /// <summary>
