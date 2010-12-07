@@ -809,6 +809,20 @@ namespace ApsimFile
          }
 
       /// <summary>
+      /// Optionally look for specified variable under the specified soil node. Will return null if
+      /// not found.
+      /// </summary>
+      public static Soil.Variable GetOptionalFromProfileNode(XmlNode SoilNode, XmlNode ProfileNode, string VariableName)
+         {
+         Soil.Variable Var = GetCalculated(SoilNode, VariableName);
+         if (Var == null)
+            return new Soil.Variable(ProfileNode, VariableName);
+         else
+            return Var;
+         }
+
+      
+      /// <summary>
       ///  Return a parent node for where the specified variable belongs. Will throw 
       ///  if not found or if there are more than one found.
       /// </summary>
@@ -881,6 +895,21 @@ namespace ApsimFile
                   }
                }
             }
+         if (ParentNodes.Count > 1)
+            {
+            // Go through all nodes and try and try and find a sample node. If found then use it and get
+            // rid of the others.
+            for (int i = 0; i < ParentNodes.Count; i++)
+               {
+               if (ParentNodes[i].Name == "Sample")
+                  {
+                  XmlNode SampleNode = ParentNodes[i];
+                  ParentNodes.Clear();
+                  ParentNodes.Add(SampleNode);
+                  }
+               }
+            }
+
          if (ParentNodes.Count > 1)
             throw new Exception("Found variable " + VariableName + " " + ParentNodes.Count.ToString() +
                                 " times in soil " + XmlHelper.Name(SoilNode) + ". Only expecting 1 occurrence.");

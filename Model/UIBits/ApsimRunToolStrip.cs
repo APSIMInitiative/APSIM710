@@ -161,8 +161,15 @@ public class ApsimRunToolStrip
 
       foreach (string SimulationPath in SimsToRun)
          {
-         Component Simulation = F.Find(SimulationPath);
-         string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+         try
+            {
+            Component Simulation = F.Find(SimulationPath);
+            string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+            }
+         catch (Exception err)
+            {
+            MessageBox.Show("Simulation: " + SimulationPath + ". " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
          }
       }
 

@@ -169,8 +169,8 @@ namespace CSUserInterface
             string Units = StringManip.SplitOffBracketedValue(ref RawVariableName, '(', ')');
             if (RawVariableName != "Thickness" && RawVariableName != "Depth" && RawVariableName != "DepthMidPoints")
                {
-               Soil.Variable Var = Soil.Get(_SoilNode, RawVariableName);
-               if (Var.Codes != null)
+               Soil.Variable Var = Soil.GetOptionalFromProfileNode(_SoilNode, ProfileNode, RawVariableName);
+               if (Var != null && Var.Codes != null)
                   {
                   if (Var.Codes.Length > 0 && Var.Codes[0] == "Calculated")
                      Grid.Columns[Col].ReadOnly = true;
