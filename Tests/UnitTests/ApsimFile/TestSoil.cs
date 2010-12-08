@@ -248,8 +248,8 @@ namespace Test
                                  "Thickness =    150.000   150.000   300.000   300.000   300.000" +
                                  "       BD =      1.020     1.030     1.020     1.020     1.060" +
                                  "    SWCon =      0.300     0.300     0.100     0.000     0.000" +
-                                 "      NO3 =      6.503     2.101     2.101     1.000     1.000" +
-                                 "      NH4 =      0.599     0.200     0.200     0.200     0.200" +
+                                 "      NO3 =      6.503     2.101     2.101     0.000     0.000" +
+                                 "      NH4 =      0.599     0.100     0.100     0.000     0.000" +
                                  "Barley LL =      0.290     0.280     0.290     0.290     0.300");
          }
 
@@ -280,9 +280,9 @@ namespace Test
          {
          double[] Thickness = new double[] { 100, 600 };
 
-         Soil.Variable ll = new Soil.Variable("x LL", "mm/mm", new double[] { 0.290, 0.280 }, Thickness);
-         Soil.Variable kl = new Soil.Variable("x KL", "/day",  new double[] { 0.060, 0.040 }, Thickness);
-         Soil.Variable xf = new Soil.Variable("x XF", "0-1",   new double[] { 1.000, 0.500 }, Thickness);
+         Soil.Variable ll = new Soil.Variable("x LL", "mm/mm", new double[] { 0.290, 0.280 }, Thickness, null);
+         Soil.Variable kl = new Soil.Variable("x KL", "/day", new double[] { 0.060, 0.040 }, Thickness, null);
+         Soil.Variable xf = new Soil.Variable("x XF", "0-1", new double[] { 1.000, 0.500 }, Thickness, null);
 
          Soil.Set(S, ll);
          Soil.Set(S, kl);
@@ -514,7 +514,7 @@ namespace Test
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Barley LL (mm/mm)"),
                                             new double[] { 0.29, 0.28, 0.29, 0.29, 0.30 }));
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Barley KL (/day)"),
-                                            new double[] { 0.01, 0.01, 0.01, 0.01, 0.01 }));
+                                            new double[] { 0.1, 0.1, 0.0, 0.0, 0.0 }));
          Assert.IsTrue(MathUtility.AreEqual(DataTableUtility.GetColumnAsDoubles(Table, "Chickpea XF (0-1)"),
                                             new double[] { 1.0, 1.0, 1.0, 0.33333, 0.0 })); 
          }
@@ -529,8 +529,8 @@ namespace Test
          {
          double[] Thickness = new double[4] {100, 100, 100, 100}; 
          Soil.Variable ChickpeaLL = new Soil.Variable("Chickpea LL", "mm/mm",
-                                                      new double[] { 0.30, 0.31, 999999.0, 0.32 }, 
-                                                      Thickness);
+                                                      new double[] { 0.30, 0.31, 999999.0, 0.32 },
+                                                      Thickness, null);
 
          Soil.Set(S, ChickpeaLL);
          Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Chickpea LL").Doubles,

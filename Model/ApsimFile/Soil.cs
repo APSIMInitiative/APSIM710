@@ -1146,15 +1146,19 @@ namespace ApsimFile
                Units = OldVar.Units;
             }
 
+         string UnitsForNewVariable = Units;
+         if (OldVar != null)
+            UnitsForNewVariable = OldVar.Units;
+
          Soil.Variable Var;
          string[] StringValues = DataTableUtility.GetColumnAsStrings(Table, ColumnName);
          if (MathUtility.ValuesAreNumerical(StringValues))
             {
             double[] Values = MathUtility.StringsToDoubles(StringValues);
-            Var = new Soil.Variable(VariableName, OldVar.Units, Values, Thickness.Doubles, SoilNode);
+            Var = new Soil.Variable(VariableName, UnitsForNewVariable, Values, Thickness.Doubles, SoilNode);
             }
          else
-            Var = new Soil.Variable(VariableName, OldVar.Units, StringValues, Thickness.Doubles, SoilNode);
+            Var = new Soil.Variable(VariableName, UnitsForNewVariable, StringValues, Thickness.Doubles, SoilNode);
 
          // Now change the unit to the new ones. This will change the values if necessary.
          Var.Units = Units;
