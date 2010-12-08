@@ -4,8 +4,7 @@ using System.Text;
 
 class HIReproductiveOrgan : BaseOrganWithLiveDead, Reproductive, AboveGround
    {
-   [Input]  private int Day = 0;
-   [Input]  private int Year = 0;
+   [Ref(".simulation.met")] Met Met;
    private double DailyGrowth = 0;
    [Ref("WaterContent")] Function WC;
    [Ref("parent(Plant)")] Plant Plant;
@@ -27,8 +26,8 @@ class HIReproductiveOrgan : BaseOrganWithLiveDead, Reproductive, AboveGround
       {
       Harvesting.Invoke();
 
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Harvesting " + Name + " from " + Plant.Name;
       double YieldDW = (Live.Wt + Dead.Wt);

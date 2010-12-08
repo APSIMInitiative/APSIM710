@@ -7,8 +7,7 @@ public class WeightedTemperatureFunction : Function
    #region Class Data Members
    [Param] private LinearInterpolation XYPairs = null;   // Temperature effect on Growth Interpolation Set
    [Param] private double MaximumTemperatureWeighting = 0.0;
-   [Input] double MaxT = 0;
-   [Input] double MinT = 0;
+   [Ref(".simulation.met")] Met Met;
    #endregion
 
    [Output]
@@ -17,7 +16,7 @@ public class WeightedTemperatureFunction : Function
       {
       get
          {
-         double Tav = MaximumTemperatureWeighting * MaxT + (1-MaximumTemperatureWeighting) * MinT;
+         double Tav = MaximumTemperatureWeighting * Met.MaxT + (1-MaximumTemperatureWeighting) * Met.MinT;
          return XYPairs.Value(Tav);
          }
       }

@@ -5,10 +5,8 @@ using System.Text;
 public class Leaf : BaseOrganWithLiveDead, AboveGround
    {
    #region Class Data Members
-   [Input]
-   private int Day = 0;
-   [Input]
-   private int Year = 0;
+   [Ref(".simulation.met")] Met Met;
+
    [Ref("parent(Plant)")] Plant Plant;
 
    [Ref("parent(Plant).Arbitrator")]   Arbitrator Arbitrator;
@@ -41,10 +39,6 @@ public class Leaf : BaseOrganWithLiveDead, AboveGround
    private double PEP = 0;
    private double EP = 0;
    private List<LeafCohort> Leaves = new List<LeafCohort>();
-   [Input]
-   private double Radn = 0;
-   [Input]
-   private double MinT = 0;
    private double _FinalNodeNo = 0;
    [Output]
    public double NodeNo = 0;
@@ -537,7 +531,7 @@ public class Leaf : BaseOrganWithLiveDead, AboveGround
          //   Fw = EP / PEP;
          //else
          //   Fw = 0;
-         return Photosynthesis.Growth(Radn * CoverGreen, Math.Min(Fw, Fn));
+         return Photosynthesis.Growth(Met.Radn * CoverGreen, Math.Min(Fw, Fn));
          }
       }
    [Output]
@@ -845,8 +839,8 @@ public class Leaf : BaseOrganWithLiveDead, AboveGround
    [EventHandler]
    private void OnKillLeaf(KillLeafType KillLeaf)
       {
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
       Console.WriteLine("");
@@ -863,8 +857,8 @@ public class Leaf : BaseOrganWithLiveDead, AboveGround
    [EventHandler]
    private void OnCut()
       {
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
       Console.WriteLine("");

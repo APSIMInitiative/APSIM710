@@ -18,13 +18,13 @@
          using System;
          public class Manager
          {
-         [Input] public int Day;
-         [Input] public string CurrentStageName;
+         [Ref(".simulation.met")] Met Met;
          public event SowDelegate Sow;
          public event NullTypeDelegate Harvest;
+         public event NullTypeDelegate KillCrop;
          [EventHandler] public void OnPrepare()
             {
-            if (Day == 100)
+            if (Met.Day == 100)
                {
                SowType SowData = new SowType();
                SowData.RowSpacing = 500;
@@ -35,10 +35,10 @@
                if (Sow != null)
                   Sow.Invoke(SowData);
                }
-            else if (Day == 273)
+            else if (Met.Day == 273)
                {
-               NullType n = new NullType();
-               Harvest.Invoke();               
+               Harvest.Invoke();
+               KillCrop.Invoke();
                }
             }
          }

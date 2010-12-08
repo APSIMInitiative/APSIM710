@@ -7,9 +7,7 @@ public class RUEModel : Instance
    {
    private NewMetType MetData;
 
-   [Input] private double MaxT = 0;
-   [Input] private double MinT = 0;
-   [Input] private double VP = 0;
+   [Ref(".simulation.met")] Met Met;
 
    [Ref("Ft")] Function FT;
    [Ref("Fvpd")] Function FVPD;
@@ -28,10 +26,10 @@ public class RUEModel : Instance
          {
          const double SVPfrac = 0.66;
 
-         double VPDmint = VBMet.Humidity.svp((float)MinT) - VP;
+         double VPDmint = VBMet.Humidity.svp((float)Met.MinT) - Met.VP;
          VPDmint = Math.Max(VPDmint, 0.0);
 
-         double VPDmaxt = VBMet.Humidity.svp((float)MaxT) - VP;
+         double VPDmaxt = VBMet.Humidity.svp((float)Met.MaxT) - Met.VP;
          VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
          return SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;

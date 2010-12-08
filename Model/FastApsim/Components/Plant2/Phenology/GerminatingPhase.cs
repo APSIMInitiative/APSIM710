@@ -8,6 +8,7 @@ class GerminatingPhase : Phase
    {
    [Input] private double[] ESW = null;
    [Ref("parent(Plant).Phenology")] Phenology Phenology;
+   [Ref(".simulation.met")] Met Met;
 
    /// <summary>
    /// Do our timestep development

@@ -5,10 +5,7 @@ using CSGeneral;
 
 class GenericOrgan : BaseOrganWithLiveDead, AboveGround
    {
-   [Input]
-   private int Day = 0;
-   [Input]
-   private int Year = 0;
+   [Ref(".simulation.met")] Met Met;
    [Ref("parent(Plant).Arbitrator")]          Arbitrator A;
    [Ref("PartitionFraction")]   Function PartitionFraction;
    [Ref("StructuralFraction")]  Function StructuralFraction;
@@ -35,7 +32,7 @@ class GenericOrgan : BaseOrganWithLiveDead, AboveGround
       {
       set
          {
-         if (value > Live.NonStructuralWt)
+         if (MathUtility.IsGreaterThan(value, Live.NonStructuralWt))
             throw new Exception("Retranslocation exceeds nonstructural biomass in organ: " + Name);
          Live.NonStructuralWt -= value;
          }
@@ -84,8 +81,8 @@ class GenericOrgan : BaseOrganWithLiveDead, AboveGround
       }
    [EventHandler] private void OnPrune(ManagerEventType keys)
       {
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Pruning " + Name + " from " + Plant.Name;
       Console.WriteLine("");
@@ -98,8 +95,8 @@ class GenericOrgan : BaseOrganWithLiveDead, AboveGround
    [EventHandler]
    private void OnCut()
       {
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
       Console.WriteLine("");

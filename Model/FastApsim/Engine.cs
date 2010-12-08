@@ -81,8 +81,6 @@ public class Engine
       {
       try
          {
-         Simulation.UpdateValues();
-
          Simulation Sim = (Simulation)Simulation.TheModel;
          Sim.InvokeTick();
          }
@@ -100,6 +98,7 @@ public class Engine
    /// </summary>
    private void Run()
       {
+      Simulation.UpdateValues();
       while (RunSingleTimeStep() == 0);
       }
 

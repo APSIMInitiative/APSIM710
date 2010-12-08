@@ -13,10 +13,10 @@ public class Met
    public event NewMetDelegate NewMet;
    [Param] string FileName = "";
    [Output] DateTime Today;
-   [Output] double Radn;
-   [Output] double MaxT;
-   [Output] double MinT;
-   [Output] double Rain;
+   [Output] public double Radn;
+   [Output] public double MaxT;
+   [Output] public double MinT;
+   [Output] public double Rain;
    [Output]
    public int Day
       {

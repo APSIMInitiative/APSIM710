@@ -6,14 +6,13 @@ using CSGeneral;
 class PhotoperiodFunction : Function
    {
    [Param] private double Twilight = 0;
-   [Input] private double Latitude = 0;
-   [Input] public double Day = 0;
+   [Ref(".simulation.met")] Met Met;
 
    [Output] public override double Value
       {
       get
          {
-         return MathUtility.DayLength(Day, Twilight, Latitude);
+         return MathUtility.DayLength(Met.Day, Twilight, Met.Latitude);
          }
       }
 

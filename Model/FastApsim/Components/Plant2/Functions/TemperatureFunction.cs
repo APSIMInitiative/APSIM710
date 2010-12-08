@@ -6,8 +6,7 @@ public class TemperatureFunction : Function
    {
    #region Class Data Members
    [Param] private LinearInterpolation XYPairs = null;   // Temperature effect on Growth Interpolation Set
-   [Input] double MaxT = 0;
-   [Input] double MinT = 0;
+   [Ref(".simulation.met")] Met Met;
    #endregion
 
    [Output]  [Units("0-1")]
@@ -15,7 +14,7 @@ public class TemperatureFunction : Function
       {
       get
          {
-         return Linint3hrlyTemp(MaxT, MinT, XYPairs);
+         return Linint3hrlyTemp(Met.MaxT, Met.MinT, XYPairs);
          }
       }
    static public double Linint3hrlyTemp(double tmax, double tmin, LinearInterpolation ttFn)

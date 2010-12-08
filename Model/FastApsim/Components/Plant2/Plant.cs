@@ -30,8 +30,8 @@ public class Plant : Instance
       // Public property to return our organs to caller. Used primarily for unit testing.
       get { return _Organs; }
       }
-   [Input] public int day;
-   [Input] public int year;
+
+   [Ref(".simulation.met")] Met Met;
 
    /// <summary>
    /// Return today as a DateTime class.
@@ -40,8 +40,8 @@ public class Plant : Instance
       {
       get
          {
-         DateTime x = new DateTime(year, 1, 1);
-         x = x.AddDays(day - 1);
+         DateTime x = new DateTime(Met.Year, 1, 1);
+         x = x.AddDays(Met.Day - 1);
          return x;
          }
       }

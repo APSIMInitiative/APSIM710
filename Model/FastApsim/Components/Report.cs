@@ -8,7 +8,8 @@ using CSGeneral;
 class Report
    {
    [Param] private string FileName = "";
-   [Input] private DateTime Today;
+   [Ref(".simulation.met")] Met Met;
+
    [Input] private ModelAPIInterface ScienceAPI = null;
    private SQLite Connection;
    private IntPtr Query;
@@ -88,22 +89,22 @@ class Report
    public void OnReport()
       {
       // Get all variable values.
-      //List<object> OutputValues = new List<object>();
-      //foreach (string VariableName in Variables)
-      //   OutputValues.Add(ScienceAPI.Get(VariableName));
+      List<object> OutputValues = new List<object>();
+      foreach (string VariableName in Variables)
+         OutputValues.Add(ScienceAPI.Get(VariableName));
       
-      //if (Connection == null)
-      //   {
-      //   if (File.Exists(FileName))
-      //      File.Delete(FileName);
+      if (Connection == null)
+         {
+         if (File.Exists(FileName))
+            File.Delete(FileName);
 
-      //   Connection = new SQLite();
-      //   Connection.OpenDatabase(FileName);
-      //   Connection.ExecuteNonQuery("PRAGMA synchronous=OFF");
-      //   Connection.ExecuteNonQuery("BEGIN");
-      //   CreateTable(Connection, "test", Variables, OutputValues);
-      //   Query = PrepareInsertIntoTable(Connection, "test", Variables);
-      //   }
-      //Connection.BindParametersAndRunQuery(Query, OutputValues);
+         Connection = new SQLite();
+         Connection.OpenDatabase(FileName);
+         Connection.ExecuteNonQuery("PRAGMA synchronous=OFF");
+         Connection.ExecuteNonQuery("BEGIN");
+         CreateTable(Connection, "test", Variables, OutputValues);
+         Query = PrepareInsertIntoTable(Connection, "test", Variables);
+         }
+      Connection.BindParametersAndRunQuery(Query, OutputValues);
       }
    }

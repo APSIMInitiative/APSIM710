@@ -6,8 +6,7 @@ class SimpleReproductiveOrgan : BaseOrganWithLiveDead, Reproductive, AboveGround
       {
       #region Class Data Members
       [Event] public event NullTypeDelegate Harvesting;
-      [Input] private int Day=0;
-      [Input] private int Year=0;
+      [Ref(".simulation.met")] Met Met;
       [Param] private string RipeStage = "";
       private bool _ReadyForHarvest = false;
       [Ref("WaterContent")] Function WC;
@@ -48,8 +47,8 @@ class SimpleReproductiveOrgan : BaseOrganWithLiveDead, Reproductive, AboveGround
 
          Harvesting.Invoke();
 
-         DateTime Today = new DateTime(Year, 1, 1);
-         Today = Today.AddDays(Day - 1);
+         DateTime Today = new DateTime(Met.Year, 1, 1);
+         Today = Today.AddDays(Met.Day - 1);
          string Indent = "     ";
          string Title = Indent+Today.ToShortDateString()+"  - Harvesting " + Name + " from " + Plant.Name;
          double YieldDW = (Live.Wt + Dead.Wt);

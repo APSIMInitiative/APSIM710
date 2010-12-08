@@ -10,10 +10,8 @@ class SimpleLeaf : BaseOrganWithLiveDead
 
    [Event] public event NewPotentialGrowthDelegate NewPotentialGrowth;
    [Event] public event NewCanopyDelegate New_Canopy;
+   [Ref(".simulation.met")] Met Met;
 
-   [Input] private float maxt = 0;
-   [Input] private float mint = 0;
-   [Input] private float vp = 0;
    [Param("Height")]  private double _Height;         // Height of the canopy (mm) 
    [Param("LAI")]     private double _LAI;            // Leaf Area Index (Green)
    [Param("LAIDead")] private double _LAIDead;        // Leaf Area Index (Dead)
@@ -64,7 +62,7 @@ class SimpleLeaf : BaseOrganWithLiveDead
       {
       get
          {
-         double Tav = (maxt + mint) / 2.0;
+         double Tav = (Met.MaxT + Met.MinT) / 2.0;
          return FT.Value(Tav);
          }
       }
@@ -74,10 +72,10 @@ class SimpleLeaf : BaseOrganWithLiveDead
          {
          const double SVPfrac = 0.66;
 
-         double VPDmint = VBMet.Humidity.svp(mint) - vp;
+         double VPDmint = VBMet.Humidity.svp((float)Met.MinT) - Met.VP;
          VPDmint = Math.Max(VPDmint, 0.0);
 
-         double VPDmaxt = VBMet.Humidity.svp(maxt) - vp;
+         double VPDmaxt = VBMet.Humidity.svp((float)Met.MaxT) - Met.VP;
          VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
          double VPD = SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;

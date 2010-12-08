@@ -5,8 +5,8 @@ using System.Text;
 class ReproductiveOrgan : BaseOrganWithLiveDead, Reproductive, AboveGround
    {
    private bool _ReadyForHarvest = false;
-   [Input]  private int Day = 0;
-   [Input]  private int Year = 0;
+   [Ref(".simulation.met")] Met Met;
+
    [Param]  private double MaximumSize = 0;
    [Param]  private string RipeStage = "";
    private double DailyGrowth = 0;
@@ -71,8 +71,8 @@ class ReproductiveOrgan : BaseOrganWithLiveDead, Reproductive, AboveGround
       if (Harvesting != null)
          Harvesting.Invoke();
 
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Harvesting " + Name + " from " + Plant.Name;
       double YieldDW = (Live.Wt + Dead.Wt);
@@ -93,8 +93,8 @@ class ReproductiveOrgan : BaseOrganWithLiveDead, Reproductive, AboveGround
       }
    [EventHandler] private void OnCut()
       {
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
       Console.WriteLine("");

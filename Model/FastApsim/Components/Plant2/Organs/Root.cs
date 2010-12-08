@@ -18,20 +18,7 @@ public class Root : BaseOrgan, BelowGround
    public event WaterChangedDelegate WaterChanged;
    [Event]
    public event NitrogenChangedDelegate NitrogenChanged;
-   [Input]
-   public double[] sw_dep = null;
-   [Input]
-   public double[] dlayer = null;
-   [Input]
-   public double[] bd = null;
-   [Input]
-   public double[] no3 = null;
-   [Input]
-   public double[] nh4 = null;
-   [Input]
-   public double[] dul_dep = null;
-   [Input]
-   public double[] ll15_dep = null;
+   [Ref(".simulation.soilwat")] SoilWat SoilWat;
    [Param]
    public double[] ll = null;
    [Param]
@@ -73,9 +60,9 @@ public class Root : BaseOrgan, BelowGround
       {
       if (LayerLive == null)
          {
-         LayerLive = new Biomass[dlayer.Length];
-         LayerDead = new Biomass[dlayer.Length];
-         for (int i = 0; i < dlayer.Length; i++)
+         LayerLive = new Biomass[SoilWat.dlayer.Length];
+         LayerDead = new Biomass[SoilWat.dlayer.Length];
+         for (int i = 0; i < SoilWat.dlayer.Length; i++)
             {
             LayerLive[i] = new Biomass();
             LayerDead[i] = new Biomass();
@@ -87,11 +74,11 @@ public class Root : BaseOrgan, BelowGround
          Depth = SowingInfo.Depth;
          }
 
-      if (ll.Length != dlayer.Length)
+      if (ll.Length != SoilWat.dlayer.Length)
          throw new Exception("Number of LL items does not match the number of soil layers.");
-      if (kl.Length != dlayer.Length)
+      if (kl.Length != SoilWat.dlayer.Length)
          throw new Exception("Number of KL items does not match the number of soil layers.");
-      if (xf.Length != dlayer.Length)
+      if (xf.Length != SoilWat.dlayer.Length)
          throw new Exception("Number of XF items does not match the number of soil layers.");
 
       }
@@ -102,9 +89,9 @@ public class Root : BaseOrgan, BelowGround
       int RootLayer = LayerIndex(Depth);
       Depth = Depth + RFV.Value * xf[RootLayer] * TF.Value;
       double MaxDepth = 0;
-      for (int i = 0; i < dlayer.Length; i++)
+      for (int i = 0; i < SoilWat.dlayer.Length; i++)
          if (xf[i] > 0)
-            MaxDepth += dlayer[i];
+            MaxDepth += SoilWat.dlayer[i];
 
       Depth = Math.Min(Depth, MaxDepth);
       }
@@ -152,9 +139,9 @@ public class Root : BaseOrgan, BelowGround
       {
       get
          {
-         double[] value = new double[dlayer.Length];
-         for (int i = 0; i < dlayer.Length; i++)
-            value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
+         double[] value = new double[SoilWat.dlayer.Length];
+         for (int i = 0; i < SoilWat.dlayer.Length; i++)
+            value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / SoilWat.dlayer[i];
          return value;
          }
       }
@@ -164,16 +151,16 @@ public class Root : BaseOrgan, BelowGround
       set
          {
          // Calculate Root Activity Values
-         double[] RAw = new double[dlayer.Length];
+         double[] RAw = new double[SoilWat.dlayer.Length];
          double TotalRAw = 0;
 
-         for (int layer = 0; layer < dlayer.Length; layer++)
+         for (int layer = 0; layer < SoilWat.dlayer.Length; layer++)
             {
             if (layer <= LayerIndex(Depth))
                if (LayerLive[layer].Wt > 0)
                   {
                   RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
-                             * dlayer[layer]
+                             * SoilWat.dlayer[layer]
                              * RootProportion(layer, Depth);
                   RAw[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
                   }
@@ -184,7 +171,7 @@ public class Root : BaseOrgan, BelowGround
             TotalRAw += RAw[layer];
             }
 
-         for (int layer = 0; layer < dlayer.Length; layer++)
+         for (int layer = 0; layer < SoilWat.dlayer.Length; layer++)
             {
             if (TotalRAw > 0)
 
@@ -199,12 +186,12 @@ public class Root : BaseOrgan, BelowGround
       {
       get
          {
-         if (SWSupply == null || SWSupply.Length != dlayer.Length)
-            SWSupply = new double[dlayer.Length];
+         if (SWSupply == null || SWSupply.Length != SoilWat.dlayer.Length)
+            SWSupply = new double[SoilWat.dlayer.Length];
 
-         for (int layer = 0; layer < dlayer.Length; layer++)
+         for (int layer = 0; layer < SoilWat.dlayer.Length; layer++)
             if (layer <= LayerIndex(Depth))
-               SWSupply[layer] = Math.Max(0.0, kl[layer] * KLModifier.Value * (sw_dep[layer] - ll[layer] * dlayer[layer]) * RootProportion(layer, Depth));
+               SWSupply[layer] = Math.Max(0.0, kl[layer] * KLModifier.Value * (SoilWat.sw_dep[layer] - ll[layer] * SoilWat.dlayer[layer]) * RootProportion(layer, Depth));
             else
                SWSupply[layer] = 0;
 
@@ -237,9 +224,9 @@ public class Root : BaseOrgan, BelowGround
    private int LayerIndex(double depth)
       {
       double CumDepth = 0;
-      for (int i = 0; i < dlayer.Length; i++)
+      for (int i = 0; i < SoilWat.dlayer.Length; i++)
          {
-         CumDepth = CumDepth + dlayer[i];
+         CumDepth = CumDepth + SoilWat.dlayer[i];
          if (CumDepth >= depth) { return i; }
          }
       throw new Exception("Depth deeper than bottom of soil profile");
@@ -252,12 +239,12 @@ public class Root : BaseOrgan, BelowGround
       double depth_of_root_in_layer = 0;  // depth of root within layer (mm)
       // Implementation Section ----------------------------------
       for (int i = 0; i <= layer; i++)
-         depth_to_layer_bottom += dlayer[i];
-      depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
+         depth_to_layer_bottom += SoilWat.dlayer[i];
+      depth_to_layer_top = depth_to_layer_bottom - SoilWat.dlayer[layer];
       depth_to_root = Math.Min(depth_to_layer_bottom, root_depth);
       depth_of_root_in_layer = Math.Max(0.0, depth_to_root - depth_to_layer_top);
 
-      return depth_of_root_in_layer / dlayer[layer];
+      return depth_of_root_in_layer / SoilWat.dlayer[layer];
       }
 
    [Output]
@@ -279,20 +266,20 @@ public class Root : BaseOrgan, BelowGround
 
    private void SoilNSupply(double[] NO3Supply, double[] NH4Supply)
       {
-      double[] no3ppm = new double[dlayer.Length];
-      double[] nh4ppm = new double[dlayer.Length];
+      double[] no3ppm = new double[SoilWat.dlayer.Length];
+      double[] nh4ppm = new double[SoilWat.dlayer.Length];
 
-      for (int layer = 0; layer < dlayer.Length; layer++)
+      for (int layer = 0; layer < SoilWat.dlayer.Length; layer++)
          {
          if (LayerLive[layer].Wt > 0)
             {
             double swaf = 0;
-            swaf = (sw_dep[layer] - ll15_dep[layer]) / (dul_dep[layer] - ll15_dep[layer]);
+            swaf = (SoilWat.sw_dep[layer] - SoilWat.ll15_dep[layer]) / (SoilWat.dul_dep[layer] - SoilWat.ll15_dep[layer]);
             swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
-            no3ppm[layer] = no3[layer] * (100.0 / (bd[layer] * dlayer[layer]));
-            NO3Supply[layer] = no3[layer] * KNO3 * no3ppm[layer] * swaf;
-            nh4ppm[layer] = nh4[layer] * (100.0 / (bd[layer] * dlayer[layer]));
-            NH4Supply[layer] = nh4[layer] * KNH4 * nh4ppm[layer] * swaf;
+            no3ppm[layer] = SoilWat.no3[layer] * (100.0 / (SoilWat.bd[layer] * SoilWat.dlayer[layer]));
+            NO3Supply[layer] = SoilWat.no3[layer] * KNO3 * no3ppm[layer] * swaf;
+            nh4ppm[layer] = SoilWat.nh4[layer] * (100.0 / (SoilWat.bd[layer] * SoilWat.dlayer[layer]));
+            NH4Supply[layer] = SoilWat.nh4[layer] * KNH4 * nh4ppm[layer] * swaf;
             }
          else
             {
@@ -306,8 +293,8 @@ public class Root : BaseOrgan, BelowGround
       {
       get
          {
-         double[] no3supply = new double[dlayer.Length];
-         double[] nh4supply = new double[dlayer.Length];
+         double[] no3supply = new double[SoilWat.dlayer.Length];
+         double[] nh4supply = new double[SoilWat.dlayer.Length];
          SoilNSupply(no3supply, nh4supply);
 
          double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
@@ -321,11 +308,11 @@ public class Root : BaseOrgan, BelowGround
          {
          double Uptake = value / kgha2gsm;
          NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
-         NitrogenUptake.DeltaNO3 = new double[dlayer.Length];
-         NitrogenUptake.DeltaNH4 = new double[dlayer.Length];
+         NitrogenUptake.DeltaNO3 = new double[SoilWat.dlayer.Length];
+         NitrogenUptake.DeltaNH4 = new double[SoilWat.dlayer.Length];
 
-         double[] no3supply = new double[dlayer.Length];
-         double[] nh4supply = new double[dlayer.Length];
+         double[] no3supply = new double[SoilWat.dlayer.Length];
+         double[] nh4supply = new double[SoilWat.dlayer.Length];
          SoilNSupply(no3supply, nh4supply);
          double NSupply = MathUtility.Sum(no3supply) + MathUtility.Sum(nh4supply);
          if (Uptake > 0)
@@ -335,7 +322,7 @@ public class Root : BaseOrgan, BelowGround
             double fraction = 0;
             if (NSupply > 0) fraction = Uptake / NSupply;
 
-            for (int layer = 0; layer <= dlayer.Length - 1; layer++)
+            for (int layer = 0; layer <= SoilWat.dlayer.Length - 1; layer++)
                {
                NitrogenUptake.DeltaNO3[layer] = -no3supply[layer] * fraction;
                NitrogenUptake.DeltaNH4[layer] = -nh4supply[layer] * fraction;

@@ -5,10 +5,7 @@ using CSGeneral;
 
 class BelowGroundOrgan : GenericOrgan, BelowGround, Reproductive
    {
-   [Input]
-   private int Day = 0;
-   [Input]
-   private int Year = 0;
+   [Ref(".simulation.met")] Met Met;
    [Ref("parent(Plant)")] Plant Plant;
 
    [Event]
@@ -18,8 +15,8 @@ class BelowGroundOrgan : GenericOrgan, BelowGround, Reproductive
       {
       Harvesting.Invoke();
 
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
+      DateTime Today = new DateTime(Met.Year, 1, 1);
+      Today = Today.AddDays(Met.Day - 1);
       string Indent = "     ";
       string Title = Indent + Today.ToShortDateString() + "  - Harvesting " + Name + " from " + Plant.Name;
       double YieldDW = (Live.Wt + Dead.Wt);

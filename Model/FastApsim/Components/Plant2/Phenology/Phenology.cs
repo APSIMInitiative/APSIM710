@@ -206,5 +206,11 @@ public class Phenology : Instance
          }
       return -1;
       }
+
+   [EventHandler]
+   public void OnKillCrop()
+      {
+      CurrentPhaseIndex = 0;
+      }
    }
 
