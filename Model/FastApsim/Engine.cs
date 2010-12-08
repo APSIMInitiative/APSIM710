@@ -58,6 +58,7 @@ public class Engine
       Simulation.SetModelAPIs();
       Simulation Sim = (Simulation)Simulation.TheModel;
       Sim.InvokeInitialised();
+      Simulation.UpdateValues();
       }
 
    /// <summary>
@@ -72,6 +73,7 @@ public class Engine
       Simulation.SetModelAPIs();
       Simulation Sim = (Simulation)Simulation.TheModel;
       Sim.InvokeInitialised();
+      Simulation.UpdateValues();
       }
 
    /// <summary>

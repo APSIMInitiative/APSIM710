@@ -404,6 +404,11 @@ namespace GraphDataUserInterface
                         S.ValuesLists[i].DateTime = true;
                         }
                      }
+                  else
+                     {
+                     S.ValuesLists[i].Value = MathUtility.CreateArrayOfValues(0, Table.Rows.Count);
+                     S.ValuesLists[i].Count = S.ValuesLists[i].Value.Length;
+                     }
                   }
                }
 

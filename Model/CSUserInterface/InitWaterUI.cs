@@ -502,6 +502,10 @@ namespace CSUserInterface
          List<string> Names = new List<string>();
          //Names.AddRange(Soil.ValidVariablesForProfileNode(Data));
          Names.Add("SW (mm/mm)");
+         Names.Add("AirDry (mm/mm)");
+         Names.Add("LL15 (mm/mm)");
+         Names.Add("DUL (mm/mm)");
+         Names.Add("SAT (mm/mm)");
 
          // Remove the thickness column and add in a depth mid points column
          //Names.RemoveAt(0);

@@ -100,7 +100,6 @@ namespace UIBits
          ToolStripMenuItem MoveUpItem = (ToolStripMenuItem)PopupMenu.Items.Add("Move up");
          MoveUpItem.ShortcutKeys = Keys.Control | Keys.Up;
          MoveUpItem.Click += new EventHandler(OnMoveUp);
-         ContextMenuStrip = PopupMenu;
          }
 
       /// <summary>
@@ -140,7 +139,7 @@ namespace UIBits
          if (Combo != null)
             {
             string SavedValue = Combo.Text;
-            EndEdit();
+            //EndEdit();
             CurrentCell.Value = SavedValue;
             }
          }
@@ -192,6 +191,9 @@ namespace UIBits
          if (DataSourceTable != null)
             {
             InRefresh = true;
+
+            ContextMenuStrip = PopupMenu;
+
             // Make sure we have the right number of columns.
             ColumnCount = Math.Max(DataSourceTable.Columns.Count, 1);
 
@@ -311,6 +313,11 @@ namespace UIBits
 
                if (Row > DataSourceTable.Rows.Count - 1)
                   DataSourceTable.Rows.Add(DataSourceTable.NewRow());
+
+               // Make sure this row has our popup menu.
+               if (Rows[e.RowIndex].ContextMenuStrip == null)
+                  Rows[e.RowIndex].ContextMenuStrip = PopupMenu;
+               ContextMenuStrip = PopupMenu;
 
                DataSourceTable.Rows[Row][Col] = Rows[Row].Cells[Col].Value;
                ChangedColumnNames.Add(DataSourceTable.Columns[Col].ColumnName);
@@ -448,6 +455,7 @@ namespace UIBits
                   string[] LineBits = Line.Split('\t');
                   for (int i = 0; i < LineBits.GetLength(0); ++i)
                      {
+                     LineBits[i] = LineBits[i].Replace("\r", "");
                      int Col = ColBase + i;
                      if (Col < ColumnCount)
                         {
@@ -492,6 +500,7 @@ namespace UIBits
             {
             MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+         ContextMenuStrip = PopupMenu;
          InRefresh = false;
          return ColumnsChanged;
          }
