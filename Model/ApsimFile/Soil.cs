@@ -885,13 +885,16 @@ namespace ApsimFile
             }
          if (ParentNodes.Count > 1)
             {
-            // go through all parent nodes and remove the ones that have blank values.
-            for (int i = 0; i < ParentNodes.Count; i++)
+            // go through all parent nodes and remove the ones that have blank values
+            // until we have just one left.
+            for (int i = ParentNodes.Count - 1; i >= 0;  i--)
                {
                if (XmlHelper.Value(ParentNodes[i], "Layer/" + VariableName) == "")
                   {
                   ParentNodes.RemoveAt(i);
                   i--;
+                  if (ParentNodes.Count == 1)
+                     break;
                   }
                }
             }
