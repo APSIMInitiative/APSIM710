@@ -309,15 +309,7 @@ namespace CSGeneral
       public static void SetValue(XmlNode Node, string NamePath, string Value)
          {
          XmlNode ValueNode = EnsureNodeExists(Node, NamePath);
-
-         char[] InvalidChars = { '&', '<', '>' };
-         if (Value.IndexOfAny(InvalidChars) != -1)
-            {
-            XmlCDataSection cdata = Node.OwnerDocument.CreateCDataSection(Value);
-            ValueNode.InnerXml = cdata.OuterXml;
-            }
-         else
-            ValueNode.InnerText = Value;
+         ValueNode.InnerText = Value;
          }
       public static List<string> Values(XmlNode Node, string TypeFilter)
             {
