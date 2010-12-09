@@ -175,6 +175,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
          character token_array(Max_tokens)*(Max_token_size)
                                           ! Array to hold tokens.
+         integer token_length(Max_tokens) ! Array to hold length of each token
          integer num_local_variables    ! Number of local variables.
          integer local_variable_regIds(Max_local_variables)
          integer token_array2(Max_tokens)
@@ -195,8 +196,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
          integer       end_of_file               ! End of file flag
          integer       start_token               ! Where to start filling token array
          integer       last_token                ! Position of last token stored.
+         integer       buffer_length             ! length of text in buffer
          character     buffer*(Buffer_size)      ! extract word
-         character     buffer_last*(Buffer_size)      ! extract word
+         character     buffer_last*(Buffer_size) ! extract word
          character     line*(Buffer_size)        ! line read from file
          character     last_line*(Buffer_size)   ! last line read from file
          character     ch                        ! next character in g_line
@@ -225,12 +227,17 @@ C     Last change:  P    25 Oct 2000    9:26 am
                                                    ! part of each expression
          character     expression_result*(Buffer_size)
                                                    ! returned expression result
+         integer       result_leng                 ! length of expression_result
          character     expression_array(Variable_maximum)*(Buffer_size)
+         integer       expression_lens(Variable_maximum) ! Lengths of strings in expression_array
          character     stack(stack_maximum)*(Buffer_size)
                                                    ! stack used in expression
+         integer       stack_length(stack_maximum) ! Length of strings on stack												   
          character     expression_sub_array(Variable_maximum)*
      .                                       (Buffer_size)
+         integer       expression_sub_lens(Variable_maximum) ! Length of strings in expression_sub_array
          character     and_or_array(Variable_maximum)*(Buffer_size)
+         integer       and_or_lens(Variable_maximum) ! Length of strings in and_or_array
 
       end type ManagerData
 
@@ -394,7 +401,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
       g%num_local_variables = 0
       g%lines_been_read = .false.
       g%buffer = blank
+      g%buffer_length = 0
       g%expression_result = blank
+      g%result_leng = 0
 
       call fill_char_array (g%expression_array, blank, Variable_maximum)
       call fill_char_array (g%stack, blank, stack_maximum)
@@ -539,7 +548,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          end if
          g%line_number = 0
          g%num_lines = apsimcomponentdata_getnumrulelines()
-         call Tokenize (g%token_array, g%token_array2, max_tokens)
+         call Tokenize ()
       end do
 
       call pop_routine(Routine_name)
@@ -573,7 +582,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          if (g%rule_regIds(rule) .eq. regId) then
             g%start_token = g%rule_indexes(rule)
             if (g%start_token .gt. 0) then
-               call Parse (g%token_array, g%token_array2)
+               call Parse ()
             endif
          endif
       enddo
@@ -617,8 +626,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       ! Try to find variable in local variable list.
 
-      Variable_index = find_string_in_array
-     .   (Variable_name, g%local_variable_names, g%num_local_variables)
+      Variable_index = LocalVarIndex(Variable_name)
 
       if (Variable_index .gt. 0) then
          if (g%local_variable_is_real(Variable_index)) then
@@ -629,7 +637,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .                                 realValue)
          else
             call respond2get_char_var (Variable_name, '',
-     .                        g%local_variable_values(Variable_index))
+     .           g%local_variable_values(Variable_index))
          endif
       else
          ! not our variable
@@ -662,9 +670,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       ! Try to find variable in local variable list.
 
-      variableIndex = find_string_in_array(Variable_name,
-     .                                     g%local_variable_names,
-     .                                     g%num_local_variables)
+      variableIndex = LocalVarIndex(Variable_name)
 
       if (variableIndex .gt. 0) then
          call Collect_char_var (Variable_name,
@@ -686,6 +692,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Parse_read_line(Line, EOF_flag)
 ! ====================================================================
       Use Infrastructure
+      Use ComponentInterfaceModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -727,7 +734,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          g%line_number = g%line_number + 1
 
          ! remove any comments.
-         Pos_comment = index(Line, "!")
+         Pos_comment = fast_index(Line, "!")
          if (Pos_comment .gt. 0) then
             Line(Pos_comment:) = Blank
          endif
@@ -774,12 +781,14 @@ C     Last change:  P    25 Oct 2000    9:26 am
       character Str*300                ! Dummy value returned by APSIM
       integer read_status
       real realValue
+      integer idx, leng
 
       integer, parameter :: Ok_status=0
       integer, parameter :: Not_ok=1
 
 !- Implementation Section ----------------------------------
 
+      idx = g%num_local_variables
       g%num_local_variables = g%num_local_variables + 1
 
       if (g%num_local_variables .gt. Max_local_variables) then
@@ -790,12 +799,28 @@ C     Last change:  P    25 Oct 2000    9:26 am
          call Fatal_error(ERR_user, str)
 
       else
-         g%local_variable_is_real(g%num_local_variables) = .not.
-     :                                                     RHSisString
+         ! Need to insert item at correct position to keep the names sorted
+         leng = len_trim(variable_name)		 
+         do while (idx .gt. 0 .and.
+     .      g%local_variable_names(idx)
+     .      .gt. variable_name(:leng))
+	           g%local_variable_names(idx + 1) = 
+     .              g%local_variable_names(idx)
+	           g%local_variable_values(idx + 1) = 
+     .              g%local_variable_values(idx)
+	           g%local_variable_is_real(idx + 1) = 
+     .              g%local_variable_is_real(idx)
+	           g%local_variable_regids(idx + 1) = 
+     .              g%local_variable_regids(idx)
+               idx = idx - 1
+         enddo
+         idx = idx + 1
+	 
+         g%local_variable_is_real(idx) = .not. RHSisString
          call assign_string (
-     :        g%local_variable_names(g%num_local_variables)
+     :        g%local_variable_names(idx)
      :      , Variable_name)
-         call SetLocalVariable(g%num_local_variables, Variable_value)
+         call SetLocalVariable(idx, Variable_value)
 
       endif
       if (RHSisString) then
@@ -804,7 +829,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .            trim(variable_name),
      .            ' = ',
      .            trim(Variable_value)
-         g%local_variable_regIds(g%num_local_variables)
+         g%local_variable_regIds(idx)
      .      = Add_Registration (respondToGetSetReg, Variable_name,
      .                       stringTypeDDML, ' ')
       else
@@ -812,8 +837,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .        'Manager creating a new local real variable : ',
      .         trim(variable_name),
      .         ' = ',
-     .         adjustl(g%local_variable_values(g%num_local_variables))
-         g%local_variable_regIds(g%num_local_variables)
+     .         adjustl(g%local_variable_values(idx))
+         g%local_variable_regIds(idx)
      .      = Add_Registration (respondToGetSetReg, Variable_name,
      .                       floatTypeDDML, ' ')
       endif
@@ -826,13 +851,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
       subroutine SetLocalVariable(Indx, Value)
 ! ====================================================================
-      use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
       integer Indx                     ! (INPUT) Index of variable to set the value of.
-      character Value*(*)	       ! (INPUT) Variable value to store
+      character Value*(*)              ! (INPUT) Variable value to store
 
 !+  Local Variables
       real RealValue
@@ -859,6 +883,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine manager_get_params (Function_call, Params)
 ! ====================================================================
+      Use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -890,18 +915,19 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       ! locate open and close bracket.
 
-      pos_open_bracket = index (Function_call, '(')
-      pos_close_bracket = index (Function_call, ')')
+      pos_open_bracket = fast_index (Function_call, '(')
+	  if (pos_open_bracket .gt. 0) then
+        pos_close_bracket = fast_index (Function_call, ')')
+      endif
 
       ! did we find both an open and a close bracket?
 
       if (pos_open_bracket .gt. 0 .and.
      .    pos_close_bracket .gt. pos_open_bracket) then
 
-
          ! yes - locate position of comma.
 
-         pos_comma = index (Function_call, ',')
+         pos_comma = fast_index (Function_call(:pos_close_bracket), ',')
 
          ! did we find a comma between the brackets?
 
@@ -936,8 +962,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 ! ====================================================================
       recursive subroutine Parse_get_variable
-     .                 (Variable_Name, Variable_Value, valueIsReal)
+     .           (Variable_Name, Variable_Value, valueIsReal, leng)
 ! ====================================================================
+      Use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -945,6 +972,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       character     Variable_Name*(*)  ! (INPUT) name of variable
       character     Variable_Value*(*) ! (OUTPUT) return value of variable
       logical       valueIsReal        ! (OUTPUT) returns true if value is a real.
+      integer       leng               ! (OUTPUT) returns length of value string	  
 
 !+  Purpose
 !     The parse routine has requested a variable.  Return value to it.
@@ -982,9 +1010,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer numMonths
       logical IsReal
       integer day, month, year
+      integer nChars
 
 !- Implementation Section ----------------------------------
-      Is_apsim_variable = (index(variable_name, '.') .gt. 0)
+      leng = 0
+      Is_apsim_variable = (fast_index(variable_name, '.') .gt. 0)
 
       ! Look for function first.
 
@@ -1000,10 +1030,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
          if (Params(1) .eq. ' ') then
             valueIsReal = .true.
             variable_value = '0'
+            leng = 1
          else
             call String_to_jday (Params(1), d_var_val, numvals, Today)
             if (numvals .eq. 0) then
-               call Parse_get_variable(Params(1), Str, IsReal)
+               call Parse_get_variable(Params(1), Str, IsReal, nChars)
                if (.not. IsReal) then
                   call Double_var_to_string (Date(Str, Today),
      .                                       Variable_value)
@@ -1017,11 +1048,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .                                   Variable_value)
             endif
             valueIsReal = .false.
+            leng = len_trim(Variable_value)
          endif
 
       else if (variable_name(1:6) .eq. 'month(') then
          call Manager_get_params (variable_name, Params)
-         call parse_get_variable(params(1), variable_value, valueIsReal)
+         call parse_get_variable(params(1), variable_value, 
+     .                            valueIsReal, nChars)
          call string_to_double_var(variable_value, d_var_val, numvals)
          if (numvals .ne. 1) then
             call fatal_error(ERR_user,
@@ -1032,7 +1065,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             call integer_var_to_string (month, variable_value)
          end if
          valueIsReal = .true.
-
+         leng = len_trim(Variable_value)
 
       else if (variable_name(1:12) .eq. 'date_within(') then
          ! get parameters from string.
@@ -1049,10 +1082,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
             Variable_value = '0'
          endif
          valueIsReal = .true.
+         leng = 1
 
       else if (variable_name(1:12) .eq. 'nearest_int(') then
          call Manager_get_params (variable_name, Params)
-         call parse_get_variable(params(1), variable_value, valueIsReal)
+         call parse_get_variable(params(1), variable_value, 
+     .               valueIsReal, nChars)
          call string_to_double_var(variable_value, d_var_val, numvals)
          if (numvals .ne. 1) then
             call fatal_error(ERR_user,
@@ -1062,6 +1097,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             call double_var_to_string (d_var_val, variable_value)
          end if
          valueIsReal = .true.
+         leng = len_trim(variable_value)
 
       else if (variable_name(1:19) .eq. 'paddock_is_fallow()') then
          crop_in_ground = .false.
@@ -1085,10 +1121,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
             Variable_value = '1'
          endif
          valueIsReal = .true.
+         leng = 1
 
       else if (variable_name(1:11) .eq. 'add_months(') then
          call Manager_get_params (variable_name, Params)
-         call parse_get_variable(params(1), variable_value, valueIsReal)
+         call parse_get_variable(params(1), variable_value, 
+     .           valueIsReal, nChars)
          call string_to_double_var(variable_value, d_var_val, numvals)
          if (numvals .ne. 1) then
             call fatal_error(ERR_user,
@@ -1099,7 +1137,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .                                 numvals)
             if (numvals .eq. 0) then
                call parse_get_variable(params(2), variable_value,
-     .                                 valueIsReal)
+     .                                 valueIsReal, nChars)
                call string_to_integer_var(variable_value, numMonths,
      .                                    numvals)
             endif
@@ -1113,6 +1151,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             endif
          end if
          valueIsReal = .true.
+         leng = len_trim(Variable_value)
 
       elseif (Is_apsim_variable) then
          call Split_line_reverse(variable_name, Mod_name,
@@ -1127,6 +1166,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             call str_to_real_var
      .           (Variable_value, value, io_result)
             valueIsReal = (io_result .eq. 0)
+            leng = len_trim(Variable_value)
          else
             valueIsReal = .false.
          endif
@@ -1134,9 +1174,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       else
          ! Try to find variable in local variable list.
 
-         Variable_index = find_string_in_array
-     .      (variable_name, g%local_variable_names,
-     .       g%num_local_variables)
+         Variable_index = LocalVarIndex(variable_name)
 
          ! If not in local variable list then ask APSIM for it.
 
@@ -1157,22 +1195,27 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .         'used in an expression.'
                call warning_error(ERR_user, str)
 
-               Variable_value = Real_or_not('0')
+               Variable_value = '0'
                valueIsReal = .true.
+               leng = 1
+			   nChars = len_trim(Variable_name)
                call manager_new_local_variable
-     .             (variable_name, Variable_value, .not.valueIsReal)
+     .             (variable_name(:nChars), Variable_value(:leng), 
+     .                 .not.valueIsReal)
 
             else
                ! Found variable elsewhere in APSIM
                call str_to_real_var
      .                  (Variable_value, value, io_result)
                valueIsReal = (io_result .eq. 0)
+               leng = len_trim(Variable_value)
             endif
 
          else
             call assign_string (Variable_value
      .                   , g%local_variable_values(Variable_index))
             valueIsReal = g%local_variable_is_real(variable_index)
+            leng = len_trim(Variable_value)
          endif
       endif
 
@@ -1185,6 +1228,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Parse_set_variable
      .           (Variable_Name, Variable_Value, RHSisString)
 ! ====================================================================
+      Use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -1222,7 +1266,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
       str = blank
       variable_name = lower_case(variable_name)
-      Is_apsim_variable = (index(variable_name, '.') .gt. 0)
+      Is_apsim_variable = (fast_index(variable_name, '.') .gt. 0)
       if (Is_apsim_variable) then
          call Split_line_reverse(variable_name, Mod_name,
      .                           Var_name, '.')
@@ -1240,9 +1284,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       else
          ! Try to find variable in local variable list.
 
-         Variable_index = find_string_in_array
-     .      (variable_name, g%local_variable_names,
-     :       g%num_local_variables)
+         Variable_index = LocalVarIndex(variable_name)
 
          ! If not in local variable list then tell APSIM about it. If
          ! APSIM doesn't know about it, then add to local variable list.
@@ -1332,6 +1374,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine Parse_action (Action_string)
 ! ====================================================================
+      Use ComponentInterfaceModule
       Use Infrastructure
       !Use ConstantsModule
       implicit none
@@ -1402,7 +1445,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       ! Test for case where user has forgotten to put in equals sign in set command.
 
       if (Action .eq. 'set') then
-         if (index(Data_string, '=') .eq. 0) then
+         if (fast_index(Data_string, '=') .eq. 0) then
             write (msg, '(50a)' )
      .         'Your manager file has a set command that does not',
      .         new_line,
@@ -1434,7 +1477,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          endif
 
          if (data_string .ne. ' ' .and.
-     :      index(Data_string, '=') .eq. 0) then
+     :      fast_index(Data_string, '=') .eq. 0) then
             write (msg, '(50a)' )
      :         'Your manager file has data in an action line that does',
      :         new_line,
@@ -1474,12 +1517,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! variable values.
 ! ====================================================================
       recursive subroutine Replace_local_variables(st)
+      Use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
       character st*(*)
       character key*(100)
-      character value*(2000)
+      character aValue*(2000)
       character new_value_string*(2000)
       character Value_string*(2000)
       character newString*(2000)
@@ -1488,11 +1532,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer   numvals
       integer localIndex
       integer posQuote
+      integer nChars
 
       newString = ' '
       new_value_string = ' '
 
-      if (index(st, '=') .ne. 0) then
+      if (fast_index(st, '=') .ne. 0) then
 
          ! string will look like:
          !   cultivar = hartog, plants = 121.61, sowing_depth = 30 (mm)
@@ -1506,15 +1551,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
             new_value_string = ' '
             numvals = word_count (Value_string)
             do valueIndx = 1, Numvals
-               call Get_next_word(Value_string, value)
-               value = No_leading_spaces(value)
-               if (value(1:1) .ne. '"' .and. value(1:1) .ne. '''') then
-
-                  localIndex = find_string_in_array(value,
-     :                                        g%local_variable_names,
-     :                                        g%num_local_variables)
+               call Get_next_word(Value_string, aValue)
+               aValue = No_leading_spaces(aValue)
+               if (aValue(1:1).ne.'"' .and. aValue(1:1).ne.'''') then
+                  localIndex = LocalVarIndex(aValue)
                   if (localIndex > 0) then
-                     value = g%local_variable_values(localIndex)
+                     aValue = g%local_variable_values(localIndex)
                   else
                      ! local variable name not found - leave as is
                   endif
@@ -1523,7 +1565,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
                endif
                   ! append value to a new value string.
                call append_string(new_value_string, ' '
-     :                           // No_leading_spaces(value))
+     :                           // No_leading_spaces(aValue))
             enddo
 
             ! append all the bits for the current key to a new string.
@@ -1531,7 +1573,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
                call append_string(newString, ',')
             endif
             call append_string(newString, ' ' // key)
-            if (value .ne. ' ') then
+            if (aValue .ne. ' ') then
                call append_string(newString, ' =')
                call append_string(newString, ' '
      :                        // No_leading_spaces(new_value_string))
@@ -1606,14 +1648,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Parse (Token_array, Token_array2)
+       recursive subroutine Parse ()
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Parse a given array and perform the specified actions.
@@ -1635,25 +1675,23 @@ C     Last change:  P    25 Oct 2000    9:26 am
 10     continue
 
        if (g%end_of_file .eq. NO) then
-          call   Get_next_token(Token_array, Token_array2)
+          call   Get_next_token()
 
           if     (g%token .eq. C_WORD) then
-                 call Assignment_Statement(Token_array,Token_array2)
+             call Assignment_Statement()
 
           elseif (g%token .eq. C_ACTION) then
-                 call   Process_Action(Token_array, Token_array2)
+              call   Process_Action()
 
           elseif (g%token .eq. C_IF) then
                  Nested_ifs = Nested_ifs + 1
-                 call   Process_if_statement(Nested_ifs,Token_array,
-     .                                                Token_array2)
+                 call   Process_if_statement(Nested_ifs)
 
           elseif (g%token .eq. C_ENDIF) then
                  Nested_ifs = Nested_ifs - 1
 
           elseif (g%token .eq. C_ELSE) then
-                 call   Process_else_statement(Nested_ifs,
-     .                                 Token_array, Token_array2)
+                 call   Process_else_statement(Nested_ifs)
 
           endif
 
@@ -1671,15 +1709,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 ! =====================================================================
        recursive subroutine Process_if_statement
-     .    (Nested_ifs, Token_array, Token_array2)
+     .    (Nested_ifs)
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
        integer       Nested_ifs           ! Number of nested statements
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Process a single if statement.
@@ -1698,9 +1734,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !- Implementation Section ----------------------------------
 
-       call   Get_next_token(Token_array, Token_array2)
+       call   Get_next_token()
 
-       if (If_statement(Token_array, Token_array2) .eq. 0) then
+       if (If_statement() .eq. 0) then
           if (g%all_ok .eq. YES) then
              This_Nested = Nested_ifs
              if (g%token .ne. C_THEN) then
@@ -1713,7 +1749,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
           if (g%all_ok .eq. YES) then
 
              Last_Token = g%token
-             call   Get_next_token(Token_array, Token_array2)
+             call   Get_next_token()
 
              if (g%token .eq. C_IF .and.
      .           Last_Token .eq. C_EOL) then
@@ -1763,15 +1799,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 ! =====================================================================
        recursive subroutine Process_else_statement
-     .  (Nested_ifs, Token_array, Token_array2)
+     .  (Nested_ifs)
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
        integer       Nested_ifs           ! Number of nested statements
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Process the else part of an if-statement.
@@ -1787,7 +1821,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        This_Nested = Nested_ifs
 10     continue
 
-       call   Get_next_token(Token_array, Token_array2)
+       call   Get_next_token()
 
        if     (g%token .eq. C_IF) then
               Nested_ifs = Nested_ifs + 1
@@ -1811,15 +1845,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Assignment_Statement
-     .     (Token_array, Token_array2)
+       recursive subroutine Assignment_Statement ()
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Perform a given assignment.
@@ -1831,20 +1862,21 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !+  Local Variables
        character     Variable_name*(Buffer_size)
                                           ! Variable to assign a value
+       integer       Variable_length
 
 !- Implementation Section ----------------------------------
 
-       Variable_name = g%buffer
+       Variable_name = g%buffer(:g%buffer_length)
+       Variable_length = g%buffer_length
 
-       call   Get_next_token(Token_array, Token_array2)
+       call   Get_next_token()
 
        if     (g%token .eq. C_EQUAL) then
-              call   Process_Assignment(Variable_name, Token_array,
-     .                                                  Token_array2)
+              call Process_Assignment(Variable_name(:Variable_length))
 
        else
-              call   Parse_error('Syntax error        ',
-     .                           'Assignment_Statement')
+              call Parse_error('Syntax error        ',
+     .                          'Assignment_Statement')
 
        endif
 
@@ -1855,16 +1887,14 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 ! =====================================================================
        recursive subroutine Process_Assignment
-     .  (Variable_name, Token_array, Token_array2)
+     .  (Variable_name)
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
-       character     Variable_name*(Buffer_size)
+       character     Variable_name*(*)
                                           ! Variable to assign a value
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Assign a value to a variable.
@@ -1880,28 +1910,37 @@ C     Last change:  P    25 Oct 2000    9:26 am
        logical       RHSisString
        integer       token1
        character     Word_name1*(Buffer_size)
-      integer read_status
-      real realValue
+       integer read_status
+       real realValue
        integer, parameter :: Ok_status=0
+       integer       nChars
+       integer       name1_len
 
 !- Implementation Section ----------------------------------
 
-       call   Get_next_token(Token_array, Token_array2)
+       call   Get_next_token()
        token1 = g%token
        g%number_expressions = 1
-       word_name1 =  g%buffer
-       call assign_string (g%expression_array(g%number_expressions)
-     :                   , g%buffer)
+       word_name1 =  g%buffer(:g%buffer_length)
+       name1_len = g%buffer_length
+       nChars = g%buffer_length
+       call assign_string (
+     :      g%expression_array(g%number_expressions)(:nChars),
+     :      g%buffer(:nChars))
+       g%expression_lens(g%number_expressions) = nChars
        g%expression_array2(g%number_expressions) = g%token
-       call   Get_next_token (Token_array, Token_array2)
+       call   Get_next_token ()
 
 10     continue
        if     (g%token .ne. C_EOL) then
               g%number_expressions = g%number_expressions + 1
+              nChars = g%buffer_length
               call assign_string
-     :            (g%expression_array(g%number_expressions), g%buffer)
+     :            (g%expression_array(g%number_expressions)(:nChars), 
+     :             g%buffer(:nChars))
+              g%expression_lens(g%number_expressions) = nChars
               g%expression_array2(g%number_expressions) = g%token
-              call   Get_next_token(Token_array, Token_array2)
+              call   Get_next_token()
               goto 10
        endif
        g%expression_array2(g%number_expressions+1) = C_end
@@ -1914,9 +1953,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
                 RHSisString = .true.
              elseif (token1 .eq. C_WORD) then
                 ! Try to find variable in local variable list.
-                Var_index = find_string_in_array
-     :               (word_name1, g%local_variable_names,
-     :               g%num_local_variables)
+                var_index = LocalVarIndex(word_name1(:name1_len))
                 if (var_index .gt. 0) then
                    RHSisString
      :                     = .not. g%local_variable_is_real(var_index)
@@ -1929,12 +1966,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
           else
              RHSisString = .false.
           endif
-          call assign_string (Variable_value, g%expression_result)
+          call assign_string (Variable_value(:g%result_leng), 
+     :            g%expression_result(:g%result_leng))
           call str_to_real_var
-     .                     (Variable_value, realValue, read_status)
+     .         (Variable_value(:g%result_leng), realValue, read_status)
           RHSisString = read_status.ne.OK_status .or. RHSisString
-          call   Parse_set_variable(Variable_Name, Variable_Value
-     :                              , RHSisString)
+          call   Parse_set_variable(Variable_Name, 
+     :           Variable_Value(:g%result_leng), RHSisString)
        else
        endif
 
@@ -1944,14 +1982,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Process_Action (Token_array, Token_array2)
+       recursive subroutine Process_Action ()
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Perform a given action.
@@ -1968,12 +2004,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
        SavedEndOfFile = g%end_of_file
        SavedNextToken = g%next_token
        SavedToken = g%Token
-       call   Parse_action (g%buffer)
+       call   Parse_action (g%buffer(:g%buffer_length))
        g%end_of_file = SavedEndOfFile
        g%next_token = SavedNextToken
        g%Token = SavedToken
 
-       call   Get_next_token (Token_array, Token_array2)
+       call   Get_next_token ()
 
        return
        end subroutine
@@ -1981,15 +2017,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive integer function If_statement
-     .     (Token_array, Token_array2)
+       recursive integer function If_statement ()
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Calculate the expression in an if statement.
@@ -2008,7 +2041,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        g%word_or_number       = NO
 
 10     continue
-       call   Get_expression_array(Token_array, Token_array2)
+       call   Get_expression_array()
 
 20     continue
 
@@ -2019,8 +2052,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        if (g%all_ok .eq. YES) then
 
               if     (g%save_token .ne. C_THEN) then
-                     call   Process_next_expression(Token_array,
-     .                                                Token_array2)
+                     call   Process_next_expression()
                      goto 10
               endif
 
@@ -2030,8 +2062,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
               endif
 
               g%token = g%save_token
-              call string_to_integer_var (g%expression_result,
-     :                                   If_result, NumVals)
+              call string_to_integer_var (
+     :               g%expression_result(:g%result_leng),
+     :               If_result, NumVals)
 
               If_statement = If_result
        endif
@@ -2042,15 +2075,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Process_next_expression
-     .    (Token_array, Token_array2)
+       recursive subroutine Process_next_expression ()
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Process the next part of an expression.
@@ -2060,6 +2090,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !+  Local Variables
        integer       ind                  ! loop index
+       integer       nChars, idx
 
 !- Implementation Section ----------------------------------
 
@@ -2072,10 +2103,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
           do 10  ind = g%number_and_or + 1
      .               , g%number_and_or + g%number_expressions
-             call assign_string (g%and_or_array(ind)
-     .                   , g%expression_array(ind - g%number_and_or))
+             idx = ind - g%number_and_or
+             nChars = g%expression_lens(idx)
+             call assign_string (g%and_or_array(ind)(:nChars)
+     .                   , g%expression_array(idx)(:nChars))
+             g%and_or_lens(ind) = nChars
              g%and_or_array2(ind) =
-     .                     g%expression_array2(ind - g%number_and_or)
+     .                     g%expression_array2(idx)
 10        continue
 
           g%number_and_or = g%number_and_or + g%number_expressions
@@ -2083,7 +2117,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        endif
 
        g%save_token = 0
-       call   Get_next_token(Token_array, Token_array2)
+       call   Get_next_token()
 
        return
        end subroutine
@@ -2104,21 +2138,27 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !+  Local Variables
        integer       ind                  ! loop index
+       integer       nChars, idx
 
 !- Implementation Section ----------------------------------
 
       do 10  ind = g%number_and_or + 1
      :           , g%number_and_or + g%number_expressions
-         call assign_string (g%and_or_array(ind)
-     :                     , g%expression_array(ind-g%number_and_or))
-         g%and_or_array2(ind)=g%expression_array2(ind-g%number_and_or)
+         idx = ind - g%number_and_or
+         nChars = g%expression_lens(idx)
+         call assign_string (g%and_or_array(ind)(:nChars)
+     :                     , g%expression_array(idx)(:nChars))
+         g%and_or_lens(ind) = nChars
+         g%and_or_array2(ind)=g%expression_array2(idx)
 10    continue
 
        g%number_and_or = g%number_and_or + g%number_expressions
 
        do 20  ind = 1, g%number_and_or
-          call assign_string (g%expression_array(ind)
-     :                      , g%and_or_array(ind))
+          nChars = g%and_or_lens(ind)
+          call assign_string (g%expression_array(ind)(:nChars)
+     :                      , g%and_or_array(ind)(:nChars))
+          g%expression_lens(ind) = nChars
           g%expression_array2(ind) = g%and_or_array2(ind)
 20     continue
 
@@ -2152,6 +2192,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        integer       ind2                 ! loop index
        integer       left                 ! position of the left parent
        integer       right                ! position of the right parent
+       integer       leng
 
 !- Implementation Section ----------------------------------
 
@@ -2172,14 +2213,20 @@ C     Last change:  P    25 Oct 2000    9:26 am
        if (left .gt. 0 .and. right .gt. 0) then
           g%number_of_tokens = right - left - 1
           do 40  ind = 1, g%number_of_tokens
-             call assign_string (g%expression_sub_array(ind)
-     :                         , g%expression_array(ind+left))
+             leng = g%expression_lens(ind+left)
+             call assign_string (g%expression_sub_array(ind)(:leng)
+     :                         , g%expression_array(ind+left)(:leng))
              g%expression_sub_array2(ind) =
      :                                 g%expression_array2(ind+left)
+             g%expression_sub_lens(ind) = leng
+     :                                 
 40        continue
           g%expression_sub_array2(g%number_of_tokens+1) = C_end
 
-          call assign_string (g%buffer, g%expression_sub_array(1))
+          leng = g%expression_sub_lens(1)
+          call assign_string (g%buffer(:leng),
+     :                        g%expression_sub_array(1)(:leng))
+          g%buffer_length = leng
 !          g%buffer_last = g%buffer
           g%token = g%expression_sub_array2(1)
           g%current_token = 1
@@ -2191,22 +2238,28 @@ C     Last change:  P    25 Oct 2000    9:26 am
                 left = 1
              endif
 
-             g%expression_result = pop_stack()
+			 g%result_leng = pop_stack(g%expression_result)
 
           end if
 
           if (g%all_ok .eq. YES) then
-              call assign_string (g%expression_array(left)
-     :                         ,  g%expression_result)
+              leng = g%result_leng			  
+              call assign_string (
+     :             g%expression_array(left)(:leng),
+     :             g%expression_result(:leng))
+              g%expression_lens(left) = leng
               g%expression_array2(left) = C_NUMBER
 
               ind2 = 0
               do 50  ind = right+1, g%number_expressions
                  ind2 = ind2 + 1
-                 call assign_string (g%expression_array(left+ind2)
-     .                             , g%expression_array(ind))
+                 leng = g%expression_lens(ind)
+                 call assign_string (
+     :                    g%expression_array(left+ind2)(:leng),
+     .                    g%expression_array(ind)(:leng))
                  g%expression_array2(left+ind2) =
      .                            g%expression_array2(ind)
+                 g%expression_lens(left+ind2) = leng
 50           continue
              g%number_expressions =
      .              g%number_expressions - (right - left)
@@ -2217,14 +2270,19 @@ C     Last change:  P    25 Oct 2000    9:26 am
           g%number_of_tokens = g%number_expressions - left
 
           do 60  ind = 1, g%number_of_tokens
-             call assign_string (g%expression_sub_array(ind)
-     :                         , g%expression_array(ind+left))
+             leng = g%expression_lens(ind+left)
+             call assign_string (g%expression_sub_array(ind)(:leng)
+     :                         , g%expression_array(ind+left)(:leng))
              g%expression_sub_array2(ind) =
      :                             g%expression_array2(ind+left)
+             g%expression_sub_lens(ind) = leng
 60        continue
           g%expression_sub_array2(g%number_of_tokens+1) = C_end
 
-          call assign_string (g%buffer, g%expression_sub_array(1))
+          leng = g%expression_sub_lens(1)
+          call assign_string (g%buffer(:leng), 
+     :                        g%expression_sub_array(1)(:leng))
+          g%buffer_length = leng		  
 !          g%buffer_last = g%buffer
           g%token = g%expression_sub_array2(1)
           g%current_token = 1
@@ -2232,17 +2290,18 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call Process_sub_expression()
 
           if (g%all_ok .eq. YES) then
-             call assign_string (g%expression_result, pop_stack())
+             g%result_leng = pop_stack(g%expression_result)
           endif
 
           if (g%all_ok .eq. YES) then
              do 70  ind = 1, left
                 g%expression_array2(ind) = C_LEFT_PAREN
 70           continue
-
-             call assign_string (g%expression_array(left+1)
-     :                         , g%expression_result)
+             leng = g%result_leng  
+             call assign_string (g%expression_array(left+1)(:leng)
+     :                         , g%expression_result(:leng))
              g%expression_array2(left+1) = C_NUMBER
+             g%expression_lens(left+1) = leng
 
              if (right .gt. 0) then
                 do 80  ind = 1, g%number_expressions+1-right
@@ -2267,7 +2326,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Str_to_double_var
      .     (String, Double_value, io_result)
 ! =====================================================================
-      use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -2318,7 +2376,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !      enddo
 !      io_result = -1
 !      return
-		 
+ 
       end subroutine
 
 
@@ -2326,7 +2384,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Str_to_real_var
      .     (String, Real_value, io_result)
 ! =====================================================================
-      use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -2404,6 +2461,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        character     operand_2*(Buffer_size)
        double precision Temp_1, Temp_2
        integer       io_result1, io_result2
+       integer       op1_leng, op2_leng
                                           ! check for reals
 
 !- Implementation Section ----------------------------------
@@ -2422,11 +2480,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call   Get_sub_token
           call   Process_Simple_Expression
 
-          call assign_string (operand_2, pop_stack())
-          call assign_string (operand_1, pop_stack())
+          op2_leng = pop_stack(operand_2)
+          op1_leng = pop_stack(operand_1)
 
-          call Str_to_double_var(Operand_1, Temp_1, io_result1)
-          call Str_to_double_var(Operand_2, Temp_2, io_result2)
+          call Str_to_double_var(Operand_1(:op1_leng), 
+     :                            Temp_1, io_result1)
+          call Str_to_double_var(Operand_2(:op2_leng), 
+     :                            Temp_2, io_result2)
 
           if (io_result1 .eq. 0 .and. io_result2 .eq. 0) then
             if (g%all_ok .eq. YES) then
@@ -2475,48 +2535,49 @@ C     Last change:  P    25 Oct 2000    9:26 am
             endif
           else
             if (g%all_ok .eq. YES) then
-                if (operator .eq. C_EQUAL) then
-                    if (strings_equal(Operand_1, Operand_2)) then
-                        call   push_stack('1.0')
-                     else
-                        call   push_stack('0.0')
-                    endif
+              if (operator .eq. C_EQUAL) then
+                  if (strings_equal(Operand_1(:op1_leng), 
+     :                              Operand_2(:op2_leng))) then
+                      call   push_stack('1.0')
+                   else
+                      call   push_stack('0.0')
+                  endif
 
-                elseif (operator .eq. C_LESS_THAN) then
-                    if (operand_1 .lt. operand_2) then
-                        call   push_stack('1.0')
-                    else
-                        call   push_stack('0.0')
-                    endif
-
-                elseif (operator .eq. C_LESS_EQUAL) then
-                    if (operand_1 .le. operand_2) then
-                        call   push_stack('1.0')
-                    else
-                        call   push_stack('0.0')
-                    endif
-
-                elseif (operator .eq. C_GREATER_THAN) then
-                    if (operand_1 .gt. operand_2) then
-                        call   push_stack('1.0')
-                    else
-                        call   push_stack('0.0')
-                    endif
-
-                elseif (operator .eq. C_GREATER_EQUAL) then
-                    if (operand_1 .ge. operand_2) then
-                        call   push_stack('1.0')
-                    else
-                        call   push_stack('0.0')
-                    endif
-
-                elseif (operator .eq. C_NOT_EQUAL) then
-                    if (operand_1 .ne. operand_2) then
-                        call   push_stack('1.0')
-                    else
-                        call   push_stack('0.0')
-                    endif
+              elseif (operator .eq. C_LESS_THAN) then
+                if (operand_1(:op1_leng) .lt. operand_2(:op2_leng)) then
+                      call   push_stack('1.0')
+                else
+                      call   push_stack('0.0')
                 endif
+
+              elseif (operator .eq. C_LESS_EQUAL) then
+                if (operand_1(:op1_leng) .le. operand_2(:op2_leng)) then
+                    call   push_stack('1.0')
+                else
+                    call   push_stack('0.0')
+                endif
+
+              elseif (operator .eq. C_GREATER_THAN) then
+                if (operand_1(:op1_leng) .gt. operand_2(:op2_leng)) then
+                    call   push_stack('1.0')
+                else
+                    call   push_stack('0.0')
+                endif
+
+              elseif (operator .eq. C_GREATER_EQUAL) then
+                if (operand_1(:op1_leng) .ge. operand_2(:op2_leng)) then
+                    call   push_stack('1.0')
+                else
+                    call   push_stack('0.0')
+                endif
+
+              elseif (operator .eq. C_NOT_EQUAL) then
+                if (operand_1(:op1_leng) .ne. operand_2(:op2_leng)) then
+                    call   push_stack('1.0')
+                else
+                    call   push_stack('0.0')
+                endif
+              endif
             endif
          endif
        endif
@@ -2545,11 +2606,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !+  Local Variables
        integer       operator             ! save the operator
-       character     Temp_operand*(Buffer_size)
+       character     Temp_operand*(25)
        double precision  Temp_1, Temp_2
        character     operand_1*(Buffer_size)
        character     operand_2*(Buffer_size)
        integer       numvals
+       integer       op1_leng, op2_leng
+       integer       temp_len
 
 !- Implementation Section ----------------------------------
 
@@ -2565,25 +2628,33 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call  Get_sub_token
           call  Process_Term
 
-          call assign_string (operand_2, pop_stack())
-          call assign_string (operand_1, pop_stack())
+          op2_leng = pop_stack(operand_2)
+          op1_leng = pop_stack(operand_1)
 
           if (g%all_ok .eq. YES) then
              if (operator .eq. C_PLUS) then
-                call string_to_double_var(Operand_1, Temp_1, numvals)
-                call string_to_double_var(Operand_2, Temp_2, numvals)
+                call string_to_double_var(Operand_1(:op1_leng), 
+     :                                    Temp_1, numvals)
+                call string_to_double_var(Operand_2(:op2_leng), 
+     :                                    Temp_2, numvals)
                 call Double_var_to_string(Temp_1 + Temp_2, Temp_operand)
-                call   push_stack(Temp_operand)
+                temp_len = len_trim(temp_operand)
+                call   push_stack(Temp_operand(:temp_len))
 
              elseif (operator .eq. C_MINUS) then
-                call string_to_double_var(Operand_1, Temp_1, numvals)
-                call string_to_double_var(Operand_2, Temp_2, numvals)
+                call string_to_double_var(Operand_1(:op1_leng), 
+     :                                     Temp_1, numvals)
+                call string_to_double_var(Operand_2(:op2_leng), 
+     :                                     Temp_2, numvals)
                 call Double_var_to_string(Temp_1 - Temp_2, Temp_operand)
-                call push_stack(Temp_operand)
+                temp_len = len_trim(temp_operand)
+                call push_stack(Temp_operand(:temp_len))
 
              elseif (operator .eq. C_AND) then
-                call string_to_double_var(Operand_1, Temp_1, numvals)
-                call string_to_double_var(Operand_2, Temp_2, numvals)
+                call string_to_double_var(Operand_1(:op1_leng), 
+     :                                     Temp_1, numvals)
+                call string_to_double_var(Operand_2(:op2_leng), 
+     :                                     Temp_2, numvals)
 
                 if (doubles_are_equal (Temp_1, 1.0d0) .and.
      .              doubles_are_equal (Temp_2, 1.0d0)) then
@@ -2623,11 +2694,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !+  Local Variables
        integer       operator             ! save the operator
-       character     Temp_operand*(Buffer_size)
+       character     Temp_operand*(25)
        double precision Temp_1, Temp_2
        character     operand_1*(Buffer_size)
        character     operand_2*(Buffer_size)
        integer       numvals
+       integer       op1_leng, op2_leng
+       integer       temp_len
 
 !- Implementation Section ----------------------------------
 
@@ -2644,20 +2717,25 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call  Get_sub_token
           call  Process_Power
 
-          call assign_string (operand_2, pop_stack())
-          call assign_string (operand_1, pop_stack())
+          op2_leng = pop_stack(operand_2)
+          op1_leng = pop_stack(operand_1)
 
 
           if (g%all_ok .eq. YES) then
              if (operator .eq. C_MULTIPLY) then
-                call string_to_double_var(Operand_1, Temp_1, numvals)
-                call string_to_double_var(Operand_2, Temp_2, numvals)
+                call string_to_double_var(Operand_1(:op1_leng), 
+     :                                     Temp_1, numvals)
+                call string_to_double_var(Operand_2(:op2_leng), 
+     :                                     Temp_2, numvals)
                 call Double_var_to_string(Temp_1 * Temp_2, Temp_operand)
-                call   push_stack(Temp_operand)
+                temp_len = len_trim(temp_operand)
+                call   push_stack(Temp_operand(:temp_len))
 
              elseif (operator .eq. C_DIVIDE) then
-                call string_to_double_var(Operand_1, Temp_1, numvals)
-                call string_to_double_var(Operand_2, Temp_2, numvals)
+                call string_to_double_var(Operand_1(:op1_leng), 
+     :                                    Temp_1, numvals)
+                call string_to_double_var(Operand_2(:op2_leng), 
+     :                                     Temp_2, numvals)
 
                 if (doubles_are_equal(Temp_2, 0.0d0)) then
                    call   Parse_error
@@ -2666,12 +2744,15 @@ C     Last change:  P    25 Oct 2000    9:26 am
                 else
                    call Double_var_to_string(Temp_1 / Temp_2,
      .                                       Temp_operand)
-                   call   push_stack(Temp_operand)
+                   temp_len = len_trim(temp_operand)
+                   call   push_stack(Temp_operand(:temp_len))
                 endif
 
              elseif (operator .eq. C_OR) then
-                call string_to_double_var(Operand_1, Temp_1, numvals)
-                call string_to_double_var(Operand_2, Temp_2, numvals)
+                call string_to_double_var(Operand_1(:op1_leng), 
+     :                                    Temp_1, numvals)
+                call string_to_double_var(Operand_2(:op2_leng), 
+     :                                    Temp_2, numvals)
                 if (Doubles_are_equal (Temp_1, 1.0d0) .or.
      .              Doubles_are_equal (Temp_2, 1.0d0)) then
                    call push_stack('1.0')
@@ -2706,11 +2787,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !+  Local Variables
        integer       operator             ! save the operator
-       character     Temp_operand*(Buffer_size)
+       character     Temp_operand*(25)
        double precision Temp_1, Temp_2
        character     operand_1*(Buffer_size)
        character     operand_2*(Buffer_size)
        integer       numvals
+       integer       op1_leng, op2_leng
+       integer       temp_len
 
 !- Implementation Section ----------------------------------
 
@@ -2724,17 +2807,19 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call  Get_sub_token
           call  Process_Factor
 
-          call assign_string (operand_2, pop_stack())
-          call assign_string (operand_1, pop_stack())
-
+          op2_leng = pop_stack(operand_2)
+          op1_leng = pop_stack(operand_1)
 
           if (g%all_ok .eq. YES) then
              if (operator .eq. C_POWER) then
-                call string_to_double_var(Operand_1, Temp_1, numvals)
-                call string_to_double_var(Operand_2, Temp_2, numvals)
+                call string_to_double_var(Operand_1(:op1_leng), 
+     :                                    Temp_1, numvals)
+                call string_to_double_var(Operand_2(:op2_leng), 
+     :                                    Temp_2, numvals)
                 call Double_var_to_string(Temp_1 ** Temp_2,
      .                                    Temp_operand)
-                call push_stack(Temp_operand)
+                temp_len = len_trim(temp_operand)
+                call push_stack(Temp_operand(:temp_len))
              endif
 
              if (g%all_ok .eq. YES) then
@@ -2769,32 +2854,36 @@ C     Last change:  P    25 Oct 2000    9:26 am
                                           ! Value to push on g%stack
        character     Temp*(Buffer_size)
        logical valueIsReal
+       integer leng
 
 !- Implementation Section ----------------------------------
 
        if (g%token .eq. C_WORD) then
           call   Parse_get_variable
-     .         (g%buffer, Variable_Value, valueIsReal)
+     .     (g%buffer(:g%buffer_length), Variable_Value, 
+     .      valueIsReal, leng)
 
           if (valueIsReal) then
-             call assign_string (Temp, Real_or_not(Variable_Value))
+             call assign_string (Temp, 
+     .           Real_or_not(Variable_Value(:leng), leng))
           else
-             call assign_string (Temp, Variable_value)
+             call assign_string (Temp(:leng), Variable_value(:leng))
           endif
-
-          call   push_stack(Temp)
+           
+          call   push_stack(Temp(:leng))
 
           call   Get_sub_token
 
        elseif (g%token .eq. C_NUMBER) then
 
-          call assign_string (Temp, Real_or_not(g%buffer))
-          call   push_stack(Temp)
+          call assign_string (Temp, 
+     .        Real_or_not(g%buffer(:g%buffer_length), leng))
+          call   push_stack(Temp(:leng))
 
           call   Get_sub_token
 
        elseif (g%token .eq. C_LITERAL) then
-          call   push_stack(g%buffer)
+          call   push_stack(g%buffer(:g%buffer_length))
 
           call   Get_sub_token
 
@@ -2814,6 +2903,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !+  Sub-Program Arguments
        character     Variable_Value*(*) ! (INPUT) Value to push on g%stack
+       integer       nChars ! Length of the string being pushed
+       integer       nVars
 
 !+  Purpose
 !      Add a value to the top of the stack.
@@ -2825,12 +2916,15 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
 
        g%number_of_variables = g%number_of_variables + 1
-       if (g%number_of_variables .gt. Variable_maximum) then
+       nVars = g%number_of_variables
+       if (nVars .gt. Variable_maximum) then
           call   Parse_error('Too many variables  ',
      .                       'push_stack          ')
-       else if (g%number_of_variables .gt. 0) then
-          call assign_string (g%stack(g%number_of_variables)
+       else if (nVars .gt. 0) then
+          nChars = len(Variable_Value)
+          call assign_string (g%stack(nVars)(:nChars)
      :                      , Variable_Value)
+          g%stack_length(nVars) = nChars
        else
          ! we have a problem elsewhere
        endif
@@ -2842,10 +2936,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive character*(buffer_size) function pop_stack ()
+       recursive integer function pop_stack (buffer)
 ! =====================================================================
       Use Infrastructure
       implicit none
+	  
+      integer nVars
+      character buffer*(*)
 
 !+  Purpose
 !     Get the string off the top of the stack.
@@ -2856,18 +2953,20 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !- Implementation Section ----------------------------------
 
-       g%number_of_variables = g%number_of_variables - 1
+       nVars = g%number_of_variables
+       pop_stack = 0
 
-       if (g%number_of_variables .lt. 0) then
+       if (nVars .lt. 1) then
           call   Parse_error('Too few variables   ',
      .                       'pop_stack           ')
-       else if (g%number_of_variables .le. Variable_maximum) then
-          call assign_string (pop_stack
-     :                      , g%stack(g%number_of_variables + 1))
+       else if (nVars .le. Variable_maximum - 1) then
+          pop_stack = g%stack_length(nVars)
+          call assign_string (buffer(:pop_stack), 
+     .              g%stack(nVars)(:pop_stack))
        else
          ! we have a problem elsewhere
        endif
-
+       g%number_of_variables = g%number_of_variables - 1
 
        return
        end function
@@ -2879,6 +2978,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
       Use Infrastructure
       implicit none
+      integer leng
 
 !+  Purpose
 !     Get the next token off the sub array.
@@ -2895,8 +2995,10 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .                           'Get_sub_token       ')
        endif
 
-       call assign_string (g%buffer
-     :                   , g%expression_sub_array(g%current_token))
+       leng = g%expression_sub_lens(g%current_token)
+       call assign_string (g%buffer(:leng),
+     :                g%expression_sub_array(g%current_token)(:leng))
+       g%buffer_length = leng
        g%token = g%expression_sub_array2(g%current_token)
 !          g%buffer_last = g%buffer
 
@@ -2907,14 +3009,14 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Get_next_token (Token_array, Token_array2)
+       recursive subroutine Get_next_token ()
 ! =====================================================================
       Use Infrastructure
       implicit none
+	  
+      integer leng
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Get the next token of the g%token array.
@@ -2928,10 +3030,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !       call assign_string (g%buffer_LAST, Token_array(g%next_token))
        g%next_token = g%next_token + 1
 
-       call assign_string (g%buffer, Token_array(g%next_token))
+       leng = g%Token_length(g%next_token)
+       call assign_string (g%buffer(:leng), 
+     :                    g%Token_array(g%next_token)(:leng))
 !          g%buffer_last = g%buffer
-       g%token = Token_array2(g%next_token)
-
+       g%token = g%Token_array2(g%next_token)
+       g%buffer_length = leng
+	   
        if     (g%token .eq. C_EOF) then
               g%end_of_file = YES
        endif
@@ -2943,15 +3048,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Get_expression_array
-     .    (Token_array, Token_array2)
+       recursive subroutine Get_expression_array ()
 ! =====================================================================
       Use Infrastructure
       implicit none
+      integer leng
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
 
 !+  Purpose
 !     Put all tokens in expression into expression array.
@@ -2969,10 +3072,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call   Check_previous_word
 
           g%number_expressions = g%number_expressions + 1
-          call assign_string (g%expression_array(g%number_expressions)
-     :                      , g%buffer)
+          leng = g%buffer_length
+          call assign_string (
+     :         g%expression_array(g%number_expressions)(:leng),
+     :         g%buffer(:leng))
           g%expression_array2(g%number_expressions) = g%token
-          call   Get_next_token(Token_array, Token_array2)
+          g%expression_lens(g%number_expressions) = leng
+          call   Get_next_token()
        endif
 
 10     continue
@@ -2990,16 +3096,19 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
               call   Check_previous_word
               g%number_expressions = g%number_expressions + 1
+              leng = g%buffer_length
               call assign_string (
-     :             g%expression_array(g%number_expressions), g%buffer)
+     :             g%expression_array(g%number_expressions)(:leng), 
+     :             g%buffer(:leng))
+              g%expression_lens(g%number_expressions) = leng
               g%expression_array2(g%number_expressions) = g%token
 
-              call   Get_next_token(Token_array, Token_array2)
+              call   Get_next_token()
               goto   10
           endif
 
           if (g%token .eq. C_EOL) then
-             call   Get_next_token(Token_array, Token_array2)
+             call   Get_next_token()
              goto   10
           endif
 
@@ -3068,13 +3177,14 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 ! =====================================================================
        recursive character*(buffer_size) function Real_or_not
-     .     (Variable_Value)
+     .     (Variable_Value, Variable_leng)
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
        character*(*) Variable_Value
+       integer Variable_leng
 
 !+  Purpose
 !     check to see if the value is a real
@@ -3093,8 +3203,10 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
        if (Double_flag .eq. 0) then
           call Real_var_to_string(real(Temp), Real_or_not)
+          Variable_leng = 25  ! Real_var_to_string uses "G25.15e3"
        else
-          Real_or_not = Variable_Value
+          Variable_leng = len(Variable_value)
+          Real_or_not(:Variable_leng) = Variable_Value
        endif
 
        return
@@ -3103,16 +3215,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive subroutine Tokenize
-     .    (Token_array, Token_array2, maxtokens)
+       recursive subroutine Tokenize()
 ! =====================================================================
       Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
-       character     Token_array(*)*(*)
-       integer       Token_array2(*)
-       integer       maxtokens
 
 !+  Purpose
 !      Read a file token by token
@@ -3151,7 +3259,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 10     continue
 
-       if (ind .ge. maxtokens-1) then
+       if (ind .ge. max_tokens-1) then
           call fatal_error (err_internal, 'Token array limit exceeded')
 
        else
@@ -3165,15 +3273,17 @@ C     Last change:  P    25 Oct 2000    9:26 am
                if  (if_count .gt. 0) then
                    if_count = if_count - 1
                else
-                   do 20  count = 1, elseif_count
-                      g%token = C_ENDIF
-                      g%buffer = 'endif'
+                 do 20  count = 1, elseif_count
+                    g%token = C_ENDIF
+                    g%buffer = 'endif'
 !          g%buffer_last = g%buffer
-                      ind = ind + 1
-                      call assign_string(Token_array(ind),g%buffer)
-                      Token_array2(ind) = g%token
-20                 continue
-                   elseif_count = 0
+                    ind = ind + 1
+                    call assign_string(g%Token_array(ind)(:5),
+     :                                  g%buffer(:5))
+                    g%Token_length(ind) = 5
+                    g%Token_array2(ind) = g%token
+20               continue
+                 elseif_count = 0
                endif
           endif
 
@@ -3183,18 +3293,19 @@ C     Last change:  P    25 Oct 2000    9:26 am
                g%buffer = 'else'
 !          g%buffer_last = g%buffer
                ind = ind + 1
-               call assign_string (Token_array(ind), g%buffer)
-               Token_array2(ind) = g%token
+               call assign_string (g%Token_array(ind), g%buffer(:4))
+               g%Token_length(ind) = 4
+               g%Token_array2(ind) = g%token
                g%token = C_IF
                g%buffer = 'if'
 !          g%buffer_last = g%buffer
           endif
 
           if   (g%token .eq. C_NUMBER .and. ind .ge. 2 .and.
-     :           Token_array2(ind) .eq. C_MINUS .and.
-     :           Token_array2(ind-1) .ne. C_NUMBER .and.
-     :           Token_array2(ind-1) .ne. C_RIGHT_PAREN .and.
-     :           Token_array2(ind-1) .ne. C_WORD) then
+     :           g%Token_array2(ind) .eq. C_MINUS .and.
+     :           g%Token_array2(ind-1) .ne. C_NUMBER .and.
+     :           g%Token_array2(ind-1) .ne. C_RIGHT_PAREN .and.
+     :           g%Token_array2(ind-1) .ne. C_WORD) then
 
                  call assign_string (g%buffer, '-'//g%buffer)
                  ind = ind -1
@@ -3204,10 +3315,10 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
           if   (ind .ge. 1 .and.
      :          (g%token .eq. C_WORD .or. g%Token .eq. C_LITERAL) .and.
-     :             (Token_array2(ind) .eq. C_WORD .or.
-     :              Token_array2(ind) .eq. C_LITERAL) ) then
+     :             (g%Token_array2(ind) .eq. C_WORD .or.
+     :              g%Token_array2(ind) .eq. C_LITERAL) ) then
 
-                g%buffer = string_concat (Token_Array(ind),
+                g%buffer = string_concat (g%Token_Array(ind),
      :                                          ' '//g%buffer)
 !          g%buffer_last = g%buffer
                call Get_Action()
@@ -3216,21 +3327,23 @@ C     Last change:  P    25 Oct 2000    9:26 am
           endif
 
           ind = ind + 1
-          call assign_string (Token_array(ind), g%buffer)
+          call assign_string (g%Token_array(ind), g%buffer)
+          g%buffer_length = len_trim(g%buffer)
+          g%Token_length(ind) = g%buffer_length
 
 !          g%buffer_last = g%buffer
-          Token_array2(ind) = g%token
+          g%Token_array2(ind) = g%token
 
           if     (g%end_of_file .eq. 0) then
               goto 10
           endif
        endif
 
-       if (token_array2(ind) .ne. c_eol) then
+       if (g%token_array2(ind) .ne. c_eol) then
           ind = ind+1
-          token_array2(ind) = c_eol
+          g%token_array2(ind) = c_eol
        end if
-       Token_array2(ind+1) = C_EOF
+       g%Token_array2(ind+1) = C_EOF
 
        g%last_token = ind
        return
@@ -3338,6 +3451,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
           Inside_quotes = .true.
        else
           g%buffer = g%ch
+		  g%buffer_length = 1
 !          g%buffer_last = g%buffer
           Inside_quotes = .false.
        endif
@@ -3367,7 +3481,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :      g%ch .eq. '(')     .or.
      .      (g%ch .eq. ')' .and. left .gt. 0))   then
 
-          g%buffer = string_concat(g%buffer, g%ch)
+          g%buffer = string_concat(g%buffer(:g%buffer_length), g%ch)
+          g%buffer_length = g%buffer_length + 1		  
 
           if  (g%ch .eq. '(') then
                left = left + 1
@@ -3412,14 +3527,16 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
 
        g%buffer = ' '
+       g%buffer_length = 0
 
 10     continue
 
        call   Get_Char()
 
        if (g%ch .ne. '''') then
-              g%buffer = string_concat (g%buffer, g%ch)
-              goto 10
+          g%buffer = string_concat (g%buffer(:g%buffer_length), g%ch)
+          g%buffer_length = g%buffer_length + 1
+          goto 10
        endif
 !          g%buffer_last = g%buffer
 
@@ -3452,14 +3569,16 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
        g%buffer = g%ch
+       g%buffer_length = 1	   
 10     continue
 
        call Get_Char()
 
        if ((g%ch .ge. '0' .and. g%ch .le. '9')  .or.
-     :     (g%ch .eq. '.'))                     then
-              g%buffer = string_concat (g%buffer, g%ch)
-              goto 10
+     :    (g%ch .eq. '.'))                     then
+            g%buffer = string_concat (g%buffer(:g%buffer_length), g%ch)
+            g%buffer_length = g%buffer_length + 1			
+            goto 10
        end if
 !          g%buffer_last = g%buffer
 
@@ -3666,6 +3785,32 @@ C     Last change:  P    25 Oct 2000    9:26 am
        return
        end function
 
+! ====================================================================
+! Find a local variable name by binary search
+! Requires the local variable name list to be kept in sorted order
+! ====================================================================
+      integer function LocalVarIndex(varName)
+      implicit none
+      character*(*), intent(in) :: varName
+	  
+	  
+      integer left, right, middle
+      LocalVarIndex = 0
+      left = 0
+      right = g%num_local_variables + 1
+      do while (right - left > 1)
+        middle = (left + right) / 2
+        if (varName .gt. g%local_variable_names(middle)) then
+          left = middle
+        else if (varName .lt. g%local_variable_names(middle)) then
+          right = middle
+        else
+          LocalVarIndex = middle
+          exit
+        endif
+      enddo
+      return
+      end function LocalVarIndex
 
 
       end module ManagerModule
@@ -3781,3 +3926,4 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       return
       end subroutine respondToEvent
+

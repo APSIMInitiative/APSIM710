@@ -1524,7 +1524,7 @@ extern "C" bool EXPORT STDCALL component_id_to_name(unsigned* id, char* name,
    string nameString = asString(name, nameLength);
    bool ok = FortranWrapper::currentInstance->componentIDToName(*id, nameString);
    if (ok)
-	  FString(name, nameLength, FORString) = nameString.c_str();
+	  FString(name, nameLength, EmptyString) = nameString.c_str();
    return ok;
    }
 // ------------------------------------------------------------------
@@ -1553,7 +1553,7 @@ extern "C" int EXPORT STDCALL read_parameter
    {
    FString fsect = FString(sectionName, sectionNameLength, FORString);
    FString fpar = FString(parameterName, parameterNameLength, FORString);
-   FString fvar = FString(value, valueLength, FORString);
+   FString fvar = FString(value, valueLength, EmptyString);
    bool found = FortranWrapper::currentInstance->readParameter(fsect, fpar, fvar, *optional != 0);
 
    if (found)
@@ -1593,7 +1593,19 @@ extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsi
 	*ok = (endPtr != buf) && ((*endPtr == '\0') || isspace(*endPtr));
 	return result;
 }
-   
+
+extern "C" int EXPORT STDCALL fast_index(char* str, const char* ch, unsigned strLeng, unsigned chLeng)
+{
+	char lastCh = str[strLeng - 1];
+	str[strLeng - 1] = '\0';
+	char* endPtr = strchr(str, *ch);
+	str[strLeng - 1] = lastCh;
+	if (endPtr == NULL)
+		return (lastCh == *ch) ? strLeng : 0;
+	else
+		return int(endPtr - str) + 1;
+}
+
 // restore the warnings about "Functions containing for are not expanded inline.
 #pragma warn .inl
 

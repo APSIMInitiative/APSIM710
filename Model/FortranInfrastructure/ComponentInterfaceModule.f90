@@ -716,6 +716,13 @@ module ComponentInterfaceModule
        double precision string_to_float
        end function string_to_float	   
 
+       function fast_index(inString, ch)
+       ml_external fast_index
+       character (len=*), intent(in) :: inString
+       character (len=1), intent(in) :: ch
+       integer fast_index
+       end function fast_index
+
    end interface
 
 end module ComponentInterfaceModule
