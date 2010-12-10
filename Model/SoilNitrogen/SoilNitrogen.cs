@@ -13,6 +13,7 @@ public class SoilN : Instance
 {
 #region Parameters used to initialise the model
 
+#region Parameters we expect to see provided by the user
     [Param(Optional=true)]
     private string soiltype = "standard";   // soil type spec used to determine mineralisation properties
 
@@ -180,7 +181,8 @@ public class SoilN : Instance
                 _ureappm = value;
         }
     }
-
+    #endregion
+#region Parameters not usually provided by the user
     [Param]
     private double enr_a_coeff = 0.0;   // enrichment equation coefficient a
 
@@ -312,7 +314,7 @@ public class SoilN : Instance
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     public double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
-
+#endregion
 #endregion
 
 #region Outputs we make available
@@ -3151,7 +3153,7 @@ public class SoilN : Instance
                                               _dlt_res_c_atm[layer][residue];
                     c_summed += dlt_res_c_decomp[layer];
 
-                    dlt_res_n_decomp[layer] = dlt_res_n_decomp[layer][residue];
+                    dlt_res_n_decomp[layer] = this.dlt_res_n_decomp[layer][residue];
                     n_summed += dlt_res_n_decomp[layer];
                 }
 
