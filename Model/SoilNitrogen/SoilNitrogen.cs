@@ -198,6 +198,121 @@ public class SoilN : Instance
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     public double nh4ppm_min;           // minimum allowable NH4 (ppm)
+
+    [Param(Optional = true, MinVal = 1.0, MaxVal = 50.0)]
+    public double mcn = 8.0;            // C:N ratio of microbes ()
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double ef_fom;               // fraction of FOM C mineralized retained in system (0-1)   
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double fr_fom_biom;          // fraction of retained FOM C transferred to biomass (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double ef_biom;              // fraction of biomass C mineralized retained in system (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double fr_biom_biom;         // fraction of retained biomass C returned to biomass (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double ef_hum;               // fraction of humic C mineralized retained in system (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] rd_biom = null;     // potential rate of soil biomass mineralization (per day)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] rd_hum = null;      // potential rate of humus mineralization (per day)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double ef_res;               // fraction of residue C mineralized retained in system (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double fr_res_biom;          // fraction of retained residue C transferred to biomass (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] rd_carb;            // maximum rate constants for decomposition of FOM pools [carbohydrate component] (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] rd_cell;            // maximum rate constants for decomposition of FOM pools [cellulose component] (0-1)
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] rd_lign;            // maximum rate constants for decomposition of FOM pools [lignin component] (0-1)
+
+    [Param(Name = "fom_type")]
+    public String[] fom_types;           // list of fom types
+
+    [Output]
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] fr_carb;            // carbohydrate fraction of FOM (0-1)          
+
+    [Output]
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] fr_cell;            // cellulose fraction of FOM (0-1)          
+
+    [Output]
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] fr_lign;            // lignin fraction of FOM (0-1)          
+
+    [Param(MinVal = 0.0, MaxVal = 3.0)]
+    public double oc2om_factor;         // conversion from OC to OM
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double fom_min;              // minimum allowable FOM (kg/ha)
+
+    [Param(MinVal = 0.0, MaxVal = 1000.0)]
+    public double min_depth;            // depth from which mineral N can be immobilized by decomposing residues (mm)
+
+    [Param(MinVal = 0.0, MaxVal = 10.0)]
+    public double cnrf_coeff;           // coeff. to determine the magnitude of C:N effects on decomposition of FOM ()
+
+    [Param(MinVal = 5.0, MaxVal = 100.0)]
+    public double cnrf_optcn;           // C:N above which decomposition rate of FOM declines ()
+
+    [Param(MinVal = 5.0, MaxVal = 100.0)]
+    public double[] opt_temp;           // Soil temperature above which there is no further effect on mineralisation and nitrification (oC)
+
+    [Param(MinVal = 0.0, MaxVal = 2.0)]
+    public double[] wfmin_index;        // index specifying water content for water factor for mineralization
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] wfmin_values;       // value of water factor(mineralization) function at given index values
+
+    [Param(MinVal = 0.0, MaxVal = 2.0)]
+    public double[] wfnit_index;        // index specifying water content for water factor for nitrification
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] wfnit_values;       // value of water factor(nitrification) function at given index values
+
+    [Param(MinVal = 0.0, MaxVal = 100.0)]
+    public double nitrification_pot;    // Potential nitrification by soil (ppm)
+
+    [Param(MinVal = 0.0, MaxVal = 200.0)]
+    public double nh4_at_half_pot;      // nh4 conc at half potential (ppm)   
+
+    [Param(MinVal = 0.0, MaxVal = 14.0)]
+    public double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double dnit_rate_coeff;      // denitrification rate coefficient (kg/mg)
+
+    [Param(MinVal = 0.0, MaxVal = 5.0)]
+    public double dnit_wf_power;        // denitrification water factor power term
+
+    [Param(MinVal = 0.0, MaxVal = 100.0)]
+    public double dnit_k1;              // K1 parameter from Thorburn et al (2010) for N2O model
+
+    [Param(MinVal = 0.0, MaxVal = 100.0)]
+    public double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
+
+    [Param(MinVal = 0.0, MaxVal = 100.0)]
+    public double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
+
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    public double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
+
 #endregion
 
 #region Outputs we make available
@@ -337,7 +452,7 @@ public class SoilN : Instance
 
     [Output]
     int num_fom_types      // number of fom types read
-    { get { return minInst.fom_types.Length; } }
+    { get { return fom_types.Length; } }
 
     [Output]
     [Units("kg/ha")]
@@ -1000,9 +1115,9 @@ public class SoilN : Instance
         if (nSpecified)
         {
             fom_type = 0; // use as default in fom type not found
-            for (int i = 0; i < minInst.fom_types.Length; i++)
+            for (int i = 0; i < fom_types.Length; i++)
             {
-                if (minInst.fom_types[i] == IncorpFOM.Type)
+                if (fom_types[i] == IncorpFOM.Type)
                 {
                     fom_type = i;
                     break;
@@ -1014,13 +1129,13 @@ public class SoilN : Instance
             ResizeLayerArrays(nLayers);
             for (int i = 0; i < nLayers; i++)
             {
-                fom_c_pool1[i] += IncorpFOM.Layer[i].FOM.amount * minInst.fr_carb[fom_type] * c_in_fom;
-                fom_c_pool2[i] += IncorpFOM.Layer[i].FOM.amount * minInst.fr_cell[fom_type] * c_in_fom;
-                fom_c_pool3[i] += IncorpFOM.Layer[i].FOM.amount * minInst.fr_lign[fom_type] * c_in_fom;
+                fom_c_pool1[i] += IncorpFOM.Layer[i].FOM.amount * fr_carb[fom_type] * c_in_fom;
+                fom_c_pool2[i] += IncorpFOM.Layer[i].FOM.amount * fr_cell[fom_type] * c_in_fom;
+                fom_c_pool3[i] += IncorpFOM.Layer[i].FOM.amount * fr_lign[fom_type] * c_in_fom;
 
-                fom_n_pool1[i] += IncorpFOM.Layer[i].FOM.N * minInst.fr_carb[fom_type];
-                fom_n_pool2[i] += IncorpFOM.Layer[i].FOM.N * minInst.fr_cell[fom_type];
-                fom_n_pool3[i] += IncorpFOM.Layer[i].FOM.N * minInst.fr_lign[fom_type];
+                fom_n_pool1[i] += IncorpFOM.Layer[i].FOM.N * fr_carb[fom_type];
+                fom_n_pool2[i] += IncorpFOM.Layer[i].FOM.N * fr_cell[fom_type];
+                fom_n_pool3[i] += IncorpFOM.Layer[i].FOM.N * fr_lign[fom_type];
 
                 // add up fom_n in each layer by adding up each of the pools
                 fom_n[i] = fom_n_pool1[i] + fom_n_pool2[i] + fom_n_pool3[i];
@@ -1137,7 +1252,6 @@ public class SoilN : Instance
 #endregion
 
 #region  Various internal variables
-    private Mineralisation minInst;
     private double oldN;
     private double oldC;
     private float[] ll15_dep; // lower limit (@15 bar) of soil water content (mm)
@@ -1184,7 +1298,6 @@ public class SoilN : Instance
     {
         base.Initialised();
         soiltypeOverridden = Override(typeof(SoilType), soiltype);
-        minInst = (Mineralisation)Find("Mineralisation");
     }
 
     private void ReadParam()  // Could do checking of the parameters here....
@@ -1249,11 +1362,11 @@ public class SoilN : Instance
             Console.WriteLine("     Using soil mineralisation specification for " + soiltype);
         else
             Console.WriteLine("     Using standard soil mineralisation for soil type " + soiltype);
-        if (num_fom_types != minInst.fr_carb.Length)
+        if (num_fom_types != fr_carb.Length)
             throw new Exception("Number of \"fr_carb\" different to \"fom_type\"");
-        if (num_fom_types != minInst.fr_cell.Length)
+        if (num_fom_types != fr_cell.Length)
             throw new Exception("Number of \"fr_cell\" different to \"fom_type\"");
-        if (num_fom_types != minInst.fr_lign.Length)
+        if (num_fom_types != fr_lign.Length)
             throw new Exception("Number of \"fr_lign\" different to \"fom_type\"");
     }
 
@@ -1402,16 +1515,16 @@ public class SoilN : Instance
             // to mineralization
 
             biom_c[layer] = MathUtility.Divide((carbon_tot - inert_c[layer]) * fbiom[layer], 1.0 + fbiom[layer], 0.0);
-            biom_n[layer] = MathUtility.Divide(biom_c[layer], minInst.mcn, 0.0);
+            biom_n[layer] = MathUtility.Divide(biom_c[layer], mcn, 0.0);
 
             hum_c[layer] = carbon_tot - biom_c[layer];
             hum_n[layer] = MathUtility.Divide(hum_c[layer], soil_cn, 0.0);
 
             double fom = MathUtility.Divide(root_wt * root_distrib[layer], root_distrib_tot, 0.0);
 
-            fom_c_pool1[layer] = fom * minInst.fr_carb[0] * c_in_fom;
-            fom_c_pool2[layer] = fom * minInst.fr_cell[0] * c_in_fom;
-            fom_c_pool3[layer] = fom * minInst.fr_lign[0] * c_in_fom;
+            fom_c_pool1[layer] = fom * fr_carb[0] * c_in_fom;
+            fom_c_pool2[layer] = fom * fr_cell[0] * c_in_fom;
+            fom_c_pool3[layer] = fom * fr_lign[0] * c_in_fom;
 
             // Calculate the N in each pool in each layer, fom_n_pool(n)[layer]
             fom_n_pool1[layer] = MathUtility.Divide(fom_c_pool1[layer], root_cn_pool[0], 0.0);
@@ -1523,7 +1636,7 @@ public class SoilN : Instance
             for (int layer = 0; layer < nLayers; layer++)
             {
                 hum_n[layer] = MathUtility.Divide(hum_c[layer], soil_cn, 0.0);
-                biom_n[layer] = MathUtility.Divide(biom_c[layer], minInst.mcn, 0.0);
+                biom_n[layer] = MathUtility.Divide(biom_c[layer], mcn, 0.0);
 
                 // update soil mineral N
 
@@ -1546,7 +1659,7 @@ public class SoilN : Instance
             biom_c[0] += pond_biom_C;
 
             hum_n[0] = MathUtility.Divide(hum_c[0], soil_cn, 0.0);
-            biom_n[0] = MathUtility.Divide(biom_c[0], minInst.mcn, 0.0);
+            biom_n[0] = MathUtility.Divide(biom_c[0], mcn, 0.0);
         }
 
         double[,] dlt_fom_n = new double[3, nLayers]; // fom N mineralised in each fraction (kg/ha)
@@ -1602,7 +1715,7 @@ public class SoilN : Instance
             biom_c[layer] += dlt_hum_c_biom[layer] - dlt_biom_c_hum[layer] - dlt_biom_c_atm[layer] +
                            _dlt_fom_c_biom[0][layer] + _dlt_fom_c_biom[1][layer] + _dlt_fom_c_biom[2][layer];
 
-            biom_n[layer] = MathUtility.Divide(biom_c[layer], minInst.mcn, 0.0);
+            biom_n[layer] = MathUtility.Divide(biom_c[layer], mcn, 0.0);
 
             fom_c_pool1[layer] -= (_dlt_fom_c_hum[0][layer] + _dlt_fom_c_biom[0][layer] + _dlt_fom_c_atm[0][layer]);
             fom_c_pool2[layer] -= (_dlt_fom_c_hum[1][layer] + _dlt_fom_c_biom[1][layer] + _dlt_fom_c_atm[1][layer]);
@@ -1715,7 +1828,7 @@ public class SoilN : Instance
         dlt_no3_min = new double[nLayers];
 
         // get total available mineral N in surface soil
-        int min_layer = getCumulativeIndex(minInst.min_depth, dlayer); // soil layer to which N is available for mineralisation.
+        int min_layer = getCumulativeIndex(min_depth, dlayer); // soil layer to which N is available for mineralisation.
 
         double min_layer_top = 0.0; // depth of the top of min_layer
         for (int layer = 0; layer < min_layer; layer++)
@@ -1734,7 +1847,7 @@ public class SoilN : Instance
             if (layer == min_layer)
             {
                 fraction[layer] = Math.Max(0.0, Math.Min(1.0,
-                    (dlayer[layer] == 0.0) ? 0.0 : (minInst.min_depth - min_layer_top) / dlayer[layer]));
+                    (dlayer[layer] == 0.0) ? 0.0 : (min_depth - min_layer_top) / dlayer[layer]));
 
             }
 
@@ -1759,14 +1872,14 @@ public class SoilN : Instance
 
         for (int residue = 0; residue < num_residues; residue++)
         {
-            dlt_c_biom_tot[residue] = pot_c_decomp[residue] * minInst.ef_res * minInst.fr_res_biom;
-            dlt_c_hum_tot[residue] = pot_c_decomp[residue] * minInst.ef_res * (1.0 - minInst.fr_res_biom);
+            dlt_c_biom_tot[residue] = pot_c_decomp[residue] * ef_res * fr_res_biom;
+            dlt_c_hum_tot[residue] = pot_c_decomp[residue] * ef_res * (1.0 - fr_res_biom);
         }
             
         // test whether adequate N available to meet immobilization demand
 
         // potential N immobilization
-        double n_demand = MathUtility.Divide(SumDoubleArray(dlt_c_biom_tot), minInst.mcn, 0.0) +
+        double n_demand = MathUtility.Divide(SumDoubleArray(dlt_c_biom_tot), mcn, 0.0) +
                           MathUtility.Divide(SumDoubleArray(dlt_c_hum_tot), soil_cn, 0.0);
         double n_avail = nit_tot + SumDoubleArray(pot_n_decomp);
 
@@ -1783,7 +1896,7 @@ public class SoilN : Instance
 
         for (int layer = 0; layer <= min_layer; layer++)
         {
-            double part_fraction = MathUtility.Divide(dlayer[layer] * fraction[layer], minInst.min_depth, 0.0);
+            double part_fraction = MathUtility.Divide(dlayer[layer] * fraction[layer], min_depth, 0.0);
             for (int residue = 0; residue < num_residues; residue++)
             {
                 // now adjust carbon transformations etc.
@@ -1806,7 +1919,7 @@ public class SoilN : Instance
             // distribute it over the layers
             for (int layer = 0; layer <= min_layer; layer++)
             {
-                double part_fraction = MathUtility.Divide(dlayer[layer] * fraction[layer], minInst.min_depth, 0.0);
+                double part_fraction = MathUtility.Divide(dlayer[layer] * fraction[layer], min_depth, 0.0);
                 dlt_nh4_min[layer] = dlt_n_min * part_fraction;
             }
         }
@@ -1914,9 +2027,9 @@ public class SoilN : Instance
     {
         switch (fract)
         {
-            case 0 : return minInst.rd_carb;
-            case 1 : return minInst.rd_cell;
-            case 2 : return minInst.rd_lign;
+            case 0 : return rd_carb;
+            case 1 : return rd_cell;
+            case 2 : return rd_lign;
             default : throw new Exception("Coding error: bad fraction in FractRDFom");
         }
     }
@@ -2449,12 +2562,12 @@ public class SoilN : Instance
 
         // get the rate of mineralization of N from the humic pool
 
-        double dlt_c_min_tot = (hum_c[layer] - inert_c[layer])* minInst.rd_hum[index - 1] * tf * mf;
+        double dlt_c_min_tot = (hum_c[layer] - inert_c[layer])* rd_hum[index - 1] * tf * mf;
         double dlt_n_min_tot = MathUtility.Divide(dlt_c_min_tot, soil_cn, 0.0);
 
-        dlt_c_biom = dlt_c_min_tot * minInst.ef_hum;
-        dlt_c_atm = dlt_c_min_tot *(1.0 - minInst.ef_hum);
-        dlt_n_min = dlt_n_min_tot - MathUtility.Divide (dlt_c_biom, minInst.mcn, 0.0);
+        dlt_c_biom = dlt_c_min_tot * ef_hum;
+        dlt_c_atm = dlt_c_min_tot *(1.0 - ef_hum);
+        dlt_n_min = dlt_n_min_tot - MathUtility.Divide (dlt_c_biom, mcn, 0.0);
     }
 
     private void MinBiomass(int layer, ref double dlt_c_hum, ref double dlt_c_atm, ref double dlt_n_min)
@@ -2481,16 +2594,16 @@ public class SoilN : Instance
 
         // get the rate of mineralization of C & N from the biomass pool
 
-        double dlt_n_min_tot = biom_n[layer] * minInst.rd_biom[index - 1] * tf * mf;
-        double dlt_c_min_tot = dlt_n_min_tot * minInst.mcn;
+        double dlt_n_min_tot = biom_n[layer] * rd_biom[index - 1] * tf * mf;
+        double dlt_c_min_tot = dlt_n_min_tot * mcn;
 
-        dlt_c_hum = dlt_c_min_tot * minInst.ef_biom * (1.0 - minInst.fr_biom_biom);
-        dlt_c_atm = dlt_c_min_tot * (1.0 - minInst.ef_biom);
+        dlt_c_hum = dlt_c_min_tot * ef_biom * (1.0 - fr_biom_biom);
+        dlt_c_atm = dlt_c_min_tot * (1.0 - ef_biom);
 
         // calculate net mineralization
 
         dlt_n_min = dlt_n_min_tot - MathUtility.Divide(dlt_c_hum, soil_cn, 0.0) - 
-                                    MathUtility.Divide((dlt_c_min_tot - dlt_c_atm - dlt_c_hum), minInst.mcn, 0.0);
+                                    MathUtility.Divide((dlt_c_min_tot - dlt_c_atm - dlt_c_hum), mcn, 0.0);
     }
 
     private void MinFom(int layer, out double[] dlt_c_biom, out double[] dlt_c_hum,
@@ -2541,7 +2654,7 @@ public class SoilN : Instance
 
         // calculate the C:N ratio factor
         double cnrf = Math.Max(0.0, Math.Min(1.0, // Bound to [0, 1]
-             Math.Exp(-minInst.cnrf_coeff * (cnr - minInst.cnrf_optcn) / minInst.cnrf_optcn)));
+             Math.Exp(-cnrf_coeff * (cnr - cnrf_optcn) / cnrf_optcn)));
 
         // get temperature & moisture factors for the layer
         double tf = (soiltype == "rothc") ? RothcTF (layer, index) : TF(layer, index);
@@ -2550,7 +2663,7 @@ public class SoilN : Instance
         // calculate gross amount of C & N released due to mineralization
         // of the fresh organic matter.
 
-        if (fomC >= minInst.fom_min)
+        if (fomC >= fom_min)
         {
             // take the decomposition of carbohydrate-like,
             // cellulose-like and lignin-like fractions (fpools)
@@ -2580,11 +2693,11 @@ public class SoilN : Instance
 
             // calculate potential transfers to biom and humic pools
 
-            double dlt_c_biom_tot = dlt_fom_c_min_tot * minInst.ef_fom * minInst.fr_fom_biom; // C mineralized converted to biomass
-            double dlt_c_hum_tot = dlt_fom_c_min_tot * minInst.ef_fom* (1.0 - minInst.fr_fom_biom); // C mineralized converted to humic
+            double dlt_c_biom_tot = dlt_fom_c_min_tot * ef_fom * fr_fom_biom; // C mineralized converted to biomass
+            double dlt_c_hum_tot = dlt_fom_c_min_tot * ef_fom* (1.0 - fr_fom_biom); // C mineralized converted to humic
 
             // test whether adequate N available to meet immobilization demand
-            double n_demand = MathUtility.Divide(dlt_c_biom_tot, minInst.mcn, 0.0) + 
+            double n_demand = MathUtility.Divide(dlt_c_biom_tot, mcn, 0.0) + 
                               MathUtility.Divide(dlt_c_hum_tot, soil_cn, 0.0);
             double n_avail = nitTot + dlt_fom_n_min_tot;
 
@@ -2601,9 +2714,9 @@ public class SoilN : Instance
 
             for (int fractn = 0; fractn < 3; fractn++)
             {
-                dlt_c_hum[fractn] = dlt_c_min_tot[fractn] * minInst.ef_fom * (1.0 - minInst.fr_fom_biom) * scale_of;
-                dlt_c_biom[fractn] = dlt_c_min_tot[fractn] * minInst.ef_fom * minInst.fr_fom_biom * scale_of;
-                dlt_c_atm[fractn] = dlt_c_min_tot[fractn] * (1.0 - minInst.ef_fom)* scale_of;
+                dlt_c_hum[fractn] = dlt_c_min_tot[fractn] * ef_fom * (1.0 - fr_fom_biom) * scale_of;
+                dlt_c_biom[fractn] = dlt_c_min_tot[fractn] * ef_fom * fr_fom_biom * scale_of;
+                dlt_c_atm[fractn] = dlt_c_min_tot[fractn] * (1.0 - ef_fom)* scale_of;
                 dlt_fom_n[fractn] = dlt_n_min_tot[fractn] * scale_of;
 
                 dlt_c_hum[fractn] = MathUtility.RoundToZero(dlt_c_hum[fractn]);
@@ -2627,7 +2740,7 @@ public class SoilN : Instance
         //+  Mission Statement
         //     Calculate pH factor for nitrification
         bool DidInterpolate;
-        return MathUtility.LinearInterpReal(ph[layer], minInst.pHf_nit_pH, minInst.pHf_nit_values, out DidInterpolate);
+        return MathUtility.LinearInterpReal(ph[layer], pHf_nit_pH, pHf_nit_values, out DidInterpolate);
     }
 
     private double Nitrification(int layer)
@@ -2677,7 +2790,7 @@ public class SoilN : Instance
        // get actual rate of nitrification for layer
         double convFact = SoilN2Fac(layer);
         nh4ppm = _nh4[layer] * convFact;
-        opt_rate_ppm = MathUtility.Divide(minInst.nitrification_pot * nh4ppm, nh4ppm + minInst.nh4_at_half_pot, 0.0);
+        opt_rate_ppm = MathUtility.Divide(nitrification_pot * nh4ppm, nh4ppm + nh4_at_half_pot, 0.0);
         opt_rate = MathUtility.Divide(opt_rate_ppm, convFact, 0.0);
 
        //-----Changes by VOS 13 Dec 09, Reviewed by RCichota (9/02/2010)----------------
@@ -2689,7 +2802,7 @@ public class SoilN : Instance
         nh4_avail = Math.Max(_nh4[layer] - nh4_min[layer], 0.0);
         result = Math.Max(0.0, Math.Min(nh4_avail, result));
 
-        dlt_nh4_dnit[layer] = result * minInst.dnit_nitrf_loss;
+        dlt_nh4_dnit[layer] = result * dnit_nitrf_loss;
         effective_nitrification[layer] = result - dlt_nh4_dnit[layer];
         n2o_atm[layer] += dlt_nh4_dnit[layer];
 
@@ -2772,7 +2885,7 @@ public class SoilN : Instance
         tf = Math.Max(0.0, Math.Min(1.0, tf));
 
       // calculate denitrification rate  - kg/ha
-        double result = minInst.dnit_rate_coeff * active_c * wf * tf * _no3[layer];
+        double result = dnit_rate_coeff * active_c * wf * tf * _no3[layer];
 
       // prevent NO3 - N concentration from falling below NO3_min
         no3_avail = _no3[layer] - no3_min[layer];
@@ -2782,13 +2895,13 @@ public class SoilN : Instance
         double CO2 = (_dlt_fom_c_atm[0][layer] + _dlt_fom_c_atm[1][layer] +_dlt_fom_c_atm[2][layer] +
                       dlt_biom_c_atm[layer] + dlt_hum_c_atm[layer]) /
                       (bd[layer] * dlayer[layer]) * 100.0;
-        double RtermA = 0.16 * minInst.dnit_k1;
+        double RtermA = 0.16 * dnit_k1;
         double RtermB = (CO2 > 0.0) ?
-             minInst.dnit_k1 * (Math.Exp(-0.8 * (_no3[layer] * SoilN2Fac(layer) / CO2))) 
+             dnit_k1 * (Math.Exp(-0.8 * (_no3[layer] * SoilN2Fac(layer) / CO2))) 
              : 0.0;
         double RtermC = 0.1;
         bool didInterpolate;
-        double RtermD = MathUtility.LinearInterpReal(WFPS, minInst.dnit_wfps, minInst.dnit_n2o_factor, out didInterpolate);
+        double RtermD = MathUtility.LinearInterpReal(WFPS, dnit_wfps, dnit_n2o_factor, out didInterpolate);
         // RTermD = (0.015 * WFPS) - 0.32;
 
         double N2N2O = Math.Max(RtermA, RtermB) * Math.Max(RtermC, RtermD);
@@ -2826,7 +2939,7 @@ public class SoilN : Instance
 
         bool didInterpolate;
         if (index == 1)
-            return MathUtility.LinearInterpReal(wfd, minInst.wfnit_index, minInst.wfnit_values, out didInterpolate);
+            return MathUtility.LinearInterpReal(wfd, wfnit_index, wfnit_values, out didInterpolate);
         else
             // if pond is active, and aerobic conditions dominate, assume wf_nitrf = 0
             return 0;
@@ -2846,7 +2959,7 @@ public class SoilN : Instance
         double wfd = 0.0; // temporary water factor (0-1); 0 is used if unsaturated
         if (sw_dep[layer] > dul_dep[layer] && sat_dep[layer] > dul_dep[layer])  // saturated
             wfd = Math.Pow((sw_dep[layer] - dul_dep[layer]) / (sat_dep[layer] - dul_dep[layer]), 
-                            minInst.dnit_wf_power);
+                            dnit_wf_power);
         return Math.Max(0.0, Math.Min(1.0, wfd));
     }
 
@@ -2886,7 +2999,7 @@ public class SoilN : Instance
         if (index == 1)
         {
             bool didInterpolate;
-            return MathUtility.LinearInterpReal(wfd, minInst.wfmin_index, minInst.wfmin_values, out didInterpolate);
+            return MathUtility.LinearInterpReal(wfd, wfmin_index, wfmin_values, out didInterpolate);
         }
         else if (index == 2) // if pond is active, and liquid conditions dominate, assume wf = 1
             return 1.0;
@@ -2918,11 +3031,11 @@ public class SoilN : Instance
 
         if (st[layer] > 0.0)
         {
-            if (minInst.opt_temp[index - 1] == 0.0)
+            if (opt_temp[index - 1] == 0.0)
                 return 0.0;
             else
                 return Math.Max(0.0, Math.Min(1.0,
-                    (st[layer] * st[layer]) / Math.Pow(minInst.opt_temp[index - 1], 2.0)));
+                    (st[layer] * st[layer]) / Math.Pow(opt_temp[index - 1], 2.0)));
         }
         else // soil is too cold for mineralisation
             return 0.0;
@@ -2941,7 +3054,7 @@ public class SoilN : Instance
 
         //+  Mission Statement
         //     Nitrification and mineralisation soil temperature factor in %1
-        double t = Math.Min(st[layer], minInst.opt_temp[layer]);
+        double t = Math.Min(st[layer], opt_temp[layer]);
         return 47.9 / (1.0 + Math.Exp(106.0 / (t + 18.3)));
     }
 
@@ -3038,7 +3151,7 @@ public class SoilN : Instance
                                               _dlt_res_c_atm[layer][residue];
                     c_summed += dlt_res_c_decomp[layer];
 
-                    dlt_res_n_decomp[layer] = this.dlt_res_n_decomp[layer][residue];
+                    dlt_res_n_decomp[layer] = dlt_res_n_decomp[layer][residue];
                     n_summed += dlt_res_n_decomp[layer];
                 }
 
@@ -3189,7 +3302,7 @@ public class SoilN : Instance
 
                 // Change in OM is related by a fixed factor
                 // =================================
-                dlt_om[layer] = dlt_oc[layer] * minInst.oc2om_factor;
+                dlt_om[layer] = dlt_oc[layer] * oc2om_factor;
             }
 
             ApsimVariantType data = new ApsimVariantType();
@@ -3342,124 +3455,6 @@ public class SoilN : Instance
             result += Value;
         return result;
     }
-}
-
-public class Mineralisation : Instance
-{
-    [Param(Optional = true, MinVal=1.0, MaxVal=50.0)]
-    public double mcn = 8.0;            // C:N ratio of microbes ()
-
-    [Param(MinVal=0.0, MaxVal=1.0)]
-    public double ef_fom;               // fraction of FOM C mineralized retained in system (0-1)   
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fr_fom_biom;          // fraction of retained FOM C transferred to biomass (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double ef_biom;              // fraction of biomass C mineralized retained in system (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fr_biom_biom;         // fraction of retained biomass C returned to biomass (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double ef_hum;               // fraction of humic C mineralized retained in system (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_biom = null;     // potential rate of soil biomass mineralization (per day)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_hum = null;      // potential rate of humus mineralization (per day)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double ef_res;               // fraction of residue C mineralized retained in system (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fr_res_biom;          // fraction of retained residue C transferred to biomass (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_carb;            // maximum rate constants for decomposition of FOM pools [carbohydrate component] (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_cell;            // maximum rate constants for decomposition of FOM pools [cellulose component] (0-1)
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] rd_lign;            // maximum rate constants for decomposition of FOM pools [lignin component] (0-1)
-
-    [Param(Name="fom_type")]
-    public String[] fom_types;           // list of fom types
-
-    [Output]
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] fr_carb;            // carbohydrate fraction of FOM (0-1)          
-
-    [Output]
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] fr_cell;            // cellulose fraction of FOM (0-1)          
-
-    [Output]
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] fr_lign;            // lignin fraction of FOM (0-1)          
-
-    [Param(MinVal = 0.0, MaxVal = 3.0)]
-    public double oc2om_factor;         // conversion from OC to OM
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double fom_min;              // minimum allowable FOM (kg/ha)
-
-    [Param(MinVal = 0.0, MaxVal = 1000.0)]
-    public double min_depth;            // depth from which mineral N can be immobilized by decomposing residues (mm)
-
-    [Param(MinVal = 0.0, MaxVal = 10.0)]
-    public double cnrf_coeff;           // coeff. to determine the magnitude of C:N effects on decomposition of FOM ()
-
-    [Param(MinVal = 5.0, MaxVal = 100.0)]
-    public double cnrf_optcn;           // C:N above which decomposition rate of FOM declines ()
-
-    [Param(MinVal = 5.0, MaxVal = 100.0)]
-    public double[] opt_temp;           // Soil temperature above which there is no further effect on mineralisation and nitrification (oC)
-
-    [Param(MinVal = 0.0, MaxVal = 2.0)]
-    public double[] wfmin_index;        // index specifying water content for water factor for mineralization
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] wfmin_values;       // value of water factor(mineralization) function at given index values
-
-    [Param(MinVal = 0.0, MaxVal = 2.0)]
-    public double[] wfnit_index;        // index specifying water content for water factor for nitrification
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] wfnit_values;       // value of water factor(nitrification) function at given index values
-
-    [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double nitrification_pot;    // Potential nitrification by soil (ppm)
-
-    [Param(MinVal = 0.0, MaxVal = 200.0)]
-    public double nh4_at_half_pot;      // nh4 conc at half potential (ppm)   
-
-    [Param(MinVal = 0.0, MaxVal = 14.0)]
-    public double[] pHf_nit_pH;         // pH values for specifying pH factor for nitrification
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] pHf_nit_values;     // value of pH factor(nitrification) function for given pH values
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double dnit_rate_coeff;      // denitrification rate coefficient (kg/mg)
-
-    [Param(MinVal = 0.0, MaxVal = 5.0)]
-    public double dnit_wf_power;        // denitrification water factor power term
-
-    [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double dnit_k1;              // K1 parameter from Thorburn et al (2010) for N2O model
-
-    [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double[] dnit_wfps;            // WFPS for calculating the n2o fraction of denitrification
-
-    [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double[] dnit_n2o_factor;      // WFPS factor for n2o fraction of denitrification
-
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double dnit_nitrf_loss;      // Fraction of nitrification lost as denitrification
-
 }
 
 public class SoilType : DerivedInstance
