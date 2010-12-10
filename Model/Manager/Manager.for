@@ -851,6 +851,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
       subroutine SetLocalVariable(Indx, Value)
 ! ====================================================================
+      Use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -2326,6 +2327,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Str_to_double_var
      .     (String, Double_value, io_result)
 ! =====================================================================
+      Use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
@@ -2384,6 +2386,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Str_to_real_var
      .     (String, Real_value, io_result)
 ! =====================================================================
+      Use ComponentInterfaceModule
       Use Infrastructure
       implicit none
 
