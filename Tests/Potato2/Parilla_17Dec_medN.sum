@@ -19,8 +19,8 @@ Paddock:
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component           "Pinarro_sand Water" = %apsim%\Model\SoilWat.dll
@@ -347,37 +347,6 @@ Paddock:
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- Sowing rule Initialisation --------------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-           if (paddock_is_fallow() = 1 ) then
-              if (date_within('17-dec, 17-dec') = 1) then
-     if (rain[7] >= 10 and esw >= 10) or
-         ('yes' = 'yes' and today = date('17-dec'))) then
-        choosenextcrop = 'yes'
-        stf = st(1) / 10.
-        if (stf < 0) then
-           stf = 0
-        endif
-        if (stf > 1) then
-           stf = 1
-        endif
-        swf = (sw(1) - ll(1))/(dul(1) - ll(1))
-        if (swf < 0) then
-           swf = 0
-        endif
-        if (swf > 1) then
-           swf = 1
-        endif
-        density = 5*4
-        potato2 sow population =density, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-     endif
-              endif
-           endif
-     END of rules
-     
-
 ------- Harvesting rule Initialisation ----------------------------------------
      Manager rules:
      
@@ -388,6 +357,21 @@ Paddock:
                 endif
      END of rules
      
+
+------- Potato Sowing Rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     plant_population = 1/((770/1000)*(280/1000))
+     if today = date('07/12/2007') then
+        potato2 sow population = plant_population, depth = 170, cultivar = coliban, maxcover = 1.0, budnumber = 2.4, row_spacing = 770, crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -624,25 +608,6 @@ Paddock:
      Manager creating a new local real variable : initialmineraln = 81.20642
 17 December 2007(Day of year=351), operations: 
       Sending apply message to irrigation
-17 December 2007(Day of year=351), Sowing rule: 
-     Manager creating a new local string variable : choosenextcrop = yes
-     Manager creating a new local real variable : stf = 1.98537
-17 December 2007(Day of year=351): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "ll(1)".
-     Variables should have a value before they are used in an expression.
-     Component name: Sowing rule
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : ll(1) = 0.00000
-     Manager creating a new local real variable : swf = 0.73958
-     Manager creating a new local real variable : density = 20.00000
-17/12/2007 - Peeping
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 0.00 (g/m^2)
 18 December 2007(Day of year=352), operations: 
       Sending apply message to irrigation
 19 December 2007(Day of year=353), operations: 
@@ -713,9 +678,6 @@ Paddock:
       Sending apply message to irrigation
 18 January 2008(Day of year=18), operations: 
       Sending apply message to irrigation
-19/01/2008 - Emergence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 0.00 (g/m^2)
 20 January 2008(Day of year=20), operations: 
       Sending apply message to irrigation
 21 January 2008(Day of year=21), operations: 
@@ -774,9 +736,6 @@ Paddock:
       Sending apply message to irrigation
 11 February 2008(Day of year=42), operations: 
       Sending apply message to irrigation
-11/02/2008 - FloralInitiation
-                            LAI = 1.10 (m^2/m^2)
-           Above Ground Biomass = 72.68 (g/m^2)
 12 February 2008(Day of year=43), operations: 
       Sending apply message to fertiliser
 12 February 2008(Day of year=43), fertiliser: 
@@ -793,9 +752,6 @@ Paddock:
         40.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
       Sending apply message to irrigation
-13/02/2008 - TuberInitiation
-                            LAI = 1.27 (m^2/m^2)
-           Above Ground Biomass = 92.34 (g/m^2)
 14 February 2008(Day of year=45), operations: 
       Sending apply message to irrigation
 15 February 2008(Day of year=46), operations: 
@@ -923,9 +879,6 @@ Paddock:
       Sending apply message to irrigation
 16 April 2008(Day of year=107), operations: 
       Sending apply message to irrigation
-17/04/2008 - FinalLeaf
-                            LAI = 1.91 (m^2/m^2)
-           Above Ground Biomass = 708.25 (g/m^2)
 18 April 2008(Day of year=109), operations: 
       Sending apply message to irrigation
 19 April 2008(Day of year=110), operations: 

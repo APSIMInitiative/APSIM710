@@ -19,8 +19,8 @@ Paddock:
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
@@ -166,6 +166,7 @@ Paddock:
         LeafMaximumNConcValue
         StemMaximumNConcValue
         TuberMaximumNConcValue
+        No3_30cm
 
      Output file = Lynetts_2_75kg_planting Plant2 diagnostic variables.out
      Format = normal
@@ -194,21 +195,6 @@ Paddock:
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- Sowing rule Initialisation --------------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-           if today = date('4-nov-1992') then
-        potato2 sow population = 20, depth = 150, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-           endif
-     no3_30cm = no3(1) + no3(2)
-     
-     SECTION:- init
-     no3_30cm = 0
-     END of rules
-     
-     Manager creating a new local real variable : no3_30cm = 0.00000
-
 ------- Harvesting rule Initialisation ----------------------------------------
      Manager rules:
      
@@ -219,6 +205,21 @@ Paddock:
                 endif
      END of rules
      
+
+------- Potato Sowing Rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     plant_population = 1/((750/1000)*(330/1000))
+     if today = date('04/11/1992') then
+        potato2 sow population = plant_population, depth = 150, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 750, crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -243,6 +244,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
+     no3_30cm = 0
      leafnpercent = 0
      accumttemerg = 0
      
@@ -276,6 +278,7 @@ Paddock:
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
+     no3_30cm = no3(1) + no3(2)
      
      SECTION:- end_of_day
      if simday = 1 then
@@ -303,6 +306,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : no3_30cm = 0.00000
      Manager creating a new local real variable : leafnpercent = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
@@ -468,11 +472,11 @@ Paddock:
 18 December 1992(Day of year=353), operations: 
       Sending apply message to irrigation
 25/12/1992 - FloralInitiation
-                            LAI = 3.16 (m^2/m^2)
-           Above Ground Biomass = 197.00 (g/m^2)
+                            LAI = 0.99 (m^2/m^2)
+           Above Ground Biomass = 109.26 (g/m^2)
 26/12/1992 - TuberInitiation
-                            LAI = 3.39 (m^2/m^2)
-           Above Ground Biomass = 211.13 (g/m^2)
+                            LAI = 1.06 (m^2/m^2)
+           Above Ground Biomass = 119.30 (g/m^2)
 7 January 1993(Day of year=7), operations: 
       Sending apply message to irrigation
 2 February 1993(Day of year=33), operations: 
@@ -480,15 +484,15 @@ Paddock:
 16 February 1993(Day of year=47), operations: 
       Sending apply message to irrigation
 23/02/1993 - FinalLeaf
-                            LAI = 2.55 (m^2/m^2)
-           Above Ground Biomass = 1117.04 (g/m^2)
+                            LAI = 3.15 (m^2/m^2)
+           Above Ground Biomass = 1059.67 (g/m^2)
 Removing Leaves from plant
 25/05/1993 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1370.40 (g/m^2)
+           Above Ground Biomass = 1149.07 (g/m^2)
 26/05/1993 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1370.40 (g/m^2)
+           Above Ground Biomass = 1149.07 (g/m^2)
 26 May 1993(Day of year=146), Harvesting rule: 
      Manager sending message :- potato2 harvest
      Manager sending message :- potato2 end_crop

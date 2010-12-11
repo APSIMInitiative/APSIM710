@@ -20,7 +20,7 @@ Paddock:
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
@@ -209,15 +209,20 @@ Paddock:
      END of rules
      
 
-------- Sowing rule Initialisation --------------------------------------------
+------- Potato Sowing Rule Initialisation -------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
-           if today = date('19-oct-1999') then
-        potato2 sow population = 24, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-           endif
+     plant_population = 1/((780/1000)*(33/1000))
+     if today = date('21/10/1999') then
+        potato2 sow population = plant_population, depth = 170, cultivar = russetburbank, maxcover = 1.0, budnumber = 3.5, row_spacing = 780, crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
      END of rules
      
+     Manager creating a new local real variable : plant_population = 0.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -453,22 +458,22 @@ Paddock:
      Manager creating a new local real variable : initialmineraln = 115.80119
 19 October 1999(Day of year=292), operations: 
       Sending apply message to fertiliser
-19/10/1999 - Peeping
+21/10/1999 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-16/11/1999 - Emergence
+15/11/1999 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 1 December 1999(Day of year=335), operations: 
       Sending apply message to fertiliser
 9 December 1999(Day of year=343), operations: 
       Sending apply message to irrigation
-13/12/1999 - FloralInitiation
-                            LAI = 3.80 (m^2/m^2)
-           Above Ground Biomass = 233.90 (g/m^2)
-15/12/1999 - TuberInitiation
-                            LAI = 4.10 (m^2/m^2)
-           Above Ground Biomass = 252.49 (g/m^2)
+11/12/1999 - FloralInitiation
+                            LAI = 5.97 (m^2/m^2)
+           Above Ground Biomass = 241.96 (g/m^2)
+13/12/1999 - TuberInitiation
+                            LAI = 6.51 (m^2/m^2)
+           Above Ground Biomass = 261.91 (g/m^2)
 23 December 1999(Day of year=357), operations: 
       Sending apply message to irrigation
 30 December 1999(Day of year=364), operations: 
@@ -477,20 +482,26 @@ Paddock:
       Sending apply message to irrigation
 10 February 2000(Day of year=41), operations: 
       Sending apply message to irrigation
-12/02/2000 - FinalLeaf
-                            LAI = 2.21 (m^2/m^2)
-           Above Ground Biomass = 869.45 (g/m^2)
+11/02/2000 - FinalLeaf
+                            LAI = 4.17 (m^2/m^2)
+           Above Ground Biomass = 818.20 (g/m^2)
 16 February 2000(Day of year=47), operations: 
       Sending apply message to irrigation
 1 March 2000(Day of year=61), operations: 
       Sending apply message to irrigation
 Removing Leaves from plant
-27/04/2000 - FullSenescence
+24/04/2000 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 904.47 (g/m^2)
-27/04/2000 - Maturity
+           Above Ground Biomass = 809.43 (g/m^2)
+25/04/2000 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 904.47 (g/m^2)
+           Above Ground Biomass = 809.43 (g/m^2)
+25 April 2000(Day of year=116), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+26 April 2000(Day of year=117), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
 27 April 2000(Day of year=118), Harvesting rule: 
      Manager sending message :- potato2 harvest
      Manager sending message :- potato2 end_crop

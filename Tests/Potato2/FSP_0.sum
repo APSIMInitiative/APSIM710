@@ -19,8 +19,8 @@ Paddock:
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
@@ -189,37 +189,6 @@ Paddock:
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- Sowing rule Initialisation --------------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-           if (paddock_is_fallow() = 1 ) then
-              if (date_within('2-may, 2-may') = 1) then
-     if (rain[7] >= 10 and esw >= 10) or
-         ('yes' = 'yes' and today = date('2-may'))) then
-        choosenextcrop = 'yes'
-        stf = st(1) / 10.
-        if (stf < 0) then
-           stf = 0
-        endif
-        if (stf > 1) then
-           stf = 1
-        endif
-        swf = (sw(1) - ll(1))/(dul(1) - ll(1))
-        if (swf < 0) then
-           swf = 0
-        endif
-        if (swf > 1) then
-           swf = 1
-        endif
-        density = 5*4
-        potato2 sow population =density, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-     endif
-              endif
-           endif
-     END of rules
-     
-
 ------- Harvesting rule Initialisation ----------------------------------------
      Manager rules:
      
@@ -230,6 +199,21 @@ Paddock:
                 endif
      END of rules
      
+
+------- Potato Sowing Rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     plant_population = 1/((770/1000)*(280/1000))
+     if today = date('02/05/2000') then
+        potato2 sow population = plant_population, depth = 170, cultivar = ilamhardy, maxcover = 1.0, budnumber = 2.4, row_spacing = 770, crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -463,40 +447,41 @@ Paddock:
      Manager creating a new local real variable : initialsoilomn = 14972.24020
      Manager creating a new local real variable : initialsurfaceomn = 10.00000
      Manager creating a new local real variable : initialmineraln = 115.80119
-2 May 2000(Day of year=123), Sowing rule: 
-     Manager creating a new local string variable : choosenextcrop = yes
-     Manager creating a new local real variable : stf = 1.51967
-2 May 2000(Day of year=123): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "ll(1)".
-     Variables should have a value before they are used in an expression.
-     Component name: Sowing rule
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : ll(1) = 0.00000
-     Manager creating a new local real variable : swf = 0.98028
-     Manager creating a new local real variable : density = 20.00000
+2 May 2000(Day of year=123), Potato Sowing Rule: 
+     Manager sending message :- potato2 sow  population = 4.63822, depth = 170, cultivar = ilamhardy, maxcover = 1.0, budnumber = 2.4, row_spacing = 770, crop_class = plant
 2/05/2000 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-30/05/2000 - Emergence
+26/05/2000 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-28/06/2000 - FloralInitiation
-                            LAI = 0.15 (m^2/m^2)
-           Above Ground Biomass = 9.81 (g/m^2)
-30/06/2000 - TuberInitiation
-                            LAI = 0.17 (m^2/m^2)
-           Above Ground Biomass = 11.43 (g/m^2)
-19/09/2000 - FinalLeaf
-                            LAI = 2.03 (m^2/m^2)
-           Above Ground Biomass = 421.34 (g/m^2)
+25/06/2000 - FloralInitiation
+                            LAI = 0.14 (m^2/m^2)
+           Above Ground Biomass = 5.56 (g/m^2)
+27/06/2000 - TuberInitiation
+                            LAI = 0.18 (m^2/m^2)
+           Above Ground Biomass = 6.94 (g/m^2)
+13/09/2000 - FinalLeaf
+                            LAI = 2.91 (m^2/m^2)
+           Above Ground Biomass = 454.52 (g/m^2)
 Removing Leaves from plant
-1/12/2000 - FullSenescence
+28/11/2000 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 598.84 (g/m^2)
+           Above Ground Biomass = 543.81 (g/m^2)
+28/11/2000 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 543.81 (g/m^2)
+28 November 2000(Day of year=333), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+29 November 2000(Day of year=334), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+30 November 2000(Day of year=335), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+1 December 2000(Day of year=336), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
 1 December 2000(Day of year=336), clock: 
      Simulation is terminating due to end criteria being met.

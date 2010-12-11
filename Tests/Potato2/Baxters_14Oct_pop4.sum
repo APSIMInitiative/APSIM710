@@ -20,7 +20,7 @@ Paddock:
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component        "Baxters_compact Water" = %apsim%\Model\SoilWat.dll
@@ -214,15 +214,20 @@ Paddock:
      END of rules
      
 
-------- Sowing rule Initialisation --------------------------------------------
+------- Potato Sowing Rule Initialisation -------------------------------------
      Manager rules:
      
      SECTION:- start_of_day
-           if today = date('14-oct-1998') then
-        potato2 sow population = 13, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-           endif
+     plant_population = 1/((770/1000)*(300/1000))
+     if today = date('14/10/1998') then
+        potato2 sow population = plant_population, depth = 220, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 770, crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
      END of rules
      
+     Manager creating a new local real variable : plant_population = 0.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -461,10 +466,10 @@ Paddock:
            Above Ground Biomass = 0.00 (g/m^2)
 26 October 1998(Day of year=299), operations: 
       Sending apply message to irrigation
-16/11/1998 - Emergence
+18/11/1998 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-16 November 1998(Day of year=320): 
+18 November 1998(Day of year=322): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -474,16 +479,16 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-16 November 1998(Day of year=320), Harvesting rule: 
+18 November 1998(Day of year=322), Harvesting rule: 
      Manager creating a new local real variable : tt_emerge = 0.00000
-12/12/1998 - FloralInitiation
-                            LAI = 2.85 (m^2/m^2)
-           Above Ground Biomass = 175.09 (g/m^2)
-14/12/1998 - TuberInitiation
-                            LAI = 3.16 (m^2/m^2)
-           Above Ground Biomass = 201.89 (g/m^2)
+14/12/1998 - FloralInitiation
+                            LAI = 1.16 (m^2/m^2)
+           Above Ground Biomass = 114.17 (g/m^2)
 15 December 1998(Day of year=349), operations: 
       Sending apply message to irrigation
+16/12/1998 - TuberInitiation
+                            LAI = 1.28 (m^2/m^2)
+           Above Ground Biomass = 144.70 (g/m^2)
 29 December 1998(Day of year=363), operations: 
       Sending apply message to irrigation
       Sending apply message to fertiliser
@@ -498,9 +503,9 @@ Paddock:
       Sending apply message to irrigation
 21 January 1999(Day of year=21), operations: 
       Sending apply message to irrigation
-5/02/1999 - FinalLeaf
-                            LAI = 5.43 (m^2/m^2)
-           Above Ground Biomass = 1629.86 (g/m^2)
+6/02/1999 - FinalLeaf
+                            LAI = 4.61 (m^2/m^2)
+           Above Ground Biomass = 1544.36 (g/m^2)
 10 February 1999(Day of year=41), operations: 
       Sending apply message to irrigation
 19 February 1999(Day of year=50), operations: 
@@ -508,21 +513,12 @@ Paddock:
 9 March 1999(Day of year=68), operations: 
       Sending apply message to irrigation
 Removing Leaves from plant
-11/04/1999 - FullSenescence
+15/04/1999 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 2147.54 (g/m^2)
-12/04/1999 - Maturity
+           Above Ground Biomass = 1838.13 (g/m^2)
+15/04/1999 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 2147.54 (g/m^2)
-12 April 1999(Day of year=102), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-13 April 1999(Day of year=103), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-14 April 1999(Day of year=104), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
+           Above Ground Biomass = 1838.13 (g/m^2)
 15 April 1999(Day of year=105), Harvesting rule: 
      Manager sending message :- potato2 harvest
      Manager sending message :- potato2 end_crop

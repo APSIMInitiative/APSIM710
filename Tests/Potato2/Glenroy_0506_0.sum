@@ -1,0 +1,616 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Glenroy_0506_0
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component           "Templeton Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "potato2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 18/10/2005
+     Simulation end date   =  1/06/2006
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Potato2\Coonawarra.met
+
+------- Plant2 diagnostic variables Initialisation ----------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy
+        AccumTtemerg
+        StageCodeValue
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNUptakeSupply
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundDM
+        BelowGroundDM
+        TotalDM
+        LeafDeadWt
+        LeafLiveWt2
+        StemDeadWt
+        StemLiveWt
+        TuberDeadWt
+        TuberLiveWt
+        RootDeadWt
+        RootLiveWt
+        GrainLIveWt
+        GrainDeadWt
+        FloretLIveWt
+        FloretDeadWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
+        RootLiveN
+        RootDeadN
+        LeafDeadN2
+        LeafLiveN2
+        StemDeadN
+        StemLiveN
+        TuberDeadN
+        TuberLiveN
+        GrainLiveN
+        GrainDeadN
+        FloretLiveN
+        FloretDeadN
+        GrainLiveNconc
+        FloretLiveNconc
+        TuberLiveNconc
+        LeafNpercent
+        StemliveNConc
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafFrgr
+        LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        sw
+        no3
+        LeafPartitionFractionValue
+        StemPartitionFractionValue
+        TuberPartitionFractionValue
+        GrainPartitionFractionValue
+        FloretPartitionFractionValue
+        RootPartitionFractionValue
+        GrainStructuralNConcValue
+        FloretStructuralNConcValue
+        LeafMinimumNConcValue
+        StemStructuralNConcValue
+        TuberStructuralNConcValue
+        GrainMaximumNConcValue
+        FloretMaximumNConcValue
+        LeafMaximumNConcValue
+        StemMaximumNConcValue
+        TuberMaximumNConcValue
+
+     Output file = Glenroy_0506_0 Plant2 diagnostic variables.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     20/10/2003  Prepare      fertiliser apply amount= 100 (kg/ha), type= urea_N (), depth= 10 (mm)
+     25/11/2003  Prepare      fertiliser apply amount= 69 (kg/ha), type= urea_N (), depth= 10 (mm)
+     26/11/2003  Prepare      irrigation apply amount= 15 (mm)
+      4/12/2003  Prepare      irrigation apply amount= 50 (mm)
+     16/12/2003  Prepare      irrigation apply amount= 15 (mm)
+     22/12/2003  Prepare      irrigation apply amount= 50 (mm)
+     30/12/2003  Prepare      irrigation apply amount= 50 (mm)
+       8/1/2004  Prepare      irrigation apply amount= 50 (mm)
+      21/1/2004  Prepare      irrigation apply amount= 50 (mm)
+      31/1/2004  Prepare      irrigation apply amount= 50 (mm)
+      27/2/2004  Prepare      irrigation apply amount= 25 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
+       potato2  harvest
+       potato2  end_crop
+                endif
+     END of rules
+     
+
+------- Potato Sowing Rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     plant_population = 1/((770/1000)*(280/1000))
+     if today = date('18/10/2005') then
+        potato2 sow population = plant_population, depth = 170, cultivar = russetburbank, maxcover = 1.0, budnumber = 2.4, row_spacing = 770, crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     leafnpercent = 0
+     accumttemerg = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemlivenconc - potato2.stemdeadn - potato2.tuberlivenconc - potato2.tuberdeadn ) * 10
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - potato2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if potato2.leaflivewt2 > 0 then
+     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     endif
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
+     endif
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Templeton Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.080  0.130  0.330  0.500  0.330  1.200  0.613  0.550
+          100.-  300.  0.080  0.130  0.330  0.500  0.330  1.200  0.340  0.550
+          300.-  600.  0.050  0.100  0.310  0.440  0.310  1.200  0.048  0.550
+          600.-  900.  0.040  0.080  0.270  0.460  0.270  1.200  0.000  0.550
+          900.- 1200.  0.060  0.110  0.300  0.440  0.300  1.200  0.000  0.550
+         1200.- 1500.  0.060  0.110  0.300  0.440  0.300  1.200  0.000  0.550
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      13.00      20.00      20.00      17.00
+          100.-  300.      26.00      40.00      40.00      34.00
+          300.-  600.      30.00      63.00      63.00      39.00
+          600.-  900.      24.00      57.00      57.00      57.00
+          900.- 1200.      33.00      57.00      57.00      42.00
+         1200.- 1500.      33.00      57.00      57.00      42.00
+          ---------------------------------------------------------
+               Totals     159.00     294.00     294.00     231.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.18       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              68.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     4.40 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         2000.0   800.0    10.0     0.0   0.632     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.6
+     
+
+------- Templeton Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.60  1.82   40.00    0.12    0.00
+             2     6.20  1.47   54.00    0.24    0.00
+             3     5.70  1.20    5.00    0.36    0.00
+             4     5.50  1.03    5.00    0.36    0.00
+             5     5.50  0.47    5.00    0.36    0.00
+             6     5.50  0.47    5.00    0.36    0.00
+          ------------------------------------------------
+           Totals              114.00    1.80    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      21467.1  1866.7   372.9    46.6   497.6    16.6
+             2      34763.7  3022.9   516.3    64.5   333.5    11.1
+             3      43040.4  3742.6   159.6    20.0   183.0     6.1
+             4      37043.3  3221.2    36.7     4.6   100.5     3.3
+             5      16913.3  1470.7     6.7     0.8    55.1     1.8
+             6      16913.3  1470.7     6.7     0.8    30.3     1.0
+          ---------------------------------------------------------
+           Totals  170141.1 14794.9  1098.9   137.4  1200.0    40.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : initialsoilomn = 14972.24020
+     Manager creating a new local real variable : initialsurfaceomn = 10.00000
+     Manager creating a new local real variable : initialmineraln = 115.80119
+18/10/2005 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+10/11/2005 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+5/12/2005 - FloralInitiation
+                            LAI = 1.04 (m^2/m^2)
+           Above Ground Biomass = 102.93 (g/m^2)
+6/12/2005 - TuberInitiation
+                            LAI = 1.09 (m^2/m^2)
+           Above Ground Biomass = 118.16 (g/m^2)
+4/02/2006 - FinalLeaf
+                            LAI = 2.50 (m^2/m^2)
+           Above Ground Biomass = 705.68 (g/m^2)
+Removing Leaves from plant
+18/04/2006 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 718.14 (g/m^2)
+19/04/2006 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 718.14 (g/m^2)
+19 April 2006(Day of year=109), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+20 April 2006(Day of year=110), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+21 April 2006(Day of year=111), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+22 April 2006(Day of year=112), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+23 April 2006(Day of year=113), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+24 April 2006(Day of year=114), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+25 April 2006(Day of year=115), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+26 April 2006(Day of year=116), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+27 April 2006(Day of year=117), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+28 April 2006(Day of year=118), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+29 April 2006(Day of year=119), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+30 April 2006(Day of year=120), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+1 May 2006(Day of year=121), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+2 May 2006(Day of year=122), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+3 May 2006(Day of year=123), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+4 May 2006(Day of year=124), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+5 May 2006(Day of year=125), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+6 May 2006(Day of year=126), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+7 May 2006(Day of year=127), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+8 May 2006(Day of year=128), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+9 May 2006(Day of year=129), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+10 May 2006(Day of year=130), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+11 May 2006(Day of year=131), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+12 May 2006(Day of year=132), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+13 May 2006(Day of year=133), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+14 May 2006(Day of year=134), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+15 May 2006(Day of year=135), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+16 May 2006(Day of year=136), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+17 May 2006(Day of year=137), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+18 May 2006(Day of year=138), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+19 May 2006(Day of year=139), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+20 May 2006(Day of year=140), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+21 May 2006(Day of year=141), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+22 May 2006(Day of year=142), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+23 May 2006(Day of year=143), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+24 May 2006(Day of year=144), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+25 May 2006(Day of year=145), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+26 May 2006(Day of year=146), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+27 May 2006(Day of year=147), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+28 May 2006(Day of year=148), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+29 May 2006(Day of year=149), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+30 May 2006(Day of year=150), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+31 May 2006(Day of year=151), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+1 June 2006(Day of year=152), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 end_crop
+1 June 2006(Day of year=152), clock: 
+     Simulation is terminating due to end criteria being met.

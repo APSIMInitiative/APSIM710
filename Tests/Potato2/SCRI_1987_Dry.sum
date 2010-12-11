@@ -1,0 +1,3750 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = SCRI_1987_Dry
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component              "East loan Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component           "East loan Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "potato2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 29/04/1987
+     Simulation end date   = 16/09/1987
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Potato2\SCRI_Dundee_dry.met
+
+------- Plant2 diagnostic variables Initialisation ----------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy
+        AccumTtemerg
+        StageCodeValue
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNUptakeSupply
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundDM
+        BelowGroundDM
+        TotalDM
+        LeafDeadWt
+        LeafLiveWt2
+        StemDeadWt
+        StemLiveWt
+        TuberDeadWt
+        TuberLiveWt
+        RootDeadWt
+        RootLiveWt
+        GrainLIveWt
+        GrainDeadWt
+        FloretLIveWt
+        FloretDeadWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
+        RootLiveN
+        RootDeadN
+        LeafDeadN2
+        LeafLiveN2
+        StemDeadN
+        StemLiveN
+        TuberDeadN
+        TuberLiveN
+        GrainLiveN
+        GrainDeadN
+        FloretLiveN
+        FloretDeadN
+        GrainLiveNconc
+        FloretLiveNconc
+        TuberLiveNconc
+        LeafNpercent
+        StemliveNConc
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafFrgr
+        LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        sw
+        no3
+        LeafPartitionFractionValue
+        StemPartitionFractionValue
+        TuberPartitionFractionValue
+        GrainPartitionFractionValue
+        FloretPartitionFractionValue
+        RootPartitionFractionValue
+        GrainStructuralNConcValue
+        FloretStructuralNConcValue
+        LeafMinimumNConcValue
+        StemStructuralNConcValue
+        TuberStructuralNConcValue
+        GrainMaximumNConcValue
+        FloretMaximumNConcValue
+        LeafMaximumNConcValue
+        StemMaximumNConcValue
+        TuberMaximumNConcValue
+        Profile_SW
+
+     Output file = SCRI_1987_Dry Plant2 diagnostic variables.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     29/04/1987  Prepare      fertiliser apply amount= 240 (kg/ha), type= urea_N (), depth= 10 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
+       potato2  harvest
+       potato2  end_crop
+                endif
+     END of rules
+     
+
+------- Potato Sowing Rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     plant_population = 1/((600/1000)*(300/1000))
+     if today = date('29/04/1987') then
+        potato2 sow population = plant_population, depth = 150, cultivar = marispiper, maxcover = 1.0, budnumber = 7, row_spacing = 600, crop_class = plant
+     endif
+     
+     SECTION:- init
+     plant_population = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     leafnpercent = 0
+     accumttemerg = 0
+     profile_sw = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemlivenconc - potato2.stemdeadn - potato2.tuberlivenconc - potato2.tuberdeadn ) * 10
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - potato2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if potato2.leaflivewt2 > 0 then
+     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     endif
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
+     endif
+     profile_sw = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4)
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
+     Manager creating a new local real variable : profile_sw = 0.00000
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('29/04/1987, 15/09/1987') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * -100 / 100
+        radn = radn + radn * 0 / 100
+        co2 = 350
+      endif
+     
+     SECTION:- init
+     co2 = 350
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 350.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- East loan Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.050  0.080  0.310  0.400  0.310  1.390  0.928  0.550
+          150.-  170.  0.080  0.080  0.310  0.400  0.310  1.390  0.024  0.550
+          170.-  185.  0.060  0.060  0.300  0.410  0.300  1.470  0.014  0.550
+          185.-  220.  0.060  0.060  0.300  0.410  0.300  1.500  0.022  0.550
+          220.-  235.  0.010  0.010  0.090  0.380  0.090  1.500  0.006  0.550
+          235.-  255.  0.010  0.010  0.090  0.380  0.090  1.800  0.006  0.550
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      12.00      34.50      34.50      13.50
+          150.-  170.       1.60       4.60       4.60       1.80
+          170.-  185.       0.90       3.60       3.60       1.65
+          185.-  220.       2.10       8.40       8.40       3.85
+          220.-  235.       0.15       1.20       1.20       4.35
+          235.-  255.       0.20       1.60       1.60       5.80
+          ---------------------------------------------------------
+               Totals      16.95      53.90      53.90      30.95
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.18       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              68.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     4.40 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         2000.0   800.0    10.0     0.0   0.632     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.6
+     
+
+------- East loan Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.30  4.43   17.37    0.21    0.00
+             2     5.30  2.50    1.39    0.03    0.00
+             3     5.30  2.50    1.10    0.02    0.00
+             4     5.30  2.50    2.63    0.05    0.00
+             5     5.30  2.50    1.13    0.02    0.00
+             6     5.30  2.50    1.80    0.04    0.00
+          ------------------------------------------------
+           Totals               25.42    0.37    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      90228.4  3222.4  2199.6   275.0   338.0    11.3
+             2       6828.5   243.9   121.5    15.2   267.1     8.9
+             3       5416.2   193.4    96.3    12.0   223.9     7.5
+             4      12895.6   460.6   229.4    28.7   148.3     4.9
+             5       5526.7   197.4    98.3    12.3   124.3     4.1
+             6       8842.7   315.8   157.3    19.7    98.3     3.3
+          ---------------------------------------------------------
+           Totals  129738.1  4633.5  2902.4   362.8  1200.0    40.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+      Sending apply message to fertiliser
+fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       240.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- potato2 sow  population = 5.55556, depth = 150, cultivar = marispiper, maxcover = 1.0, budnumber = 7, row_spacing = 600, crop_class = plant
+     Manager creating a new local real variable : initialsoilomn = 5036.30420
+     Manager creating a new local real variable : initialsurfaceomn = 10.00000
+     Manager creating a new local real variable : initialmineraln = 265.78616
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29/04/1987 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 April 1987(Day of year=120): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 May 1987(Day of year=121): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 May 1987(Day of year=122): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 May 1987(Day of year=123): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 May 1987(Day of year=124): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 May 1987(Day of year=125): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 May 1987(Day of year=126): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 May 1987(Day of year=127): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 May 1987(Day of year=128): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 May 1987(Day of year=129): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 May 1987(Day of year=130): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 May 1987(Day of year=131): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 May 1987(Day of year=132): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 May 1987(Day of year=133): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 May 1987(Day of year=134): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 May 1987(Day of year=135): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 May 1987(Day of year=136): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 May 1987(Day of year=137): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 May 1987(Day of year=138): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 May 1987(Day of year=139): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 May 1987(Day of year=140): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 May 1987(Day of year=141): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 May 1987(Day of year=142): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 May 1987(Day of year=143): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 May 1987(Day of year=144): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 May 1987(Day of year=145): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 May 1987(Day of year=146): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 May 1987(Day of year=147): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 May 1987(Day of year=148): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 May 1987(Day of year=149): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 May 1987(Day of year=150): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 May 1987(Day of year=151): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 June 1987(Day of year=152): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 June 1987(Day of year=153): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 June 1987(Day of year=154): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3/06/1987 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 June 1987(Day of year=155): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 June 1987(Day of year=156): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 June 1987(Day of year=157): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 June 1987(Day of year=158): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 June 1987(Day of year=159): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 June 1987(Day of year=160): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 June 1987(Day of year=161): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 June 1987(Day of year=162): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 June 1987(Day of year=163): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 June 1987(Day of year=164): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 June 1987(Day of year=165): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 June 1987(Day of year=166): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 June 1987(Day of year=167): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 June 1987(Day of year=168): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 June 1987(Day of year=169): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 June 1987(Day of year=170): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 June 1987(Day of year=171): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 June 1987(Day of year=172): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 June 1987(Day of year=173): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 June 1987(Day of year=174): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 June 1987(Day of year=175): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 June 1987(Day of year=176): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 June 1987(Day of year=177): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 June 1987(Day of year=178): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 June 1987(Day of year=179): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 June 1987(Day of year=180): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 June 1987(Day of year=181): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 July 1987(Day of year=182): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 July 1987(Day of year=183): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 July 1987(Day of year=184): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3/07/1987 - FloralInitiation
+                            LAI = 0.16 (m^2/m^2)
+           Above Ground Biomass = 9.99 (g/m^2)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 July 1987(Day of year=185): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4/07/1987 - TuberInitiation
+                            LAI = 0.16 (m^2/m^2)
+           Above Ground Biomass = 9.99 (g/m^2)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 July 1987(Day of year=186): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 July 1987(Day of year=187): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 July 1987(Day of year=188): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 July 1987(Day of year=189): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 July 1987(Day of year=190): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 July 1987(Day of year=191): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 July 1987(Day of year=192): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 July 1987(Day of year=193): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 July 1987(Day of year=194): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 July 1987(Day of year=195): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 July 1987(Day of year=196): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 July 1987(Day of year=197): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 July 1987(Day of year=198): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 July 1987(Day of year=199): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 July 1987(Day of year=200): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 July 1987(Day of year=201): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 July 1987(Day of year=202): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 July 1987(Day of year=203): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 July 1987(Day of year=204): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 July 1987(Day of year=205): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 July 1987(Day of year=206): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 July 1987(Day of year=207): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 July 1987(Day of year=208): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 July 1987(Day of year=209): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 July 1987(Day of year=210): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 July 1987(Day of year=211): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 July 1987(Day of year=212): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 August 1987(Day of year=213): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 August 1987(Day of year=214): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 August 1987(Day of year=215): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 August 1987(Day of year=216): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 August 1987(Day of year=217): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 August 1987(Day of year=218): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 August 1987(Day of year=219): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 August 1987(Day of year=220): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 August 1987(Day of year=221): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 August 1987(Day of year=222): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 August 1987(Day of year=223): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 August 1987(Day of year=224): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 August 1987(Day of year=225): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 August 1987(Day of year=226): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 August 1987(Day of year=227): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 August 1987(Day of year=228): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 August 1987(Day of year=229): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 August 1987(Day of year=230): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 August 1987(Day of year=231): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 August 1987(Day of year=232): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 August 1987(Day of year=233): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 August 1987(Day of year=234): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 August 1987(Day of year=235): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 August 1987(Day of year=236): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 August 1987(Day of year=237): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 August 1987(Day of year=238): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 August 1987(Day of year=239): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 August 1987(Day of year=240): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 August 1987(Day of year=241): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29/08/1987 - FinalLeaf
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 9.99 (g/m^2)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 August 1987(Day of year=242): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 August 1987(Day of year=243): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 September 1987(Day of year=244): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 September 1987(Day of year=245): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 September 1987(Day of year=246): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 September 1987(Day of year=247): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 September 1987(Day of year=248): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 September 1987(Day of year=249): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 September 1987(Day of year=250): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 September 1987(Day of year=251): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 September 1987(Day of year=252): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 September 1987(Day of year=253): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 September 1987(Day of year=254): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 September 1987(Day of year=255): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 September 1987(Day of year=256): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 September 1987(Day of year=257): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 September 1987(Day of year=258): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 September 1987(Day of year=259): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.380000      in layer   6
+              is above acceptable value of     0.320755
+     You must adjust bulk density (bd) to below      1.64300
+     OR saturation (sat) to below     0.320755
+     Component name: East loan Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 September 1987(Day of year=259), clock: 
+     Simulation is terminating due to end criteria being met.

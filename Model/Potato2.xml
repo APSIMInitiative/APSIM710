@@ -173,16 +173,16 @@
     </events>
   </Info>
   <MetaData>
-    <UItype>VBUserInterface.EmptyUI</UItype>
-    <IsCrop>Yes</IsCrop>
-    <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\potato.jpg</Image>
-    <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process. NOTE THIS MODULE IS A PROTOTYPE ONLY.</Description>
-    <Documentation>%apsim%\Documentation\4 Module Reference\Potato.htm</Documentation>
-    <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
-    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
-    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
-    <dll>%apsim%\Model\Plant2.dll</dll>
+    <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
+    <IsCrop type="text" description="IsCrop">Yes</IsCrop>
+    <ShowInMainTree type="text" description="ShowInMainTree">Yes</ShowInMainTree>
+    <Image type="text" description="Image">%apsim%\UserInterface\Images\Potato_king_dick.jpg</Image>
+    <Description type="text" description="Description">Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process. NOTE THIS MODULE IS A PROTOTYPE ONLY.</Description>
+    <Documentation type="text" description="Documentation">%apsim%\Documentation\4 Module Reference\Potato.htm</Documentation>
+    <Documentation type="text" description="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
+    <LargeIcon type="text" description="LargeIcon">%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+    <SmallIcon type="text" description="SmallIcon">%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+    <dll type="text" description="dll">%apsim%\Model\Plant2.dll</dll>
     <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
@@ -200,13 +200,55 @@
     </ApsimToSim>
   </MetaData>
   <Model>
-    <Cultivar name="russet">
+    <Cultivar name="RussetBurbank">
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Cultivar name="IlamHardy">
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Cultivar name="MarisPiper">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Horizon">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="JerseyBenny">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Karaka">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Nooksac">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="RedRascal">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Rua">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Fianna">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="RussetRanger">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Nadine">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Coliban">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Moonlight">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Agria">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Bondi">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Crop39">
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Plant>
@@ -423,15 +465,15 @@
         </EndPhase>
       </Phenology>
       <Leaf>
-        <Frgr>1</Frgr>
-        <PrimaryBudNo>1</PrimaryBudNo>
-        <MaxCover>1.0</MaxCover>
-        <KDead>0.5</KDead>
-        <MaxNodeNo>40</MaxNodeNo>
-        <InitialAreas>1000 </InitialAreas>
-        <InitialAges>150  </InitialAges>
-        <InitialiseStage>Emergence</InitialiseStage>
-        <InitialLeafPrimordia>6</InitialLeafPrimordia>
+        <Frgr type="text" description="Frgr">1</Frgr>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <MaxCover type="text" description="MaxCover">1.0</MaxCover>
+        <KDead type="text" description="KDead">.03</KDead>
+        <MaxNodeNo type="text" description="MaxNodeNo">33</MaxNodeNo>
+        <InitialAreas type="text" description="InitialAreas">500</InitialAreas>
+        <InitialAges type="text" description="InitialAges">50</InitialAges>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <GenericFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
@@ -446,7 +488,8 @@
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 0.8</XY>
-            <XY>1 0.8</XY>
+            <XY>2 0.8</XY>
+            <XY>8 0.8</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="Height">
@@ -456,10 +499,6 @@
             <XY>78 700</XY>
           </XYPairs>
         </GenericFunction>
-        <StageBasedInterpolation name="xPartitionFraction">
-          <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes"> 0          0             0.46            0.46               0.18                  0.05         0                        0</Codes>
-        </StageBasedInterpolation>
         <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </TemperatureFunction>
@@ -476,10 +515,10 @@
           <GenericFunction name="Phyllochron">
             <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
             <XYPairs>
-              <XY>0 17</XY>
-              <XY>7 17</XY>
-              <XY>8 40</XY>
-              <XY>40 40</XY>
+              <XY>0 5</XY>
+              <XY>5 30</XY>
+              <XY>25 30</XY>
+              <XY>26 60</XY>
             </XYPairs>
           </GenericFunction>
         </PhaseLookupValue>
@@ -491,70 +530,62 @@
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="SpecificLeafArea">
-          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>0 29000</XY>
-            <XY>7 29000</XY>
+            <XY>0 30000</XY>
+            <XY>7 55000</XY>
+            <XY>25 55000</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="MaxArea">
           <XProperty type="text" description="XProperty">Leaf.CohortNo</XProperty>
           <XYPairs>
-            <XY>1 2000</XY>
-            <XY>12 40000</XY>
-            <XY>40 40000</XY>
+            <XY>1 6000</XY>
+            <XY>4 20000</XY>
+            <XY>9 35000</XY>
+            <XY>10 35000</XY>
+            <XY>20 8000</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="GrowthDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>1 100</XY>
-            <XY>7 150</XY>
-            <XY>8 150</XY>
-            <XY>18 150</XY>
-            <XY>35 150</XY>
-            <XY>40 150</XY>
+            <XY>2 200</XY>
+            <XY>7 200</XY>
+            <XY>9 400</XY>
+            <XY>17 400</XY>
+            <XY>34 300</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="LagDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>1 100</XY>
-            <XY>7 350</XY>
-            <XY>30 350</XY>
-            <XY>40 100</XY>
+            <XY>2 100</XY>
+            <XY>17 100</XY>
+            <XY>34 75</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>1 150</XY>
-            <XY>7 150</XY>
-            <XY>8 150</XY>
-            <XY>18 150</XY>
-            <XY>35 150</XY>
-            <XY>40 150</XY>
+            <XY>2 600</XY>
+            <XY>7 600</XY>
+            <XY>9 400</XY>
+            <XY>17 400</XY>
+            <XY>33 300</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="BranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>5 0</XY>
-            <XY>7 0.5</XY>
-            <XY>13 0.5</XY>
-            <XY>15 0</XY>
+            <XY>12 0</XY>
+            <XY>13 0.25</XY>
+            <XY>16 0.25</XY>
+            <XY>17 0</XY>
+            <XY>34 0</XY>
           </XYPairs>
         </GenericFunction>
-        <Constant name="xMaximumNConc">
-          <Value type="text" description="Value">0.065</Value>
-        </Constant>
-        <Constant name="xMinimumNConc">
-          <Value type="text" description="Value">.001</Value>
-        </Constant>
-        <Constant name="xStructuralNConc">
-          <Value>0.0</Value>
-        </Constant>
         <Constant name="InitialNConc">
           <Value>.01</Value>
         </Constant>
@@ -585,14 +616,14 @@
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">FloralInitiation</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.45</Value>
+              <Value type="text" description="Value">.35</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="Induced">
             <Start type="text" description="Start">FloralInitiation</Start>
             <End type="text" description="End">TuberInitiation</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.44</Value>
+              <Value type="text" description="Value">.35</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="EarlyTuber">
@@ -612,11 +643,11 @@
         </PhaseLookup>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes">0.06       0.06       0.06            0.06                0.06                0.04        0.02                   0.02</Codes>
+          <Codes type="text" description="Codes">0.06       0.06       0.06            0.06                0.06                0.04        0.04                   0.04</Codes>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="MinimumNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes">0.02       0.02       0.02            0.02                0.02                0.02        0.02                   0.02 </Codes>
+          <Codes type="text" description="Codes">0.024     0.024     0.024          0.024              0.024              0.024      0.024                 0.024 </Codes>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="StructuralNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
@@ -626,18 +657,8 @@
       <GenericOrgan name="Stem">
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <StageBasedInterpolation name="xPartitionFraction">
-          <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes"> 0          0             0.38            0.38                0.16                  0             0                        0</Codes>
-        </StageBasedInterpolation>
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">0.1</Value>
-        </Constant>
-        <Constant name="xMaximumNConc">
-          <Value type="text" description="Value">0.045</Value>
-        </Constant>
-        <Constant name="xStructuralNConc">
-          <Value type="text" description="Value">.05</Value>
+          <Value type="text" description="Value">0.005</Value>
         </Constant>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Inductive">
@@ -651,7 +672,7 @@
             <Start type="text" description="Start">FloralInitiation</Start>
             <End type="text" description="End">TuberInitiation</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.36</Value>
+              <Value type="text" description="Value">.35</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="EarlyTuber">
@@ -671,7 +692,7 @@
         </PhaseLookup>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes">0.05       0.05       0.055          0.04                0.039              0.023      0.006                   0.006</Codes>
+          <Codes type="text" description="Codes">0.05       0.05       0.055          0.04                0.039              0.023      0.006                  0.006</Codes>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="StructuralNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
@@ -681,18 +702,8 @@
       <GenericOrgan name="Tuber">
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <StageBasedInterpolation name="xPartitionFraction">
-          <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes">  0          0            0                 0                    0.61                  0.95         1.0                     0</Codes>
-        </StageBasedInterpolation>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
-        </Constant>
-        <Constant name="xMaximumNConc">
-          <Value type="text" description="Value">0.02</Value>
-        </Constant>
-        <Constant name="xStructuralNConc">
-          <Value>1.0</Value>
         </Constant>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Inductive">
@@ -713,7 +724,7 @@
             <Start type="text" description="Start">TuberInitiation</Start>
             <End type="text" description="End">FinalLeaf</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.61</Value>
+              <Value type="text" description="Value">.60</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="LateTuber">
@@ -773,23 +784,19 @@
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <StageBasedInterpolation name="xPartitionFraction">
-          <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Codes type="text" description="Codes"> 0          0             0.17            0.17               0.05                  0            0                        0</Codes>
-        </StageBasedInterpolation>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Inductive">
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">FloralInitiation</End>
             <Constant name="Function">
-              <Value type="text" description="Value">0.2</Value>
+              <Value type="text" description="Value">0.3</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="Induced">
             <Start type="text" description="Start">FloralInitiation</Start>
             <End type="text" description="End">TuberInitiation</End>
             <Constant name="Function">
-              <Value type="text" description="Value">0.2</Value>
+              <Value type="text" description="Value">0.3</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="EarlyTuber">
