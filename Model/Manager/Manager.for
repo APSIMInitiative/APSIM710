@@ -406,11 +406,15 @@ C     Last change:  P    25 Oct 2000    9:26 am
       g%result_leng = 0
 
       call fill_char_array (g%expression_array, blank, Variable_maximum)
+      call fill_integer_array (g%expression_lens, 0, Variable_maximum)
       call fill_char_array (g%stack, blank, stack_maximum)
 
       call fill_char_array (g%expression_sub_array
      :                     , blank, Variable_maximum)
+      call fill_integer_array (g%expression_sub_lens
+     :                        , 0, Variable_maximum)
       call fill_char_array (g%and_or_array, blank, Variable_maximum)
+      call fill_integer_array (g%and_or_lens, 0, Variable_maximum)
       g%line = blank
       g%last_line = blank
       g%ch = blank
@@ -421,6 +425,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       g%local_variable_is_real(:) = .false.
 
       call fill_char_array (g%token_array, blank, Max_tokens)
+      call fill_integer_array (g%token_length, 0, Max_tokens)
       g%token         = 0
       g%end_of_file   = 0
       g%start_token   = 0
@@ -2958,6 +2963,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
        nVars = g%number_of_variables
        pop_stack = 0
+       buffer(1:1) = ' '
 
        if (nVars .lt. 1) then
           call   Parse_error('Too few variables   ',
