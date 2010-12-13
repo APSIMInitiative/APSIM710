@@ -1064,7 +1064,7 @@
       c%cold_shock_delay             = 0.0
       p%rate_emergence               = 0.0
       c%nskip_default                = 0.0
-
+      c%days_since_fert_max          = 0
       ! OzcotParameters
 
       p%UNUL(:)           = 0.0
@@ -6534,7 +6534,8 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
       sdepth_mm = 0.0
       row_space_mm = 0.0
-
+      g%cultivar = 'undefined'
+      
       call collect_char_var ('cultivar', '()'
      :                      , g%cultivar, numvals)
 
@@ -7644,6 +7645,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
          call ozcot_end_run ()
 
       elseif (Action.eq.ACTION_init) then
+         call ozcot_zero_all_globals()
          call ozcot_zero_variables ()
          call ozcot_get_other_variables ()
          call ozcot_Init ()
