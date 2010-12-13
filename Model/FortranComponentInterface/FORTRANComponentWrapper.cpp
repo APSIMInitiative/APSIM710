@@ -604,7 +604,9 @@ extern "C" bool EXPORT STDCALL strings_equal(const char* st1, const char* st2,
 #else	  
           return strncasecmp(st1, st2, st1Length) == 0;
 #endif		  
-	  else
+	  else if (st1Length == 0 || st2Length == 0)
+          return false;
+      else
           return (FString(st1, st1Length, FORString) == FString(st2, st2Length, FORString));
    }
 
