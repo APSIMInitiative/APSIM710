@@ -50,10 +50,10 @@
       <folder name="Manager folder">
         <manager name="Sowing rule">
           <script>
-            <text><![CDATA[
-      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+            <text>
+      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
          if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
+            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
                [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
@@ -63,7 +63,7 @@
             endif
          endif
       endif
-            ]]></text>
+            </text>
             <event>start_of_day</event>
           </script>
           <ui>
