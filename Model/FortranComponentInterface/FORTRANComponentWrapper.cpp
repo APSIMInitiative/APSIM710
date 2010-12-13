@@ -1139,11 +1139,11 @@ extern "C" void EXPORT STDCALL set_char_var_optional(
 									   unsigned variableNameLength,
 									   unsigned unitsLength, unsigned valueLength)
    {
-   bool result = FortranWrapper::currentInstance->set_var_optional
+   bool result = value ? FortranWrapper::currentInstance->set_var_optional
 	  (*componentID,
 	   FString(variableName, variableNameLength, FORString),
 	   stringType,
-	   FString(value, valueLength, FORString));
+	   FString(value, valueLength, FORString)) : false;
    *num_set = result ? 1 : 0;
    }
 
