@@ -2963,7 +2963,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
        nVars = g%number_of_variables
        pop_stack = 0
-       buffer(1:1) = ' '
 
        if (nVars .lt. 1) then
           call   Parse_error('Too few variables   ',

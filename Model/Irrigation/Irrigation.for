@@ -1815,7 +1815,7 @@ cnh note that results may be strange if swdep < ll15
      :                      ,sender
      :                      ,numvals)
 
-
+      names = blank
       call collect_char_array (DATA_new_solute_names
      :                        ,max_solutes
      :                        ,'()'

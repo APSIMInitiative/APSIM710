@@ -1033,7 +1033,7 @@ extern "C" void EXPORT STDCALL get_char_var
    FortranWrapper::currentInstance->get_var
       (*componentID, FString(variableName, variableNameLength, FORString), stringType,
        valueString, *numvals);
-   FString(value, valueLength, FORString) = valueString;
+   FString(value, valueLength, EmptyString) = valueString;
    if (*numvals == 0)
       memset((char*)value, ' ', valueLength);
    }
@@ -1049,7 +1049,7 @@ extern "C" void EXPORT STDCALL get_char_var_optional
    FortranWrapper::currentInstance->get_var
       (*componentID, FString(variableName, variableNameLength, FORString), stringType,
        valueString, *numvals, true);
-   FString(value, valueLength, FORString) = valueString;
+   FString(value, valueLength, EmptyString) = valueString;
    if (*numvals == 0)
       memset((char*)value, ' ', valueLength);
    }
@@ -1065,7 +1065,7 @@ extern "C" void EXPORT STDCALL get_char_vars
    FortranWrapper::currentInstance->get_vars
       (*requestNo, FString(variableName, variableNameLength, FORString), stringType,
        valueString, *numvals);
-   FString(value, valueLength, FORString) = valueString;
+   FString(value, valueLength, EmptyString) = valueString;
    if (*numvals == 0)
       memset((char*)value, ' ', valueLength);
    }
@@ -1286,7 +1286,7 @@ extern "C" void EXPORT STDCALL collect_char_var
    FortranWrapper::currentInstance->collect_var
 	  (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
 	   newValue, *numvals, false);
-   FString(value, valueLength, FORString) = newValue;
+   FString(value, valueLength, EmptyString) = newValue;
    }
 // ------------------------------------------------------------------
 // Module is getting a value from a variant.
@@ -1299,7 +1299,7 @@ extern "C" void EXPORT STDCALL collect_char_var_optional
    FortranWrapper::currentInstance->collect_var
 	  (FString(variableName, variableNameLength, FORString), protocol::DTstring, false,
 	   newValue, *numvals, true);
-   FString(value, valueLength, FORString) = newValue;
+   FString(value, valueLength, EmptyString) = newValue;
    }
 // ------------------------------------------------------------------
 // Module is getting a value from a variant.

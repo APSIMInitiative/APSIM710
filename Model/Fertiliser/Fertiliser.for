@@ -174,7 +174,9 @@ c     include   'fertiliz.inc'
 
          call SetSearchOrder(type);
 
+         full_name = blank
          call ReadParam('full_name', '()', NotOptional, full_name)
+         components(:) = blank		 
          call ReadParam(
      :           'components'         ! Keyword
      :         , '()'                 ! Units
