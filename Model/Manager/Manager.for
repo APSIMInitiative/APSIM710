@@ -3455,7 +3455,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
           Inside_quotes = .true.
        else
           g%buffer = g%ch
-		  g%buffer_length = 1
           Inside_quotes = .false.
        endif
 
@@ -3484,8 +3483,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :      g%ch .eq. '(')     .or.
      .      (g%ch .eq. ')' .and. left .gt. 0))   then
 
-          g%buffer = string_concat(g%buffer(:g%buffer_length), g%ch)
-          g%buffer_length = g%buffer_length + 1		  
+          g%buffer = string_concat(g%buffer, g%ch)
 
           if  (g%ch .eq. '(') then
                left = left + 1
@@ -3529,15 +3527,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
 
        g%buffer = ' '
-       g%buffer_length = 0
 
 10     continue
 
        call   Get_Char()
 
        if (g%ch .ne. '''') then
-          g%buffer = string_concat (g%buffer(:g%buffer_length), g%ch)
-          g%buffer_length = g%buffer_length + 1
+          g%buffer = string_concat (g%buffer, g%ch)
           goto 10
        endif
 
@@ -3570,15 +3566,13 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
        g%buffer = g%ch
-       g%buffer_length = 1	   
 10     continue
 
        call Get_Char()
 
        if ((g%ch .ge. '0' .and. g%ch .le. '9')  .or.
      :    (g%ch .eq. '.'))                     then
-            g%buffer = string_concat (g%buffer(:g%buffer_length), g%ch)
-            g%buffer_length = g%buffer_length + 1			
+            g%buffer = string_concat (g%buffer, g%ch)
             goto 10
        end if
 
