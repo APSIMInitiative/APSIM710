@@ -198,7 +198,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
          integer       last_token                ! Position of last token stored.
          integer       buffer_length             ! length of text in buffer
          character     buffer*(Buffer_size)      ! extract word
-         character     buffer_last*(Buffer_size) ! extract word
          character     line*(Buffer_size)        ! line read from file
          character     last_line*(Buffer_size)   ! last line read from file
          character     ch                        ! next character in g_line
@@ -408,6 +407,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       call fill_char_array (g%expression_array, blank, Variable_maximum)
       call fill_integer_array (g%expression_lens, 0, Variable_maximum)
       call fill_char_array (g%stack, blank, stack_maximum)
+      call fill_integer_array (g%stack_length, 0, stack_maximum)
 
       call fill_char_array (g%expression_sub_array
      :                     , blank, Variable_maximum)
@@ -739,7 +739,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          g%line_number = g%line_number + 1
 
          ! remove any comments.
-         Pos_comment = fast_index(Line, "!")
+         Pos_comment = Index(Line, "!")
          if (Pos_comment .gt. 0) then
             Line(Pos_comment:) = Blank
          endif
@@ -921,9 +921,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       ! locate open and close bracket.
 
-      pos_open_bracket = fast_index (Function_call, '(')
+      pos_open_bracket = Index (Function_call, '(')
 	  if (pos_open_bracket .gt. 0) then
-        pos_close_bracket = fast_index (Function_call, ')')
+        pos_close_bracket = Index (Function_call, ')')
       endif
 
       ! did we find both an open and a close bracket?
@@ -933,7 +933,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
          ! yes - locate position of comma.
 
-         pos_comma = fast_index (Function_call(:pos_close_bracket), ',')
+         pos_comma = Index (Function_call(:pos_close_bracket), ',')
 
          ! did we find a comma between the brackets?
 
@@ -1020,7 +1020,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !- Implementation Section ----------------------------------
       leng = 0
-      Is_apsim_variable = (fast_index(variable_name, '.') .gt. 0)
+      Is_apsim_variable = (Index(variable_name, '.') .gt. 0)
 
       ! Look for function first.
 
@@ -1272,7 +1272,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
       str = blank
       variable_name = lower_case(variable_name)
-      Is_apsim_variable = (fast_index(variable_name, '.') .gt. 0)
+      Is_apsim_variable = (Index(variable_name, '.') .gt. 0)
       if (Is_apsim_variable) then
          call Split_line_reverse(variable_name, Mod_name,
      .                           Var_name, '.')
@@ -1451,7 +1451,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       ! Test for case where user has forgotten to put in equals sign in set command.
 
       if (Action .eq. 'set') then
-         if (fast_index(Data_string, '=') .eq. 0) then
+         if (Index(Data_string, '=') .eq. 0) then
             write (msg, '(50a)' )
      .         'Your manager file has a set command that does not',
      .         new_line,
@@ -1483,7 +1483,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          endif
 
          if (data_string .ne. ' ' .and.
-     :      fast_index(Data_string, '=') .eq. 0) then
+     :      Index(Data_string, '=') .eq. 0) then
             write (msg, '(50a)' )
      :         'Your manager file has data in an action line that does',
      :         new_line,
@@ -1543,7 +1543,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       newString = ' '
       new_value_string = ' '
 
-      if (fast_index(st, '=') .ne. 0) then
+      if (Index(st, '=') .ne. 0) then
 
          ! string will look like:
          !   cultivar = hartog, plants = 121.61, sowing_depth = 30 (mm)
@@ -1642,7 +1642,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !     .   New_line,
 !     .   'Line number  = ', Current_record_num
       call Fatal_error(ERR_user, Error_message
-     :                //' at: '//trim(g%buffer_last)//']')
+     :                //' at: '//trim(g%buffer)//']')
 
       g%all_ok = NO
 
@@ -2233,7 +2233,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call assign_string (g%buffer(:leng),
      :                        g%expression_sub_array(1)(:leng))
           g%buffer_length = leng
-!          g%buffer_last = g%buffer
           g%token = g%expression_sub_array2(1)
           g%current_token = 1
 
@@ -2289,7 +2288,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
           call assign_string (g%buffer(:leng), 
      :                        g%expression_sub_array(1)(:leng))
           g%buffer_length = leng		  
-!          g%buffer_last = g%buffer
           g%token = g%expression_sub_array2(1)
           g%current_token = 1
 
@@ -3008,7 +3006,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :                g%expression_sub_array(g%current_token)(:leng))
        g%buffer_length = leng
        g%token = g%expression_sub_array2(g%current_token)
-!          g%buffer_last = g%buffer
 
 
        return
@@ -3035,13 +3032,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !- Implementation Section ----------------------------------
 
-!       call assign_string (g%buffer_LAST, Token_array(g%next_token))
        g%next_token = g%next_token + 1
 
        leng = g%Token_length(g%next_token)
        call assign_string (g%buffer(:leng), 
      :                    g%Token_array(g%next_token)(:leng))
-!          g%buffer_last = g%buffer
        g%token = g%Token_array2(g%next_token)
        g%buffer_length = leng
 	   
@@ -3284,7 +3279,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
                  do 20  count = 1, elseif_count
                     g%token = C_ENDIF
                     g%buffer = 'endif'
-!          g%buffer_last = g%buffer
                     ind = ind + 1
                     call assign_string(g%Token_array(ind)(:5),
      :                                  g%buffer(:5))
@@ -3299,14 +3293,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
                elseif_count  = elseif_count + 1
                g%token = C_ELSE
                g%buffer = 'else'
-!          g%buffer_last = g%buffer
                ind = ind + 1
-               call assign_string (g%Token_array(ind), g%buffer(:4))
+               call assign_string (g%Token_array(ind)(:4), g%buffer(:4))
                g%Token_length(ind) = 4
                g%Token_array2(ind) = g%token
                g%token = C_IF
                g%buffer = 'if'
-!          g%buffer_last = g%buffer
           endif
 
           if   (g%token .eq. C_NUMBER .and. ind .ge. 2 .and.
@@ -3317,7 +3309,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
                  call assign_string (g%buffer, '-'//g%buffer)
                  ind = ind -1
-!          g%buffer_last = g%buffer
         endif
 
 
@@ -3326,9 +3317,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :             (g%Token_array2(ind) .eq. C_WORD .or.
      :              g%Token_array2(ind) .eq. C_LITERAL) ) then
 
-                g%buffer = string_concat (g%Token_Array(ind),
-     :                                          ' '//g%buffer)
-!          g%buffer_last = g%buffer
+                g%buffer = string_concat (g%Token_Array(ind)
+     :                                  (:g%token_length(ind)),
+     :                                  ' '//g%buffer)
                call Get_Action()
                g%token = C_ACTION
                ind = ind - 1
@@ -3339,7 +3330,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
           g%buffer_length = len_trim(g%buffer)
           g%Token_length(ind) = g%buffer_length
 
-!          g%buffer_last = g%buffer
           g%Token_array2(ind) = g%token
 
           if     (g%end_of_file .eq. 0) then
@@ -3460,7 +3450,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        else
           g%buffer = g%ch
 		  g%buffer_length = 1
-!          g%buffer_last = g%buffer
           Inside_quotes = .false.
        endif
 
@@ -3502,7 +3491,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
           goto 10
        endif
-!          g%buffer_last = g%buffer
 
 
 
@@ -3546,7 +3534,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
           g%buffer_length = g%buffer_length + 1
           goto 10
        endif
-!          g%buffer_last = g%buffer
 
        call   Get_Char()
 
@@ -3588,7 +3575,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
             g%buffer_length = g%buffer_length + 1			
             goto 10
        end if
-!          g%buffer_last = g%buffer
 
 
        g%token = C_NUMBER
@@ -3619,7 +3605,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
 
        g%buffer = g%ch
-!          g%buffer_last = g%buffer
 
 
        if (g%ch .eq. '-') then
@@ -3733,7 +3718,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
       else
           call assign_string (g%buffer, g%line)
        endif
-!          g%buffer_last = g%buffer
 
 
 10     continue
