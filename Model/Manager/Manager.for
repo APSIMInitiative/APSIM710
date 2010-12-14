@@ -739,7 +739,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          g%line_number = g%line_number + 1
 
          ! remove any comments.
-         Pos_comment = Index(Line, "!")
+         Pos_comment = fast_index(Line, "!")
          if (Pos_comment .gt. 0) then
             Line(Pos_comment:) = Blank
          endif
@@ -1020,7 +1020,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !- Implementation Section ----------------------------------
       leng = 0
-      Is_apsim_variable = (Index(variable_name, '.') .gt. 0)
+      Is_apsim_variable = (fast_index(variable_name, '.') .gt. 0)
 
       ! Look for function first.
 
@@ -1272,7 +1272,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
       str = blank
       variable_name = lower_case(variable_name)
-      Is_apsim_variable = (Index(variable_name, '.') .gt. 0)
+      Is_apsim_variable = (fast_index(variable_name, '.') .gt. 0)
       if (Is_apsim_variable) then
          call Split_line_reverse(variable_name, Mod_name,
      .                           Var_name, '.')
@@ -1451,7 +1451,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       ! Test for case where user has forgotten to put in equals sign in set command.
 
       if (Action .eq. 'set') then
-         if (Index(Data_string, '=') .eq. 0) then
+         if (fast_index(Data_string, '=') .eq. 0) then
             write (msg, '(50a)' )
      .         'Your manager file has a set command that does not',
      .         new_line,
@@ -1483,7 +1483,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          endif
 
          if (data_string .ne. ' ' .and.
-     :      Index(Data_string, '=') .eq. 0) then
+     :      fast_index(Data_string, '=') .eq. 0) then
             write (msg, '(50a)' )
      :         'Your manager file has data in an action line that does',
      :         new_line,
@@ -1543,7 +1543,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       newString = ' '
       new_value_string = ' '
 
-      if (Index(st, '=') .ne. 0) then
+      if (fast_index(st, '=') .ne. 0) then
 
          ! string will look like:
          !   cultivar = hartog, plants = 121.61, sowing_depth = 30 (mm)
@@ -3245,6 +3245,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        integer       count                ! loop index
        integer       elseif_count         !
        integer       if_count             !
+       integer       nChars               ! string lengths
 
 !- Implementation Section ----------------------------------
 
@@ -3279,10 +3280,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
                  do 20  count = 1, elseif_count
                     g%token = C_ENDIF
                     g%buffer = 'endif'
+                    nChars = 5
                     ind = ind + 1
-                    call assign_string(g%Token_array(ind)(:5),
-     :                                  g%buffer(:5))
-                    g%Token_length(ind) = 5
+                    call assign_string(g%Token_array(ind)(:nChars),
+     :                                  g%buffer(:nChars))
+                    g%Token_length(ind) = nChars
                     g%Token_array2(ind) = g%token
 20               continue
                  elseif_count = 0
@@ -3293,9 +3295,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
                elseif_count  = elseif_count + 1
                g%token = C_ELSE
                g%buffer = 'else'
+               nChars = 4
                ind = ind + 1
-               call assign_string (g%Token_array(ind)(:4), g%buffer(:4))
-               g%Token_length(ind) = 4
+               call assign_string (g%Token_array(ind)(:nChars),
+     :                                  g%buffer(:nChars))
+               g%Token_length(ind) = nChars
                g%Token_array2(ind) = g%token
                g%token = C_IF
                g%buffer = 'if'
@@ -3326,9 +3330,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
           endif
 
           ind = ind + 1
-          call assign_string (g%Token_array(ind), g%buffer)
-          g%buffer_length = len_trim(g%buffer)
-          g%Token_length(ind) = g%buffer_length
+          nChars = max(1, len_trim(g%buffer))
+          call assign_string (g%Token_array(ind)(:nChars),
+     :                                  g%buffer(:nChars))
+          g%buffer_length = nChars
+          g%Token_length(ind) = nChars
 
           g%Token_array2(ind) = g%token
 
