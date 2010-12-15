@@ -242,9 +242,10 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       ! instance variables.
       common /InstancePointers/ ID,g,p,c
-      save InstancePointers
+      save /InstancePointers/
       type (ManagerData),pointer :: g
       type (IDsType), pointer :: id
+      integer, pointer :: p, c
 
       contains
 
@@ -921,9 +922,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       ! locate open and close bracket.
 
-      pos_open_bracket = Index (Function_call, '(')
+      pos_open_bracket = fast_index(Function_call, '(')
 	  if (pos_open_bracket .gt. 0) then
-        pos_close_bracket = Index (Function_call, ')')
+        pos_close_bracket = fast_index(Function_call, ')')
+      else
+        pos_close_bracket = 0
       endif
 
       ! did we find both an open and a close bracket?
@@ -933,7 +936,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
          ! yes - locate position of comma.
 
-         pos_comma = Index (Function_call(:pos_close_bracket), ',')
+         pos_comma = fast_index(Function_call(:pos_close_bracket), ',')
 
          ! did we find a comma between the brackets?
 
