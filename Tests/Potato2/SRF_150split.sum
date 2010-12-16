@@ -171,6 +171,7 @@ Paddock:
         N_0_15cm
         N_15_30cm
         N_30_60cm
+        PhenologyPhotoperiodValue
 
      Output file = SRF_150split Plant2 diagnostic variables.out
      Format = normal
@@ -182,9 +183,9 @@ Paddock:
      Operations Schedule
      ===================
      21/01/2003  Prepare      irrigation apply amount= 50 (mm)
-     29/01/2003  Prepare      irrigation apply amount= 25 (mm)
-      3/02/2003  Prepare      irrigation apply amount= 25 (mm)
-     13/02/2003  Prepare      irrigation apply amount= 35 (mm)
+     29/01/2003  Prepare      irrigation apply amount= 15 (mm)
+      3/02/2003  Prepare      irrigation apply amount= 15 (mm)
+     13/02/2003  Prepare      irrigation apply amount= 25 (mm)
       4/03/2003  Prepare      irrigation apply amount= 35 (mm)
      19/03/2003  Prepare      irrigation apply amount= 35 (mm)
       6/01/2003  Prepare      fertiliser apply amount= 100 (kg/ha), type= urea_N (), depth= 10 (mm)
@@ -220,6 +221,44 @@ Paddock:
      plant_population = 1/((770/1000)*(280/1000))
      if today = date('10/12/2002') then
         potato2 sow population = plant_population, depth = 120, cultivar = russetburbank, maxcover = 1.0, budnumber = 3.4, row_spacing = 770, crop_class = plant
+     endif
+     if today = date('25-dec') then
+     fertiliser apply amount= 50 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('5-jan') then
+     fertiliser apply amount= 40 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('25-jan') then
+     fertiliser apply amount= 10 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('5-feb') then
+     fertiliser apply amount= 10 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('25-feb') then
+     fertiliser apply amount= 10 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('5-mar') then
+     fertiliser apply amount= 5 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('25-mar') then
+     fertiliser apply amount= 3 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('5-apr') then
+     fertiliser apply amount= 1 (kg/ha), type= urea_n (), depth= 10 (mm)
+     elseif today = date('25-apr') then
+     fertiliser apply amount= 1 (kg/ha), type= urea_n (), depth= 10 (mm)
+     endif
+     if today = date('25-dec') then
+     fertiliser apply amount= 25 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('5-jan') then
+     fertiliser apply amount= 20 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('25-jan') then
+     fertiliser apply amount= 8 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('5-feb') then
+     fertiliser apply amount= 7 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('25-feb') then
+     fertiliser apply amount= 2 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('5-mar') then
+     fertiliser apply amount= 1 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('25-mar') then
+     fertiliser apply amount= 1 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('5-apr') then
+     fertiliser apply amount= 1 (kg/ha), type= urea_n (), depth= 170 (mm)
+     elseif today = date('25-apr') then
+     fertiliser apply amount= 1 (kg/ha), type= urea_n (), depth= 170 (mm)
      endif
      
      SECTION:- init
@@ -348,12 +387,12 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  150.  0.080  0.160  0.330  0.500  0.330  1.200  0.762  0.550
-          150.-  300.  0.160  0.160  0.330  0.500  0.330  1.200  0.190  0.550
-          300.-  600.  0.150  0.150  0.310  0.440  0.310  1.200  0.048  0.550
-          600.-  900.  0.140  0.140  0.270  0.460  0.270  1.200  0.000  0.550
-          900.- 1200.  0.150  0.150  0.300  0.440  0.300  1.200  0.000  0.550
-         1200.- 1500.  0.150  0.150  0.300  0.440  0.300  1.200  0.000  0.550
+            0.-  150.  0.080  0.160  0.330  0.500  0.262  1.200  0.762  0.550
+          150.-  300.  0.160  0.160  0.330  0.500  0.262  1.200  0.190  0.550
+          300.-  600.  0.160  0.160  0.330  0.440  0.262  1.200  0.048  0.550
+          600.-  900.  0.160  0.160  0.330  0.460  0.262  1.200  0.000  0.550
+          900.- 1200.  0.150  0.150  0.300  0.440  0.240  1.200  0.000  0.550
+         1200.- 1500.  0.150  0.150  0.300  0.440  0.240  1.200  0.000  0.550
         ---------------------------------------------------------------------
      
      
@@ -364,14 +403,14 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  150.      24.00      25.50      25.50      25.50
-          150.-  300.      24.00      25.50      25.50      25.50
-          300.-  600.      45.00      48.00      48.00      39.00
-          600.-  900.      42.00      39.00      39.00      57.00
-          900.- 1200.      45.00      45.00      45.00      42.00
-         1200.- 1500.      45.00      45.00      45.00      42.00
+            0.-  150.      24.00      15.30      25.50      25.50
+          150.-  300.      24.00      15.30      25.50      25.50
+          300.-  600.      48.00      30.60      51.00      33.00
+          600.-  900.      48.00      30.60      51.00      39.00
+          900.- 1200.      45.00      27.00      45.00      42.00
+         1200.- 1500.      45.00      27.00      45.00      42.00
           ---------------------------------------------------------
-               Totals     225.00     228.00     228.00     231.00
+               Totals     234.00     145.80     243.00     207.00
           ---------------------------------------------------------
      
      
@@ -383,7 +422,7 @@ Paddock:
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   0.00        0.18       88.00       35.40
+                   0.00        0.18        1.00        0.10
           ---------------------------------------------------------
      
      
@@ -415,10 +454,10 @@ Paddock:
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          wheat     wheat         2000.0   800.0    10.0     0.0   0.632     0.0
+          wheat     grass         4000.0  1600.0    40.0     0.0   0.798     0.0
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   0.6
+                      Effective Cover from Surface Materials =   0.8
      
 
 ------- Templeton Nitrogen Initialisation -------------------------------------
@@ -458,18 +497,18 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      53078.0  4615.5   922.0   115.2   468.7    23.4
-             2      26072.8  2267.2   387.2    48.4   347.2    17.4
-             3      43040.4  3742.6   159.6    20.0   190.6     9.5
-             4      37043.3  3221.2    36.7     4.6   104.6     5.2
-             5      16913.3  1470.7     6.7     0.8    57.4     2.9
-             6      16913.3  1470.7     6.7     0.8    31.5     1.6
+             1      53078.0  4615.5   922.0   115.2   781.2     9.8
+             2      26072.8  2267.2   387.2    48.4   578.7     7.2
+             3      43040.4  3742.6   159.6    20.0   317.6     4.0
+             4      37043.3  3221.2    36.7     4.6   174.3     2.2
+             5      16913.3  1470.7     6.7     0.8    95.7     1.2
+             6      16913.3  1470.7     6.7     0.8    52.5     0.7
           ---------------------------------------------------------
-           Totals  193061.1 16787.9  1518.9   189.9  1200.0    60.0
+           Totals  193061.1 16787.9  1518.9   189.9  2000.0    25.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : initialsoilomn = 17037.78320
-     Manager creating a new local real variable : initialsurfaceomn = 10.00000
+     Manager creating a new local real variable : initialsoilomn = 17002.78320
+     Manager creating a new local real variable : initialsurfaceomn = 40.00000
      Manager creating a new local real variable : initialmineraln = 30.80340
      Manager creating a new local real variable : n_60cm = 23.72220
      Manager creating a new local real variable : n_0_15cm = 10.12140
@@ -478,9 +517,33 @@ Paddock:
 10/12/2002 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
+25 December 2002(Day of year=359), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 50 (kg/ha), type = urea_n, depth = 10 (mm)
+25 December 2002(Day of year=359), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 25 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+        25.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
 30/12/2002 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
+5 January 2003(Day of year=5), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 40 (kg/ha), type = urea_n, depth = 10 (mm)
+5 January 2003(Day of year=5), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 20 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+        20.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
 6 January 2003(Day of year=6), operations: 
       Sending apply message to fertiliser
 6 January 2003(Day of year=6), fertiliser: 
@@ -496,10 +559,34 @@ Paddock:
 21/01/2003 - TuberInitiation
                             LAI = 1.11 (m^2/m^2)
            Above Ground Biomass = 85.31 (g/m^2)
+25 January 2003(Day of year=25), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 10 (kg/ha), type = urea_n, depth = 10 (mm)
+25 January 2003(Day of year=25), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+         8.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
 29 January 2003(Day of year=29), operations: 
       Sending apply message to irrigation
 3 February 2003(Day of year=34), operations: 
       Sending apply message to irrigation
+5 February 2003(Day of year=36), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 10 (kg/ha), type = urea_n, depth = 10 (mm)
+5 February 2003(Day of year=36), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
 12 February 2003(Day of year=43), operations: 
       Sending apply message to fertiliser
 12 February 2003(Day of year=43), fertiliser: 
@@ -509,12 +596,72 @@ Paddock:
                                          added at depth   10.00 (layer   1)
 13 February 2003(Day of year=44), operations: 
       Sending apply message to irrigation
+25 February 2003(Day of year=56), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 10 (kg/ha), type = urea_n, depth = 10 (mm)
+25 February 2003(Day of year=56), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+         2.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
 4 March 2003(Day of year=63), operations: 
       Sending apply message to irrigation
+5 March 2003(Day of year=64), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 5 (kg/ha), type = urea_n, depth = 10 (mm)
+5 March 2003(Day of year=64), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1 (kg/ha), type = urea_n, depth = 170 (mm)
+6/03/2003 - FinalLeaf
+                            LAI = 8.33 (m^2/m^2)
+           Above Ground Biomass = 1101.11 (g/m^2)
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
 19 March 2003(Day of year=78), operations: 
       Sending apply message to irrigation
-26/03/2003 - FinalLeaf
-                            LAI = 6.67 (m^2/m^2)
-           Above Ground Biomass = 1206.39 (g/m^2)
+25 March 2003(Day of year=84), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 3 (kg/ha), type = urea_n, depth = 10 (mm)
+25 March 2003(Day of year=84), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
+5 April 2003(Day of year=95), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 1 (kg/ha), type = urea_n, depth = 10 (mm)
+5 April 2003(Day of year=95), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
+25 April 2003(Day of year=115), Potato Sowing Rule: 
+     Manager sending message :- fertiliser apply  amount = 1 (kg/ha), type = urea_n, depth = 10 (mm)
+25 April 2003(Day of year=115), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1 (kg/ha), type = urea_n, depth = 170 (mm)
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_n)
+                                         added at depth  170.00 (layer   2)
 1 June 2003(Day of year=152), clock: 
      Simulation is terminating due to end criteria being met.

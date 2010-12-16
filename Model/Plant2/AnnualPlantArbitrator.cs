@@ -113,8 +113,9 @@ public class AnnualPlantArbitrator : Arbitrator
             else
                {
                DMAllocation[i] = fraction * DMDemand[i];
-               if (Organs[i].Name == DMSink.ValueString)
-                  DMAllocation[i] += Excess;
+               //if (Organs[i].Name == DMSink.ValueString)
+               if (string.Compare(Organs[i].Name, DMSink.ValueString, true) == 0)
+                 DMAllocation[i] += Excess;
                TotalDMAllocated += DMAllocation[i];
                }
          }
@@ -415,8 +416,9 @@ public class AnnualPlantArbitrator : Arbitrator
       for (int i = 0; i < Organs.Count; i++)
          {
          DMAllocation[i] = fraction * DMDemand[i];
-         if (Organs[i].Name == DMSink.ValueString)
-            DMAllocation[i] += Excess;
+         //if (Organs[i].Name == DMSink.ValueString)
+         if (string.Compare(Organs[i].Name, DMSink.ValueString, true) == 0)
+           DMAllocation[i] += Excess;
          TotalAllocated += DMAllocation[i];
          }
       double BalanceError = Math.Abs(TotalAllocated - TotalDMSupply);
