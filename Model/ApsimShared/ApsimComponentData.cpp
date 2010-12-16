@@ -520,14 +520,12 @@ extern "C" void EXPORT STDCALL ApsimComponentData_getRuleLine
     char* line,
     unsigned lineLength)
    {
-   FString l(line, lineLength, FORString);
-   l = ruleLines[*lineNumber].c_str();
+   FString(line, lineLength, EmptyString) = ruleLines[*lineNumber].c_str();
    }
 extern "C" void EXPORT STDCALL ApsimComponentData_getRuleCondition
    (char* condition,
     unsigned conditionLength)
    {
-   FString cond(condition, conditionLength, FORString);
-   cond = ruleCondition.c_str();
+   FString(condition, conditionLength, EmptyString) = ruleCondition.c_str();
    }
 
