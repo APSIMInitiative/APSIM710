@@ -1,4 +1,4 @@
-<Type version="24" name="Potato2">
+<Type version="25" name="Potato2">
   <Info>
     <variables>
       <variable name="Crop_Type" description="" read="T" write="F" kind="string" array="" units="" />
@@ -284,14 +284,14 @@
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">FloralInitiation</End>
             <Constant name="Function">
-              <Value type="text" description="Value">Stem</Value>
+              <Value type="text" description="Value">root</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="Induced">
             <Start type="text" description="Start">FloralInitiation</Start>
             <End type="text" description="End">TuberInitiation</End>
             <Constant name="Function">
-              <Value type="text" description="Value">Stem</Value>
+              <Value type="text" description="Value">root</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="EarlyTuber">
@@ -428,8 +428,10 @@
           <GenericFunction name="Target">
             <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
             <XYPairs>
-              <XY>10 700</XY>
-              <XY>18 700</XY>
+              <XY>8 800</XY>
+              <XY>14 800</XY>
+              <XY>16 800</XY>
+              <XY>20 800</XY>
             </XYPairs>
           </GenericFunction>
           <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
@@ -439,12 +441,18 @@
         <GenericPhase name="LateTuber">
           <Start type="text" description="Start">FinalLeaf</Start>
           <End type="text" description="End">FullSenescence</End>
-          <Constant name="Target">
-            <Value type="text" description="Value">850</Value>
-          </Constant>
           <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
           </TemperatureFunction>
+          <GenericFunction name="Target">
+            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+            <XYPairs>
+              <XY>8 850</XY>
+              <XY>13 850</XY>
+              <XY>16 850</XY>
+              <XY>20 850</XY>
+            </XYPairs>
+          </GenericFunction>
         </GenericPhase>
         <GenericPhase name="Senesced">
           <Start type="text" description="Start">FullSenescence</Start>
@@ -469,12 +477,12 @@
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
-        <MaxNodeNo type="text" description="MaxNodeNo">33</MaxNodeNo>
+        <MaxNodeNo type="text" description="MaxNodeNo">50</MaxNodeNo>
         <InitialAreas type="text" description="InitialAreas">500</InitialAreas>
         <InitialAges type="text" description="InitialAges">50</InitialAges>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
+        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
         <GenericFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -484,7 +492,20 @@
         </GenericFunction>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <GenericFunction name="ExtinctionCoeff">
+        <MultiplyFunction name="ExtinctionCoeff">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <Constant name="PotentialExtinctionCoeff">
+            <Value type="text" description="Value">0.8</Value>
+          </Constant>
+          <GenericFunction>
+            <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
+            <XYPairs>
+              <XY>0 0.5</XY>
+              <XY>1 1</XY>
+            </XYPairs>
+          </GenericFunction>
+        </MultiplyFunction>
+        <GenericFunction name="xExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 0.8</XY>
@@ -495,8 +516,10 @@
         <GenericFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
-            <XY>0 20</XY>
-            <XY>78 700</XY>
+            <XY>0 0</XY>
+            <XY>200 300</XY>
+            <XY>1200 700</XY>
+            <XY>4000 900</XY>
           </XYPairs>
         </GenericFunction>
         <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
@@ -533,49 +556,50 @@
           <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>0 30000</XY>
-            <XY>7 55000</XY>
-            <XY>25 55000</XY>
+            <XY>7 50000</XY>
+            <XY>25 50000</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="MaxArea">
-          <XProperty type="text" description="XProperty">Leaf.CohortNo</XProperty>
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
-            <XY>1 6000</XY>
-            <XY>4 20000</XY>
-            <XY>9 35000</XY>
-            <XY>10 35000</XY>
-            <XY>20 8000</XY>
+            <XY>3 6000</XY>
+            <XY>3.3 28000</XY>
+            <XY>3.6 40000</XY>
+            <XY>4 40000</XY>
+            <XY>5.3 10500</XY>
+            <XY>8 10500</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="GrowthDuration">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
-            <XY>2 200</XY>
-            <XY>7 200</XY>
-            <XY>9 400</XY>
-            <XY>17 400</XY>
-            <XY>34 300</XY>
+            <XY>3 200</XY>
+            <XY>3.45 200</XY>
+            <XY>3.55 400</XY>
+            <XY>5.1 400</XY>
+            <XY>6 400</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="LagDuration">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
-            <XY>2 100</XY>
-            <XY>17 100</XY>
-            <XY>34 75</XY>
+            <XY>3 100</XY>
+            <XY>5.1 100</XY>
+            <XY>6 100</XY>
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>2 600</XY>
-            <XY>7 600</XY>
-            <XY>9 400</XY>
-            <XY>17 400</XY>
-            <XY>33 300</XY>
+            <XY>3 600</XY>
+            <XY>3.45 600</XY>
+            <XY>3.55 400</XY>
+            <XY>5.1 400</XY>
+            <XY>33 400</XY>
           </XYPairs>
         </GenericFunction>
-        <GenericFunction name="BranchingRate">
+        <GenericFunction name="xBranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>0 0</XY>
@@ -630,14 +654,14 @@
             <Start type="text" description="Start">TuberInitiation</Start>
             <End type="text" description="End">FinalLeaf</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.18</Value>
+              <Value type="text" description="Value">.26</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="LateTuber">
             <Start type="text" description="Start">FinalLeaf</Start>
             <End type="text" description="End">FullSenescence</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.02</Value>
+              <Value type="text" description="Value">0</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
@@ -653,6 +677,30 @@
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
           <Codes type="text" description="Codes">0.015       0.015       0.015            0.015                0.015              0.015      0.015                 0.015 </Codes>
         </StageBasedInterpolation>
+        <MultiplyFunction name="BranchingRate">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <GenericFunction name="Potential_Branching_Rate">
+            <XProperty>Leaf.NodeNo</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>12 0</XY>
+              <XY>13 1</XY>
+              <XY>16 1</XY>
+              <XY>17 0</XY>
+              <XY>34 0</XY>
+            </XYPairs>
+          </GenericFunction>
+          <GenericFunction name="Cover_response">
+            <XProperty type="text" description="XProperty">leaf.CoverGreen</XProperty>
+            <XYPairs>
+              <XY>0 1</XY>
+              <XY>0.55 1</XY>
+              <XY>0.75 0.5</XY>
+              <XY>0.8 0</XY>
+              <XY>1 0</XY>
+            </XYPairs>
+          </GenericFunction>
+        </MultiplyFunction>
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -679,7 +727,7 @@
             <Start type="text" description="Start">TuberInitiation</Start>
             <End type="text" description="End">FinalLeaf</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.16</Value>
+              <Value type="text" description="Value">.08</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="LateTuber">
@@ -731,7 +779,7 @@
             <Start type="text" description="Start">FinalLeaf</Start>
             <End type="text" description="End">FullSenescence</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.98</Value>
+              <Value type="text" description="Value">1</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>

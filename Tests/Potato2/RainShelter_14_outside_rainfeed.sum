@@ -177,59 +177,6 @@ Paddock:
 ------- operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-     29/10/1987  Prepare      irrigation apply amount= 15 (mm)
-      8/11/1987  Prepare      irrigation apply amount= 0.6 (mm)
-     16/11/1987  Prepare      irrigation apply amount= 0.4 (mm)
-     20/11/1987  Prepare      irrigation apply amount= 21 (mm)
-     23/11/1987  Prepare      irrigation apply amount= 3.3 (mm)
-     28/11/1987  Prepare      irrigation apply amount= 19.5 (mm)
-     29/11/1987  Prepare      irrigation apply amount= 1.4 (mm)
-     30/11/1987  Prepare      irrigation apply amount= 6.5 (mm)
-      1/12/1987  Prepare      irrigation apply amount= 2.5 (mm)
-      5/12/1987  Prepare      irrigation apply amount= 8.3 (mm)
-      9/12/1987  Prepare      irrigation apply amount= 4.3 (mm)
-     11/12/1987  Prepare      irrigation apply amount= 0.4 (mm)
-     15/12/1987  Prepare      irrigation apply amount= 17 (mm)
-     16/12/1987  Prepare      irrigation apply amount= 0.2 (mm)
-     17/12/1987  Prepare      irrigation apply amount= 0.1 (mm)
-     19/12/1987  Prepare      irrigation apply amount= 2.2 (mm)
-     21/12/1987  Prepare      irrigation apply amount= 33 (mm)
-     22/12/1987  Prepare      irrigation apply amount= 3.7 (mm)
-     26/12/1987  Prepare      irrigation apply amount= 17 (mm)
-     30/12/1987  Prepare      irrigation apply amount= 6.7 (mm)
-     31/12/1987  Prepare      irrigation apply amount= 19.1 (mm)
-      9/01/1988  Prepare      irrigation apply amount= 3.5 (mm)
-     11/01/1988  Prepare      irrigation apply amount= 24 (mm)
-     14/01/1988  Prepare      irrigation apply amount= 7.2 (mm)
-     18/01/1988  Prepare      irrigation apply amount= 5.3 (mm)
-     19/01/1988  Prepare      irrigation apply amount= 8.2 (mm)
-     20/01/1988  Prepare      irrigation apply amount= 1.4 (mm)
-     21/01/1988  Prepare      irrigation apply amount= 7 (mm)
-     26/01/1988  Prepare      irrigation apply amount= 27 (mm)
-     28/01/1988  Prepare      irrigation apply amount= 2.2 (mm)
-      1/02/1988  Prepare      irrigation apply amount= 25 (mm)
-      2/02/1988  Prepare      irrigation apply amount= 4.7 (mm)
-      6/02/1988  Prepare      irrigation apply amount= 27 (mm)
-      7/02/1988  Prepare      irrigation apply amount= 0.6 (mm)
-     12/02/1988  Prepare      irrigation apply amount= 27 (mm)
-     14/02/1988  Prepare      irrigation apply amount= 1.6 (mm)
-     15/02/1988  Prepare      irrigation apply amount= 35 (mm)
-     21/02/1988  Prepare      irrigation apply amount= 1.1 (mm)
-     24/02/1988  Prepare      irrigation apply amount= 26 (mm)
-     25/02/1988  Prepare      irrigation apply amount= 0.7 (mm)
-      2/03/1988  Prepare      irrigation apply amount= 17 (mm)
-      6/03/1988  Prepare      irrigation apply amount= 0.2 (mm)
-      9/03/1988  Prepare      irrigation apply amount= 25 (mm)
-     10/03/1988  Prepare      irrigation apply amount= 1.3 (mm)
-     11/03/1988  Prepare      irrigation apply amount= 2.1 (mm)
-     12/03/1988  Prepare      irrigation apply amount= 0.4 (mm)
-     14/03/1988  Prepare      irrigation apply amount= 0.3 (mm)
-     15/03/1988  Prepare      irrigation apply amount= 1 (mm)
-     16/03/1988  Prepare      irrigation apply amount= 3.9 (mm)
-     17/03/1988  Prepare      irrigation apply amount= 0.6 (mm)
-     19/03/1988  Prepare      irrigation apply amount= 0.4 (mm)
-     24/03/1988  Prepare      irrigation apply amount= 0.1 (mm)
-     29/03/1988  Prepare      irrigation apply amount= 6.1 (mm)
      13/10/1987  Prepare      fertiliser apply amount= 10 (kg/ha), type= urea_N (), depth= 10 (mm)
      24/12/1987  Prepare      fertiliser apply amount= 60 (kg/ha), type= urea_N (), depth= 10 (mm)
      19/01/1988  Prepare      fertiliser apply amount= 40 (kg/ha), type= urea_N (), depth= 10 (mm)
@@ -279,7 +226,7 @@ Paddock:
      if (date_within('1-jan, 31-dec') = 1) then
         maxt = maxt + 0
         mint = mint + 0
-        rain = rain + rain * -100 / 100
+        rain = rain + rain * 0 / 100
         radn = radn + radn * 20 / 100
         co2 = 350
       endif
@@ -322,7 +269,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemlivenconc - potato2.stemdeadn - potato2.tuberlivenconc - potato2.tuberdeadn ) * 10
+     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -410,13 +357,13 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
         ---------------------------------------------------------------------
-            0.-  200.  0.050  0.100  0.330  0.430  0.330  1.300  0.940  0.550999.000
-          200.-  220.  0.100  0.100  0.350  0.440  0.350  1.500  0.017  0.550389.000
-          220.-  240.  0.190  0.190  0.330  0.380  0.330  1.650  0.013  0.550 20.000
-          240.-  260.  0.170  0.170  0.300  0.360  0.300  1.600  0.010  0.550100.000
-          260.-  280.  0.250  0.250  0.400  0.440  0.400  1.600  0.008  0.550100.000
-          280.-  300.  0.200  0.200  0.310  0.390  0.310  1.600  0.006  0.550100.000
-          300.-  320.  0.170  0.170  0.290  0.370  0.290  1.600  0.005  0.550100.000
+            0.-  200.  0.160  0.160  0.330  0.430  0.330  1.300  0.856  0.550999.000
+          200.-  400.  0.210  0.210  0.350  0.440  0.350  1.500  0.135  0.550389.000
+          400.-  600.  0.160  0.160  0.330  0.380  0.330  1.650  0.009  0.550 20.000
+          600.-  800.  0.150  0.150  0.300  0.360  0.300  1.600  0.000  0.550100.000
+          800.- 1000.  0.350  0.350  0.400  0.440  0.400  1.600  0.000  0.550100.000
+         1000.- 1200.  0.160  0.160  0.310  0.390  0.310  1.600  0.000  0.550100.000
+         1200.- 1400.  0.150  0.150  0.290  0.370  0.290  1.600  0.000  0.550100.000
         ---------------------------------------------------------------------
      
      
@@ -427,15 +374,15 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  200.      20.00      46.00      46.00      20.00
-          200.-  220.       2.00       5.00       5.00       1.80
-          220.-  240.       3.80       2.80       2.80       1.00
-          240.-  260.       3.40       2.60       2.60       1.20
-          260.-  280.       5.00       3.00       3.00       0.80
-          280.-  300.       4.00       2.20       2.20       1.60
-          300.-  320.       3.40       2.40       2.40       1.60
+            0.-  200.      32.00      34.00      34.00      20.00
+          200.-  400.      42.00      28.00      28.00      18.00
+          400.-  600.      32.00      34.00      34.00      10.00
+          600.-  800.      30.00      30.00      30.00      12.00
+          800.- 1000.      70.00      10.00      10.00       8.00
+         1000.- 1200.      32.00      30.00      30.00      16.00
+         1200.- 1400.      30.00      28.00      28.00      16.00
           ---------------------------------------------------------
-               Totals      41.60      64.00      64.00      28.00
+               Totals     268.00     194.00     194.00     100.00
           ---------------------------------------------------------
      
      
@@ -463,7 +410,10 @@ Paddock:
      
            Using Ritchie evaporation model
             Cuml evap (U):            9.00 (mm^0.5)
-            CONA:                     4.40 ()
+            Stage 2       (CONA): Summer        0.30 (mm^0.5)
+                                  Winter        4.40 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
             Eo from priestly-taylor
 
 ------- surface organic matter Initialisation ---------------------------------
@@ -502,15 +452,15 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.60  1.82   65.00    0.26    0.00
-             2     6.20  1.47    7.50    0.03    0.00
-             3     6.00  1.20    8.25    0.03    0.00
-             4     6.00  1.03    8.00    0.03    0.00
-             5     6.00  0.47    8.00    0.03    0.00
-             6     6.00  0.47    8.00    0.03    0.00
-             7     6.00  0.47    5.33    0.03    0.00
+             1     6.60  1.82   31.71    0.26    0.00
+             2     6.20  1.47   22.98    0.30    0.00
+             3     6.00  1.20   10.31    0.33    0.00
+             4     6.00  1.03    3.33    0.32    0.00
+             5     6.00  0.47    1.67    0.32    0.00
+             6     6.00  0.47    0.00    0.32    0.00
+             7     6.00  0.47    0.00    0.32    0.00
           ------------------------------------------------
-           Totals              110.08    0.45    0.00
+           Totals               70.00    2.17    0.00
           ------------------------------------------------
      
      
@@ -523,20 +473,20 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      46512.1  4044.5   807.9   101.0   280.7     9.4
-             2       4345.5   377.9    64.5     8.1   232.7     7.8
-             3       3945.4   343.1    14.6     1.8   192.9     6.4
-             4       3292.7   286.3     3.3     0.4   159.9     5.3
-             5       1503.4   130.7     0.6     0.1   132.6     4.4
-             6       1503.4   130.7     0.6     0.1   109.9     3.7
-             7       1503.4   130.7     0.6     0.1    91.1     3.0
+             1      46512.1  4044.5   807.9   101.0   440.2    14.7
+             2      43454.6  3778.7   645.4    80.7   286.8     9.6
+             3      39453.7  3430.8   146.3    18.3   186.8     6.2
+             4      32927.4  2863.2    32.6     4.1   121.7     4.1
+             5      15034.0  1307.3     6.0     0.7    79.3     2.6
+             6      15034.0  1307.3     6.0     0.7    51.6     1.7
+             7      15034.0  1307.3     6.0     0.7    33.6     1.1
           ---------------------------------------------------------
-           Totals   62605.9  5444.0   892.1   111.5  1200.0    40.0
+           Totals  207449.9 18039.1  1650.1   206.3  1200.0    40.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : initialsoilomn = 5595.50488
+     Manager creating a new local real variable : initialsoilomn = 18285.38480
      Manager creating a new local real variable : initialsurfaceomn = 10.00000
-     Manager creating a new local real variable : initialmineraln = 110.53445
+     Manager creating a new local real variable : initialmineraln = 72.17109
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -926,8 +876,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-29 October 1987(Day of year=302), operations: 
-      Sending apply message to irrigation
 29 October 1987(Day of year=302): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1158,8 +1106,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-8 November 1987(Day of year=312), operations: 
-      Sending apply message to irrigation
 8 November 1987(Day of year=312): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1347,8 +1293,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-16 November 1987(Day of year=320), operations: 
-      Sending apply message to irrigation
 16 November 1987(Day of year=320): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1441,8 +1385,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-20 November 1987(Day of year=324), operations: 
-      Sending apply message to irrigation
 20 November 1987(Day of year=324): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1512,8 +1454,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-23 November 1987(Day of year=327), operations: 
-      Sending apply message to irrigation
 23 November 1987(Day of year=327): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1629,8 +1569,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-28 November 1987(Day of year=332), operations: 
-      Sending apply message to irrigation
 28 November 1987(Day of year=332): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1654,8 +1592,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-29 November 1987(Day of year=333), operations: 
-      Sending apply message to irrigation
 29 November 1987(Day of year=333): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1679,8 +1615,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-30 November 1987(Day of year=334), operations: 
-      Sending apply message to irrigation
 30 November 1987(Day of year=334): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1704,8 +1638,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-1 December 1987(Day of year=335), operations: 
-      Sending apply message to irrigation
 1 December 1987(Day of year=335): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1798,8 +1730,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-5 December 1987(Day of year=339), operations: 
-      Sending apply message to irrigation
 5 December 1987(Day of year=339): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1836,8 +1766,8 @@ Paddock:
      
      
 6/12/1987 - FloralInitiation
-                            LAI = 0.90 (m^2/m^2)
-           Above Ground Biomass = 78.47 (g/m^2)
+                            LAI = 0.86 (m^2/m^2)
+           Above Ground Biomass = 66.87 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -1885,8 +1815,8 @@ Paddock:
      
      
 8/12/1987 - TuberInitiation
-                            LAI = 1.00 (m^2/m^2)
-           Above Ground Biomass = 93.87 (g/m^2)
+                            LAI = 0.97 (m^2/m^2)
+           Above Ground Biomass = 79.84 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -1898,8 +1828,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-9 December 1987(Day of year=343), operations: 
-      Sending apply message to irrigation
 9 December 1987(Day of year=343): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1946,8 +1874,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-11 December 1987(Day of year=345), operations: 
-      Sending apply message to irrigation
 11 December 1987(Day of year=345): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2040,8 +1966,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-15 December 1987(Day of year=349), operations: 
-      Sending apply message to irrigation
 15 December 1987(Day of year=349): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2065,8 +1989,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-16 December 1987(Day of year=350), operations: 
-      Sending apply message to irrigation
 16 December 1987(Day of year=350): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2090,8 +2012,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-17 December 1987(Day of year=351), operations: 
-      Sending apply message to irrigation
 17 December 1987(Day of year=351): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2138,8 +2058,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-19 December 1987(Day of year=353), operations: 
-      Sending apply message to irrigation
 19 December 1987(Day of year=353): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2186,8 +2104,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-21 December 1987(Day of year=355), operations: 
-      Sending apply message to irrigation
 21 December 1987(Day of year=355): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2211,8 +2127,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-22 December 1987(Day of year=356), operations: 
-      Sending apply message to irrigation
 22 December 1987(Day of year=356): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2312,8 +2226,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-26 December 1987(Day of year=360), operations: 
-      Sending apply message to irrigation
 26 December 1987(Day of year=360): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2406,8 +2318,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-30 December 1987(Day of year=364), operations: 
-      Sending apply message to irrigation
 30 December 1987(Day of year=364): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2431,8 +2341,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-31 December 1987(Day of year=365), operations: 
-      Sending apply message to irrigation
 31 December 1987(Day of year=365): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2640,8 +2548,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-9 January 1988(Day of year=9), operations: 
-      Sending apply message to irrigation
 9 January 1988(Day of year=9): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2688,8 +2594,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-11 January 1988(Day of year=11), operations: 
-      Sending apply message to irrigation
 11 January 1988(Day of year=11): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2759,8 +2663,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-14 January 1988(Day of year=14), operations: 
-      Sending apply message to irrigation
 14 January 1988(Day of year=14): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2853,8 +2755,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-18 January 1988(Day of year=18), operations: 
-      Sending apply message to irrigation
 18 January 1988(Day of year=18): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2879,7 +2779,6 @@ Paddock:
      
      
 19 January 1988(Day of year=19), operations: 
-      Sending apply message to irrigation
       Sending apply message to fertiliser
 19 January 1988(Day of year=19), fertiliser: 
      
@@ -2909,8 +2808,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-20 January 1988(Day of year=20), operations: 
-      Sending apply message to irrigation
 20 January 1988(Day of year=20): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -2934,8 +2831,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-21 January 1988(Day of year=21), operations: 
-      Sending apply message to irrigation
 21 January 1988(Day of year=21): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3051,8 +2946,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-26 January 1988(Day of year=26), operations: 
-      Sending apply message to irrigation
 26 January 1988(Day of year=26): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3099,8 +2992,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-28 January 1988(Day of year=28), operations: 
-      Sending apply message to irrigation
 28 January 1988(Day of year=28): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3193,8 +3084,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-1 February 1988(Day of year=32), operations: 
-      Sending apply message to irrigation
 1 February 1988(Day of year=32): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3218,8 +3107,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-2 February 1988(Day of year=33), operations: 
-      Sending apply message to irrigation
 2 February 1988(Day of year=33): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3232,9 +3119,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-2/02/1988 - FinalLeaf
-                            LAI = 3.88 (m^2/m^2)
-           Above Ground Biomass = 1099.95 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -3315,8 +3199,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-6 February 1988(Day of year=37), operations: 
-      Sending apply message to irrigation
 6 February 1988(Day of year=37): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3340,8 +3222,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-7 February 1988(Day of year=38), operations: 
-      Sending apply message to irrigation
 7 February 1988(Day of year=38): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3423,6 +3303,9 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+10/02/1988 - FinalLeaf
+                            LAI = 1.38 (m^2/m^2)
+           Above Ground Biomass = 589.06 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -3457,8 +3340,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-12 February 1988(Day of year=43), operations: 
-      Sending apply message to irrigation
 12 February 1988(Day of year=43): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3505,8 +3386,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-14 February 1988(Day of year=45), operations: 
-      Sending apply message to irrigation
 14 February 1988(Day of year=45): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3530,8 +3409,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-15 February 1988(Day of year=46), operations: 
-      Sending apply message to irrigation
 15 February 1988(Day of year=46): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3670,8 +3547,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-21 February 1988(Day of year=52), operations: 
-      Sending apply message to irrigation
 21 February 1988(Day of year=52): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3741,8 +3616,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-24 February 1988(Day of year=55), operations: 
-      Sending apply message to irrigation
 24 February 1988(Day of year=55): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3766,8 +3639,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-25 February 1988(Day of year=56), operations: 
-      Sending apply message to irrigation
 25 February 1988(Day of year=56): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3906,8 +3777,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-2 March 1988(Day of year=62), operations: 
-      Sending apply message to irrigation
 2 March 1988(Day of year=62): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4000,8 +3869,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-6 March 1988(Day of year=66), operations: 
-      Sending apply message to irrigation
 6 March 1988(Day of year=66): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4071,8 +3938,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-9 March 1988(Day of year=69), operations: 
-      Sending apply message to irrigation
 9 March 1988(Day of year=69): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4096,8 +3961,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-10 March 1988(Day of year=70), operations: 
-      Sending apply message to irrigation
 10 March 1988(Day of year=70): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4121,8 +3984,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-11 March 1988(Day of year=71), operations: 
-      Sending apply message to irrigation
 11 March 1988(Day of year=71): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4146,8 +4007,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-12 March 1988(Day of year=72), operations: 
-      Sending apply message to irrigation
 12 March 1988(Day of year=72): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4194,8 +4053,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-14 March 1988(Day of year=74), operations: 
-      Sending apply message to irrigation
 14 March 1988(Day of year=74): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4219,8 +4076,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-15 March 1988(Day of year=75), operations: 
-      Sending apply message to irrigation
 15 March 1988(Day of year=75): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4244,8 +4099,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-16 March 1988(Day of year=76), operations: 
-      Sending apply message to irrigation
 16 March 1988(Day of year=76): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4269,8 +4122,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-17 March 1988(Day of year=77), operations: 
-      Sending apply message to irrigation
 17 March 1988(Day of year=77): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4317,8 +4168,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-19 March 1988(Day of year=79), operations: 
-      Sending apply message to irrigation
 19 March 1988(Day of year=79): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4434,8 +4283,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-24 March 1988(Day of year=84), operations: 
-      Sending apply message to irrigation
 24 March 1988(Day of year=84): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4551,8 +4398,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-29 March 1988(Day of year=89), operations: 
-      Sending apply message to irrigation
 29 March 1988(Day of year=89): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4668,7 +4513,6 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-Removing Leaves from plant
 3 April 1988(Day of year=94): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -4934,9 +4778,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-14/04/1988 - FullSenescence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1323.17 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -4960,9 +4801,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-15/04/1988 - Maturity
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1323.17 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -4974,9 +4812,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-15 April 1988(Day of year=106), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 16 April 1988(Day of year=107): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5000,9 +4835,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-16 April 1988(Day of year=107), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 17 April 1988(Day of year=108): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5026,9 +4858,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-17 April 1988(Day of year=108), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 18 April 1988(Day of year=109): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5052,9 +4881,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-18 April 1988(Day of year=109), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 19 April 1988(Day of year=110): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5078,9 +4904,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-19 April 1988(Day of year=110), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 20 April 1988(Day of year=111): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5104,9 +4927,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-20 April 1988(Day of year=111), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 21 April 1988(Day of year=112): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5130,9 +4950,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-21 April 1988(Day of year=112), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 22 April 1988(Day of year=113): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5156,9 +4973,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-22 April 1988(Day of year=113), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 23 April 1988(Day of year=114): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5182,9 +4996,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-23 April 1988(Day of year=114), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 24 April 1988(Day of year=115): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5208,9 +5019,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-24 April 1988(Day of year=115), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 25 April 1988(Day of year=116): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5234,9 +5042,6 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-25 April 1988(Day of year=116), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
 26 April 1988(Day of year=117): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5249,6 +5054,9 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+26/04/1988 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 675.32 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -5260,944 +5068,12 @@ Removing Leaves from plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-26 April 1988(Day of year=117), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-27 April 1988(Day of year=118): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-27 April 1988(Day of year=118), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-28 April 1988(Day of year=119): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-28 April 1988(Day of year=119), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-29 April 1988(Day of year=120): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-29 April 1988(Day of year=120), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-30 April 1988(Day of year=121): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-30 April 1988(Day of year=121), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 May 1988(Day of year=122): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-1 May 1988(Day of year=122), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-2 May 1988(Day of year=123): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-2 May 1988(Day of year=123), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-3 May 1988(Day of year=124): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-3 May 1988(Day of year=124), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-4 May 1988(Day of year=125): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-4 May 1988(Day of year=125), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-5 May 1988(Day of year=126): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-5 May 1988(Day of year=126), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-6 May 1988(Day of year=127): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-6 May 1988(Day of year=127), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-7 May 1988(Day of year=128): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-7 May 1988(Day of year=128), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-8 May 1988(Day of year=129): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-8 May 1988(Day of year=129), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-9 May 1988(Day of year=130): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 May 1988(Day of year=130), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-10 May 1988(Day of year=131): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-10 May 1988(Day of year=131), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-11 May 1988(Day of year=132): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-11 May 1988(Day of year=132), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-12 May 1988(Day of year=133): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-12 May 1988(Day of year=133), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-13 May 1988(Day of year=134): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-13 May 1988(Day of year=134), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-14 May 1988(Day of year=135): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-14 May 1988(Day of year=135), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-15 May 1988(Day of year=136): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-15 May 1988(Day of year=136), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-16 May 1988(Day of year=137): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-16 May 1988(Day of year=137), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-17 May 1988(Day of year=138): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-17 May 1988(Day of year=138), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-18 May 1988(Day of year=139): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-18 May 1988(Day of year=139), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-19 May 1988(Day of year=140): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-19 May 1988(Day of year=140), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-20 May 1988(Day of year=141): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-20 May 1988(Day of year=141), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-21 May 1988(Day of year=142): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
+                      APSIM  Fatal  Error
                       -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-21 May 1988(Day of year=142), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-22 May 1988(Day of year=143): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-22 May 1988(Day of year=143), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-23 May 1988(Day of year=144): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-23 May 1988(Day of year=144), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-24 May 1988(Day of year=145): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-24 May 1988(Day of year=145), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-25 May 1988(Day of year=146): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-25 May 1988(Day of year=146), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-26 May 1988(Day of year=147): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
+     Mass Balance Error in Photosynthesis DM Allocation
+     Component name: potato2
      
-26 May 1988(Day of year=147), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-27 May 1988(Day of year=148): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-27 May 1988(Day of year=148), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-28 May 1988(Day of year=149): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-28 May 1988(Day of year=149), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-29 May 1988(Day of year=150): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-29 May 1988(Day of year=150), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-30 May 1988(Day of year=151): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-30 May 1988(Day of year=151), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-31 May 1988(Day of year=152): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-31 May 1988(Day of year=152), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 June 1988(Day of year=153): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      saturation of     0.440000      in layer   5
-              is above acceptable value of     0.396226
-     You must adjust bulk density (bd) to below      1.48400
-     OR saturation (sat) to below     0.396226
-     Component name: Templeton Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-1 June 1988(Day of year=153), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 June 1988(Day of year=153), clock: 
-     Simulation is terminating due to end criteria being met.

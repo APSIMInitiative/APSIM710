@@ -212,7 +212,7 @@ Paddock:
      SECTION:- start_of_day
      plant_population = 1/((750/1000)*(330/1000))
      if today = date('04/11/1992') then
-        potato2 sow population = plant_population, depth = 150, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 750, crop_class = plant
+        potato2 sow population = plant_population, depth = 120, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 750, crop_class = plant
      endif
      
      SECTION:- init
@@ -254,7 +254,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemlivenconc - potato2.stemdeadn - potato2.tuberlivenconc - potato2.tuberdeadn ) * 10
+     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -333,12 +333,12 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  150.  0.080  0.130  0.330  0.500  0.330  1.200  0.902  0.550
-          150.-  165.  0.080  0.130  0.330  0.500  0.330  1.200  0.022  0.550
-          165.-  195.  0.050  0.100  0.310  0.440  0.310  1.200  0.032  0.550
-          195.-  225.  0.040  0.080  0.270  0.460  0.270  1.200  0.021  0.550
-          225.-  255.  0.060  0.110  0.300  0.440  0.300  1.200  0.013  0.550
-          255.-  285.  0.060  0.110  0.300  0.440  0.300  1.200  0.009  0.550
+            0.-  150.  0.080  0.160  0.330  0.500  0.330  1.200  0.762  0.550
+          150.-  300.  0.160  0.160  0.330  0.500  0.330  1.200  0.190  0.550
+          300.-  600.  0.140  0.140  0.310  0.440  0.310  1.200  0.048  0.550
+          600.-  900.  0.120  0.120  0.270  0.460  0.270  1.200  0.000  0.550
+          900.- 1200.  0.150  0.150  0.300  0.440  0.300  1.200  0.000  0.550
+         1200.- 1500.  0.150  0.150  0.300  0.440  0.300  1.200  0.000  0.550
         ---------------------------------------------------------------------
      
      
@@ -349,14 +349,14 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  150.      19.50      30.00      30.00      25.50
-          150.-  165.       1.95       3.00       3.00       2.55
-          165.-  195.       3.00       6.30       6.30       3.90
-          195.-  225.       2.40       5.70       5.70       5.70
-          225.-  255.       3.30       5.70       5.70       4.20
-          255.-  285.       3.30       5.70       5.70       4.20
+            0.-  150.      24.00      25.50      25.50      25.50
+          150.-  300.      24.00      25.50      25.50      25.50
+          300.-  600.      42.00      51.00      51.00      39.00
+          600.-  900.      36.00      45.00      45.00      57.00
+          900.- 1200.      45.00      45.00      45.00      42.00
+         1200.- 1500.      45.00      45.00      45.00      42.00
           ---------------------------------------------------------
-               Totals      33.45      56.40      56.40      46.05
+               Totals     216.00     237.00     237.00     231.00
           ---------------------------------------------------------
      
      
@@ -423,12 +423,12 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.60  3.00    8.50    0.10    0.00
-             2     6.20  1.80    4.80    0.08    0.00
-             3     5.78  1.20    2.76    0.11    0.00
+             1     6.60  5.00    8.50    0.10    0.00
+             2     6.20  2.50    6.40    0.10    0.00
+             3     5.78  1.20    1.39    0.10    0.00
              4     5.53  1.03    1.39    0.10    0.00
              5     5.50  0.47    1.39    0.10    0.00
-             6     5.50  0.47    1.62    0.12    0.00
+             6     5.50  0.47    1.39    0.10    0.00
           ------------------------------------------------
            Totals               20.46    0.60    0.00
           ------------------------------------------------
@@ -443,19 +443,19 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      53078.0  4615.5   922.0   115.2  3425.3   171.3
-             2       3192.6   277.6    47.4     5.9  2925.0   146.3
-             3       4304.0   374.3    16.0     2.0  2133.0   106.6
-             4       3704.3   322.1     3.7     0.5  1555.4    77.8
-             5       1691.3   147.1     0.7     0.1  1134.2    56.7
-             6       1691.3   147.1     0.7     0.1   827.1    41.4
+             1      88463.4  7692.5  1536.6   192.1   468.7    23.4
+             2      44341.5  3855.8   658.5    82.3   347.2    17.4
+             3      43040.4  3742.6   159.6    20.0   190.6     9.5
+             4      37043.3  3221.2    36.7     4.6   104.6     5.2
+             5      16913.3  1470.7     6.7     0.8    57.4     2.9
+             6      16913.3  1470.7     6.7     0.8    31.5     1.6
           ---------------------------------------------------------
-           Totals   67661.7  5883.6   990.3   123.8 12000.0   600.0
+           Totals  246715.1 21453.5  2404.8   300.6  1200.0    60.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : initialsoilomn = 6607.41553
+     Manager creating a new local real variable : initialsoilomn = 21814.09770
      Manager creating a new local real variable : initialsurfaceomn = 0.00000
-     Manager creating a new local real variable : initialmineraln = 21.05604
+     Manager creating a new local real variable : initialmineraln = 21.06360
 4 November 1992(Day of year=309), operations: 
       Sending apply message to fertiliser
 4 November 1992(Day of year=309), fertiliser: 
@@ -466,56 +466,25 @@ Paddock:
    - Reading Fertiliser Type Parameters
        300.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
-29/11/1992 - Emergence
+26/11/1992 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 18 December 1992(Day of year=353), operations: 
       Sending apply message to irrigation
-25/12/1992 - FloralInitiation
-                            LAI = 0.99 (m^2/m^2)
-           Above Ground Biomass = 109.26 (g/m^2)
-26/12/1992 - TuberInitiation
-                            LAI = 1.06 (m^2/m^2)
-           Above Ground Biomass = 119.30 (g/m^2)
+21/12/1992 - FloralInitiation
+                            LAI = 0.95 (m^2/m^2)
+           Above Ground Biomass = 95.58 (g/m^2)
+23/12/1992 - TuberInitiation
+                            LAI = 1.10 (m^2/m^2)
+           Above Ground Biomass = 129.24 (g/m^2)
 7 January 1993(Day of year=7), operations: 
       Sending apply message to irrigation
 2 February 1993(Day of year=33), operations: 
       Sending apply message to irrigation
 16 February 1993(Day of year=47), operations: 
       Sending apply message to irrigation
-23/02/1993 - FinalLeaf
-                            LAI = 3.41 (m^2/m^2)
-           Above Ground Biomass = 1363.77 (g/m^2)
-Removing Leaves from plant
-25/05/1993 - FullSenescence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1579.49 (g/m^2)
-26/05/1993 - Maturity
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1579.49 (g/m^2)
-26 May 1993(Day of year=146), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-27 May 1993(Day of year=147), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-28 May 1993(Day of year=148), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-29 May 1993(Day of year=149), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-30 May 1993(Day of year=150), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-31 May 1993(Day of year=151), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 June 1993(Day of year=152), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-2 June 1993(Day of year=153), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
+27/02/1993 - FinalLeaf
+                            LAI = 5.29 (m^2/m^2)
+           Above Ground Biomass = 1547.68 (g/m^2)
 2 June 1993(Day of year=153), clock: 
      Simulation is terminating due to end criteria being met.
